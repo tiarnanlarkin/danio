@@ -195,8 +195,11 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         text = text.replaceAll(RegExp(r'^```\w*\n?'), '').replaceAll('```', '');
       }
 
-      final json = jsonDecode(text) as Map<String, dynamic>;
-      final identification = IdentificationResult.fromJson(json);
+      final decoded = jsonDecode(text);
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException('AI response is not a JSON object');
+      }
+      final identification = IdentificationResult.fromJson(decoded);
 
       // Record rate limit & AI history.
       rateLimiter.recordRequest(AIFeature.fishId);

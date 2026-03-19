@@ -418,7 +418,7 @@ class UserProfile {
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
-      id: json['id'] as String,
+      id: (json['id'] as String?) ?? '',
       name: json['name'] as String?,
       experienceLevel: ExperienceLevel.values.firstWhere(
         (e) => e.name == json['experienceLevel'],
@@ -429,91 +429,104 @@ class UserProfile {
         orElse: () => TankType.freshwater,
       ),
       goals:
-          (json['goals'] as List?)
-              ?.map(
-                (g) => UserGoal.values.firstWhere(
-                  (e) => e.name == g,
-                  orElse: () => UserGoal.keepFishAlive,
-                ),
-              )
-              .toList() ??
-          [UserGoal.keepFishAlive],
-      totalXp: json['totalXp'] as int? ?? 0,
-      currentStreak: json['currentStreak'] as int? ?? 0,
-      longestStreak: json['longestStreak'] as int? ?? 0,
-      lastActivityDate: json['lastActivityDate'] != null
-          ? DateTime.parse(json['lastActivityDate'] as String)
-          : null,
+          (json['goals'] is List?)
+              ? (json['goals'] as List)
+                  .whereType<String>()
+                  .map(
+                    (g) => UserGoal.values.firstWhere(
+                      (e) => e.name == g,
+                      orElse: () => UserGoal.keepFishAlive,
+                    ),
+                  )
+                  .toList()
+              : [UserGoal.keepFishAlive],
+      totalXp: (json['totalXp'] as int?) ?? 0,
+      currentStreak: (json['currentStreak'] as int?) ?? 0,
+      longestStreak: (json['longestStreak'] as int?) ?? 0,
+      lastActivityDate: DateTime.tryParse(json['lastActivityDate']?.toString() ?? ''),
       achievements:
-          (json['achievements'] as List?)?.cast<String>().toList() ?? [],
+          (json['achievements'] is List?)
+              ? (json['achievements'] as List).whereType<String>().toList()
+              : [],
       completedLessons:
-          (json['completedLessons'] as List?)?.cast<String>().toList() ?? [],
+          (json['completedLessons'] is List?)
+              ? (json['completedLessons'] as List).whereType<String>().toList()
+              : [],
       lessonProgress:
-          (json['lessonProgress'] as Map?)?.cast<String, dynamic>().map(
-            (key, value) => MapEntry(
-              key,
-              LessonProgress.fromJson(value as Map<String, dynamic>),
-            ),
-          ) ??
-          {},
+          (json['lessonProgress'] is Map?)
+              ? (json['lessonProgress'] as Map).cast<String, dynamic>().map(
+                    (key, value) {
+                      if (value is Map<String, dynamic>) {
+                        return MapEntry(
+                          key,
+                          LessonProgress.fromJson(value),
+                        );
+                      }
+                      return MapEntry(
+                        key,
+                        LessonProgress.fromJson(<String, dynamic>{}),
+                      );
+                    },
+                  )
+              : {},
       completedStories:
-          (json['completedStories'] as List?)?.cast<String>().toList() ?? [],
+          (json['completedStories'] is List?)
+              ? (json['completedStories'] as List).whereType<String>().toList()
+              : [],
       storyProgress:
-          (json['storyProgress'] as Map?)?.cast<String, dynamic>() ?? {},
+          (json['storyProgress'] is Map?)
+              ? (json['storyProgress'] as Map).cast<String, dynamic>()
+              : {},
       hasCompletedPlacementTest:
-          json['hasCompletedPlacementTest'] as bool? ?? false,
+          (json['hasCompletedPlacementTest'] as bool?) ?? false,
       hasSkippedPlacementTest:
-          json['hasSkippedPlacementTest'] as bool? ?? false,
+          (json['hasSkippedPlacementTest'] as bool?) ?? false,
       placementResultId: json['placementResultId'] as String?,
-      placementTestDate: json['placementTestDate'] != null
-          ? DateTime.parse(json['placementTestDate'] as String)
-          : null,
-      dailyXpGoal: json['dailyXpGoal'] as int? ?? 50,
+      placementTestDate: DateTime.tryParse(json['placementTestDate']?.toString() ?? ''),
+      dailyXpGoal: (json['dailyXpGoal'] as int?) ?? 50,
       dailyXpHistory:
-          (json['dailyXpHistory'] as Map?)?.cast<String, dynamic>().map(
-            (key, value) => MapEntry(key, value as int),
-          ) ??
-          {},
-      hasStreakFreeze: json['hasStreakFreeze'] as bool? ?? true,
-      streakFreezeUsedDate: json['streakFreezeUsedDate'] != null
-          ? DateTime.parse(json['streakFreezeUsedDate'] as String)
-          : null,
-      streakFreezeGrantedDate: json['streakFreezeGrantedDate'] != null
-          ? DateTime.parse(json['streakFreezeGrantedDate'] as String)
-          : null,
-      hearts: json['hearts'] as int? ?? 5,
-      lastHeartRefill: json['lastHeartRefill'] != null
-          ? DateTime.parse(json['lastHeartRefill'] as String)
-          : null,
+          (json['dailyXpHistory'] is Map?)
+              ? (json['dailyXpHistory'] as Map).cast<String, dynamic>().map(
+                    (key, value) => MapEntry(key, value is int ? value : 0),
+                  )
+              : {},
+      hasStreakFreeze: (json['hasStreakFreeze'] as bool?) ?? true,
+      streakFreezeUsedDate: DateTime.tryParse(json['streakFreezeUsedDate']?.toString() ?? ''),
+      streakFreezeGrantedDate: DateTime.tryParse(json['streakFreezeGrantedDate']?.toString() ?? ''),
+      hearts: (json['hearts'] as int?) ?? 5,
+      lastHeartRefill: DateTime.tryParse(json['lastHeartRefill']?.toString() ?? ''),
       league: json['league'] != null
-          ? League.fromJson(json['league'] as String)
+          ? League.fromJson(json['league'].toString())
           : League.bronze,
-      weeklyXP: json['weeklyXP'] as int? ?? 0,
-      weekStartDate: json['weekStartDate'] != null
-          ? DateTime.parse(json['weekStartDate'] as String)
-          : null,
+      weeklyXP: (json['weeklyXP'] as int?) ?? 0,
+      weekStartDate: DateTime.tryParse(json['weekStartDate']?.toString() ?? ''),
       inventory:
-          (json['inventory'] as List?)
-              ?.map((e) => InventoryItem.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+          (json['inventory'] is List?)
+              ? (json['inventory'] as List)
+                  .whereType<Map<String, dynamic>>()
+                  .map((e) => InventoryItem.fromJson(e))
+                  .toList()
+              : [],
       tankStatus: json['tankStatus'] as String?,
       firstFishSpeciesId: json['firstFishSpeciesId'] as String?,
-      dailyTipsEnabled: json['dailyTipsEnabled'] as bool? ?? true,
-      streakRemindersEnabled: json['streakRemindersEnabled'] as bool? ?? true,
-      hasSeenTutorial: json['hasSeenTutorial'] as bool? ?? false,
-      morningReminderTime: json['morningReminderTime'] as String? ?? '09:00',
-      eveningReminderTime: json['eveningReminderTime'] as String? ?? '19:00',
-      nightReminderTime: json['nightReminderTime'] as String? ?? '23:00',
+      dailyTipsEnabled: (json['dailyTipsEnabled'] as bool?) ?? true,
+      streakRemindersEnabled: (json['streakRemindersEnabled'] as bool?) ?? true,
+      hasSeenTutorial: (json['hasSeenTutorial'] as bool?) ?? false,
+      morningReminderTime: (json['morningReminderTime'] as String?) ?? '09:00',
+      eveningReminderTime: (json['eveningReminderTime'] as String?) ?? '19:00',
+      nightReminderTime: (json['nightReminderTime'] as String?) ?? '23:00',
       learningStylePreference: json['learningStylePreference'] as String?,
       weekendActivityDates:
-          (json['weekendActivityDates'] as List?)?.cast<String>().toList() ??
-          [],
+          (json['weekendActivityDates'] is List?)
+              ? (json['weekendActivityDates'] as List).whereType<String>().toList()
+              : [],
       fullHeartDates:
-          (json['fullHeartDates'] as List?)?.cast<String>().toList() ?? [],
-      perfectScoreCount: json['perfectScoreCount'] as int? ?? 0,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+          (json['fullHeartDates'] is List?)
+              ? (json['fullHeartDates'] as List).whereType<String>().toList()
+              : [],
+      perfectScoreCount: (json['perfectScoreCount'] as int?) ?? 0,
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
     );
   }
 }

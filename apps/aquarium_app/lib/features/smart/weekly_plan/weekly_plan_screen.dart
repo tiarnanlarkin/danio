@@ -132,9 +132,12 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         text = text.replaceAll(RegExp(r'^```\w*\n?'), '').replaceAll('```', '');
       }
 
-      final json = jsonDecode(text) as Map<String, dynamic>;
+      final decoded = jsonDecode(text);
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException('AI response is not a JSON object');
+      }
       final plan = WeeklyPlan.fromJson({
-        ...json,
+        ...decoded,
         'generated_at': DateTime.now().toIso8601String(),
       });
 

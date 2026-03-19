@@ -210,19 +210,21 @@ class Tank {
 
   /// Create from JSON (for import/restore)
   factory Tank.fromJson(Map<String, dynamic> json) {
-    final targetsJson = json['targets'] as Map<String, dynamic>?;
+    final targetsJson = json['targets'] is Map<String, dynamic>
+        ? json['targets'] as Map<String, dynamic>
+        : null;
     return Tank(
-      id: json['id'] as String,
-      name: json['name'] as String,
+      id: (json['id'] as String?) ?? '',
+      name: (json['name'] as String?) ?? 'Unnamed Tank',
       type: TankType.values.firstWhere(
-        (e) => e.name == (json['type'] ?? 'freshwater'),
+        (e) => e.name == (json['type']?.toString() ?? 'freshwater'),
         orElse: () => TankType.freshwater,
       ),
       volumeLitres: (json['volumeLitres'] as num?)?.toDouble() ?? 0,
       lengthCm: (json['lengthCm'] as num?)?.toDouble(),
       widthCm: (json['widthCm'] as num?)?.toDouble(),
       heightCm: (json['heightCm'] as num?)?.toDouble(),
-      startDate: DateTime.parse(json['startDate'] as String),
+      startDate: DateTime.tryParse(json['startDate']?.toString() ?? '') ?? DateTime.now(),
       targets: targetsJson != null
           ? WaterTargets(
               tempMin: (targetsJson['tempMin'] as num?)?.toDouble(),
@@ -239,8 +241,8 @@ class Tank {
       imageUrl: json['imageUrl'] as String?,
       sortOrder: (json['sortOrder'] as int?) ?? 0,
       isDemoTank: (json['isDemoTank'] as bool?) ?? false,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
     );
   }
 }

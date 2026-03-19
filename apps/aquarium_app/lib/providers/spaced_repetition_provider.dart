@@ -82,8 +82,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       List<ReviewCard> cards = [];
 
       if (cardsJson != null) {
-        final decoded = jsonDecode(cardsJson) as List;
-        cards = decoded.map((c) => ReviewCard.fromJson(c)).toList();
+        final decoded = jsonDecode(cardsJson);
+        if (decoded is List) {
+          cards = decoded.map((c) => ReviewCard.fromJson(c)).toList();
+        }
       }
 
       // Load stats data
