@@ -95,9 +95,6 @@ class _RiveFishState extends State<RiveFish> {
       if (controller != null) {
         artboard.addController(controller);
         _setupInputs(controller);
-        if (widget.disableMotion) {
-          controller.pause();
-        }
       }
 
       if (mounted) {
@@ -162,24 +159,16 @@ class _RiveFishState extends State<RiveFish> {
   }
 
   void _onTap() {
-    _tapTrigger?.fire();
+    if (!widget.disableMotion) {
+      _tapTrigger?.fire();
+    }
     widget.onTap?.call();
   }
 
-  @override
-  void didUpdateWidget(covariant RiveFish oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.disableMotion != oldWidget.disableMotion && _controller != null) {
-      if (widget.disableMotion) {
-        _controller!.pause();
-      } else {
-        _controller!.play();
-      }
-    }
-  }
-
   void _onHover(bool isHovering) {
-    _hoverInput?.value = isHovering;
+    if (!widget.disableMotion) {
+      _hoverInput?.value = isHovering;
+    }
   }
 
   void _onPointerMove(PointerEvent event, BoxConstraints constraints) {
