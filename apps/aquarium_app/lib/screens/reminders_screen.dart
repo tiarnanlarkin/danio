@@ -794,7 +794,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                       frequency: _isRecurring ? _frequency : 'once',
                     ),
                   );
-                  Navigator.pop(context);
+                  Navigator.maybePop(context);
                 },
                 child: const Text('Save Reminder'),
               ),

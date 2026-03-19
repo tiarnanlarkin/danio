@@ -44,7 +44,7 @@ void showThemePicker(BuildContext context, WidgetRef ref) {
                 child: GestureDetector(
                   onTap: () {
                     ref.read(roomThemeProvider.notifier).setTheme(type);
-                    Navigator.pop(ctx);
+                    Navigator.maybePop(ctx);
                   },
                   child: Container(
                     width: 100,

@@ -349,9 +349,9 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                                 _typeFilters = Set<LogType>.from(workingTypes);
                                 _dateRange = workingRange;
                               });
-                              Navigator.pop(ctx);
+                              Navigator.maybePop(ctx);
                             }
-                          : () => Navigator.pop(ctx),
+                          : () => Navigator.maybePop(ctx),
                       child: Text(hasChanges ? 'Apply' : 'Done'),
                     ),
                   ],
@@ -375,7 +375,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               leading: const Icon(Icons.science),
               title: const Text('Water Test'),
               onTap: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 _openAdd(context, LogType.waterTest);
               },
             ),
@@ -383,7 +383,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               leading: const Icon(Icons.water_drop),
               title: const Text('Water Change'),
               onTap: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 _openAdd(context, LogType.waterChange);
               },
             ),
@@ -391,7 +391,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               leading: const Icon(Icons.visibility),
               title: const Text('Observation'),
               onTap: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 _openAdd(context, LogType.observation);
               },
             ),
@@ -399,7 +399,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               leading: const Icon(Icons.medication),
               title: const Text('Medication'),
               onTap: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 _openAdd(context, LogType.medication);
               },
             ),

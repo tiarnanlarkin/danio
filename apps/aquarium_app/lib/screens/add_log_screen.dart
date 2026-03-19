@@ -186,18 +186,18 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
+                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
+                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
                 child: const Text('Discard'),
               ),
             ],
           ),
         );
         if (shouldPop == true && context.mounted) {
-          Navigator.pop(context);
+          Navigator.maybePop(context);
         }
       },
       child: GestureDetector(
@@ -1025,7 +1025,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           );
           rootOverlay.insert(celebrationEntry);
         }
-        Navigator.pop(context);
+        Navigator.maybePop(context);
         AppFeedback.showSuccess(
           context,
           '${log.typeName} logged! +$effectiveXp XP',

@@ -334,12 +334,12 @@ class EquipmentScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
               try {
                 final storage = ref.read(storageServiceProvider);
                 await storage.deleteEquipment(equipment.id);
@@ -467,7 +467,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.maybePop(context),
           child: const Text('Close'),
         ),
       ],
@@ -814,7 +814,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       widget.ref.invalidate(equipmentProvider(widget.tankId));
       widget.ref.invalidate(tasksProvider(widget.tankId));
 
-      if (mounted) Navigator.pop(context);
+      if (mounted) Navigator.maybePop(context);
     } catch (e) {
       if (mounted) {
         AppFeedback.showError(

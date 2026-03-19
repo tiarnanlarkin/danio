@@ -152,11 +152,11 @@ class LogDetailScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Keep'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: const Text(
               'Delete Log',
               style: TextStyle(color: AppColors.error),
@@ -189,7 +189,7 @@ class LogDetailScreen extends ConsumerWidget {
           ),
         ),
       );
-      Navigator.pop(context);
+      Navigator.maybePop(context);
     }
   }
 

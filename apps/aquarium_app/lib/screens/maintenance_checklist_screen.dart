@@ -297,7 +297,7 @@ class _MaintenanceChecklistScreenState
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Keep Progress'),
           ),
           FilledButton(
@@ -307,7 +307,7 @@ class _MaintenanceChecklistScreenState
                 _monthlyChecks = {};
               });
               _saveChecks();
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
             child: const Text('Reset'),
           ),

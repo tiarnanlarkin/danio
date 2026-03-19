@@ -391,11 +391,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Cancel'),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: const Text('Restore'),
           ),
         ],
@@ -437,12 +437,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Cancel'),
           ),
           FilledButton(
             onPressed: () {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
               ref.read(authProvider.notifier).signOut();
             },
             child: const Text('Sign Out'),

@@ -119,7 +119,7 @@ void showWaterParams(BuildContext context, WidgetRef ref, String? tankId) {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 NavigationThrottle.push(
                   context,
                   AddLogScreen(tankId: tankId, initialType: LogType.waterTest),

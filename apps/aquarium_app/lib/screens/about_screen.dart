@@ -38,6 +38,8 @@ class AboutScreen extends StatelessWidget {
                   'assets/icons/app_icon.png',
                   width: 100,
                   height: 100,
+                  cacheWidth: 200,
+                  cacheHeight: 200,
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Container(
                     decoration: const BoxDecoration(

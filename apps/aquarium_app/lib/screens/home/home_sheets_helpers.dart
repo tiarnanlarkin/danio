@@ -50,7 +50,7 @@ void showItemSheet(
         icon: icon,
         accentColor: color,
         rows: rows,
-        onClose: () => Navigator.pop(ctx),
+        onClose: () => Navigator.maybePop(ctx),
       ),
     ),
   );

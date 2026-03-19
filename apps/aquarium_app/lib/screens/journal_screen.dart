@@ -117,7 +117,7 @@ class JournalScreen extends ConsumerWidget {
           await storage.saveLog(entry);
           ref.invalidate(allLogsProvider(tankId));
 
-          if (ctx.mounted) Navigator.pop(ctx);
+          if (ctx.mounted) Navigator.maybePop(ctx);
         },
       ),
     );
@@ -241,7 +241,7 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
               IconButton(
                 icon: const Icon(Icons.close),
                 tooltip: 'Close',
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.maybePop(context),
               ),
             ],
           ),

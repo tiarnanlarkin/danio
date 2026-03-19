@@ -1140,7 +1140,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               title: const Text('Export as CSV'),
               subtitle: const Text('Spreadsheet-friendly format'),
               onTap: () async {
-                Navigator.pop(context);
+                Navigator.maybePop(context);
                 await _exportAsCSV(summary);
               },
             ),
@@ -1149,7 +1149,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               title: const Text('Export as JSON'),
               subtitle: const Text('Technical format'),
               onTap: () async {
-                Navigator.pop(context);
+                Navigator.maybePop(context);
                 await _exportAsJson(summary);
               },
             ),
@@ -1158,7 +1158,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               title: const Text('Share Progress Report'),
               subtitle: const Text('Human-readable text'),
               onTap: () async {
-                Navigator.pop(context);
+                Navigator.maybePop(context);
                 await _shareReport(summary);
               },
             ),

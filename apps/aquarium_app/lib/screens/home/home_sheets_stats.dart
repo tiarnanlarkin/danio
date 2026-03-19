@@ -84,7 +84,7 @@ void showStatsDetails(BuildContext context, WidgetRef ref) {
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   tooltip: 'Close',
-                  onPressed: () => Navigator.pop(ctx),
+                  onPressed: () => Navigator.maybePop(ctx),
                 ),
               ),
             ],
@@ -97,7 +97,7 @@ void showStatsDetails(BuildContext context, WidgetRef ref) {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    Navigator.pop(ctx);
+                    Navigator.maybePop(ctx);
                     if (screenContext.mounted) {
                       showDailyGoalDetails(screenContext);
                     }
@@ -110,7 +110,7 @@ void showStatsDetails(BuildContext context, WidgetRef ref) {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    Navigator.pop(ctx);
+                    Navigator.maybePop(ctx);
                     if (screenContext.mounted) {
                       showStreakCalendar(screenContext);
                     }
@@ -159,7 +159,7 @@ void showDailyGoalDetails(BuildContext context) {
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   tooltip: 'Close',
-                  onPressed: () => Navigator.pop(ctx),
+                  onPressed: () => Navigator.maybePop(ctx),
                 ),
               ),
             ],

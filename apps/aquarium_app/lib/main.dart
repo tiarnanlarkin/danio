@@ -411,6 +411,8 @@ class _AppRouterState extends ConsumerState<_AppRouter>
                   'assets/icons/app_icon.png',
                   width: 80,
                   height: 80,
+                  cacheWidth: 160,
+                  cacheHeight: 160,
                   errorBuilder: (_, __, ___) => const Icon(
                     Icons.water_drop,
                     size: 80,

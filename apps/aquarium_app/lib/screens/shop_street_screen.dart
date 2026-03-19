@@ -192,14 +192,14 @@ class ShopStreetScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               final amount = double.tryParse(controller.text) ?? 100;
               ref.read(budgetProvider.notifier).setMonthlyBudget(amount);
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
             child: const Text('Save'),
           ),
@@ -319,7 +319,7 @@ class ShopStreetScreen extends ConsumerWidget {
                                 .read(localShopsProvider.notifier)
                                 .updateShop(shop);
                           }
-                          Navigator.pop(ctx);
+                          Navigator.maybePop(ctx);
                         }
                       : null,
                   child: Text(
@@ -347,13 +347,13 @@ class ShopStreetScreen extends ConsumerWidget {
         content: Text('Remove "${shop.name}" from your saved shops?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () {
               ref.read(localShopsProvider.notifier).removeShop(shop.id);
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: const Text('Remove Shop'),

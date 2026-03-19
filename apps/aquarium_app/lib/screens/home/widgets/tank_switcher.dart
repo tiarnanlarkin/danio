@@ -125,10 +125,10 @@ class TankSwitcher extends StatelessWidget {
         currentIndex: currentIndex,
         onSelected: (index) {
           onChanged(index);
-          Navigator.pop(ctx);
+          Navigator.maybePop(ctx);
         },
         onAddTank: () {
-          Navigator.pop(ctx);
+          Navigator.maybePop(ctx);
           onAddTank();
         },
       ),

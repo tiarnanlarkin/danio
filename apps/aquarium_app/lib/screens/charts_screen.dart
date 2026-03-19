@@ -841,7 +841,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 _multiParamMode = false;
                 _selectedParams.clear();
               });
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
             child: const Text('Cancel'),
           ),
@@ -851,7 +851,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                     setState(() {
                       _multiParamMode = true;
                     });
-                    Navigator.pop(ctx);
+                    Navigator.maybePop(ctx);
                   }
                 : null,
             child: const Text('Compare'),

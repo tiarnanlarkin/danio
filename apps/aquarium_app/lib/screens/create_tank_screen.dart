@@ -69,18 +69,18 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
+                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
+                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
                 child: const Text('Discard'),
               ),
             ],
           ),
         );
         if (shouldPop == true && context.mounted) {
-          Navigator.pop(context);
+          Navigator.maybePop(context);
         }
       },
       child: GestureDetector(
@@ -99,7 +99,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                     // Let PopScope handle confirmation
                     Navigator.maybePop(context);
                   } else {
-                    Navigator.pop(context);
+                    Navigator.maybePop(context);
                   }
                 },
               ),

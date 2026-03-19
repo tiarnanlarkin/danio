@@ -89,6 +89,9 @@ class LivingRoomScene extends ConsumerWidget {
                   child: Image.asset(
                     _backgroundForTheme(ref.watch(roomThemeProvider)),
                     fit: BoxFit.cover,
+                    cacheWidth: 1024,
+                    cacheHeight: 1024,
+                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                   ),
                 ),
               ),

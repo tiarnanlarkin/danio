@@ -317,11 +317,11 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, 'practice'),
+            onPressed: () { if (Navigator.canPop(context)) Navigator.pop(context, 'practice'); },
             child: const Text('Practice Mode'),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, 'wait'),
+            onPressed: () { if (Navigator.canPop(context)) Navigator.pop(context, 'wait'); },
             child: const Text('Got It'),
           ),
         ],

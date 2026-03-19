@@ -264,7 +264,7 @@ class TermsOfServiceScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Close'),
           ),
         ],

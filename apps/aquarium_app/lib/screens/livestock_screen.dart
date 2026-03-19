@@ -420,7 +420,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                 (tank) => ListTile(
                   title: Text(tank.name),
                   subtitle: Text('${tank.volumeLitres.toStringAsFixed(0)}L'),
-                  onTap: () => Navigator.pop(ctx, tank),
+                  onTap: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, tank); },
                 ),
               )
               .toList(),
@@ -478,11 +478,11 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         content: Text('Livestock to remove:\n\n$livestockNames'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Keep'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: const Text(
               'Remove Livestock',
               style: TextStyle(color: AppColors.error),
@@ -1202,7 +1202,7 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
 
       ref.invalidate(livestockProvider(widget.tankId));
 
-      if (mounted) Navigator.pop(context);
+      if (mounted) Navigator.maybePop(context);
     } catch (e) {
       if (mounted) {
         AppFeedback.showError(
@@ -1385,7 +1385,7 @@ class _BulkAddLivestockSheetState
       }
 
       if (mounted) {
-        Navigator.pop(context);
+        Navigator.maybePop(context);
         AppFeedback.showSuccess(
           context,
           'Welcome aboard, new friends! \u{1F420} ${_items.length} added',

@@ -273,9 +273,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: Text('Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?'),
         content: Text('Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep')),
+          TextButton(onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); }, child: const Text('Keep')),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: Text('Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}', style: const TextStyle(color: AppColors.error)),
           ),
         ],

@@ -371,7 +371,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 TextButton(
                   onPressed: _isPurchasing
                       ? null
-                      : () => Navigator.pop(ctx, false),
+                      : () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
                   child: const Text(
                     'Cancel',
                     style: TextStyle(color: AppColors.textSecondaryDark),
@@ -379,7 +379,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 ),
                 ElevatedButton(
                   onPressed: (canAfford && !_isPurchasing)
-                      ? () => Navigator.pop(ctx, true)
+                      ? () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); }
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GemShopColors.gemPrimary,

@@ -109,11 +109,11 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Cancel'),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: const Text('I Understand'),
           ),
         ],

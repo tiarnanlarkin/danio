@@ -285,7 +285,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
                 onChanged: (v) {
                   setState(() => _currency = v ?? '£');
                   _saveExpenses();
-                  Navigator.pop(ctx);
+                  Navigator.maybePop(ctx);
                 },
               ),
             ),
@@ -295,7 +295,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
                 tooltip: 'Delete expense',
                 icon: Icon(Icons.delete, color: AppColors.error),
                 onPressed: () {
-                  Navigator.pop(ctx);
+                  Navigator.maybePop(ctx);
                   _confirmClear();
                 },
               ),
@@ -304,7 +304,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Close'),
           ),
         ],
@@ -320,7 +320,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         content: const Text('This cannot be undone.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Cancel'),
           ),
           FilledButton(
@@ -328,7 +328,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
             onPressed: () {
               setState(() => _expenses = []);
               _saveExpenses();
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
             child: const Text('Clear All'),
           ),
@@ -698,7 +698,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                     date: _date,
                   ),
                 );
-                Navigator.pop(context);
+                Navigator.maybePop(context);
               },
               child: const Text('Save Expense'),
             ),

@@ -756,11 +756,11 @@ class SettingsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: Text('Import', style: TextStyle(color: AppColors.warning)),
           ),
         ],
@@ -864,7 +864,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(ctx),
+              onPressed: () => Navigator.maybePop(ctx),
               child: const Text('Got It'),
             ),
           ],
@@ -898,11 +898,11 @@ class SettingsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: Text(
               'Delete Everything',
               style: TextStyle(color: AppColors.error),
@@ -922,11 +922,11 @@ class SettingsScreen extends ConsumerWidget {
         content: const Text('All data will be lost forever.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('No, keep my data'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: Text(
               'Yes, delete everything',
               style: TextStyle(color: AppColors.error),
@@ -1001,11 +1001,11 @@ class SettingsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
             child: Text(
               'Delete Everything',
               style: TextStyle(color: AppColors.error),
@@ -1094,7 +1094,7 @@ void _showThemePicker(
               ref
                   .read(settingsProvider.notifier)
                   .setThemeMode(AppThemeMode.system);
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
           ),
           AppListTile(
@@ -1108,7 +1108,7 @@ void _showThemePicker(
               ref
                   .read(settingsProvider.notifier)
                   .setThemeMode(AppThemeMode.light);
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
           ),
           AppListTile(
@@ -1122,7 +1122,7 @@ void _showThemePicker(
               ref
                   .read(settingsProvider.notifier)
                   .setThemeMode(AppThemeMode.dark);
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
             },
           ),
           const SizedBox(height: AppSpacing.md),
@@ -1495,7 +1495,7 @@ class _GoalOptionState extends State<_GoalOption> {
               .read(userProfileProvider.notifier)
               .setDailyGoal(widget.goal);
           if (mounted) {
-            Navigator.pop(this.context);
+            Navigator.maybePop(this.context);
             AppFeedback.showSuccess(
               this.context,
               'Daily goal updated to ${widget.goal} XP',

@@ -195,7 +195,7 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                           ),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => Navigator.maybePop(context),
                               child: const Text('Close'),
                             ),
                           ],

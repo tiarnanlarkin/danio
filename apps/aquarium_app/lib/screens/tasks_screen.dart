@@ -223,21 +223,21 @@ class TasksScreen extends ConsumerWidget {
             ListTile(
               title: const Text('1 day'),
               onTap: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 _snoozeTask(ref, task, 1);
               },
             ),
             ListTile(
               title: const Text('3 days'),
               onTap: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 _snoozeTask(ref, task, 3);
               },
             ),
             ListTile(
               title: const Text('1 week'),
               onTap: () {
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 _snoozeTask(ref, task, 7);
               },
             ),
@@ -280,12 +280,12 @@ class TasksScreen extends ConsumerWidget {
         content: Text('Remove "${task.title}" from your task list?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Navigator.maybePop(ctx),
             child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
               try {
                 await ref.read(storageServiceProvider).deleteTask(task.id);
                 ref.invalidate(tasksProvider(tankId));
@@ -437,7 +437,7 @@ class _TaskHistoryDialog extends ConsumerWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.maybePop(context),
           child: const Text('Close'),
         ),
       ],
@@ -795,7 +795,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       await storage.saveTask(task);
       widget.ref.invalidate(tasksProvider(widget.tankId));
 
-      if (mounted) Navigator.pop(context);
+      if (mounted) Navigator.maybePop(context);
     } catch (e) {
       if (mounted) {
         AppFeedback.showError(context, 'Oops, something went wrong!');

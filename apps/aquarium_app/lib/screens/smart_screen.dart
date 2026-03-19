@@ -449,7 +449,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 const SizedBox(height: AppSpacing.lg),
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pop(ctx);
+                    Navigator.maybePop(ctx);
                     // Navigate to symptom triage
                   },
                   icon: const Icon(Icons.medical_services_outlined, size: 18),

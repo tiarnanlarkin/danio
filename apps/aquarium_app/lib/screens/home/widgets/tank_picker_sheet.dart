@@ -204,7 +204,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
       await actions.reorderTanks(_tanks);
 
       if (mounted) {
-        Navigator.pop(context);
+        Navigator.maybePop(context);
         AppFeedback.showSuccess(context, 'Tank order saved');
       }
     } catch (e) {

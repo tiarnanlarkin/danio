@@ -81,6 +81,8 @@ class _LivestockSprite extends StatelessWidget {
           child: Image.asset(
             thumbPath,
             fit: BoxFit.cover,
+            cacheWidth: 64,
+            cacheHeight: 64,
             errorBuilder: (_, __, ___) =>
                 Icon(Icons.set_meal, color: AppColors.primary, size: 24),
           ),

@@ -47,7 +47,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.notifications_outlined),
             title: const Text('Reminders'),
             onTap: () {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
               // Use WidgetsBinding to ensure sheet is dismissed before pushing
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!context.mounted) return;
@@ -63,7 +63,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.book_outlined),
             title: const Text('Tank Journal'),
             onTap: () {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
               NavigationThrottle.push(
                 context,
                 JournalScreen(tankId: tankId),
@@ -75,7 +75,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.analytics_outlined),
             title: const Text('Analytics'),
             onTap: () {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
               NavigationThrottle.push(context, const AnalyticsScreen());
             },
           ),
@@ -83,7 +83,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.search),
             title: const Text('Species Search'),
             onTap: () {
-              Navigator.pop(ctx);
+              Navigator.maybePop(ctx);
               NavigationThrottle.push(
                 context,
                 const SearchScreen(),
@@ -164,7 +164,7 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
                 final temp = double.tryParse(tempC.text);
                 final ammonia = double.tryParse(ammoniaC.text);
                 if (ph == null && temp == null && ammonia == null) return;
-                Navigator.pop(ctx);
+                Navigator.maybePop(ctx);
                 final now = DateTime.now();
                 final log = LogEntry(
                   id: now.microsecondsSinceEpoch.toString(),
