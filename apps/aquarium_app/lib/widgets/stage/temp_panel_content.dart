@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/log_entry.dart';
 import '../../providers/tank_provider.dart';
+import '../../screens/add_log_screen.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 
@@ -813,15 +814,12 @@ class _LogButton extends StatelessWidget {
       height: 48,
       child: ElevatedButton.icon(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Log temperature — coming soon!'),
-              backgroundColor: _kAmberGold,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.mediumRadius,
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => AddLogScreen(
+                tankId: tankId,
+                initialType: LogType.waterTest,
               ),
-              duration: const Duration(seconds: 2),
             ),
           );
         },
