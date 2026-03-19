@@ -498,7 +498,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                       (mate) => Chip(
                         label: Text(mate, style: theme.textTheme.bodySmall),
                         visualDensity: VisualDensity.compact,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        materialTapTargetSize: MaterialTapTargetSize.padded,
                       ),
                     )
                     .toList(),
@@ -588,7 +588,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       avatar: null,
       label: Text('$label: $value'),
       visualDensity: VisualDensity.compact,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      materialTapTargetSize: MaterialTapTargetSize.padded,
     );
   }
 }

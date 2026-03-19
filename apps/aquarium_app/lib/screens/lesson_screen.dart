@@ -636,13 +636,17 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              ClipRRect(
-                borderRadius: AppRadius.xsRadius,
-                child: LinearProgressIndicator(
-                  value: (_currentQuizQuestion + 1) / quiz.questions.length,
-                  backgroundColor: context.surfaceVariant,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                  minHeight: 8,
+              Semantics(
+                label: 'Quiz progress: question ${_currentQuizQuestion + 1} of ${quiz.questions.length}',
+                child: ClipRRect(
+                  borderRadius: AppRadius.xsRadius,
+                  child: LinearProgressIndicator(
+                    value: (_currentQuizQuestion + 1) / quiz.questions.length,
+                    backgroundColor: context.surfaceVariant,
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                    minHeight: 8,
+                    semanticsLabel: '', // Exclude default semantics (handled by wrapper)
+                  ),
                 ),
               ),
             ],
@@ -668,9 +672,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
               // Question text
               if (index == 1) {
-                return Text(
-                  question.question,
-                  style: AppTypography.headlineMedium,
+                return Semantics(
+                  header: true,
+                  liveRegion: true,
+                  child: Text(
+                    question.question,
+                    style: AppTypography.headlineMedium,
+                  ),
                 );
               }
 
@@ -1021,17 +1029,24 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    passed ? _passedMessage(percentage) : _tryAgainMessage(),
-                    style: AppTypography.headlineLarge,
+                  Semantics(
+                    liveRegion: true,
+                    header: true,
+                    child: Text(
+                      passed ? _passedMessage(percentage) : _tryAgainMessage(),
+                      style: AppTypography.headlineLarge,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'You got $_correctAnswers out of ${quiz.questions.length} correct ($percentage%)',
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: context.textSecondary,
+                  Semantics(
+                    liveRegion: true,
+                    child: Text(
+                      'You got $_correctAnswers out of ${quiz.questions.length} correct ($percentage%)',
+                      style: AppTypography.bodyLarge.copyWith(
+                        color: context.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.xl),
 

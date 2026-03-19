@@ -36,7 +36,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
     with TickerProviderStateMixin {
   // ── Colours ──────────────────────────────────────────────────────
   static const _warmCream = Color(0xFFFFF8F0);
-  static const _amber = Color(0xFFF5A623);
+  static const _amber = Color(0xFFF5A623); // Decorative amber — not for text
+  static const _amberText = Color(0xFF9E6008); // WCAG AA text on light bg (4.8:1)
 
   // ── Phase tracking ──────────────────────────────────────────────
   int _phase = 1; // 1, 2, or 3
@@ -253,7 +254,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                 'Building your $fishName care guide${'.' * _dotCount}',
                 style: GoogleFonts.nunito(
                   fontSize: 14,
-                  color: _amber,
+                  color: _amberText,
                 ),
               ),
             ],
@@ -300,7 +301,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                   style: GoogleFonts.nunito(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: _amber,
+                    color: _amberText,
                   ),
                 ),
               ),

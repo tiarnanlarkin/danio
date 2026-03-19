@@ -113,7 +113,7 @@ class AppBarAction extends StatelessWidget {
     Widget button = IconButton(
       icon: Icon(icon, size: AppIconSizes.md),
       onPressed: onPressed,
-      tooltip: tooltip,
+      tooltip: tooltip ?? semanticsLabel,
       color: color ?? (context.textPrimary),
       constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
     );

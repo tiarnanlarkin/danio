@@ -429,7 +429,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   Switch(
                     value: _bulkEntryMode,
                     onChanged: (v) => setState(() => _bulkEntryMode = v),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    materialTapTargetSize: MaterialTapTargetSize.padded,
                   ),
                 ],
               ),
