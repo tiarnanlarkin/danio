@@ -62,6 +62,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
   static const _key = 'gems_state';
   static const _cumulativeKey = 'gems_cumulative';
+  static const _maxTransactions = 200;
   bool _spending = false;
   int _cumulativeEarned = 0;
   int _cumulativeSpent = 0;
@@ -101,6 +102,13 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         await _saveCumulative(prefs);
       }
 
+      // Trim oldest transactions if list exceeds cap
+      if (gemsState.transactions.length > _maxTransactions) {
+        gemsState = gemsState.copyWith(
+          transactions: gemsState.transactions.take(_maxTransactions).toList(),
+        );
+      }
+
       state = AsyncValue.data(gemsState);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -117,7 +125,14 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   Future<void> _save(GemsState gemsState) async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      // Trim oldest transactions before persisting
+      List<GemTransaction> transactions = gemsState.transactions;
+      if (transactions.length > _maxTransactions) {
+        transactions = transactions.take(_maxTransactions).toList();
+        gemsState = gemsState.copyWith(transactions: transactions);
+      }
       await prefs.setString(_key, jsonEncode(gemsState.toJson()));
+      await _saveCumulative(prefs);
     } catch (e) {
       // Rethrow to let callers handle the error
       throw Exception('Failed to save gems data: $e');
@@ -160,10 +175,15 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       final updatedTransactions = [transaction, ...current.transactions];
-      // Keep full transaction history (no cap — lifetime totals must be accurate)
+      // Cap transaction list to prevent unbounded SharedPreferences growth
+      final cappedTransactions = updatedTransactions.length > _maxTransactions
+          ? updatedTransactions.take(_maxTransactions).toList()
+          : updatedTransactions;
+
+      _cumulativeEarned += amount;
       final updatedState = current.copyWith(
         balance: newBalance,
-        transactions: updatedTransactions,
+        transactions: cappedTransactions,
         lastUpdated: now,
       );
 
@@ -216,10 +236,15 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         );
 
         final updatedTransactions = [transaction, ...current.transactions];
+        final cappedTransactions = updatedTransactions.length > _maxTransactions
+            ? updatedTransactions.take(_maxTransactions).toList()
+            : updatedTransactions;
+
+        _cumulativeSpent += amount;
 
         final updatedState = current.copyWith(
           balance: newBalance,
-          transactions: updatedTransactions,
+          transactions: cappedTransactions,
           lastUpdated: now,
         );
 
@@ -266,10 +291,13 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       final updatedTransactions = [transaction, ...current.transactions];
+      final cappedTransactions = updatedTransactions.length > _maxTransactions
+          ? updatedTransactions.take(_maxTransactions).toList()
+          : updatedTransactions;
 
       final updatedState = current.copyWith(
         balance: newBalance,
-        transactions: updatedTransactions,
+        transactions: cappedTransactions,
         lastUpdated: now,
       );
 
@@ -288,23 +316,11 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     return current.transactions.take(count).toList();
   }
 
-  /// Get total gems earned (all time)
-  int get totalEarned {
-    final current = state.value;
-    if (current == null) return 0;
-    return current.transactions
-        .where((t) => t.type == GemTransactionType.earn)
-        .fold(0, (sum, t) => sum + t.amount);
-  }
+  /// Get total gems earned (all time) — uses running counter for O(1) lookup
+  int get totalEarned => _cumulativeEarned;
 
-  /// Get total gems spent (all time)
-  int get totalSpent {
-    final current = state.value;
-    if (current == null) return 0;
-    return current.transactions
-        .where((t) => t.type == GemTransactionType.spend)
-        .fold(0, (sum, t) => sum + t.amount.abs());
-  }
+  /// Get total gems spent (all time) — uses running counter for O(1) lookup
+  int get totalSpent => _cumulativeSpent;
 
   /// Reset gems (for testing/debugging)
   Future<void> reset() async {
@@ -339,10 +355,13 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       final updatedTransactions = [transaction, ...current.transactions];
+      final cappedTransactions = updatedTransactions.length > _maxTransactions
+          ? updatedTransactions.take(_maxTransactions).toList()
+          : updatedTransactions;
 
       final updatedState = current.copyWith(
         balance: newBalance,
-        transactions: updatedTransactions,
+        transactions: cappedTransactions,
         lastUpdated: now,
       );
 

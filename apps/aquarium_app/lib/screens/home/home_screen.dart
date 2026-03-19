@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -105,18 +104,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  /// Waits for the user profile to load from the provider.
+  Future<UserProfile?> _waitForProfile() async {
+    // Fast path: already loaded
+    var profile = ref.read(userProfileProvider).valueOrNull;
+    if (profile != null) return profile;
+
+    // The provider is loading — give it a moment then check again.
+    await Future.delayed(const Duration(milliseconds: 300));
+    profile = ref.read(userProfileProvider).valueOrNull;
+    return profile;
+  }
+
   Future<void> _checkWelcomeBanner() async {
     final prefs = await SharedPreferences.getInstance();
     final hasSeen = prefs.getBool('has_seen_welcome_banner') ?? false;
     if (!hasSeen && mounted) {
-      final profileJson = prefs.getString('user_profile');
-      if (profileJson != null) {
-        try {
-          final decoded = jsonDecode(profileJson);
-          _cachedUserName = decoded['name'] as String?;
-        } catch (e) {
-          debugPrint('Failed to parse user profile JSON: $e');
-        }
+      final profile = await _waitForProfile();
+      if (profile != null) {
+        _cachedUserName = profile.name;
       }
       setState(() => _showWelcomeBanner = true);
       await prefs.setBool('has_seen_welcome_banner', true);
@@ -128,20 +134,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> _checkComebackBanner() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final profileJson = prefs.getString('user_profile');
-      if (profileJson == null || !mounted) return;
-      final decoded = jsonDecode(profileJson);
-      if (decoded is! Map<String, dynamic>) return;
+      final profile = await _waitForProfile();
+      if (profile == null || !mounted) return;
 
-      final hadStreak = (decoded['currentStreak'] as int?) ?? 0;
-      final lastActivityStr = decoded['lastActivityDate'] as String?;
-      _cachedFishSpeciesName = decoded['firstFishSpeciesId'] as String?;
-      _cachedUserName ??= decoded['name'] as String?;
-      if (hadStreak <= 0 || lastActivityStr == null) return;
+      final hadStreak = profile.currentStreak;
+      final lastActivity = profile.lastActivityDate;
+      _cachedFishSpeciesName = profile.firstFishSpeciesId;
+      _cachedUserName ??= profile.name;
+      if (hadStreak <= 0 || lastActivity == null) return;
 
-      final lastActivity = DateTime.tryParse(lastActivityStr);
-      if (lastActivity == null) return;
       final today = DateTime.now();
       final todayStr = today.toIso8601String().substring(0, 10);
       final yesterdayStr = today.subtract(const Duration(days: 1)).toIso8601String().substring(0, 10);
@@ -159,19 +160,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (!mounted) return;
     try {
       final prefs = await SharedPreferences.getInstance();
-      final profileJson = prefs.getString('user_profile');
-      if (profileJson == null) return;
-      final decoded = jsonDecode(profileJson);
-      if (decoded is! Map<String, dynamic>) return;
+      final profile = await _waitForProfile();
+      if (profile == null) return;
 
-      final createdAtStr = decoded['createdAt'] as String?;
-      if (createdAtStr == null) return;
-      final createdAt = DateTime.tryParse(createdAtStr);
-      if (createdAt == null) return;
-
-      final currentStreak = (decoded['currentStreak'] as int?) ?? 0;
+      final createdAt = profile.createdAt;
+      final currentStreak = profile.currentStreak;
       final daysSinceSignup = DateTime.now().difference(createdAt).inDays;
-      final fishName = decoded['firstFishSpeciesId'] as String?;
+      final fishName = profile.firstFishSpeciesId;
 
       Widget? milestoneCard;
       String? prefsKey;
@@ -190,8 +185,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         prefsKey = 'seen_day7_milestone';
       } else if (daysSinceSignup >= 30 && daysSinceSignup <= 31 && currentStreak >= 1 &&
           (prefs.getBool('seen_day30_committed') ?? false) == false) {
-        final totalXp = (decoded['totalXp'] as int?) ?? 0;
-        final lessonsCompleted = (decoded['completedLessons'] as List?)?.length ?? 0;
+        final totalXp = profile.totalXp;
+        final lessonsCompleted = profile.completedLessons.length;
         // speciesViewed isn't tracked in the profile yet — use 0
         // TODO(sprint4): Track speciesViewed in UserProfile, wire it here
         const speciesViewed = 0;
