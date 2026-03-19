@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,7 @@ final userProfileProvider =
 class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   UserProfileNotifier(this.ref) : super(const AsyncValue.loading()) {
     _load();
-    _lifecycleListener = _ProfileLifecycleListener(_flushPendingSave);
+    _lifecycleListener = _ProfileLifecycleListener(_onLifecyclePause);
     WidgetsBinding.instance.addObserver(_lifecycleListener);
   }
 
@@ -47,9 +48,23 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   /// The latest profile pending a debounced write.
   UserProfile? _pendingSave;
 
-  /// Flush any pending debounced save immediately (called on lifecycle pause/detach).
-  void _flushPendingSave() {
-    _saveDebouncer.flush();
+  /// Save the current pending profile immediately on app pause/detach.
+  /// The debouncer's flush() only starts the async save but doesn't await it,
+  /// so we save directly to prevent data loss if the OS kills the app.
+  void _onLifecyclePause() {
+    _saveDebouncer.cancel(); // Cancel any pending debounced save
+    final toSave = _pendingSave ?? state.value;
+    if (toSave == null) return;
+    _pendingSave = null;
+    _trimXpHistory(toSave);
+    // Fire-and-forget but at least SharedPreferences queues the write
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString(_key, jsonEncode(toSave.toJson())).catchError((e) {
+        if (kDebugMode) {
+          debugPrint('Warning: profile save failed on lifecycle pause: $e');
+        }
+      });
+    });
   }
 
   Future<void> _load() async {
@@ -105,8 +120,6 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(_lifecycleListener);
-    // Flush any pending save before disposal
-    _saveDebouncer.flush();
     _saveDebouncer.dispose();
     super.dispose();
   }
@@ -206,9 +219,12 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     return current.dailyXpHistory[today] ?? 0;
   }
 
-  /// Format date as YYYY-MM-DD for dailyXpHistory key
+  /// Format date as YYYY-MM-DD (UTC) for dailyXpHistory key.
+  /// All date keys use UTC to stay consistent with streak calculations
+  /// and prevent timezone/DST mismatches near midnight.
   String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    final utc = date.toUtc();
+    return '${utc.year}-${utc.month.toString().padLeft(2, '0')}-${utc.day.toString().padLeft(2, '0')}';
   }
 
   /// Set daily XP goal (25, 50, 100, or 200)
@@ -254,9 +270,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       await offlineService.awardXp(
         amount: effectiveXp,
         localUpdate: () async {
-          // Shadow current into c so Dart flow analysis can track non-nullability
-          // across this async closure boundary.
-          var c = current;
+          // Read state fresh inside the async closure to avoid stale snapshots.
+          // If another XP operation completed between the outer capture and here,
+          // using the captured `current` would silently overwrite newer state.
+          var c = state.value;
           if (c == null) return;
 
           // Reset streak freeze weekly if needed
@@ -266,7 +283,6 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
               streakFreezeGrantedDate: DateTime.now(),
               updatedAt: DateTime.now(),
             );
-            current = c;
           }
 
           final now = DateTime.now().toUtc();
@@ -374,27 +390,34 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             ref.read(streakFreezeUsedProvider.notifier).state = true;
           }
 
-          // Award gems for milestones
-          final gemsNotifier = ref.read(gemsProvider.notifier);
+          // Award gems for milestones — non-fatal so XP still records if gems fail.
+          try {
+            final gemsNotifier = ref.read(gemsProvider.notifier);
 
-          // Streak milestone gems (7, 14, 30, 50, 100 days)
-          if (newStreak > c.currentStreak) {
-            final streakGems = GemRewards.getStreakMilestoneReward(newStreak);
-            if (streakGems > 0) {
+            // Streak milestone gems (7, 14, 30, 50, 100 days)
+            if (newStreak > c.currentStreak) {
+              final streakGems = GemRewards.getStreakMilestoneReward(newStreak);
+              if (streakGems > 0) {
+                await gemsNotifier.addGems(
+                  amount: streakGems,
+                  reason: GemEarnReason.streakMilestone,
+                  customReason: '$newStreak day streak!',
+                );
+              }
+            }
+
+            // Daily goal completion gems (first time reaching goal today)
+            if (previousTodayXp < c.dailyXpGoal && todayXp >= c.dailyXpGoal) {
               await gemsNotifier.addGems(
-                amount: streakGems,
-                reason: GemEarnReason.streakMilestone,
-                customReason: '$newStreak day streak!',
+                amount: GemRewards.dailyGoalMet,
+                reason: GemEarnReason.dailyGoalMet,
               );
             }
-          }
-
-          // Daily goal completion gems (first time reaching goal today)
-          if (previousTodayXp < c.dailyXpGoal && todayXp >= c.dailyXpGoal) {
-            await gemsNotifier.addGems(
-              amount: GemRewards.dailyGoalMet,
-              reason: GemEarnReason.dailyGoalMet,
-            );
+          } catch (e) {
+            // Gem awarding failed — log but don't break XP recording.
+            if (kDebugMode) {
+              debugPrint('Warning: gem award failed in recordActivity: $e');
+            }
           }
         },
       );
