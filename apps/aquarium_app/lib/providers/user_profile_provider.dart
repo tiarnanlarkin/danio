@@ -63,6 +63,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         if (kDebugMode) {
           debugPrint('Warning: profile save failed on lifecycle pause: $e');
         }
+        return false;
       });
     });
   }
