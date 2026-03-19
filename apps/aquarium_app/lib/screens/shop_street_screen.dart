@@ -79,7 +79,6 @@ class ShopStreetScreen extends ConsumerWidget {
                 foregroundColor: AppColors.textPrimaryDark,
                 elevation: 0,
                 pinned: true,
-                automaticallyImplyLeading: false,
               ),
 
               // Header

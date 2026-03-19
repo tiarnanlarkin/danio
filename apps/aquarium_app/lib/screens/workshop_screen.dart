@@ -105,7 +105,6 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                 foregroundColor: WorkshopColors.textPrimary,
                 elevation: 0,
                 pinned: true,
-                automaticallyImplyLeading: false,
               ),
 
               // Header
