@@ -25,7 +25,7 @@ class Livestock {
   final HealthStatus healthStatus;
   final DateTime updatedAt;
 
-  Livestock({
+  const Livestock({
     required this.id,
     required this.tankId,
     required this.commonName,

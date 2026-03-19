@@ -32,7 +32,7 @@ class Task {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Task({
+  const Task({
     required this.id,
     this.tankId,
     required this.title,

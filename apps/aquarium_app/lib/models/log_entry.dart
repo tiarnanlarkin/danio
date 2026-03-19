@@ -133,7 +133,7 @@ class LogEntry {
   final String? relatedTaskId; // For task-completion logs
   final DateTime createdAt;
 
-  LogEntry({
+  const LogEntry({
     required this.id,
     required this.tankId,
     required this.type,

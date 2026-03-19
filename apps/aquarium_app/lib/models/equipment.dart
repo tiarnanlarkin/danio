@@ -35,7 +35,7 @@ class Equipment {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Equipment({
+  const Equipment({
     required this.id,
     required this.tankId,
     required this.type,

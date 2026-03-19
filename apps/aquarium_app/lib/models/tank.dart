@@ -123,7 +123,7 @@ class Tank {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Tank({
+  const Tank({
     required this.id,
     required this.name,
     required this.type,
