@@ -548,7 +548,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'A quarantine (QT) tank is a small, bare-bones tank used to isolate new fish or treat sick fish. It doesn\'t need to be fancy - a simple 10-20 liter tank with a sponge filter is perfect.',
+              'A quarantine (QT) tank is a small, bare-bones tank used to isolate new fish or treat sick fish. A quarantine tank should be at minimum 40 litres (10 gallons) — smaller tanks have unstable water parameters which stress sick fish. No substrate, minimal decor (PVC pipes for hiding spots), and a simple sponge filter. Run it alongside your main tank so the filter is always cycled.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

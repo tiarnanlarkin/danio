@@ -124,12 +124,12 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '**Step 1: Raise the temperature** — Gradually increase to 30°C (86°F) over 24–48 hours. This speeds up the life cycle, making the parasite vulnerable faster. Don\'t jump the temperature suddenly.\n\n**Step 2: Add salt** — Use aquarium salt at 1–3 teaspoons per gallon (dissolve first!). Salt is effective against the free-swimming stage and is safe for most community fish. Avoid with scaleless species like loaches and catfish.\n\n**Step 3: Commercial medication** — If salt alone isn\'t working, use a copper-based or malachite green treatment. Follow the instructions carefully — copper is toxic in overdoses.\n\n**Step 4: Continue treatment for 7–10 days AFTER the last white spot disappears.** This is the most common mistake. Stopping early leaves surviving tomonts to re-infect your fish.',
+              '**Step 1: Raise the temperature** — Gradually increase to 30°C (86°F) over 24–48 hours. Raising temperature speeds up the ich parasite\'s lifecycle, causing it to drop off the fish faster so medication can kill the free-swimming stage. Maintain this temperature for the full treatment duration (usually 10–14 days). Don\'t jump the temperature suddenly.\n\n**Step 2: Add salt** — ⚠️ Salt is irreversible — you cannot remove it by water changes alone. Only use salt treatments in dedicated hospital/quarantine tanks, never in display tanks with live plants or sensitive species. Use aquarium salt at 1–3 teaspoons per gallon (dissolve first!). Salt is effective against the free-swimming stage and is safe for most community fish. Avoid with scaleless species like loaches and catfish.\n\n**Step 3: Commercial medication** — If salt alone isn\'t working, use a copper-based or malachite green treatment. Follow the instructions carefully — copper is toxic in overdoses.\n\n**Step 4: Continue treatment for 7–10 days AFTER the last white spot disappears.** This is the most common mistake. Stopping early leaves surviving tomonts to re-infect your fish.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Remove carbon from your filter during treatment — it absorbs medications. Turn it back on after treatment ends.',
+              'Remove chemical filter media (activated carbon) before treating with any medication — carbon absorbs the medication and makes it ineffective. You can return the carbon 24 hours after the final treatment dose.',
         ),
       ],
       quiz: Quiz(

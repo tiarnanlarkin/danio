@@ -35,7 +35,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Aim for 25-50% water change weekly. This keeps nitrate low and maintains stable water parameters. Water changes of 50-75% are perfectly safe when the new water is temperature-matched and dechlorinated — larger changes actually help maintain stable water parameters. The old "never change more than 25%" advice is outdated. Many experienced aquarists do 50%+ weekly changes without issues.',
+              'Aim for 25-50% water change weekly. This keeps nitrate low and maintains stable water parameters. For established tanks with low bioload, 20-25% weekly is sufficient. For tanks with high bioload, overstocking, or during cycling, increase to 30-40% weekly. Never change more than 50% at once as it disrupts beneficial bacteria. Water changes of 50-75% are perfectly safe when the new water is temperature-matched and dechlorinated — larger changes actually help maintain stable water parameters. The old "never change more than 25%" advice is outdated. Many experienced aquarists do 50%+ weekly changes without issues.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -49,7 +49,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'The key to safe water changes is simple: match the temperature and always add dechlorinator. As long as those two conditions are met, even 75%+ water changes won\'t harm your fish. In emergencies (ammonia or nitrite spikes), don\'t be afraid to do multiple large changes in one day.',
+              'The key to safe water changes is simple: match the temperature and always add dechlorinator. As long as those two conditions are met, even 75%+ water changes won\'t harm your fish. In emergencies (ammonia or nitrite spikes), don\'t be afraid to do multiple large changes in one day.\n\nWater conditioners are generally safe in overdose — Seachem Prime, for example, can detoxify ammonia and nitrite at up to 5× the recommended dose. However, extremely high doses may temporarily reduce oxygen levels. As a rule, dose for the full tank volume, not the water change volume.',
         ),
       ],
       quiz: Quiz(
@@ -113,7 +113,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Sponges and bio-media rarely need replacing - just rinse them. Carbon should be replaced monthly if used. If you must replace sponges, only do one at a time with weeks between.',
+              'Never replace all filter media at once — this destroys your beneficial bacteria colony. When cleaning mechanical media (sponge/filter pad), rinse in OLD tank water (not tap water — chlorine kills bacteria). Replace no more than 1/3 of biological media per month. Sponges and bio-media rarely need replacing - just rinse them. Carbon should be replaced monthly if used. If you must replace sponges, only do one at a time with weeks between.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -547,7 +547,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'If using bleach: 1) Use 10:1 water to bleach ratio, 2) Soak only 15 minutes, 3) Rinse for 10+ minutes, 4) Soak in dechlorinated water overnight. Any bleach residue kills fish!',
+              'If using bleach: Use a 5% bleach solution: 1 part unscented household bleach to 19 parts water (e.g., 50ml bleach + 950ml water). Dip plants for 2-3 minutes maximum. Rinse thoroughly under running water, then soak in dechlorinated water with a double dose of water conditioner for 15-30 minutes before adding to tank. Any bleach residue kills fish!',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

@@ -49,7 +49,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Avoid "pH adjusters" and chemicals. They cause dangerous swings. It\'s better to keep fish suited to your tap water\'s natural pH.',
+              'Avoid "pH adjusters" and chemicals. They cause dangerous swings. It\'s better to keep fish suited to your tap water\'s natural pH. If you do need to adjust pH, never change it by more than 0.2-0.3 per day. Use natural methods first: driftwood or almond leaves lower pH; crushed coral or limestone raise it. Chemical pH adjusters often cause pH swings that are more harmful than the original pH.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -175,7 +175,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Most tropical fish do well in GH 4-12 dGH. Livebearers (guppies, mollies) prefer harder water (10-20 dGH). Soft water fish (tetras, discus) prefer 2-8 dGH.',
+              'Most tropical fish do well in GH 4-12 dGH (70-210 ppm). This is the ideal range for most tropical community tanks, and most tap water falls in this range. Livebearers (guppies, mollies) prefer harder water (10-20 dGH). Soft water fish (tetras, discus) prefer 2-8 dGH. If your GH is very high (>20°dGH), consider mixing with RO water. Very soft water (<3°dGH) needs remineralisation for most fish.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -189,7 +189,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Low KH (below 3 dKH) can cause dangerous pH crashes, especially overnight when plants release CO2. If your KH is very low, consider adding crushed coral or baking soda.',
+              'KH (carbonate hardness) acts as your tank\'s pH buffer. If KH drops below 3°dKH, pH can crash suddenly — sometimes overnight — which is fatal. Test KH alongside pH. If KH is low, add a small amount of baking soda (1 tsp per 50L) to raise it gradually. Low KH (below 3 dKH) can cause dangerous pH crashes, especially overnight when plants release CO2. If your KH is very low, consider adding crushed coral or baking soda.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -296,7 +296,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Seachem Prime is the gold standard. It dechlorinates, detoxifies ammonia/nitrite, and detoxifies heavy metals. One bottle lasts forever - worth the investment.',
+              'Seachem Prime is the gold standard. It dechlorinates, detoxifies ammonia/nitrite, and detoxifies heavy metals. One bottle lasts forever - worth the investment. Water conditioners are generally safe in overdose — Seachem Prime, for example, can detoxify ammonia and nitrite at up to 5× the recommended dose. However, extremely high doses may temporarily reduce oxygen levels. As a rule, dose for the full tank volume, not the water change volume.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

@@ -60,7 +60,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '"Cycling" your tank means growing colonies of beneficial bacteria before adding fish. These bacteria convert toxic ammonia into less harmful substances. This process takes 2-6 weeks - but it\'s worth the wait.',
+              '"Cycling" your tank means growing colonies of beneficial bacteria before adding fish. These bacteria convert toxic ammonia into less harmful substances. Cycling typically takes 3-6 weeks. It\'s faster with a seeded filter from an established tank (1-2 weeks) and slower in cold water or with very low ammonia. You\'ll know cycling is complete when: ammonia = 0, nitrite = 0, and nitrate is rising.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,

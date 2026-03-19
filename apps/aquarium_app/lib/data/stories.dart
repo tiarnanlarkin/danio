@@ -632,7 +632,7 @@ class Stories {
       StoryScene(
         id: 'temp_check',
         text:
-            'Before adding the new water, you check temperature:\n• Tank water: 76°F (24°C)\n• New water: 65°F (18°C)\n\nThat\'s an 11°F (6°C) difference! What do you do?',
+            'Before adding the new water, you check temperature:\n• Tank water: 24°C (76°F)\n• New water: 18°C (65°F)\n\nThat\'s a 6°C (11°F) difference! What do you do?',
         choices: [
           StoryChoice(
             id: 'warm_it',
@@ -654,7 +654,7 @@ class Stories {
       StoryScene(
         id: 'perfect_match',
         text:
-            'You add hot water to warm the new water to 76°F (24°C). Perfect match!\n\nYou slowly pour the water back into the tank, aiming for the decorations to diffuse the flow. The fish seem unbothered.',
+            'You add hot water to warm the new water to 24°C (76°F). Perfect match!\n\nYou slowly pour the water back into the tank, aiming for the decorations to diffuse the flow. The fish seem unbothered.',
         choices: [
           StoryChoice(
             id: 'finish_up',
@@ -1208,7 +1208,7 @@ class Stories {
       StoryScene(
         id: 'research_phase',
         text:
-            'You research extensively:\n• Rams prefer 82-86°F for breeding\n• Need soft, acidic water (pH 6.0-6.5)\n• Prefer flat stones for egg-laying\n• Extremely protective parents\n\n"Water chemistry is critical," you note. What will you use for breeding water?',
+            'You research extensively:\n• Rams prefer 28-30°C (82-86°F) for breeding\n• Need soft, acidic water (pH 6.0-6.5)\n• Prefer flat stones for egg-laying\n• Extremely protective parents\n\n"Water chemistry is critical," you note. What will you use for breeding water?',
         choices: [
           StoryChoice(
             id: 'ro_water',
@@ -1251,7 +1251,7 @@ class Stories {
       StoryScene(
         id: 'perfect_water',
         text:
-            'You invest in an RO unit and remineralization salts. Creating perfect water:\n• RO water base\n• GH: 4-5 dGH\n• KH: 1-2 dKH\n• pH: 6.2\n• Temp: 84°F\n\n"This is breeding-grade water," Jamie confirms. "Now the tank setup."',
+            'You invest in an RO unit and remineralization salts. Creating perfect water:\n• RO water base\n• GH: 4-5 dGH\n• KH: 1-2 dKH\n• pH: 6.2\n• Temp: 29°C (84°F)\n\n"This is breeding-grade water," Jamie confirms. "Now the tank setup."',
         choices: [
           StoryChoice(
             id: 'tank_setup',
@@ -1290,7 +1290,7 @@ class Stories {
       StoryScene(
         id: 'tank_setup',
         text:
-            'Setting up the 75-litre breeding tank:\n• Bare bottom or sand?\n• Sponge filter (fry-safe)\n• Flat stones for spawning\n• Minimal decor (easy viewing)\n• Heater set to 84°F\n\nWhat substrate do you choose?',
+            'Setting up the 75-litre breeding tank:\n• Bare bottom or sand?\n• Sponge filter (fry-safe)\n• Flat stones for spawning\n• Minimal decor (easy viewing)\n• Heater set to 29°C (84°F)\n\nWhat substrate do you choose?',
         choices: [
           StoryChoice(
             id: 'bare_bottom',
