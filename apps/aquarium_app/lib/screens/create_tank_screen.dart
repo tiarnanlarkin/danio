@@ -5,6 +5,7 @@ import '../providers/tank_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/achievement_provider.dart';
+import '../providers/inventory_provider.dart';
 import '../services/achievement_service.dart';
 import '../services/xp_animation_service.dart';
 import '../services/celebration_service.dart';
