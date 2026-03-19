@@ -98,7 +98,9 @@ void showStatsDetails(BuildContext context, WidgetRef ref) {
                 child: OutlinedButton.icon(
                   onPressed: () {
                     Navigator.pop(ctx);
-                    showDailyGoalDetails(screenContext);
+                    if (screenContext.mounted) {
+                      showDailyGoalDetails(screenContext);
+                    }
                   },
                   icon: const Icon(Icons.flag),
                   label: const Text('Daily Goal'),
@@ -109,7 +111,9 @@ void showStatsDetails(BuildContext context, WidgetRef ref) {
                 child: OutlinedButton.icon(
                   onPressed: () {
                     Navigator.pop(ctx);
-                    showStreakCalendar(screenContext);
+                    if (screenContext.mounted) {
+                      showStreakCalendar(screenContext);
+                    }
                   },
                   icon: const Icon(Icons.calendar_month),
                   label: const Text('Calendar'),

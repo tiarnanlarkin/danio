@@ -22,7 +22,7 @@ class NavigationThrottle {
   /// in case an exception or hang prevents the finally block from running.
   static void _startSafetyTimer() {
     _safetyTimer?.cancel();
-    _safetyTimer = Timer(const Duration(seconds: 2), () {
+    _safetyTimer = Timer(const Duration(seconds: 5), () {
       _busyCount = 0;
     });
   }
