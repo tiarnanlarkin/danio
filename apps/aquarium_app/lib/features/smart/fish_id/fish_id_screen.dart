@@ -12,6 +12,7 @@ import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/core/bubble_loader.dart';
+import '../../../widgets/optimized_image.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
@@ -297,8 +298,8 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     if (_selectedImage != null) {
       return ClipRRect(
         borderRadius: AppRadius.md2Radius,
-        child: Image.file(
-          _selectedImage!,
+        child: OptimizedFileImage(
+          file: _selectedImage!,
           height: 250,
           width: double.infinity,
           fit: BoxFit.cover,
