@@ -124,8 +124,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         isLoading: false,
         clearError: true,
       );
-    } catch (e) {
-      // Initialize with empty state on error, but keep flow going
+    } catch (e, stackTrace) {
+      logError('Failed to load review cards: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       final stats = ReviewStats.fromCards([]);
       state = state.copyWith(
         cards: [],
@@ -153,8 +153,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         'lastReviewDate': DateTime.now().toIso8601String(),
       };
       await prefs.setString(_statsKey, jsonEncode(statsData));
-    } catch (e) {
-      throw Exception('Failed to save review data: $e');
+    } catch (e, stackTrace) {
+      throw Exception('Failed to save review data: $e\n$stackTrace');
     }
   }
 
@@ -190,10 +190,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       await _saveData();
       await _scheduleNotifications();
-    } catch (e) {
+    } catch (e, stackTrace) {
       state = state.copyWith(
         errorMessage: "Couldn't create that review card. Please try again.",
       );
+      logError('Failed to create review card: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       rethrow;
     }
   }
@@ -300,29 +301,30 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       await _saveData();
       await _scheduleNotifications();
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Log error but don't break lesson completion flow
       state = state.copyWith(
         errorMessage: "Couldn't set up your review cards. Please try again.",
       );
+      logError('Failed to seed review cards: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       // Don't rethrow - lesson completion should still succeed
     }
   }
 
   /// Safely read a named String field from a dynamic object (LessonSection /
   /// QuizQuestion) without introducing a circular import.
-  /// Uses dynamic dispatch — returns null if the access throws or is non-String.
+  /// Uses dynamic dispatch via toJson() — returns null if the access throws or
+  /// is non-String.
   String? _safeStringField(dynamic obj, String fieldName) {
     try {
       // ignore: avoid_dynamic_calls
-      final dynamic value = fieldName == 'content'
-          // ignore: avoid_dynamic_calls
-          ? (obj as dynamic).content
-          // ignore: avoid_dynamic_calls
-          : (obj as dynamic).question;
-      return value is String ? value : null;
-    } catch (e) {
-      logError('Spaced repetition: failed to extract card value: $e', tag: 'SpacedRepetitionProvider');
+      final json = (obj as dynamic).toJson() as Map<String, dynamic>;
+      return json[fieldName] as String?;
+    } catch (e, stackTrace) {
+      logError(
+        'Spaced repetition: failed to extract "$fieldName": $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       return null;
     }
   }
@@ -373,7 +375,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       await _saveData();
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Rollback on save failure, but don't break review flow
       state = state.copyWith(
         cards: originalCards,
@@ -381,6 +383,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         errorMessage:
             'Couldn\'t save that review — it\'ll retry automatically.',
       );
+      logError('Failed to save review result: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       // Don't rethrow - let review flow continue
     }
   }
@@ -396,10 +399,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       state = state.copyWith(currentSession: session, clearError: true);
-    } catch (e) {
+    } catch (e, stackTrace) {
       state = state.copyWith(
         errorMessage: "Couldn't start your review session. Please try again.",
       );
+      logError('Failed to start review session: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       rethrow;
     }
   }
@@ -457,11 +461,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await reviewCard(cardId: cardId, correct: correct);
 
       return result;
-    } catch (e) {
+    } catch (e, stackTrace) {
       state = state.copyWith(
         errorMessage:
             "Couldn't save your answer. Your progress is safe — try again.",
       );
+      logError('Failed to record session result: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       rethrow;
     }
   }
@@ -496,11 +501,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       // Refresh notifications for next review
       await _scheduleNotifications();
-    } catch (e) {
+    } catch (e, stackTrace) {
       state = state.copyWith(
         errorMessage:
             "Couldn't save your session results. Don't worry — your progress is tracked.",
       );
+      logError('Failed to complete review session: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       rethrow;
     }
   }
@@ -595,11 +601,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       // Check for streak achievements
       await _checkStreakAchievements(newStreak);
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Don't break flow on streak update failure
       state = state.copyWith(
         errorMessage: "Couldn't update your streak. It'll catch up next time.",
       );
+      logError('Failed to update review streak: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
     }
   }
 
@@ -635,11 +642,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           }
         }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Don't break flow on achievement check failure
       state = state.copyWith(
         errorMessage: "Couldn't check for new achievements right now.",
       );
+      logError('Failed to check streak achievements: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
     }
   }
 
@@ -675,11 +683,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           }
         }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Don't break flow on achievement check failure
       state = state.copyWith(
         errorMessage: "Couldn't check for new achievements right now.",
       );
+      logError('Failed to check session count achievements: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
     }
   }
 
@@ -697,11 +706,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           time: const TimeOfDay(hour: 9, minute: 0), // 9 AM
         );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       // Don't break flow on notification scheduling failure
       state = state.copyWith(
         errorMessage: "Couldn't set up your review reminders.",
       );
+      logError('Failed to schedule notifications: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
     }
   }
 
@@ -728,10 +738,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       await _saveData();
-    } catch (e) {
+    } catch (e, stackTrace) {
       state = state.copyWith(
         errorMessage: "Couldn't remove that card. Please try again.",
       );
+      logError('Failed to delete review card: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       rethrow;
     }
   }

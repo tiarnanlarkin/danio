@@ -668,7 +668,7 @@ class AchievementChecker {
 
 /// Provider for filtered achievements
 final filteredAchievementsProvider =
-    Provider.family<List<Achievement>, AchievementFilter>((ref, filter) {
+    Provider.autoDispose.family<List<Achievement>, AchievementFilter>((ref, filter) {
       final progressMap = ref.watch(achievementProgressProvider);
 
       // Exclude hidden achievements unless they've been unlocked
@@ -758,7 +758,7 @@ class AchievementFilter {
 enum AchievementSortBy { rarity, dateUnlocked, progress, name }
 
 /// Provider for completion percentage (excludes hidden achievements)
-final achievementCompletionProvider = Provider<double>((ref) {
+final achievementCompletionProvider = Provider.autoDispose<double>((ref) {
   final progressMap = ref.watch(achievementProgressProvider);
   final visibleAchievements = AchievementDefinitions.all
       .where((a) => !a.isHidden)

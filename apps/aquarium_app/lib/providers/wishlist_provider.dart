@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/wishlist.dart';
+import 'user_profile_provider.dart';
 import 'package:danio/utils/logger.dart';
 
 /// Keys for SharedPreferences storage
@@ -11,12 +12,12 @@ const _shopsKey = 'local_shops';
 
 /// Provider for all wishlist items
 final wishlistProvider =
-    StateNotifierProvider<WishlistNotifier, List<WishlistItem>>((ref) {
-      return WishlistNotifier();
+    StateNotifierProvider.autoDispose<WishlistNotifier, List<WishlistItem>>((ref) {
+      return WishlistNotifier(ref);
     });
 
 /// Provider for items filtered by category
-final fishWishlistProvider = Provider<List<WishlistItem>>((ref) {
+final fishWishlistProvider = Provider.autoDispose<List<WishlistItem>>((ref) {
   return ref
       .watch(wishlistProvider)
       .where(
@@ -25,7 +26,7 @@ final fishWishlistProvider = Provider<List<WishlistItem>>((ref) {
       .toList();
 });
 
-final plantWishlistProvider = Provider<List<WishlistItem>>((ref) {
+final plantWishlistProvider = Provider.autoDispose<List<WishlistItem>>((ref) {
   return ref
       .watch(wishlistProvider)
       .where(
@@ -34,7 +35,7 @@ final plantWishlistProvider = Provider<List<WishlistItem>>((ref) {
       .toList();
 });
 
-final equipmentWishlistProvider = Provider<List<WishlistItem>>((ref) {
+final equipmentWishlistProvider = Provider.autoDispose<List<WishlistItem>>((ref) {
   return ref
       .watch(wishlistProvider)
       .where(
@@ -45,44 +46,45 @@ final equipmentWishlistProvider = Provider<List<WishlistItem>>((ref) {
 });
 
 /// Provider for shop budget
-final budgetProvider = StateNotifierProvider<BudgetNotifier, ShopBudget>((ref) {
-  return BudgetNotifier();
+final budgetProvider = StateNotifierProvider.autoDispose<BudgetNotifier, ShopBudget>((ref) {
+  return BudgetNotifier(ref);
 });
 
 /// Provider for local shops
 final localShopsProvider =
-    StateNotifierProvider<LocalShopsNotifier, List<LocalShop>>((ref) {
-      return LocalShopsNotifier();
+    StateNotifierProvider.autoDispose<LocalShopsNotifier, List<LocalShop>>((ref) {
+      return LocalShopsNotifier(ref);
     });
 
 /// Wishlist state management
 class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
-  WishlistNotifier() : super([]) {
+  WishlistNotifier(this._ref) : super([]) {
     _loadFromStorage();
   }
 
+  final Ref _ref;
+
   Future<void> _loadFromStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final jsonString = prefs.getString(_wishlistKey);
       if (jsonString != null) {
         final List<dynamic> jsonList = json.decode(jsonString);
         state = jsonList.map((j) => WishlistItem.fromJson(j)).toList();
       }
-    } catch (e) {
-      // If loading fails (corrupt data, etc.), start with empty wishlist
-      // Don't crash the app - user can rebuild their wishlist
+    } catch (e, stackTrace) {
+      logError('Failed to load wishlist: $e\n$stackTrace', tag: 'WishlistProvider');
       state = [];
     }
   }
 
   Future<void> _saveToStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final jsonString = json.encode(state.map((e) => e.toJson()).toList());
       await prefs.setString(_wishlistKey, jsonString);
-    } catch (e) {
-      // Save failed - throw so callers can handle/notify user
+    } catch (e, stackTrace) {
+      logError('Failed to save wishlist: $e\n$stackTrace', tag: 'WishlistProvider');
       throw Exception('Failed to save wishlist. Please try again.');
     }
   }
@@ -91,7 +93,8 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
     state = [...state, item];
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after adding item: $e\n$stackTrace', tag: 'WishlistProvider');
       // Revert state change on save failure
       state = state.where((i) => i.id != item.id).toList();
       rethrow;
@@ -103,7 +106,8 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
     state = state.map((e) => e.id == item.id ? item : e).toList();
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after updating item: $e\n$stackTrace', tag: 'WishlistProvider');
       // Revert on failure
       state = oldState;
       rethrow;
@@ -115,7 +119,8 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
     state = state.where((e) => e.id != id).toList();
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after removing item: $e\n$stackTrace', tag: 'WishlistProvider');
       // Revert on failure
       state = oldState;
       rethrow;
@@ -132,7 +137,8 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
     }).toList();
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after marking purchased: $e\n$stackTrace', tag: 'WishlistProvider');
       // Revert on failure
       state = oldState;
       rethrow;
@@ -153,31 +159,33 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
 
 /// Budget state management
 class BudgetNotifier extends StateNotifier<ShopBudget> {
-  BudgetNotifier() : super(ShopBudget()) {
+  BudgetNotifier(this._ref) : super(ShopBudget()) {
     _loadFromStorage();
   }
 
+  final Ref _ref;
+
   Future<void> _loadFromStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final jsonString = prefs.getString(_budgetKey);
       if (jsonString != null) {
         state = ShopBudget.fromJson(json.decode(jsonString));
         // Check if we need to reset for new month
         _checkMonthReset();
       }
-    } catch (e) {
-      // If loading fails, start with default budget
-      // Don't crash the app - user can set up budget again
+    } catch (e, stackTrace) {
+      logError('Failed to load budget: $e\n$stackTrace', tag: 'WishlistProvider');
       state = ShopBudget();
     }
   }
 
   Future<void> _saveToStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       await prefs.setString(_budgetKey, json.encode(state.toJson()));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save budget: $e\n$stackTrace', tag: 'WishlistProvider');
       throw Exception('Failed to save budget. Please try again.');
     }
   }
@@ -199,7 +207,8 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
     state = state.copyWith(monthlyBudget: amount);
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save monthly budget: $e\n$stackTrace', tag: 'WishlistProvider');
       state = oldState;
       rethrow;
     }
@@ -210,7 +219,8 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
     state = state.copyWith(spentThisMonth: state.spentThisMonth + amount);
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after adding purchase: $e\n$stackTrace', tag: 'WishlistProvider');
       state = oldState;
       rethrow;
     }
@@ -221,7 +231,8 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
     state = state.copyWith(spentThisMonth: 0, lastReset: DateTime.now());
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after resetting spending: $e\n$stackTrace', tag: 'WishlistProvider');
       state = oldState;
       rethrow;
     }
@@ -230,31 +241,33 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
 
 /// Local shops state management
 class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
-  LocalShopsNotifier() : super([]) {
+  LocalShopsNotifier(this._ref) : super([]) {
     _loadFromStorage();
   }
 
+  final Ref _ref;
+
   Future<void> _loadFromStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final jsonString = prefs.getString(_shopsKey);
       if (jsonString != null) {
         final List<dynamic> jsonList = json.decode(jsonString);
         state = jsonList.map((j) => LocalShop.fromJson(j)).toList();
       }
-    } catch (e) {
-      // If loading fails, start with empty shops list
-      // Don't crash the app - user can add shops again
+    } catch (e, stackTrace) {
+      logError('Failed to load local shops: $e\n$stackTrace', tag: 'WishlistProvider');
       state = [];
     }
   }
 
   Future<void> _saveToStorage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final jsonString = json.encode(state.map((e) => e.toJson()).toList());
       await prefs.setString(_shopsKey, jsonString);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save local shops: $e\n$stackTrace', tag: 'WishlistProvider');
       throw Exception('Failed to save local shops. Please try again.');
     }
   }
@@ -263,7 +276,8 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
     state = [...state, shop];
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after adding shop: $e\n$stackTrace', tag: 'WishlistProvider');
       // Revert on failure
       state = state.where((s) => s.id != shop.id).toList();
       rethrow;
@@ -275,7 +289,8 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
     state = state.map((e) => e.id == shop.id ? shop : e).toList();
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after updating shop: $e\n$stackTrace', tag: 'WishlistProvider');
       state = oldState;
       rethrow;
     }
@@ -286,7 +301,8 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
     state = state.where((e) => e.id != id).toList();
     try {
       await _saveToStorage();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logError('Failed to save after removing shop: $e\n$stackTrace', tag: 'WishlistProvider');
       state = oldState;
       rethrow;
     }

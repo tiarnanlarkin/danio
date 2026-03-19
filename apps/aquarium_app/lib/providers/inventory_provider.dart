@@ -11,7 +11,7 @@ import '../theme/room_themes.dart';
 
 /// Provider for user's shop inventory
 final inventoryProvider =
-    StateNotifierProvider<InventoryNotifier, AsyncValue<List<InventoryItem>>>((
+    StateNotifierProvider.autoDispose<InventoryNotifier, AsyncValue<List<InventoryItem>>>((
       ref,
     ) {
       return InventoryNotifier(ref);
@@ -410,7 +410,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 }
 
 /// Provider to check if user owns a specific item
-final ownsItemProvider = Provider.family<bool, String>((ref, itemId) {
+final ownsItemProvider = Provider.autoDispose.family<bool, String>((ref, itemId) {
   final inventory = ref.watch(inventoryProvider);
   return inventory.when(
     loading: () => false,
@@ -420,7 +420,7 @@ final ownsItemProvider = Provider.family<bool, String>((ref, itemId) {
 });
 
 /// Provider for active power-ups
-final activePowerUpsProvider = Provider<List<InventoryItem>>((ref) {
+final activePowerUpsProvider = Provider.autoDispose<List<InventoryItem>>((ref) {
   final inventory = ref.watch(inventoryProvider);
   return inventory.when(
     loading: () => [],
@@ -437,7 +437,7 @@ const _xpBoostItemIds = {'xp_boost_1h'};
 /// Uses exact ID matching against [_xpBoostItemIds] rather than a substring
 /// check to avoid false positives from items that happen to contain 'xp_boost'
 /// in their ID (e.g. 'xp_boost_1h_bundle', 'no_xp_boost_ads', etc.).
-final xpBoostActiveProvider = Provider<bool>((ref) {
+final xpBoostActiveProvider = Provider.autoDispose<bool>((ref) {
   final activePowerUps = ref.watch(activePowerUpsProvider);
   return activePowerUps.any((item) => _xpBoostItemIds.contains(item.itemId));
 });

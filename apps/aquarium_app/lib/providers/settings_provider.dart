@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/utils/logger.dart';
+import 'user_profile_provider.dart';
 
 /// Theme mode preference
 enum AppThemeMode { system, light, dark }
@@ -54,9 +55,11 @@ class AppSettings {
 
 /// Settings notifier for managing app preferences
 class SettingsNotifier extends StateNotifier<AppSettings> {
-  SettingsNotifier() : super(const AppSettings()) {
+  SettingsNotifier(this._ref) : super(const AppSettings()) {
     _loadSettings();
   }
+
+  final Ref _ref;
 
   static const _themeModeKey = 'theme_mode';
   static const _useMetricKey = 'use_metric';
@@ -66,7 +69,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 
   Future<void> _loadSettings() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
 
       final themeModeIndex = prefs.getInt(_themeModeKey) ?? 0;
       final useMetric = prefs.getBool(_useMetricKey) ?? true;
@@ -82,16 +85,14 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
         ambientLightingEnabled: ambientLightingEnabled,
         hapticFeedbackEnabled: hapticFeedbackEnabled,
       );
-    } catch (e) {
-      // If loading fails, keep default settings
-      // Don't crash the app - user can still use it with defaults
-      logError('Failed to load app settings: $e', tag: 'SettingsProvider');
+    } catch (e, stackTrace) {
+      logError('Failed to load app settings: $e\n$stackTrace', tag: 'SettingsProvider');
     }
   }
 
   Future<void> _persist(String key, dynamic value) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       if (value is int) {
         await prefs.setInt(key, value);
       } else if (value is bool) {
@@ -99,8 +100,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       } else if (value is String) {
         await prefs.setString(key, value);
       }
-    } catch (e) {
-      logError('Failed to persist setting "$key": $e', tag: 'SettingsProvider');
+    } catch (e, stackTrace) {
+      logError('Failed to persist setting "$key": $e\n$stackTrace', tag: 'SettingsProvider');
     }
   }
 
@@ -134,5 +135,5 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((
   ref,
 ) {
-  return SettingsNotifier();
+  return SettingsNotifier(ref);
 });
