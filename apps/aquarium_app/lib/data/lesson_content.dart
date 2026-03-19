@@ -5414,7 +5414,7 @@ class LessonContent {
         ),
       ),
 
-      // Lessons 34-38 (condensed for space - would be fully expanded in production)
+      // Lesson 34: Ich
       Lesson(
         id: 'fh_ich',
         pathId: 'fish_health',
@@ -5422,22 +5422,92 @@ class LessonContent {
         description: 'Identify and treat the most common fish disease',
         orderIndex: 1,
         xpReward: 50,
-        estimatedMinutes: 6,
+        estimatedMinutes: 8,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Recognising Ich',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Ich (Ichthyophthirius) looks like salt sprinkled on your fish. It\'s a parasite that attacks stressed fish.',
+                'Ichthyophthirius multifiliis — commonly called "ich" or "white spot" — is the most widespread fish disease in the aquarium hobby. It looks like someone sprinkled fine salt grains over your fish\'s body, fins, and gills. Infected fish will often "flash" (rub against objects), clamped their fins, breathe rapidly, and become lethargic. Every aquarium will encounter ich eventually — the parasite is nearly omnipresent, but only attacks when fish are stressed.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The 3-Stage Lifecycle',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Ich has a 3-stage lifecycle. You can only kill it during the free-swimming stage!',
+                'Ich has three lifecycle stages: (1) Trophont — the white spot you see, feeding on your fish\'s skin and gills. (2) Tomont — falls off the fish, encysts on surfaces, and multiplies (up to 1,000 new parasites from one spot!). (3) Theront — free-swimming stage that seeks a new host. You can ONLY kill ich during the free-swimming theront stage!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Treatment: Heat and Salt',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'The most reliable treatment is the "heat and salt" method. Raise the temperature to 30°C (86°F) gradually — no more than 1°C per hour — to speed up the parasite\'s lifecycle. Add aquarium salt at 1 tablespoon per 20 litres. The heat accelerates the lifecycle so parasites reach the vulnerable free-swimming stage faster, while the salt is toxic to theronts. Maintain this for 10-14 days after the last visible spot disappears. Never stop early — parasites can survive in the tomont cyst stage.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Some fish are sensitive to heat (rummynose tetras, cool-water species) and salt (scaleless fish like loaches and Corydoras). For these, use a commercial ich medication (containing formalin or malachite green) at half dose, or raise temperature alone (29-30°C) without salt.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Prevention beats cure every time. Quarantine new fish for 2-4 weeks. Maintain stable water quality. Avoid sudden temperature drops (common in winter). Healthy, unstressed fish can often fight off ich without treatment.',
           ),
         ],
-        quiz: Quiz(id: 'fh_ich_quiz', lessonId: 'fh_ich', questions: []),
+        quiz: Quiz(
+          id: 'fh_ich_quiz',
+          lessonId: 'fh_ich',
+          questions: [
+            const QuizQuestion(
+              id: 'fh_ich_q1',
+              question: 'During which stage of the ich lifecycle can the parasite be killed with medication?',
+              options: [
+                'When attached to the fish (white spots)',
+                'When encysted on surfaces (tomont stage)',
+                'When free-swimming (theront stage)',
+                'It can be killed at any stage',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Only the free-swimming theront stage is vulnerable. The white spots are protected by being attached to the fish, and cysts are protected on surfaces.',
+            ),
+            const QuizQuestion(
+              id: 'fh_ich_q2',
+              question: 'Why do you raise the temperature when treating ich?',
+              options: [
+                'Heat directly kills the parasite',
+                'It speeds up the lifecycle so parasites reach the vulnerable stage faster',
+                'It makes the salt work better',
+                'It makes the fish\'s immune system stronger',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Higher temperatures accelerate the parasite\'s lifecycle, forcing it into the free-swimming (treatable) stage sooner. This shortens the overall treatment time.',
+            ),
+            const QuizQuestion(
+              id: 'fh_ich_q3',
+              question: 'True or False: You should stop ich treatment as soon as the white spots disappear.',
+              options: [
+                'True',
+                'False',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'False! Continue treatment for 10-14 days after the last visible spot. Parasites in the cyst (tomont) stage can survive and reinfect your fish.',
+            ),
+          ],
+        ),
       ),
 
+      // Lesson 35: Fin Rot
       Lesson(
         id: 'fh_fin_rot',
         pathId: 'fish_health',
@@ -5445,17 +5515,81 @@ class LessonContent {
         description: 'Bacterial diseases and how to treat them',
         orderIndex: 2,
         xpReward: 50,
-        estimatedMinutes: 5,
+        estimatedMinutes: 8,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'What Is Fin Rot?',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Fin rot starts at edges and works inward. Caused by bacteria in poor water conditions.',
+                'Fin rot is a bacterial infection (usually Aeromonas or Pseudomonas) that eats away at your fish\'s fins, starting from the edges and progressing inward. The affected fin tissue turns opaque, white, or reddish before disintegrating. In severe cases, the infection reaches the body (body rot), which is far more dangerous. Fin rot is almost always a sign of poor water quality — ammonia, nitrite, or nitrate at elevated levels, or water that hasn\'t been changed in weeks.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Fin Rot vs Fin Nipping: Know the Difference',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Fin rot causes ragged, disintegrating edges with discolouration — the fins look "melting" and uneven. Fin nipping creates clean, V-shaped notches in specific fins (often the tail). Fin rot affects multiple fins simultaneously. If only one fin is damaged and it\'s the same fish every time, suspect a bully, not bacteria.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Treatment Protocol',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Step 1: Test your water and fix any problems (water change, filter check). Fin rot cannot be cured permanently if the underlying cause remains. Step 2: Do a 30-50% water change. Step 3: For mild cases, clean water and aquarium salt (1 tbsp per 20 litres) may be enough — fins regenerate quickly. Step 4: For moderate to severe cases, treat with a broad-spectrum antibacterial (Furan-2, API Fin & Body Cure, or kanamycin). Always treat in a hospital tank. Fins regrow in 2-4 weeks with clean water.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'If fin rot keeps returning despite treatment, the root cause is environmental. Chronic fin rot means chronic water quality problems. Check for overfeeding, overcrowding, inadequate filtration, or a cycled filter that crashed.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Betta fish are particularly prone to fin rot due to their large, delicate fins. Ensure betta tanks are heated (24-28°C), filtered with gentle flow, and kept pristine. Velvet is commonly misdiagnosed as fin rot — shine a flashlight on the fish to check for a golden shimmer.',
           ),
         ],
-        quiz: Quiz(id: 'fh_finrot_quiz', lessonId: 'fh_fin_rot', questions: []),
+        quiz: Quiz(
+          id: 'fh_finrot_quiz',
+          lessonId: 'fh_fin_rot',
+          questions: [
+            const QuizQuestion(
+              id: 'fh_fin_q1',
+              question: 'What is the first step in treating fin rot?',
+              options: [
+                'Add medication immediately',
+                'Test water and fix any parameter problems',
+                'Raise the temperature to 30°C',
+                'Remove all other fish from the tank',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Fin rot is caused by poor water quality. If you don\'t fix the water, the bacteria will keep coming back no matter how much medication you add.',
+            ),
+            const QuizQuestion(
+              id: 'fh_fin_q2',
+              question: 'How can you tell fin rot apart from fin nipping?',
+              options: [
+                'Fin rot only affects the tail fin',
+                'Fin rot causes ragged, disintegrating edges across multiple fins; nipping creates clean V-shaped notches',
+                'There is no difference',
+                'Fin nipping happens faster than fin rot',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Fin rot melts fin tissue unevenly across multiple fins. Fin nipping creates clean, bite-shaped chunks missing from specific fins.',
+            ),
+          ],
+        ),
       ),
 
+      // Lesson 36: Fungal Infections
       Lesson(
         id: 'fh_fungal',
         pathId: 'fish_health',
@@ -5463,17 +5597,81 @@ class LessonContent {
         description: 'Cotton-like growths and how to treat them',
         orderIndex: 3,
         xpReward: 50,
-        estimatedMinutes: 5,
+        estimatedMinutes: 7,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Cotton Wool Disease',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Fungus looks like cotton balls on fish. Usually secondary to injury or stress.',
+                'Fungal infections in aquarium fish appear as white, grey, or brownish cotton-like growths on the skin, fins, mouth, or gills. The most common is Saprolegnia — a water mould (technically an oomycete, not a true fungus, but treated the same). Fungal infections are almost always secondary — they attack tissue that\'s already been damaged by injury, rough handling, or another disease. A healthy fish with intact slime coat is nearly immune.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Common Causes',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Physical injury:** Net damage, aggression from tankmates, sharp decor edges\n• **Poor water quality:** High ammonia/nitrite weakens the slime coat\n• **Cold water:** Low temperatures suppress the immune system and promote fungal growth\n• **Uneaten food:** Decaying food provides a breeding ground for fungi\n• **Previous infection:** Fin rot or ich damage leaves tissue vulnerable to fungal colonisation',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Treatment',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Treat with antifungal medications: methylene blue, API Fungus Cure, or PimaFix (natural melaleuca-based). Methylene blue is highly effective and safe — it also protects eggs and fry from fungal infections. Apply in a hospital tank at the recommended dose. For mouth fungus (Columnaris — actually bacterial despite the name), antibacterial treatment (Furan-2) is required instead of antifungal. Improve water quality with water changes. Remove any sharp decor that may have caused the initial injury.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Methylene blue stains everything blue — including silicone, plastic plants, and your fingers. It also kills beneficial bacteria, so ONLY use it in a hospital tank, never in your main display.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Prevention is straightforward: maintain excellent water quality, avoid sharp or rough decorations (smooth river rocks and silk plants are safest), use a soft net, and quarantine new arrivals. A healthy slime coat is your fish\'s best defence against fungal infection.',
           ),
         ],
-        quiz: Quiz(id: 'fh_fungal_quiz', lessonId: 'fh_fungal', questions: []),
+        quiz: Quiz(
+          id: 'fh_fungal_quiz',
+          lessonId: 'fh_fungal',
+          questions: [
+            const QuizQuestion(
+              id: 'fh_fung_q1',
+              question: 'Fungal infections in fish are usually:',
+              options: [
+                'The primary cause of illness',
+                'Secondary to injury or other disease',
+                'Caused by feeding too much protein',
+                'Only found in cold water tanks',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Fungi attack damaged tissue. They\'re opportunists that colonise injuries, wounds, or tissue already weakened by bacterial infections.',
+            ),
+            const QuizQuestion(
+              id: 'fh_fung_q2',
+              question: 'Why should you never use methylene blue in your main display tank?',
+              options: [
+                'It makes fish too blue to see',
+                'It kills beneficial bacteria that maintain the nitrogen cycle',
+                'It raises the pH too high',
+                'It dissolves silicone seals',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Methylene blue is a potent antibacterial that will kill the beneficial bacteria in your filter, crashing the nitrogen cycle. Always use it in a separate hospital tank.',
+            ),
+          ],
+        ),
       ),
 
+      // Lesson 37: Parasites
       Lesson(
         id: 'fh_parasites',
         pathId: 'fish_health',
@@ -5481,21 +5679,99 @@ class LessonContent {
         description: 'Flukes, worms, and other freeloaders',
         orderIndex: 4,
         xpReward: 50,
-        estimatedMinutes: 6,
+        estimatedMinutes: 8,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'External Parasites',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'External parasites cause flashing (rubbing), clamped fins, and rapid breathing.',
+                'External parasites are freeloaders that attach to or live on your fish\'s skin, fins, or gills. The telltale signs: "flashing" (rubbing against objects), clamped fins, rapid gill movement, excessive mucus production, and visible parasites on the body. Common culprits include gill flukes (monogenean trematodes), anchor worms (crustacean parasites), fish lice (Argulus), and velvet (Oödinium — technically a dinoflagellate protozoan).',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Common Parasite Types',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Gill flukes:** Microscopic flatworms on gills. Cause rapid breathing, gasping. Treat with Praziquantel (API General Cure).\n• **Anchor worms:** Visible threads hanging from fish. Actually crustaceans, not worms. Treat with potassium permanganate or carefully remove with tweezers.\n• **Fish lice:** Disc-shaped parasites visible on skin. Cause red sores. Treat with organophosphate insecticides (Dimilin).\n• **Velvet (Oödinium):** Golden dust on skin. Photosynthetic — dim the lights! Treat with copper-based meds.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Internal Parasites',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Internal parasites live inside the fish — tapeworms, roundworms (Camallanus), and protozoans (Hexamita/spironucleus). Signs: bloated belly despite normal feeding, stringy white faeces, weight loss, hollow belly, or a red worm visibly protruding from the vent (Camallanus is diagnostic). Treat internal parasites with Praziquantel (tapeworms) or Fenbendazole/Levamisole (roundworms). Medicated anti-parasite food is available, but sick fish often won\'t eat — medicating the water may be necessary.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Praziquantel (found in API General Cure) is the single most useful anti-parasite medication for freshwater aquariums. It treats tapeworms, flukes, and many other parasites. It\'s safe for most fish and doesn\'t harm the filter. Keep a pack on hand.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Camallanus worms are increasingly common in the hobby, often introduced via live food (blackworms, tubifex) or wild-caught fish. If one fish has them, assume all tankmates are infected. Treat the entire tank, not just the visibly affected fish.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'The easiest way to avoid most parasites: quarantine every new fish for 2-4 weeks and avoid feeding live foods from unreliable sources. Frozen foods are safe (freezing kills parasites). Most parasite outbreaks trace back to a new fish or live food addition.',
           ),
         ],
         quiz: Quiz(
           id: 'fh_parasites_quiz',
           lessonId: 'fh_parasites',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'fh_para_q1',
+              question: 'What is "flashing" in fish a sign of?',
+              options: [
+                'Playing or exercising',
+                'Parasite irritation — the fish is rubbing against objects to relieve itching',
+                'Attempting to jump out of the tank',
+                'A mating behaviour',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Flashing (rubbing against gravel, wood, or glass) is a classic sign of external parasite irritation. It\'s the fish equivalent of scratching an itch.',
+            ),
+            const QuizQuestion(
+              id: 'fh_para_q2',
+              question: 'What medication is the most versatile anti-parasite treatment for freshwater fish?',
+              options: [
+                'Methylene blue',
+                'Praziquantel (API General Cure)',
+                'Aquarium salt',
+                'Seachem Prime',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Praziquantel treats tapeworms, flukes, and many other parasites. It\'s filter-safe, effective, and the most broadly useful anti-parasite medication for freshwater.',
+            ),
+            const QuizQuestion(
+              id: 'fh_para_q3',
+              question: 'What are "stringy white faeces" a symptom of?',
+              options: [
+                'Overfeeding',
+                'Internal parasites',
+                'Swim bladder disease',
+                'Constipation from dry food',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Stringy white, mucousy faeces that persist for days are a hallmark sign of internal parasites (often tapeworms or Hexamita). Normal faeces are coloured and disintegrate.',
+            ),
+          ],
         ),
       ),
 
+      // Lesson 38: Hospital Tank
       Lesson(
         id: 'fh_hospital_tank',
         pathId: 'fish_health',
@@ -5503,23 +5779,97 @@ class LessonContent {
         description: 'Treat sick fish without harming your display tank',
         orderIndex: 5,
         xpReward: 50,
-        estimatedMinutes: 5,
+        estimatedMinutes: 7,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Your Fish\'s ICU',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'A hospital tank lets you medicate sick fish without harming beneficial bacteria or other tank mates.',
+                'A hospital tank (sometimes called a quarantine tank or QT) is the single most important piece of equipment that most hobbyists don\'t have. It\'s a small, bare-bottom tank dedicated to treating sick fish or quarantining new arrivals. Without one, you\'re forced to medicate your entire display tank — killing beneficial bacteria, stressing healthy fish, and potentially harming plants and invertebrates.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Setting Up Your Hospital Tank',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Hospital tank essentials: 38-40 litre (10-gallon) tank, bare bottom (no substrate — easier to clean and see waste), sponge filter (gentle, biological filtration), adjustable heater, dim lighting or cover (reduces stress), and PVC pipes or terracotta pots for hiding spots. Keep it running with a sponge filter seeded from your main tank\'s filter so it\'s always cycled and ready.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Quarantine Protocol',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Every new fish should go through quarantine before entering your display tank. Duration: 2-4 weeks minimum. During quarantine, observe for signs of disease, treat preventively if needed (many experienced aquarists do a Praziquantel treatment as a precaution), and feed high-quality food to build the fish\'s strength. This prevents 90% of disease introductions. It seems like extra work, but treating a disease outbreak in your main tank is 10x more work.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Using the Hospital Tank for Treatment',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'When moving a sick fish to the hospital tank, match the water parameters (temperature, pH, GH) as closely as possible to the display tank. A net transfer is stressful — consider using a container to move the fish with some tank water. Once in the hospital tank, treat with the appropriate medication at the recommended dose. Perform 25-50% daily water changes before each medication dose. After treatment, observe for 1 week before returning the fish to the main tank.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never transfer filter media from your hospital tank back to your main tank after treating with medications. The media may contain residual medication or pathogens. Keep hospital tank media completely separate.',
           ),
           const LessonSection(
             type: LessonSectionType.tip,
             content:
-                'Keep a 10-gallon tank with sponge filter ready. It\'s aquarium insurance!',
+                'Keep a dedicated hospital tank running year-round if possible. A seeded sponge filter keeps the cycle alive, and a bare-bottom setup means zero maintenance when not in use. When disease strikes, you\'ll be glad it\'s ready to go.',
           ),
         ],
         quiz: Quiz(
           id: 'fh_hospital_quiz',
           lessonId: 'fh_hospital_tank',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'fh_hosp_q1',
+              question: 'Why should a hospital tank have no substrate?',
+              options: [
+                'Substrate makes the water too hard',
+                'It\'s easier to see waste and clean the tank without substrate',
+                'Fish hide in substrate when sick',
+                'Substrate absorbs medications',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'A bare bottom lets you see exactly how much the fish is eating, spot waste immediately, and keep the tank clean with minimal effort. Medication doses are also easier to calculate accurately.',
+            ),
+            const QuizQuestion(
+              id: 'fh_hosp_q2',
+              question: 'How long should new fish be quarantined?',
+              options: [
+                '24-48 hours',
+                '1 week',
+                '2-4 weeks',
+                'Quarantine is unnecessary',
+              ],
+              correctIndex: 2,
+              explanation:
+                  '2-4 weeks is the standard quarantine period. Many diseases have incubation periods of 1-3 weeks, so shorter quarantine periods risk missing asymptomatic infections.',
+            ),
+            const QuizQuestion(
+              id: 'fh_hosp_q3',
+              question: 'True or False: You should return hospital tank filter media to your main tank after treatment.',
+              options: [
+                'True',
+                'False',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'False! Hospital tank media may contain residual medication or pathogens. Keep hospital and main tank filter media completely separate to protect your display tank.',
+            ),
+          ],
         ),
       ),
     ],
