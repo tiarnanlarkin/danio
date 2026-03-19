@@ -63,12 +63,7 @@ android {
     }
 
     packaging {
-        jniLibs {
-            // Windows/Flutter release bundling has been intermittently failing
-            // while stripping native debug symbols. Keeping symbols avoids the
-            // broken strip path and still produces a valid release bundle.
-            keepDebugSymbols += "**/*.so"
-        }
+        // No keepDebugSymbols — allow symbol stripping to reduce bundle size.
     }
 }
 
