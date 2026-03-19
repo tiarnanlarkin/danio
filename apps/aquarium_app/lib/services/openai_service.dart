@@ -176,8 +176,9 @@ class OpenAIService {
         if (content != null && content.isNotEmpty) {
           yield content;
         }
-      } catch (_) {
+      } catch (e) {
         // Skip malformed chunks
+        debugPrint('OpenAI: skipping malformed SSE chunk: $e');
       }
     }
   }

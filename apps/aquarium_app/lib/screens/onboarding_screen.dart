@@ -82,7 +82,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       final notificationService = NotificationService();
       await notificationService.requestPermissions();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Onboarding: notification permission request failed: $e');
+    }
     _nextPage();
   }
 
@@ -125,7 +127,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // 2. Add 10 XP from micro-lesson
       try {
         await ref.read(userProfileProvider.notifier).addXp(10);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Onboarding: failed to award welcome XP: $e');
+      }
 
       // 2b. Create a default tank based on user's tank status
       try {
@@ -151,7 +155,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       try {
         final notificationService = NotificationService();
         await notificationService.scheduleOnboardingSequence();
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Onboarding: failed to schedule onboarding notifications: $e');
+      }
 
       // 4. Complete onboarding via service + invalidate provider
       final service = await OnboardingService.getInstance();

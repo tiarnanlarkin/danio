@@ -75,15 +75,29 @@ class WaterTargets {
     double? khMin,
     double? khMax,
   }) {
+    // Auto-swap inverted ranges so min is always <= max
+    double? resolveMin(double? newMin, double? currentMin, double? newMax, double? currentMax) {
+      final min = newMin ?? currentMin;
+      final max = newMax ?? currentMax;
+      if (min != null && max != null && min > max) return max;
+      return min;
+    }
+    double? resolveMax(double? newMin, double? currentMin, double? newMax, double? currentMax) {
+      final min = newMin ?? currentMin;
+      final max = newMax ?? currentMax;
+      if (min != null && max != null && min > max) return min;
+      return max;
+    }
+
     return WaterTargets(
-      tempMin: tempMin ?? this.tempMin,
-      tempMax: tempMax ?? this.tempMax,
-      phMin: phMin ?? this.phMin,
-      phMax: phMax ?? this.phMax,
-      ghMin: ghMin ?? this.ghMin,
-      ghMax: ghMax ?? this.ghMax,
-      khMin: khMin ?? this.khMin,
-      khMax: khMax ?? this.khMax,
+      tempMin: resolveMin(tempMin, this.tempMin, tempMax, this.tempMax),
+      tempMax: resolveMax(tempMin, this.tempMin, tempMax, this.tempMax),
+      phMin: resolveMin(phMin, this.phMin, phMax, this.phMax),
+      phMax: resolveMax(phMin, this.phMin, phMax, this.phMax),
+      ghMin: resolveMin(ghMin, this.ghMin, ghMax, this.ghMax),
+      ghMax: resolveMax(ghMin, this.ghMin, ghMax, this.ghMax),
+      khMin: resolveMin(khMin, this.khMin, khMax, this.khMax),
+      khMax: resolveMax(khMin, this.khMin, khMax, this.khMax),
     );
   }
 }

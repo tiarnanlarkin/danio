@@ -363,7 +363,8 @@ class LocalJsonStorageService implements StorageService {
       final bak = File('${file.path}.bak');
       try {
         await file.copy(bak.path);
-      } catch (_) {
+      } catch (e) {
+        debugPrint('Storage: backup creation failed before save: $e');
         // Best-effort backup — don't block the save
       }
     }
@@ -482,6 +483,20 @@ class LocalJsonStorageService implements StorageService {
       _equipment.removeWhere((_, v) => v.tankId == id);
       _logs.removeWhere((_, v) => v.tankId == id);
       _tasks.removeWhere((_, v) => v.tankId == id);
+      await _persistUnlocked();
+    });
+  }
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) async {
+    await _ensureLoaded();
+    await _persistLock.synchronized(() async {
+      final idSet = ids.toSet();
+      _tanks.removeWhere((id, _) => idSet.contains(id));
+      _livestock.removeWhere((_, v) => idSet.contains(v.tankId));
+      _equipment.removeWhere((_, v) => idSet.contains(v.tankId));
+      _logs.removeWhere((_, v) => idSet.contains(v.tankId));
+      _tasks.removeWhere((_, v) => idSet.contains(v.tankId));
       await _persistUnlocked();
     });
   }

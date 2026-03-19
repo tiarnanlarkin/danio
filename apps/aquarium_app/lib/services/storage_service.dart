@@ -7,6 +7,7 @@ abstract class StorageService {
   Future<Tank?> getTank(String id);
   Future<void> saveTank(Tank tank);
   Future<void> deleteTank(String id);
+  Future<void> deleteAllTanks(List<String> ids);
 
   // Livestock
   Future<List<Livestock>> getLivestockForTank(String tankId);
@@ -69,6 +70,16 @@ class InMemoryStorageService implements StorageService {
     _equipment.removeWhere((_, v) => v.tankId == id);
     _logs.removeWhere((_, v) => v.tankId == id);
     _tasks.removeWhere((_, v) => v.tankId == id);
+  }
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) async {
+    final idSet = ids.toSet();
+    _tanks.removeWhere((id, _) => idSet.contains(id));
+    _livestock.removeWhere((_, v) => idSet.contains(v.tankId));
+    _equipment.removeWhere((_, v) => idSet.contains(v.tankId));
+    _logs.removeWhere((_, v) => idSet.contains(v.tankId));
+    _tasks.removeWhere((_, v) => idSet.contains(v.tankId));
   }
 
   // --- Livestock ---

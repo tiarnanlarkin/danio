@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +28,8 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
             return AIInteraction.fromJson(
               jsonDecode(s) as Map<String, dynamic>,
             );
-          } catch (_) {
+          } catch (e) {
+            debugPrint('Smart: failed to parse AI interaction: $e');
             return null;
           }
         })
@@ -75,7 +77,8 @@ class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
         .map((s) {
           try {
             return Anomaly.fromJson(jsonDecode(s) as Map<String, dynamic>);
-          } catch (_) {
+          } catch (e) {
+            debugPrint('Smart: failed to parse anomaly: $e');
             return null;
           }
         })
@@ -130,7 +133,8 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
     if (raw != null) {
       try {
         state = WeeklyPlan.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-      } catch (_) {
+      } catch (e) {
+        debugPrint('Smart: failed to parse weekly plan: $e');
         // Corrupted - ignore
       }
     }

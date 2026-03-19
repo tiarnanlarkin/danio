@@ -104,7 +104,8 @@ class NotificationService {
       _cachedScheduleMode = canExact
           ? AndroidScheduleMode.exactAllowWhileIdle
           : AndroidScheduleMode.inexactAllowWhileIdle;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Notification: failed to detect exact alarm support: $e');
       _cachedScheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
     }
     return _cachedScheduleMode!;

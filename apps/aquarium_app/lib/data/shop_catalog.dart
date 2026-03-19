@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import '../models/shop_item.dart';
 
 /// All shop items available in the gem shop
@@ -303,7 +304,8 @@ class ShopCatalog {
   static ShopItem? getById(String id) {
     try {
       return allItems.firstWhere((item) => item.id == id);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Shop item lookup failed for id "$id": $e');
       return null;
     }
   }

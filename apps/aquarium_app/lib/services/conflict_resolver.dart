@@ -255,7 +255,7 @@ class ConflictResolver {
           } else if (value is int) {
             return DateTime.fromMillisecondsSinceEpoch(value);
           }
-        } catch (_) {
+        } catch (e) {
           // Failed to parse, try next field
         }
       }

@@ -64,6 +64,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   static const _cumulativeKey = 'gems_cumulative';
   static const _maxTransactions = 200;
   bool _spending = false;
+  bool _adding = false;
   int _cumulativeEarned = 0;
   int _cumulativeSpent = 0;
 
@@ -143,25 +144,28 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   int get balance => state.value?.balance ?? 0;
 
   /// Add gems (earn)
-  Future<void> addGems({
+  /// Returns true if successful, false if a concurrent add is in progress.
+  Future<bool> addGems({
     required int amount,
     required GemEarnReason reason,
     String? customReason,
   }) async {
-    if (amount <= 0) return;
-
-    // Auto-initialize if state not loaded yet
-    var current = state.value;
-    if (current == null) {
-      current = GemsState(
-        balance: 0,
-        transactions: [],
-        lastUpdated: DateTime.now(),
-      );
-      state = AsyncValue.data(current);
-    }
+    if (amount <= 0) return false;
+    if (_adding) return false;
+    _adding = true;
 
     try {
+      // Auto-initialize if state not loaded yet
+      var current = state.value;
+      if (current == null) {
+        current = GemsState(
+          balance: 0,
+          transactions: [],
+          lastUpdated: DateTime.now(),
+        );
+        state = AsyncValue.data(current);
+      }
+
       final now = DateTime.now();
       final newBalance = current.balance + amount;
 
@@ -189,9 +193,12 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
       await _save(updatedState);
       state = AsyncValue.data(updatedState);
+      return true;
     } catch (e, st) {
       state = AsyncValue.error(e, st);
       rethrow;
+    } finally {
+      _adding = false;
     }
   }
 

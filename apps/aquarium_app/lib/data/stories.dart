@@ -3,6 +3,7 @@
 
 library;
 
+import 'package:flutter/foundation.dart';
 import '../models/story.dart';
 
 class Stories {
@@ -23,7 +24,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'You have just bought your first aquarium! A beautiful 20-gallon tank sits empty on its stand. Your friend Alex, an experienced aquarist, stops by to help you set it up.\n\n"Excited to get fish?" Alex asks with a knowing smile. "First things first - we need to cycle this tank. What is your first step?"',
+            'You have just bought your first aquarium! A beautiful 75-litre tank sits empty on its stand. Your friend Alex, an experienced aquarist, stops by to help you set it up.\n\n"Excited to get fish?" Alex asks with a knowing smile. "First things first - we need to cycle this tank. What is your first step?"',
         choices: [
           StoryChoice(
             id: 'fill_add_fish',
@@ -222,7 +223,7 @@ class Stories {
         choices: [
           StoryChoice(
             id: 'answer_size',
-            text: '"It\'s a 20-gallon freshwater tank"',
+            text: '"It\'s a 75-litre freshwater tank"',
             nextSceneId: 'store_tour',
             isCorrect: true,
           ),
@@ -266,7 +267,7 @@ class Stories {
       StoryScene(
         id: 'goldfish_warning',
         text:
-            'Maria shakes her head gently. "Goldfish are cold-water fish and produce massive waste. A single fancy goldfish needs at least 20 gallons, and common goldfish need 40+ gallons."\n\n"For a tropical 20-gallon, let me show you better options."',
+            'Maria shakes her head gently. "Goldfish are cold-water fish and produce massive waste. A single fancy goldfish needs at least 75 litres, and common goldfish need 180+ litres."\n\n"For a tropical 75-litre, let me show you better options."',
         choices: [
           StoryChoice(
             id: 'see_options',
@@ -408,7 +409,7 @@ class Stories {
       StoryScene(
         id: 'pleco_warning',
         text:
-            '"That\'s a common pleco," Maria warns. "They can grow to 18 inches (45cm+)! Way too big for a 20-gallon."\n\nShe shows you smaller alternatives: "Bristlenose plecos stay under 5 inches, or consider otocinclus catfish."',
+            '"That\'s a common pleco," Maria warns. "They can grow to 18 inches (45cm+)! Way too big for a 75-litre."\n\nShe shows you smaller alternatives: "Bristlenose plecos stay under 5 inches, or consider otocinclus catfish."',
         choices: [
           StoryChoice(
             id: 'bristlenose',
@@ -458,7 +459,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'It\'s Sunday morning - your weekly water change day! Your 20-gallon tank has been running smoothly for a month. You check your notes: last water change was 7 days ago.\n\nWhat\'s your first step?',
+            'It\'s Sunday morning - your weekly water change day! Your 75-litre tank has been running smoothly for a month. You check your notes: last water change was 7 days ago.\n\nWhat\'s your first step?',
         choices: [
           StoryChoice(
             id: 'test_first',
@@ -510,7 +511,7 @@ class Stories {
         choices: [
           StoryChoice(
             id: 'change_25',
-            text: '25% (5 gallons)',
+            text: '25% (19 litres)',
             nextSceneId: 'good_amount',
             isCorrect: true,
             feedback: 'Perfect! 25% weekly is ideal.',
@@ -518,7 +519,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'change_50',
-            text: '50% (10 gallons)',
+            text: '50% (38 litres)',
             nextSceneId: 'big_change',
             isCorrect: true,
             feedback: 'This works for high nitrates!',
@@ -526,7 +527,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'change_10',
-            text: '10% (2 gallons)',
+            text: '10% (7.5 litres)',
             nextSceneId: 'too_small',
             isCorrect: false,
             feedback: 'Too small - nitrates won\'t drop much.',
@@ -536,7 +537,7 @@ class Stories {
       StoryScene(
         id: 'good_amount',
         text:
-            'You use the gravel vacuum to remove 5 gallons, vacuuming the substrate as you go. Debris and mulm get sucked up - gross but satisfying!\n\nThe fish seem curious about the vacuum. What\'s next?',
+            'You use the gravel vacuum to remove 19 litres, vacuuming the substrate as you go. Debris and mulm get sucked up - gross but satisfying!\n\nThe fish seem curious about the vacuum. What\'s next?',
         choices: [
           StoryChoice(
             id: 'prepare_new',
@@ -549,7 +550,7 @@ class Stories {
       StoryScene(
         id: 'big_change',
         text:
-            'You remove 10 gallons - a big change! This will really crash those nitrates. You vacuum heavily, getting deep into the gravel.\n\n"Easy on the beneficial bacteria," you remind yourself as you work.',
+            'You remove 38 litres - a big change! This will really crash those nitrates. You vacuum heavily, getting deep into the gravel.\n\n"Easy on the beneficial bacteria," you remind yourself as you work.',
         choices: [
           StoryChoice(
             id: 'prepare_new',
@@ -562,11 +563,11 @@ class Stories {
       StoryScene(
         id: 'too_small',
         text:
-            'You remove just 2 gallons. But thinking about it - that\'s only 10%. Your nitrates won\'t drop much.\n\nYou decide to remove more water. Better to do it right!',
+            'You remove just 7.5 litres. But thinking about it - that\'s only 10%. Your nitrates won\'t drop much.\n\nYou decide to remove more water. Better to do it right!',
         choices: [
           StoryChoice(
             id: 'remove_more',
-            text: 'Remove 3 more gallons (25% total)',
+            text: 'Remove 11 more litres (25% total)',
             nextSceneId: 'good_amount',
             isCorrect: true,
           ),
@@ -920,7 +921,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'Inspired by stunning aquascapes online, you decide to upgrade from plastic plants to a real planted tank. You\'ve been researching for weeks.\n\nYour 20-gallon tank awaits transformation. Where do you start?',
+            'Inspired by stunning aquascapes online, you decide to upgrade from plastic plants to a real planted tank. You\'ve been researching for weeks.\n\nYour 75-litre tank awaits transformation. Where do you start?',
         choices: [
           StoryChoice(
             id: 'plan_first',
@@ -1289,7 +1290,7 @@ class Stories {
       StoryScene(
         id: 'tank_setup',
         text:
-            'Setting up the 20-gallon breeding tank:\n• Bare bottom or sand?\n• Sponge filter (fry-safe)\n• Flat stones for spawning\n• Minimal decor (easy viewing)\n• Heater set to 84°F\n\nWhat substrate do you choose?',
+            'Setting up the 75-litre breeding tank:\n• Bare bottom or sand?\n• Sponge filter (fry-safe)\n• Flat stones for spawning\n• Minimal decor (easy viewing)\n• Heater set to 84°F\n\nWhat substrate do you choose?',
         choices: [
           StoryChoice(
             id: 'bare_bottom',
@@ -1472,7 +1473,8 @@ class Stories {
   static Story? getById(String id) {
     try {
       return allStories.firstWhere((s) => s.id == id);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Story lookup failed for id "$id": $e');
       return null;
     }
   }

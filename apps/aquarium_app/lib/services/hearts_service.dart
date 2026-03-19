@@ -82,16 +82,25 @@ class HeartsService {
     return nextRefillIn.isNegative ? Duration.zero : nextRefillIn;
   }
 
-  /// Apply auto-refill if time has passed
+  /// Apply auto-refill if time has passed.
+  ///
+  /// When hearts reach max after refill, clears [lastHeartRefill] so no
+  /// stale timer lingers. Otherwise the timer UI could show "0s" and
+  /// subsequent [loseHeart] calls might incorrectly skip starting a fresh
+  /// timer because a non-null [lastHeartRefill] already exists.
   Future<void> checkAndApplyAutoRefill() async {
     final profile = _profile;
     if (profile == null) return;
 
     final heartsToRefill = calculateAutoRefill(profile);
     if (heartsToRefill > 0) {
-      await _updateHearts(
-        profile.hearts + heartsToRefill,
-        updateRefillTime: true,
+      final newHearts = profile.hearts + heartsToRefill;
+      final atMax = newHearts >= HeartsConfig.maxHearts;
+      final notifier = ref.read(userProfileProvider.notifier);
+      await notifier.updateHearts(
+        hearts: newHearts.clamp(0, HeartsConfig.maxHearts),
+        lastHeartRefill: atMax ? null : DateTime.now(),
+        clearLastHeartRefill: atMax,
       );
     }
   }

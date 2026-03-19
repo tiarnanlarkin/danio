@@ -808,9 +808,13 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
   }
 
-  /// Get today's date key for dailyXpHistory
+  /// Get today's date key for dailyXpHistory.
+  ///
+  /// Uses UTC midnight so streak calculations (which also normalise to UTC)
+  /// and daily XP history always agree on "today", regardless of the user's
+  /// local timezone or DST transitions.
   String getTodayKey() {
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
   }
 

@@ -347,7 +347,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ref.invalidate(tanksProvider);
             try {
               await ref.read(tanksProvider.future).timeout(const Duration(seconds: 3), onTimeout: () => [demoTank]);
-            } catch (_) {}
+            } catch (e) {
+              debugPrint('Demo tank refresh after delete failed: $e');
+            }
             if (context.mounted) _navigateToTankDetail(context, demoTank);
           },
         );

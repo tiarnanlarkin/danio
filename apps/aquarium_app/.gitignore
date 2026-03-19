@@ -49,3 +49,15 @@ android/key.properties
 android/app/*.jks
 android/app/*.keystore
 android/app/google-services.json
+base/
+qa_screenshots/
+plans/
+prd/
+store-listing/
+BUNDLE-METADATA/
+QA_REPORT.md
+TODO.md
+BundleConfig.pb
+META-INF/
+*.aab
+*.apk

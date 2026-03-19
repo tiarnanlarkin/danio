@@ -2,6 +2,7 @@
 /// Organized by category: Learning, Streaks, XP, Special, Engagement
 library;
 
+import 'package:flutter/foundation.dart';
 import '../models/achievements.dart';
 
 /// All available achievements in the app
@@ -697,7 +698,8 @@ class AchievementDefinitions {
   static Achievement? getById(String id) {
     try {
       return all.firstWhere((a) => a.id == id);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Achievement lookup failed for id "$id": $e');
       return null;
     }
   }

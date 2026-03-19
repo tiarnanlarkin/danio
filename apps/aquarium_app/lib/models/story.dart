@@ -97,7 +97,8 @@ class Story {
   StoryScene? getSceneById(String sceneId) {
     try {
       return scenes.firstWhere((s) => s.id == sceneId);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Story scene lookup failed for sceneId "$sceneId": $e');
       return null;
     }
   }

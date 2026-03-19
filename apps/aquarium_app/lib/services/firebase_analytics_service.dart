@@ -15,7 +15,8 @@ class FirebaseAnalyticsService {
     try {
       Firebase.app();
       return true;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('FirebaseAnalytics: Firebase not initialised: $e');
       return false;
     }
   }

@@ -279,8 +279,8 @@ class AnalyticsService {
         final simulatedHour = 9;
         hourOfDay[simulatedHour] = (hourOfDay[simulatedHour] ?? 0) + xp;
         dayOfWeek[date.weekday] = (dayOfWeek[date.weekday] ?? 0) + xp;
-      } catch (_) {
-        // Skip invalid dates
+      } catch (e) {
+        debugPrint('Analytics: skipped invalid date in hourly distribution: $e');
       }
     }
 

@@ -1,4 +1,5 @@
 import '../widgets/core/app_states.dart';
+import 'dart:convert';
 import 'dart:io';
 import '../widgets/core/bubble_loader.dart';
 
@@ -13,6 +14,7 @@ import '../models/models.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../services/backup_service.dart';
+import '../services/shared_preferences_backup.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
@@ -261,14 +263,25 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
             const Divider(),
             _ExportItem(
-              icon: Icons.photo,
-              text: 'All photos (bundled in ZIP)',
+              icon: Icons.school,
+              text: 'Learning progress & streaks',
               included: true,
             ),
             _ExportItem(
-              icon: Icons.settings,
-              text: 'App preferences',
-              included: false,
+              icon: Icons.diamond,
+              text: 'Gem balance & transactions',
+              included: true,
+            ),
+            _ExportItem(
+              icon: Icons.person,
+              text: 'User profile & preferences',
+              included: true,
+            ),
+            const Divider(),
+            _ExportItem(
+              icon: Icons.photo,
+              text: 'All photos (bundled in ZIP)',
+              included: true,
             ),
           ],
         ),
@@ -291,7 +304,8 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                   Text('Import Warning', style: AppTypography.labelLarge),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Importing data will ADD to your existing tanks - it won\'t overwrite or delete anything.',
+                    'Importing will ADD tanks and RESTORE your learning progress, '
+                    'gems, and profile from the backup.',
                     style: AppTypography.bodySmall,
                   ),
                 ],
@@ -343,8 +357,12 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       }
 
       // Create comprehensive export data
+      final prefsBackupJson =
+          await SharedPreferencesBackup.exportAsJson();
+      final prefsBackupData = jsonDecode(prefsBackupJson) as Map<String, dynamic>;
+
       final exportData = {
-        'version': 2, // v2 includes photos in ZIP
+        'version': 3, // v3 includes SharedPreferences (profile, gems, settings)
         'exportDate': DateTime.now().toIso8601String(),
         'appVersion': '1.0.0',
         'tanks': tanks.map((t) => (t as Tank).toJson()).toList(),
@@ -352,6 +370,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         'equipment': allEquipment,
         'logs': allLogs,
         'tasks': allTasks,
+        'sharedPreferences': prefsBackupData,
       };
 
       final backupService = BackupService(
@@ -386,8 +405,8 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       // Clean up temp file after sharing.
       try {
         await File(zipPath).delete();
-      } catch (_) {
-        // Ignore cleanup errors.
+      } catch (e) {
+        debugPrint('Backup cleanup failed: $e');
       }
 
       if (!mounted) return;
@@ -491,6 +510,16 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       // NOTE: BackupService.getBackupData() already resolves portable photo
       // references (photos/<filename>) to this device's documents/photos path.
       final imported = await _importAllData(backupData);
+
+      // Restore SharedPreferences (profile, gems, settings, etc.)
+      final prefsData = backupData['sharedPreferences'];
+      if (prefsData != null && prefsData is Map<String, dynamic>) {
+        try {
+          await SharedPreferencesBackup.restoreFromJson(prefsData);
+        } catch (e) {
+          debugPrint('SharedPreferences restore warning: $e');
+        }
+      }
 
       if (mounted) {
         if (imported > 0) {

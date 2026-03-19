@@ -689,8 +689,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           );
           ref.invalidate(logsProvider(widget.tankId));
           ref.invalidate(allLogsProvider(widget.tankId));
-        } catch (_) {
-          // Silently fail log creation
+        } catch (e) {
+          debugPrint('Failed to create livestock-removal log: $e');
         }
       },
     );

@@ -52,7 +52,11 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     await prefs.setString(_key, json);
   }
 
-  /// Purchase an item from the shop
+  /// Purchase an item from the shop.
+  ///
+  /// Uses a compensating-refund pattern: if gems are deducted but the
+  /// inventory save fails, the gems are automatically refunded so the user
+  /// never loses currency without receiving the item.
   Future<bool> purchaseItem(ShopItem item) async {
     final currentInventory = state.valueOrNull ?? [];
     final gemsNotifier = ref.read(gemsProvider.notifier);
@@ -68,32 +72,56 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       return false; // Not enough gems
     }
 
-    // Add to inventory
-    final now = DateTime.now();
-    InventoryItem inventoryItem;
+    // Add to inventory — wrap in try/catch for compensating refund
+    try {
+      final now = DateTime.now();
+      InventoryItem inventoryItem;
 
-    if (item.isConsumable) {
-      // Check if item already exists (stack quantities)
-      final existingIndex = currentInventory.indexWhere(
-        (i) => i.itemId == item.id,
-      );
-
-      if (existingIndex >= 0) {
-        // Increase quantity
-        final existing = currentInventory[existingIndex];
-        inventoryItem = existing.copyWith(
-          quantity: existing.quantity + (item.quantity ?? 1),
+      if (item.isConsumable) {
+        // Check if item already exists (stack quantities)
+        final existingIndex = currentInventory.indexWhere(
+          (i) => i.itemId == item.id,
         );
 
-        final updated = List<InventoryItem>.from(currentInventory);
-        updated[existingIndex] = inventoryItem;
-        await _save(updated);
-        state = AsyncValue.data(updated);
+        if (existingIndex >= 0) {
+          // Increase quantity
+          final existing = currentInventory[existingIndex];
+          inventoryItem = existing.copyWith(
+            quantity: existing.quantity + (item.quantity ?? 1),
+          );
+
+          final updated = List<InventoryItem>.from(currentInventory);
+          updated[existingIndex] = inventoryItem;
+          await _save(updated);
+          state = AsyncValue.data(updated);
+        } else {
+          // New consumable item
+          inventoryItem = InventoryItem(
+            itemId: item.id,
+            quantity: item.quantity ?? 1,
+            purchasedAt: now,
+          );
+
+          final updated = [...currentInventory, inventoryItem];
+          await _save(updated);
+          state = AsyncValue.data(updated);
+        }
       } else {
-        // New consumable item
+        // Permanent item (cosmetic, etc.)
+        // Check if already owned
+        if (hasItem(item.id)) {
+          // Refund - already owned
+          await gemsNotifier.refund(
+            amount: item.gemCost,
+            itemId: item.id,
+            itemName: item.name,
+          );
+          return false;
+        }
+
         inventoryItem = InventoryItem(
           itemId: item.id,
-          quantity: item.quantity ?? 1,
+          quantity: 1,
           purchasedAt: now,
         );
 
@@ -101,31 +129,17 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         await _save(updated);
         state = AsyncValue.data(updated);
       }
-    } else {
-      // Permanent item (cosmetic, etc.)
-      // Check if already owned
-      if (hasItem(item.id)) {
-        // Refund - already owned
-        await gemsNotifier.refund(
-          amount: item.gemCost,
-          itemId: item.id,
-          itemName: item.name,
-        );
-        return false;
-      }
 
-      inventoryItem = InventoryItem(
+      return true;
+    } catch (e) {
+      // Compensating refund: inventory save failed, give gems back
+      await gemsNotifier.refund(
+        amount: item.gemCost,
         itemId: item.id,
-        quantity: 1,
-        purchasedAt: now,
+        itemName: item.name,
       );
-
-      final updated = [...currentInventory, inventoryItem];
-      await _save(updated);
-      state = AsyncValue.data(updated);
+      rethrow;
     }
-
-    return true;
   }
 
   /// Use/consume an item AND apply its effect

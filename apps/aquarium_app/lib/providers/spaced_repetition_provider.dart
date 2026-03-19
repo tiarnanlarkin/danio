@@ -318,7 +318,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           // ignore: avoid_dynamic_calls
           : (obj as dynamic).question;
       return value is String ? value : null;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Spaced repetition: failed to extract card value: $e');
       return null;
     }
   }

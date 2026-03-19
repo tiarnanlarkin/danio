@@ -259,7 +259,8 @@ class CloudSyncService {
         kh: (record['kh'] as num?)?.toDouble(),
         gh: (record['gh'] as num?)?.toDouble(),
       );
-    } catch (_) {
+    } catch (e) {
+      debugPrint('CloudSync: failed to parse water test record: $e');
       return null;
     }
   }
@@ -714,7 +715,8 @@ class CloudSyncService {
     try {
       final result = await Connectivity().checkConnectivity();
       return !result.contains(ConnectivityResult.none);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('CloudSync: connectivity check failed: $e');
       return false;
     }
   }

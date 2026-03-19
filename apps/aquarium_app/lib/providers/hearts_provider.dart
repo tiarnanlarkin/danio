@@ -83,33 +83,22 @@ class HeartsActions {
 
   /// Lose a heart (returns true if successful)
   Future<bool> loseHeart() async {
-    final success = await _service.loseHeart();
-    if (success) {
-      // Invalidate to trigger UI updates
-      ref.invalidate(userProfileProvider);
-    }
-    return success;
+    return await _service.loseHeart();
   }
 
   /// Gain a heart (returns true if successful)
   Future<bool> gainHeart() async {
-    final success = await _service.gainHeart();
-    if (success) {
-      ref.invalidate(userProfileProvider);
-    }
-    return success;
+    return await _service.gainHeart();
   }
 
   /// Refill all hearts to max
   Future<void> refillToMax() async {
     await _service.refillToMax();
-    ref.invalidate(userProfileProvider);
   }
 
   /// Check and apply auto-refill
   Future<void> checkAutoRefill() async {
     await _service.checkAndApplyAutoRefill();
-    ref.invalidate(userProfileProvider);
   }
 
   /// Check if user can start a lesson

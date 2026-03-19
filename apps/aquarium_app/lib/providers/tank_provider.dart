@@ -218,12 +218,12 @@ class TankActions {
     }
   }
 
-  /// Bulk delete tanks (with confirmation)
+  /// Bulk delete tanks (with confirmation).
+  /// Uses a single batch write so a crash mid-iteration cannot leave
+  /// inconsistent state — either all tanks are removed or none are.
   Future<void> bulkDeleteTanks(List<String> ids) async {
     try {
-      for (final id in ids) {
-        await _storage.deleteTank(id);
-      }
+      await _storage.deleteAllTanks(ids);
       _ref.invalidate(tanksProvider);
     } catch (e) {
       rethrow;

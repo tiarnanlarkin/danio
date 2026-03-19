@@ -229,7 +229,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       case 0:
         return _name.trim().isNotEmpty;
       case 1:
-        return _volumeLitres > 0;
+        return _volumeLitres >= 1;
       case 2:
         return true;
       default:
@@ -715,8 +715,8 @@ class _SizePageState extends State<_SizePage> {
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Please enter a volume';
                   final n = double.tryParse(v);
-                  if (n == null || n <= 0) {
-                    return 'Please enter a volume greater than 0';
+                  if (n == null || n < 1) {
+                    return 'Minimum tank volume is 1 litre';
                   }
                   if (n > 10000) return 'Maximum 10,000 litres';
                   return null;

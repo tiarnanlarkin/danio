@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -84,7 +85,8 @@ class ApiRateLimiter {
           _timestamps[feature] = stamps;
         }
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('RateLimiter: failed to load state, starting fresh: $e');
       // Non-critical — start with empty state.
     }
   }
@@ -97,8 +99,8 @@ class ApiRateLimiter {
         '$_prefsPrefix$feature',
         stamps.map((t) => t.toIso8601String()).toList(),
       );
-    } catch (_) {
-      // Non-critical.
+    } catch (e) {
+      debugPrint('RateLimiter: failed to save state: $e');
     }
   }
 }

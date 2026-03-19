@@ -19,6 +19,32 @@ import '../widgets/offline_indicator.dart';
 import 'compatibility_checker_screen.dart';
 import 'settings_screen.dart';
 
+/// Helper to show a snackbar when an AI feature is tapped while offline.
+void _showOfflineSnackBar(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.wifi_off, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              "You're offline — AI features require an internet connection.",
+            ),
+          ),
+        ],
+      ),
+      action: SnackBarAction(
+        label: 'Dismiss',
+        onPressed: () =>
+            ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+      ),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 4),
+    ),
+  );
+}
+
 /// Smart Hub - central screen for all AI-powered features.
 class SmartScreen extends ConsumerStatefulWidget {
   const SmartScreen({super.key});
@@ -48,7 +74,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     // Offline check.
     final isOnline = ref.read(isOnlineProvider);
     if (!isOnline) {
-      setState(() => _askResponse = OpenAIUserMessages.offline);
+      setState(() => _askResponse =
+          "You're offline — check your connection and tap send to retry.");
       return;
     }
 
@@ -129,7 +156,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             bottom: AppSpacing.md,
           ),
           children: [
-            // API status
+            // API status / connectivity
             if (!openai.isConfigured)
               _OfflineBanner(
                 onSettingsTap: () {
@@ -139,11 +166,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 },
               )
             else
-              _UsageChip(callCount: openai.apiCallsThisMonth),
+              ref.watch(isOnlineProvider)
+                  ? _UsageChip(callCount: openai.apiCallsThisMonth)
+                  : const OfflineIndicatorCompact(),
 
             const SizedBox(height: AppSpacing.md),
 
-            // Feature cards — gated behind API key (CA-004)
+            // Feature cards — gated behind API key (CA-004) + connectivity
             _FeatureCard(
               icon: Icons.camera_alt,
               title: 'Fish & Plant ID',
@@ -152,9 +181,15 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   : 'Enable AI in Settings to use this',
               color: AppColors.primary,
               onTap: openai.isConfigured
-                  ? () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const FishIdScreen()),
-                    )
+                  ? () {
+                      if (!ref.read(isOnlineProvider)) {
+                        _showOfflineSnackBar(context);
+                        return;
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const FishIdScreen()),
+                      );
+                    }
                   : null,
             ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
@@ -166,11 +201,17 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   : 'Enable AI in Settings to use this',
               color: AppColors.error,
               onTap: openai.isConfigured
-                  ? () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SymptomTriageScreen(),
-                      ),
-                    )
+                  ? () {
+                      if (!ref.read(isOnlineProvider)) {
+                        _showOfflineSnackBar(context);
+                        return;
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const SymptomTriageScreen(),
+                        ),
+                      );
+                    }
                   : null,
             ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
 
@@ -183,11 +224,17 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               color: AppColors
                   .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
               onTap: openai.isConfigured
-                  ? () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const WeeklyPlanScreen(),
-                      ),
-                    )
+                  ? () {
+                      if (!ref.read(isOnlineProvider)) {
+                        _showOfflineSnackBar(context);
+                        return;
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const WeeklyPlanScreen(),
+                        ),
+                      );
+                    }
                   : null,
             ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
             // Compatibility Checker (AI version when key configured)

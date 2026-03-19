@@ -334,31 +334,31 @@ class AchievementChecker {
           }
 
           // Show celebration for each unlocked achievement
-          for (final result in newlyUnlocked) {
-            final gemReward = _getGemReward(result.achievement.rarity);
-
-            // Show celebration dialog.
-            // P0-002 FIX: Wait for the current frame to fully complete before
-            // showing the dialog.  The updateAchievements() call above mutates
-            // userProfileProvider which schedules widget rebuilds.  If we push
-            // a dialog route (showDialog) before those rebuilds settle, the
-            // InheritedWidget dependency tear-down races with the new route's
-            // build, triggering _dependents.isEmpty (framework.dart:6271).
-            //
-            // addPostFrameCallback genuinely waits for the build/layout/paint
-            // pipeline to finish — unlike Future.delayed(Duration.zero) which
-            // only yields to the microtask queue.
-            await _waitForNextFrame();
-            final context = navigatorKey.currentContext;
-            if (context != null && context.mounted) {
+          // 3.34 FIX: Show a single summary dialog for multiple unlocks
+          // instead of sequential dialogs that block the UI.
+          await _waitForNextFrame();
+          final context = navigatorKey.currentContext;
+          if (context != null && context.mounted) {
+            if (newlyUnlocked.length == 1) {
+              // Single achievement — show the full dialog as before
+              final result = newlyUnlocked.first;
               await showAchievementUnlockedDialog(
                 context: context,
                 achievement: result.achievement,
                 xpAwarded: result.xpAwarded,
               );
+            } else {
+              // Multiple achievements — show a single summary dialog
+              await _showBatchAchievementDialog(
+                context: context,
+                results: newlyUnlocked,
+              );
             }
+          }
 
-            // Send notification
+          // Send notifications (non-blocking — fire and forget)
+          for (final result in newlyUnlocked) {
+            final gemReward = _getGemReward(result.achievement.rarity);
             try {
               await NotificationService().sendAchievementNotification(
                 achievement: result.achievement,
@@ -369,7 +369,6 @@ class AchievementChecker {
               debugPrint(
                 'Warning: Failed to send achievement notification: $e',
               );
-              // Continue even if notification fails
             }
           }
         }
@@ -535,6 +534,130 @@ class AchievementChecker {
       case AchievementRarity.platinum:
         return GemRewards.achievementPlatinum;
     }
+  }
+
+  /// Show a single summary dialog when multiple achievements unlock at once.
+  /// This replaces the old sequential dialog approach that blocked the UI.
+  Future<void> _showBatchAchievementDialog({
+    required BuildContext context,
+    required List<AchievementUnlockResult> results,
+  }) async {
+    final totalXp = results.fold<int>(0, (sum, r) => sum + r.xpAwarded);
+    final totalGems = results.fold<int>(
+      0,
+      (sum, r) => sum + _getGemReward(r.achievement.rarity),
+    );
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1a1a2e),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          '${results.length} Achievements Unlocked! 🎉',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // List each achievement
+            ...results.map(
+              (r) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    Text(
+                      r.achievement.icon,
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        r.achievement.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Rewards summary
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(25),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      const Text('⭐', style: TextStyle(fontSize: 20)),
+                      Text(
+                        '+$totalXp XP',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Text('💎', style: TextStyle(fontSize: 20)),
+                      Text(
+                        '+$totalGems Gems',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF1a1a2e),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Awesome!',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
