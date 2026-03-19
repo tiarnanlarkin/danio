@@ -824,7 +824,9 @@ class AppRadius {
   static const double md = 16;
   static const double lg = 24;
   static const double xl = 32;
+  static const double xxl = 48;
   static const double pill = 100;
+  static const double full = 999.0;
 
   static BorderRadius get xsRadius => BorderRadius.circular(xs);
   static BorderRadius get smallRadius => BorderRadius.circular(sm);
@@ -833,6 +835,7 @@ class AppRadius {
   static BorderRadius get largeRadius => BorderRadius.circular(lg);
   static BorderRadius get xlRadius => BorderRadius.circular(xl);
   static BorderRadius get pillRadius => BorderRadius.circular(pill);
+  static BorderRadius get fullRadius => BorderRadius.circular(full);
 }
 
 /// Elevation scale for consistent shadow/depth levels
@@ -843,6 +846,51 @@ class AppElevation {
   static const double level3 = 8;
   static const double level4 = 12;
   static const double level5 = 24;
+
+  static const BoxShadow xs = BoxShadow(
+    color: Color(0x0A000000),
+    offset: Offset(0, 1),
+    blurRadius: 2,
+  );
+  static const BoxShadow sm = BoxShadow(
+    color: Color(0x14000000),
+    offset: Offset(0, 2),
+    blurRadius: 4,
+  );
+  static const BoxShadow md = BoxShadow(
+    color: Color(0x1E000000),
+    offset: Offset(0, 4),
+    blurRadius: 8,
+  );
+  static const BoxShadow lg = BoxShadow(
+    color: Color(0x28000000),
+    offset: Offset(0, 8),
+    blurRadius: 16,
+  );
+}
+
+/// Standard card decoration recipes — use these for consistent card styling.
+/// For the full interactive card widget, see widgets/core/app_card.dart.
+abstract final class AppCardDecoration {
+  static BoxDecoration standard(BuildContext context) => BoxDecoration(
+    color: Theme.of(context).cardColor,
+    borderRadius: BorderRadius.circular(AppRadius.md),
+    border: Border.all(
+      color: Theme.of(context).dividerColor.withOpacity(0.1),
+    ),
+  );
+
+  static BoxDecoration elevated(BuildContext context) => BoxDecoration(
+    color: Theme.of(context).cardColor,
+    borderRadius: BorderRadius.circular(AppRadius.md),
+    boxShadow: [AppElevation.sm],
+  );
+
+  static BoxDecoration outlined(BuildContext context) => BoxDecoration(
+    color: Colors.transparent,
+    borderRadius: BorderRadius.circular(AppRadius.md),
+    border: Border.all(color: Theme.of(context).dividerColor),
+  );
 }
 
 class AppShadows {
@@ -943,104 +991,7 @@ class AppShadows {
   ];
 }
 
-/// Premium glassmorphism decoration presets
-class GlassStyles {
-  // Frosted glass for light mode
-  static BoxDecoration frostedLight({
-    BorderRadius? borderRadius,
-    Color? tintColor,
-  }) {
-    return BoxDecoration(
-      color: (tintColor ?? Colors.white).withAlpha(178),
-      borderRadius: borderRadius ?? AppRadius.largeRadius,
-      border: Border.all(color: AppColors.whiteAlpha40, width: 1.5),
-      boxShadow: AppShadows.glassLight,
-    );
-  }
 
-  // Frosted glass for dark mode
-  static BoxDecoration frostedDark({
-    BorderRadius? borderRadius,
-    Color? tintColor,
-  }) {
-    return BoxDecoration(
-      color: (tintColor ?? const Color(0xFF1A1A2E)).withAlpha(153),
-      borderRadius: borderRadius ?? AppRadius.largeRadius,
-      border: Border.all(color: AppColors.whiteAlpha10, width: 1),
-      boxShadow: AppShadows.glassDark,
-    );
-  }
-
-  // Soft puffy card (cotton candy style)
-  static BoxDecoration softPuffy({
-    required bool isDark,
-    BorderRadius? borderRadius,
-    Color? backgroundColor,
-  }) {
-    return BoxDecoration(
-      color:
-          backgroundColor ?? (isDark ? const Color(0xFF2A2A3E) : Colors.white),
-      borderRadius: borderRadius ?? BorderRadius.circular(24),
-      boxShadow: AppShadows.dreamySoft,
-    );
-  }
-
-  // Gradient glass with aurora effect
-  static BoxDecoration auroraGlass({
-    required bool isDark,
-    BorderRadius? borderRadius,
-  }) {
-    return BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: isDark
-            ? [
-                const Color(0xFF1A3A4A).withAlpha(204),
-                const Color(0xFF0D2030).withAlpha(230),
-              ]
-            : [
-                const Color(0xFFE8F4F8).withAlpha(230),
-                const Color(0xFFF0F8FF).withAlpha(242),
-              ],
-      ),
-      borderRadius: borderRadius ?? AppRadius.largeRadius,
-      border: Border.all(
-        color: isDark
-            ? const Color(0xFF3D9F8B).withAlpha(76)
-            : const Color(0xFF5FBFB3).withAlpha(51),
-        width: 1,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: isDark
-              ? const Color(0xFF3D9F8B).withAlpha(38)
-              : AppColors.primaryAlpha08,
-          blurRadius: 20,
-          offset: const Offset(0, 8),
-        ),
-      ],
-    );
-  }
-
-  // Cozy room card (warm home feeling)
-  static BoxDecoration cozyCard({
-    required bool isDark,
-    BorderRadius? borderRadius,
-  }) {
-    return BoxDecoration(
-      color: isDark ? const Color(0xFF2A2220) : const Color(0xFFFFFBF5),
-      borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.lg),
-      border: Border.all(
-        color: isDark
-            ? const Color(0xFFD4A574).withAlpha(38)
-            : const Color(0xFFD4A574).withAlpha(26),
-        width: 1,
-      ),
-      boxShadow: AppShadows.cozyWarm,
-    );
-  }
-}
 
 /// Custom page transition that slides+fades from right.
 /// Applied globally via [pageTransitionsTheme] so all [MaterialPageRoute]
@@ -1508,40 +1459,7 @@ class AppTheme {
   }
 }
 
-// Custom reusable widgets for the design system
-// NOTE: GlassCard has been moved to lib/widgets/core/glass_card.dart
-// Import it from there instead of app_theme.dart.
 
-class GradientCard extends StatelessWidget {
-  final Widget child;
-  final LinearGradient gradient;
-  final EdgeInsets? padding;
-  final EdgeInsets? margin;
-
-  const GradientCard({
-    super.key,
-    required this.child,
-    required this.gradient,
-    this.padding,
-    this.margin,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: margin,
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: AppRadius.largeRadius,
-        boxShadow: AppShadows.soft,
-      ),
-      child: Padding(
-        padding: padding ?? const EdgeInsets.all(AppSpacing.md),
-        child: child,
-      ),
-    );
-  }
-}
 
 class PillButton extends StatelessWidget {
   final String label;
