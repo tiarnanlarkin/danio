@@ -97,7 +97,11 @@ class GamificationDashboard extends ConsumerWidget {
           );
         }
 
-        return GestureDetector(onTap: onTap, child: content);
+        return Semantics(
+          button: onTap != null,
+          label: 'Gamification dashboard',
+          child: GestureDetector(onTap: onTap, child: content),
+        );
       },
     );
   }

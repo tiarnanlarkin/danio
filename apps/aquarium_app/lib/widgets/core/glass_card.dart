@@ -385,12 +385,15 @@ class SoftCard extends StatelessWidget {
     );
 
     if (onTap != null) {
-      card = GestureDetector(
-        onTap: () {
-          HapticFeedback.lightImpact();
-          onTap!();
-        },
-        child: card,
+      card = Semantics(
+        button: true,
+        child: GestureDetector(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onTap!();
+          },
+          child: card,
+        ),
       );
     }
 

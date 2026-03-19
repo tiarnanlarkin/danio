@@ -280,26 +280,33 @@ class _OrangeFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: AnimatedBuilder(
-        animation: animation,
-        builder: (_, __) => Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-            boxShadow: [
-              BoxShadow(
-                color: color.withAlpha(100),
-                blurRadius: 12 + (animation.value * 6),
-                spreadRadius: animation.value * 2,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    final label = icon == Icons.add
+        ? 'Open action menu'
+        : 'Close action menu';
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (_, __) => Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
+              boxShadow: [
+                BoxShadow(
+                  color: color.withAlpha(100),
+                  blurRadius: 12 + (animation.value * 6),
+                  spreadRadius: animation.value * 2,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Icon(icon, color: Colors.white, size: size * 0.44),
           ),
-          child: Icon(icon, color: Colors.white, size: size * 0.44),
         ),
       ),
     );

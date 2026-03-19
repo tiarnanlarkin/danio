@@ -1,15 +1,19 @@
 // TRACKED: CA-002 — Friends feature hidden until social backend ships.
 // See: prd/danio-master-audit-consolidated.md → T3-10
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 
-/// Social features screen — arriving in a future update
+/// Social features screen — arriving in a future update.
+/// In release mode this widget is not reachable (no navigation entry).
+/// The `assert(kDebugMode)` is a safety net against accidental inclusion.
 class FriendsScreen extends ConsumerWidget {
   const FriendsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    assert(kDebugMode, 'FriendsScreen is debug-only; no social backend yet');
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
