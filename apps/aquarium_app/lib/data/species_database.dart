@@ -505,7 +505,7 @@ const List<SpeciesInfo> _allSpecies = [
     scientificName: 'Hypostomus plecostomus',
     family: 'Loricariidae',
     careLevel: 'Advanced',
-    minTankLitres: 300,
+    minTankLitres: 400,
     minTempC: 22,
     maxTempC: 28,
     minPh: 6.5,
@@ -519,9 +519,9 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 60,
     swimLevel: 'Bottom',
     description:
-        '⚠️ BEGINNER WARNING: Often sold as small algae cleaners (5-10cm), these fish grow to 60cm and produce enormous waste. They need tanks of 300L+ as adults and quickly outgrow most setups. Choose a Bristlenose Pleco instead - same job, stays small. Needs driftwood for digestion. Nocturnal.',
+        '⚠️ Grows to 45-60cm. Produces massive waste. Not suitable for most home aquaria. Often sold as small algae cleaners (5-10cm), these fish quickly outgrow most setups. Choose a Bristlenose Pleco instead - same job, stays small. Needs driftwood for digestion. Nocturnal.',
     compatibleWith: [
-      'Large community fish',
+      'Very large community fish only',
     ],
     avoidWith: [
       'Small fish (may eat them when large)',
@@ -1294,7 +1294,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 30,
     swimLevel: 'Bottom',
     description:
-        'Vibrant orange and black striped loach. Gets VERY large - needs big tank long-term. Excellent snail control. Playful and social.',
+        'Reaches 30+cm as adult — often sold at 5cm juvenile size. Needs a group of 5+ and a large tank long-term. Vibrant orange and black striped loach. Excellent snail control. Playful and social.',
     compatibleWith: [
       'Large peaceful fish',
       'Other loaches',
@@ -3014,7 +3014,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 25,
     swimLevel: 'Bottom',
     description:
-        'Good algae eater when young but becomes territorial and aggressive with age. May harass slow-moving fish. Not ideal for community tanks long-term.',
+        '⚠️ Becomes aggressive and territorial as it matures. Stops eating algae and may attack other fish. Consider Siamese Algae Eater or Otocinclus instead. Good algae eater when young but unsuitable for community tanks long-term.',
     compatibleWith: ['Fast-moving fish', 'Robust community fish'],
     avoidWith: [
       'Slow-moving fish',
@@ -3165,7 +3165,7 @@ const List<SpeciesInfo> _allSpecies = [
     scientificName: 'Ambystoma mexicanum',
     family: 'Ambystomatidae',
     careLevel: 'Intermediate',
-    minTankLitres: 150,
+    minTankLitres: 200,
     minTempC: 14,
     maxTempC: 20,
     minPh: 7.0,
@@ -3178,7 +3178,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 25,
     swimLevel: 'Bottom',
     description:
-        'Neotenic salamander that remains aquatic. Requires cold water - CANNOT tolerate tropical temperatures. No tankmates recommended as they eat anything that fits in mouth. ⚠️ Legal restrictions apply in some regions. Check local laws before purchasing.',
+        'Neotenic salamander that remains aquatic. Requires cold water - CANNOT tolerate tropical temperatures. No tankmates recommended as they eat anything that fits in mouth. Requires long, shallow tanks — width matters more than height. ⚠️ Legal restrictions apply in some regions. Check local laws before purchasing.',
     compatibleWith: ['Other similar-sized Axolotls (with caution)'],
     avoidWith: [
       'All fish species',
@@ -3241,12 +3241,10 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 35,
     swimLevel: 'Middle',
     description:
-        'Large, intelligent South American cichlid that can recognise its owner. Reaches 30–40 cm and needs a very spacious tank. Pugnacious — will eat any tankmate small enough to swallow. May be aggressive toward other Oscars unless raised together. Long-lived (10–15 years).',
+        'Large, intelligent South American cichlid that can recognise its owner. Reaches 30–40 cm and needs a very spacious tank. Compatible ONLY with similarly-sized, robust cichlids. Will eat any fish small enough to fit in its mouth. Best kept in species-only tanks or with large plecos. Long-lived (10–15 years).',
     compatibleWith: [
-      'Other large cichlids',
-      'Large robust catfish',
-      'Silver Dollars',
-      'Plecos',
+      'Large robust cichlids (with caution)',
+      'Large plecos',
     ],
     avoidWith: [
       'Small fish',

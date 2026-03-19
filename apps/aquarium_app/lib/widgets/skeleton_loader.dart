@@ -54,7 +54,8 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
       );
     }
 
-    return AnimatedBuilder(
+    return ExcludeSemantics(
+      child: AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
         return ShaderMask(
@@ -80,6 +81,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
         );
       },
       child: widget.child,
+    ),
     );
   }
 }

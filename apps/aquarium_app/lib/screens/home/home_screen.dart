@@ -503,14 +503,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
           // Bottom plates
-          BottomPlate(
+          Semantics(
+            label: 'Tasks and activities panel',
+            child: BottomPlate(
             peekHeight: 32, bottomOffset: 64, maxHeightFraction: 0.55,
             label: 'Today', emoji: '📋', tabColor: DanioColors.topaz,
             backgroundColor: Theme.of(context).colorScheme.surface,
             plateId: BottomPlateId.today,
             child: Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TodayBoardCard(tankId: currentTank.id)),
           ),
-          BottomPlate(
+          ),
+          Semantics(
+            label: 'Tanks list panel',
+            child: BottomPlate(
             peekHeight: 32, bottomOffset: 32, maxHeightFraction: 0.75,
             label: 'Tanks', emoji: '🐠', tabColor: AppColors.accent,
             backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -566,7 +571,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
           ),
-          BottomPlate(
+          ),
+          Semantics(
+            label: 'Progress and achievements panel',
+            child: BottomPlate(
             peekHeight: 32, bottomOffset: 0, maxHeightFraction: 0.65,
             label: 'Progress', emoji: '🔥', tabColor: DanioColors.coralAccent,
             backgroundColor: Theme.of(context).colorScheme.surface,
@@ -576,6 +584,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
             ),
+          ),
           ),
 
           RoomControlFAB(

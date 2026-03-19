@@ -10,7 +10,9 @@ class SkeletonRoom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Skeletonizer(
+    return Semantics(
+      label: 'Loading content',
+      child: Skeletonizer(
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -49,6 +51,7 @@ class SkeletonRoom extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

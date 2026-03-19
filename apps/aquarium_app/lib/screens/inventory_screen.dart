@@ -591,7 +591,7 @@ class _ExpiryTimerState extends State<_ExpiryTimer> {
           Text(
             timeText,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: InventoryColors.activeColor,
+              color: AppColors.textSecondaryDark,
               fontWeight: FontWeight.bold,
             ),
           ),

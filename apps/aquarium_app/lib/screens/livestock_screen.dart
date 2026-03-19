@@ -84,6 +84,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
             )
           else
             PopupMenuButton<String>(
+              semanticsLabel: 'Livestock actions: add, bulk add, select multiple',
               icon: const Icon(Icons.more_vert),
               onSelected: (value) {
                 if (value == 'add') _showAddDialog(context, ref);
@@ -875,6 +876,7 @@ class _LivestockCard extends StatelessWidget {
         trailing: isSelectMode
             ? null
             : PopupMenuButton(
+                semanticsLabel: 'Livestock actions: view details, edit, remove',
                 itemBuilder: (_) => [
                   const PopupMenuItem(
                     value: 'view',

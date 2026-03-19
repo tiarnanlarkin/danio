@@ -154,6 +154,7 @@ class LivingRoomScene extends ConsumerWidget {
                       height: h * 0.44,
                       theme: theme,
                       useRiveFish: useRiveFish,
+                      reduceMotion: MediaQuery.of(context).disableAnimations,
                     ),
                   ),
                 ),
@@ -1220,12 +1221,14 @@ class _ThemedAquarium extends StatelessWidget {
   final double height;
   final RoomTheme theme;
   final bool useRiveFish;
+  final bool reduceMotion;
 
   const _ThemedAquarium({
     required this.width,
     required this.height,
     required this.theme,
     this.useRiveFish = true,
+    this.reduceMotion = false,
   });
 
   @override
@@ -1311,54 +1314,65 @@ class _ThemedAquarium extends StatelessWidget {
             ),
 
             // Plants with gentle swaying animation
-            Positioned(
-              bottom: height * 0.15,
-              left: width * 0.08,
-              child: SwayingPlantTall(
-                index: 0,
-                child: _SoftPlant(
-                  height: height * 0.5,
-                  color: theme.plantPrimary,
+            if (reduceMotion) ...[
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.08,
+                child: _SoftPlant(height: height * 0.5, color: theme.plantPrimary),
+              ),
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.22,
+                child: _SoftPlant(height: height * 0.35, color: theme.plantSecondary),
+              ),
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.1,
+                child: _SoftPlant(height: height * 0.55, color: theme.plantPrimary),
+              ),
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.28,
+                child: _SoftPlant(height: height * 0.4, color: theme.plantSecondary),
+              ),
+            ] else ...[
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.08,
+                child: SwayingPlantTall(
+                  index: 0,
+                  child: _SoftPlant(height: height * 0.5, color: theme.plantPrimary),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: height * 0.15,
-              left: width * 0.22,
-              child: SwayingPlantSmall(
-                index: 1,
-                child: _SoftPlant(
-                  height: height * 0.35,
-                  color: theme.plantSecondary,
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.22,
+                child: SwayingPlantSmall(
+                  index: 1,
+                  child: _SoftPlant(height: height * 0.35, color: theme.plantSecondary),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: height * 0.15,
-              right: width * 0.1,
-              child: SwayingPlantTall(
-                index: 2,
-                child: _SoftPlant(
-                  height: height * 0.55,
-                  color: theme.plantPrimary,
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.1,
+                child: SwayingPlantTall(
+                  index: 2,
+                  child: _SoftPlant(height: height * 0.55, color: theme.plantPrimary),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: height * 0.15,
-              right: width * 0.28,
-              child: SwayingPlant(
-                index: 3,
-                child: _SoftPlant(
-                  height: height * 0.4,
-                  color: theme.plantSecondary,
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.28,
+                child: SwayingPlant(
+                  index: 3,
+                  child: _SoftPlant(height: height * 0.4, color: theme.plantSecondary),
                 ),
               ),
-            ),
+            ],
 
             // Fish - Rive animated or static drawn
             // BACK LAYER FISH (behind plants) - smaller, more distant
-            if (useRiveFish) ...[
+            if (useRiveFish && !reduceMotion) ...[
               // Small fish in back - behind the tall left plant
               Positioned(
                 top: height * 0.25,
@@ -1381,53 +1395,64 @@ class _ThemedAquarium extends StatelessWidget {
             ],
 
             // Plants with gentle swaying animation (duplicated for layering)
-            Positioned(
-              bottom: height * 0.15,
-              left: width * 0.08,
-              child: SwayingPlantTall(
-                index: 0,
-                child: _SoftPlant(
-                  height: height * 0.5,
-                  color: theme.plantPrimary,
+            if (reduceMotion) ...[
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.08,
+                child: _SoftPlant(height: height * 0.5, color: theme.plantPrimary),
+              ),
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.22,
+                child: _SoftPlant(height: height * 0.35, color: theme.plantSecondary),
+              ),
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.1,
+                child: _SoftPlant(height: height * 0.55, color: theme.plantPrimary),
+              ),
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.28,
+                child: _SoftPlant(height: height * 0.4, color: theme.plantSecondary),
+              ),
+            ] else ...[
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.08,
+                child: SwayingPlantTall(
+                  index: 0,
+                  child: _SoftPlant(height: height * 0.5, color: theme.plantPrimary),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: height * 0.15,
-              left: width * 0.22,
-              child: SwayingPlantSmall(
-                index: 1,
-                child: _SoftPlant(
-                  height: height * 0.35,
-                  color: theme.plantSecondary,
+              Positioned(
+                bottom: height * 0.15,
+                left: width * 0.22,
+                child: SwayingPlantSmall(
+                  index: 1,
+                  child: _SoftPlant(height: height * 0.35, color: theme.plantSecondary),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: height * 0.15,
-              right: width * 0.1,
-              child: SwayingPlantTall(
-                index: 2,
-                child: _SoftPlant(
-                  height: height * 0.55,
-                  color: theme.plantPrimary,
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.1,
+                child: SwayingPlantTall(
+                  index: 2,
+                  child: _SoftPlant(height: height * 0.55, color: theme.plantPrimary),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: height * 0.15,
-              right: width * 0.28,
-              child: SwayingPlant(
-                index: 3,
-                child: _SoftPlant(
-                  height: height * 0.4,
-                  color: theme.plantSecondary,
+              Positioned(
+                bottom: height * 0.15,
+                right: width * 0.28,
+                child: SwayingPlant(
+                  index: 3,
+                  child: _SoftPlant(height: height * 0.4, color: theme.plantSecondary),
                 ),
               ),
-            ),
+            ],
 
             // FRONT LAYER FISH (in front of plants) - main fish, larger
-            if (useRiveFish) ...[
+            if (useRiveFish && !reduceMotion) ...[
               // Main puffer fish - upper left, swimming right
               Positioned(
                 top: height * 0.12,

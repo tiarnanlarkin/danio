@@ -702,10 +702,14 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: ActionChip(
-                      avatar: const Icon(Icons.lightbulb_outline, size: 16),
-                      label: const Text('Need a hint?'),
-                      onPressed: () => setState(() => _showHint = true),
+                    child: Semantics(
+                      button: true,
+                      label: 'Show hint',
+                      child: ActionChip(
+                        avatar: const Icon(Icons.lightbulb_outline, size: 16),
+                        label: const Text('Need a hint?'),
+                        onPressed: () => setState(() => _showHint = true),
+                      ),
                     ),
                   ),
                 );

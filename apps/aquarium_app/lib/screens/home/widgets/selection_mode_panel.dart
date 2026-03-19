@@ -77,7 +77,7 @@ class SelectionModePanel extends StatelessWidget {
                       tooltip: 'Cancel selection',
                       onPressed: onCancel,
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
+                      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                     ),
                   ],
                 ),

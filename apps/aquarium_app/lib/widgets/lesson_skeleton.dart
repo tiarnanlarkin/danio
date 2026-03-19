@@ -11,7 +11,8 @@ class PathCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return ExcludeSemantics(
+      child: Card(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
@@ -44,6 +45,7 @@ class PathCardSkeleton extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 
@@ -70,7 +72,8 @@ class LessonListSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ExcludeSemantics(
+      child: Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
@@ -92,6 +95,7 @@ class LessonListSkeleton extends StatelessWidget {
           _buildShimmer(60, 28),
         ],
       ),
+    ),
     );
   }
 
@@ -118,7 +122,8 @@ class LessonContentSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return ExcludeSemantics(
+      child: ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         _buildShimmer(200, 28), // Title
@@ -141,6 +146,7 @@ class LessonContentSkeleton extends StatelessWidget {
         _buildShimmer(double.infinity, 14),
         _buildShimmer(300, 14),
       ],
+    ),
     );
   }
 
