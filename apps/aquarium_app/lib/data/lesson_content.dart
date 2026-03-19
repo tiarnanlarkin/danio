@@ -183,7 +183,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'After 1-2 weeks, beneficial bacteria start consuming ammonia. Different bacteria groups handle this in home aquaria (including Nitrosomonas and Nitrospira). But they produce nitrite as a byproduct - which is also toxic to fish!',
+                'After 1-2 weeks, beneficial bacteria start consuming ammonia. Modern research has shown Nitrospira is the primary bacteria responsible in most freshwater aquaria (older references often cite Nitrosomonas). But they produce nitrite as a byproduct - which is also toxic to fish!',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
@@ -4866,7 +4866,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.bulletList,
             content:
-                '• **Below 20 litres (5 gallons):** Extremely difficult. Water parameters swing wildly, temperature is unstable, and very few fish can live comfortably. Avoid as a first tank.\n• **20–40 litres (5–10 gallons):** Possible for a single betta or a small group of nano fish, but requires careful attention and frequent water changes.\n• **60–120 litres (15–30 gallons):** The sweet spot for beginners. Stable parameters, good fish selection, forgiving of minor mistakes.\n• **120+ litres (30+ gallons):** Even more stable and gives you more stocking options. Only downside is cost and space.',
+                '• **Below 20 litres (5 gallons):** Extremely difficult. Water parameters swing wildly, temperature is unstable, and very few fish can live comfortably. Avoid as a first tank.\n• **40+ litres (10+ gallons):** Suitable for a single betta or a small group of nano fish.\n• **60–120 litres (15–30 gallons):** The sweet spot for beginners. Stable parameters, good fish selection, forgiving of minor mistakes.\n• **120+ litres (30+ gallons):** Even more stable and gives you more stocking options. Only downside is cost and space.',
           ),
           const LessonSection(
             type: LessonSectionType.tip,
@@ -5979,11 +5979,11 @@ class LessonContent {
                 '1 litre (a bowl)',
                 '5 litres (a vase)',
                 '19 litres (5 gallons)',
-                '75 litres (20 gallons)',
+                '40 litres (10 gallons)',
               ],
-              correctIndex: 2,
+              correctIndex: 3,
               explanation:
-                  '19 litres (5 gallons) is the minimum. Bettas need heated, filtered water — a bowl provides neither.',
+                  '40 litres (10 gallons) is the minimum. Bettas need heated, filtered water — a bowl provides neither.',
             ),
             const QuizQuestion(
               id: 'sc_betta_q2',

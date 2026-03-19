@@ -55,11 +55,11 @@ final speciesCarePath = LearningPath(
               '1 gallon (a bowl)',
               '2.5 gallons',
               '5 gallons (19 litres)',
-              '20 gallons',
+              '10 gallons (40 litres)',
             ],
-            correctIndex: 2,
+            correctIndex: 3,
             explanation:
-                'The minimum is 5 gallons (19 litres), with 10 gallons being ideal. Bettas need heated, filtered water — a bowl is not an appropriate home.',
+                'The minimum is 10 gallons (40 litres). Bettas need heated, filtered water — a bowl is not an appropriate home.',
           ),
           const QuizQuestion(
             id: 'sc_betta_q2',
