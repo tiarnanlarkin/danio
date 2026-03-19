@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
-
 /// Leaderboard and competitive ranking models
 library;
+
+import 'package:flutter/foundation.dart';
 
 /// League tier for competitive ranking
 enum League {
