@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../providers/spaced_repetition_provider.dart';
+import 'package:flutter/foundation.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/sync_indicator.dart';
 import '../widgets/celebrations/level_up_listener.dart';
@@ -223,7 +224,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                     bottom: false,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [OfflineIndicator(), SyncIndicator()],
+                      children: [const OfflineIndicator(), if (kDebugMode) const SyncIndicator()],
                     ),
                   ),
                 ),

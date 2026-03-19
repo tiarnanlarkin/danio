@@ -915,9 +915,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           TextDirection.ltr,
                         );
 
-                        // Design decision: Quiz failures do not deduct hearts.
-                        // Hearts are deducted per wrong answer during the quiz,
-                        // not on quiz failure overall. This matches Duolingo's model.
+                        // Hearts are deducted per wrong answer below (in non-practice
+                        // mode). There is no additional penalty for failing the quiz
+                        // overall — this matches Duolingo's model where each wrong
+                        // answer costs one heart.
 
                         // Handle hearts (only in non-practice mode)
                         if (!widget.isPracticeMode && !isCorrect) {

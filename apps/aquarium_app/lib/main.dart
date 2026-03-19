@@ -347,32 +347,22 @@ class _AppRouterState extends ConsumerState<_AppRouter>
 
     // ── 1. Onboarding state (reactive via provider) ──────────────────────
     final onboardingAsync = ref.watch(onboardingCompletedProvider);
+    final profileAsync = ref.watch(userProfileProvider);
 
-    // While the provider is loading, show splash screen
-    if (onboardingAsync is AsyncLoading || !onboardingAsync.hasValue) {
+    // While either provider is loading, show splash screen
+    if (onboardingAsync is AsyncLoading || !onboardingAsync.hasValue ||
+        profileAsync is AsyncLoading) {
       return _buildSplash(context);
     }
 
     final onboardingCompleted = onboardingAsync.value ?? false;
-
-    if (!onboardingCompleted) {
-      return const OnboardingScreen();
-    }
-
-    // ── 2. Profile state (reactive via provider) ─────────────────────────
-    final profileAsync = ref.watch(userProfileProvider);
-
-    // Still loading profile — show splash to avoid flash
-    if (profileAsync is AsyncLoading) {
-      return _buildSplash(context);
-    }
-
     final profileExists = profileAsync.value != null;
 
-    if (!profileExists) {
-      // New onboarding flow always creates a profile before completing.
-      // This fallback handles legacy cases where onboarding was marked
-      // complete without a profile — restart onboarding to collect data.
+    // ONB-001: If profile exists, the user has already onboarded — skip
+    // intro slides even if the onboarding flag was lost (e.g. force-quit,
+    // storage corruption). This prevents re-showing onboarding to returning
+    // users who have a valid profile.
+    if (!onboardingCompleted && !profileExists) {
       return const OnboardingScreen();
     }
 

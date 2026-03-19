@@ -427,6 +427,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           const StreakHeartsOverlay(),
 
+          // Demo tank banner
+          if (currentTank.isDemoTank)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 56,
+              left: AppSpacing.md,
+              right: AppSpacing.md,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.9),
+                  borderRadius: AppRadius.smallRadius,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.science_outlined, size: 14, color: Colors.white),
+                    const SizedBox(width: AppSpacing.xs),
+                    Flexible(
+                      child: Text(
+                        'Demo Mode — this is sample data',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
           // Bottom plates
           BottomPlate(
             peekHeight: 32, bottomOffset: 64, maxHeightFraction: 0.55,
