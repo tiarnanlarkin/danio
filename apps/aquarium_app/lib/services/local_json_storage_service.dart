@@ -474,6 +474,17 @@ class LocalJsonStorageService implements StorageService {
   }
 
   @override
+  Future<void> saveTanks(List<Tank> tanks) async {
+    await _ensureLoaded();
+    await _persistLock.synchronized(() async {
+      for (final tank in tanks) {
+        _tanks[tank.id] = tank;
+      }
+      await _persistUnlocked();
+    });
+  }
+
+  @override
   Future<void> deleteTank(String id) async {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
@@ -572,6 +583,20 @@ class LocalJsonStorageService implements StorageService {
     logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     if (limit != null && logs.length > limit) logs = logs.take(limit).toList();
     return logs;
+  }
+
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) async {
+    await _ensureLoaded();
+    LogEntry? latest;
+    for (final log in _logs.values) {
+      if (log.tankId == tankId && log.type == LogType.waterTest) {
+        if (latest == null || log.timestamp.isAfter(latest.timestamp)) {
+          latest = log;
+        }
+      }
+    }
+    return latest;
   }
 
   @override

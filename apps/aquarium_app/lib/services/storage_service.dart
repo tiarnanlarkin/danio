@@ -6,6 +6,7 @@ abstract class StorageService {
   Future<List<Tank>> getAllTanks();
   Future<Tank?> getTank(String id);
   Future<void> saveTank(Tank tank);
+  Future<void> saveTanks(List<Tank> tanks);
   Future<void> deleteTank(String id);
   Future<void> deleteAllTanks(List<String> ids);
 
@@ -25,6 +26,7 @@ abstract class StorageService {
     int? limit,
     DateTime? after,
   });
+  Future<LogEntry?> getLatestWaterTest(String tankId);
   Future<void> saveLog(LogEntry log);
   Future<void> deleteLog(String id);
 
@@ -60,6 +62,13 @@ class InMemoryStorageService implements StorageService {
   @override
   Future<void> saveTank(Tank tank) async {
     _tanks[tank.id] = tank;
+  }
+
+  @override
+  Future<void> saveTanks(List<Tank> tanks) async {
+    for (final tank in tanks) {
+      _tanks[tank.id] = tank;
+    }
   }
 
   @override
@@ -132,6 +141,19 @@ class InMemoryStorageService implements StorageService {
       logs = logs.take(limit).toList();
     }
     return logs;
+  }
+
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) async {
+    LogEntry? latest;
+    for (final log in _logs.values) {
+      if (log.tankId == tankId && log.type == LogType.waterTest) {
+        if (latest == null || log.timestamp.isAfter(latest.timestamp)) {
+          latest = log;
+        }
+      }
+    }
+    return latest;
   }
 
   @override

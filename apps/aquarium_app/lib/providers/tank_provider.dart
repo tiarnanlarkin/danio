@@ -231,17 +231,19 @@ class TankActions {
   }
 
   /// Reorder tanks - updates sortOrder for all tanks based on new positions
+  /// Single persist call for all updated tanks.
   Future<void> reorderTanks(List<Tank> reorderedTanks) async {
     try {
+      final now = DateTime.now();
+      final updates = <Tank>[];
       for (int i = 0; i < reorderedTanks.length; i++) {
         final tank = reorderedTanks[i];
         if (tank.sortOrder != i) {
-          final updated = tank.copyWith(
-            sortOrder: i,
-            updatedAt: DateTime.now(),
-          );
-          await _storage.saveTank(updated);
+          updates.add(tank.copyWith(sortOrder: i, updatedAt: now));
         }
+      }
+      if (updates.isNotEmpty) {
+        await _storage.saveTanks(updates);
       }
       _ref.invalidate(tanksProvider);
     } catch (e) {
@@ -442,22 +444,16 @@ final recentLogsProvider = FutureProvider.autoDispose
 /// Latest water test results for a tank (most recent waterTest log entry)
 final latestWaterTestProvider = FutureProvider.autoDispose
     .family<WaterTestResults?, String>((ref, tankId) async {
-      final logs = await ref.watch(logsProvider(tankId).future);
-      final waterLogs =
-          logs
-              .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-              .toList()
-            ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      return waterLogs.isEmpty ? null : waterLogs.first.waterTest;
+      final storage = ref.watch(storageServiceProvider);
+      final entry = await storage.getLatestWaterTest(tankId);
+      return entry?.waterTest;
     });
 
 /// Full LogEntry for the most recent waterTest log (gives access to timestamp)
 final latestWaterTestEntryProvider = FutureProvider.autoDispose
     .family<LogEntry?, String>((ref, tankId) async {
-      final logs = await ref.watch(logsProvider(tankId).future);
-      final waterLogs = logs.where((l) => l.type == LogType.waterTest).toList()
-        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      return waterLogs.isEmpty ? null : waterLogs.first;
+      final storage = ref.watch(storageServiceProvider);
+      return storage.getLatestWaterTest(tankId);
     });
 
 /// Consecutive calendar days (counting back from today) with at least one
