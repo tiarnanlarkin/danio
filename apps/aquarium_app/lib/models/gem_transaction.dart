@@ -5,7 +5,6 @@ enum GemTransactionType {
   spend, // Spent gems on shop items
   refund, // Refunded purchase
   grant, // Admin/promotional grant
-  expire, // Expired item (not used currently)
 }
 
 enum GemEarnReason {
