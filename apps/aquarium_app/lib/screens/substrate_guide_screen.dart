@@ -7,11 +7,7 @@ class SubstrateGuideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Substrate Guide')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+      final items = <Widget>[
           // Intro
           AppCard(
             backgroundColor: AppOverlays.info10,
@@ -307,7 +303,14 @@ class SubstrateGuideScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
+      ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Substrate Guide')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemBuilder: (context, index) => items[index],
+        itemCount: items.length,
       ),
     );
   }
@@ -531,3 +534,4 @@ class _TipItem extends StatelessWidget {
     );
   }
 }
+

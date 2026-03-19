@@ -157,19 +157,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final anomalies = ref.watch(anomalyHistoryProvider);
     final activeAnomalies = anomalies.where((a) => !a.dismissed).toList();
 
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('🧠 Smart'), centerTitle: true),
-        body: ListView(
-          // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
-          padding: const EdgeInsets.only(
-            left: AppSpacing.md,
-            right: AppSpacing.md,
-            top: AppSpacing.md,
-            bottom: AppSpacing.md,
-          ),
-          children: [
+      final items = <Widget>[
             // First-visit tooltip
             if (_showTooltip)
               FirstVisitTooltip(
@@ -393,7 +381,22 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                     (interaction) => _InteractionTile(interaction: interaction),
                   ),
             ],
-          ],
+      ];
+
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('🧠 Smart'), centerTitle: true),
+        body: ListView.builder(
+          // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
+          padding: const EdgeInsets.only(
+            left: AppSpacing.md,
+            right: AppSpacing.md,
+            top: AppSpacing.md,
+            bottom: AppSpacing.md,
+          ),
+          itemBuilder: (context, index) => items[index],
+          itemCount: items.length,
         ),
       ),
     );

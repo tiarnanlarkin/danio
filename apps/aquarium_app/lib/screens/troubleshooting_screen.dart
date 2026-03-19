@@ -7,11 +7,7 @@ class TroubleshootingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Troubleshooting')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+      final items = <Widget>[
           Text(
             'Common Problems & Solutions',
             style: AppTypography.headlineMedium,
@@ -274,7 +270,14 @@ class TroubleshootingScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
+      ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Troubleshooting')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemBuilder: (context, index) => items[index],
+        itemCount: items.length,
       ),
     );
   }
@@ -364,3 +367,4 @@ class _ProblemCard extends StatelessWidget {
     );
   }
 }
+

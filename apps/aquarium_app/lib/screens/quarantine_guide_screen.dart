@@ -7,11 +7,7 @@ class QuarantineGuideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Quarantine Guide')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+      final items = <Widget>[
           // Why quarantine
           AppCard(
             backgroundColor: AppOverlays.warning10,
@@ -265,7 +261,14 @@ class QuarantineGuideScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
+      ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Quarantine Guide')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemBuilder: (context, index) => items[index],
+        itemCount: items.length,
       ),
     );
   }
@@ -470,3 +473,4 @@ class _TipItem extends StatelessWidget {
     );
   }
 }
+

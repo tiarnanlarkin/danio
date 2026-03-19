@@ -261,9 +261,7 @@ class _CompatibilityCheckerScreenState
             ),
 
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              children: [
+                final items = <Widget>[
                 // Selected species
                 if (_selectedSpecies.isEmpty)
                   AppCard(
@@ -442,7 +440,12 @@ class _CompatibilityCheckerScreenState
                 ],
 
                 const SizedBox(height: AppSpacing.xxl),
-              ],
+                ];
+
+            child: ListView.builder(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              itemBuilder: (context, index) => items[index],
+              itemCount: items.length,
             ),
           ),
         ],
@@ -498,3 +501,4 @@ class _ParamRow extends StatelessWidget {
     );
   }
 }
+

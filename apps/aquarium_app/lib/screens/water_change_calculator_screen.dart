@@ -128,11 +128,7 @@ class _WaterChangeCalculatorScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Water Change Calculator')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+      final items = <Widget>[
           AppCard(
             backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
@@ -340,7 +336,14 @@ class _WaterChangeCalculatorScreenState
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
+      ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Water Change Calculator')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemBuilder: (context, index) => items[index],
+        itemCount: items.length,
       ),
     );
   }
@@ -401,3 +404,4 @@ class _StepRow extends StatelessWidget {
     );
   }
 }
+

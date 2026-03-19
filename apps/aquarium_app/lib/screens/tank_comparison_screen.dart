@@ -73,9 +73,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                 )
               : tanks[1];
 
-          return ListView(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            children: [
+          final items = <Widget>[
               // Tank selectors
               Row(
                 children: [
@@ -127,7 +125,12 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
               ),
 
               const SizedBox(height: AppSpacing.xxl),
-            ],
+          ];
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            itemBuilder: (context, index) => items[index],
+            itemCount: items.length,
           );
         },
       ),
@@ -237,3 +240,4 @@ class _ComparisonRow extends StatelessWidget {
     );
   }
 }
+

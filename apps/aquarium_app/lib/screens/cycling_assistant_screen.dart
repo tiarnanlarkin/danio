@@ -76,9 +76,7 @@ class _CyclingAssistantBody extends StatelessWidget {
     final phase = _determinePhase(waterTests);
     final tankAgeDays = DateTime.now().difference(tank.startDate).inDays;
 
-    return ListView(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      children: [
+    final items = <Widget>[
         // Phase indicator
         _PhaseHeader(
           phase: phase,
@@ -127,7 +125,12 @@ class _CyclingAssistantBody extends StatelessWidget {
           ),
 
         const SizedBox(height: AppSpacing.xxl),
-      ],
+    ];
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      itemBuilder: (context, index) => items[index],
+      itemCount: items.length,
     );
   }
 
@@ -828,3 +831,4 @@ class _CycledCelebration extends StatelessWidget {
     );
   }
 }
+

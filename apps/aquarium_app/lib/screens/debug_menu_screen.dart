@@ -59,22 +59,7 @@ class DebugMenuScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (!kDebugMode) return const SizedBox.shrink();
 
-    return Theme(
-      data: Theme.of(context).copyWith(
-        colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: Colors.orange,
-              secondary: Colors.deepOrange,
-            ),
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('🐛 Debug Menu'),
-          backgroundColor: Colors.orange.shade900,
-          foregroundColor: Colors.white,
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
+      final items = <Widget>[
             _SectionHeader(title: 'Onboarding'),
             _DebugTile(
               title: 'Complete Onboarding',
@@ -288,7 +273,25 @@ class DebugMenuScreen extends ConsumerWidget {
               onTap: () => _clearAllData(context),
             ),
             const SizedBox(height: 32),
-          ],
+      ];
+
+    return Theme(
+      data: Theme.of(context).copyWith(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Colors.orange,
+              secondary: Colors.deepOrange,
+            ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('🐛 Debug Menu'),
+          backgroundColor: Colors.orange.shade900,
+          foregroundColor: Colors.white,
+        ),
+        body: ListView.builder(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          itemBuilder: (context, index) => items[index],
+          itemCount: items.length,
         ),
       ),
     );
@@ -418,3 +421,4 @@ class _DebugTile extends StatelessWidget {
     );
   }
 }
+

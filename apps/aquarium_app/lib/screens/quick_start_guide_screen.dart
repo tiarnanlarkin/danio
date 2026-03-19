@@ -7,11 +7,7 @@ class QuickStartGuideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Quick Start Guide')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+      final items = <Widget>[
           AppCard(
             backgroundColor: AppOverlays.primary10,
             padding: AppCardPadding.standard,
@@ -297,7 +293,14 @@ class QuickStartGuideScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
+      ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Quick Start Guide')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemBuilder: (context, index) => items[index],
+        itemCount: items.length,
       ),
     );
   }
@@ -521,3 +524,4 @@ class _MistakeItem extends StatelessWidget {
     );
   }
 }
+

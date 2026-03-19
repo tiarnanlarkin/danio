@@ -76,11 +76,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Lighting Schedule')),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+      final items = <Widget>[
           AppCard(
             backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
@@ -315,7 +311,14 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           ],
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
+      ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Lighting Schedule')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemBuilder: (context, index) => items[index],
+        itemCount: items.length,
       ),
     );
   }
@@ -465,3 +468,4 @@ class _GuideRow extends StatelessWidget {
     );
   }
 }
+

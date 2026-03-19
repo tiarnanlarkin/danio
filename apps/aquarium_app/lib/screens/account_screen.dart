@@ -244,9 +244,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     AuthState auth,
     ThemeData theme,
   ) {
-    return ListView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      children: [
+    final items = <Widget>[
         // Profile card
         Card(
           child: Padding(
@@ -314,7 +312,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             foregroundColor: theme.colorScheme.error,
           ),
         ),
-      ],
+    ];
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      itemBuilder: (context, index) => items[index],
+      itemCount: items.length,
     );
   }
 
@@ -502,3 +505,4 @@ class _SyncStatusCard extends ConsumerWidget {
     );
   }
 }
+
