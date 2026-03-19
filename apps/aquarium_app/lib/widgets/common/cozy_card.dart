@@ -40,16 +40,12 @@ class CozyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return AppCard(
       variant: AppCardVariant.elevated,
       padding: AppCardPadding.spacious,
       customPadding: padding,
       borderRadius: BorderRadius.circular(AppRadius.xl),
-      backgroundColor: isDark
-          ? const Color(0xFF2D2B3A) // warm dark surface
-          : const Color(0xFFFFFBF5), // warm cream
+      backgroundColor: Theme.of(context).cardColor,
       boxShadow: AppShadows.cozyWarm,
       onTap: onTap,
       header: header,

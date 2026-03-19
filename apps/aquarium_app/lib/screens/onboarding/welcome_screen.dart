@@ -130,7 +130,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               'assets/images/onboarding/onboarding_journey_bg.webp',
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
-                color: const Color(0xFF2D3436),
+                color: AppColors.textPrimary,
               ),
             ),
           ),
@@ -222,7 +222,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.onboardingAmber,
-                            foregroundColor: const Color(0xFF2D3436),
+                            foregroundColor: AppColors.textPrimary,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(AppRadius.lg),

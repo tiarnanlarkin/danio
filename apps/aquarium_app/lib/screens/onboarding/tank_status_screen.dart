@@ -234,12 +234,12 @@ class _TankStatusScreenState extends State<TankStatusScreen>
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          _selected != null ? AppColors.onboardingAmber : Colors.grey[300],
+                          _selected != null ? AppColors.onboardingAmber : AppColors.border,
                       foregroundColor: _selected != null
-                          ? const Color(0xFF2D3436)
-                          : Colors.grey[500],
-                      disabledBackgroundColor: Colors.grey[300],
-                      disabledForegroundColor: Colors.grey[500],
+                          ? AppColors.textPrimary
+                          : AppColors.textSecondary,
+                      disabledBackgroundColor: AppColors.border,
+                      disabledForegroundColor: AppColors.textSecondary,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -315,7 +315,7 @@ class _OptionCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26)
-                : Colors.white,
+                : AppColors.card,
             borderRadius: BorderRadius.circular(AppRadius.md),
             border: Border.all(
               color: isSelected ? AppColors.onboardingAmber : AppColors.border,

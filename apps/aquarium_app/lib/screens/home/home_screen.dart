@@ -417,7 +417,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                  icon: const Icon(Icons.settings_outlined, color: AppOverlays.white90),
                   tooltip: 'Tank Settings',
                   onPressed: () => NavigationThrottle.push(context, TankSettingsScreen(tankId: currentTank.id)),
                 ),
@@ -436,19 +436,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.9),
+                  color: AppColors.warning,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.science_outlined, size: 14, color: Colors.white),
+                    const Icon(Icons.science_outlined, size: 14, color: AppColors.onWarning),
                     const SizedBox(width: AppSpacing.xs),
                     Flexible(
                       child: Text(
                         'Demo Mode — this is sample data',
                         style: AppTypography.bodySmall.copyWith(
-                          color: Colors.white,
+                          color: AppColors.onWarning,
                           fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -462,14 +462,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           // Bottom plates
           BottomPlate(
             peekHeight: 32, bottomOffset: 64, maxHeightFraction: 0.55,
-            label: 'Today', emoji: '📋', tabColor: const Color(0xFFE8A030),
+            label: 'Today', emoji: '📋', tabColor: DanioColors.topaz,
             backgroundColor: Theme.of(context).colorScheme.surface,
             plateId: BottomPlateId.today,
             child: Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TodayBoardCard(tankId: currentTank.id)),
           ),
           BottomPlate(
             peekHeight: 32, bottomOffset: 32, maxHeightFraction: 0.75,
-            label: 'Tanks', emoji: '🐠', tabColor: const Color(0xFF4A9DB5),
+            label: 'Tanks', emoji: '🐠', tabColor: AppColors.accent,
             backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             backgroundPainter: CustomPaint(painter: SaffianoPainter(), size: Size.infinite),
             plateId: BottomPlateId.tanks,
@@ -521,7 +521,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 const Divider(height: 1),
                 ListTile(
-                  leading: const Icon(Icons.add_circle_outline, color: Color(0xFF4A9DB5)),
+                  leading: const Icon(Icons.add_circle_outline, color: AppColors.accent),
                   title: const Text('Add New Tank'),
                   onTap: () => _navigateToCreateTank(context),
                 ),
@@ -530,7 +530,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           BottomPlate(
             peekHeight: 32, bottomOffset: 0, maxHeightFraction: 0.65,
-            label: 'Progress', emoji: '🔥', tabColor: const Color(0xFFE8503A),
+            label: 'Progress', emoji: '🔥', tabColor: DanioColors.coralAccent,
             backgroundColor: Theme.of(context).colorScheme.surface,
             backgroundPainter: CustomPaint(painter: LeatherGrainPainter(), size: Size.infinite),
             plateId: BottomPlateId.progress,

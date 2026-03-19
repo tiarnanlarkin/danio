@@ -1043,6 +1043,7 @@ const _kDanioPageTransitionsTheme = PageTransitionsTheme(
 );
 
 class AppTheme {
+  // TODO(THEME): Migrate remaining _textTheme references to AppTypography. Blocked by layout regression risk.
   /// Nunito + Lora typography pairing (Apollo design brief)
   /// Nunito: headers, buttons, labels, UI text (warm, rounded)
   /// Lora: body text, lesson content (serif, credible)
@@ -1379,6 +1380,14 @@ class AppTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: AppRadius.largeRadius,
           borderSide: const BorderSide(color: AppColors.primaryLight, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.largeRadius,
+          borderSide: const BorderSide(color: AppColors.error, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: AppRadius.largeRadius,
+          borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,

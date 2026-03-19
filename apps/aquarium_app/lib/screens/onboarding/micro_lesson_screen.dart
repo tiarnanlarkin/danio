@@ -28,9 +28,6 @@ class MicroLessonScreen extends StatefulWidget {
 
 class _MicroLessonScreenState extends State<MicroLessonScreen>
     with TickerProviderStateMixin {
-  static const _correctGreen = Color(0xFF1E8449);
-  static const _wrongRed = Color(0xFFC0392B);
-
   int? _selectedAnswer;
   bool _answered = false;
 
@@ -151,7 +148,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                       style: GoogleFonts.nunito(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFFB45309),
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -250,7 +247,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                             : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.onboardingAmber,
-                          foregroundColor: const Color(0xFF2D3436),
+                          foregroundColor: AppColors.textPrimary,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius:
@@ -287,21 +284,21 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
     Widget? trailing;
 
     if (!_answered) {
-      bgColor = Colors.white;
+      bgColor = AppColors.card;
       borderColor = AppColors.border;
     } else if (isCorrect) {
-      bgColor = _correctGreen.withAlpha(26); // ~10%
-      borderColor = _correctGreen;
-      trailing = const Text('✓', style: TextStyle(fontSize: 20, color: _correctGreen));
+      bgColor = AppColors.successAlpha10;
+      borderColor = AppColors.success;
+      trailing = const Text('✓', style: TextStyle(fontSize: 20, color: AppColors.success));
     } else if (isSelected && !isCorrect) {
-      bgColor = Colors.grey[100]!;
-      borderColor = Colors.grey[300]!;
-      textColor = Colors.grey;
-      trailing = const Text('✗', style: TextStyle(fontSize: 20, color: _wrongRed));
+      bgColor = AppColors.surfaceVariant;
+      borderColor = AppColors.border;
+      textColor = AppColors.textSecondary;
+      trailing = const Text('✗', style: TextStyle(fontSize: 20, color: AppColors.error));
     } else {
-      bgColor = Colors.grey[100]!;
-      borderColor = Colors.grey[300]!;
-      textColor = Colors.grey;
+      bgColor = AppColors.surfaceVariant;
+      borderColor = AppColors.border;
+      textColor = AppColors.textSecondary;
     }
 
     Widget tile = Semantics(
