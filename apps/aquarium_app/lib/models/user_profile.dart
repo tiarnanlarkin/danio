@@ -429,7 +429,7 @@ class UserProfile {
         orElse: () => TankType.freshwater,
       ),
       goals:
-          (json['goals'] as List<dynamic>?)
+          (json['goals'] as List?)
               ?.map(
                 (g) => UserGoal.values.firstWhere(
                   (e) => e.name == g,
@@ -445,17 +445,11 @@ class UserProfile {
           ? DateTime.parse(json['lastActivityDate'] as String)
           : null,
       achievements:
-          (json['achievements'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+          (json['achievements'] as List?)?.cast<String>().toList() ?? [],
       completedLessons:
-          (json['completedLessons'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+          (json['completedLessons'] as List?)?.cast<String>().toList() ?? [],
       lessonProgress:
-          (json['lessonProgress'] as Map<String, dynamic>?)?.map(
+          (json['lessonProgress'] as Map?)?.cast<String, dynamic>().map(
             (key, value) => MapEntry(
               key,
               LessonProgress.fromJson(value as Map<String, dynamic>),
@@ -463,11 +457,9 @@ class UserProfile {
           ) ??
           {},
       completedStories:
-          (json['completedStories'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
-      storyProgress: (json['storyProgress'] as Map<String, dynamic>?) ?? {},
+          (json['completedStories'] as List?)?.cast<String>().toList() ?? [],
+      storyProgress:
+          (json['storyProgress'] as Map?)?.cast<String, dynamic>() ?? {},
       hasCompletedPlacementTest:
           json['hasCompletedPlacementTest'] as bool? ?? false,
       hasSkippedPlacementTest:
@@ -478,7 +470,7 @@ class UserProfile {
           : null,
       dailyXpGoal: json['dailyXpGoal'] as int? ?? 50,
       dailyXpHistory:
-          (json['dailyXpHistory'] as Map<String, dynamic>?)?.map(
+          (json['dailyXpHistory'] as Map?)?.cast<String, dynamic>().map(
             (key, value) => MapEntry(key, value as int),
           ) ??
           {},
@@ -501,7 +493,7 @@ class UserProfile {
           ? DateTime.parse(json['weekStartDate'] as String)
           : null,
       inventory:
-          (json['inventory'] as List<dynamic>?)
+          (json['inventory'] as List?)
               ?.map((e) => InventoryItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
@@ -515,15 +507,10 @@ class UserProfile {
       nightReminderTime: json['nightReminderTime'] as String? ?? '23:00',
       learningStylePreference: json['learningStylePreference'] as String?,
       weekendActivityDates:
-          (json['weekendActivityDates'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
+          (json['weekendActivityDates'] as List?)?.cast<String>().toList() ??
           [],
       fullHeartDates:
-          (json['fullHeartDates'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+          (json['fullHeartDates'] as List?)?.cast<String>().toList() ?? [],
       perfectScoreCount: json['perfectScoreCount'] as int? ?? 0,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),

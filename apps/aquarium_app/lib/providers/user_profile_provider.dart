@@ -22,6 +22,14 @@ import 'spaced_repetition_provider.dart'; // For creating review cards
 import '../services/offline_aware_service.dart';
 import '../utils/debouncer.dart';
 
+/// Shared provider for SharedPreferences. All providers and services should
+/// use this instead of calling SharedPreferences.getInstance() directly, so
+/// the singleton is initialised once and reused across the app.
+final sharedPreferencesProvider =
+    FutureProvider<SharedPreferences>((ref) {
+      return SharedPreferences.getInstance();
+    });
+
 const _uuid = Uuid();
 
 /// Provider for user profile management
@@ -1050,7 +1058,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
   /// Reset profile (for testing/debugging)
   Future<void> resetProfile() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.remove(_key);
     state = const AsyncValue.data(null);
   }

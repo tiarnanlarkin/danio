@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';
 import '../models/gem_transaction.dart';
@@ -18,6 +17,9 @@ import '../main.dart'; // For navigatorKey
 import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
 import 'gems_provider.dart';
+
+/// Import sharedPreferencesProvider for shared access
+// (exported from user_profile_provider.dart via import above)
 
 /// Provider for achievement progress map
 final achievementProgressProvider =
@@ -43,7 +45,7 @@ class AchievementProgressNotifier
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final json = prefs.getString(_key);
 
       if (json != null) {
@@ -69,7 +71,7 @@ class AchievementProgressNotifier
   Future<void> _save() async {
     _saveDebouncer.run(() async {
       try {
-        final prefs = await SharedPreferences.getInstance();
+        final prefs = await ref.read(sharedPreferencesProvider.future);
         final Map<String, dynamic> toSave = {};
 
         state.forEach((key, value) {

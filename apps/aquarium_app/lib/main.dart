@@ -347,16 +347,23 @@ class _AppRouterState extends ConsumerState<_AppRouter>
 
     // ── 1. Onboarding state (reactive via provider) ──────────────────────
     final onboardingAsync = ref.watch(onboardingCompletedProvider);
-    final profileAsync = ref.watch(userProfileProvider);
+    // Select only what we need from userProfileProvider: loading state and
+    // whether a profile exists. Other profile mutations (XP, streaks) don't
+    // affect routing and should not rebuild the router.
+    final profileValue = ref.watch(
+      userProfileProvider.select((a) => a.valueOrNull),
+    );
+    final isProfileLoading = ref.watch(
+      userProfileProvider.select((a) => a.isLoading),
+    );
 
     // While either provider is loading, show splash screen
-    if (onboardingAsync is AsyncLoading || !onboardingAsync.hasValue ||
-        profileAsync is AsyncLoading) {
+    if (isProfileLoading) {
       return _buildSplash(context);
     }
 
     final onboardingCompleted = onboardingAsync.value ?? false;
-    final profileExists = profileAsync.value != null;
+    final profileExists = profileValue != null;
 
     // ONB-001: If profile exists, the user has already onboarded — skip
     // intro slides even if the onboarding flag was lost (e.g. force-quit,

@@ -19,8 +19,6 @@ dependencies:
   # Navigation
   
   # Local storage
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
   
   # HTTP
   http: ^1.2.2
@@ -87,7 +85,6 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.3
   build_runner: ^2.4.13
-  hive_generator: ^2.0.1
   patrol: ^4.3.0
 
 flutter:
