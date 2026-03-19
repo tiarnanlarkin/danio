@@ -151,6 +151,11 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     String? customReason,
   }) async {
     if (amount <= 0) return false;
+
+    // Re-entrancy guard. This is NOT atomic in a multi-threaded sense, but is
+    // safe here because: (1) Dart executes on a single isolate, and (2) Riverpod
+    // notifier methods are called from the UI thread (no concurrent awaits
+    // between the check and set). The `finally` block always resets `_adding`.
     if (_adding) return false;
     _adding = true;
 
@@ -211,6 +216,9 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     String? itemName,
   }) async {
     if (amount <= 0) return false;
+
+    // Re-entrancy guard — same Dart single-threaded safety rationale as _adding.
+    // See [addGems] for full explanation.
     if (_spending) return false;
     _spending = true;
 

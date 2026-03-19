@@ -40,6 +40,30 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         inventory = [];
       }
 
+      // Migrate any inventory stored in UserProfile.inventory (legacy dual-store).
+      // If SharedPreferences has no items but the user profile does, copy them over
+      // and clear the profile field so we never read stale data again.
+      if (inventory.isEmpty) {
+        try {
+          final profile = ref.read(userProfileProvider).valueOrNull;
+          if (profile != null && profile.inventory.isNotEmpty) {
+            inventory = List<InventoryItem>.from(profile.inventory);
+            // Persist to SharedPreferences (our single source of truth).
+            final migrateJson = jsonEncode(
+              inventory.map((i) => i.toJson()).toList(),
+            );
+            await prefs.setString(_key, migrateJson);
+            // Clear the legacy field so we don't re-migrate.
+            await ref
+                .read(userProfileProvider.notifier)
+                .updateProfile(inventory: []);
+          }
+        } catch (_) {
+          // Migration is best-effort — if profile isn't loaded yet, we'll
+          // try again next time inventory loads.
+        }
+      }
+
       state = AsyncValue.data(inventory);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -395,8 +419,15 @@ final activePowerUpsProvider = Provider<List<InventoryItem>>((ref) {
   );
 });
 
-/// Provider to check if XP boost is active
+/// Known XP boost item IDs — matches items defined in [ShopCatalog].
+const _xpBoostItemIds = {'xp_boost_1h'};
+
+/// Provider to check if XP boost is active.
+///
+/// Uses exact ID matching against [_xpBoostItemIds] rather than a substring
+/// check to avoid false positives from items that happen to contain 'xp_boost'
+/// in their ID (e.g. 'xp_boost_1h_bundle', 'no_xp_boost_ads', etc.).
 final xpBoostActiveProvider = Provider<bool>((ref) {
   final activePowerUps = ref.watch(activePowerUpsProvider);
-  return activePowerUps.any((item) => item.itemId.contains('xp_boost'));
+  return activePowerUps.any((item) => _xpBoostItemIds.contains(item.itemId));
 });
