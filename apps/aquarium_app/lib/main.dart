@@ -406,18 +406,20 @@ class _AppRouterState extends ConsumerState<_AppRouter>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  'assets/icons/app_icon.png',
-                  width: 80,
-                  height: 80,
-                  cacheWidth: 160,
-                  cacheHeight: 160,
-                  errorBuilder: (_, __, ___) => const Icon(
-                    Icons.water_drop,
-                    size: 80,
-                    color: Colors.white,
+              ExcludeSemantics(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    'assets/icons/app_icon.png',
+                    width: 80,
+                    height: 80,
+                    cacheWidth: 160,
+                    cacheHeight: 160,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.water_drop,
+                      size: 80,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

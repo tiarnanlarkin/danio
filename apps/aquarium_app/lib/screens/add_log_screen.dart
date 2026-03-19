@@ -1319,6 +1319,7 @@ class _PhotoGrid extends StatelessWidget {
                 width: 96,
                 height: 96,
                 fit: BoxFit.cover,
+                semanticLabel: 'Tank log photo',
                 cacheWidth: (96 * MediaQuery.of(context).devicePixelRatio)
                     .round(),
                 cacheHeight: (96 * MediaQuery.of(context).devicePixelRatio)

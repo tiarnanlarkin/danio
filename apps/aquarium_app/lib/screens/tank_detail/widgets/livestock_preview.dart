@@ -81,6 +81,7 @@ class _LivestockSprite extends StatelessWidget {
           child: Image.asset(
             thumbPath,
             fit: BoxFit.cover,
+            semanticLabel: commonName,
             cacheWidth: 64,
             cacheHeight: 64,
             errorBuilder: (_, __, ___) =>

@@ -32,16 +32,17 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: ClipRRect(
-                borderRadius: AppRadius.largeRadius,
-                child: Image.asset(
-                  'assets/icons/app_icon.png',
-                  width: 100,
-                  height: 100,
-                  cacheWidth: 200,
-                  cacheHeight: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
+              child: ExcludeSemantics(
+                child: ClipRRect(
+                  borderRadius: AppRadius.largeRadius,
+                  child: Image.asset(
+                    'assets/icons/app_icon.png',
+                    width: 100,
+                    height: 100,
+                    cacheWidth: 200,
+                    cacheHeight: 200,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -55,6 +56,7 @@ class AboutScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                ),
                 ),
               ),
             ),

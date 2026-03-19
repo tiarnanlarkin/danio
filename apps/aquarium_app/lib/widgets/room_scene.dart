@@ -86,12 +86,14 @@ class LivingRoomScene extends ConsumerWidget {
               // _CozyRoomBackground and plant widgets are retired — room is now image-based.
               Positioned.fill(
                 child: AmbientLightingOverlay(
-                  child: Image.asset(
-                    _backgroundForTheme(ref.watch(roomThemeProvider)),
-                    fit: BoxFit.cover,
-                    cacheWidth: 1024,
-                    cacheHeight: 1024,
-                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                  child: ExcludeSemantics(
+                    child: Image.asset(
+                      _backgroundForTheme(ref.watch(roomThemeProvider)),
+                      fit: BoxFit.cover,
+                      cacheWidth: 1024,
+                      cacheHeight: 1024,
+                      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                    ),
                   ),
                 ),
               ),
@@ -374,12 +376,14 @@ class _CozyRoomBackground extends StatelessWidget {
             ),
             child: Opacity(
               opacity: 0.25,
-              child: Image.asset(
-                'assets/textures/linen-wall.webp',
-                repeat: ImageRepeat.repeat,
-                fit: BoxFit.none,
-                cacheWidth: 256,
-                cacheHeight: 256,
+              child: ExcludeSemantics(
+                child: Image.asset(
+                  'assets/textures/linen-wall.webp',
+                  repeat: ImageRepeat.repeat,
+                  fit: BoxFit.none,
+                  cacheWidth: 256,
+                  cacheHeight: 256,
+                ),
               ),
             ),
           ),
