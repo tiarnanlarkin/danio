@@ -85,3 +85,30 @@ class StageNotifier extends StateNotifier<StageState> {
 final stageProvider = StateNotifierProvider<StageNotifier, StageState>(
   (ref) => StageNotifier(),
 );
+
+// ── Bottom Plate Controller ──────────────────────────────────────────────
+/// Identifies which bottom plate is interacting with the controller.
+enum BottomPlateId { today, tanks, progress }
+
+/// Tracks which bottom plate is currently open.
+/// When one plate opens, the previous one auto-collapses.
+class BottomPlateController extends StateNotifier<BottomPlateId?> {
+  BottomPlateController() : super(null);
+
+  void registerOpen(BottomPlateId id) {
+    if (state != id) {
+      state = id;
+    }
+  }
+
+  void registerClose(BottomPlateId id) {
+    if (state == id) {
+      state = null;
+    }
+  }
+}
+
+final bottomPlateControllerProvider =
+    StateNotifierProvider<BottomPlateController, BottomPlateId?>(
+  (ref) => BottomPlateController(),
+);

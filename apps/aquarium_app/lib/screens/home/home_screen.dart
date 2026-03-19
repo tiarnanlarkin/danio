@@ -448,6 +448,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             peekHeight: 32, bottomOffset: 64, maxHeightFraction: 0.55,
             label: 'Today', emoji: '📋', tabColor: const Color(0xFFE8A030),
             backgroundColor: Theme.of(context).colorScheme.surface,
+            plateId: BottomPlateId.today,
             child: Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TodayBoardCard(tankId: currentTank.id)),
           ),
           BottomPlate(
@@ -455,6 +456,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             label: 'Tanks', emoji: '🐠', tabColor: const Color(0xFF4A9DB5),
             backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             backgroundPainter: CustomPaint(painter: SaffianoPainter(), size: Size.infinite),
+            plateId: BottomPlateId.tanks,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -489,6 +491,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             label: 'Progress', emoji: '🔥', tabColor: const Color(0xFFE8503A),
             backgroundColor: Theme.of(context).colorScheme.surface,
             backgroundPainter: CustomPaint(painter: LeatherGrainPainter(), size: Size.infinite),
+            plateId: BottomPlateId.progress,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
