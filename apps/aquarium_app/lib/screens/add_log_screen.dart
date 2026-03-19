@@ -1227,13 +1227,17 @@ class _ParameterField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color? statusColor;
+    String? statusText;
     if (value != null) {
       if (dangerThreshold != null && value! >= dangerThreshold!) {
         statusColor = AppColors.paramDanger;
+        statusText = '✕ Danger';
       } else if (warningThreshold != null && value! >= warningThreshold!) {
         statusColor = AppColors.paramWarning;
+        statusText = '⚠ Warning';
       } else if (warningThreshold != null || dangerThreshold != null) {
         statusColor = AppColors.paramSafe;
+        statusText = '✓ Safe';
       }
     }
 
@@ -1247,7 +1251,20 @@ class _ParameterField extends StatelessWidget {
             labelText: label,
             suffixText: unit,
             suffixIcon: statusColor != null
-                ? Icon(Icons.circle, color: statusColor, size: 12)
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        statusText!,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: statusColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.circle, color: statusColor, size: 12),
+                    ],
+                  )
                 : null,
           ),
           keyboardType: TextInputType.numberWithOptions(decimal: decimal),
@@ -1369,13 +1386,17 @@ class _CompactParamField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color? statusColor;
+    String? statusText;
     if (value != null) {
       if (dangerThreshold != null && value! >= dangerThreshold!) {
         statusColor = AppColors.paramDanger;
+        statusText = '✕ Danger';
       } else if (warningThreshold != null && value! >= warningThreshold!) {
         statusColor = AppColors.paramWarning;
+        statusText = '⚠ Warning';
       } else if (warningThreshold != null || dangerThreshold != null) {
         statusColor = AppColors.paramSafe;
+        statusText = '✓ Safe';
       }
     }
 
@@ -1394,7 +1415,20 @@ class _CompactParamField extends StatelessWidget {
               ),
             ),
             if (statusColor != null)
-              Icon(Icons.circle, color: statusColor, size: 8),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    statusText!,
+                    style: AppTypography.labelSmall.copyWith(
+                      color: statusColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.circle, color: statusColor, size: 8),
+                ],
+              ),
           ],
         ),
         const SizedBox(height: AppSpacing.xs),
