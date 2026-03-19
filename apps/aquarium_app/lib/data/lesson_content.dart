@@ -5536,6 +5536,7 @@ class LessonContent {
     recommendedFor: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
     orderIndex: 7,
     lessons: [
+      // ----- BETTA FISH (sc_betta) -----
       Lesson(
         id: 'sc_betta',
         pathId: 'species_care',
@@ -5544,7 +5545,7 @@ class LessonContent {
             'The beautiful Siamese fighting fish - more than just a cup fish!',
         orderIndex: 0,
         xpReward: 50,
-        estimatedMinutes: 6,
+        estimatedMinutes: 10,
         sections: [
           const LessonSection(
             type: LessonSectionType.heading,
@@ -5553,49 +5554,268 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Bettas don\'t live in puddles! In nature, they inhabit rice paddies and slow streams. They need space, filtration, and warm water like any tropical fish.',
+                'Let\'s start by busting the biggest myth in fishkeeping: bettas do NOT live in puddles. In the wild, Betta splendens inhabit shallow rice paddies, marshes, and slow-moving streams across Southeast Asia. Sure, these waters aren\'t deep — but they\'re vast, warm, and teeming with life. A tiny unheated bowl is nothing like their natural habitat.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Minimum 19 litres (5 gallons), heated to 24-28°C (75-82°F), filtered water. No bowls!',
+                'Minimum tank size: 19 litres (5 gallons). Temperature: 24-28°C (75-82°F). pH: 6.5-7.5. Filtered and heated — always.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Tank Setup & Filtration',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Bettas are labyrinth fish, meaning they breathe air from the surface. But that doesn\'t mean they don\'t need a filter! They still produce waste, and ammonia burns their gills just like any other fish. The trick is choosing a filter with gentle flow — bettas hate strong currents. A sponge filter is ideal: it provides biological filtration without blowing your betta across the tank.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Baffle your filter output with a sponge pre-filter or by directing the flow against the glass. Your betta should be able to swim comfortably, not fight the current.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Diet: More Than Just Pellets',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'A healthy betta needs variety. High-quality betta pellets should be the staple (2-3 pellets, twice daily — overfeeding is the #1 cause of bloating), but supplement with frozen or live foods: bloodworms, brine shrimp, and daphnia. Avoid freeze-dried foods as they can cause constipation — soak them first if you must use them.',
           ),
           const LessonSection(
             type: LessonSectionType.warning,
             content:
-                'Male bettas are aggressive to other males and long-finned fish. Keep one male per tank or choose a sorority of females.',
+                'Never feed your betta flake food meant for community tanks. It sinks too fast, and bettas are surface feeders. Uneaten flakes rot and spike ammonia. Also, skip the "betta feeding block" — it\'s a myth product that just pollutes the water.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Betta Varieties',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Bettas come in stunning varieties. Halfmoon tails fan out 180 degrees like a flowing dress. Crowntails have spiky, ray-extended fins that look like royalty. Plakats have short, powerful fins — they\'re closer to wild-type and are more active swimmers. Veiltails are the most common pet-store variety with long, drooping tails. Each type has slightly different care needs — long-finned varieties are slower and more prone to fin damage.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Betta fights were so popular in Thailand (formerly Siam) that the King taxed them! The species name "splendens" means "splendid" — and watching a halfmoon betta flare, you can see why.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Common Diseases',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Velvet (Oödinium) is a golden dust-like parasite that\'s often missed until it\'s advanced. Shine a flashlight on your betta — if you see a gold shimmer, it\'s velvet. Fin rot (bacterial) eats away at those beautiful fins, turning edges black or red. Both are usually caused by poor water quality or cold water. Keep your betta warm and your water clean, and these problems become rare.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Indian Almond Leaves (Catappa leaves) release tannins that mimic bettas\' natural blackwater habitat. They lower pH slightly, have mild antifungal/antibacterial properties, and most bettas love building bubble nests under them.',
           ),
         ],
-        quiz: Quiz(id: 'sc_betta_quiz', lessonId: 'sc_betta', questions: []),
+        quiz: Quiz(
+          id: 'sc_betta_quiz',
+          lessonId: 'sc_betta',
+          questions: [
+            const QuizQuestion(
+              id: 'sc_betta_q1',
+              question: 'What is the minimum recommended tank size for a betta?',
+              options: [
+                '1 litre (a bowl)',
+                '5 litres (a vase)',
+                '19 litres (5 gallons)',
+                '75 litres (20 gallons)',
+              ],
+              correctIndex: 2,
+              explanation:
+                  '19 litres (5 gallons) is the minimum. Bettas need heated, filtered water — a bowl provides neither.',
+            ),
+            const QuizQuestion(
+              id: 'sc_betta_q2',
+              question: 'Why should you avoid giving bettas flake food?',
+              options: [
+                'It\'s toxic to them',
+                'It sinks too fast and they\'re surface feeders',
+                'It makes them aggressive',
+                'It dissolves their fins',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Bettas are surface feeders. Flake food sinks before they can eat it all, and uneaten flakes pollute the water.',
+            ),
+            const QuizQuestion(
+              id: 'sc_betta_q3',
+              question: 'What type of filter is ideal for a betta tank?',
+              options: [
+                'Power filter with strong flow',
+                'Canister filter',
+                'Sponge filter with gentle flow',
+                'No filter — bettas don\'t need one',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Sponge filters provide biological filtration with very gentle flow. Bettas hate strong currents and still need filtration for ammonia control.',
+            ),
+            const QuizQuestion(
+              id: 'sc_betta_q4',
+              question: 'True or False: Bettas live in puddles in the wild.',
+              options: [
+                'True',
+                'False',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'False! Bettas live in rice paddies, marshes, and slow streams — vast, shallow, warm habitats. Not tiny puddles.',
+            ),
+          ],
+        ),
       ),
 
+      // ----- GOLDFISH (sc_goldfish) -----
       Lesson(
         id: 'sc_goldfish',
         pathId: 'species_care',
         title: 'Goldfish: The Misunderstood Fish',
-        description: 'Goldfish are NOT beginner fish - they\'re messy giants!',
+        description: 'Goldfish are NOT beginner fish — they\'re messy giants!',
         orderIndex: 1,
         xpReward: 50,
-        estimatedMinutes: 6,
+        estimatedMinutes: 10,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Tiny Bowl, Massive Fish',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Goldfish grow to 6-12 inches and live 10-20 years (not 2 weeks!). They\'re coldwater fish that need huge tanks and powerful filtration.',
+                'The fairground goldfish in a plastic bag is one of the worst marketing campaigns in pet history. That 2cm fish will grow to 15-30cm depending on variety, and can live 10-20 years with proper care. The "goldfish bowl" is essentially a slow death sentence — no filtration, no swimming room, no oxygen exchange, and ammonia builds up lethally fast.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                '20 gallons for the first goldfish, +10 gallons per additional fish. Fancy goldfish need more space than commons/comets - they\'re less agile and produce more waste.',
+                '75 litres (20 gallons) for the first goldfish. Add 38 litres (10 gallons) per additional fish. Fancy varieties need even more space because they\'re less agile swimmers.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Fancy vs Common: Know the Difference',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'There are two main groups. Common goldfish (comets, shubunkins) are hardy, fast swimmers that can exceed 30cm. They\'re suited to large tanks or outdoor ponds. Fancy goldfish (orandas, ranchu, lionheads, ryukin) have rounded bodies and exaggerated fins — gorgeous, but they\'re slower, less hardy, and prone to swim bladder issues. Never mix the two: commons are too fast and outcompete fancies for food.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Fancy goldfish are especially prone to swim bladder disorder from eating dry food that expands in their gut. Soak pellets before feeding, and include shelled peas (squished) in their diet to prevent constipation.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Filtration: They Need Serious Power',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Goldfish produce more waste per gram of body weight than almost any other aquarium fish. A filter rated for a tropical tank will struggle with goldfish. Aim for a filter that turns over the tank volume 6-10 times per hour. Cannister filters or large hang-on-back filters are your best bet. And despite the myth, goldfish do NOT do better in cold water — they thrive at 18-22°C (64-72°F). Room-temperature water in a cold house can dip dangerously low.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Diet: They\'re Pigs',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Goldfish are constant grazers with no real stomach — food passes through them quickly. Feed sinking pellets (not floating — they gulp air at the surface, causing buoyancy problems). Supplement with blanched vegetables: peas, spinach, zucchini, and cucumber. Avoid bread, crackers, and biscuit crumbs — these swell in their gut and can be fatal.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Feed 1-2 times daily, only what they can consume in 2 minutes. Overfeeding is the #1 killer of goldfish. A hungry fish is a healthy fish.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'The oldest recorded goldfish, "Tish," lived to 43 years! Most goldfish die young because they\'re kept in bowls. With proper care, 15-20 years is entirely achievable.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Pond Option',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'If you have outdoor space, a goldfish pond is often better than any indoor tank. Commons and comets thrive in ponds year-round (at least 60cm deep for winter survival). Fancy goldfish can go in ponds too during warmer months, but bring them indoors when temperatures drop below 10°C — they\'re not as cold-hardy. A pond gives them the swimming space they desperately need.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Add a piece of cuttlebone to your goldfish tank or pond. It slowly releases calcium, which is essential for bone and scale health, and goldfish will nibble on it naturally.',
           ),
         ],
         quiz: Quiz(
           id: 'sc_goldfish_quiz',
           lessonId: 'sc_goldfish',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'sc_gold_q1',
+              question: 'What is the minimum tank size for a single goldfish?',
+              options: [
+                '10 litres (2.5 gallons)',
+                '19 litres (5 gallons)',
+                '38 litres (10 gallons)',
+                '75 litres (20 gallons)',
+              ],
+              correctIndex: 3,
+              explanation:
+                  '75 litres (20 gallons) is the minimum for the first goldfish. They grow large and produce enormous amounts of waste.',
+            ),
+            const QuizQuestion(
+              id: 'sc_gold_q2',
+              question: 'Why should you feed goldfish sinking pellets instead of floating ones?',
+              options: [
+                'Sinking pellets are more nutritious',
+                'Floating pellets dissolve too quickly',
+                'Floating pellets cause fish to gulp air, leading to buoyancy problems',
+                'Goldfish can\'t see food at the surface',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'When goldfish eat at the surface they swallow air, which can cause swim bladder disorder. Sinking pellets prevent this.',
+            ),
+            const QuizQuestion(
+              id: 'sc_gold_q3',
+              question: 'How long can a goldfish live with proper care?',
+              options: [
+                '1-2 years',
+                '3-5 years',
+                '10-20 years',
+                '30-40 years',
+              ],
+              correctIndex: 2,
+              explanation:
+                  '10-20 years is normal with proper care. The myth that they die quickly comes from bowl-keeping, not the fish\'s natural lifespan.',
+            ),
+            const QuizQuestion(
+              id: 'sc_gold_q4',
+              question: 'True or False: Common and fancy goldfish can be kept together safely.',
+              options: [
+                'True',
+                'False',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'False! Common goldfish are much faster swimmers and will outcompete fancies for every scrap of food. Keep them separately.',
+            ),
+          ],
         ),
       ),
 
+      // ----- TETRAS (sc_tetras) -----
       Lesson(
         id: 'sc_tetras',
         pathId: 'species_care',
@@ -5603,17 +5823,122 @@ class LessonContent {
         description: 'Peaceful schooling fish perfect for community tanks',
         orderIndex: 2,
         xpReward: 50,
-        estimatedMinutes: 5,
+        estimatedMinutes: 10,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Schooling Rule',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Tetras are peaceful schoolers that need groups of 6+. Neon, cardinal, ember, and black skirt tetras are all excellent choices.',
+                'Here\'s the golden rule of tetra keeping: never keep fewer than 6. Tetras are shoaling fish — they evolved to stay in tight groups for safety from predators. A lone tetra is a stressed tetra, and a stressed tetra is a dead tetra. In groups of 6 or more, they\'re confident, active, and display their best colours. Bigger groups (10-15) are even better if your tank allows it.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Minimum group size: 6. Ideal: 10+. Water: 22-26°C (72-79°F), pH 6.0-7.5. Most tetras prefer soft, slightly acidic water.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Popular Tetra Species',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Neon tetras are the classics — that iridescent blue stripe and red tail are unmistakable. They stay small (2.5cm) and are peaceful, but sensitive to water quality. Cardinal tetras look similar but grow larger (5cm), have a longer red stripe, and are slightly hardier once established. Ember tetras are tiny (2cm) fireballs of orange that look stunning in planted tanks. Black skirt tetras are larger (5cm) and more robust, but can be nippy — avoid keeping them with long-finned fish.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Setting Up a Tetra Tank',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Tetras shine in planted tanks with dim to moderate lighting. Dark substrate makes their colours pop — think black or dark brown sand. Add plenty of plants: Java moss, Amazon swords, Vallisneria, and floating plants like Salvinia that dapple the light. Leave open swimming space in the middle. A gentle sponge filter or hang-on-back with a pre-filter sponge prevents tiny fry from being sucked in.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Avoid keeping tetras with large, predatory, or fin-nipping fish. Angelfish will eat small neons, and tiger barbs will shred their fins. Good tankmates include Corydoras catfish, small rasboras, peaceful gouramis, and other tetra species.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Feeding & Diet',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Tetras are micro-predators in the wild — they eat tiny insects, crustaceans, and zooplankton. In your tank, they\'ll accept high-quality micro pellets and crushed flake food as staples. Supplement 2-3 times per week with frozen bloodworms, brine shrimp, or daphnia. Feed small amounts — their mouths are tiny, and uneaten food sinks and rots. A pinch that\'s consumed in 60 seconds is plenty.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Neon tetras can create a "schooling shimmer" — when predators approach, the group\'s coordinated movements and reflective scales create a flashing effect that confuses attackers. It\'s called "confusion effect" and it\'s why a tight school is harder for predators to target.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Breeding Tetras',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Tetras are egg scatterers that don\'t care for their young — they\'ll eat their own eggs given the chance. To breed them, set up a dedicated spawning tank with very soft, acidic water (pH 5.5-6.5), a spawning mop or Java moss, and dim lighting. Condition the parents with live foods for a week. After spawning, remove the adults immediately. Eggs hatch in 24-36 hours, and fry are free-swimming after 3-4 days. Feed them infusoria or liquid fry food until they\'re large enough for baby brine shrimp.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'If your tetras aren\'t showing full colour, check your water parameters. Pale, washed-out tetras are almost always stressed — usually from water that\'s too hard, too alkaline, or has elevated ammonia/nitrite.',
           ),
         ],
-        quiz: Quiz(id: 'sc_tetras_quiz', lessonId: 'sc_tetras', questions: []),
+        quiz: Quiz(
+          id: 'sc_tetras_quiz',
+          lessonId: 'sc_tetras',
+          questions: [
+            const QuizQuestion(
+              id: 'sc_tetra_q1',
+              question: 'What is the minimum group size for tetras?',
+              options: [
+                '2-3',
+                '4-5',
+                '6 or more',
+                '1 is fine if the tank is small',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Never keep fewer than 6 tetras. They\'re schooling fish that need a group to feel secure and display natural behaviour.',
+            ),
+            const QuizQuestion(
+              id: 'sc_tetra_q2',
+              question: 'What tankmate should you avoid keeping with neon tetras?',
+              options: [
+                'Corydoras catfish',
+                'Harlequin rasboras',
+                'Angelfish',
+                'Other tetra species',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Angelfish are predators that will eat small tetras. Neons are essentially angelfish snacks in disguise.',
+            ),
+            const QuizQuestion(
+              id: 'sc_tetra_q3',
+              question: 'How can you tell the difference between neon and cardinal tetras?',
+              options: [
+                'Cardinals are bigger with a longer red stripe',
+                'Neons are bigger with a longer red stripe',
+                'They\'re the same fish with different names',
+                'Cardinals have no blue stripe',
+              ],
+              correctIndex: 0,
+              explanation:
+                  'Cardinal tetras grow larger (5cm vs 2.5cm) and their red stripe extends the full body length. In neons, the red only covers the rear half.',
+            ),
+          ],
+        ),
       ),
 
+      // ----- CICHLIDS (sc_cichlids) -----
       Lesson(
         id: 'sc_cichlids',
         pathId: 'species_care',
@@ -5621,21 +5946,133 @@ class LessonContent {
         description: 'From peaceful Rams to aggressive Oscars',
         orderIndex: 3,
         xpReward: 50,
-        estimatedMinutes: 6,
+        estimatedMinutes: 10,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Africa vs South America: Two Different Worlds',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Cichlids have personality! African cichlids need hard water, South American need soft. Research your specific species.',
+                'Cichlids are one of the most diverse fish families on Earth — over 3,000 species! But before you buy any, you need to know which "camp" they belong to, because African and South American cichlids demand completely different water chemistry. Mixing them is like putting a desert lizard in a rainforest tank — it ends badly.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'African cichlids (especially Rift Lake): pH 7.8-8.6, GH 10-20°, temperature 24-28°C. South American cichlids: pH 6.0-7.0, GH 3-8°, temperature 24-28°C. Never mix these groups.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'African Cichlids: The Rock-Dwellers',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'African cichlids from Lake Malawi and Lake Tanganyika are the most popular. They\'re colourful, active, and territorial — think underwater bird-watching. They need hard, alkaline water (use crushed coral or limestone in the substrate to buffer pH). Provide lots of rockwork with caves and crevices — each fish will claim a territory. Mbuna (rock-dwellers) are aggressive herbivores, while Haps (open-water swimmers) are piscivores. Stock heavily — "overstocking" actually reduces aggression by preventing any single fish from dominating the whole tank.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Lake Malawi cichlids should be overstocked to spread aggression — but this means you need exceptional filtration (turnover 8-10x per hour) and larger, more frequent water changes. A 200-litre minimum for a Malawi community is realistic.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'South American Cichlids: The Garden Dwellers',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'South American cichlids prefer soft, acidic water with lots of plants and driftwood. This group includes angelfish, discus, rams, oscars, and severums. They\'re generally less aggressive than Africans, but some (like Oscars) grow enormous and will eat anything that fits in their mouth. German Blue Rams and Bolivian Rams are excellent beginner cichlids — they\'re small (5cm), colourful, and relatively peaceful in a community setup.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Beginner-Friendly Cichlids',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **German Blue Ram** (Mikrogeophagus ramirezi): 5cm, peaceful community fish, needs warm water (27-29°C)\n• **Bolivian Ram**: 8cm, hardier than Blue Rams, accepts wider temperature range\n• **Kribensis** (Pelvicachromis pulcher): 10cm, cave spawner, excellent for smaller tanks\n• **Keyhole Cichlid**: 12cm, gentle temperament, very peaceful\n• **Firemouth Cichlid**: 15cm, stunning red throat display, moderate aggression',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Advanced Cichlids: Proceed with Caution',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Oscars grow to 35cm and need a 380-litre (100-gallon) tank minimum — they\'re intelligent, personable, and will redecorate your tank by moving rocks and uprooting plants. Discus are the "king of the aquarium" — stunning disc-shaped fish that demand pristine water, high temperatures (28-30°C), and soft, acidic conditions. They\'re not for beginners, but they\'re the ultimate cichlid achievement.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Cichlids are devoted parents! Most species care for their eggs and fry — some even carry them in their mouths (mouthbrooding). This parental care is rare among fish and is one reason cichlids are so fascinating.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'When introducing cichlids to a new tank, rearrange the décor before adding each new fish. This breaks up established territories and reduces aggression toward newcomers. Adding them all at once is even better.',
           ),
         ],
         quiz: Quiz(
           id: 'sc_cichlids_quiz',
           lessonId: 'sc_cichlids',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'sc_cich_q1',
+              question: 'What pH range do Lake Malawi African cichlids need?',
+              options: [
+                '5.5-6.5',
+                '6.5-7.0',
+                '7.0-7.5',
+                '7.8-8.6',
+              ],
+              correctIndex: 3,
+              explanation:
+                  'African Rift Lake cichlids need hard, alkaline water with pH 7.8-8.6. South Americans need the opposite — soft and acidic.',
+            ),
+            const QuizQuestion(
+              id: 'sc_cich_q2',
+              question: 'Why is "overstocking" actually recommended for African cichlid tanks?',
+              options: [
+                'They need more food competition',
+                'It spreads aggression so no single fish dominates',
+                'The filter needs more fish waste to work properly',
+                'It makes the colours brighter',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'In an African cichlid tank, more fish means aggression is spread across many targets instead of one fish being bullied to death. But filtration must be exceptional.',
+            ),
+            const QuizQuestion(
+              id: 'sc_cich_q3',
+              question: 'What is the minimum tank size for a single Oscar?',
+              options: [
+                '75 litres (20 gallons)',
+                '150 litres (40 gallons)',
+                '380 litres (100 gallons)',
+                '570 litres (150 gallons)',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Oscars grow to 35cm and produce massive waste. 380 litres (100 gallons) is the minimum for one Oscar, with a powerful filter.',
+            ),
+            const QuizQuestion(
+              id: 'sc_cich_q4',
+              question: 'True or False: You can mix African and South American cichlids in the same tank.',
+              options: [
+                'True — they\'re all cichlids',
+                'False — they need completely different water chemistry',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'False! Africans need hard, alkaline water (pH 7.8-8.6) while South Americans need soft, acidic water (pH 6.0-7.0). Mixing them means one group is always in the wrong parameters.',
+            ),
+          ],
         ),
       ),
 
+      // ----- SHRIMP (sc_shrimp) -----
       Lesson(
         id: 'sc_shrimp',
         pathId: 'species_care',
@@ -5643,17 +6080,113 @@ class LessonContent {
         description: 'Tiny cleanup crew with surprising complexity',
         orderIndex: 4,
         xpReward: 50,
-        estimatedMinutes: 5,
+        estimatedMinutes: 8,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'More Than Just Cleanup Crew',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Cherry shrimp are hardy and breed readily. More sensitive species like Crystal Red require pristine water.',
+                'Aquarium shrimp are fascinating creatures that deserve more credit than they get. Cherry shrimp (Neocaridina davidi) are the gateway drug — they\'re hardy, breed like mad, and come in stunning colours from deep red ("Fire Red") to neon yellow ("Golden Back"). But once you\'re hooked, you\'ll discover a whole world from high-grade Crystal Red shrimp to Sulawesi dwarf shrimp. Each type has specific needs.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Cherry Shrimp: The Hardy Starter',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Cherry shrimp tolerate a wide range: 18-28°C, pH 6.5-8.0, GH 4-8°, KH 3-8°. They\'re omnivores that eat algae, biofilm, leftover fish food, and specialised shrimp pellets. A group of 10+ will keep a planted tank surprisingly clean. They breed readily — females carry eggs under their tail for 3-4 weeks before releasing tiny, fully-formed miniature shrimp. No special setup needed.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Cherry shrimp parameters: 18-28°C, pH 6.5-8.0, GH 4-8°, KH 3-8°. Crystal shrimp parameters: 20-24°C, pH 6.2-6.8, GH 4-6°, KH 1-3°. Crystal shrimp are far more demanding.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Crystal Red & Black Shrimp',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Crystal Red (CRS) and Crystal Black (CBS) shrimp are the show ponies of the shrimp world. Graded by intensity of colour and pattern (S, SS, SSS, Mosura), top-grade specimens sell for eye-watering prices. They need pristine, cool water (20-24°C), very soft and slightly acidic conditions, and a mature, well-planted tank. Start with lower grades (C or B) — they\'re hardier and cheaper while you learn.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Water Parameters: GH and KH Are Everything',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Shrimp need calcium for their exoskeleton (GH) and carbonate buffering (KH) for stable pH. If GH is too low, molting fails and shrimp die. If KH is too high, pH swings stress them. Use a GH/KH test kit — it\'s non-negotiable for shrimp keepers. Remineralise RO water with a dedicated shrimp mineral supplement (like Salty Shrimp GH+) rather than guessing.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Copper is lethal to shrimp — even trace amounts from tap water treatments or fish medications can wipe out a colony. Check medication labels before using anything in a shrimp tank. Some fish medications contain copper sulphate.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'When a shrimp molts, it sheds its entire exoskeleton in one piece — like taking off a suit of armour. The discarded shell is packed with calcium and shrimp will often eat it to recover minerals. Leave it in the tank!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Safe tankmates for shrimp include small, non-aggressive fish: ember tetras, celestial pearl danios, otocinclus catfish, and small rasboras. Avoid loaches (especially Yo-Yo and Clown loaches), large cichlids, and anything with a big enough mouth to eat them.',
           ),
         ],
-        quiz: Quiz(id: 'sc_shrimp_quiz', lessonId: 'sc_shrimp', questions: []),
+        quiz: Quiz(
+          id: 'sc_shrimp_quiz',
+          lessonId: 'sc_shrimp',
+          questions: [
+            const QuizQuestion(
+              id: 'sc_shrimp_q1',
+              question: 'Which mineral is critical for shrimp molting?',
+              options: [
+                'Iron',
+                'Potassium',
+                'Calcium (measured as GH)',
+                'Sodium',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Calcium, measured as General Hardness (GH), is essential for shrimp to build and shed their exoskeleton. Low GH leads to failed molts and death.',
+            ),
+            const QuizQuestion(
+              id: 'sc_shrimp_q2',
+              question: 'What should you do with a shed shrimp exoskeleton?',
+              options: [
+                'Remove it immediately',
+                'Leave it — shrimp eat it for calcium',
+                'Crush it and add it to the filter',
+                'It means the shrimp is dying',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Leave shed exoskeletons in the tank! They\'re rich in calcium and shrimp will consume them to recover minerals after molting.',
+            ),
+            const QuizQuestion(
+              id: 'sc_shrimp_q3',
+              question: 'Why are Crystal Red shrimp harder to keep than Cherry shrimp?',
+              options: [
+                'They need more food',
+                'They require more precise water parameters (lower temperature, softer water)',
+                'They\'re more aggressive',
+                'They need saltwater',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'CRS need cooler (20-24°C), softer (GH 4-6°), more acidic (pH 6.2-6.8) water than cherries, making them much less forgiving of parameter swings.',
+            ),
+          ],
+        ),
       ),
 
+      // ----- SNAILS (sc_snails) -----
       Lesson(
         id: 'sc_snails',
         pathId: 'species_care',
@@ -5662,15 +6195,110 @@ class LessonContent {
             'Algae eaters that won\'t overrun your tank (if chosen right!)',
         orderIndex: 5,
         xpReward: 50,
-        estimatedMinutes: 5,
+        estimatedMinutes: 8,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Good, The Bad, and The Pest-y',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Nerite snails eat algae but can\'t breed in freshwater. Mystery snails are beautiful but can reproduce. Avoid pest snails!',
+                'Snails get a bad reputation because most people\'s first experience is a pest snail explosion. But the right snail species are invaluable tank citizens — they clean algae off glass, eat decaying plant matter, stir the substrate, and look genuinely cool doing it. The secret is choosing the right species.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Nerite Snails: The Best Algae Eater',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Nerite snails are the gold standard for algae control. They devour green spot algae, diatoms, and biofilm with impressive efficiency. They\'re small (2-3cm), peaceful, and — here\'s the killer feature — they cannot breed in freshwater. Their eggs need brackish water to hatch, so you\'ll never get a population explosion. You might see white sesame-seed-like eggs on surfaces, but they simply won\'t develop. Tiger nerites, zebra nerites, and horned nerites all have stunning shell patterns.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Nerite snails: best algae eaters, can\'t breed in freshwater, need pH 7.0-8.0 and GH 5-12°. Calcium supplementation is important — thin, pitting shells mean calcium deficiency.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Mystery / Apple Snails: The Beauties',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Mystery snails (Pomacea bridgesii — NOT Pomacea canaliculata, which is an invasive pest) come in gorgeous colours: blue, ivory, gold, magenta, and chestnut. They\'re larger (5cm shell diameter) and can breed in freshwater, laying pink-ish egg clutches above the waterline. Simply remove the clutch if you don\'t want babies — they\'re easy to spot and scrape off. They have a trapdoor (operculum) that seals their shell when threatened, and they\'ll occasionally "surf" to the top of the tank for air.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Avoid Malaysian Trumpet Snails (Melanoides tuberculata). They reproduce asexually and burrow into the substrate. A few hitchhikers can become hundreds in weeks. They\'re almost impossible to eradicate once established. If you see a cone-shaped spiral shell — remove it immediately.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Calcium: The Essential Supplement',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'All snails need calcium to build and maintain their shells. If you see thin, cracking, or pitting shells, your water is too soft. Add crushed cuttlebone, a piece of limestone, or liquid calcium supplements. Most tap water has enough calcium, but if you use RO water or have very soft water, supplementation is essential. GH of at least 5° is recommended for all snail species.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Assassin snails (Clea helena) are the biological solution to pest snails. They\'re beautiful striped cone-shaped snails that actively hunt and eat other snails. Add a few to a pest snail-infested tank and watch the population gradually decline. They won\'t breed fast enough to become pests themselves.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'If you find mystery snail eggs (pinkish clutch above the waterline), just scrape them off with a card or your fingernail and dispose of them. No babies, no problem. This is one of the reasons mystery snails are considered "responsible" — population control is entirely in your hands.',
           ),
         ],
-        quiz: Quiz(id: 'sc_snails_quiz', lessonId: 'sc_snails', questions: []),
+        quiz: Quiz(
+          id: 'sc_snails_quiz',
+          lessonId: 'sc_snails',
+          questions: [
+            const QuizQuestion(
+              id: 'sc_snail_q1',
+              question: 'Why are Nerite snails ideal for algae control?',
+              options: [
+                'They reproduce the fastest',
+                'They\'re the cheapest snail species',
+                'They can\'t breed in freshwater, so they won\'t overrun your tank',
+                'They eat all types of algae including blue-green algae',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Nerite snails need brackish water to breed, so they\'re self-limiting in freshwater. No population explosions — just reliable algae eating.',
+            ),
+            const QuizQuestion(
+              id: 'sc_snail_q2',
+              question: 'What does it mean if your snail\'s shell is thin and pitting?',
+              options: [
+                'The snail is too old',
+                'Calcium deficiency — your water is too soft',
+                'The snail has a parasite',
+                'The water is too warm',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Thin, pitting shells are a classic sign of calcium deficiency. Increase GH or add calcium supplements like cuttlebone or limestone.',
+            ),
+            const QuizQuestion(
+              id: 'sc_snail_q3',
+              question: 'What type of snail should you avoid introducing to your tank?',
+              options: [
+                'Nerite snails',
+                'Mystery snails',
+                'Malaysian Trumpet Snails',
+                'Assassin snails',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Malaysian Trumpet Snails reproduce asexually and can quickly overrun a tank. They burrow into substrate and are extremely difficult to eradicate.',
+            ),
+          ],
+        ),
       ),
     ],
   );
@@ -5687,66 +6315,261 @@ class LessonContent {
     recommendedFor: [ExperienceLevel.expert],
     orderIndex: 8,
     lessons: [
+      // ----- BREEDING LIVEBEARERS -----
       Lesson(
         id: 'at_breeding_livebearers',
         pathId: 'advanced_topics',
         title: 'Breeding Basics: Livebearers',
         description:
-            'Guppies, mollies, and platies - easy first breeding projects',
+            'Guppies, mollies, and platies — easy first breeding projects',
         orderIndex: 0,
         xpReward: 75,
-        estimatedMinutes: 7,
+        estimatedMinutes: 12,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Easiest Fish to Breed',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Livebearers give birth to free-swimming fry (no eggs!). They\'re so easy they\'ll breed without any help from you.',
+                'If there were an award for "fish most likely to reproduce while you\'re not looking," livebearers would win every time. Guppies, mollies, platies, and swordtails give birth to free-swimming fry (no eggs!), and they\'re so prolific that the real challenge isn\'t getting them to breed — it\'s managing the population explosion that follows. A single female guppy can produce 20-60 fry every 4-6 weeks.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Sexing Your Fish',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'The easiest way to sex livebearers is by the anal fin. Males have a modified anal fin called a gonopodium — it\'s thin, pointed, and rod-like. Females have a normal, fan-shaped anal fin. Females are also noticeably larger and rounder, especially when gravid (pregnant). In guppies, males are the colourful ones with flowing tails, while females are larger but drab — grey or silver. Once you know what to look for, you can sex them at 2-3 months old.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'The challenge isn\'t breeding - it\'s keeping the fry alive! Provide hiding spots (plants) and feed micro foods.',
+                'The gestation period for most livebearers is 28-35 days. Females can store sperm and produce multiple batches from a single mating — up to 6 months later! This is why "just one female" isn\'t safe.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Caring for the Pregnant Female',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'A gravid female develops a dark "gravid spot" near her anal fin — this darkens as the fry develop. In the final days, you can actually see the eyes of the fry through her belly. Move her to a breeding box or separate tank before she gives birth. Keep the water pristine (ammonia and nitrite at 0), feed high-quality food (frozen bloodworms, brine shrimp), and maintain stable temperature (25-27°C for guppies). Stress can cause premature birth or absorption of the fry.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Fry Care: The Critical First Weeks',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Newborn fry are tiny and immediately hunted by every fish in the tank — including their own parents. Separate them as soon as possible. Feed freshly hatched baby brine shrimp (the gold standard), liquid fry food, or crushed flake so fine it\'s essentially powder. Feed 3-4 small meals daily. Keep the water warm (26-28°C) and clean — fry are extremely sensitive to ammonia. In 4-6 weeks they\'ll be large enough to rejoin the main tank.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never use a breeding net or box long-term. The confined space stresses the female and often leads to miscarriage. Use it only in the final 1-2 days before birth, then return her to the main tank. A dedicated 40-litre breeding tank with lots of Java moss is far better.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Population Control',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'One guppy pair can produce 2,000+ fry per year. Unless you\'re breeding for sale, keep only males or only females to prevent uncontrolled breeding. Many aquarists keep all-male tanks — no babies, maximum colour. If you want both sexes, accept that you\'ll need to manage (give away, sell, or feed to larger predatory fish) the offspring regularly.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Genetics: Why Babies Look Different',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Guppy genetics are fascinating. Colour, pattern, and tail shape are all inherited traits, but a single female carrying sperm from multiple males can produce fry with wildly different appearances in the same drop. Selective breeding over generations can fix desirable traits — this is how breeders developed the fancy guppy varieties you see today. It takes patience (6-8 generations), but watching your own line develop is incredibly rewarding.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Female guppies can produce up to 6 batches of fry from a single mating — storing the male\'s sperm in a specialised organ for months. No wonder they\'re so successful in the wild!',
           ),
           const LessonSection(
             type: LessonSectionType.tip,
             content:
-                'Breeding box or nursery net protects fry from being eaten. Feed 3-4 times daily for fast growth.',
+                'If you\'re raising fry, set up a "green water" culture or Java moss culture in a sunny window. The microorganisms that grow in green water are the perfect first food for fry — it\'s free, and it never runs out.',
           ),
         ],
         quiz: Quiz(
           id: 'at_breeding_live_quiz',
           lessonId: 'at_breeding_livebearers',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'at_live_q1',
+              question: 'How can you tell a male livebearer from a female?',
+              options: [
+                'Males are always larger',
+                'Males have a thin, rod-like anal fin called a gonopodium',
+                'Females are more colourful',
+                'There is no visible difference',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'The gonopodium is the telltale sign — a thin, pointed, modified anal fin used to transfer sperm. Females have a normal fan-shaped anal fin.',
+            ),
+            const QuizQuestion(
+              id: 'at_live_q2',
+              question: 'How long is the gestation period for most livebearers?',
+              options: [
+                '7-14 days',
+                '15-20 days',
+                '28-35 days',
+                '50-60 days',
+              ],
+              correctIndex: 2,
+              explanation:
+                  '28-35 days is typical for guppies, mollies, and platies. Watch for the darkening gravid spot as the birth approaches.',
+            ),
+            const QuizQuestion(
+              id: 'at_live_q3',
+              question: 'True or False: A female guppy can store sperm and produce multiple batches of fry from a single mating.',
+              options: [
+                'True',
+                'False',
+              ],
+              correctIndex: 0,
+              explanation:
+                  'True! Females can store sperm for up to 6 months and produce multiple batches — this is why one mating leads to many batches of fry.',
+            ),
+          ],
         ),
       ),
 
+      // ----- BREEDING EGG LAYERS -----
       Lesson(
         id: 'at_breeding_egg_layers',
         pathId: 'advanced_topics',
         title: 'Breeding: Egg Layers',
-        description: 'From tetras to cichlids - raising egg-laying species',
+        description: 'From tetras to cichlids — raising egg-laying species',
         orderIndex: 1,
         xpReward: 75,
-        estimatedMinutes: 8,
+        estimatedMinutes: 12,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'A Different Ball Game',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Egg layers require more setup: spawning mops, caves, or flat stones depending on species. Water parameters must be perfect.',
+                'Breeding egg-laying fish is more challenging than livebearers because you need to trigger spawning, protect the eggs, and raise microscopic fry. But the satisfaction of seeing your first batch of tetra fry or watching cichlid parents herd their babies around the tank is unbeatable. Each species has different requirements, but there are common principles.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Conditioning Breeders',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Before breeding, condition your fish with high-quality live or frozen foods for 1-2 weeks. Bloodworms, brine shrimp, white worms, and daphnia are excellent. The goal is to get them into peak physical condition — well-fed fish produce more eggs and higher-quality fry. Separate males and females during conditioning so they\'re eager to spawn when reunited.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Spawning Triggers',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Most egg layers need specific triggers to spawn. Common triggers include: a slight temperature increase (1-2°C), a large water change (50-70%) with slightly cooler water, softening the water (using RO), and adjusting the photoperiod (longer light hours). For many tetras, adding a spawning mop (dark green yarn tied to a cork) or Java moss gives them a place to scatter their eggs. Different species respond to different triggers — research your specific fish.',
           ),
           const LessonSection(
             type: LessonSectionType.warning,
             content:
-                'Many fish eat their own eggs! Remove parents or use dividers after spawning.',
+                'Many egg-laying fish eat their own eggs and fry. Tetras, barbs, and many others have no parental instinct. Remove the parents immediately after spawning, or use a mesh divider. Cichlids are the exception — many are devoted parents.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Species-Specific Techniques',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Tetras:** Scatter eggs on spawning mops or Java moss. Remove parents after spawning. Eggs hatch in 24-48 hours.\n• **Gouramis:** Males build bubble nests at the surface. Remove female after spawning — male guards the nest.\n• **Cichlids:** Many lay eggs on flat stones or in caves. Both parents often guard eggs and fry. Don\'t separate parents!\n• **Killifish:** Some lay eggs in substrate that can survive dry periods. Eggs are sometimes shipped in damp peat moss!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Hatching & First Foods',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Most eggs hatch in 24-72 hours depending on species and temperature. Fry initially absorb their yolk sac and don\'t need food for the first 1-3 days. After that, they need microscopic food: infusoria (cultured from hay or potato in jar water), liquid fry food, or freshly hatched baby brine shrimp. At 5-7 days, most fry can take crushed flakes or micro worms. The first two weeks are the danger zone — most losses happen here from starvation or poor water quality.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Fry are extremely sensitive to ammonia and nitrite. Test water daily in the rearing tank. Use aged, dechlorinated water for water changes — never raw tap water. Small daily water changes (10-15%) are safer than occasional large ones.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Betta fish males build elaborate bubble nests and will diligently tend to them, collecting any eggs that fall and returning them to the nest. After the fry hatch, he guards them until they\'re free-swimming — then he may eat them. Nature is pragmatic!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Start an infusoria culture 1-2 weeks before you plan to breed. Put a piece of blanched lettuce or a crushed snail shell in a jar of tank water in a sunny window. Within a week you\'ll have a cloudy culture full of microscopic organisms — free fry food.',
           ),
         ],
         quiz: Quiz(
           id: 'at_breeding_egg_quiz',
           lessonId: 'at_breeding_egg_layers',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'at_egg_q1',
+              question: 'What should you do with most egg-laying fish after they spawn?',
+              options: [
+                'Leave them to guard the eggs',
+                'Feed them extra to prevent egg-eating',
+                'Remove the parents — most will eat their own eggs',
+                'Turn off the filter',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Most egg-laying fish have no parental instinct and will happily eat their own eggs. Remove parents after spawning (cichlids being the main exception).',
+            ),
+            const QuizQuestion(
+              id: 'at_egg_q2',
+              question: 'How long can most newly hatched fry survive on their yolk sac before needing food?',
+              options: [
+                'Immediately — they need food right away',
+                '1-3 days',
+                '1 week',
+                '2 weeks',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Most fry absorb their yolk sac over 1-3 days before needing external food. Start with infusoria or liquid fry food.',
+            ),
+            const QuizQuestion(
+              id: 'at_egg_q3',
+              question: 'What common spawning trigger works for many tetra species?',
+              options: [
+                'Adding salt to the water',
+                'A large water change with slightly cooler water',
+                'Raising the pH to 8.0',
+                'Turning off all lights for 3 days',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'A 50-70% water change with water 1-2°C cooler simulates rainfall and triggers spawning in many tetra and barb species.',
+            ),
+          ],
         ),
       ),
 
+      // ----- AQUASCAPING -----
       Lesson(
         id: 'at_aquascaping',
         pathId: 'advanced_topics',
@@ -5755,26 +6578,131 @@ class LessonContent {
             'Create underwater landscapes using Iwagumi, Dutch, and Nature styles',
         orderIndex: 2,
         xpReward: 75,
-        estimatedMinutes: 8,
+        estimatedMinutes: 12,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Underwater Gardening as Art',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Aquascaping is underwater gardening. Use the rule of thirds, focal points, and layered depth to create stunning tanks.',
+                'Aquascaping is the craft of arranging aquatic plants, rocks, driftwood, and substrate to create beautiful underwater landscapes. It\'s been elevated to an art form by pioneers like Takashi Amano, whose Nature Aquarium style inspired a global movement. Whether you want a minimalist Japanese rock garden or a lush Dutch plant street, the fundamentals are the same: balance, depth, and intentionality.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Three Major Styles',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Iwagumi is the Japanese minimalist style — dominated by carefully arranged stones, with low-growing carpet plants and minimal hardscape. It uses odd-numbered stone groupings (3 or 5) with a clear "father stone" (the largest, or Oyaishi) positioned slightly off-centre. Dutch style is the opposite: a lush, garden-like arrangement with dense "streets" of plants organised by height and colour, terraced from front to back, with no hardscape visible. Nature/Amano style combines elements of both — creating natural-looking scenes that evoke real landscapes like mountains, forests, or riverbanks.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Substrate: The Foundation',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Your substrate does more than look pretty — it feeds your plants. Use a nutrient-rich planted tank substrate (like ADA Aqua Soil, Seachem Flourite, or Tropica Soil) capped with a thin layer of fine gravel or sand. The nutrient layer feeds plant roots, while the cap prevents the nutrient soil from clouding the water. Avoid standard gravel — it\'s inert and offers no nutrition. For carpet plants, use a fine-grain substrate (2-3mm) so plants can root easily.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'CO₂: Do You Need It?',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Pressurised CO₂ is the single biggest upgrade you can make to a planted tank. It accelerates plant growth dramatically, enables you to grow demanding species, and helps prevent algae by giving plants a competitive advantage. Without CO₂, you\'re limited to low-tech plants: Anubias, Java fern, Vallisneria, Cryptocoryne, and mosses. With CO₂, you can grow carpet plants (HC Cuba, Monte Carlo), stem plants (Rotala, Ludwigia), and the more demanding species. Target 20-30 ppm CO₂ — use a drop checker with a 4 dKH solution to monitor.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Iwagumi (stones), Dutch (plant streets), Nature (Takashi Amano style) - each has principles you can learn!',
+                'Low-tech tanks: no CO₂, limited plant selection, slower growth, easier maintenance. High-tech tanks: pressurised CO₂, wider plant range, faster growth, weekly trimming and fertilising required. Both can look stunning.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Plant Selection: Think in Layers',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Foreground:** Low carpet plants — Monte Carlo, HC Cuba, Eleocharis parvula, Glossostigma\n• **Midground:** Bushy plants — Cryptocoryne, Anubias, Bucephalandra, Staurogyne repens\n• **Background:** Tall stem plants — Rotala rotundifolia, Ludwigia repens, Hygrophila, Vallisneria\n• **Hardscape:** Seiryu stone, lava rock, dragon stone, Malaysian driftwood, spider wood',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Lighting: More Isn\'t Always Better',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Too much light without enough CO₂ and nutrients = algae. Low-tech tanks need 3-5 watts per gallon (or a PAR reading of 30-50 at substrate). High-tech tanks can handle 5-8 watts per gallon (PAR 50-80). Run lights for 6-8 hours daily — longer doesn\'t help and encourages algae. Use a timer for consistency. Many aquascapers start low and gradually increase light duration/intensity over weeks.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never start a new planted tank with high light and no CO₂. The plants can\'t keep up with the energy from the light, and algae will take over within days. Start low, establish the plants, then increase gradually.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Takashi Amano, the father of modern aquascaping, used a species of freshwater shrimp (now named "Amano shrimp" in his honour — Caridina multidentata) as his primary algae control. His book "Nature Aquarium World" (1994) launched aquascaping as a global hobby.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'The "golden rule" of aquascaping: the golden ratio (1:1.618). Place your focal point off-centre — about 38% from one side. This creates natural visual tension and looks far more appealing than a perfectly centred layout.',
           ),
         ],
         quiz: Quiz(
           id: 'at_aquascape_quiz',
           lessonId: 'at_aquascaping',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'at_aqua_q1',
+              question: 'What happens if you have high-intensity lighting without CO₂ in a planted tank?',
+              options: [
+                'Plants grow faster',
+                'Fish become more colourful',
+                'Algae takes over because plants can\'t use the excess light energy',
+                'Nothing — light intensity doesn\'t matter',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Without CO₂, plants can\'t photosynthesise fast enough to use the light energy. The excess light energy fuels algae growth instead. Start with low light and increase gradually.',
+            ),
+            const QuizQuestion(
+              id: 'at_aqua_q2',
+              question: 'In Iwagumi style, why are stones arranged in odd numbers?',
+              options: [
+                'It\'s cheaper to buy 3 than 4',
+                'Odd numbers create more natural, asymmetric compositions',
+                'Even numbers bring bad luck',
+                'There\'s no reason — it\'s just tradition',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Odd-numbered groupings create natural asymmetry that avoids looking rigid or artificial. Three or five stones arranged with varying heights and textures create visual depth.',
+            ),
+            const QuizQuestion(
+              id: 'at_aqua_q3',
+              question: 'How long should aquarium lights run per day?',
+              options: [
+                '12-14 hours',
+                '6-8 hours',
+                '24 hours for maximum plant growth',
+                '3-4 hours to save electricity',
+              ],
+              correctIndex: 1,
+              explanation:
+                  '6-8 hours is ideal. More than 8 hours encourages algae without significantly benefiting plant growth. Use a timer for consistency.',
+            ),
+          ],
         ),
       ),
 
+      // ----- BIOTOPE -----
       Lesson(
         id: 'at_biotope',
         pathId: 'advanced_topics',
@@ -5782,26 +6710,108 @@ class LessonContent {
         description: 'Recreate specific natural habitats accurately',
         orderIndex: 3,
         xpReward: 75,
-        estimatedMinutes: 7,
+        estimatedMinutes: 10,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Nature in a Box',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Biotope tanks recreate real locations: Amazon blackwater, Lake Malawi rift, Asian rice paddy. Only species from that location, matching water chemistry.',
+                'A biotope aquarium is a tank that faithfully recreates a specific natural habitat — the water chemistry, substrate, plants, hardscape, and fish species all come from the same geographic location. No mixing Amazon plants with Asian fish. No using seiryu stone in a West African setup. The goal is accuracy: when someone looks at your tank, they should be able to say "that\'s definitely a Rio Negro blackwater stream." It\'s the most authentic and rewarding style of fishkeeping.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Popular Biotope Setups',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Amazon Blackwater:** pH 4.5-6.0, very soft water, driftwood, leaf litter (oak, almond), floating plants. Fish: cardinal tetras, rummy-nose tetras, discus, hatchetfish, Corydoras\n• **Southeast Asian Stream:** pH 6.5-7.0, smooth river stones, bamboo, mosses. Fish: harlequin rasboras, cherry barbs, sparkling gourami, dwarf loaches\n• **Lake Malawi Rocky:** pH 7.8-8.6, hard alkaline water, limestone rock piles, sand substrate. Fish: mbuna cichlids, synodontis catfish\n• **West African River:** pH 6.0-7.0, moderate hardness, driftwood caves, Anubias and Bolbitis. Fish: kribensis, African butterfly fish, Congo tetras',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Sourcing Authentic Materials',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Authenticity matters in biotope keeping. Collect leaves from native trees (oak, beech, almond, magnolia — boiled before use) instead of buying imports. For substrate, match what\'s found in the natural habitat: fine sand for river systems, leaf litter for forest streams, crushed coral for Rift Lake setups. Driftwood should be aquarium-safe and species-appropriate — Malaysian driftwood for Asian setups, mopani or redmoor for South American. Avoid dyed or artificially coloured substrates.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Creating Blackwater',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Blackwater habitats (Amazon, Borneo peat swamps) have tea-coloured water from tannins released by decaying leaves and wood. You can replicate this by adding Indian Almond Leaves (Catappa), alder cones, or rooibos tea bags to your filter. The water turns amber, pH drops to 5.0-6.0, and many South American and Asian species thrive in these conditions. Don\'t worry about the colour — clear water isn\'t natural for these fish!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Biotope golden rule: every element in the tank — water, substrate, plants, hardscape, and fish — must come from the same geographic location. Research before you set up, not after.',
           ),
           const LessonSection(
             type: LessonSectionType.funFact,
             content:
-                'Biotope Aquarium Contests judge accuracy down to leaf litter species! Ultra-nerdy but beautiful.',
+                'The International Biotope Aquarium Design Contest (IBAC) is the world championship of biotope aquaria. Entrants submit detailed habitat documentation including GPS coordinates, water parameter data, and species lists. The judging is incredibly strict — accuracy is everything.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Start with a Google Images search of your chosen habitat. Study the riverbed, bank vegetation, water colour, and fish behaviour. Then replicate what you see — not what you imagine. Real habitats are always more beautiful than imagined ones.',
           ),
         ],
         quiz: Quiz(
           id: 'at_biotope_quiz',
           lessonId: 'at_biotope',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'at_bio_q1',
+              question: 'What defines a biotope aquarium compared to other aquascaping styles?',
+              options: [
+                'It must be very large',
+                'Every element must come from the same geographic location',
+                'It cannot contain live plants',
+                'It must use only artificial decorations',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'A biotope faithfully recreates a specific natural habitat — all water chemistry, plants, hardscape, and fish must match the real location.',
+            ),
+            const QuizQuestion(
+              id: 'at_bio_q2',
+              question: 'What gives Amazon blackwater its characteristic tea colour?',
+              options: [
+                'Iron in the substrate',
+                'Tannins released by decaying leaves and wood',
+                'Algae growth',
+                'Fish waste',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Tannins from decaying leaves and wood leach into the water, creating the amber/blackwater colour. This is natural and beneficial for many species.',
+            ),
+            const QuizQuestion(
+              id: 'at_bio_q3',
+              question: 'What water parameters does a Lake Malawi biotope need?',
+              options: [
+                'Soft and acidic (pH 6.0-6.5)',
+                'Very hard and alkaline (pH 7.8-8.6)',
+                'Neutral pH 7.0 with moderate hardness',
+                'Brackish water',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Lake Malawi is a Rift Lake with very hard, alkaline water (pH 7.8-8.6). This is completely different from Amazon or Asian habitats.',
+            ),
+          ],
         ),
       ),
 
+      // ----- TROUBLESHOOTING -----
       Lesson(
         id: 'at_troubleshooting',
         pathId: 'advanced_topics',
@@ -5809,7 +6819,7 @@ class LessonContent {
         description: 'Fix crashes, spikes, and disasters fast',
         orderIndex: 4,
         xpReward: 75,
-        estimatedMinutes: 9,
+        estimatedMinutes: 14,
         sections: [
           const LessonSection(
             type: LessonSectionType.heading,
@@ -5818,26 +6828,139 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Ammonia spike? 50% water change immediately. Cloudy water? Test parameters first - could be bacterial bloom (harmless) or ammonia (deadly).',
+                'Every fishkeeper faces emergencies. The difference between a minor hiccup and a mass die-off is knowing what to do and acting quickly. This guide covers the most common disasters and their protocols. Print it, screenshot it, memorise it — because in a real emergency, you won\'t have time to Google.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Ammonia Spike Protocol',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Ammonia (NH₃) is the most toxic substance in your aquarium. Any detectable level is an emergency. Symptoms: fish gasping at the surface, red/purple gills, clamped fins, lethargy. Action plan: (1) Do a 50% water change immediately with dechlorinated water matching the temperature. (2) Add a bacterial starter (Seachem Stability or FritzZyme) to boost biological filtration. (3) Stop feeding for 3 days — fish can go weeks without food. (4) Test daily until ammonia reads 0. (5) Find the cause: overfeeding, dead fish, dead plant, or filter failure.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Nitrite Spike Protocol',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Nitrite (NO₂⁻) is the middle step in the nitrogen cycle and it\'s nearly as toxic as ammonia. It enters the fish\'s bloodstream and prevents oxygen transport — essentially suffocating the fish from the inside. This is called "brown blood disease." Symptoms: fish hovering near the surface, brownish gills, rapid gill movement. Action: 50% water change immediately. Add aquarium salt at 1 tablespoon per 20 litres — the chloride ions compete with nitrite for absorption in the gills, reducing its toxicity. Continue testing daily.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Never panic-clean! Gradual changes are safer than drastic ones. Test, then act.',
+                'Emergency essentials every fishkeeper should have: dechlorinator, API Freshwater Master Test Kit, aquarium salt, Seachem Prime (ammonia/nitrite detoxifier), spare filter media, and a 10-litre container for emergency water changes.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Algae: Identify Before You Treat',
           ),
           const LessonSection(
             type: LessonSectionType.bulletList,
             content:
-                '• **Ammonia spike:** 50% water change + stop feeding\n• **Algae bloom:** Reduce light to 6 hours\n• **Cloudy water:** Test first, usually resolves in days\n• **Dead fish:** Remove immediately, test water, check tank mates',
+                '• **Green spot algae:** Hard green dots on glass. Caused by excess light. Solution: reduce light duration, add nerite snails, scrape with a razor.\n• **Brown diatoms:** Brownish dust on surfaces. Normal in new tanks (first 2-4 weeks). Usually clears on its own. Otocinclus catfish eat it.\n• **Black beard algae:** Dark, tufty growth on plants and hardscape. Caused by low CO₂ or fluctuating CO₂. Solution: increase CO₂, dose liquid carbon (Excel), reduce light. Siamese algae eaters are the best biological control.\n• **Blue-green "algae":** Actually cyanobacteria. Smells bad. Caused by excess nutrients and poor circulation. Solution: increase flow, reduce feeding, dose with erythromycin (last resort). Blackout treatment (cover tank for 3 days) also works.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Disease Identification Quick Guide',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Ich (white spot):** White salt-like spots, flashing against objects. Treat with heat (30°C) + salt or commercial ich medication.\n• **Velvet:** Gold dust appearance, clamped fins. Dim the lights (it\'s photosynthetic), treat with copper-based medication.\n• **Fin rot:** Fins fraying from edges, turning black/red. Fix water quality first, then treat with antibacterial medication if needed.\n• **Dropsy:** Fish extremely bloated, scales pineconing outward. Usually internal bacterial infection. Quarantine and treat with kanamycin. Prognosis is often poor.\n• **Columnaris:** White/grey cottony patches on mouth, fins, body. Very contagious and fast-moving. Treat with Furan-2 or kanamycin immediately. Can kill in 24-48 hours.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Quarantine & Hospital Tank',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Every fishkeeper needs a hospital tank — a small, bare-bottom tank (40 litres) with a heater, sponge filter, and hiding spot. No substrate (easier to see waste and medicate accurately). Quarantine ALL new fish for 2-4 weeks before adding to your display tank. This single habit prevents 90% of disease introductions. For hospital use, match the water parameters to the display tank when moving a sick fish — sudden parameter changes add lethal stress on top of illness.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never add medications to your main display tank. Medications kill beneficial bacteria, crashing your cycle. Always treat in a separate hospital tank. The only exception is aquarium salt in very small doses.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Medication Guide',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Aquarium salt (NaCl): effective for ich, nitrite poisoning, and some parasites. Dose at 1 tablespoon per 20 litres. Never use with scaleless fish (loaches, catfish). Methylene blue: antifungal and antiparasitic, safe for eggs and fry. Tints water blue — use in hospital tank only. API General Cure, Furan-2, and Kanaplex are the "big three" commercial treatments — General Cure for parasites, Furan-2 for bacterial infections, Kanaplex for internal infections. Always complete the full treatment course, even if the fish looks better.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Seachem Prime is a lifesaver in emergencies — it temporarily detoxifies ammonia and nitrite for 24-48 hours, buying you time to fix the root cause. Keep a bottle on hand at all times.',
           ),
         ],
         quiz: Quiz(
           id: 'at_trouble_quiz',
           lessonId: 'at_troubleshooting',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'at_trouble_q1',
+              question: 'Your ammonia test reads 0.5 ppm. What should you do first?',
+              options: [
+                'Add medication',
+                'Do a 50% water change immediately',
+                'Wait a few days and test again',
+                'Add more fish to boost the cycle',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Any detectable ammonia is an emergency. A 50% water change halves the concentration immediately. Then stop feeding and find the cause.',
+            ),
+            const QuizQuestion(
+              id: 'at_trouble_q2',
+              question: 'Why do you add aquarium salt during a nitrite spike?',
+              options: [
+                'Salt kills nitrite directly',
+                'Chloride ions compete with nitrite for absorption in the fish\'s gills',
+                'Salt makes the water clearer',
+                'Salt kills the beneficial bacteria causing the spike',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Chloride ions from salt compete with nitrite for uptake in the gills, reducing the amount of nitrite that enters the fish\'s bloodstream. It\'s a protective measure, not a cure.',
+            ),
+            const QuizQuestion(
+              id: 'at_trouble_q3',
+              question: 'Why should you never add medications to your main display tank?',
+              options: [
+                'Medications are too expensive for large tanks',
+                'They kill beneficial bacteria, crashing the nitrogen cycle',
+                'Fish will become immune to medications',
+                'Medications discolour the tank permanently',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Most fish medications are antibacterial or antiparasitic and will kill the beneficial bacteria in your filter, crashing the nitrogen cycle. Always treat in a separate hospital tank.',
+            ),
+            const QuizQuestion(
+              id: 'at_trouble_q4',
+              question: 'What is "black beard algae" usually caused by?',
+              options: [
+                'Too many snails',
+                'Low CO₂ or fluctuating CO₂ levels',
+                'Water that\'s too hard',
+                'Feeding too much protein',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Black beard algae thrives when CO₂ is low or fluctuating — the plants can\'t outcompete it. Increase CO₂ stability and reduce light to combat it.',
+            ),
+          ],
         ),
       ),
 
+      // ----- ADVANCED WATER CHEMISTRY -----
       Lesson(
         id: 'at_water_chem',
         pathId: 'advanced_topics',
@@ -5845,23 +6968,140 @@ class LessonContent {
         description: 'Master GH, KH, TDS, and buffering capacity',
         orderIndex: 5,
         xpReward: 75,
-        estimatedMinutes: 10,
+        estimatedMinutes: 14,
         sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Beyond pH: The Full Picture',
+          ),
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Beyond pH: GH (hardness) measures calcium/magnesium, KH (alkalinity) is buffering capacity, TDS is total dissolved solids. Each matters for different species.',
+                'Most beginners test only pH, but pH is just the surface. The real story lies in what\'s driving it: General Hardness (GH), Carbonate Hardness (KH), Total Dissolved Solids (TDS), and the relationship between CO₂, carbonates, and pH. Understanding these parameters — and how they interact — lets you create ideal conditions for any species and troubleshoot problems you couldn\'t see before.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'GH: General Hardness',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'GH measures the concentration of calcium and magnesium ions in your water — the minerals that matter most for fish health, snail shells, and shrimp exoskeletons. Measured in degrees (°dGH) or ppm (1°dGH = 17.9 ppm). Soft water has GH 0-4° (suitable for South American fish, tetras, rasboras). Moderate water has GH 5-12° (good for most community fish). Hard water has GH 13+° (ideal for African cichlids, livebearers, goldfish). You can raise GH with crushed coral, limestone, or commercial GH supplements. Lowering it requires RO water or peat filtration.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'KH: Carbonate Hardness (Buffering Capacity)',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'KH measures carbonate and bicarbonate ions — your water\'s acid-buffering system. Think of KH as a shock absorber for pH. High KH (5-10+) means pH stays stable even when acids are added. Low KH (0-3) means pH can crash suddenly, which is lethal. The KH-CO₂-pH relationship is key: more CO₂ in the water lowers pH, and KH determines how much pH drops. With KH of 4°, adding CO₂ to 30 ppm drops pH to about 6.6. With KH of 1°, the same CO₂ would crash pH to dangerous levels.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Stable water > perfect water. Don\'t chase numbers if fish are thriving. Match fish to your water, not water to random fish.',
+                'The relationship: Higher CO₂ → lower pH. Higher KH → more stable pH. Target KH 3-5° for planted tanks with CO₂ injection. Below KH 2°, pH swings become dangerous.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'TDS: Total Dissolved Solids',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'TDS is the total concentration of everything dissolved in your water: minerals, organics, salts, waste — everything. Measured in ppm with an inexpensive TDS meter. Tap water typically reads 150-400 ppm. Pure RO water reads 0 ppm. TDS is most useful as a trend indicator: a sudden spike means something is wrong (overfeeding, dead fish, substrate disturbance). For shrimp keepers, TDS matters a lot — Crystal Red shrimp prefer 100-200 ppm, while some Sulawesi shrimp need specific TDS ranges.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Remineralising RO Water',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Reverse osmosis (RO) water strips everything — GH 0, KH 0, TDS 0. It\'s a blank canvas, which is brilliant if your tap water is unsuitable for your target species. But you MUST remineralise it before adding fish — pure RO water has no minerals for osmoregulation and will kill them. Use a dedicated remineraliser (Salty Shrimp GH+, Equilibrium, or Seachem Replenish) at the manufacturer\'s recommended dose. Target the GH and KH your species need. Always test after mixing.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never change water parameters by more than 0.5 pH units or 2° GH per day. Fish cannot adapt to sudden changes — osmoregulatory shock can be fatal. Adjust gradually over days, not hours.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Testing Equipment Recommendations',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **API Freshwater Master Test Kit:** The essential liquid test kit for ammonia, nitrite, nitrate, pH (high and low). Accurate, affordable, lasts ~2 years.\n• **GH/KH test kit:** API makes one — essential for anyone keeping shrimp, snails, or cichlids.\n• **TDS meter:** Digital pen-style, under £10. Instant readings.\n• **pH pen/meter:** More accurate than strips for planted tank pH monitoring.\n• **Avoid test strips:** They\'re inaccurate and give vague ranges. Liquid tests cost more but give actual numbers.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'The "rule of 1.2" for planted tanks with CO₂: if you know your KH and pH, you can estimate CO₂ levels. CO₂ (in ppm) = 3 × KH × 10^(7-pH). At KH 4° and pH 6.6, you get roughly 30 ppm CO₂ — the sweet spot for most planted tanks. A drop checker with 4 dKH solution does this visually (green = good CO₂).',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Stable water chemistry is always better than "perfect" water chemistry. If your fish are healthy, breeding, and colourful in pH 7.8 water, don\'t try to lower it to 6.5 because a care sheet says so. Match fish to your water, not water to fish. Adjusting parameters creates stress and risk.',
           ),
         ],
         quiz: Quiz(
           id: 'at_chem_quiz',
           lessonId: 'at_water_chem',
-          questions: [],
+          questions: [
+            const QuizQuestion(
+              id: 'at_chem_q1',
+              question: 'What does KH (carbonate hardness) measure?',
+              options: [
+                'Calcium and magnesium levels',
+                'Carbonate and bicarbonate ions (acid-buffering capacity)',
+                'Total waste dissolved in water',
+                'Oxygen levels',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'KH measures carbonate/bicarbonate ions — your water\'s ability to resist pH changes. GH measures calcium/magnesium. They\'re different parameters.',
+            ),
+            const QuizQuestion(
+              id: 'at_chem_q2',
+              question: 'What is the maximum safe pH change per day?',
+              options: [
+                'Any amount is fine if done gradually',
+                '0.5 pH units',
+                '2.0 pH units',
+                '0.1 pH units',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Never change pH by more than 0.5 units per day. Rapid pH shifts cause osmoregulatory shock, which can be fatal to fish.',
+            ),
+            const QuizQuestion(
+              id: 'at_chem_q3',
+              question: 'Why must you remineralise RO water before adding fish?',
+              options: [
+                'RO water is too cold',
+                'Pure RO water has no minerals — fish need them for osmoregulation',
+                'RO water contains harmful chemicals',
+                'Fish won\'t eat in RO water',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'RO water has zero GH, KH, and TDS. Fish use dissolved minerals for osmoregulation (maintaining internal salt/water balance). Without minerals, they cannot survive long-term.',
+            ),
+            const QuizQuestion(
+              id: 'at_chem_q4',
+              question: 'What is TDS a useful indicator of?',
+              options: [
+                'Exact species of bacteria in the tank',
+                'Overall trend of dissolved substances — spikes indicate problems',
+                'The colour of the water',
+                'How many fish you can keep',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'TDS measures total dissolved substances. A sudden spike (not explained by a water change or mineral addition) usually means waste buildup, overfeeding, or a dead organism.',
+            ),
+          ],
         ),
       ),
     ],
