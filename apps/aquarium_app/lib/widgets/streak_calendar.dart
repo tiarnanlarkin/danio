@@ -71,7 +71,7 @@ class StreakCalendar extends ConsumerWidget {
   }
 }
 
-class _CalendarGrid extends StatelessWidget {
+class _CalendarGrid extends StatefulWidget {
   final List<DailyGoal> goals;
   final double cellSize;
   final double spacing;
@@ -83,8 +83,29 @@ class _CalendarGrid extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    // Group by week (Sunday-Saturday)
+  State<_CalendarGrid> createState() => _CalendarGridState();
+}
+
+class _CalendarGridState extends State<_CalendarGrid> {
+  /// Cached week grouping — recomputed only when [goals] reference changes.
+  late List<List<DailyGoal>> _weeks;
+
+  @override
+  void initState() {
+    super.initState();
+    _weeks = _groupIntoWeeks(widget.goals);
+  }
+
+  @override
+  void didUpdateWidget(covariant _CalendarGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.goals, widget.goals)) {
+      _weeks = _groupIntoWeeks(widget.goals);
+    }
+  }
+
+  /// Pre-compute week grouping from the given goals.
+  static List<List<DailyGoal>> _groupIntoWeeks(List<DailyGoal> goals) {
     final weeks = <List<DailyGoal>>[];
     var currentWeek = <DailyGoal>[];
 
@@ -115,6 +136,14 @@ class _CalendarGrid extends StatelessWidget {
         );
       }
     }
+
+    return weeks;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cellSize = widget.cellSize;
+    final spacing = widget.spacing;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,12 +199,12 @@ class _CalendarGrid extends StatelessWidget {
             // Month labels (vertical)
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: _buildMonthLabels(weeks, context),
+              children: _buildMonthLabels(context),
             ),
             SizedBox(width: spacing),
 
             // Week columns
-            ...weeks.map(
+            ..._weeks.map(
               (week) => _WeekColumn(
                 goals: week,
                 cellSize: cellSize,
@@ -188,17 +217,16 @@ class _CalendarGrid extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildMonthLabels(
-    List<List<DailyGoal>> weeks,
-    BuildContext context,
-  ) {
+  List<Widget> _buildMonthLabels(BuildContext context) {
+    final cellSize = widget.cellSize;
+    final spacing = widget.spacing;
     final labels = <Widget>[];
     String? lastMonth;
 
     for (int i = 0; i < 7; i++) {
       String? monthLabel;
 
-      for (final week in weeks) {
+      for (final week in _weeks) {
         if (week.length > i) {
           final goal = week[i];
           final month = DateFormat('MMM').format(goal.date);
