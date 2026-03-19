@@ -3,8 +3,8 @@
 
 library;
 
-import 'package:flutter/foundation.dart';
 import '../models/story.dart';
+import 'package:danio/utils/logger.dart';
 
 class Stories {
   // ==========================================
@@ -1474,7 +1474,7 @@ class Stories {
     try {
       return allStories.firstWhere((s) => s.id == id);
     } catch (e) {
-      debugPrint('Story lookup failed for id "$id": $e');
+      logError('Story lookup failed for id "$id": $e', tag: 'Stories');
       return null;
     }
   }

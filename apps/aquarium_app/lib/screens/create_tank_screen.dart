@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/achievement_provider.dart';
@@ -246,7 +247,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       } catch (_) {
         // unfocus errors are non-critical; ignore silently
       }
-      AppHaptics.light();
+      AppHaptics.light(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
       _pageController.nextPage(
         duration: AppDurations.medium4,
         curve: AppCurves.standard,
@@ -257,7 +258,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   void _previousPage() {
     if (_currentPage > 0) {
       FocusManager.instance.primaryFocus?.unfocus();
-      AppHaptics.light();
+      AppHaptics.light(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
       _pageController.previousPage(
         duration: AppDurations.medium4,
         curve: AppCurves.standard,
@@ -269,7 +270,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     if (!_canProceed()) return;
     if (!_formKey.currentState!.validate()) return;
 
-    AppHaptics.medium();
+    AppHaptics.medium(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
     setState(() => _isCreating = true);
 
     try {
@@ -324,7 +325,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       }
 
       if (mounted) {
-        AppHaptics.success();
+        AppHaptics.success(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
         // Capture navigator and messenger BEFORE pop() disposes the context.
         final nav = Navigator.of(context);
         final messenger = ScaffoldMessenger.of(context);
@@ -372,7 +373,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppHaptics.error();
+        AppHaptics.error(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
         AppFeedback.showError(
           context,
           'Couldn\'t create your tank right now. Give it another go!',

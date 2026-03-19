@@ -4,8 +4,6 @@ library;
 
 import 'package:flutter/foundation.dart';
 
-// Re-export friend models for convenience
-export 'friend.dart';
 
 /// Friend request status
 enum FriendRequestStatus {

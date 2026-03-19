@@ -153,7 +153,7 @@ class _CompatibilityCheckerScreenState
     }
 
     // Tank size check: warn if any species needs a bigger tank than user has
-    final tanks = ref.read(tanksProvider).valueOrNull;
+    final tanks = ref.watch(tanksProvider).valueOrNull;
     if (tanks != null && tanks.isNotEmpty && _selectedSpecies.isNotEmpty) {
       // Use the largest tank the user owns as reference
       final largestTankVolume = tanks
