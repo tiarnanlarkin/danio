@@ -55,6 +55,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   bool _showHint = false; // Personalisation: beginner hints
 
   @override
+  void dispose() {
+    _isExitingDueToHearts = false;
+    _isHeartsModalVisible = false;
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     _lessonStartTime =
