@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/hearts_widgets.dart';
+import '../widgets/first_visit_tooltip.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
 import 'achievements_screen.dart';
@@ -12,17 +14,35 @@ import '../utils/navigation_throttle.dart';
 
 /// Practice Hub - Central location for all quiz and practice activities
 /// This is Tab 1 in the new navigation structure
-class PracticeHubScreen extends ConsumerWidget {
+class PracticeHubScreen extends ConsumerStatefulWidget {
   const PracticeHubScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PracticeHubScreen> createState() => _PracticeHubScreenState();
+}
+
+class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
+  bool _showTooltip = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTooltip();
+  }
+
+  Future<void> _checkTooltip() async {
+    final seen = await hasSeenTooltip('tooltip_seen_practice');
+    if (mounted) setState(() => _showTooltip = !seen);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final srState = ref.watch(spacedRepetitionProvider);
     final profile = ref.watch(userProfileProvider).value;
     final dueCards = srState.stats.dueCards;
     final totalCards = srState.stats.totalCards;
 
-    return Scaffold(
+    final body = Scaffold(
       appBar: AppBar(
         title: const Text('🧪 Practice'),
         actions: const [
@@ -46,6 +66,30 @@ class PracticeHubScreen extends ConsumerWidget {
         ),
       ),
     );
+
+    if (_showTooltip) {
+      return Stack(
+        children: [
+          body,
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: FirstVisitTooltip(
+                prefsKey: 'tooltip_seen_practice',
+                emoji: '🧪',
+                message: 'Practice Hub — test your knowledge and review lessons here!',
+                onDismissed: () => setState(() => _showTooltip = false),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return body;
   }
 
   int _getPracticeHubItemCount(int dueCards, int totalCards) {
@@ -98,9 +142,10 @@ class PracticeHubScreen extends ConsumerWidget {
           return _buildHeroCard(
             context,
             title: 'All Caught Up! 🎉',
-            subtitle: 'All caught up — try a new lesson? →',
+            subtitle: 'No cards to review right now.',
             icon: Icons.check_circle,
             color: AppColors.success,
+            actionLabel: 'Try a new lesson',
             onTap: () {
               ref.read(currentTabProvider.notifier).state = 0;
             },
@@ -223,6 +268,7 @@ class PracticeHubScreen extends ConsumerWidget {
     required String subtitle,
     required IconData icon,
     required Color color,
+    String? actionLabel,
     required VoidCallback? onTap,
   }) {
     return Semantics(
@@ -257,6 +303,26 @@ class PracticeHubScreen extends ConsumerWidget {
                         color: context.textSecondary,
                       ),
                     ),
+                    if (actionLabel != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: color.withAlpha(26),
+                          borderRadius: AppRadius.md2Radius,
+                        ),
+                        child: Text(
+                          actionLabel,
+                          style: AppTypography.labelSmall.copyWith(
+                            color: color,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

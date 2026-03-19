@@ -30,6 +30,13 @@ import 'widgets/error_boundary.dart';
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+/// Notification payloads arrive from native while the widget tree may not
+/// yet be built.  This notifier bridges the gap — the notification service
+/// writes the payload here and [_AppRouter] listens for it.
+final notificationPayloadNotifier = ValueNotifier<String?>(null);
+
+// Performance monitoring toggle (enable in debug mode)
+
 // Performance monitoring toggle (enable in debug mode)
 const bool _enablePerformanceMonitoring =
     kDebugMode && false; // Set to true to enable
@@ -123,25 +130,13 @@ void main() async {
       performanceMonitor.startMonitoring();
     }
 
-    // Initialize notifications with navigation callback
+    // Initialize notifications with navigation callback.
+    // Notification payloads are handled by _AppRouter via a ValueNotifier
+    // so that tab navigators are available for in-tab navigation.
     final notificationService = NotificationService();
     await notificationService.initialize(
       onSelectNotification: (payload) {
-        if (payload == 'learn') {
-          navigatorKey.currentState?.push(
-            MaterialPageRoute(builder: (_) => const LearnScreen()),
-          );
-        } else if (payload == 'review') {
-          navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (_) => const SpacedRepetitionPracticeScreen(),
-            ),
-          );
-        } else if (payload == 'achievements') {
-          navigatorKey.currentState?.push(
-            MaterialPageRoute(builder: (_) => const AchievementsScreen()),
-          );
-        }
+        notificationPayloadNotifier.value = payload;
       },
     );
   });
@@ -205,6 +200,51 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _checkGdprConsent();
+    notificationPayloadNotifier.addListener(_onNotificationPayload);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    notificationPayloadNotifier.removeListener(_onNotificationPayload);
+    super.dispose();
+  }
+
+  /// Handle notification deep-link navigation within the tab navigator
+  /// so the bottom navigation bar stays visible.
+  void _onNotificationPayload() {
+    final payload = notificationPayloadNotifier.value;
+    if (payload == null) return;
+    notificationPayloadNotifier.value = null;
+
+    int targetTab = -1;
+    MaterialPageRoute<void>? route;
+
+    if (payload == 'learn') {
+      targetTab = 0;
+    } else if (payload == 'review') {
+      targetTab = 1;
+      route = MaterialPageRoute(
+        builder: (_) => const SpacedRepetitionPracticeScreen(),
+      );
+    } else if (payload == 'achievements') {
+      targetTab = 4;
+      route = MaterialPageRoute(
+        builder: (_) => const AchievementsScreen(),
+      );
+    }
+
+    if (targetTab < 0) return;
+
+    ref.read(currentTabProvider.notifier).state = targetTab;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final keys = ref.read(tabNavigatorKeysProvider);
+      final tabNav = keys[targetTab].currentState;
+      if (tabNav != null && route != null) {
+        tabNav.push(route);
+      }
+    });
   }
 
   Future<void> _checkGdprConsent() async {
@@ -216,12 +256,6 @@ class _AppRouterState extends ConsumerState<_AppRouter>
         _gdprConsentDecided = consent != null;
       });
     }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
   }
 
   @override

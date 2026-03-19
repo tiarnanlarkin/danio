@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../smart_providers.dart';
 
@@ -398,7 +399,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
               const SizedBox(
                 width: 16,
                 height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: BubbleLoader.small(),
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(

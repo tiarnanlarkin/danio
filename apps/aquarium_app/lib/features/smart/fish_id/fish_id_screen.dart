@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
@@ -339,7 +340,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           children: [
-            const CircularProgressIndicator(color: AppColors.primary),
+            const BubbleLoader.small(),
             const SizedBox(height: AppSpacing.md),
             Text(
               'Analysing image with AI...',

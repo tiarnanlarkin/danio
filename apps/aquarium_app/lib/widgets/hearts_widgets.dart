@@ -40,32 +40,36 @@ class HeartIndicator extends ConsumerWidget {
         : (hearts > 0 ? AppColors.error : AppOverlays.error50);
     final textColor = compact ? Colors.white : AppColors.error;
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: compact ? 8 : 12,
-        vertical: compact ? 4 : 6,
-      ),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: compact ? AppRadius.md2Radius : AppRadius.mediumRadius,
-        border: Border.all(color: borderColor),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            hearts > 0 ? Icons.favorite : Icons.favorite_border,
-            size: compact ? 14 : 16,
-            color: iconColor,
-          ),
-          SizedBox(width: compact ? 4 : 6),
-          Text(
-            '$hearts/$maxHearts',
-            style:
-                (compact ? AppTypography.labelSmall : AppTypography.labelMedium)
-                    .copyWith(color: textColor, fontWeight: FontWeight.bold),
-          ),
-        ],
+    return Semantics(
+      liveRegion: true,
+      label: '$hearts of $maxHearts hearts remaining',
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: compact ? 8 : 12,
+          vertical: compact ? 4 : 6,
+        ),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: compact ? AppRadius.md2Radius : AppRadius.mediumRadius,
+          border: Border.all(color: borderColor),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              hearts > 0 ? Icons.favorite : Icons.favorite_border,
+              size: compact ? 14 : 16,
+              color: iconColor,
+            ),
+            SizedBox(width: compact ? 4 : 6),
+            Text(
+              '$hearts/$maxHearts',
+              style:
+                  (compact ? AppTypography.labelSmall : AppTypography.labelMedium)
+                      .copyWith(color: textColor, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/common/common_widgets.dart';
+import '../widgets/first_visit_tooltip.dart';
 import 'about_screen.dart';
 import 'achievements_screen.dart';
 import 'analytics_screen.dart';
@@ -33,9 +35,22 @@ class SettingsHubScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
+  bool _showTooltip = true;
+
   // ── Debug menu tap gate ──────────────────────────────────────────────────
   int _versionTapCount = 0;
   DateTime? _firstVersionTap;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTooltip();
+  }
+
+  Future<void> _checkTooltip() async {
+    final seen = await hasSeenTooltip('tooltip_seen_more');
+    if (mounted) setState(() => _showTooltip = !seen);
+  }
 
   void _handleVersionTap() {
     if (!kDebugMode) return;
@@ -76,6 +91,14 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
   List<Widget> _buildListItems(BuildContext context, profile) {
     return [
+      if (_showTooltip)
+        FirstVisitTooltip(
+          prefsKey: 'tooltip_seen_more',
+          emoji: '🧰',
+          message: 'More — your toolbox for settings, profile, and extras!',
+          onDismissed: () => setState(() => _showTooltip = false),
+        ),
+
       // === Profile Card ===
       _buildProfileCard(context, profile),
 

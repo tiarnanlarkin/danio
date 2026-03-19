@@ -16,6 +16,13 @@ import 'smart_screen.dart';
 /// Provider for current tab index
 final currentTabProvider = StateProvider<int>((ref) => 0); // Start at Learn tab
 
+/// Holds the list of per-tab nested navigator keys.
+/// Initialized once by [TabNavigator] so that external callers (notification
+/// deep-link handler) can push routes within a specific tab's navigator.
+final tabNavigatorKeysProvider = StateProvider<List<GlobalKey<NavigatorState>>>(
+  (ref) => List.generate(5, (_) => GlobalKey<NavigatorState>()),
+);
+
 /// The main app navigation - 5-tab bottom navigation
 /// Main tab-based navigation pattern with smooth cross-fade transitions
 class TabNavigator extends ConsumerStatefulWidget {
@@ -90,6 +97,12 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
     final dueCardsCount = ref.watch(
       spacedRepetitionProvider.select((s) => s.stats.dueCards),
     );
+
+    // Expose tab navigator keys so external code (notifications) can push
+    // routes within a specific tab's navigator.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(tabNavigatorKeysProvider.notifier).state = _navigatorKeys;
+    });
 
     return StreakMilestoneListener(
       child: LevelUpListener(

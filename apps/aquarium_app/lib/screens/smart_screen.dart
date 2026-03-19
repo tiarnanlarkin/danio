@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/smart/fish_id/fish_id_screen.dart';
 import '../features/smart/models/smart_models.dart';
@@ -16,6 +17,7 @@ import '../utils/navigation_throttle.dart';
 import '../widgets/compatibility_checker_widget.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
+import '../widgets/first_visit_tooltip.dart';
 import 'compatibility_checker_screen.dart';
 import 'settings_screen.dart';
 
@@ -57,6 +59,18 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
   final _askController = TextEditingController();
   String? _askResponse;
   bool _askLoading = false;
+  bool _showTooltip = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkTooltip();
+  }
+
+  Future<void> _checkTooltip() async {
+    final seen = await hasSeenTooltip('tooltip_seen_smart');
+    if (mounted) setState(() => _showTooltip = !seen);
+  }
 
   @override
   void dispose() {
@@ -156,6 +170,15 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             bottom: AppSpacing.md,
           ),
           children: [
+            // First-visit tooltip
+            if (_showTooltip)
+              FirstVisitTooltip(
+                prefsKey: 'tooltip_seen_smart',
+                emoji: '🧠',
+                message: 'Smart Hub — AI tools to help you care for your fish!',
+                onDismissed: () => setState(() => _showTooltip = false),
+              ),
+
             // API status / connectivity
             if (!openai.isConfigured)
               _OfflineBanner(

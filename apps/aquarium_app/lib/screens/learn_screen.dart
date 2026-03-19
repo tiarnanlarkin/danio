@@ -22,7 +22,7 @@ import '../utils/app_constants.dart';
 import '../widgets/learning_streak_badge.dart';
 import '../widgets/placement_challenge_card.dart';
 import '../utils/navigation_throttle.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/first_visit_tooltip.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -36,30 +36,18 @@ class LearnScreen extends ConsumerStatefulWidget {
 class _LearnScreenState extends ConsumerState<LearnScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _hasScrolledToFirstLesson = false;
+  bool _showTooltip = true;
   final GlobalKey _firstPathKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    _showFirstVisitTooltip();
+    _checkFirstVisitTooltip();
   }
 
-  Future<void> _showFirstVisitTooltip() async {
-    final prefs = await SharedPreferences.getInstance();
-    final visited = prefs.getBool('tab_0_visited') ?? false;
-    if (!visited) {
-      await prefs.setBool('tab_0_visited', true);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('📚 Welcome to the Study Room — your learning hub!'),
-            duration: Duration(seconds: 4),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      });
-    }
+  Future<void> _checkFirstVisitTooltip() async {
+    final seen = await hasSeenTooltip('tooltip_seen_learn');
+    if (mounted) setState(() => _showTooltip = !seen);
   }
 
   @override
@@ -87,12 +75,18 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           curve: Curves.easeOutCubic,
         );
       } else {
-        // Fallback if key not yet attached
-        _scrollController.animateTo(
-          320.0,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.easeOutCubic,
-        );
+        // Key not yet attached — retry on next frame
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || !_scrollController.hasClients) return;
+          final retryContext = _firstPathKey.currentContext;
+          if (retryContext != null) {
+            Scrollable.ensureVisible(
+              retryContext,
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.easeOutCubic,
+            );
+          }
+        });
       }
     });
   }
@@ -210,6 +204,36 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       }
     });
 
+    // pathMetadataProvider: full list needed for path cards — cannot narrow
+    // further without extracting each _LazyLearningPathCard into its own
+    // ConsumerWidget (tracked: future refactor).
+    final metadata = ref.watch(pathMetadataProvider);
+
+    if (_showTooltip) {
+      return Stack(
+        children: [
+          _buildLearnScaffold(context, metadata),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: FirstVisitTooltip(
+                prefsKey: 'tooltip_seen_learn',
+                emoji: '📚',
+                message: 'Welcome to the Study Room — your learning hub!',
+                onDismissed: () => setState(() => _showTooltip = false),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return _buildLearnScaffold(context, metadata);
+  }
+
+  Widget _buildLearnScaffold(BuildContext context, List<PathMetadata> metadata) {
     final profileAsync = ref.watch(userProfileProvider);
     // Select only the two fields used by StudyRoomScene so that other stat
     // changes (e.g. weeklyXp updates) don't rebuild this 980-line screen.
@@ -219,10 +243,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     final statsLevel = ref.watch(
       learningStatsProvider.select((s) => s?.levelTitle ?? 'Beginner'),
     );
-    // pathMetadataProvider: full list needed for path cards — cannot narrow
-    // further without extracting each _LazyLearningPathCard into its own
-    // ConsumerWidget (tracked: future refactor).
-    final metadata = ref.watch(pathMetadataProvider);
 
     return Scaffold(
       body: profileAsync.when(
@@ -489,7 +509,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     );
   }
 
-  /// Navigate to water chemistry/parameter guide
   void _navigateToWaterChemistry(BuildContext context) {
     Navigator.of(
       context,

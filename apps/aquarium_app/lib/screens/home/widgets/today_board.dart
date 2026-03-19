@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/task.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../theme/app_theme.dart';
+import '../../../../screens/tab_navigator.dart';
 
 /// Compact glass-style card showing today's tasks / upcoming maintenance.
 ///
@@ -70,7 +71,7 @@ class TodayBoardCard extends ConsumerWidget {
         ].take(maxItems).toList();
 
         if (combined.isEmpty) {
-          return _buildEmptyState(context);
+          return _buildEmptyState(context, ref);
         }
 
         return _TodayBoardContent(tasks: combined);
@@ -78,33 +79,43 @@ class TodayBoardCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: AppOverlays.white80,
-        borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppOverlays.white50),
-        boxShadow: AppShadows.soft,
-      ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.check_circle_outline,
-            size: AppIconSizes.sm,
-            color: AppColors.success,
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            'All caught up! 🎉',
-            style: AppTypography.labelMedium.copyWith(
+  Widget _buildEmptyState(BuildContext context, WidgetRef ref) {
+    return GestureDetector(
+      onTap: () => ref.read(currentTabProvider.notifier).state = 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: AppOverlays.white80,
+          borderRadius: AppRadius.mediumRadius,
+          border: Border.all(color: AppOverlays.white50),
+          boxShadow: AppShadows.soft,
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.check_circle_outline,
+              size: AppIconSizes.sm,
+              color: AppColors.success,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                'All caught up! 🎉',
+                style: AppTypography.labelMedium.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward,
+              size: 16,
               color: context.textSecondary,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

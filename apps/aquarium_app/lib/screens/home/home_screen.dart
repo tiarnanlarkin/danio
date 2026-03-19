@@ -22,6 +22,7 @@ import '../../painters/saffiano_painter.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../widgets/room_scene.dart';
+import '../../widgets/first_visit_tooltip.dart';
 import '../tab_navigator.dart';
 import '../onboarding/returning_user_flows.dart';
 import '../create_tank_screen.dart';
@@ -58,6 +59,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isNavigatingToCreate = false;
   bool _showWelcomeBanner = false;
   bool _showComebackBanner = false;
+  bool _showTankTooltip = true;
+  bool _showHeartsTooltip = true;
+  bool _showStageHandleTooltip = true;
   String? _cachedUserName;
   String? _cachedFishSpeciesName;
   final Set<String> _selectedTankIds = {};
@@ -68,39 +72,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _checkWelcomeBanner();
     _checkComebackBanner();
     _checkReturningUserFlow();
-    _showFirstVisitTooltip();
+    _checkTooltipFlags();
   }
 
   // ── Lifecycle checks ──────────────────────────────────────────────────
 
-  Future<void> _showFirstVisitTooltip() async {
+  Future<void> _checkTooltipFlags() async {
     final prefs = await SharedPreferences.getInstance();
-    final visited = prefs.getBool('tab_2_visited') ?? false;
-    if (!visited) {
-      await prefs.setBool('tab_2_visited', true);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🏠 This is your Living Room — manage your aquariums here'),
-            duration: Duration(seconds: 4),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+    final seenTank = prefs.getBool('tooltip_seen_tank') ?? false;
+    final seenHearts = prefs.getBool('tooltip_seen_hearts') ?? false;
+    final seenStageHandles = prefs.getBool('tooltip_seen_stage_handles') ?? false;
+    if (mounted) {
+      setState(() {
+        _showTankTooltip = !seenTank;
+        _showHeartsTooltip = !seenHearts;
+        _showStageHandleTooltip = !seenStageHandles;
       });
-    }
-    final panelsShown = prefs.getBool('stage_panels_shown') ?? false;
-    if (!panelsShown) {
-      await prefs.setBool('stage_panels_shown', true);
-      await Future.delayed(const Duration(seconds: 5));
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('💡 Swipe from the edges to see your tank\'s temperature and water quality panels!'),
-          duration: Duration(seconds: 4),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
     }
   }
 
@@ -557,6 +544,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               userName: _cachedUserName,
               fishSpeciesName: _cachedFishSpeciesName,
               onDismiss: () => setState(() => _showComebackBanner = false),
+            ),
+          if (_showTankTooltip && !showWelcome && !showComeback)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                bottom: false,
+                child: FirstVisitTooltip(
+                  prefsKey: 'tooltip_seen_tank',
+                  emoji: '🏠',
+                  message: 'This is your Living Room — manage your aquariums here!',
+                  onDismissed: () => setState(() => _showTankTooltip = false),
+                ),
+              ),
+            ),
+          if (_showHeartsTooltip && !showWelcome && !showComeback)
+            Positioned(
+              top: 56,
+              left: 0,
+              right: 0,
+              child: FirstVisitTooltip(
+                prefsKey: 'tooltip_seen_hearts',
+                emoji: '❤️',
+                message: 'Hearts show your progress! Earn them by completing lessons and caring for your tank. Lose one for each wrong quiz answer — but don\'t worry, they reset daily!',
+                autoDismissDuration: const Duration(seconds: 6),
+                onDismissed: () => setState(() => _showHeartsTooltip = false),
+              ),
+            ),
+          if (_showStageHandleTooltip && !showWelcome && !showComeback)
+            Positioned(
+              bottom: 160,
+              left: 0,
+              right: 0,
+              child: FirstVisitTooltip(
+                prefsKey: 'tooltip_seen_stage_handles',
+                emoji: '👆',
+                message: 'Tap the side handles to check water parameters and feeding info!',
+                autoDismissDuration: const Duration(seconds: 5),
+                onDismissed: () => setState(() => _showStageHandleTooltip = false),
+              ),
             ),
         ],
       ),

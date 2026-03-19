@@ -10,6 +10,7 @@ import '../../../providers/tank_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
@@ -193,7 +194,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(color: AppColors.primary),
+          BubbleLoader.small(),
           SizedBox(height: AppSpacing.md),
           Text('Generating your weekly plan...'),
         ],

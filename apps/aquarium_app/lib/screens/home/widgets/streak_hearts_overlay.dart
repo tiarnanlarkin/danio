@@ -121,35 +121,48 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (streak > 0 && !_streakDismissed)
-            DismissibleBanner(
-              color: DanioColors.amberGold.withAlpha(230),
-              text: '\u{1F525} $streak day streak!',
-              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            Semantics(
+              liveRegion: true,
+              label: 'Learning streak: $streak days',
+              child: DismissibleBanner(
+                color: DanioColors.amberGold.withAlpha(230),
+                text: '\u{1F525} $streak day streak!',
+                textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                onDismiss: () {
+                  setState(() => _streakDismissed = true);
+                  SharedPreferences.getInstance().then(
+                    (p) => p.setInt('streak_banner_dismissed_at', streak),
+                  );
+                },
               ),
-              onDismiss: () {
-                setState(() => _streakDismissed = true);
-                SharedPreferences.getInstance().then(
-                  (p) => p.setInt('streak_banner_dismissed_at', streak),
-                );
-              },
             ),
 
-          const WcStreakBanner(),
+          Semantics(
+            liveRegion: true,
+            child: const WcStreakBanner(),
+          ),
 
           if (lowHearts && hearts.currentHearts >= 0 && !_heartsDismissed) ...[
             const SizedBox(height: AppSpacing.xs),
-            DismissibleBanner(
-              color: AppColors.warning.withAlpha(210),
-              text: hearts.currentHearts == 0
-                  ? '\u{1F494} No hearts left - wait for refill!'
-                  : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
-              textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
+            Semantics(
+              liveRegion: true,
+              label: hearts.currentHearts == 0
+                  ? 'No hearts remaining, waiting for refill'
+                  : 'Last heart remaining',
+              child: DismissibleBanner(
+                color: AppColors.warning.withAlpha(210),
+                text: hearts.currentHearts == 0
+                    ? '\u{1F494} No hearts left - wait for refill!'
+                    : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
+                textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+                onDismiss: () => setState(() => _heartsDismissed = true),
               ),
-              onDismiss: () => setState(() => _heartsDismissed = true),
             ),
           ],
         ],
@@ -196,17 +209,22 @@ class WcStreakBannerState extends ConsumerState<WcStreakBanner> {
       data: (logs) {
         final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
         if (wcStreak == 0 || _dismissed) return const SizedBox.shrink();
-        return Padding(
-          padding: const EdgeInsets.only(top: AppSpacing.xs),
-          child: DismissibleBanner(
-            color: DanioColors.tealWater.withAlpha(230),
-            text:
-                '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
-            textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+        return Semantics(
+          liveRegion: true,
+          label:
+              'Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
+          child: Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.xs),
+            child: DismissibleBanner(
+              color: DanioColors.tealWater.withAlpha(230),
+              text:
+                  '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
+              textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              onDismiss: () => setState(() => _dismissed = true),
             ),
-            onDismiss: () => setState(() => _dismissed = true),
           ),
         );
       },
