@@ -170,6 +170,7 @@ class TankHealthService {
           }
         }
       }
+      } // Close else { (latest != null)
     }
 
     // --- 3. Logging regularity (25 points) ---
