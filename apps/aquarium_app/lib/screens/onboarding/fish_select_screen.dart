@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/species_database.dart';
+import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
 
 /// Screen 6 — Fish Selection
@@ -402,6 +403,45 @@ class _FishSelectScreenState extends State<FishSelectScreen>
 // Sub-widgets
 // ═══════════════════════════════════════════════════════════════════════
 
+/// Displays a fish sprite image when available, falling back to an emoji.
+class _FishSpriteImage extends StatelessWidget {
+  final String commonName;
+  final double size;
+
+  const _FishSpriteImage({
+    required this.commonName,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final thumbPath = SpeciesSprites.thumbFor(commonName);
+    if (thumbPath != null) {
+      return ClipOval(
+        child: Image.asset(
+          thumbPath,
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _fallbackEmoji,
+        ),
+      );
+    }
+    return _fallbackEmoji;
+  }
+
+  Widget get _fallbackEmoji => Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: const Color(0xFFF5A623).withAlpha(26),
+      shape: BoxShape.circle,
+    ),
+    alignment: Alignment.center,
+    child: Text('🐠', style: TextStyle(fontSize: size * 0.5)),
+  );
+}
+
 /// A single popular-fish tile in the 3-column grid.
 class _PopularTile extends StatelessWidget {
   final SpeciesInfo fish;
@@ -440,16 +480,10 @@ class _PopularTile extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Fish emoji placeholder
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5A623).withAlpha(26),
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: const Text('🐠', style: TextStyle(fontSize: 20)),
+              // Fish sprite or fallback emoji
+              _FishSpriteImage(
+                commonName: fish.commonName,
+                size: 40,
               ),
               const SizedBox(height: 6),
               // Common name
@@ -537,16 +571,10 @@ class _SearchResultCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Fish emoji
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5A623).withAlpha(26),
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: const Text('🐠', style: TextStyle(fontSize: 18)),
+              // Fish sprite or fallback emoji
+              _FishSpriteImage(
+                commonName: fish.commonName,
+                size: 36,
               ),
               const SizedBox(width: 12),
               // Names

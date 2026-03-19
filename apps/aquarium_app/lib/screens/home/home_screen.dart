@@ -479,6 +479,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   volumeLitres: e.value.volumeLitres,
                   isSelected: e.key == _currentTankIndex,
                   showChevron: true,
+                  isDemoTank: e.value.isDemoTank,
                   onTap: () => _navigateToTankDetail(context, e.value),
                 )),
                 // Add New Tank action

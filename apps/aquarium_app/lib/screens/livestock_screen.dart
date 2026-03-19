@@ -16,6 +16,7 @@ import '../services/compatibility_service.dart';
 import '../services/xp_animation_service.dart';
 import '../utils/app_constants.dart';
 import '../utils/haptic_feedback.dart';
+import '../data/species_sprites.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/skeleton_placeholders.dart';
@@ -783,11 +784,16 @@ class _LivestockCard extends StatelessWidget {
                         backgroundColor: AppOverlays.primary10,
                         backgroundImage: livestock.imageUrl != null
                             ? NetworkImage(livestock.imageUrl!)
-                            : null,
-                        onBackgroundImageError: livestock.imageUrl != null
-                            ? (_, __) {}
-                            : null,
-                        child: livestock.imageUrl == null
+                            : (SpeciesSprites.thumbFor(livestock.commonName)
+                                != null
+                                ? AssetImage(SpeciesSprites.thumbFor(
+                                    livestock.commonName)!)
+                                : null),
+                        onBackgroundImageError: (_, __) {},
+                        child: livestock.imageUrl == null &&
+                                SpeciesSprites.thumbFor(
+                                        livestock.commonName) ==
+                                    null
                             ? const Icon(
                                 Icons.set_meal,
                                 color: AppColors.primary,

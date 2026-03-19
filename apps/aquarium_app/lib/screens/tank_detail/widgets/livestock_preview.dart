@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../data/species_sprites.dart';
 import '../../../models/models.dart';
 import '../../../widgets/core/app_card.dart';
 import '../../../widgets/empty_state.dart';
@@ -44,7 +45,7 @@ class LivestockPreview extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.set_meal, color: AppColors.primary),
+                    _LivestockSprite(commonName: l.commonName),
                     const Spacer(),
                     Text(
                       l.commonName,
@@ -61,5 +62,31 @@ class LivestockPreview extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+/// Shows a fish sprite thumbnail or a fallback icon for livestock cards.
+class _LivestockSprite extends StatelessWidget {
+  final String commonName;
+  const _LivestockSprite({required this.commonName});
+
+  @override
+  Widget build(BuildContext context) {
+    final thumbPath = SpeciesSprites.thumbFor(commonName);
+    if (thumbPath != null) {
+      return SizedBox(
+        width: 32,
+        height: 32,
+        child: ClipOval(
+          child: Image.asset(
+            thumbPath,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) =>
+                Icon(Icons.set_meal, color: AppColors.primary, size: 24),
+          ),
+        ),
+      );
+    }
+    return Icon(Icons.set_meal, color: AppColors.primary, size: 24);
   }
 }

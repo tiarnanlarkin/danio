@@ -100,6 +100,8 @@ flutter:
     - assets/images/onboarding/
     - assets/images/illustrations/
     - assets/images/error_states/
+    - assets/images/fish/
+    - assets/images/fish/thumb/
     - assets/icons/app_icon.png
     - assets/icons/badges/
     - assets/animations/

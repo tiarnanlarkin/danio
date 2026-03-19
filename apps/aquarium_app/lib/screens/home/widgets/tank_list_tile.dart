@@ -12,6 +12,9 @@ class TankListTile extends StatelessWidget {
   /// Whether to show a trailing chevron (indicates navigability).
   final bool showChevron;
 
+  /// Whether this tank is a demo/sample tank.
+  final bool isDemoTank;
+
   const TankListTile({
     super.key,
     required this.name,
@@ -19,6 +22,7 @@ class TankListTile extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     this.showChevron = false,
+    this.isDemoTank = false,
   });
 
   @override
@@ -32,12 +36,39 @@ class TankListTile extends StatelessWidget {
         color: isSelected ? context.textPrimary : context.textSecondary,
         size: 20,
       ),
-      title: Text(
-        name,
-        style: TextStyle(
-          color: isSelected ? context.textPrimary : context.textSecondary,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        ),
+      title: Row(
+        children: [
+          Text(
+            name,
+            style: TextStyle(
+              color: isSelected ? context.textPrimary : context.textSecondary,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          if (isDemoTank) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withAlpha(30),
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: AppColors.primary.withAlpha(60),
+                  width: 0.5,
+                ),
+              ),
+              child: Text(
+                'Demo',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  height: 1.4,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
       subtitle: Text(
         '${volumeLitres.toStringAsFixed(0)}L',
