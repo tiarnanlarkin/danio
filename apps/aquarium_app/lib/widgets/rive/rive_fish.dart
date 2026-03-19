@@ -27,6 +27,9 @@ class RiveFish extends StatefulWidget {
   final VoidCallback? onTap;
   final Color? tint;
 
+  /// Whether to disable Rive animation playback.
+  final bool disableMotion;
+
   const RiveFish({
     super.key,
     required this.fishType,
@@ -34,6 +37,7 @@ class RiveFish extends StatefulWidget {
     this.flipHorizontal = false,
     this.onTap,
     this.tint,
+    this.disableMotion = false,
   });
 
   @override
@@ -91,6 +95,9 @@ class _RiveFishState extends State<RiveFish> {
       if (controller != null) {
         artboard.addController(controller);
         _setupInputs(controller);
+        if (widget.disableMotion) {
+          controller.pause();
+        }
       }
 
       if (mounted) {
@@ -157,6 +164,18 @@ class _RiveFishState extends State<RiveFish> {
   void _onTap() {
     _tapTrigger?.fire();
     widget.onTap?.call();
+  }
+
+  @override
+  void didUpdateWidget(covariant RiveFish oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.disableMotion != oldWidget.disableMotion && _controller != null) {
+      if (widget.disableMotion) {
+        _controller!.pause();
+      } else {
+        _controller!.play();
+      }
+    }
   }
 
   void _onHover(bool isHovering) {
@@ -271,9 +290,10 @@ class _PositionedRiveFishState extends State<PositionedRiveFish>
     super.initState();
 
     if (widget.swimAnimation) {
+      final disableMotion = MediaQuery.of(context).disableAnimations;
       _swimController = AnimationController(
         vsync: this,
-        duration: widget.swimDuration,
+        duration: disableMotion ? Duration.zero : widget.swimDuration,
       )..repeat(reverse: true);
 
       _swimAnimation = Tween<double>(begin: -10, end: 10).animate(

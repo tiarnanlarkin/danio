@@ -71,6 +71,8 @@ class LocalJsonStorageService implements StorageService {
   // P0-1 FIX: Lock to prevent race conditions during concurrent saves
   final Lock _persistLock = Lock();
 
+  bool _firstSaveDone = false;
+
   // P0-2 FIX: Enhanced state tracking for error handling
   StorageState _state = StorageState.idle;
   StorageError? _lastError;
@@ -356,14 +358,14 @@ class LocalJsonStorageService implements StorageService {
     final tmp = File('${file.path}.tmp');
     await tmp.writeAsString(jsonEncode(payload));
 
-    // Keep a backup of the previous version for crash recovery
-    if (await file.exists()) {
+    // Keep a backup of the previous version for crash recovery (first save only)
+    if (!_firstSaveDone && await file.exists()) {
       final bak = File('${file.path}.bak');
       try {
         await file.copy(bak.path);
+        _firstSaveDone = true;
       } catch (e) {
         logError('Storage: backup creation failed before save: $e', tag: 'LocalJsonStorageService');
-        // Best-effort backup — don't block the save
       }
     }
 

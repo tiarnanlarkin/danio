@@ -37,8 +37,9 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: AppDurations.long3,
+      duration: disableMotion ? Duration.zero : AppDurations.long3,
       vsync: this,
     );
 
@@ -241,8 +242,9 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _shimmerController = AnimationController(
-      duration: AppDurations.celebration,
+      duration: disableMotion ? Duration.zero : AppDurations.celebration,
       vsync: this,
     );
     if (widget.isAnimating) {

@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -69,6 +70,15 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   bool _adding = false;
   int _cumulativeEarned = 0;
   int _cumulativeSpent = 0;
+  Timer? _saveDebounce;
+  Timer? _cumulativeSaveDebounce;
+
+  @override
+  void dispose() {
+    _saveDebounce?.cancel();
+    _cumulativeSaveDebounce?.cancel();
+    super.dispose();
+  }
 
   Future<void> _load() async {
     try {
@@ -126,20 +136,21 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   }
 
   Future<void> _save(GemsState gemsState) async {
-    try {
-      final prefs = await ref.read(sharedPreferencesProvider.future);
-      // Trim oldest transactions before persisting
-      List<GemTransaction> transactions = gemsState.transactions;
-      if (transactions.length > _maxTransactions) {
-        transactions = transactions.take(_maxTransactions).toList();
-        gemsState = gemsState.copyWith(transactions: transactions);
+    _saveDebounce?.cancel();
+    _saveDebounce = Timer(const Duration(milliseconds: 500), () async {
+      try {
+        final prefs = await ref.read(sharedPreferencesProvider.future);
+        List<GemTransaction> transactions = gemsState.transactions;
+        if (transactions.length > _maxTransactions) {
+          transactions = transactions.take(_maxTransactions).toList();
+          gemsState = gemsState.copyWith(transactions: transactions);
+        }
+        await prefs.setString(_key, jsonEncode(gemsState.toJson()));
+        await _saveCumulative(prefs);
+      } catch (e) {
+        throw Exception('Failed to save gems data: $e');
       }
-      await prefs.setString(_key, jsonEncode(gemsState.toJson()));
-      await _saveCumulative(prefs);
-    } catch (e) {
-      // Rethrow to let callers handle the error
-      throw Exception('Failed to save gems data: $e');
-    }
+    });
   }
 
   /// Get current gem balance

@@ -82,10 +82,14 @@ class _InteractiveObjectState extends State<InteractiveObject>
   void initState() {
     super.initState();
 
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+
     // Pulse animation (continuous subtle animation)
     _pulseController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: widget.isNewUser ? 1200 : 2000),
+      duration: disableMotion
+          ? Duration.zero
+          : Duration(milliseconds: widget.isNewUser ? 1200 : 2000),
     );
 
     _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -95,7 +99,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
     // Press animation (on tap)
     _pressController = AnimationController(
       vsync: this,
-      duration: AppDurations.short,
+      duration: disableMotion ? Duration.zero : AppDurations.short,
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(

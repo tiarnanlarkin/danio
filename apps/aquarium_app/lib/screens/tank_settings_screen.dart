@@ -82,7 +82,17 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           _initialized = true;
         }
 
-        return Scaffold(
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            if (!_hasUnsavedChanges(tank)) {
+              Navigator.of(context).pop();
+              return;
+            }
+            _showUnsavedChangesDialog(context);
+          },
+          child: Scaffold(
           appBar: AppBar(
             title: const Text('Tank Settings'),
             actions: [
@@ -114,6 +124,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
               ),
             ),
           ),
+        ),
         );
       },
     );
@@ -342,6 +353,43 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       ),
       const SizedBox(height: AppSpacing.lg),
     ];
+  }
+
+  bool _hasUnsavedChanges(Tank tank) {
+    return _name.trim() != tank.name ||
+        _type != tank.type ||
+        _volumeLitres != tank.volumeLitres ||
+        _lengthCm != tank.lengthCm ||
+        _widthCm != tank.widthCm ||
+        _heightCm != tank.heightCm ||
+        _startDate != tank.startDate ||
+        (_notes.trim().isEmpty ? null : _notes.trim()) != tank.notes;
+  }
+
+  Future<void> _showUnsavedChangesDialog(BuildContext context) async {
+    final discard = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Unsaved Changes'),
+        content: const Text('You have unsaved changes. Discard them?'),
+        actions: [
+          TextButton(
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
+            child: const Text('Keep Editing'),
+          ),
+          TextButton(
+            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
+            child: const Text(
+              'Discard',
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (discard == true && context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   bool _closeTo(double? a, double? b, {double epsilon = 0.6}) {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/shop_item.dart';
@@ -23,6 +24,13 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   final Ref ref;
   static const _key = 'shop_inventory';
+  Timer? _saveDebounce;
+
+  @override
+  void dispose() {
+    _saveDebounce?.cancel();
+    super.dispose();
+  }
 
   Future<void> _load() async {
     try {
@@ -70,9 +78,12 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   }
 
   Future<void> _save(List<InventoryItem> inventory) async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    final json = jsonEncode(inventory.map((i) => i.toJson()).toList());
-    await prefs.setString(_key, json);
+    _saveDebounce?.cancel();
+    _saveDebounce = Timer(const Duration(milliseconds: 500), () async {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final json = jsonEncode(inventory.map((i) => i.toJson()).toList());
+      await prefs.setString(_key, json);
+    });
   }
 
   /// Purchase an item from the shop.

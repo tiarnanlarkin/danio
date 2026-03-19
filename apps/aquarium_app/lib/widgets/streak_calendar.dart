@@ -27,16 +27,16 @@ class StreakCalendar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider).value;
+    final profileData = ref.watch(userProfileProvider.select((p) => (p.value?.dailyXpGoal, p.value?.dailyXpHistory)));
 
-    if (profile == null) {
+    if (profileData.$1 == null || profileData.$2 == null) {
       return const SizedBox.shrink();
     }
 
     final recentGoals = DailyGoal.getRecentDays(
       days: weeks * 7,
-      dailyXpGoal: profile.dailyXpGoal,
-      dailyXpHistory: profile.dailyXpHistory,
+      dailyXpGoal: profileData.$1!,
+      dailyXpHistory: profileData.$2!,
     );
 
     return Column(
@@ -381,7 +381,7 @@ class StreakCalendarScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider).value;
+    final streaks = ref.watch(userProfileProvider.select((p) => (p.value?.currentStreak, p.value?.longestStreak)));
 
     return Scaffold(
       appBar: AppBar(title: const Text('Activity Calendar')),
@@ -396,7 +396,7 @@ class StreakCalendarScreen extends ConsumerWidget {
                 Expanded(
                   child: _StatCard(
                     label: 'Current Streak',
-                    value: '${profile?.currentStreak ?? 0}',
+                    value: '${streaks.$1 ?? 0}',
                     icon: Icons.local_fire_department,
                     color: const Color(0xFFFF6B35),
                   ),
@@ -405,7 +405,7 @@ class StreakCalendarScreen extends ConsumerWidget {
                 Expanded(
                   child: _StatCard(
                     label: 'Longest Streak',
-                    value: '${profile?.longestStreak ?? 0}',
+                    value: '${streaks.$2 ?? 0}',
                     icon: Icons.emoji_events,
                     color: AppColors.secondary,
                   ),

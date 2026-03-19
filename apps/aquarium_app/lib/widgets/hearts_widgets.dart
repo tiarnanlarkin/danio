@@ -332,7 +332,6 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
     }
 
     final heartsService = ref.watch(heartsServiceProvider);
-    final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),

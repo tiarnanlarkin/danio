@@ -254,8 +254,8 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
 class _WorkshopHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider).value;
-    final isNewUser = !(profile?.hasSeenTutorial ?? false);
+    final profile = ref.watch(userProfileProvider.select((p) => p.value?.hasSeenTutorial));
+    final isNewUser = !(profile ?? false);
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg2),

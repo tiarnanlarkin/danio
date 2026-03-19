@@ -1745,8 +1745,11 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: Duration(milliseconds: (widget.swimSpeed * 1000).toInt()),
+      duration: disableMotion
+          ? Duration.zero
+          : Duration(milliseconds: (widget.swimSpeed * 1000).toInt()),
       vsync: this,
     );
 

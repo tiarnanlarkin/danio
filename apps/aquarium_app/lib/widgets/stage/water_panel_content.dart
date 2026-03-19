@@ -183,9 +183,10 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _ringAnim = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 900),
     );
     Future.delayed(const Duration(milliseconds: 150), () {
       if (mounted) _ringAnim.forward(from: 0);

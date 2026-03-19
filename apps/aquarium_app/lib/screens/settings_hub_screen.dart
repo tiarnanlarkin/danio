@@ -76,8 +76,12 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider).value;
-    final items = _buildListItems(context, profile);
+    final profile = ref.watch(userProfileProvider.select((p) => (p.value?.name, p.value?.currentLevel, p.value?.totalXp, p.value?.currentStreak)));
+    final name = profile.$1 ?? 'Aquarist';
+    final level = profile.$2 ?? 1;
+    final xp = profile.$3 ?? 0;
+    final streak = profile.$4 ?? 0;
+    final items = _buildListItems(context, name, level, xp, streak);
 
     return Scaffold(
       appBar: AppBar(title: const Text('More')),
@@ -89,7 +93,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     );
   }
 
-  List<Widget> _buildListItems(BuildContext context, profile) {
+  List<Widget> _buildListItems(BuildContext context, String name, int level, int xp, int streak) {
     return [
       if (_showTooltip)
         FirstVisitTooltip(
@@ -100,7 +104,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
         ),
 
       // === Profile Card ===
-      _buildProfileCard(context, profile),
+      _buildProfileCard(context, name, level, xp, streak),
 
       const SizedBox(height: AppSpacing.lg),
 
@@ -254,11 +258,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     ];
   }
 
-  Widget _buildProfileCard(BuildContext context, profile) {
-    final name = profile?.name ?? 'Aquarist';
-    final level = profile?.currentLevel ?? 1;
-    final xp = profile?.totalXp ?? 0;
-    final streak = profile?.currentStreak ?? 0;
+  Widget _buildProfileCard(BuildContext context, String name, int level, int xp, int streak) {
     return Semantics(
       label: '$name, Level $level, $xp XP, $streak day streak',
       child: CozyCard(
@@ -268,9 +268,9 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
             CircleAvatar(
               radius: kAvatarSizeMd,
               backgroundColor: AppColors.primaryAlpha05,
-              child: profile?.name != null && profile!.name.isNotEmpty
+              child: name.isNotEmpty
                   ? Text(
-                      profile.name[0].toUpperCase(),
+                      name[0].toUpperCase(),
                       style: Theme.of(context).textTheme.headlineMedium!
                           .copyWith(
                             fontWeight: FontWeight.bold,
@@ -290,12 +290,12 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    profile?.name ?? 'Aquarist',
+                    name,
                     style: AppTypography.titleLarge,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Level ${profile?.currentLevel ?? 1} • ${profile?.totalXp ?? 0} XP',
+                    'Level $level • $xp XP',
                     style: AppTypography.bodyMedium.copyWith(
                       color: context.textSecondary,
                     ),
@@ -303,9 +303,9 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     // BUG-06: hide fire emoji when streak is 0
-                    '${profile?.currentStreak ?? 0} day streak${(profile?.currentStreak ?? 0) > 0 ? " 🔥" : ""}',
+                    '$streak day streak${streak > 0 ? " 🔥" : ""}',
                     style: AppTypography.bodySmall.copyWith(
-                      color: (profile?.currentStreak ?? 0) > 0
+                      color: streak > 0
                           ? AppColors.warning
                           : context.textSecondary,
                       fontWeight: FontWeight.w600,

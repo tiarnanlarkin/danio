@@ -47,9 +47,10 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 500),
     );
     _slideAnim = Tween<Offset>(begin: const Offset(0.5, 0.5), end: Offset.zero)
         .animate(

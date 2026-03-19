@@ -93,9 +93,11 @@ class _MascotBubbleState extends State<MascotBubble>
   void initState() {
     super.initState();
 
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+
     // Bubble entrance animation
     _bubbleController = AnimationController(
-      duration: AppDurations.long2,
+      duration: disableMotion ? Duration.zero : AppDurations.long2,
       vsync: this,
     );
 
@@ -120,7 +122,7 @@ class _MascotBubbleState extends State<MascotBubble>
 
     // Fish bobbing animation (continuous)
     _fishController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 2000),
       vsync: this,
     );
 
@@ -391,8 +393,9 @@ class _MascotAvatarState extends State<MascotAvatar>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 2000),
       vsync: this,
     );
 

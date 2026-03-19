@@ -57,9 +57,10 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _anim = AnimationController(
       vsync: this,
-      duration: AppDurations.medium4, // 300ms – snappy blade-open
+      duration: disableMotion ? Duration.zero : AppDurations.medium4,
     );
   }
 

@@ -611,8 +611,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     final question = quiz.questions[_currentQuizQuestion];
 
     // Personalisation: show hint for beginner users (not in practice mode)
-    final profile = ref.watch(userProfileProvider).value;
-    final isBeginner = profile?.experienceLevel == ExperienceLevel.beginner;
+    final profile = ref.watch(userProfileProvider.select((p) => p.value?.experienceLevel));
+    final isBeginner = profile == ExperienceLevel.beginner;
     final hintExtraItems = (isBeginner && !_answered && !_showHint) ? 1 : 0;
 
     return Column(

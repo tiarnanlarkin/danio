@@ -38,7 +38,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   @override
   Widget build(BuildContext context) {
     final srState = ref.watch(spacedRepetitionProvider);
-    final profile = ref.watch(userProfileProvider).value;
+    final profile = ref.watch(userProfileProvider.select((p) => p.value?.currentStreak));
     final dueCards = srState.stats.dueCards;
     final totalCards = srState.stats.totalCards;
 
@@ -230,7 +230,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         return const SizedBox(height: AppSpacing.sm2);
       case 14: // Study Streak card — BUG-06: neutral look when streak=0
         {
-          final streak = profile?.currentStreak ?? 0;
+          final streak = profile ?? 0;
           return _buildProgressCard(
             context,
             title: 'Study Streak',

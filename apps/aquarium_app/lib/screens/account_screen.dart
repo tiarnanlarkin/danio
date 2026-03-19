@@ -40,13 +40,43 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Account')),
-        body: !SupabaseService.isInitialised
-            ? _buildOfflineOnlyMessage(theme)
-            : auth.isSignedIn
-            ? _buildSignedInView(context, auth, theme)
-            : _buildSignedOutView(context, auth, theme),
+      child: PopScope(
+        canPop: !(_emailController.text.isNotEmpty || _passwordController.text.isNotEmpty),
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          if (_emailController.text.isEmpty && _passwordController.text.isEmpty) return;
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Unsaved Changes'),
+              content: const Text('You have unsaved changes. Discard them?'),
+              actions: [
+                TextButton(
+                  onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx); },
+                  child: const Text('Keep Editing'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (Navigator.canPop(ctx)) Navigator.pop(ctx);
+                    if (Navigator.canPop(context)) Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Discard',
+                    style: TextStyle(color: AppColors.error),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        child: Scaffold(
+          appBar: AppBar(title: const Text('Account')),
+          body: !SupabaseService.isInitialised
+              ? _buildOfflineOnlyMessage(theme)
+              : auth.isSignedIn
+              ? _buildSignedInView(context, auth, theme)
+              : _buildSignedOutView(context, auth, theme),
+        ),
       ),
     );
   }

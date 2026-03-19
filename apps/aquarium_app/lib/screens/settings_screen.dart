@@ -1321,7 +1321,7 @@ class _LearnCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(learningStatsProvider);
-    final profile = ref.watch(userProfileProvider).asData?.value;
+    final profile = ref.watch(userProfileProvider.select((p) => (p.asData?.value?.hasStreakFreeze, p.asData?.value?.streakFreezeUsedThisWeek)));
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
@@ -1407,12 +1407,11 @@ class _LearnCard extends ConsumerWidget {
                               color: Colors.white70,
                             ),
                           ),
-                          if (profile != null &&
-                              (profile.hasStreakFreeze ||
-                                  profile.streakFreezeUsedThisWeek)) ...[
+                          if (profile.$1 == true ||
+                              profile.$2 == true) ...[
                             const SizedBox(height: AppSpacing.xxs),
                             Text(
-                              profile.hasStreakFreeze
+                              profile.$1 == true
                                   ? '🧊 Streak freeze available'
                                   : '🧊 Streak freeze used this week',
                               style: AppTypography.bodySmall.copyWith(
