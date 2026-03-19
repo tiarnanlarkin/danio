@@ -266,7 +266,7 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rowChildren = [
-      Text(icon, style: Theme.of(context).textTheme.titleLarge!.copyWith()),
+      Text(icon, style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith()),
       const SizedBox(width: AppSpacing.xs),
       Flexible(
         child: Text(
@@ -314,7 +314,7 @@ class _HeartsDisplay extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('❤️', style: Theme.of(context).textTheme.titleLarge!),
+        Text('❤️', style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith()),
         const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Column(
@@ -393,7 +393,7 @@ class _DailyGoalProgress extends StatelessWidget {
           children: [
             Text(
               '📊',
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
                 color: isComplete ? DanioColors.emeraldGreen : null,
               ),
             ),
@@ -528,7 +528,7 @@ class _MiniStat extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(emoji, style: Theme.of(context).textTheme.bodyLarge!.copyWith()),
+          Text(emoji, style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith()),
           const SizedBox(width: AppSpacing.xs),
           Text(
             value.toString(),

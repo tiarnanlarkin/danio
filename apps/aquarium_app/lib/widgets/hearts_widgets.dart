@@ -351,9 +351,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
               child: Center(
                 child: Text(
                   '💔',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineMedium!.copyWith(fontSize: 56),
+                  style: (Theme.of(context).textTheme.headlineMedium ?? const TextStyle()).copyWith(fontSize: 56),
                 ),
               ),
             ),

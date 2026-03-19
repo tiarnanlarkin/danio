@@ -94,7 +94,7 @@ class SyncIndicator extends ConsumerWidget {
                 liveRegion: true,
                 child: Text(
                   statusMessage,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
                     color: isError
                         ? AppColors.error
                         : hasConflicts
@@ -166,7 +166,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
           const SizedBox(width: AppSpacing.xs),
           Text(
             syncState.isSyncing ? 'Syncing' : '${syncState.queuedCount}',
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+            style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
               color: syncState.isSyncing
                   ? AppColors.warning
                   : context.textSecondary,

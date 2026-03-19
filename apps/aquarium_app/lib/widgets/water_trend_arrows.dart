@@ -34,14 +34,14 @@ class WaterTrendArrows extends StatelessWidget {
           children: [
             _TrendChip(
               label: 'pH',
-              values: recent.map((l) => l.waterTest!.ph).toList(),
+              values: recent.map((l) => l.waterTest?.ph).toList(),
               idealMin: tank.targets.phMin ?? 6.5,
               idealMax: tank.targets.phMax ?? 7.5,
               decimals: 1,
             ),
             _TrendChip(
               label: 'Temp',
-              values: recent.map((l) => l.waterTest!.temperature).toList(),
+              values: recent.map((l) => l.waterTest?.temperature).toList(),
               idealMin: tank.targets.tempMin ?? 24,
               idealMax: tank.targets.tempMax ?? 28,
               decimals: 1,
@@ -49,7 +49,7 @@ class WaterTrendArrows extends StatelessWidget {
             ),
             _TrendChip(
               label: 'NH\u2083',
-              values: recent.map((l) => l.waterTest!.ammonia).toList(),
+              values: recent.map((l) => l.waterTest?.ammonia).toList(),
               idealMin: 0,
               idealMax: 0.25,
               decimals: 2,

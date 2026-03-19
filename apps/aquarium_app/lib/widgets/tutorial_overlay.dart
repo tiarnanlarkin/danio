@@ -224,7 +224,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                       ),
                       child: Text(
                         'Tip ${_currentStep + 1}/${widget.steps.length}',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppColors.accent,
                         ),
@@ -237,7 +237,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                 // Title
                 Text(
                   step.title,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -247,7 +247,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                 // Description
                 Text(
                   step.description,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
                     color: Colors.black54,
                     height: 1.4,
                   ),

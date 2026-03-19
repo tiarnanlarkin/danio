@@ -8,6 +8,8 @@
 /// only instantiate this widget when the tooltip has not yet been seen.
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +49,7 @@ class FirstVisitTooltip extends ConsumerStatefulWidget {
 
 class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
     with SingleTickerProviderStateMixin {
+  Timer? _dismissTimer;
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
   late final Animation<Offset> _slideAnimation;
@@ -72,20 +75,24 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
   }
 
   void _scheduleDismiss() {
-    Future.delayed(widget.autoDismissDuration, () {
+    _dismissTimer = Timer(widget.autoDismissDuration, () {
       if (mounted) _dismiss();
     });
   }
 
   Future<void> _dismiss() async {
     await _controller.reverse();
+    if (!mounted) return;
     final prefs = await ref.read(sharedPreferencesProvider.future);
+    if (!mounted) return;
     await prefs.setBool(widget.prefsKey, true);
+    if (!mounted) return;
     widget.onDismissed?.call();
   }
 
   @override
   void dispose() {
+    _dismissTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

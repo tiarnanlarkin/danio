@@ -284,7 +284,7 @@ class _WorkshopHeader extends ConsumerWidget {
                   children: [
                     Text(
                       '🔧 Workshop',
-                      style: Theme.of(context).textTheme.headlineSmall!
+                      style: (Theme.of(context).textTheme.headlineSmall ?? const TextStyle())
                           .copyWith(
                             color: WorkshopColors.textPrimary,
                             fontWeight: FontWeight.bold,
@@ -293,7 +293,7 @@ class _WorkshopHeader extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Tools & calculators',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
                         color: WorkshopColors.textSecondary,
                       ),
                     ),
@@ -359,7 +359,7 @@ class _ToolCard extends StatelessWidget {
                 const Spacer(),
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
                     color: WorkshopColors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
@@ -367,7 +367,7 @@ class _ToolCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xxs),
                 Text(
                   subtitle,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
                     color: WorkshopColors.textSecondary,
                   ),
                 ),
@@ -402,7 +402,7 @@ class _QuickConversions extends StatelessWidget {
               children: [
                 Text(
                   'Quick Reference',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
                     color: WorkshopColors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
@@ -436,13 +436,13 @@ class _ConversionRow extends StatelessWidget {
         children: [
           Text(
             left,
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
               color: WorkshopColors.textSecondary,
             ),
           ),
           Text(
             right,
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
               color: WorkshopColors.accentWarm,
               fontWeight: FontWeight.w500,
             ),

@@ -6,7 +6,7 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 
-## Gson (if used by plugins)
+## Gson (Firebase)
 -keepattributes Signature
 -keepattributes *Annotation*
 -dontwarn sun.misc.**
@@ -22,3 +22,10 @@
 
 ## Firebase
 -keep class com.google.firebase.** { *; }
+
+## Supabase (PostgREST models)
+-keep class com.supabase.** { *; }
+-keep class * implements com.postgrest.** { *; }
+-keepclassmembers class * {
+    <init>(...);
+}
