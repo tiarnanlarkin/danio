@@ -48,7 +48,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
   }
 
   Future<void> _checkTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_more');
+    final seen = await hasSeenTooltip('tooltip_seen_more', ref);
     if (mounted) setState(() => _showTooltip = !seen);
   }
 

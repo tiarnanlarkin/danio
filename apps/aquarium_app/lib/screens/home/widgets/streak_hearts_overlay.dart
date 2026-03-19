@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../providers/hearts_provider.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../providers/user_profile_provider.dart';
@@ -80,7 +79,7 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
   }
 
   Future<void> _loadDismissedState() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final dismissedAt = prefs.getInt('streak_banner_dismissed_at') ?? 0;
     final current = ref.read(userProfileProvider).value?.currentStreak ?? 0;
     if (dismissedAt > 0 && dismissedAt >= current) {
@@ -133,7 +132,7 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
                 ),
                 onDismiss: () {
                   setState(() => _streakDismissed = true);
-                  SharedPreferences.getInstance().then(
+                  ref.read(sharedPreferencesProvider.future).then(
                     (p) => p.setInt('streak_banner_dismissed_at', streak),
                   );
                 },

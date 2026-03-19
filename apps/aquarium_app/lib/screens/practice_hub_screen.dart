@@ -31,7 +31,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   }
 
   Future<void> _checkTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_practice');
+    final seen = await hasSeenTooltip('tooltip_seen_practice', ref);
     if (mounted) setState(() => _showTooltip = !seen);
   }
 

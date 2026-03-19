@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 /// Analytics service for aggregating stats, calculating trends, and generating insights
 /// Provides comprehensive progress analysis with AI-like recommendations

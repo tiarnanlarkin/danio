@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
@@ -26,7 +26,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   }
 
   Future<void> _loadExpenses() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = prefs.getString('cost_tracker_expenses');
     final currency = prefs.getString('cost_tracker_currency') ?? '£';
 
@@ -41,7 +41,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   }
 
   Future<void> _saveExpenses() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(_expenses.map((e) => e.toJson()).toList());
     await prefs.setString('cost_tracker_expenses', json);
     await prefs.setString('cost_tracker_currency', _currency);

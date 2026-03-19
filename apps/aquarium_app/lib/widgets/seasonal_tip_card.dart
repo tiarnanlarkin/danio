@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/user_profile_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 
 /// A dismissable seasonal tip card that shows relevant fishkeeping advice
 /// based on the current month. Appears on the home screen.
-class SeasonalTipCard extends StatefulWidget {
+class SeasonalTipCard extends ConsumerStatefulWidget {
   const SeasonalTipCard({super.key});
 
   @override
-  State<SeasonalTipCard> createState() => _SeasonalTipCardState();
+  ConsumerState<SeasonalTipCard> createState() => _SeasonalTipCardState();
 }
 
-class _SeasonalTipCardState extends State<SeasonalTipCard>
+class _SeasonalTipCardState extends ConsumerState<SeasonalTipCard>
     with SingleTickerProviderStateMixin {
   bool _dismissed = false;
   bool _loaded = false;
@@ -44,7 +46,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
   }
 
   Future<void> _checkDismissed() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final key = _dismissKey;
     final wasDismissed = prefs.getBool(key) ?? false;
     if (mounted) {
@@ -65,7 +67,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
 
   Future<void> _dismiss() async {
     await _controller.reverse();
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setBool(_dismissKey, true);
     if (mounted) {
       setState(() => _dismissed = true);

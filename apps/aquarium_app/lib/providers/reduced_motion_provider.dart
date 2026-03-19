@@ -46,6 +46,7 @@ class ReducedMotionState {
 
 /// Notifier for managing reduced motion settings
 class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
+  final Ref ref;
   ReducedMotionNotifier(this.ref)
     : super(
         const ReducedMotionState(isEnabled: false, systemPreference: false),
@@ -145,7 +146,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
 /// Provider for reduced motion state
 final reducedMotionProvider =
     StateNotifierProvider<ReducedMotionNotifier, ReducedMotionState>(
-      (ref) => ReducedMotionNotifier(this.ref),
+      (ref) => ReducedMotionNotifier(ref),
     );
 
 /// Extension to get reduced motion state easily in widgets

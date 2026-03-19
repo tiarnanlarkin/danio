@@ -19,7 +19,6 @@ import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
 import 'package:in_app_review/in_app_review.dart';
-import '../providers/user_profile_provider.dart';
 import 'package:danio/utils/logger.dart';
 
 /// Screen for viewing a single lesson and taking quizzes

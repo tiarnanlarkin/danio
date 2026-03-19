@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'user_profile_provider.dart';
+import '../../providers/user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'models/smart_models.dart';

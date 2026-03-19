@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
@@ -27,7 +26,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final json = prefs.getString(_key);
 
       List<InventoryItem> inventory;
@@ -71,7 +70,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   }
 
   Future<void> _save(List<InventoryItem> inventory) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(inventory.map((i) => i.toJson()).toList());
     await prefs.setString(_key, json);
   }
@@ -286,13 +285,13 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   /// Mark quiz retry as available
   Future<void> _activateQuizRetry() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setBool('quiz_retry_available', true);
   }
 
   /// Check if quiz retry is available (and consume it)
   Future<bool> consumeQuizRetry() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final available = prefs.getBool('quiz_retry_available') ?? false;
     if (available) {
       await prefs.setBool('quiz_retry_available', false);
@@ -303,7 +302,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   /// Check if quiz retry is available (without consuming)
   Future<bool> isQuizRetryAvailable() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     return prefs.getBool('quiz_retry_available') ?? false;
   }
 
@@ -393,7 +392,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   /// Reset inventory (for testing)
   Future<void> reset() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.remove(_key);
     await _load();
   }

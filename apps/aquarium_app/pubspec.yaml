@@ -14,7 +14,6 @@ dependencies:
   
   # State management
   flutter_riverpod: ^2.6.1
-  riverpod_annotation: ^2.6.1
   
   # Navigation
   
@@ -42,11 +41,9 @@ dependencies:
   confetti: ^0.7.0
   skeletonizer: ^2.1.2
   floating_bubbles: ^2.6.2
-  animations: ^2.0.11
 
   # Audio & Haptics
   audioplayers: ^6.1.0
-  vibration: ^2.0.0
   
   # File handling
   path_provider: ^2.1.5
@@ -84,7 +81,6 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.3
-  build_runner: ^2.4.13
   patrol: ^4.3.0
 
 flutter:
@@ -101,7 +97,6 @@ flutter:
     - assets/images/fish/thumb/
     - assets/icons/app_icon.png
     - assets/icons/badges/
-    - assets/animations/
     - assets/textures/
     - assets/backgrounds/
 

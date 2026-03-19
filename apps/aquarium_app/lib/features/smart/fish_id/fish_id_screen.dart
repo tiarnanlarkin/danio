@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../providers/user_profile_provider.dart';
 
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
@@ -93,7 +93,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
   /// Shows a one-time disclosure about OpenAI data handling.
   /// Returns `true` if the user accepts, `false` if they cancel.
   Future<bool> _ensureOpenAIDisclosure() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     if (prefs.getBool(_openaiDisclosureKey) == true) return true;
 
     if (!mounted) return false;

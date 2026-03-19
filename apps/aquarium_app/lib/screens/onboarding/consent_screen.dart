@@ -1,5 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,21 +31,21 @@ Future<void> applyAnalyticsConsent(bool accepted) async {
 
 /// A clean Material Design screen that explains what data Danio collects and
 /// lets the user accept or decline analytics/crashlytics.
-class ConsentScreen extends StatelessWidget {
+class ConsentScreen extends ConsumerWidget {
   const ConsentScreen({super.key, required this.onConsentGiven});
 
   /// Called after the user taps either button and the preference is persisted.
   final VoidCallback onConsentGiven;
 
-  Future<void> _respond(BuildContext context, bool accepted) async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> _respond(BuildContext context, WidgetRef ref, bool accepted) async {
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setBool(kGdprAnalyticsConsentKey, accepted);
     await applyAnalyticsConsent(accepted);
     onConsentGiven();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -87,7 +89,7 @@ class ConsentScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () => _respond(context, true),
+                  onPressed: () => _respond(context, ref, true),
                   child: const Text('Accept Analytics'),
                 ),
               ),
@@ -95,7 +97,7 @@ class ConsentScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () => _respond(context, false),
+                  onPressed: () => _respond(context, ref, false),
                   child: const Text('No Thanks'),
                 ),
               ),

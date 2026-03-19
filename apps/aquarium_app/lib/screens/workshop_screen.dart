@@ -16,7 +16,6 @@ import 'unit_converter_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'lighting_schedule_screen.dart';
 import '../utils/navigation_throttle.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
 /// Workshop colors - practical maker space theme
@@ -66,7 +65,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
   }
 
   Future<void> _showFirstVisitTooltip() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final visited = prefs.getBool('tab_4_workshop_visited') ?? false;
     if (!visited) {
       await prefs.setBool('tab_4_workshop_visited', true);

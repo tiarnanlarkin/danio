@@ -3,6 +3,7 @@
 
 library;
 
+import 'package:flutter/foundation.dart';
 import 'user_profile.dart';
 import 'package:danio/utils/logger.dart';
 

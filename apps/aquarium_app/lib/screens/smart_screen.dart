@@ -68,7 +68,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
   }
 
   Future<void> _checkTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_smart');
+    final seen = await hasSeenTooltip('tooltip_seen_smart', ref);
     if (mounted) setState(() => _showTooltip = !seen);
   }
 

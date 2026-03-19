@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
@@ -29,7 +29,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   Future<void> _loadReminders() async {
     setState(() => _isLoading = true);
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final json = prefs.getString('aquarium_reminders');
       if (json != null && mounted) {
         final list = jsonDecode(json) as List;
@@ -45,7 +45,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   }
 
   Future<void> _saveReminders() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(_reminders.map((r) => r.toJson()).toList());
     await prefs.setString('aquarium_reminders', json);
   }

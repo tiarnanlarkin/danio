@@ -75,7 +75,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     state = state.copyWith(isLoading: true, clearError: true);
 
     try {
-      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
 
       // Load cards
       final cardsJson = prefs.getString(_storageKey);
@@ -137,7 +137,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   /// Save cards to storage
   Future<void> _saveData() async {
     try {
-      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
 
       // Save cards
       final cardsJson = jsonEncode(state.cards.map((c) => c.toJson()).toList());
@@ -473,7 +473,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _updateReviewStreak();
 
       // Load and update session count
-      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final sessionCountJson = prefs.getString(_sessionsKey);
       int sessionCount = 1;
 
@@ -537,7 +537,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   /// Update review streak after completing a session
   Future<void> _updateReviewStreak() async {
     try {
-      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final now = DateTime.now();
 
       // Load streak data
@@ -738,7 +738,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   Future<void> resetAll() async {
     state = SpacedRepetitionState(stats: ReviewStats.fromCards([]));
 
-    final prefs = await ref.read(sharedPreferencesProvider.future);
+    final prefs = await _ref.read(sharedPreferencesProvider.future);
     await prefs.remove(_storageKey);
     await prefs.remove(_statsKey);
   }

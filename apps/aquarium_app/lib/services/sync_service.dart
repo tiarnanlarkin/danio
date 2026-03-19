@@ -1,7 +1,7 @@
 // SCAFFOLDING: Backend sync not yet implemented. Queued actions execute locally only.
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../widgets/offline_indicator.dart';
 import 'conflict_resolver.dart';
@@ -126,7 +126,7 @@ class SyncService extends StateNotifier<SyncState> {
   /// Load queued actions from storage
   Future<void> _loadQueue() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final queueJson = prefs.getString(_queueKey);
       final lastSyncString = prefs.getString(_lastSyncKey);
 
@@ -155,7 +155,7 @@ class SyncService extends StateNotifier<SyncState> {
   /// Save queue to storage
   Future<void> _saveQueue() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final queueJson = jsonEncode(
         state.queuedActions.map((a) => a.toJson()).toList(),
       );
@@ -266,7 +266,7 @@ class SyncService extends StateNotifier<SyncState> {
 
       // All actions are already applied locally when they were queued,
       // conflicts were resolved above, so we can safely clear the queue
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       await prefs.remove(_queueKey);
       await prefs.setString(_lastSyncKey, DateTime.now().toIso8601String());
 

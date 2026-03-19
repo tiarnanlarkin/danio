@@ -9,11 +9,13 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 
 /// A tooltip that appears as a floating card with a subtle shadow.
-class FirstVisitTooltip extends StatefulWidget {
+class FirstVisitTooltip extends ConsumerStatefulWidget {
   /// Unique SharedPreferences key (e.g. `tooltip_seen_tank`).
   final String prefsKey;
 
@@ -39,10 +41,10 @@ class FirstVisitTooltip extends StatefulWidget {
   });
 
   @override
-  State<FirstVisitTooltip> createState() => FirstVisitTooltipState();
+  ConsumerState<FirstVisitTooltip> createState() => FirstVisitTooltipState();
 }
 
-class FirstVisitTooltipState extends State<FirstVisitTooltip>
+class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
@@ -75,7 +77,7 @@ class FirstVisitTooltipState extends State<FirstVisitTooltip>
 
   Future<void> _dismiss() async {
     await _controller.reverse();
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setBool(widget.prefsKey, true);
     widget.onDismissed?.call();
   }
@@ -144,7 +146,7 @@ class FirstVisitTooltipState extends State<FirstVisitTooltip>
 }
 
 /// Check if a tooltip has been seen without building the widget.
-Future<bool> hasSeenTooltip(String prefsKey) async {
-  final prefs = await SharedPreferences.getInstance();
+Future<bool> hasSeenTooltip(String prefsKey, WidgetRef ref) async {
+  final prefs = await ref.read(sharedPreferencesProvider.future);
   return prefs.getBool(prefsKey) ?? false;
 }

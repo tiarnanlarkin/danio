@@ -46,7 +46,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   }
 
   Future<void> _checkFirstVisitTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_learn');
+    final seen = await hasSeenTooltip('tooltip_seen_learn', ref);
     if (mounted) setState(() => _showTooltip = !seen);
   }
 

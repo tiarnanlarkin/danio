@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
 
 import '../widgets/core/app_list_tile.dart';
 import '../theme/app_theme.dart';
@@ -270,7 +271,7 @@ class DebugMenuScreen extends ConsumerWidget {
               title: 'Clear All Data',
               subtitle: '⚠️ Clears SharedPreferences and resets state',
               color: Colors.red.shade700,
-              onTap: () => _clearAllData(context),
+              onTap: () => _clearAllData(context, ref),
             ),
             const SizedBox(height: 32),
       ];
@@ -338,7 +339,7 @@ class DebugMenuScreen extends ConsumerWidget {
     _push(context, const TankSettingsScreen(tankId: 'debug-test-tank'));
   }
 
-  Future<void> _clearAllData(BuildContext context) async {
+  Future<void> _clearAllData(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -362,7 +363,7 @@ class DebugMenuScreen extends ConsumerWidget {
     );
 
     if (confirmed == true) {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       await prefs.clear();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

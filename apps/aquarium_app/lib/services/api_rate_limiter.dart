@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../providers/user_profile_provider.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +16,9 @@ class ApiRateLimiter {
   /// In-memory cache of timestamps per feature.
   final Map<String, List<DateTime>> _timestamps = {};
 
-  ApiRateLimiter() {
+  final Ref _ref;
+
+  ApiRateLimiter(this._ref) {
     _loadFromPrefs();
   }
 
@@ -68,7 +71,7 @@ class ApiRateLimiter {
 
   Future<void> _loadFromPrefs() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final keys = prefs.getKeys().where((k) => k.startsWith(_prefsPrefix));
       final cutoff = DateTime.now().subtract(const Duration(hours: 1));
       for (final key in keys) {
@@ -93,7 +96,7 @@ class ApiRateLimiter {
 
   Future<void> _saveToPrefs(String feature) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _ref.read(sharedPreferencesProvider.future);
       final stamps = _timestamps[feature] ?? [];
       await prefs.setStringList(
         '$_prefsPrefix$feature',
@@ -118,5 +121,5 @@ class AIFeature {
 
 /// Singleton Riverpod provider for the rate limiter.
 final apiRateLimiterProvider = Provider<ApiRateLimiter>((ref) {
-  return ApiRateLimiter();
+  return ApiRateLimiter(ref);
 });

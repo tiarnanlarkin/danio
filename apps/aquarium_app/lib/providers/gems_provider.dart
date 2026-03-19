@@ -1,16 +1,17 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../models/gem_transaction.dart';
 import '../models/gem_economy.dart';
+import 'user_profile_provider.dart';
 
 const _uuid = Uuid();
 
 /// Provider for gem economy management
 final gemsProvider = StateNotifierProvider<GemsNotifier, AsyncValue<GemsState>>(
   (ref) {
-    return GemsNotifier();
+    return GemsNotifier(ref);
   },
 );
 
@@ -56,7 +57,8 @@ class GemsState {
 }
 
 class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
-  GemsNotifier() : super(const AsyncValue.loading()) {
+  final Ref ref;
+  GemsNotifier(this.ref) : super(const AsyncValue.loading()) {
     _load();
   }
 
@@ -70,7 +72,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final json = prefs.getString(_key);
 
       GemsState gemsState;
@@ -125,7 +127,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
   Future<void> _save(GemsState gemsState) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       // Trim oldest transactions before persisting
       List<GemTransaction> transactions = gemsState.transactions;
       if (transactions.length > _maxTransactions) {
@@ -339,7 +341,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
   /// Reset gems (for testing/debugging)
   Future<void> reset() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.remove(_key);
     await _load();
   }

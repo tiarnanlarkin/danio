@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
 import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
@@ -64,7 +64,7 @@ class _MaintenanceChecklistScreenState
   }
 
   Future<void> _loadChecks() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final prefix = 'checklist_${widget.tankId}';
 
     final savedWeek = prefs.getString('${prefix}_week');
@@ -95,7 +95,7 @@ class _MaintenanceChecklistScreenState
   }
 
   Future<void> _saveChecks() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final prefix = 'checklist_${widget.tankId}';
 
     await prefs.setString('${prefix}_week', _currentWeek);
