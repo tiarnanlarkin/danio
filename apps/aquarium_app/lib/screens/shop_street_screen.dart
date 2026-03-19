@@ -53,9 +53,9 @@ class ShopStreetScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fishCount = ref.watch(fishWishlistProvider).length;
-    final plantCount = ref.watch(plantWishlistProvider).length;
-    final equipmentCount = ref.watch(equipmentWishlistProvider).length;
+    final fishCount = ref.watch(fishWishlistProvider.select((list) => list.length));
+    final plantCount = ref.watch(plantWishlistProvider.select((list) => list.length));
+    final equipmentCount = ref.watch(equipmentWishlistProvider.select((list) => list.length));
     final budget = ref.watch(budgetProvider);
     final shops = ref.watch(localShopsProvider);
 

@@ -213,6 +213,7 @@ class SkeletonList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: itemCount,
+      itemExtent: itemHeight,
       itemBuilder: (context, index) {
         return SkeletonCard(height: itemHeight);
       },

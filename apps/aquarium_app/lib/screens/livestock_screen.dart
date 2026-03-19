@@ -18,6 +18,7 @@ import '../utils/app_constants.dart';
 import '../utils/haptic_feedback.dart';
 import '../data/species_sprites.dart';
 import '../theme/app_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../utils/app_feedback.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
@@ -784,7 +785,7 @@ class _LivestockCard extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: AppOverlays.primary10,
                         backgroundImage: livestock.imageUrl != null
-                            ? NetworkImage(livestock.imageUrl!)
+                            ? CachedNetworkImageProvider(livestock.imageUrl!)
                             : (SpeciesSprites.thumbFor(livestock.commonName)
                                 != null
                                 ? AssetImage(SpeciesSprites.thumbFor(

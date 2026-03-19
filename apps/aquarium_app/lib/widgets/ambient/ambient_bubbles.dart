@@ -15,8 +15,10 @@ class AmbientBubbles extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reducedMotion = ref.watch(reducedMotionProvider);
-    if (reducedMotion.disableDecorativeAnimations ||
+    final disableDecorative = ref.watch(
+      reducedMotionProvider.select((s) => s.disableDecorativeAnimations),
+    );
+    if (disableDecorative ||
         MediaQuery.of(context).disableAnimations) {
       return const SizedBox.shrink();
     }
@@ -52,8 +54,10 @@ class AmbientBubblesSubtle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reducedMotion = ref.watch(reducedMotionProvider);
-    if (reducedMotion.disableDecorativeAnimations ||
+    final disableDecorative = ref.watch(
+      reducedMotionProvider.select((s) => s.disableDecorativeAnimations),
+    );
+    if (disableDecorative ||
         MediaQuery.of(context).disableAnimations) {
       return const SizedBox.shrink();
     }
