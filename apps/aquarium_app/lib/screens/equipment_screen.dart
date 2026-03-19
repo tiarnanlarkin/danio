@@ -329,7 +329,9 @@ class EquipmentScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Remove Equipment?'),
-        content: Text('Remove "${equipment.name}" from this tank?'),
+        content: Text(
+          'Remove "${equipment.name}" from this tank? You can undo within 5 seconds.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -345,6 +347,23 @@ class EquipmentScreen extends ConsumerWidget {
                 await storage.deleteTask(_maintenanceTaskId(equipment.id));
                 ref.invalidate(equipmentProvider(tankId));
                 ref.invalidate(tasksProvider(tankId));
+                if (context.mounted) {
+                  final messenger = ScaffoldMessenger.of(context);
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text('${equipment.name} removed'),
+                      duration: const Duration(seconds: 5),
+                      action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () async {
+                          await storage.saveEquipment(equipment);
+                          ref.invalidate(equipmentProvider(tankId));
+                          ref.invalidate(tasksProvider(tankId));
+                        },
+                      ),
+                    ),
+                  );
+                }
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(

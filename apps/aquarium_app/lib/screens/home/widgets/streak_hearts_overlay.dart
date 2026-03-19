@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../providers/hearts_provider.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../providers/user_profile_provider.dart';
@@ -69,7 +70,23 @@ class StreakHeartsOverlay extends ConsumerStatefulWidget {
 
 class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
   bool _streakDismissed = false;
+  int _lastStreakMilestone = 0;
   bool _heartsDismissed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDismissedState();
+  }
+
+  Future<void> _loadDismissedState() async {
+    final prefs = await SharedPreferences.getInstance();
+    final dismissedAt = prefs.getInt('streak_banner_dismissed_at') ?? 0;
+    final current = ref.read(userProfileProvider).value?.currentStreak ?? 0;
+    if (dismissedAt > 0 && dismissedAt >= current) {
+      if (mounted) setState(() => _streakDismissed = true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +99,13 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
     ref.listen<int>(
       userProfileProvider.select((p) => p.value?.currentStreak ?? 0),
       (prev, next) {
-        if (prev != next) {
-          setState(() => _streakDismissed = false);
+        // Only reset dismiss state on streak increase (new milestone),
+        // not on every recalculation or decrease.
+        if (prev != null && next > prev && next > _lastStreakMilestone) {
+          setState(() {
+            _streakDismissed = false;
+            _lastStreakMilestone = next;
+          });
         }
       },
     );
@@ -106,7 +128,12 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
-              onDismiss: () => setState(() => _streakDismissed = true),
+              onDismiss: () {
+                setState(() => _streakDismissed = true);
+                SharedPreferences.getInstance().then(
+                  (p) => p.setInt('streak_banner_dismissed_at', streak),
+                );
+              },
             ),
 
           const WcStreakBanner(),

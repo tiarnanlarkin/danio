@@ -147,7 +147,9 @@ class LogDetailScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Log Entry?'),
-        content: const Text('This cannot be undone.'),
+        content: const Text(
+          'This log will be removed. You can undo within 5 seconds.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -166,11 +168,29 @@ class LogDetailScreen extends ConsumerWidget {
 
     if (ok != true) return;
 
-    await ref.read(storageServiceProvider).deleteLog(log.id);
+    final storage = ref.read(storageServiceProvider);
+    await storage.deleteLog(log.id);
     ref.invalidate(logsProvider(tankId));
     ref.invalidate(allLogsProvider(tankId));
 
-    if (context.mounted) Navigator.pop(context);
+    if (context.mounted) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(
+        SnackBar(
+          content: const Text('Log deleted'),
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: 'UNDO',
+            onPressed: () async {
+              await storage.saveLog(log);
+              ref.invalidate(logsProvider(tankId));
+              ref.invalidate(allLogsProvider(tankId));
+            },
+          ),
+        ),
+      );
+      Navigator.pop(context);
+    }
   }
 
   static IconData _iconFor(LogType type) {

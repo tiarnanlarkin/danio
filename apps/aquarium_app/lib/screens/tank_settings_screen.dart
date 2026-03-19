@@ -103,7 +103,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
             child: Form(
               key: _formKey,
               child: ListView.builder(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.only(
+                  left: AppSpacing.md,
+                  right: AppSpacing.md,
+                  top: AppSpacing.md,
+                  bottom: MediaQuery.of(context).padding.bottom + 96,
+                ),
                 itemCount: _buildItems(tank).length,
                 itemBuilder: (context, index) => _buildItems(tank)[index],
               ),
