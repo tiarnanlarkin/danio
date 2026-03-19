@@ -114,7 +114,6 @@ class PlacementChallengeCard extends ConsumerWidget {
                     child: FilledButton(
                       onPressed: () {
                         // Placement test screen removed — no-op for now
-                        // TODO: Replace with new assessment flow if needed
                       },
                       style: FilledButton.styleFrom(
                         backgroundColor: AppColors.accent,

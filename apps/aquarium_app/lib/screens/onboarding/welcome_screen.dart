@@ -272,7 +272,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         style: GoogleFonts.nunito(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.onboardingWarmCream.withAlpha(178), // 70%
+                          color: AppColors.onboardingWarmCream.withAlpha(217), // 85%
                           decoration: TextDecoration.underline,
                           decorationColor: AppColors.onboardingWarmCream.withAlpha(128),
                         ),

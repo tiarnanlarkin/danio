@@ -16,6 +16,7 @@ import 'screens/learn_screen.dart';
 import 'screens/spaced_repetition_practice_screen.dart';
 import 'screens/achievements_screen.dart';
 import 'services/onboarding_service.dart';
+import 'services/notification_scheduler.dart';
 import 'services/notification_service.dart';
 import 'services/hearts_service.dart';
 import 'services/celebration_service.dart';
@@ -288,51 +289,9 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       heartsService.checkAndApplyAutoRefill();
 
       // Schedule review notifications if cards are due
-      _scheduleReviewNotifications();
+      NotificationScheduler.instance.scheduleReviewNotifications(ref);
       // Refresh streak nudge notifications based on today's progress
-      _scheduleStreakNotifications();
-    }
-  }
-
-  /// Schedule review reminder notifications based on due cards
-  Future<void> _scheduleReviewNotifications() async {
-    try {
-      final srState = ref.read(spacedRepetitionProvider);
-      final dueCount = srState.stats.dueCards;
-
-      // Schedule notification if cards are due
-      final notificationService = NotificationService();
-      await notificationService.scheduleReviewReminder(
-        dueCardsCount: dueCount,
-        time: const TimeOfDay(hour: 9, minute: 0), // Default 9 AM
-      );
-    } catch (e) {
-      // Silently fail - don't break app flow
-      logError(kDebugMode, tag: 'Main');
-    }
-  }
-
-  /// Schedule streak nudge notifications based on current profile.
-  /// Cancels existing streak notifications before re-scheduling to
-  /// avoid duplicates. Silently skips if permission was not granted.
-  Future<void> _scheduleStreakNotifications() async {
-    try {
-      final profile = ref.read(userProfileProvider).value;
-      if (profile == null) return;
-
-      final notificationService = NotificationService();
-      final now = DateTime.now();
-      final todayKey =
-          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-      final todayXp = profile.dailyXpHistory[todayKey] ?? 0;
-
-      await notificationService.scheduleAllStreakNotifications(
-        currentStreak: profile.currentStreak,
-        dailyXpGoal: profile.dailyXpGoal,
-        todayXp: todayXp,
-      );
-    } catch (e) {
-      logError(kDebugMode, tag: 'Main');
+      NotificationScheduler.instance.scheduleStreakNotifications(ref);
     }
   }
 
@@ -385,8 +344,8 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       _hasScheduledNotifications = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          _scheduleReviewNotifications();
-          _scheduleStreakNotifications();
+          NotificationScheduler.instance.scheduleReviewNotifications(ref);
+          NotificationScheduler.instance.scheduleStreakNotifications(ref);
         }
       });
     }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
@@ -141,7 +142,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         setState(() => _showComebackBanner = true);
       }
     } catch (e) {
-      debugPrint('Comeback banner check failed: $e');
+      if (kDebugMode) {
+        debugPrint('Comeback banner check failed: $e');
+      }
     }
   }
 
@@ -177,7 +180,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final totalXp = profile.totalXp;
         final lessonsCompleted = profile.completedLessons.length;
         // speciesViewed isn't tracked in the profile yet — use 0
-        // TODO(sprint4): Track speciesViewed in UserProfile, wire it here
+        // FIXME(sprint4): Track speciesViewed in UserProfile, wire it here
         const speciesViewed = 0;
         milestoneCard = Day30CommittedCard(
           lessonsCompleted: lessonsCompleted,
@@ -197,7 +200,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         if (prefsKey != null) await prefs.setBool(prefsKey, true);
       }
     } catch (e) {
-      debugPrint('Returning user flow check failed: $e');
+      if (kDebugMode) {
+        debugPrint('Returning user flow check failed: $e');
+      }
     }
   }
 
@@ -337,7 +342,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             try {
               await ref.read(tanksProvider.future).timeout(const Duration(seconds: 3), onTimeout: () => [demoTank]);
             } catch (e) {
-              debugPrint('Demo tank refresh after delete failed: $e');
+              if (kDebugMode) {
+                debugPrint('Demo tank refresh after delete failed: $e');
+              }
             }
             if (context.mounted) _navigateToTankDetail(context, demoTank);
           },
@@ -556,11 +563,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onTap: () => _navigateToCreateTank(context),
                 ),
                 const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.add_circle_outline, color: AppColors.accent),
-                  title: const Text('Add New Tank'),
-                  onTap: () => _navigateToCreateTank(context),
-                ),
               ],
             ),
           ),
