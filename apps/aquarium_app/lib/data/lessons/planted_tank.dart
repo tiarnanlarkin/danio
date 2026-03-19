@@ -395,16 +395,16 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Excel can melt certain plants (Vallisneria, some mosses) and is toxic to shrimp at high doses. Start with half-dose and watch your plants.',
+              'Excel (glutaraldehyde) is NOT SAFE for shrimp tanks at any dose. Even trace amounts can kill shrimp. If you have shrimp, use alternative CO2 methods like pressurized CO2 or stick with low-tech plants. Excel can also melt certain plants (Vallisneria, some mosses).',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
           content: 'DIY CO2: The Middle Ground',
         ),
         const LessonSection(
-          type: LessonSectionType.text,
+          type: LessonSectionType.warning,
           content:
-              '⚠️ DIY CO2 is risky with fish. A yeast batch crash overnight can dump CO2 and suffocate fish by morning. If using DIY CO2, always run an airstone at night to prevent crashes, and never use it as your only CO2 source in a stocked tank.',
+              'DIY CO2 systems are unpredictable and can crash — if the yeast stops producing CO2 while plants have adapted to high CO2 levels, pH swings can occur. In severe cases, a sudden die-off of plants can deplete oxygen overnight, potentially suffocating fish. Always ensure good surface agitation as a safety net, monitor pH regularly, and never rely on DIY CO2 as your only carbon source in a stocked tank. Pressurized CO2 with a regulator and drop checker is far safer.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

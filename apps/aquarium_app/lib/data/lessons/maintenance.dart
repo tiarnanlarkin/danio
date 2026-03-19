@@ -35,7 +35,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Aim for 20-30% water change weekly. This keeps nitrate low without shocking fish with big parameter swings.',
+              'Aim for 25-50% water change weekly. This keeps nitrate low and maintains stable water parameters. Water changes of 50-75% are perfectly safe when the new water is temperature-matched and dechlorinated — larger changes actually help maintain stable water parameters. The old "never change more than 25%" advice is outdated. Many experienced aquarists do 50%+ weekly changes without issues.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -49,7 +49,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'In emergencies (ammonia or nitrite spikes), large water changes of 50-75% are safe when the new water is temperature-matched and dechlorinated. For routine maintenance, 25-50% weekly is the sweet spot.',
+              'The key to safe water changes is simple: match the temperature and always add dechlorinator. As long as those two conditions are met, even 75%+ water changes won\'t harm your fish. In emergencies (ammonia or nitrite spikes), don\'t be afraid to do multiple large changes in one day.',
         ),
       ],
       quiz: Quiz(
@@ -59,10 +59,10 @@ final maintenancePath = LearningPath(
           const QuizQuestion(
             id: 'maint_wc_q1',
             question: 'How much water should you change weekly?',
-            options: ['5-10%', '20-30%', '50-75%', '100%'],
+            options: ['5-10%', '25-50%', '80-100%', 'No water changes needed'],
             correctIndex: 1,
             explanation:
-                '20-30% weekly keeps nitrate low without shocking fish with big parameter changes.',
+                '25-50% weekly keeps nitrate low and maintains stable water. Larger changes (50-75%) are also safe as long as the new water is temperature-matched and dechlorinated.',
           ),
         ],
       ),
@@ -697,7 +697,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '✓ 20-30% water change with gravel vacuum\n✓ Clean inside glass (if needed)\n✓ Test water parameters (ammonia, nitrite, nitrate)\n✓ Remove dead plant leaves\n✓ Check filter flow (still strong?)\n✓ Top off evaporated water',
+              '✓ 25-50% water change with gravel vacuum\n✓ Clean inside glass (if needed)\n✓ Test water parameters (ammonia, nitrite, nitrate)\n✓ Remove dead plant leaves\n✓ Check filter flow (still strong?)\n✓ Top off evaporated water',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -796,13 +796,13 @@ final maintenancePath = LearningPath(
             question: 'How often should you do water changes?',
             options: [
               'Daily',
-              'Weekly (20-30%)',
+              'Weekly (25-50%)',
               'Monthly',
               'Only when water looks dirty',
             ],
             correctIndex: 1,
             explanation:
-                'Weekly 20-30% water changes are the gold standard. Consistent small changes beat infrequent large ones.',
+                'Weekly 25-50% water changes are the gold standard. Consistent changes beat infrequent large ones. Larger changes (50-75%) are also safe when water is temperature-matched and dechlorinated.',
           ),
           const QuizQuestion(
             id: 'maint_sch_q2',
