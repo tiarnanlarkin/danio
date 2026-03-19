@@ -100,6 +100,12 @@ class _SpacedRepetitionPracticeScreenState
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.lg),
+            FilledButton.icon(
+              onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+              icon: const Icon(Icons.auto_stories),
+              label: const Text('Try a new lesson'),
+            ),
+            const SizedBox(height: AppSpacing.md),
             if (srState.stats.totalCards > 0) ...[
               Text(
                 'Next review in:',
@@ -115,7 +121,6 @@ class _SpacedRepetitionPracticeScreenState
                 ),
               ),
             ] else ...[
-              const SizedBox(height: AppSpacing.md),
               Text(
                 'Complete lessons to build your practice queue.',
                 style: AppTypography.bodyMedium.copyWith(

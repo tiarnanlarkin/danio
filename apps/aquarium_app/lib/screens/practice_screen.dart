@@ -99,6 +99,12 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
+            FilledButton.icon(
+              onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+              icon: const Icon(Icons.auto_stories),
+              label: const Text('Try a new lesson'),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Complete more lessons to build your practice queue.',
               style: AppTypography.bodyMedium.copyWith(color: context.textHint),
