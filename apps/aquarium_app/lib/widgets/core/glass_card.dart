@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_theme.dart';
 
 /// Glass card variant styles
@@ -66,6 +67,7 @@ class _GlassCardState extends State<GlassCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -84,6 +86,16 @@ class _GlassCardState extends State<GlassCard>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : AppDurations.short;
+    }
   }
 
   void _handleTapDown(TapDownDetails details) {

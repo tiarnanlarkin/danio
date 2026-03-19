@@ -5,6 +5,7 @@ library;
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../models/adaptive_difficulty.dart';
 import '../services/difficulty_service.dart';
 
@@ -193,6 +194,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -223,6 +225,16 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
         }
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : const Duration(milliseconds: 2000);
+    }
   }
 
   @override

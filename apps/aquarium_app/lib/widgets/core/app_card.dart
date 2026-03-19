@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_theme.dart';
 
 /// Visual variant for cards
@@ -138,6 +139,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
   bool _isPressed = false;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -155,6 +157,16 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   void dispose() {
     _scaleController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _scaleController.duration = _disableMotion ? Duration.zero : AppDurations.short;
+    }
   }
 
   bool get _isInteractive => widget.onTap != null || widget.onLongPress != null;

@@ -44,14 +44,11 @@ class _AnimatedFlameState extends State<AnimatedFlame>
   late Animation<double> _glowAnimation;
   late Animation<double> _celebrationScale;
 
+  bool _disableMotion = false;
+
   @override
   void initState() {
     super.initState();
-    _initAnimations();
-  }
-
-  void _initAnimations() {
-    // Main flame flicker controller - continuous
     _flameController = AnimationController(
       duration: AppDurations.long3,
       vsync: this,
@@ -68,6 +65,23 @@ class _AnimatedFlameState extends State<AnimatedFlame>
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
+    _buildAnimations();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      // Update durations for reduced motion
+      _flameController.duration = _disableMotion ? Duration.zero : AppDurations.long3;
+      _glowController.duration = _disableMotion ? Duration.zero : AppDurations.celebration;
+      _celebrationController.duration = _disableMotion ? Duration.zero : const Duration(milliseconds: 600);
+    }
+  }
+
+  void _buildAnimations() {
 
     // Create staggered tongue animations (5 flames with different phases)
     _tongueAnimations = List.generate(5, (index) {

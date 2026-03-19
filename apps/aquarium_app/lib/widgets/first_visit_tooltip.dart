@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/user_profile_provider.dart';
+import '../providers/reduced_motion_provider.dart';
 import '../theme/app_theme.dart';
 
 /// A tooltip that appears as a floating card with a subtle shadow.
@@ -53,9 +54,10 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
   @override
   void initState() {
     super.initState();
+    final disableMotion = ref.read(reducedMotionProvider).disableDecorativeAnimations;
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 400),
     );
     _fadeAnimation = CurvedAnimation(
       parent: _controller,

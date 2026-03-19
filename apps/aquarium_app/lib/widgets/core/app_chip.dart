@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_theme.dart';
 
 /// Visual variants for chips
@@ -418,6 +419,7 @@ class _PulsingDot extends StatefulWidget {
 class _PulsingDotState extends State<_PulsingDot>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -426,6 +428,16 @@ class _PulsingDotState extends State<_PulsingDot>
       duration: AppDurations.celebration,
       vsync: this,
     )..repeat();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : AppDurations.celebration;
+    }
   }
 
   @override

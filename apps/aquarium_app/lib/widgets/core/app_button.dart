@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_theme.dart';
 
 /// Button variants for different use cases
@@ -98,6 +99,7 @@ class _AppButtonState extends State<AppButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -115,6 +117,16 @@ class _AppButtonState extends State<AppButton>
   void dispose() {
     _scaleController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _scaleController.duration = _disableMotion ? Duration.zero : AppDurations.short;
+    }
   }
 
   bool get _isEnabled => widget.onPressed != null && !widget.isLoading;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../theme/app_theme.dart';
 
 /// Quick-add FAB with expandable options
@@ -31,8 +32,9 @@ class _QuickAddFabState extends State<QuickAddFab>
   @override
   void initState() {
     super.initState();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: AppDurations.medium2,
+      duration: disableMotion ? Duration.zero : AppDurations.medium2,
       vsync: this,
     );
     _expandAnimation = CurvedAnimation(

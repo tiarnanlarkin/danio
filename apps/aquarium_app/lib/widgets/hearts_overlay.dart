@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../theme/app_theme.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
@@ -54,6 +55,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _rotationAnimation;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -96,6 +98,16 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
     ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.elastic));
 
     _controller.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : widget.duration;
+    }
   }
 
   @override
@@ -196,13 +208,14 @@ class HeartsStatusBanner extends ConsumerStatefulWidget {
 
 class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
   Timer? _timer;
+  final ValueNotifier<int> _tick = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
     if (widget.showTimer) {
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (mounted) setState(() {});
+        if (mounted) _tick.value = DateTime.now().millisecondsSinceEpoch;
       });
     }
   }
@@ -210,12 +223,13 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
   @override
   void dispose() {
     _timer?.cancel();
+    _tick.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider).value;
+    final profile = ref.watch(userProfileProvider.select((p) => p.value));
     final heartsService = ref.watch(heartsServiceProvider);
 
     if (profile == null) return widget.child;
@@ -250,12 +264,18 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                       size: AppIconSizes.xs,
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    ValueListenableBuilder<int>(
+                      valueListenable: _tick,
+                      builder: (_, __, ___) {
+                        final now = heartsService.getTimeUntilNextRefill(profile);
+                        return Text(
+                          'Next heart in ${heartsService.formatTimeRemaining(now ?? timeUntilRefill)}',
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

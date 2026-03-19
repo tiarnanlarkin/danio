@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import '../providers/reduced_motion_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import 'package:flutter/foundation.dart';
 import '../widgets/offline_indicator.dart';
@@ -59,9 +60,10 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
   @override
   void initState() {
     super.initState();
+    final disableMotion = ref.read(reducedMotionProvider).disableDecorativeAnimations;
     _fadeController = AnimationController(
       vsync: this,
-      duration: AppDurations.medium2, // 200ms – crisp tab cross-fade
+      duration: disableMotion ? Duration.zero : AppDurations.medium2, // 200ms – crisp tab cross-fade
       value: 1.0, // Start fully visible
     );
     _fadeAnimation = CurvedAnimation(

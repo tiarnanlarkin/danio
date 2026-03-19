@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
 import 'bubble_loader.dart';
@@ -382,12 +383,23 @@ class _LoadingDots extends StatefulWidget {
 class _LoadingDotsState extends State<_LoadingDots>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  bool _disableMotion = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(duration: kQuizRevealDelay, vsync: this)
       ..repeat();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : kQuizRevealDelay;
+    }
   }
 
   @override

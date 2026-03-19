@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../theme/app_theme.dart';
 
 /// A widget that shows rotating fun loading messages
@@ -30,6 +31,7 @@ class _FunLoadingMessageState extends State<FunLoadingMessage>
   Timer? _timer;
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -65,6 +67,16 @@ class _FunLoadingMessageState extends State<FunLoadingMessage>
     _timer?.cancel();
     _fadeController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _fadeController.duration = _disableMotion ? Duration.zero : const Duration(milliseconds: 200);
+    }
   }
 
   @override

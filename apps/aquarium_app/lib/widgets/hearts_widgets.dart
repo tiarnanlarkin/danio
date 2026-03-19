@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/gems_provider.dart';
@@ -86,30 +87,30 @@ class DetailedHeartsDisplay extends ConsumerStatefulWidget {
 
 class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
   Timer? _timer;
+  final ValueNotifier<int> _tick = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
-    // Update every second to show countdown
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
+      if (mounted) _tick.value = DateTime.now().millisecondsSinceEpoch;
     });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _tick.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider).value;
+    final profile = ref.watch(userProfileProvider.select((p) => p.value));
     if (profile == null) return const SizedBox.shrink();
 
     final heartsService = ref.watch(heartsServiceProvider);
     final heartsDisplay = heartsService.getHeartsDisplay();
-    final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -138,32 +139,37 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
             ],
           ),
           const SizedBox(height: AppSpacing.sm2),
-          if (timeUntilRefill != null) ...[
-            Row(
-              children: [
-                Icon(
-                  Icons.schedule,
-                  size: AppIconSizes.xs,
-                  color: context.textSecondary,
+          ValueListenableBuilder<int>(
+            valueListenable: _tick,
+            builder: (_, __, ___) {
+              final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
+              if (timeUntilRefill != null) {
+                return Row(
+                  children: [
+                    Icon(
+                      Icons.schedule,
+                      size: AppIconSizes.xs,
+                      color: context.textSecondary,
+                    ),
+                    const SizedBox(width: AppSpacing.xs2),
+                    Text(
+                      'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return Text(
+                'Hearts are full!',
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.success,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(width: AppSpacing.xs2),
-                Text(
-                  'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: context.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ] else ...[
-            Text(
-              'Hearts are full!',
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.success,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ],
       ),
     );
@@ -187,6 +193,7 @@ class _HeartAnimationState extends State<HeartAnimation>
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -232,6 +239,16 @@ class _HeartAnimationState extends State<HeartAnimation>
     _controller.forward().then((_) {
       widget.onComplete?.call();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : kQuizRevealDelay;
+    }
   }
 
   @override
@@ -289,25 +306,26 @@ class OutOfHeartsModal extends ConsumerStatefulWidget {
 
 class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
   Timer? _timer;
+  final ValueNotifier<int> _tick = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
-    // Update every second to show countdown
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
+      if (mounted) _tick.value = DateTime.now().millisecondsSinceEpoch;
     });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _tick.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider).value;
+    final profile = ref.watch(userProfileProvider.select((p) => p.value));
     if (profile == null) {
       Navigator.of(context).pop();
       return const SizedBox.shrink();
@@ -361,28 +379,34 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
             const SizedBox(height: AppSpacing.lg),
 
             // Countdown timer
-            if (timeUntilRefill != null)
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: context.surfaceVariant,
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.schedule, color: AppColors.primary),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
+            ValueListenableBuilder<int>(
+              valueListenable: _tick,
+              builder: (_, __, ___) {
+                final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
+                if (timeUntilRefill == null) return const SizedBox.shrink();
+                return Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: context.surfaceVariant,
+                    borderRadius: AppRadius.mediumRadius,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.schedule, color: AppColors.primary),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                );
+              },
+            ),
             const SizedBox(height: AppSpacing.lg),
 
             // Gem balance indicator
@@ -478,7 +502,7 @@ class CompactHeartsDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider).value;
+    final profile = ref.watch(userProfileProvider.select((p) => p.value));
     if (profile == null) return const SizedBox.shrink();
 
     final heartsService = ref.watch(heartsServiceProvider);

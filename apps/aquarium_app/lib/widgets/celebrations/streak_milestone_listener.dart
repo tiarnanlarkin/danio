@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 
@@ -92,6 +93,7 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
   late AnimationController _controller;
   late Animation<double> _fade;
   late Animation<double> _scale;
+  bool _disableMotion = false;
 
   String get _emoji {
     if (widget.streakDays >= 100) return '\u{1F451}';
@@ -143,6 +145,16 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
       }
     });
     _controller.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : const Duration(milliseconds: 3000);
+    }
   }
 
   @override

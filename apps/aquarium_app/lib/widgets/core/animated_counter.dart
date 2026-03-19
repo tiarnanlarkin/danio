@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_theme.dart';
 
 /// An animated number counter that smoothly transitions between values.
@@ -60,6 +61,7 @@ class _AnimatedCounterState extends State<AnimatedCounter>
   late AnimationController _controller;
   late Animation<double> _animation;
   int _previousValue = 0;
+  bool _disableMotion = false;
 
   @override
   void initState() {
@@ -81,7 +83,18 @@ class _AnimatedCounterState extends State<AnimatedCounter>
         begin: _previousValue.toDouble(),
         end: widget.value.toDouble(),
       ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
+      _controller.duration = _disableMotion ? Duration.zero : widget.duration;
       _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newValue = MediaQuery.of(context).disableAnimations;
+    if (newValue != _disableMotion) {
+      _disableMotion = newValue;
+      _controller.duration = _disableMotion ? Duration.zero : widget.duration;
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:math';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';
@@ -62,10 +63,12 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
       duration: const Duration(seconds: 5),
     );
 
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+
     // Animation controller for entrance
     _animationController = AnimationController(
       vsync: this,
-      duration: AppDurations.long3,
+      duration: disableMotion ? Duration.zero : AppDurations.long3,
     );
 
     _scaleAnimation = CurvedAnimation(
