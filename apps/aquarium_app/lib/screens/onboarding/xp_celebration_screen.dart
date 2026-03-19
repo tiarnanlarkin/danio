@@ -26,8 +26,6 @@ class XpCelebrationScreen extends StatefulWidget {
 
 class _XpCelebrationScreenState extends State<XpCelebrationScreen>
     with TickerProviderStateMixin {
-  static const _warmCream = Color(0xFFFFF8F0);
-  static const _onboardingAmber = Color(0xFFF5A623);
 
   late final AnimationController _confettiController;
   late final AnimationController _badgeController;
@@ -170,7 +168,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
         child: Stack(
           children: [
@@ -205,10 +203,10 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                         height: 140,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: _onboardingAmber,
+                          color: AppColors.onboardingAmber,
                           boxShadow: [
                             BoxShadow(
-                              color: _onboardingAmber.withAlpha(102), // 40%
+                              color: AppColors.onboardingAmber.withAlpha(102), // 40%
                               blurRadius: 30,
                               offset: const Offset(0, 8),
                             ),
@@ -220,7 +218,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                           style: GoogleFonts.lora(
                             fontSize: 36,
                             fontWeight: FontWeight.w700,
-                            color: _warmCream,
+                            color: AppColors.onboardingWarmCream,
                           ),
                         ),
                       ),
@@ -266,7 +264,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                             widthFactor: _progressValue.value,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: _onboardingAmber,
+                                color: AppColors.onboardingAmber,
                                 borderRadius:
                                     BorderRadius.circular(AppRadius.pill),
                               ),
@@ -332,7 +330,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                               widget.onNext();
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _onboardingAmber,
+                              backgroundColor: AppColors.onboardingAmber,
                               foregroundColor: const Color(0xFF2D3436),
                               elevation: 0,
                               shape: RoundedRectangleBorder(
@@ -379,9 +377,9 @@ class _ConfettiParticle {
         color = _confettiColors[r.nextInt(_confettiColors.length)];
 
   static const _confettiColors = [
-    Color(0xFFF5A623), // amber
+    AppColors.onboardingAmber, // amber
     Color(0xFFE8934A), // warm orange
-    Color(0xFFFFF8F0), // cream
+    AppColors.onboardingWarmCream, // cream
     Color(0xFFD4A574), // soft gold
     Color(0xFFFFD54F), // golden yellow
   ];

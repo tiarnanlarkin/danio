@@ -24,8 +24,6 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with TickerProviderStateMixin {
-  static const _warmCream = Color(0xFFFFF8F0);
-  static const _onboardingAmber = Color(0xFFF5A623);
 
   late final AnimationController _headlineController;
   late final AnimationController _bodyController;
@@ -178,7 +176,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         style: GoogleFonts.lora(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
-                          color: _warmCream,
+                          color: AppColors.onboardingWarmCream,
                           height: 1.2,
                         ),
                         textAlign: TextAlign.left,
@@ -197,7 +195,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: _warmCream.withAlpha(204), // 80%
+                      color: AppColors.onboardingWarmCream.withAlpha(204), // 80%
                       height: 1.5,
                     ),
                     textAlign: TextAlign.left,
@@ -223,7 +221,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                             widget.onNext();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _onboardingAmber,
+                            backgroundColor: AppColors.onboardingAmber,
                             foregroundColor: const Color(0xFF2D3436),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
@@ -259,9 +257,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         style: GoogleFonts.nunito(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: _warmCream.withAlpha(178), // 70%
+                          color: AppColors.onboardingWarmCream.withAlpha(178), // 70%
                           decoration: TextDecoration.underline,
-                          decorationColor: _warmCream.withAlpha(128),
+                          decorationColor: AppColors.onboardingWarmCream.withAlpha(128),
                         ),
                         textAlign: TextAlign.center,
                       ),

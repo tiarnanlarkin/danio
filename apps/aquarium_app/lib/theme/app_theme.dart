@@ -46,6 +46,11 @@ class AppColors {
   static const Color paramWarning = Color(0xFFC99524);
   static const Color paramDanger = Color(0xFFC0392B);
 
+  // Onboarding palette (consolidated from 7+ onboarding screens)
+  static const Color onboardingWarmCream = Color(0xFFFFF8F0);
+  static const Color onboardingAmber = Color(0xFFF5A623);
+  static const Color onboardingAmberText = Color(0xFF9E6008); // WCAG AA on warm cream
+
   // Neutrals - Light mode
   static const Color background = Color(0xFFFFF5E8); // Warm Cream
   static const Color surface = Color(0xFFFFFBF5); // Ivory White

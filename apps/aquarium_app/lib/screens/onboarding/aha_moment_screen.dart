@@ -35,9 +35,7 @@ class AhaMomentScreen extends StatefulWidget {
 class _AhaMomentScreenState extends State<AhaMomentScreen>
     with TickerProviderStateMixin {
   // ── Colours ──────────────────────────────────────────────────────
-  static const _warmCream = Color(0xFFFFF8F0);
-  static const _amber = Color(0xFFF5A623); // Decorative amber — not for text
-  static const _amberText = Color(0xFF9E6008); // WCAG AA text on light bg (4.8:1)
+  // Onboarding colours consolidated into AppColors
 
   // ── Phase tracking ──────────────────────────────────────────────
   int _phase = 1; // 1, 2, or 3
@@ -198,7 +196,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
         child: _phase == 1 ? _buildPhase1() : _buildPhase2And3(),
       ),
@@ -214,7 +212,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       animation: _overlayOpacity,
       builder: (context, child) {
         return Container(
-          color: Color.lerp(_warmCream, const Color(0xFFE8DFD3), _overlayOpacity.value),
+          color: Color.lerp(AppColors.onboardingWarmCream, const Color(0xFFE8DFD3), _overlayOpacity.value),
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -227,8 +225,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                   height: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _warmCream,
-                    border: Border.all(color: _amber, width: 3),
+                    color: AppColors.onboardingWarmCream,
+                    border: Border.all(color: AppColors.onboardingAmber, width: 3),
                   ),
                   alignment: Alignment.center,
                   child: const Text('🐠', style: TextStyle(fontSize: 48)),
@@ -254,7 +252,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                 'Building your $fishName care guide${'.' * _dotCount}',
                 style: GoogleFonts.nunito(
                   fontSize: 14,
-                  color: _amberText,
+                  color: AppColors.onboardingAmberText,
                 ),
               ),
             ],
@@ -293,7 +291,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: _amber.withAlpha(26),
+                  color: AppColors.onboardingAmber.withAlpha(26),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -301,7 +299,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                   style: GoogleFonts.nunito(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: _amberText,
+                    color: AppColors.onboardingAmberText,
                   ),
                 ),
               ),
@@ -385,9 +383,9 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                         child: ElevatedButton(
                           onPressed: _ctaTapped ? null : _onCtaTap,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _amber,
+                            backgroundColor: AppColors.onboardingAmber,
                             foregroundColor: Colors.white,
-                            disabledBackgroundColor: _amber.withAlpha(153),
+                            disabledBackgroundColor: AppColors.onboardingAmber.withAlpha(153),
                             disabledForegroundColor: Colors.white70,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -429,8 +427,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
           height: 48,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _warmCream,
-            border: Border.all(color: _amber, width: 2),
+            color: AppColors.onboardingWarmCream,
+            border: Border.all(color: AppColors.onboardingAmber, width: 2),
           ),
           alignment: Alignment.center,
           child: const Text('🐠', style: TextStyle(fontSize: 22)),

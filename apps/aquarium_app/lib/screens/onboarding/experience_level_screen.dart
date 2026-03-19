@@ -23,8 +23,6 @@ class ExperienceLevelScreen extends StatefulWidget {
 
 class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
     with TickerProviderStateMixin {
-  static const _warmCream = Color(0xFFFFF8F0);
-  static const _onboardingAmber = Color(0xFFF5A623);
 
   ExperienceLevel? _selected;
 
@@ -135,7 +133,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -236,7 +234,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          _selected != null ? _onboardingAmber : Colors.grey[300],
+                          _selected != null ? AppColors.onboardingAmber : Colors.grey[300],
                       foregroundColor: _selected != null
                           ? const Color(0xFF2D3436)
                           : Colors.grey[500],
@@ -298,7 +296,6 @@ class _OptionCard extends StatelessWidget {
     required this.onTap,
   });
 
-  static const _onboardingAmber = Color(0xFFF5A623);
 
   @override
   Widget build(BuildContext context) {
@@ -317,11 +314,11 @@ class _OptionCard extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: isSelected
-                ? _onboardingAmber.withAlpha(26) // ~10%
+                ? AppColors.onboardingAmber.withAlpha(26) // ~10%
                 : Colors.white,
             borderRadius: BorderRadius.circular(AppRadius.md),
             border: Border.all(
-              color: isSelected ? _onboardingAmber : AppColors.border,
+              color: isSelected ? AppColors.onboardingAmber : AppColors.border,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -373,7 +370,6 @@ class _ProgressDots extends StatelessWidget {
 
   const _ProgressDots({required this.currentIndex});
 
-  static const _onboardingAmber = Color(0xFFF5A623);
 
   @override
   Widget build(BuildContext context) {
@@ -389,7 +385,7 @@ class _ProgressDots extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isFilled ? _onboardingAmber : AppColors.border,
+              color: isFilled ? AppColors.onboardingAmber : AppColors.border,
             ),
           );
         }),

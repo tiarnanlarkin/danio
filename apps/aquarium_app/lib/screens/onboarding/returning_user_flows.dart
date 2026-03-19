@@ -34,7 +34,6 @@ class Day2StreakPrompt extends StatefulWidget {
 
 class _Day2StreakPromptState extends State<Day2StreakPrompt>
     with SingleTickerProviderStateMixin {
-  static const Color _amber = Color(0xFFF5A623);
 
   late final AnimationController _flickerController;
   late final Animation<double> _flickerScale;
@@ -140,7 +139,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
                     widget.onContinue();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _amber,
+                    backgroundColor: AppColors.onboardingAmber,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -208,7 +207,6 @@ class Day7MilestoneCard extends StatefulWidget {
 
 class _Day7MilestoneCardState extends State<Day7MilestoneCard>
     with SingleTickerProviderStateMixin {
-  static const Color _amber = Color(0xFFF5A623);
 
   late final AnimationController _xpController;
   late final Animation<double> _xpScale;
@@ -261,8 +259,8 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              _amber,
-              _amber.withAlpha(210),
+              AppColors.onboardingAmber,
+              AppColors.onboardingAmber.withAlpha(210),
             ],
           ),
           borderRadius: BorderRadius.circular(20),
@@ -434,7 +432,7 @@ class Day30CommittedCard extends StatelessWidget {
                   },
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
-                      color: const Color(0xFFF5A623),
+                      color: AppColors.onboardingAmber,
                       width: 1.5,
                     ),
                     shape: RoundedRectangleBorder(
@@ -446,7 +444,7 @@ class Day30CommittedCard extends StatelessWidget {
                     style: GoogleFonts.nunito(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFFF5A623),
+                      color: AppColors.onboardingAmber,
                     ),
                   ),
                 ),

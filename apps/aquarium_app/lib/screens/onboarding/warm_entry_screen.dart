@@ -35,8 +35,7 @@ class WarmEntryScreen extends StatefulWidget {
 
 class _WarmEntryScreenState extends State<WarmEntryScreen>
     with TickerProviderStateMixin {
-  static const Color _amber = Color(0xFFF5A623);
-  static const Color _warmCream = Color(0xFFFFF8F0);
+  // Onboarding colours consolidated into AppColors
 
   late final AnimationController _fishCardController;
   late final Animation<double> _fishCardOpacity;
@@ -196,7 +195,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
@@ -270,7 +269,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                       FilledButton(
                         onPressed: _submitName,
                         style: FilledButton.styleFrom(
-                          backgroundColor: _amber,
+                          backgroundColor: AppColors.onboardingAmber,
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         ),
                         child: Text(
@@ -396,13 +395,13 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: _warmCream,
+        color: AppColors.onboardingWarmCream,
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: _amber),
+          Icon(icon, size: 16, color: AppColors.onboardingAmber),
           const SizedBox(width: 6),
           Text(
             label,
@@ -434,12 +433,12 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: _amber.withAlpha(30),
+                color: AppColors.onboardingAmber.withAlpha(30),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(
                 Icons.menu_book_rounded,
-                color: _amber,
+                color: AppColors.onboardingAmber,
                 size: 22,
               ),
             ),
@@ -522,7 +521,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                   widthFactor: _xpFill.value,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: _amber,
+                      color: AppColors.onboardingAmber,
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),

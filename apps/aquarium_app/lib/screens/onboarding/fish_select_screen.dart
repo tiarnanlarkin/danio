@@ -58,10 +58,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
 
   late final List<SpeciesInfo> _popularFish;
 
-  // Warm cream
-  static const _warmCream = Color(0xFFFFF8F0);
-  // Decorative amber for non-text usage
-  static const _amber = Color(0xFFF5A623);
+  // Onboarding colours consolidated into AppColors
 
   @override
   void initState() {
@@ -141,7 +138,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
         child: Stack(
           children: [
@@ -221,7 +218,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: _amber,
+                            color: AppColors.onboardingAmber,
                             width: 2,
                           ),
                         ),
@@ -434,7 +431,7 @@ class _FishSpriteImage extends StatelessWidget {
     width: size,
     height: size,
     decoration: BoxDecoration(
-      color: const Color(0xFFF5A623).withAlpha(26),
+      color: AppColors.onboardingAmber.withAlpha(26),
       shape: BoxShape.circle,
     ),
     alignment: Alignment.center,
@@ -466,12 +463,12 @@ class _PopularTile extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFFF5A623).withAlpha(26) // 10%
+                ? AppColors.onboardingAmber.withAlpha(26) // 10%
                 : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
-                  ? const Color(0xFFF5A623)
+                  ? AppColors.onboardingAmber
                   : AppColors.border,
               width: isSelected ? 2 : 1,
             ),
@@ -511,7 +508,7 @@ class _PopularTile extends StatelessWidget {
                 ),
               ),
               if (isSelected)
-                const Icon(Icons.check_circle, color: Color(0xFFF5A623), size: 16),
+                const Icon(Icons.check_circle, color: AppColors.onboardingAmber, size: 16),
             ],
           ),
         ),
@@ -559,12 +556,12 @@ class _SearchResultCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFFF5A623).withAlpha(26)
+                ? AppColors.onboardingAmber.withAlpha(26)
                 : Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
-                  ? const Color(0xFFF5A623)
+                  ? AppColors.onboardingAmber
                   : AppColors.border,
               width: isSelected ? 2 : 1,
             ),
@@ -612,7 +609,7 @@ class _SearchResultCard extends StatelessWidget {
               ),
               if (isSelected) ...[
                 const SizedBox(width: 8),
-                const Icon(Icons.check_circle, color: Color(0xFFF5A623), size: 20),
+                const Icon(Icons.check_circle, color: AppColors.onboardingAmber, size: 20),
               ],
             ],
           ),
@@ -680,7 +677,7 @@ class _PulsingButtonState extends State<_PulsingButton>
       child: ElevatedButton(
         onPressed: widget.onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFF5A623),
+          backgroundColor: AppColors.onboardingAmber,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           shape: RoundedRectangleBorder(

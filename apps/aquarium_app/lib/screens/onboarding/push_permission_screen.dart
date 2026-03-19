@@ -24,8 +24,6 @@ class PushPermissionScreen extends StatefulWidget {
 
 class _PushPermissionScreenState extends State<PushPermissionScreen>
     with TickerProviderStateMixin {
-  static const Color _amber = Color(0xFFF5A623);
-  static const Color _warmCream = Color(0xFFFFF8F0);
 
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnim;
@@ -84,7 +82,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: FadeTransition(
         opacity: _fadeAnim,
         child: SafeArea(
@@ -148,7 +146,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                             widget.onAllow();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _amber,
+                            backgroundColor: AppColors.onboardingAmber,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
@@ -213,7 +211,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
             Icon(
               Icons.water_rounded,
               size: 120,
-              color: _amber.withAlpha(60),
+              color: AppColors.onboardingAmber.withAlpha(60),
             ),
             // Notification bell — floating on top
             AnimatedBuilder(
@@ -227,7 +225,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
               child: Icon(
                 Icons.notifications_active_rounded,
                 size: 64,
-                color: _amber,
+                color: AppColors.onboardingAmber,
               ),
             ),
           ],

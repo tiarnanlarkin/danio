@@ -28,8 +28,6 @@ class MicroLessonScreen extends StatefulWidget {
 
 class _MicroLessonScreenState extends State<MicroLessonScreen>
     with TickerProviderStateMixin {
-  static const _warmCream = Color(0xFFFFF8F0);
-  static const _onboardingAmber = Color(0xFFF5A623);
   static const _correctGreen = Color(0xFF1E8449);
   static const _wrongRed = Color(0xFFC0392B);
 
@@ -121,7 +119,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -145,7 +143,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                       vertical: AppSpacing.xs2,
                     ),
                     decoration: BoxDecoration(
-                      color: _onboardingAmber.withAlpha(38), // ~15%
+                      color: AppColors.onboardingAmber.withAlpha(38), // ~15%
                       borderRadius: BorderRadius.circular(AppRadius.pill),
                     ),
                     child: Text(
@@ -251,7 +249,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                               }
                             : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _onboardingAmber,
+                          backgroundColor: AppColors.onboardingAmber,
                           foregroundColor: const Color(0xFF2D3436),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -437,7 +435,6 @@ class _ProgressDots extends StatelessWidget {
 
   const _ProgressDots({required this.currentIndex});
 
-  static const _onboardingAmber = Color(0xFFF5A623);
 
   @override
   Widget build(BuildContext context) {
@@ -453,7 +450,7 @@ class _ProgressDots extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isFilled ? _onboardingAmber : AppColors.border,
+              color: isFilled ? AppColors.onboardingAmber : AppColors.border,
             ),
           );
         }),

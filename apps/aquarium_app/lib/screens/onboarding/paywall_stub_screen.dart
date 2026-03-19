@@ -29,8 +29,6 @@ class PaywallStubScreen extends StatefulWidget {
 class _PaywallStubScreenState extends State<PaywallStubScreen>
     with TickerProviderStateMixin {
   // Amber brand colour from spec
-  static const Color _amber = Color(0xFFF5A623);
-  static const Color _warmCream = Color(0xFFFFF8F0);
 
   late final AnimationController _fishBounceController;
   late final Animation<double> _fishBounceAnim;
@@ -113,7 +111,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
-      backgroundColor: _warmCream,
+      backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -210,7 +208,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_rounded, color: _amber, size: 22),
+                  const Icon(Icons.check_rounded, color: AppColors.onboardingAmber, size: 22),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -292,7 +290,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
             color: isSelected ? const Color(0xFFFFF3E0) : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isSelected ? _amber : AppColors.border,
+              color: isSelected ? AppColors.onboardingAmber : AppColors.border,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -328,7 +326,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: _amber,
+                              color: AppColors.onboardingAmber,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -364,7 +362,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isSelected ? _amber : AppColors.textHint,
+                    color: isSelected ? AppColors.onboardingAmber : AppColors.textHint,
                     width: 2,
                   ),
                 ),
@@ -375,7 +373,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                           height: 12,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: _amber,
+                            color: AppColors.onboardingAmber,
                           ),
                         ),
                       )
@@ -394,7 +392,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: _amber,
+          color: AppColors.onboardingAmber,
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
         child: Text(
@@ -413,7 +411,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
     return Container(
       padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPadding + 16),
       decoration: BoxDecoration(
-        color: _warmCream,
+        color: AppColors.onboardingWarmCream,
         boxShadow: [
           BoxShadow(
             color: AppColors.blackAlpha05,
@@ -435,7 +433,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
               child: ElevatedButton(
                 onPressed: _onCtaTapped,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _amber,
+                  backgroundColor: AppColors.onboardingAmber,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
