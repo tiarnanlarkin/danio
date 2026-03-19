@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
 
 /// AI-powered stocking suggestion bottom sheet.
@@ -214,14 +215,9 @@ class _AiStockingSuggestionSheetState
           // Content
           Expanded(
             child: _loading
-                ? const Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: AppSpacing.md),
-                        Text('Analyzing your tank...'),
-                      ],
+                ? Center(
+                    child: BubbleLoader.small(
+                      color: AppColors.accent,
                     ),
                   )
                 : _error != null

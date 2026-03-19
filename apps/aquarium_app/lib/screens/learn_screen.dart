@@ -103,7 +103,12 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           slivers: [
             // Skeleton header
             SliverToBoxAdapter(
-              child: Container(height: 320, color: AppOverlays.primary10),
+              child: Builder(
+                builder: (context) => Container(
+                  height: MediaQuery.of(context).size.height * 0.38,
+                  color: AppOverlays.primary10,
+                ),
+              ),
             ),
             // Skeleton learning paths header
             SliverToBoxAdapter(
@@ -277,7 +282,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                 // === Study Room Scene Header ===
                 SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 320,
+                    height: MediaQuery.of(context).size.height * 0.38,
                     child: Stack(
                       children: [
                         // Study room illustration
