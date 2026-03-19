@@ -101,9 +101,7 @@ class DailyGoal {
     return goals;
   }
 
-  static String _formatDateKey(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
+  static String _formatDateKey(DateTime date) => formatDateKey(date);
 }
 
 /// Streak calculation utilities
@@ -174,9 +172,7 @@ class StreakCalculator {
     return 4; // Goal met or exceeded
   }
 
-  static String _formatDateKey(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
+  static String _formatDateKey(DateTime date) => formatDateKey(date);
 }
 
 /// Helper to format date key for daily XP history
