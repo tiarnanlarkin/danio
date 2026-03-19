@@ -317,14 +317,18 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(ctx, false),
+                  onPressed: () {
+                    if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
+                  },
                   child: const Text(
                     'Cancel',
                     style: TextStyle(color: AppColors.textSecondaryDark),
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(ctx, true),
+                  onPressed: () {
+                    if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: InventoryColors.consumableColor,
                     shape: RoundedRectangleBorder(

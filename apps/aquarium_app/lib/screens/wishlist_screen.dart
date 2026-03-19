@@ -114,7 +114,7 @@ class WishlistScreen extends ConsumerWidget {
         accentColor: _accentColor,
         onSave: (item) {
           ref.read(wishlistProvider.notifier).addItem(item);
-          Navigator.pop(ctx);
+          if (Navigator.canPop(ctx)) Navigator.pop(ctx);
         },
       ),
     );
@@ -131,7 +131,7 @@ class WishlistScreen extends ConsumerWidget {
         existingItem: item,
         onSave: (updated) {
           ref.read(wishlistProvider.notifier).updateItem(updated);
-          Navigator.pop(ctx);
+          if (Navigator.canPop(ctx)) Navigator.pop(ctx);
         },
       ),
     );
@@ -158,13 +158,15 @@ class WishlistScreen extends ConsumerWidget {
         content: Text('Remove "${item.name}" from your wishlist?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () {
+              if (Navigator.canPop(ctx)) Navigator.pop(ctx);
+            },
             child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () {
               ref.read(wishlistProvider.notifier).removeItem(item.id);
-              Navigator.pop(ctx);
+              if (Navigator.canPop(ctx)) Navigator.pop(ctx);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: const Text('Remove Item'),

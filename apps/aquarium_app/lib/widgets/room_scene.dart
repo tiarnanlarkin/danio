@@ -383,6 +383,8 @@ class _CozyRoomBackground extends StatelessWidget {
                   fit: BoxFit.none,
                   cacheWidth: 256,
                   cacheHeight: 256,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox.shrink(),
                 ),
               ),
             ),
