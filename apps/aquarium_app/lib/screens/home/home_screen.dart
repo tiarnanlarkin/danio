@@ -61,6 +61,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _showTankTooltip = true;
   bool _showHeartsTooltip = true;
   bool _showStageHandleTooltip = true;
+  bool _showRoomMetaphorTooltip = true;
   String? _cachedUserName;
   String? _cachedFishSpeciesName;
   final Set<String> _selectedTankIds = {};
@@ -81,11 +82,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final seenTank = prefs.getBool('tooltip_seen_tank') ?? false;
     final seenHearts = prefs.getBool('tooltip_seen_hearts') ?? false;
     final seenStageHandles = prefs.getBool('tooltip_seen_stage_handles') ?? false;
+    final seenRoomMetaphor = prefs.getBool('tooltip_seen_room_metaphor') ?? false;
     if (mounted) {
       setState(() {
         _showTankTooltip = !seenTank;
         _showHeartsTooltip = !seenHearts;
         _showStageHandleTooltip = !seenStageHandles;
+        _showRoomMetaphorTooltip = !seenRoomMetaphor;
       });
     }
   }
@@ -388,6 +391,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Builder(builder: (context) {
             final topOffset = MediaQuery.of(context).size.height * 0.38;
             return Stack(children: [
+              // Subtle edge accent lines when panels are closed
+              Consumer(builder: (context, ref, _) {
+                final openPanels = ref.watch(stageProvider.select((s) => s.openPanels));
+                final leftClosed = !openPanels.contains(StagePanel.temp);
+                final rightClosed = !openPanels.contains(StagePanel.waterQuality);
+                return Stack(children: [
+                  if (leftClosed)
+                    Positioned(
+                      left: 0,
+                      top: topOffset - 4,
+                      child: Container(
+                        width: 3,
+                        height: 88,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withAlpha(90),
+                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(2)),
+                        ),
+                      ),
+                    ),
+                  if (rightClosed)
+                    Positioned(
+                      right: 0,
+                      top: topOffset - 4,
+                      child: Container(
+                        width: 3,
+                        height: 88,
+                        decoration: BoxDecoration(
+                          color: AppColors.accent.withAlpha(90),
+                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(2)),
+                        ),
+                      ),
+                    ),
+                ]);
+              }),
               Positioned(left: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.temp, isLeft: true, icon: Icons.thermostat_rounded)),
               Positioned(right: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.waterQuality, isLeft: false, icon: Icons.science_rounded)),
             ]);
@@ -615,6 +652,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 message: 'Tap the side handles to check water parameters and feeding info!',
                 autoDismissDuration: const Duration(seconds: 5),
                 onDismissed: () => setState(() => _showStageHandleTooltip = false),
+              ),
+            ),
+          if (_showRoomMetaphorTooltip && !showWelcome && !showComeback && !_showTankTooltip && !_showHeartsTooltip && !_showStageHandleTooltip)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                bottom: false,
+                child: FirstVisitTooltip(
+                  prefsKey: 'tooltip_seen_room_metaphor',
+                  emoji: '🏡',
+                  message: 'This is your virtual fish room. Your tank lives in the center — tap the panels on each side to check water parameters, lighting, and more!',
+                  autoDismissDuration: const Duration(seconds: 6),
+                  onDismissed: () => setState(() => _showRoomMetaphorTooltip = false),
+                ),
               ),
             ),
         ],

@@ -244,6 +244,8 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       route = MaterialPageRoute(
         builder: (_) => const SpacedRepetitionPracticeScreen(),
       );
+    } else if (payload == 'home') {
+      targetTab = 2;
     } else if (payload == 'achievements') {
       targetTab = 4;
       route = MaterialPageRoute(
@@ -254,6 +256,9 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     if (targetTab < 0) return;
 
     ref.read(currentTabProvider.notifier).state = targetTab;
+
+    // Tab-only navigation (no in-tab push) for payloads without a route.
+    if (route == null) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final keys = ref.read(tabNavigatorKeysProvider);

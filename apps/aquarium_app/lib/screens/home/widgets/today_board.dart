@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/task.dart';
 import '../../../providers/tank_provider.dart';
+import '../../../providers/spaced_repetition_provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../../screens/tab_navigator.dart';
 
@@ -80,8 +81,35 @@ class TodayBoardCard extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, WidgetRef ref) {
+    final srState = ref.watch(spacedRepetitionProvider);
+    final dueCards = srState.stats.dueCards;
+    final hasCardsToReview = dueCards > 0;
+
+    // Pick the best next action
+    final int targetTab;
+    final String emoji;
+    final String label;
+    final IconData icon;
+
+    if (hasCardsToReview) {
+      targetTab = 1; // Practice
+      emoji = '🧠';
+      label = 'Practice due reviews';
+      icon = Icons.quiz;
+    } else if (srState.stats.totalCards > 0) {
+      targetTab = 0; // Learn
+      emoji = '📖';
+      label = 'Browse new lessons';
+      icon = Icons.auto_stories;
+    } else {
+      targetTab = 0; // Learn
+      emoji = '🐠';
+      label = 'Explore the fish encyclopedia';
+      icon = Icons.menu_book;
+    }
+
     return GestureDetector(
-      onTap: () => ref.read(currentTabProvider.notifier).state = 0,
+      onTap: () => ref.read(currentTabProvider.notifier).state = targetTab,
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -95,15 +123,17 @@ class TodayBoardCard extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.check_circle_outline,
+            Icon(
+              icon,
               size: AppIconSizes.sm,
               color: AppColors.success,
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
-                'All caught up! 🎉',
+                hasCardsToReview
+                    ? 'Tasks done — $emoji reviews waiting!'
+                    : 'All caught up! $emoji $label',
                 style: AppTypography.labelMedium.copyWith(
                   color: context.textSecondary,
                 ),
