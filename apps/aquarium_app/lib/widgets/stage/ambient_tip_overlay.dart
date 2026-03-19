@@ -157,12 +157,16 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
                       ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
-                    GestureDetector(
-                      onTap: _dismiss,
-                      child: Icon(
-                        Icons.close,
-                        size: 14,
-                        color: widget.theme.textSecondary,
+                    Semantics(
+                      button: true,
+                      label: 'Dismiss tip',
+                      child: GestureDetector(
+                        onTap: _dismiss,
+                        child: Icon(
+                          Icons.close,
+                          size: 14,
+                          color: widget.theme.textSecondary,
+                        ),
                       ),
                     ),
                   ],

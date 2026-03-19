@@ -166,12 +166,15 @@ class _InteractiveObjectState extends State<InteractiveObject>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: _handleTapDown,
-      onTapUp: _handleTapUp,
-      onTapCancel: _handleTapCancel,
-      onLongPress: _handleLongPress,
-      child: AnimatedBuilder(
+    return Semantics(
+      button: true,
+      label: widget.label,
+      child: GestureDetector(
+        onTapDown: _handleTapDown,
+        onTapUp: _handleTapUp,
+        onTapCancel: _handleTapCancel,
+        onLongPress: _handleLongPress,
+        child: AnimatedBuilder(
         animation: Listenable.merge([_pulseAnimation, _scaleAnimation]),
         builder: (context, child) {
           return Stack(
@@ -195,7 +198,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
           );
         },
       ),
-    );
+    ));
   }
 
   double _getScaleForStyle() {

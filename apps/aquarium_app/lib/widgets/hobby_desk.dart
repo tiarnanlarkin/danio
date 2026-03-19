@@ -234,9 +234,13 @@ class ItemDetailPopup extends StatelessWidget {
                 Text(title, style: AppTypography.labelLarge),
                 const Spacer(),
                 if (onClose != null)
-                  GestureDetector(
-                    onTap: onClose,
-                    child: Icon(Icons.close, size: 18, color: context.textHint),
+                  Semantics(
+                    button: true,
+                    label: 'Close popup',
+                    child: GestureDetector(
+                      onTap: onClose,
+                      child: Icon(Icons.close, size: 18, color: context.textHint),
+                    ),
                   ),
               ],
             ),
@@ -304,15 +308,18 @@ class MiniTankScene extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Tank
-            Container(
+    return Semantics(
+      button: onTap != null,
+      label: '$name tank, ${volumeLitres.toInt()} litres',
+      child: GestureDetector(
+        onTap: onTap,
+        child: SizedBox(
+          width: width,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Tank
+              Container(
               width: width,
               height: width * 0.6,
               decoration: BoxDecoration(
@@ -468,7 +475,7 @@ class MiniTankScene extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }
 

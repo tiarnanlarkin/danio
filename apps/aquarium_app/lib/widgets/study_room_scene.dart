@@ -133,9 +133,13 @@ class StudyRoomScene extends StatelessWidget {
               Positioned(
                 top: h * 0.15,
                 left: w * 0.08,
-                child: GestureDetector(
-                  onTap: onBookshelfTap,
-                  child: _Bookshelf(width: w * 0.35, height: h * 0.45),
+                child: Semantics(
+                  button: true,
+                  label: 'Open bookshelf',
+                  child: GestureDetector(
+                    onTap: onBookshelfTap,
+                    child: _Bookshelf(width: w * 0.35, height: h * 0.45),
+                  ),
                 ),
               ),
 
@@ -143,9 +147,13 @@ class StudyRoomScene extends StatelessWidget {
               Positioned(
                 top: h * 0.25,
                 right: w * 0.08,
-                child: GestureDetector(
-                  onTap: onDeskTap,
-                  child: _StudyDesk(width: w * 0.4, height: h * 0.35),
+                child: Semantics(
+                  button: true,
+                  label: 'Open study desk',
+                  child: GestureDetector(
+                    onTap: onDeskTap,
+                    child: _StudyDesk(width: w * 0.4, height: h * 0.35),
+                  ),
                 ),
               ),
 

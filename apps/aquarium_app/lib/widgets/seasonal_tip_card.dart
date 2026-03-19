@@ -127,11 +127,15 @@ class _SeasonalTipCardState extends ConsumerState<SeasonalTipCard>
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: _dismiss,
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xs),
-                  child: Icon(Icons.close, size: 18, color: context.textHint),
+              Semantics(
+                button: true,
+                label: 'Dismiss seasonal tip',
+                child: GestureDetector(
+                  onTap: _dismiss,
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xs),
+                    child: Icon(Icons.close, size: 18, color: context.textHint),
+                  ),
                 ),
               ),
             ],
