@@ -67,7 +67,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               title: 'Nitrite (NO₂)',
               subtitle: 'Toxic - prevents oxygen absorption',
               description:
-                  'Nitrosomonas bacteria convert ammonia to nitrite. '
+                  'Nitrospira bacteria convert ammonia to nitrite. '
                   'Still toxic but shows the cycle is progressing.',
               color: AppColors.warning,
               icon: Icons.science,

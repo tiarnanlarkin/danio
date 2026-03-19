@@ -264,7 +264,7 @@ final _allTerms = [
   const _GlossaryTerm(
     term: 'Beneficial Bacteria',
     definition:
-        'Bacteria that convert ammonia to nitrite (Nitrosomonas) and nitrite to nitrate (Nitrobacter).',
+        'Bacteria that convert ammonia to nitrite and nitrite to nitrate. Nitrospira is now recognised as the primary genus responsible for both steps in most freshwater aquaria.',
     category: 'Cycling',
   ),
 

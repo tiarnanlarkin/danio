@@ -68,7 +68,7 @@ class PlacementTestContent {
       ],
       correctIndex: 1,
       explanation:
-          'Nitrospira bacteria handle the second step of the nitrogen cycle: converting toxic nitrite (NO₂⁻) into much less harmful nitrate (NO₃⁻). Nitrosomonas handle the first step (ammonia → nitrite), which is why nitrite spikes after ammonia starts dropping. Denitrifying bacteria go the other direction (nitrate → nitrogen gas) and only work in anaerobic conditions.',
+          'Nitrospira bacteria handle the second step of the nitrogen cycle: converting toxic nitrite (NO₂⁻) into much less harmful nitrate (NO₃⁻). Nitrospira also handle the first step (ammonia → nitrite) in most freshwater aquaria — though older references often credit Nitrosomonas. Denitrifying bacteria go the other direction (nitrate → nitrogen gas) and only work in anaerobic conditions.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 

@@ -148,7 +148,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'After 1-2 weeks, bacteria called Nitrosomonas start consuming ammonia. But they produce nitrite as a byproduct - which is also toxic to fish!',
+              'After 1-2 weeks, bacteria called Nitrospira start consuming ammonia. (You may see older references to Nitrosomonas — recent research has shown Nitrospira is the primary ammonia-oxidiser in most freshwater aquaria.) They produce nitrite as a byproduct — which is also toxic to fish!',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,

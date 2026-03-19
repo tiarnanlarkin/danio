@@ -574,7 +574,7 @@ class _PhaseEducation extends StatelessWidget {
         title = 'What is Happening Now';
         content =
             'Ammonia is building up in your tank. This is normal and expected!\n\n'
-            'Nitrosomonas bacteria are starting to colonise your filter media. '
+            'Nitrospira bacteria are starting to colonise your filter media. '
             'These bacteria eat ammonia and convert it to nitrite (NO2).\n\n'
             'DO NOT add fish during this phase - ammonia is toxic to them.';
         icon = Icons.science;
