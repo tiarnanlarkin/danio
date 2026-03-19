@@ -4829,6 +4829,516 @@ class LessonContent {
           ],
         ),
       ),
+
+      // Lesson 2.46: Choosing Your First Tank
+      Lesson(
+        id: 'eq_tank_selection',
+        pathId: 'equipment',
+        title: 'Choosing Your First Tank',
+        description: 'Pre-purchase guidance for picking the perfect starter tank',
+        orderIndex: 3,
+        xpReward: 50,
+        estimatedMinutes: 7,
+        sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Before You Buy Anything',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Walking into an aquarium shop for the first time is exciting — and overwhelming. Tanks of every size, shapes you\'ve never imagined, and shelves of equipment you didn\'t know existed. Before you hand over any money, let\'s talk about what actually matters.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Your tank choice affects everything else: which fish you can keep, how much maintenance you\'ll do, and whether your fish thrive or struggle. Get this right and everything else gets easier.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Tank Size: Why Bigger Is Easier',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'The single most common beginner mistake is buying a tank that\'s too small. It seems logical — "I\'m a beginner, I should start small" — but in fishkeeping, smaller tanks are actually harder to maintain.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Below 20 litres (5 gallons):** Extremely difficult. Water parameters swing wildly, temperature is unstable, and very few fish can live comfortably. Avoid as a first tank.\n• **20–40 litres (5–10 gallons):** Possible for a single betta or a small group of nano fish, but requires careful attention and frequent water changes.\n• **60–120 litres (15–30 gallons):** The sweet spot for beginners. Stable parameters, good fish selection, forgiving of minor mistakes.\n• **120+ litres (30+ gallons):** Even more stable and gives you more stocking options. Only downside is cost and space.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Think of it like this: a drop of pollution in a teacup is much more concentrated than the same drop in a swimming pool. Larger volumes dilute problems and give you more time to fix them.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Glass vs Acrylic',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Most starter tanks are glass, and for good reason — it\'s affordable, scratch-resistant, and doesn\'t yellow over time. Acrylic tanks are lighter and clearer, but they scratch easily and cost significantly more.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Glass:** Heavier, more affordable, scratch-resistant, can develop tiny leaks at seams over many years\n• **Acrylic:** Lighter, optically clearer, more impact-resistant, scratches easily (even cleaning with the wrong cloth can mark it)',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Acrylic tanks can weigh up to 50% less than glass tanks of the same size. This matters for very large tanks — a 400-litre glass tank can weigh over 400 kg with water!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Where to Put Your Tank',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Placement matters more than most people think. Your tank needs a level, sturdy surface that can handle the weight (water weighs roughly 1 kg per litre, plus the tank itself and substrate).',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Away from windows:** Direct sunlight causes temperature fluctuations and algae explosions\n• **Away from radiators and heaters:** Stable temperature is critical for fish health\n• **Away from doors:** Vibrations and temperature drafts from opening doors stress fish\n• **Near a power socket:** You\'ll need one for your filter, heater, and light\n• **On a proper stand:** Aquarium stands are designed for the weight and water movement. A regular table or bookshelf is risky.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'A 120-litre tank with water, substrate, and stand can weigh over 200 kg. Make sure your floor can handle it — especially if you live in an older building or flat.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Budget Expectations',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'The tank itself is usually the cheapest part. Here\'s a realistic breakdown for a 60–120 litre beginner setup:',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Tank + stand:** £80–200\n• **Filter:** £20–60\n• **Heater:** £15–30\n• **Thermometer:** £5–10\n• **Light:** Often included, otherwise £15–40\n• **Substrate (gravel/sand):** £10–25\n• **Water conditioner + test kit:** £20–35\n• **Decor (plants, caves, hides):** £15–40\n• **First fish:** £5–25\n\n**Total realistic budget: £200–450** for a good starter setup.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Second-hand tanks can save you a lot — check local marketplace listings. Just inspect carefully for scratches, leaks, and silicone condition.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Common Beginner Mistakes',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'These mistakes are so common they\'re almost a rite of passage. Save yourself the heartache and learn from others:',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Buying too small:** The "it\'s just for one fish" trap. Even a single betta benefits from a 20-litre tank.\n• **Impulse buying fish on the same day as the tank:** Your tank needs to cycle for 2–6 weeks before fish can safely move in.\n• **Skipping the water conditioner:** Tap water contains chlorine and chloramine that kill fish and beneficial bacteria.\n• **Choosing a tank based on looks alone:** That cool bow-front or hexagonal tank might look great but is harder to clean and has less swimming space than a standard rectangular tank.\n• **Forgetting about the stand:** A wobbly table under a heavy water-filled glass box is an accident waiting to happen.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'A rectangular tank is always the best choice for beginners. It maximises swimming space, is easiest to clean, and provides the most stable water conditions.',
+          ),
+        ],
+        quiz: Quiz(
+          id: 'eq_tank_selection_quiz',
+          lessonId: 'eq_tank_selection',
+          questions: [
+            const QuizQuestion(
+              id: 'eq_tank_q1',
+              question: 'Why is a larger tank generally easier for beginners?',
+              options: [
+                'It looks better',
+                'Larger water volumes are more stable and forgiving of mistakes',
+                'Larger tanks need less equipment',
+                'Fish grow faster in bigger tanks',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Larger volumes of water dilute waste and changes more slowly, giving you more time to notice and fix problems before they become dangerous.',
+            ),
+            const QuizQuestion(
+              id: 'eq_tank_q2',
+              question: 'Where should you NOT place your aquarium?',
+              options: [
+                'Near a power socket',
+                'On a proper aquarium stand',
+                'In direct sunlight by a window',
+                'Against an interior wall',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Direct sunlight causes temperature swings and triggers algae blooms. Always place your tank away from windows and heat sources.',
+            ),
+            const QuizQuestion(
+              id: 'eq_tank_q3',
+              question: 'Which tank shape is best for beginners?',
+              options: [
+                'Bow-front',
+                'Hexagonal',
+                'Rectangular',
+                'Cylindrical',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Rectangular tanks maximise swimming space, are easiest to clean and maintain, and provide the most stable water conditions.',
+            ),
+          ],
+        ),
+      ),
+
+      // Lesson 2.47: Stocking Your Tank
+      Lesson(
+        id: 'eq_stocking',
+        pathId: 'equipment',
+        title: 'Stocking Your Tank',
+        description: 'How to choose compatible fish and avoid overstocking',
+        orderIndex: 4,
+        xpReward: 50,
+        estimatedMinutes: 7,
+        sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Most Exciting Part — and the Most Dangerous',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Picking fish for your new tank is the fun part. It\'s also where most beginners make expensive mistakes that cost fish their lives. Let\'s make sure you get it right.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Before you buy a single fish, your tank must be fully cycled. A cycled tank has established colonies of beneficial bacteria that can process fish waste. No cycling = no fish. Period.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The "Inch Per Gallon" Myth',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'You\'ve probably heard the rule: "one inch of fish per gallon of water." It sounds simple and useful — but it\'s dangerously misleading.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• A 30 cm (12 inch) goldfish produces far more waste than six 5 cm (2 inch) tetras — same "inches" but massively different bioload\n• A tall, thin fish and a wide, round fish have the same length but very different space needs\n• Schooling fish need to be in groups — you can\'t keep "one inch" of a species that needs to be in a group of six\n• This rule ignores adult size. That 2 cm baby pleco will grow to 40 cm',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'The inch-per-gallon "rule" has killed more fish than it has helped. Always research the adult size, bioload, and social needs of every species individually.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Cycling Comes First',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'This is so important it bears repeating: your tank must be cycled before any fish go in. The nitrogen cycle takes 2–6 weeks to establish. During this time, beneficial bacteria grow and colonise your filter and substrate.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'You can cycle with or without fish. Fishless cycling (using ammonia or fish food) is safer and doesn\'t put any fish at risk. Your test kit is your best friend during this process — watch for ammonia and nitrite to spike and then drop to zero.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Tip: You can speed up cycling by borrowing some filter media or substrate from an established, healthy tank. The beneficial bacteria will colonise your new filter much faster.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Introducing Fish Gradually',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Even in a fully cycled tank, don\'t add all your fish at once. The bacterial colony can only handle so much waste at once. Adding too many fish overwhelms the system and causes an ammonia spike.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Week 1:** Add 2–3 small fish (or one slightly larger fish)\n• **Week 2:** Test water parameters. If ammonia and nitrite are zero, add a few more\n• **Week 3 onwards:** Continue adding fish gradually, testing between additions\n• **Rule of thumb:** Add no more than 25% of your planned total stocking per week',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Acclimation matters! Float the fish bag in your tank for 15 minutes to equalise temperature, then gradually mix tank water into the bag over 30 minutes before releasing.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Compatibility Basics',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Not all fish get along. Before adding any species to your tank, check these three things:',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Temperament:** Peaceful community fish (tetras, rasboras, corydoras) should live with other peaceful fish. Don\'t mix aggressive or semi-aggressive species with gentle community fish.\n• **Size:** A general rule — don\'t keep fish with tank mates that can fit in their mouth. Tiny fish will eventually become lunch.\n• **Water parameters:** Check temperature range, pH preference, and hardness. Fish from different environments (e.g., African rift lake cichlids and Amazon tetras) need very different water chemistry.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Corydoras catfish are one of the best community additions. They\'re peaceful, active, and clean up food that falls to the bottom. Keep them in groups of at least 6 — they\'re social creatures!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Warning Signs of Overstocking',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'An overstocked tank is a ticking time bomb. Watch for these signs:',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Constant high nitrates:** If weekly water changes can\'t keep nitrates below 40 ppm, you have too many fish\n• **Aggression increasing:** Fish fighting more as they compete for limited territory\n• **Excessive algae:** More fish = more waste = more nutrients for algae\n• **Cloudy water that won\'t clear:** Usually a sign of excess biological load\n• **Fish hiding all the time:** Stressed from overcrowding and lack of personal space',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'The best approach: research every species before buying. Know its adult size, minimum tank size, preferred water parameters, temperament, and whether it needs to be kept in a group. Then plan your stocking list and check compatibility.',
+          ),
+        ],
+        quiz: Quiz(
+          id: 'eq_stocking_quiz',
+          lessonId: 'eq_stocking',
+          questions: [
+            const QuizQuestion(
+              id: 'eq_stocking_q1',
+              question: 'Why is the "inch per gallon" rule unreliable?',
+              options: [
+                'Fish don\'t grow in captivity',
+                'It ignores differences in waste production, adult size, and social needs between species',
+                'It only works for saltwater tanks',
+                'It was disproven in the 1990s',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'The rule treats all fish as equal, but a 30 cm goldfish produces far more waste than six 5 cm tetras. Different species have wildly different bioloads and space needs.',
+            ),
+            const QuizQuestion(
+              id: 'eq_stocking_q2',
+              question: 'When can you add fish to a new tank?',
+              options: [
+                'As soon as the water clears',
+                'After the tank has been cycling for at least 2–6 weeks and tests show zero ammonia and nitrite',
+                'After 24 hours of running the filter',
+                'When the water reaches room temperature',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'The nitrogen cycle takes 2–6 weeks to establish beneficial bacteria colonies. You should only add fish once ammonia and nitrite readings are consistently zero.',
+            ),
+            const QuizQuestion(
+              id: 'eq_stocking_q3',
+              question: 'What is a sign that your tank might be overstocked?',
+              options: [
+                'Fish are eating enthusiastically',
+                'Nitrates stay high even after weekly water changes',
+                'The filter is running quietly',
+                'Plants are growing well',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'If regular water changes can\'t keep nitrates below 40 ppm, your tank is producing more waste than the filtration and maintenance can handle — a clear sign of overstocking.',
+            ),
+          ],
+        ),
+      ),
+
+      // Lesson 2.48: Essential Maintenance Skills
+      Lesson(
+        id: 'eq_maintenance_skills',
+        pathId: 'equipment',
+        title: 'Essential Maintenance Skills',
+        description: 'Hands-on techniques every fishkeeper needs to know',
+        orderIndex: 5,
+        xpReward: 50,
+        estimatedMinutes: 8,
+        sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Skills That Keep Fish Alive',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'You can read about water parameters and the nitrogen cycle all day, but at some point you need to get your hands wet. These are the practical skills every fishkeeper uses regularly — and doing them properly makes the difference between a thriving tank and a struggling one.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Consistency beats intensity. A modest 25% water change every week is far better than an emergency 80% change once a month.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'How to Do a Water Change (Step by Step)',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Weekly partial water changes are the single most important maintenance task. They remove nitrates, replenish minerals, and keep your water fresh.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '1. **Turn off the heater and filter** — a heater running in low water can crack; a filter without water can burn out\n2. **Prepare replacement water** — fill a clean bucket, add water conditioner, and match the temperature to your tank\n3. **Remove 25–30% of the water** — use a siphon or jug. Don\'t remove more than 30% in a single session unless it\'s an emergency\n4. **Clean the substrate** while draining — more on this below\n5. **Refill slowly** — pour new water in gently to avoid disturbing fish and substrate. Pouring onto a plate or your hand disperses the flow\n6. **Turn equipment back on** — wait a few minutes for the water to equalise, then switch everything on\n7. **Test the water** — check parameters to make sure everything looks good',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Never use hot tap water to speed up temperature matching. In the UK, hot water passes through copper pipes and boilers, leaching dissolved copper that is toxic to fish — especially invertebrates.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'How to Gravel Vacuum',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'A gravel vacuum (also called a siphon) is your best friend. It removes water and cleans the substrate at the same time — basically a two-for-one maintenance tool.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• Insert the wide end into the gravel and twist slightly — you\'ll see debris and dirty water get sucked up\n• When the water flowing out runs clear, move to the next section\n• Don\'t vacuum the entire substrate every week — rotate through sections (e.g., one quarter per week) so you don\'t disturb too much beneficial bacteria\n• Only vacuum the top 2–3 cm of gravel. Deeper layers are where most of your beneficial bacteria live\n• For sand substrate, hover the vacuum just above the surface — sand is lighter and will get sucked up if you push in too deep',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'How to Start a Siphon',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Starting a siphon for the first time can feel awkward, but it\'s straightforward once you know the technique:',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Method 1 — Submerge and lift:** Fill the entire siphon tube with water (submerge it fully), put your thumb over the end, and place that end in your waste bucket below the tank level. Remove your thumb and gravity does the rest.\n• **Method 2 — Squeeze bulb:** Many modern siphons have a squeeze bulb. Submerge the vacuum end, squeeze the bulb a few times, and water will start flowing.\n• **Method 3 — Shake method:** Submerge the vacuum end, hold the tube end below the tank, and quickly move the vacuum end up and down in the water to start the flow.\n\n⚠️ Never start a siphon by sucking on the tube with your mouth. Aquarium water contains bacteria that can make you ill.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Rinsing Substrate Before Setup',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'New gravel and sand are coated in fine dust from manufacturing. If you add them straight to your tank, you\'ll get a cloudy mess that can take days to clear.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• Put a small amount of substrate in a bucket (don\'t rinse the whole bag at once — it gets too heavy)\n• Fill the bucket with water, stir vigorously, and pour off the cloudy water\n• Repeat until the water runs clear — this can take 5–10 rinses for dusty substrates\n• Only then add it to your tank\n\n⚠️ Use water only — never soap or detergent. Even trace amounts are lethal to fish.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'Some planted tank substrates (like aquasoil) should NOT be pre-rinsed — the cloudiness is temporary and the nutrients in the dust are beneficial. Always check the manufacturer\'s instructions!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Filter Maintenance Basics',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Your filter is the heart of your tank\'s ecosystem. The beneficial bacteria living on the filter media are doing most of the work keeping your water safe. Look after them!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Mechanical media (sponge/pad):** Rinse in OLD tank water during a water change, never under tap water. Chlorine kills beneficial bacteria.\n• **Biological media (ceramic rings, bio-balls):** Rinse gently in old tank water. Replace only when they\'re physically falling apart — not on a schedule.\n• **Chemical media (carbon):** Replace monthly as directed. Remove during medication treatment — carbon absorbs the medication.\n• **Flow check:** If water flow noticeably decreases, it\'s time to clean or replace the mechanical media.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never clean all your filter media at once. Replace or clean one component at a time, spaced weeks apart. This preserves enough bacteria to keep your cycle going.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Tools Every Beginner Needs',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'You don\'t need to spend a fortune, but a few basic tools make maintenance much easier:',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Gravel vacuum/siphon:** Essential. Get one appropriate for your tank size.\n• **Water conditioner:** Removes chlorine and chloramine from tap water. Non-negotiable.\n• **Liquid test kit:** Drop tests (API Freshwater Master Kit) are more accurate than test strips and last for hundreds of tests.\n• **Bucket:** Dedicated to aquarium use only — never one that\'s had soap or chemicals in it.\n• **Thermometer:** A basic glass or digital thermometer to monitor water temperature.\n• **Algae scraper:** For cleaning the glass. Avoid kitchen sponges (soap residue).\n• **Net:** For moving fish or removing debris. Get a soft mesh one to avoid injuring fish.\n• **Towels:** Aquariums are wet. Keep a dedicated towel nearby — you\'ll use it every time.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Set up a maintenance routine and stick to it. Weekly water changes, monthly filter checks, and daily visual inspections. Your fish will reward you with years of health and colour.',
+          ),
+        ],
+        quiz: Quiz(
+          id: 'eq_maintenance_skills_quiz',
+          lessonId: 'eq_maintenance_skills',
+          questions: [
+            const QuizQuestion(
+              id: 'eq_maint_q1',
+              question: 'How much water should you change per week?',
+              options: [
+                '10%',
+                '25–30%',
+                '50%',
+                '100%',
+              ],
+              correctIndex: 1,
+              explanation:
+                  '25–30% weekly is the sweet spot — enough to remove nitrates without disrupting beneficial bacteria or causing parameter swings.',
+            ),
+            const QuizQuestion(
+              id: 'eq_maint_q2',
+              question: 'Why should you rinse filter media in old tank water instead of tap water?',
+              options: [
+                'Old water cleans more effectively',
+                'Tap water is too cold and shocks the bacteria',
+                'Chlorine in tap water kills beneficial bacteria',
+                'Old water has nutrients that feed the bacteria',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Chlorine and chloramine in tap water are specifically designed to kill bacteria — including the beneficial ones in your filter. Old tank water is chlorine-free and safe for rinsing.',
+            ),
+            const QuizQuestion(
+              id: 'eq_maint_q3',
+              question: 'What should you never do when starting a siphon?',
+              options: [
+                'Use a bucket',
+                'Start it by sucking on the tube with your mouth',
+                'Submerge the tube fully first',
+                'Place the waste bucket below the tank level',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Aquarium water contains bacteria that can make you ill. Always use one of the safe methods: submerge-and-lift, squeeze bulb, or the shake method.',
+            ),
+          ],
+        ),
+      ),
     ],
   );
 
