@@ -149,13 +149,16 @@ class _GlassCardState extends State<GlassCard>
     );
 
     if (widget.onTap != null || widget.onLongPress != null) {
-      card = GestureDetector(
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        onTap: _handleTap,
-        onLongPress: _handleLongPress,
-        child: card,
+      card = Semantics(
+        button: widget.onTap != null,
+        child: GestureDetector(
+          onTapDown: _handleTapDown,
+          onTapUp: _handleTapUp,
+          onTapCancel: _handleTapCancel,
+          onTap: _handleTap,
+          onLongPress: _handleLongPress,
+          child: card,
+        ),
       );
     }
 

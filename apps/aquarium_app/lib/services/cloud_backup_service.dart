@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show FileOptions;
 
 import '../models/models.dart';
-import '../utils/model_serialization.dart' as serial;
 import 'local_json_storage_service.dart';
 import 'supabase_service.dart';
 
@@ -127,10 +126,10 @@ class CloudBackupService {
       final logs = await storage.getLogsForTank(tank.id);
       final tasks = await storage.getTasksForTank(tank.id);
 
-      allLivestock.addAll(livestock.map(serial.livestockToJson));
-      allEquipment.addAll(equipment.map(serial.equipmentToJson));
-      allLogs.addAll(logs.map(serial.logEntryToJson));
-      allTasks.addAll(tasks.map(serial.taskToJson));
+      allLivestock.addAll(livestock.map((l) => l.toJson()));
+      allEquipment.addAll(equipment.map((e) => e.toJson()));
+      allLogs.addAll(logs.map((l) => l.toJson()));
+      allTasks.addAll(tasks.map((t) => t.toJson()));
     }
 
     return {
@@ -168,7 +167,7 @@ class CloudBackupService {
     final livestockJson = data['livestock'] as List<dynamic>? ?? [];
     for (final lJson in livestockJson) {
       final map = lJson as Map<String, dynamic>;
-      final livestock = serial.livestockFromJson(map);
+      final livestock = Livestock.fromJson(map);
       await storage.saveLivestock(livestock);
     }
 
@@ -176,7 +175,7 @@ class CloudBackupService {
     final equipmentJson = data['equipment'] as List<dynamic>? ?? [];
     for (final eJson in equipmentJson) {
       final map = eJson as Map<String, dynamic>;
-      final equipment = serial.equipmentFromJson(map);
+      final equipment = Equipment.fromJson(map);
       await storage.saveEquipment(equipment);
     }
 
@@ -184,7 +183,7 @@ class CloudBackupService {
     final logsJson = data['logs'] as List<dynamic>? ?? [];
     for (final logJson in logsJson) {
       final map = logJson as Map<String, dynamic>;
-      final log = serial.logEntryFromJson(map);
+      final log = LogEntry.fromJson(map);
       await storage.saveLog(log);
     }
 
@@ -192,7 +191,7 @@ class CloudBackupService {
     final tasksJson = data['tasks'] as List<dynamic>? ?? [];
     for (final taskJson in tasksJson) {
       final map = taskJson as Map<String, dynamic>;
-      final task = serial.taskFromJson(map);
+      final task = Task.fromJson(map);
       await storage.saveTask(task);
     }
   }
