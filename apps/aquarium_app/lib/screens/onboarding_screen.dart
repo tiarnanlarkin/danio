@@ -88,8 +88,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   // ── Derive a goal from collected state ───────────────────────────────
   UserGoal _deriveGoal() {
+    final level = _experienceLevel ?? ExperienceLevel.beginner;
     if (_tankStatus == 'planning') return UserGoal.learnTheScience;
-    if (_experienceLevel == ExperienceLevel.expert) {
+    if (level == ExperienceLevel.expert) {
       return UserGoal.masterTheHobby;
     }
     return UserGoal.keepFishAlive;
@@ -98,27 +99,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   // ── Complete onboarding ──────────────────────────────────────────────
   Future<void> _completeOnboarding() async {
     try {
-      // 1. Create or update profile with all collected data
+      // 1. Create or update profile with all collected data atomically
       final existingProfile = ref.read(userProfileProvider).value;
+      final level = _experienceLevel ?? ExperienceLevel.beginner;
+
       if (existingProfile == null) {
         await ref.read(userProfileProvider.notifier).createProfile(
-          experienceLevel: _experienceLevel!,
+          experienceLevel: level,
           primaryTankType: TankType.freshwater,
           goals: [_deriveGoal()],
-          name: _userName, // Persist name from onboarding if provided
-        );
-        // Persist the new onboarding fields
-        await ref.read(userProfileProvider.notifier).updateProfile(
+          name: _userName,
           tankStatus: _tankStatus,
           firstFishSpeciesId: _selectedFish?.commonName,
         );
       } else {
         await ref.read(userProfileProvider.notifier).updateProfile(
-          experienceLevel: _experienceLevel,
+          experienceLevel: level,
           goals: [_deriveGoal()],
           tankStatus: _tankStatus,
           firstFishSpeciesId: _selectedFish?.commonName,
-          name: _userName, // Persist name from onboarding if provided
+          name: _userName,
         );
       }
 
@@ -204,8 +204,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Scaffold(
-        body: PageView(
+      child: PopScope(
+        canPop: false,
+        child: Scaffold(
+          body: PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
@@ -304,6 +306,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               );
             }),
           ],
+        ),
         ),
       ),
     );

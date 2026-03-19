@@ -117,6 +117,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     required ExperienceLevel experienceLevel,
     TankType primaryTankType = TankType.freshwater,
     required List<UserGoal> goals,
+    String? tankStatus,
+    String? firstFishSpeciesId,
   }) async {
     try {
       final now = DateTime.now();
@@ -126,6 +128,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         experienceLevel: experienceLevel,
         primaryTankType: primaryTankType,
         goals: goals,
+        tankStatus: tankStatus,
+        firstFishSpeciesId: firstFishSpeciesId,
         createdAt: now,
         updatedAt: now,
       );
