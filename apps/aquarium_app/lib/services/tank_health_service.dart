@@ -82,7 +82,11 @@ class TankHealthService {
       paramScore = 20; // Neutral - no data
       factors.add('No water tests logged yet');
     } else {
-      final latest = waterTests.first.waterTest!;
+      final latest = waterTests.first.waterTest;
+      if (latest == null) {
+        paramScore = 20;
+        factors.add('Latest water test has no parameter data');
+      } else {
       final daysSinceTest = now.difference(waterTests.first.timestamp).inDays;
 
       // Stale test penalty

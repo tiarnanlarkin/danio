@@ -607,10 +607,25 @@ class CloudSyncService {
   // ---------------------------------------------------------------------------
 
   /// Queue a change for later sync (when offline).
+  /// Maximum number of entries retained in the offline queue.
+  /// Oldest entries are dropped when the cap is exceeded.
+  static const _maxOfflineQueueSize = 100;
+
   Future<void> queueOfflineChange(OfflineQueueEntry entry) async {
     final prefs = await _ref.read(sharedPreferencesProvider.future);
     final existing = prefs.getStringList(_queueKey) ?? [];
     existing.add(json.encode(entry.toJson()));
+
+    if (existing.length > _maxOfflineQueueSize) {
+      final dropped = existing.length - _maxOfflineQueueSize;
+      appLog(
+        '[CloudSync] Offline queue exceeded cap ($existing.length). '
+        'Dropping $dropped oldest entry(ies).',
+        tag: 'CloudSyncService',
+      );
+      existing.removeRange(0, dropped);
+    }
+
     await prefs.setStringList(_queueKey, existing);
     appLog('[CloudSync] Queued offline change: ${entry.table}/${entry.id}', tag: 'CloudSyncService');
   }

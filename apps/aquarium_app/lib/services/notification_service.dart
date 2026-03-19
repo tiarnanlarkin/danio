@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart'; // For TimeOfDay
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -31,7 +32,7 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
-  bool _initialized = false;
+  Completer<void>? _initCompleter;
   // Cached schedule mode — resolved once on first scheduling call (P2-007).
   AndroidScheduleMode? _cachedScheduleMode;
 
@@ -47,40 +48,52 @@ class NotificationService {
   Function(String?)? onNotificationTap;
 
   /// Initialize the notification service.
+  /// Safe to call multiple times — concurrent callers will await the same
+  /// completer and only one initialization runs.
   Future<void> initialize({Function(String?)? onSelectNotification}) async {
-    if (_initialized) return;
-
-    tz_data.initializeTimeZones();
-
-    // Store callback for notification taps
-    if (onSelectNotification != null) {
-      onNotificationTap = onSelectNotification;
+    if (_initCompleter != null) {
+      await _initCompleter!.future;
+      return;
     }
 
-    const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+    _initCompleter = Completer<void>();
 
-    const settings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
+    try {
+      tz_data.initializeTimeZones();
 
-    await _plugin.initialize(
-      settings,
-      onDidReceiveNotificationResponse: (details) {
-        // Handle notification tap
-        if (details.payload != null && onNotificationTap != null) {
-          onNotificationTap!(details.payload);
-        }
-      },
-    );
-    _initialized = true;
+      // Store callback for notification taps
+      if (onSelectNotification != null) {
+        onNotificationTap = onSelectNotification;
+      }
+
+      const androidSettings = AndroidInitializationSettings(
+        '@mipmap/ic_launcher',
+      );
+      const iosSettings = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+      );
+
+      const settings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
+
+      await _plugin.initialize(
+        settings,
+        onDidReceiveNotificationResponse: (details) {
+          if (details.payload != null && onNotificationTap != null) {
+            onNotificationTap!(details.payload);
+          }
+        },
+      );
+      _initCompleter!.complete();
+    } catch (e) {
+      _initCompleter!.completeError(e);
+      _initCompleter = null;
+      rethrow;
+    }
   }
 
   /// Returns the best available AndroidScheduleMode (cached after first call).
@@ -142,7 +155,7 @@ class NotificationService {
 
   /// Schedule a notification for a task.
   Future<void> scheduleTaskReminder(Task task) async {
-    if (!_initialized) await initialize();
+    await initialize();
     if (task.dueDate == null || !task.isEnabled) return;
 
     // Schedule for 9 AM on the due date
@@ -187,19 +200,19 @@ class NotificationService {
 
   /// Cancel a specific task notification.
   Future<void> cancelTaskReminder(String taskId) async {
-    if (!_initialized) await initialize();
+    await initialize();
     await _plugin.cancel(taskId.hashCode);
   }
 
   /// Cancel all notifications.
   Future<void> cancelAll() async {
-    if (!_initialized) await initialize();
+    await initialize();
     await _plugin.cancelAll();
   }
 
   /// Show an immediate notification (for testing).
   Future<void> showTestNotification() async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     await _plugin.show(
       0,
@@ -228,7 +241,7 @@ class NotificationService {
     required int xpAwarded,
     required int gemsAwarded,
   }) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     // Use achievement ID hash as notification ID to avoid duplicates
     final notificationId = achievement.id.hashCode;
@@ -258,7 +271,7 @@ class NotificationService {
 
   /// Schedule notifications for all enabled tasks with due dates.
   Future<void> scheduleAllTaskReminders(List<Task> tasks) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     // Cancel only existing task notifications (not streak/review/water reminders)
     for (final task in tasks) {
@@ -280,7 +293,7 @@ class NotificationService {
     required int currentStreak,
     required TimeOfDay time,
   }) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     final now = DateTime.now();
     var scheduledDate = DateTime(
@@ -333,7 +346,7 @@ class NotificationService {
     required int xpNeeded,
     required TimeOfDay time,
   }) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     final now = DateTime.now();
     var scheduledDate = DateTime(
@@ -385,7 +398,7 @@ class NotificationService {
     required int currentStreak,
     required TimeOfDay time,
   }) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     final now = DateTime.now();
     var scheduledDate = DateTime(
@@ -434,7 +447,7 @@ class NotificationService {
 
   /// Cancel all streak notifications
   Future<void> cancelStreakNotifications() async {
-    if (!_initialized) await initialize();
+    await initialize();
     await _plugin.cancel(_morningNotificationId);
     await _plugin.cancel(_eveningNotificationId);
     await _plugin.cancel(_nightNotificationId);
@@ -450,7 +463,7 @@ class NotificationService {
     TimeOfDay? eveningTime,
     TimeOfDay? nightTime,
   }) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     // Cancel existing streak notifications
     await cancelStreakNotifications();
@@ -488,7 +501,7 @@ class NotificationService {
     required int dueCardsCount,
     TimeOfDay? time,
   }) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     // Cancel existing review notification
     await _plugin.cancel(_reviewReminderNotificationId);
@@ -545,7 +558,7 @@ class NotificationService {
 
   /// Cancel review reminder notification
   Future<void> cancelReviewReminder() async {
-    if (!_initialized) await initialize();
+    await initialize();
     await _plugin.cancel(_reviewReminderNotificationId);
   }
 
@@ -565,7 +578,7 @@ class NotificationService {
     int reminderThresholdDays = 7,
     int tankIndex = 0,
   }) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     final notificationId = _waterChangeNotificationId + tankIndex;
     await _plugin.cancel(notificationId);
@@ -627,7 +640,7 @@ class NotificationService {
 
   /// Cancel water change reminder for a specific tank.
   Future<void> cancelWaterChangeReminder({int tankIndex = 0}) async {
-    if (!_initialized) await initialize();
+    await initialize();
     await _plugin.cancel(_waterChangeNotificationId + tankIndex);
   }
 
@@ -639,7 +652,7 @@ class NotificationService {
   /// notifications across the first 3 days. The 5th notification (achievement
   /// celebration) is event-driven — see [showOnboardingAchievement].
   Future<void> scheduleOnboardingSequence() async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     final now = DateTime.now();
     final scheduleMode = await _resolveScheduleMode();
@@ -776,7 +789,7 @@ class NotificationService {
   /// Call this when the user completes a lesson on Day 2 so they don't receive
   /// the "you're building a habit" nudge unnecessarily.
   Future<void> cancelOnboardingStreakNudge() async {
-    if (!_initialized) await initialize();
+    await initialize();
     await _plugin.cancel(_onboardingStreakNudgeId);
   }
 
@@ -785,7 +798,7 @@ class NotificationService {
   /// Call this when [lessonsCompleted] reaches 3 — it's event-driven, not
   /// time-scheduled.
   Future<void> showOnboardingAchievement() async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     await _plugin.show(
       _onboardingAchievementId,
@@ -812,7 +825,7 @@ class NotificationService {
 
   /// Cancel all onboarding sequence notifications.
   Future<void> cancelOnboardingSequence() async {
-    if (!_initialized) await initialize();
+    await initialize();
     await _plugin.cancel(_onboardingWelcomeId);
     await _plugin.cancel(_onboardingCareReminderId);
     await _plugin.cancel(_onboardingDiscoveryHookId);
@@ -843,7 +856,7 @@ class NotificationService {
   Future<void> scheduleWeeklyOnboardingCadence(
     AndroidScheduleMode scheduleMode,
   ) async {
-    if (!_initialized) await initialize();
+    await initialize();
 
     final now = DateTime.now();
     final details = const NotificationDetails(

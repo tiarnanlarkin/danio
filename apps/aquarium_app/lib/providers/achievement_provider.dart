@@ -44,6 +44,12 @@ class AchievementProgressNotifier
   /// in quick succession) into a single disk write after 500ms of inactivity.
   final _saveDebouncer = Debouncer(delay: const Duration(milliseconds: 500));
 
+  @override
+  void dispose() {
+    _saveDebouncer.flush();
+    super.dispose();
+  }
+
   Future<void> _load() async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
