@@ -29,10 +29,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   late final AnimationController _bodyController;
   late final AnimationController _buttonController;
 
+  late final CurvedAnimation _headlineOpacityCurve;
   late final Animation<double> _headlineOpacity;
+  late final CurvedAnimation _headlineSlideCurve;
   late final Animation<Offset> _headlineSlide;
+  late final CurvedAnimation _bodyOpacityCurve;
   late final Animation<double> _bodyOpacity;
+  late final CurvedAnimation _buttonOpacityCurve;
   late final Animation<double> _buttonOpacity;
+  late final CurvedAnimation _buttonSlideCurve;
   late final Animation<Offset> _buttonSlide;
 
   @override
@@ -44,44 +49,49 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _headlineOpacity = CurvedAnimation(
+    _headlineOpacityCurve = CurvedAnimation(
+      parent: _headlineController,
+      curve: AppCurves.standardDecelerate,
+    );
+    _headlineOpacity = _headlineOpacityCurve;
+    _headlineSlideCurve = CurvedAnimation(
       parent: _headlineController,
       curve: AppCurves.standardDecelerate,
     );
     _headlineSlide = Tween<Offset>(
       begin: const Offset(0, 0.15),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _headlineController,
-      curve: AppCurves.standardDecelerate,
-    ));
+    ).animate(_headlineSlideCurve);
 
     // Body: fade in (300ms), starts 150ms after headline
     _bodyController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _bodyOpacity = CurvedAnimation(
+    _bodyOpacityCurve = CurvedAnimation(
       parent: _bodyController,
       curve: AppCurves.standardDecelerate,
     );
+    _bodyOpacity = _bodyOpacityCurve;
 
     // Button: slide up + fade (200ms spring), starts after body
     _buttonController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _buttonOpacity = CurvedAnimation(
+    _buttonOpacityCurve = CurvedAnimation(
       parent: _buttonController,
       curve: AppCurves.standardDecelerate,
+    );
+    _buttonOpacity = _buttonOpacityCurve;
+    _buttonSlideCurve = CurvedAnimation(
+      parent: _buttonController,
+      curve: AppCurves.elastic,
     );
     _buttonSlide = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _buttonController,
-      curve: AppCurves.elastic,
-    ));
+    ).animate(_buttonSlideCurve);
   }
 
   @override
@@ -110,8 +120,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   void dispose() {
+    _headlineOpacityCurve.dispose();
+    _headlineSlideCurve.dispose();
     _headlineController.dispose();
+    _bodyOpacityCurve.dispose();
     _bodyController.dispose();
+    _buttonOpacityCurve.dispose();
+    _buttonSlideCurve.dispose();
     _buttonController.dispose();
     super.dispose();
   }

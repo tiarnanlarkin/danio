@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Leaderboard and competitive ranking models
 library;
 
@@ -89,6 +91,7 @@ enum League {
 }
 
 /// Entry in the weekly leaderboard
+@immutable
 class LeaderboardEntry {
   final String userId;
   final String displayName;
@@ -347,6 +350,7 @@ class WeekPeriod {
 }
 
 /// Promotion/demotion thresholds
+@immutable
 class LeagueThresholds {
   static const int topPromotion = 3; // Top 3 users get promoted
   static const int bottomDemotion = 3; // Bottom 3 users get demoted

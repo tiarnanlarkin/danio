@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Temperament flags for compatibility checking
 enum Temperament { peaceful, semiAggressive, aggressive }
 
@@ -5,6 +7,7 @@ enum Temperament { peaceful, semiAggressive, aggressive }
 enum HealthStatus { healthy, sick, quarantine }
 
 /// Livestock entry - fish, snails, shrimp, etc.
+@immutable
 class Livestock {
   final String id;
   final String tankId;

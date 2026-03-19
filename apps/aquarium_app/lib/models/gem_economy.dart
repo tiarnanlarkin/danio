@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
+
 /// Gem economy configuration and reward values
 /// Defines how many gems users earn for different actions
 library;
 
 import 'learning.dart';
 
+@immutable
 class GemRewards {
   // Lesson & Learning
   static const int lessonComplete = 3;

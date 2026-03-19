@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Log entry types
 enum LogType {
   waterTest,
@@ -13,6 +15,7 @@ enum LogType {
 }
 
 /// Water test results - all nullable since not all tests done each time
+@immutable
 class WaterTestResults {
   final double? temperature; // °C
   final double? ph;
@@ -114,6 +117,7 @@ class WaterTestResults {
 }
 
 /// A log entry - water tests, events, observations
+@immutable
 class LogEntry {
   final String id;
   final String tankId;

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Recurrence pattern for tasks
 enum RecurrenceType {
   none, // One-time task
@@ -12,6 +14,7 @@ enum RecurrenceType {
 enum TaskPriority { low, normal, high }
 
 /// A task/reminder - can be auto-generated or user-created
+@immutable
 class Task {
   final String id;
   final String? tankId; // Null for global tasks

@@ -38,6 +38,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
 
   // Bottom tray animation
   late final AnimationController _trayController;
+  late final CurvedAnimation _trayCurve;
   late final Animation<Offset> _traySlide;
 
   // Popular starter fish common names — looked up from SpeciesDatabase
@@ -75,13 +76,14 @@ class _FishSelectScreenState extends State<FishSelectScreen>
       vsync: this,
       duration: const Duration(milliseconds: 280),
     );
+    _trayCurve = CurvedAnimation(
+      parent: _trayController,
+      curve: Curves.easeOutBack,
+    );
     _traySlide = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _trayController,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(_trayCurve);
 
     _searchController.addListener(_onSearchChanged);
   }
@@ -90,6 +92,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
   void dispose() {
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _trayCurve.dispose();
     _trayController.dispose();
     super.dispose();
   }
@@ -633,6 +636,7 @@ class _PulsingButton extends StatefulWidget {
 class _PulsingButtonState extends State<_PulsingButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  late final CurvedAnimation _scaleCurve;
   late final Animation<double> _scale;
 
   @override
@@ -643,12 +647,11 @@ class _PulsingButtonState extends State<_PulsingButton>
       duration: const Duration(milliseconds: 800),
     );
 
-    _scale = Tween<double>(begin: 1.0, end: 1.02).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
+    _scaleCurve = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
     );
+    _scale = Tween<double>(begin: 1.0, end: 1.02).animate(_scaleCurve);
 
     if (widget.animate) _controller.repeat();
   }
@@ -666,6 +669,7 @@ class _PulsingButtonState extends State<_PulsingButton>
 
   @override
   void dispose() {
+    _scaleCurve.dispose();
     _controller.dispose();
     super.dispose();
   }

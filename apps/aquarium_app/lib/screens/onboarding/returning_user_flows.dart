@@ -36,6 +36,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
     with SingleTickerProviderStateMixin {
 
   late final AnimationController _flickerController;
+  late final CurvedAnimation _flickerCurve;
   late final Animation<double> _flickerScale;
 
   @override
@@ -50,14 +51,15 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
+    _flickerCurve = CurvedAnimation(
+      parent: _flickerController,
+      curve: Curves.easeInOut,
+    );
     _flickerScale = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.2), weight: 30),
       TweenSequenceItem(tween: Tween(begin: 1.2, end: 0.95), weight: 30),
       TweenSequenceItem(tween: Tween(begin: 0.95, end: 1.0), weight: 40),
-    ]).animate(CurvedAnimation(
-      parent: _flickerController,
-      curve: Curves.easeInOut,
-    ));
+    ]).animate(_flickerCurve);
 
     if (!disableAnimations) {
       _flickerController.repeat();
@@ -68,6 +70,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
 
   @override
   void dispose() {
+    _flickerCurve.dispose();
     _flickerController.dispose();
     super.dispose();
   }
@@ -209,6 +212,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
     with SingleTickerProviderStateMixin {
 
   late final AnimationController _xpController;
+  late final CurvedAnimation _xpCurve;
   late final Animation<double> _xpScale;
 
   @override
@@ -223,13 +227,14 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+    _xpCurve = CurvedAnimation(
+      parent: _xpController,
+      curve: Curves.easeOut,
+    );
     _xpScale = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.15), weight: 60),
       TweenSequenceItem(tween: Tween(begin: 1.15, end: 1.0), weight: 40),
-    ]).animate(CurvedAnimation(
-      parent: _xpController,
-      curve: Curves.easeOut,
-    ));
+    ]).animate(_xpCurve);
 
     if (!disableAnimations) {
       // Delay XP animation slightly so the card has rendered
@@ -243,6 +248,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
 
   @override
   void dispose() {
+    _xpCurve.dispose();
     _xpController.dispose();
     super.dispose();
   }

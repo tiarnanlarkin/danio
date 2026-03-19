@@ -108,7 +108,7 @@ class PrimaryButton extends StatelessWidget {
 /// ```dart
 /// SecondaryButton(
 ///   label: 'Cancel',
-///   onPressed: () => Navigator.pop(context),
+///   onPressed: () => Navigator.maybePop(context),
 /// )
 /// ```
 class SecondaryButton extends StatelessWidget {

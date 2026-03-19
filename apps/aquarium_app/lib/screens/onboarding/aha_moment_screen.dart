@@ -43,6 +43,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
 
   // ── Phase 1 animations ──────────────────────────────────────────
   late final AnimationController _fishScaleCtrl;
+  late final CurvedAnimation _fishScaleCurve;
   late final Animation<double> _fishScale;
 
   late final AnimationController _dotsCtrl; // looping dots
@@ -50,15 +51,19 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
 
   // ── Phase 1→2 transition ───────────────────────────────────────
   late final AnimationController _transitionCtrl;
+  late final CurvedAnimation _transitionCurve;
   late final Animation<double> _overlayOpacity;
 
   // ── Phase 2 card stagger ───────────────────────────────────────
   late final AnimationController _cardsCtrl;
+  late final List<CurvedAnimation> _cardFadeCurves;
   late final List<Animation<double>> _cardFades;
+  late final List<CurvedAnimation> _cardSlideCurves;
   late final List<Animation<Offset>> _cardSlides;
 
   // ── Phase 3 fade ───────────────────────────────────────────────
   late final AnimationController _inviteCtrl;
+  late final CurvedAnimation _inviteFadeCurve;
   late final Animation<double> _inviteFade;
 
   bool get _reduceMotion =>
@@ -73,10 +78,11 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _fishScale = CurvedAnimation(
+    _fishScaleCurve = CurvedAnimation(
       parent: _fishScaleCtrl,
       curve: Curves.elasticOut,
     );
+    _fishScale = _fishScaleCurve;
 
     // Phase 1 — animated dots loop
     _dotsCtrl = AnimationController(
@@ -94,9 +100,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _overlayOpacity = Tween<double>(begin: 0.8, end: 0.0).animate(
-      CurvedAnimation(parent: _transitionCtrl, curve: Curves.easeOut),
-    );
+    _transitionCurve = CurvedAnimation(parent: _transitionCtrl, curve: Curves.easeOut);
+    _overlayOpacity = Tween<double>(begin: 0.8, end: 0.0).animate(_transitionCurve);
 
     // Phase 2 — 3 cards, staggered
     _cardsCtrl = AnimationController(
@@ -104,37 +109,42 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       duration: const Duration(milliseconds: 1150), // 250ms × 3 + 300ms × 2 gap ≈ 1150
     );
 
-    _cardFades = List.generate(3, (i) {
+    _cardFadeCurves = List.generate(3, (i) {
       final start = i * 0.26; // ~300 ms stagger at 1150 ms total
       final end = (start + 0.22).clamp(0.0, 1.0);
-      return Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(
-          parent: _cardsCtrl,
-          curve: Interval(start, end, curve: Curves.easeOut),
-        ),
+      return CurvedAnimation(
+        parent: _cardsCtrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
       );
     });
 
-    _cardSlides = List.generate(3, (i) {
+    _cardFades = _cardFadeCurves.map((curve) {
+      return Tween<double>(begin: 0, end: 1).animate(curve);
+    }).toList();
+
+    _cardSlideCurves = List.generate(3, (i) {
       final start = i * 0.26;
       final end = (start + 0.22).clamp(0.0, 1.0);
+      return CurvedAnimation(
+        parent: _cardsCtrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
+      );
+    });
+
+    _cardSlides = _cardSlideCurves.map((curve) {
       return Tween<Offset>(
         begin: const Offset(40, 0),
         end: Offset.zero,
-      ).animate(
-        CurvedAnimation(
-          parent: _cardsCtrl,
-          curve: Interval(start, end, curve: Curves.easeOut),
-        ),
-      );
-    });
+      ).animate(curve);
+    }).toList();
 
     // Phase 3 — invite fade
     _inviteCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _inviteFade = CurvedAnimation(parent: _inviteCtrl, curve: Curves.easeIn);
+    _inviteFadeCurve = CurvedAnimation(parent: _inviteCtrl, curve: Curves.easeIn);
+    _inviteFade = _inviteFadeCurve;
 
     // Start the sequence
     WidgetsBinding.instance.addPostFrameCallback((_) => _startSequence());
@@ -181,10 +191,15 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
 
   @override
   void dispose() {
+    _fishScaleCurve.dispose();
     _fishScaleCtrl.dispose();
     _dotsCtrl.dispose();
+    _transitionCurve.dispose();
     _transitionCtrl.dispose();
+    for (final c in _cardFadeCurves) { c.dispose(); }
+    for (final c in _cardSlideCurves) { c.dispose(); }
     _cardsCtrl.dispose();
+    _inviteFadeCurve.dispose();
     _inviteCtrl.dispose();
     super.dispose();
   }

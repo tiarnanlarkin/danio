@@ -32,10 +32,13 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
   bool _answered = false;
 
   late final AnimationController _gotItController;
+  late final CurvedAnimation _gotItOpacityCurve;
   late final Animation<double> _gotItOpacity;
+  late final CurvedAnimation _gotItSlideCurve;
   late final Animation<Offset> _gotItSlide;
 
   AnimationController? _correctBounceController;
+  CurvedAnimation? _correctBounceCurve;
   Animation<double>? _correctBounceScale;
 
   bool get _isAdvanced => widget.experienceLevel == ExperienceLevel.expert;
@@ -53,33 +56,37 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _gotItOpacity = CurvedAnimation(
+    _gotItOpacityCurve = CurvedAnimation(
+      parent: _gotItController,
+      curve: AppCurves.standardDecelerate,
+    );
+    _gotItOpacity = _gotItOpacityCurve;
+    _gotItSlideCurve = CurvedAnimation(
       parent: _gotItController,
       curve: AppCurves.standardDecelerate,
     );
     _gotItSlide = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _gotItController,
-      curve: AppCurves.standardDecelerate,
-    ));
+    ).animate(_gotItSlideCurve);
 
     _correctBounceController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _correctBounceScale = Tween<double>(begin: 1.0, end: 1.1).animate(
-      CurvedAnimation(
-        parent: _correctBounceController!,
-        curve: Curves.easeOutBack,
-      ),
+    _correctBounceCurve = CurvedAnimation(
+      parent: _correctBounceController!,
+      curve: Curves.easeOutBack,
     );
+    _correctBounceScale = Tween<double>(begin: 1.0, end: 1.1).animate(_correctBounceCurve!);
   }
 
   @override
   void dispose() {
+    _gotItOpacityCurve.dispose();
+    _gotItSlideCurve.dispose();
     _gotItController.dispose();
+    _correctBounceCurve?.dispose();
     _correctBounceController?.dispose();
     super.dispose();
   }

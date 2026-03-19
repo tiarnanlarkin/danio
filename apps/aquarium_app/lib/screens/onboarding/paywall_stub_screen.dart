@@ -31,9 +31,11 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
   // Amber brand colour from spec
 
   late final AnimationController _fishBounceController;
+  late final CurvedAnimation _fishBounceCurve;
   late final Animation<double> _fishBounceAnim;
 
   late final AnimationController _maybeLaterController;
+  late final CurvedAnimation _maybeLaterCurve;
   late final Animation<double> _maybeLaterOpacity;
 
   int _selectedPlan = 0; // 0 = annual (default)
@@ -51,19 +53,19 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _fishBounceAnim = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(parent: _fishBounceController, curve: Curves.easeInOut),
-    );
+    _fishBounceCurve = CurvedAnimation(parent: _fishBounceController, curve: Curves.easeInOut);
+    _fishBounceAnim = Tween<double>(begin: 1.0, end: 1.05).animate(_fishBounceCurve);
 
     // "Maybe later" fades in 1s after build
     _maybeLaterController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _maybeLaterOpacity = CurvedAnimation(
+    _maybeLaterCurve = CurvedAnimation(
       parent: _maybeLaterController,
       curve: Curves.easeIn,
     );
+    _maybeLaterOpacity = _maybeLaterCurve;
 
     if (!disableAnimations) {
       _fishBounceController.forward();
@@ -78,7 +80,9 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
 
   @override
   void dispose() {
+    _fishBounceCurve.dispose();
     _fishBounceController.dispose();
+    _maybeLaterCurve.dispose();
     _maybeLaterController.dispose();
     super.dispose();
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -528,14 +530,33 @@ class _InventoryItemCard extends StatelessWidget {
 }
 
 /// Timer showing time until expiry
-class _ExpiryTimer extends StatelessWidget {
+class _ExpiryTimer extends StatefulWidget {
   final DateTime expiresAt;
 
   const _ExpiryTimer({required this.expiresAt});
 
   @override
+  State<_ExpiryTimer> createState() => _ExpiryTimerState();
+}
+
+class _ExpiryTimerState extends State<_ExpiryTimer> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final remaining = expiresAt.difference(DateTime.now());
+    final remaining = widget.expiresAt.difference(DateTime.now());
     final hours = remaining.inHours;
     final minutes = remaining.inMinutes % 60;
 

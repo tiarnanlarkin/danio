@@ -66,13 +66,14 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     _pendingSave = null;
     _trimXpHistory(toSave);
     // Fire-and-forget but at least SharedPreferences queues the write
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString(_key, jsonEncode(toSave.toJson())).catchError((e) {
+    SharedPreferences.getInstance().then((prefs) async {
+      try {
+        await prefs.setString(_key, jsonEncode(toSave.toJson()));
+      } catch (e) {
         if (kDebugMode) {
           debugPrint('Warning: profile save failed on lifecycle pause: $e');
         }
-        return false;
-      });
+      }
     });
   }
 

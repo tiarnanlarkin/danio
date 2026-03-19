@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 const _uuid = Uuid();
@@ -142,6 +143,7 @@ class ShopBudget {
 }
 
 /// A local fish shop
+@immutable
 class LocalShop {
   final String id;
   final String name;

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Equipment types
 enum EquipmentType {
   filter,
@@ -14,6 +16,7 @@ enum EquipmentType {
 
 /// Equipment item - filters, heaters, lights, etc.
 /// Each has its own maintenance schedule.
+@immutable
 class Equipment {
   final String id;
   final String tankId;

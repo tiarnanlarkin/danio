@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -282,6 +283,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
             border: OutlineInputBorder(),
           ),
           maxLines: 3,
+          inputFormatters: [LengthLimitingTextInputFormatter(500)],
         ),
       ],
     );
@@ -300,6 +302,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
+                inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -311,6 +314,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
+                inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),
           ],
@@ -326,6 +330,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
+                inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -337,6 +342,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
+                inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),
           ],
@@ -349,6 +355,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
             border: OutlineInputBorder(),
           ),
           keyboardType: TextInputType.number,
+          inputFormatters: [LengthLimitingTextInputFormatter(500)],
         ),
       ],
     );

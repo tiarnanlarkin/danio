@@ -33,10 +33,15 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
   late final AnimationController _textController;
   late final AnimationController _buttonController;
 
+  late final CurvedAnimation _badgeScaleCurve;
   late final Animation<double> _badgeScale;
+  late final CurvedAnimation _progressValueCurve;
   late final Animation<double> _progressValue;
+  late final CurvedAnimation _textOpacityCurve;
   late final Animation<double> _textOpacity;
+  late final CurvedAnimation _buttonOpacityCurve;
   late final Animation<double> _buttonOpacity;
+  late final CurvedAnimation _buttonSlideCurve;
   late final Animation<Offset> _buttonSlide;
 
   late final List<_ConfettiParticle> _particles;
@@ -61,51 +66,52 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _badgeScale = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _badgeController,
-        curve: Curves.easeOutBack, // Overshoots to ~1.15 then settles — same spring feel
-      ),
+    _badgeScaleCurve = CurvedAnimation(
+      parent: _badgeController,
+      curve: Curves.easeOutBack, // Overshoots to ~1.15 then settles — same spring feel
     );
+    _badgeScale = Tween<double>(begin: 0.0, end: 1.0).animate(_badgeScaleCurve);
 
     // Progress bar (600ms ease-out)
     _progressController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _progressValue = Tween<double>(begin: 0, end: 0.1).animate(
-      CurvedAnimation(
-        parent: _progressController,
-        curve: AppCurves.standardDecelerate,
-      ),
+    _progressValueCurve = CurvedAnimation(
+      parent: _progressController,
+      curve: AppCurves.standardDecelerate,
     );
+    _progressValue = Tween<double>(begin: 0, end: 0.1).animate(_progressValueCurve);
 
     // Text fade
     _textController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _textOpacity = CurvedAnimation(
+    _textOpacityCurve = CurvedAnimation(
       parent: _textController,
       curve: AppCurves.standardDecelerate,
     );
+    _textOpacity = _textOpacityCurve;
 
     // Button slide + fade
     _buttonController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _buttonOpacity = CurvedAnimation(
+    _buttonOpacityCurve = CurvedAnimation(
+      parent: _buttonController,
+      curve: AppCurves.standardDecelerate,
+    );
+    _buttonOpacity = _buttonOpacityCurve;
+    _buttonSlideCurve = CurvedAnimation(
       parent: _buttonController,
       curve: AppCurves.standardDecelerate,
     );
     _buttonSlide = Tween<Offset>(
       begin: const Offset(0, 0.2),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _buttonController,
-      curve: AppCurves.standardDecelerate,
-    ));
+    ).animate(_buttonSlideCurve);
   }
 
   @override
@@ -157,10 +163,14 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
 
   @override
   void dispose() {
-    _confettiController.dispose();
+    _badgeScaleCurve.dispose();
     _badgeController.dispose();
+    _progressValueCurve.dispose();
     _progressController.dispose();
+    _textOpacityCurve.dispose();
     _textController.dispose();
+    _buttonOpacityCurve.dispose();
+    _buttonSlideCurve.dispose();
     _buttonController.dispose();
     super.dispose();
   }

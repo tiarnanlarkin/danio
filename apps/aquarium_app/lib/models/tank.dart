@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Tank type - freshwater only for MVP
 enum TankType {
   freshwater,
@@ -103,6 +105,7 @@ class WaterTargets {
 }
 
 /// A fish tank - the core object in the app
+@immutable
 class Tank {
   final String id;
   final String name;

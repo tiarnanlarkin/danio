@@ -426,6 +426,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                 hintText: _getNameHint(),
               ),
               textCapitalization: TextCapitalization.words,
+              inputFormatters: [LengthLimitingTextInputFormatter(500)],
             ),
             const SizedBox(height: AppSpacing.md),
 
@@ -437,6 +438,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                   labelText: 'Scientific name (optional)',
                   hintText: 'e.g., Paracheirodon innesi',
                 ),
+                inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
               const SizedBox(height: AppSpacing.md),
             ],
@@ -496,6 +498,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                 hintText: 'Any details to remember...',
               ),
               maxLines: 2,
+              inputFormatters: [LengthLimitingTextInputFormatter(500)],
             ),
             const SizedBox(height: AppSpacing.lg),
 

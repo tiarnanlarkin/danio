@@ -38,13 +38,17 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
   // Onboarding colours consolidated into AppColors
 
   late final AnimationController _fishCardController;
+  late final CurvedAnimation _fishCardOpacityCurve;
   late final Animation<double> _fishCardOpacity;
+  late final CurvedAnimation _fishCardSlideCurve;
   late final Animation<Offset> _fishCardSlide;
 
   late final AnimationController _lessonCardController;
+  late final CurvedAnimation _lessonCardOpacityCurve;
   late final Animation<double> _lessonCardOpacity;
 
   late final AnimationController _xpBarController;
+  late final CurvedAnimation _xpFillCurve;
   late final Animation<double> _xpFill;
 
   late final AnimationController _streakFlickerController;
@@ -70,36 +74,38 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _fishCardOpacity = CurvedAnimation(
+    _fishCardOpacityCurve = CurvedAnimation(
+      parent: _fishCardController,
+      curve: Curves.easeOut,
+    );
+    _fishCardOpacity = _fishCardOpacityCurve;
+    _fishCardSlideCurve = CurvedAnimation(
       parent: _fishCardController,
       curve: Curves.easeOut,
     );
     _fishCardSlide = Tween<Offset>(
       begin: const Offset(0, 0.05),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _fishCardController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(_fishCardSlideCurve);
 
     // Lesson card: appears 200ms after fish card
     _lessonCardController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _lessonCardOpacity = CurvedAnimation(
+    _lessonCardOpacityCurve = CurvedAnimation(
       parent: _lessonCardController,
       curve: Curves.easeOut,
     );
+    _lessonCardOpacity = _lessonCardOpacityCurve;
 
     // XP bar fills 0→10% over 500ms
     _xpBarController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _xpFill = Tween<double>(begin: 0.0, end: 0.1).animate(
-      CurvedAnimation(parent: _xpBarController, curve: Curves.easeOut),
-    );
+    _xpFillCurve = CurvedAnimation(parent: _xpBarController, curve: Curves.easeOut);
+    _xpFill = Tween<double>(begin: 0.0, end: 0.1).animate(_xpFillCurve);
 
     // Streak flame flicker (scale pulse)
     _streakFlickerController = AnimationController(
@@ -160,8 +166,12 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
 
   @override
   void dispose() {
+    _fishCardOpacityCurve.dispose();
+    _fishCardSlideCurve.dispose();
     _fishCardController.dispose();
+    _lessonCardOpacityCurve.dispose();
     _lessonCardController.dispose();
+    _xpFillCurve.dispose();
     _xpBarController.dispose();
     _streakFlickerController.dispose();
     _nameController.dispose();

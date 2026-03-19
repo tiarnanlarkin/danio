@@ -27,10 +27,13 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
   ExperienceLevel? _selected;
 
   late final List<AnimationController> _cardControllers;
+  late final List<CurvedAnimation> _cardOpacitiesCurves;
   late final List<Animation<double>> _cardOpacities;
+  late final List<CurvedAnimation> _cardSlidesCurves;
   late final List<Animation<Offset>> _cardSlides;
 
   AnimationController? _pulseController;
+  CurvedAnimation? _pulseCurve;
   Animation<double>? _pulseScale;
 
   static const _cards = [
@@ -65,27 +68,34 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
       );
     });
 
-    _cardOpacities = _cardControllers.map((c) {
+    _cardOpacitiesCurves = _cardControllers.map((c) {
       return CurvedAnimation(parent: c, curve: AppCurves.standardDecelerate);
     }).toList();
 
-    _cardSlides = _cardControllers.map((c) {
+    _cardOpacities = _cardOpacitiesCurves.map((curve) {
+      return curve;
+    }).toList();
+
+    _cardSlidesCurves = _cardControllers.map((c) {
+      return CurvedAnimation(parent: c, curve: AppCurves.standardDecelerate);
+    }).toList();
+
+    _cardSlides = _cardSlidesCurves.map((curve) {
       return Tween<Offset>(
         begin: const Offset(0, 0.08),
         end: Offset.zero,
-      ).animate(CurvedAnimation(parent: c, curve: AppCurves.standardDecelerate));
+      ).animate(curve);
     }).toList();
 
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _pulseScale = Tween<double>(begin: 1.0, end: 1.02).animate(
-      CurvedAnimation(
-        parent: _pulseController!,
-        curve: Curves.easeInOut,
-      ),
+    _pulseCurve = CurvedAnimation(
+      parent: _pulseController!,
+      curve: Curves.easeInOut,
     );
+    _pulseScale = Tween<double>(begin: 1.0, end: 1.02).animate(_pulseCurve!);
   }
 
   @override
@@ -112,9 +122,12 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
 
   @override
   void dispose() {
+    for (final c in _cardOpacitiesCurves) { c.dispose(); }
+    for (final c in _cardSlidesCurves) { c.dispose(); }
     for (final c in _cardControllers) {
       c.dispose();
     }
+    _pulseCurve?.dispose();
     _pulseController?.dispose();
     super.dispose();
   }

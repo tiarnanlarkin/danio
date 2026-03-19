@@ -26,9 +26,11 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
     with TickerProviderStateMixin {
 
   late final AnimationController _fadeController;
+  late final CurvedAnimation _fadeCurve;
   late final Animation<double> _fadeAnim;
 
   late final AnimationController _bellFloatController;
+  late final CurvedAnimation _bellFloatCurve;
   late final Animation<double> _bellOffset;
 
   @override
@@ -44,22 +46,22 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _fadeAnim = CurvedAnimation(
+    _fadeCurve = CurvedAnimation(
       parent: _fadeController,
       curve: Curves.easeIn,
     );
+    _fadeAnim = _fadeCurve;
 
     // Bell float animation: translateY -6 to 0, 1.5s ease-in-out loop
     _bellFloatController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _bellOffset = Tween<double>(begin: -6.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _bellFloatController,
-        curve: Curves.easeInOut,
-      ),
+    _bellFloatCurve = CurvedAnimation(
+      parent: _bellFloatController,
+      curve: Curves.easeInOut,
     );
+    _bellOffset = Tween<double>(begin: -6.0, end: 0.0).animate(_bellFloatCurve);
 
     if (!disableAnimations) {
       _fadeController.forward();
@@ -72,7 +74,9 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
 
   @override
   void dispose() {
+    _fadeCurve.dispose();
     _fadeController.dispose();
+    _bellFloatCurve.dispose();
     _bellFloatController.dispose();
     super.dispose();
   }
