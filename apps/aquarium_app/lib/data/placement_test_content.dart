@@ -59,16 +59,16 @@ class PlacementTestContent {
     const PlacementQuestion(
       id: 'nc_q3',
       pathId: 'nitrogen_cycle',
-      question: 'Which bacteria converts nitrite (NO₂⁻) into nitrate (NO₃⁻)?',
+      question: 'During aquarium cycling, nitrite (NO₂⁻) spikes after ammonia begins to drop. Which bacteria are responsible for converting this nitrite into nitrate (NO₃⁻)?',
       options: [
-        'Nitrosomonas bacteria',
-        'Nitrospira bacteria',
-        'Heterotrophic bacteria',
-        'Anaerobic bacteria',
+        'Nitrosomonas — they process ammonia into nitrite',
+        'Nitrospira — they convert nitrite into nitrate',
+        'Heterotrophic bacteria — they break down fish waste directly',
+        'Denitrifying bacteria — they convert nitrate into nitrogen gas',
       ],
       correctIndex: 1,
       explanation:
-          'Nitrospira bacteria convert toxic nitrite into less harmful nitrate. Nitrosomonas handle the first step (ammonia to nitrite).',
+          'Nitrospira bacteria handle the second step of the nitrogen cycle: converting toxic nitrite (NO₂⁻) into much less harmful nitrate (NO₃⁻). Nitrosomonas handle the first step (ammonia → nitrite), which is why nitrite spikes after ammonia starts dropping. Denitrifying bacteria go the other direction (nitrate → nitrogen gas) and only work in anaerobic conditions.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 

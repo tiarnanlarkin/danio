@@ -437,7 +437,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Remember: healthy plants start with the right environment — lighting, nutrients, and CO2 in balance.',
+              'The world\'s largest planted aquarium (the Oceanário de Lisboa in Portugal) holds 5 million litres and uses over 8,000 individual plants — maintained by a full-time team of aquascapers.',
         ),
       ],
       quiz: Quiz(

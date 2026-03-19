@@ -346,9 +346,9 @@ class _HeroSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Big temp display
+              // Big temp display with fish emoji
               Text(
-                temp != null ? '${temp!.toStringAsFixed(1)}°C' : '--°C',
+                temp != null ? '🐟 ${temp!.toStringAsFixed(1)}°C' : '🐟 --°C',
                 style: AppTypography.headlineLarge.copyWith(
                   color: temp != null ? _kCharcoal : _kCharcoal.withAlpha(100),
                   fontWeight: FontWeight.w800,

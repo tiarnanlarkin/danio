@@ -715,12 +715,53 @@ final maintenancePath = LearningPath(
         ),
         const LessonSection(
           type: LessonSectionType.heading,
-          content: 'Seasonal Tasks (Every 3-6 months)',
+          content: 'Seasonal Care Guide',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Seasons affect your tank more than you\'d think. Room temperature swings, daylight hours change, and your tank\'s needs shift with them. Here\'s what to watch for each season.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: '🌸 Spring: Post-Winter Check',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '✓ Replace filter cartridges (carbon, fine pads)\n✓ Deep clean canister filter if used\n✓ Replace air stones (they clog over time)\n✓ Check heater accuracy with separate thermometer\n✓ Inspect all tubing for cracks/algae buildup',
+              '✓ Test all parameters — ammonia, nitrite, nitrate, pH, GH/KH\n✓ Check heater accuracy with a separate thermometer (winter can knock them out of calibration)\n✓ Inspect filter flow — clean or replace media if clogged from winter\n✓ Increase feeding gradually as fish become more active\n✓ Resume weekly water changes if you slowed down over winter\n✓ Check for algae — longer daylight hours can trigger early blooms',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: '☀️ Summer: Heat Management',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '✓ Monitor temperature daily — room temps above 25°C can push tank water dangerously high\n✓ Keep frozen water bottles ready: swap 2-3 times daily during heatwaves (drops temp by 2-3°C each)\n✓ Reduce feeding slightly — fish metabolise food faster in warm water, producing more waste\n✓ Run lights for shorter periods or use a dimmer — excess light + heat = algae explosions\n✓ Ensure good surface agitation — warmer water holds less oxygen\n✓ Open cabinet doors to improve airflow around the filter and heater',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: '🍂 Autumn: Preparing for Cooler Months',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '✓ Check that your heater is working before you actually need it — don\'t wait for the first cold snap\n✓ Gradually reduce feeding as fish activity slows with dropping temperatures\n✓ Cut back lighting hours as natural daylight decreases\n✓ Deep clean the filter and check all equipment\n✓ Consider a timer for your heater if your home gets very cold at night\n✓ Vacuum the substrate thoroughly — organic buildup can cause problems over winter',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: '❄️ Winter: Cold Weather Protocol',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '✓ Check heater daily — heater failure in winter can be fatal within hours\n✓ Keep a backup heater (even a small one) ready to go\n✓ Reduce feeding to 2-3 times per week — fish are less active in cooler water\n✓ Don\'t overfeed to "keep them warm" — uneaten food rots and spikes ammonia\n✓ Insulate the back and sides of the tank with foam board if room temp drops below 18°C\n✓ Monitor for condensation on the lid — excessive condensation can drip and cause electrical issues near lights',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'A cheap digital thermometer with a temperature alert is one of the best investments you can make. Set it to alert you if the tank drops below or rises above your target range — it can save your fish while you\'re asleep or at work.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
