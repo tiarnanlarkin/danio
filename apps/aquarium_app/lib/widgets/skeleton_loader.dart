@@ -44,6 +44,16 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
   Widget build(BuildContext context) {
     if (!widget.isLoading) return widget.child;
 
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    // Reduced motion: show static placeholder instead of shimmer
+    if (reduceMotion) {
+      return Opacity(
+        opacity: 0.4,
+        child: widget.child,
+      );
+    }
+
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
