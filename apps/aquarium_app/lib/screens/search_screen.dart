@@ -135,7 +135,7 @@ class _SearchResults extends StatelessWidget {
 
     // Search livestock across all tanks
     for (final tank in tanks) {
-      final livestockAsync = ref.read(livestockProvider(tank.id));
+      final livestockAsync = ref.watch(livestockProvider(tank.id));
       livestockAsync.whenData((livestock) {
         for (final l in livestock) {
           if (l.commonName.toLowerCase().contains(query) ||
@@ -157,7 +157,7 @@ class _SearchResults extends StatelessWidget {
       });
 
       // Search equipment
-      final equipmentAsync = ref.read(equipmentProvider(tank.id));
+      final equipmentAsync = ref.watch(equipmentProvider(tank.id));
       equipmentAsync.whenData((equipment) {
         for (final e in equipment) {
           if (e.name.toLowerCase().contains(query) ||
