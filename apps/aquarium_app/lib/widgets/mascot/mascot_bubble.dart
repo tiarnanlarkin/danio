@@ -153,32 +153,33 @@ class _MascotBubbleState extends State<MascotBubble>
       child: FadeTransition(
         opacity: _fadeAnimation,
         child: Semantics(
-        button: widget.onTap != null,
-        label: widget.message,
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              if (widget.position == MascotPosition.left) ...[
-                _buildMascot(dimensions),
-                const SizedBox(width: AppSpacing.sm),
-              ],
-              Flexible(
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  alignment: widget.position == MascotPosition.left
-                      ? Alignment.bottomLeft
-                      : Alignment.bottomRight,
-                  child: _buildBubble(),
+          button: widget.onTap != null,
+          label: widget.message,
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (widget.position == MascotPosition.left) ...[
+                  _buildMascot(dimensions),
+                  const SizedBox(width: AppSpacing.sm),
+                ],
+                Flexible(
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    alignment: widget.position == MascotPosition.left
+                        ? Alignment.bottomLeft
+                        : Alignment.bottomRight,
+                    child: _buildBubble(),
+                  ),
                 ),
-              ),
-              if (widget.position == MascotPosition.right) ...[
-                const SizedBox(width: AppSpacing.sm),
-                _buildMascot(dimensions),
+                if (widget.position == MascotPosition.right) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildMascot(dimensions),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -260,12 +261,16 @@ class _MascotBubbleState extends State<MascotBubble>
               ),
               if (widget.showDismiss) ...[
                 const SizedBox(width: AppSpacing.sm),
-                GestureDetector(
-                  onTap: widget.onDismiss,
-                  child: Icon(
-                    Icons.close,
-                    size: AppIconSizes.xs,
-                    color: context.textHint,
+                Semantics(
+                  label: 'Dismiss mascot message',
+                  button: true,
+                  child: GestureDetector(
+                    onTap: widget.onDismiss,
+                    child: Icon(
+                      Icons.close,
+                      size: AppIconSizes.xs,
+                      color: context.textHint,
+                    ),
                   ),
                 ),
               ],
@@ -442,7 +447,11 @@ class _MascotAvatarState extends State<MascotAvatar>
     );
 
     if (widget.onTap != null) {
-      return GestureDetector(onTap: widget.onTap, child: avatar);
+      return Semantics(
+        button: true,
+        label: 'Mascot avatar',
+        child: GestureDetector(onTap: widget.onTap, child: avatar),
+      );
     }
 
     return avatar;
