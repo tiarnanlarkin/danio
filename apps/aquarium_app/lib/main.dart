@@ -36,11 +36,13 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final notificationPayloadNotifier = ValueNotifier<String?>(null);
 
 // Performance monitoring toggle (enable in debug mode)
-
-// Performance monitoring toggle (enable in debug mode)
 const bool _enablePerformanceMonitoring =
-    kDebugMode && false; // Set to true to enable
+    kDebugMode; // Set to true to enable
 const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
+
+/// Buffer for errors that occur before Firebase Crashlytics initializes.
+/// Flushed once Firebase is ready in the post-frame callback.
+final List<Object> _preFirebaseErrors = [];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,16 +67,22 @@ void main() async {
       FlutterError.presentError(details);
     };
     PlatformDispatcher.instance.onError = (error, stack) {
-      debugPrint('Platform error (pre-Firebase): $error\n$stack');
+      if (kDebugMode) {
+        debugPrint('Platform error (pre-Firebase): $error\n$stack');
+      }
+      // Buffer errors for Crashlytics once Firebase initializes
+      _preFirebaseErrors.add(error);
       return true;
     };
   } else {
     final originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
-      debugPrint('========== FLUTTER ERROR ==========');
-      debugPrint('${details.exception}');
-      debugPrint('${details.stack}');
-      debugPrint('===================================');
+      if (kDebugMode) {
+        debugPrint('========== FLUTTER ERROR ==========');
+        debugPrint('${details.exception}');
+        debugPrint('${details.stack}');
+        debugPrint('===================================');
+      }
       originalOnError?.call(details);
     };
 
@@ -96,9 +104,9 @@ void main() async {
     try {
       await Firebase.initializeApp();
       firebaseInitialized = true;
-      debugPrint('✅ Firebase initialized successfully');
+      if (kDebugMode) debugPrint('✅ Firebase initialized successfully');
     } catch (e) {
-      debugPrint('⚠️ Firebase init failed (app will run without it): $e');
+      if (kDebugMode) debugPrint('⚠️ Firebase init failed (app will run without it): $e');
     }
 
     // ── Apply persisted GDPR analytics consent ──
@@ -119,6 +127,14 @@ void main() async {
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
         return true;
       };
+
+      // Flush any errors that occurred before Firebase was ready
+      if (_preFirebaseErrors.isNotEmpty) {
+        for (final error in _preFirebaseErrors) {
+          FirebaseCrashlytics.instance.recordError(error, null, fatal: false);
+        }
+        _preFirebaseErrors.clear();
+      }
     }
 
     // Initialize Supabase (safe to call - returns false if credentials are
@@ -286,7 +302,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       );
     } catch (e) {
       // Silently fail - don't break app flow
-      debugPrint('Failed to schedule review notifications: $e');
+      if (kDebugMode) debugPrint('Failed to schedule review notifications: $e');
     }
   }
 
@@ -310,7 +326,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
         todayXp: todayXp,
       );
     } catch (e) {
-      debugPrint('Failed to schedule streak notifications: $e');
+      if (kDebugMode) debugPrint('Failed to schedule streak notifications: $e');
     }
   }
 

@@ -2,7 +2,9 @@
 /// Provides methods for confetti bursts, achievements, level ups, etc.
 library;
 
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import '../widgets/celebrations/confetti_overlay.dart';
@@ -70,6 +72,13 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
 
   final Ref _ref;
   ConfettiController? _controller;
+  Timer? _dismissTimer;
+
+  /// Cancel any pending auto-dismiss timer.
+  void _cancelDismissTimer() {
+    _dismissTimer?.cancel();
+    _dismissTimer = null;
+  }
 
   /// Trigger a standard confetti burst
   /// With reduced motion: skips confetti, shows simple success indicator
@@ -82,6 +91,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
     }
 
     _disposeController();
+    _cancelDismissTimer();
     _controller = ConfettiController(duration: duration);
 
     state = CelebrationState(
@@ -93,7 +103,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
     _controller?.play();
 
     // Auto-dismiss after duration
-    Future.delayed(duration + const Duration(milliseconds: 500), () {
+    _dismissTimer = Timer(duration + const Duration(milliseconds: 500), () {
       if (mounted) {
         dismiss();
       }
@@ -106,6 +116,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
     final reducedMotion = _ref.read(reducedMotionProvider);
 
     _disposeController();
+    _cancelDismissTimer();
 
     // Skip confetti for reduced motion, but still show title
     if (!reducedMotion.disableDecorativeAnimations) {
@@ -127,7 +138,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
         ? const Duration(seconds: 2)
         : const Duration(seconds: 4);
 
-    Future.delayed(dismissDelay, () {
+    _dismissTimer = Timer(dismissDelay, () {
       if (mounted) {
         dismiss();
       }
@@ -138,6 +149,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
   /// For the enhanced overlay, use showLevelUpOverlay() with a BuildContext
   void levelUp(int level, {String? levelTitle}) {
     _disposeController();
+    _cancelDismissTimer();
     _controller = ConfettiController(duration: const Duration(seconds: 4));
 
     state = CelebrationState(
@@ -151,7 +163,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
     _controller?.play();
 
     // Auto-dismiss after animation
-    Future.delayed(const Duration(seconds: 5), () {
+    _dismissTimer = Timer(const Duration(seconds: 5), () {
       if (mounted) {
         dismiss();
       }
@@ -168,13 +180,19 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
     // Dismiss any existing celebration
     dismiss();
 
-    // Show the enhanced level up overlay
-    LevelUpOverlay.show(context, newLevel: level, levelTitle: levelTitle);
+    // Defer overlay to post-frame callback to avoid _ElementLifecycle.active
+    // assertion during build transitions (e.g. onboarding → TabNavigator).
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) {
+        LevelUpOverlay.show(context, newLevel: level, levelTitle: levelTitle);
+      }
+    });
   }
 
   /// Trigger a milestone celebration (big achievement)
   void milestone(String title, {String? subtitle}) {
     _disposeController();
+    _cancelDismissTimer();
     _controller = ConfettiController(duration: const Duration(seconds: 5));
 
     state = CelebrationState(
@@ -188,7 +206,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
     _controller?.play();
 
     // Auto-dismiss after animation
-    Future.delayed(const Duration(seconds: 6), () {
+    _dismissTimer = Timer(const Duration(seconds: 6), () {
       if (mounted) {
         dismiss();
       }
@@ -197,6 +215,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
 
   /// Dismiss active celebration
   void dismiss() {
+    _cancelDismissTimer();
     _disposeController();
     state = const CelebrationState();
   }
@@ -208,6 +227,7 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
 
   @override
   void dispose() {
+    _cancelDismissTimer();
     _disposeController();
     super.dispose();
   }
