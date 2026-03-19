@@ -136,17 +136,6 @@ class QuizQuestion {
   });
 }
 
-/// Legacy achievement category enum — kept for backward compatibility.
-/// New code should use AchievementCategory from models/achievements.dart.
-enum AchievementCategory {
-  learning, // Complete lessons
-  tracking, // Log data
-  streak, // Consistency
-  milestones, // XP/level milestones
-  exploration, // Use features
-  special, // Easter eggs, events
-}
-
 /// Achievement tier used by GemRewards for gem calculations.
 enum AchievementTier { bronze, silver, gold, platinum }
 

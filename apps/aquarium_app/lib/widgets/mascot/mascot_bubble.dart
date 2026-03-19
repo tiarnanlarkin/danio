@@ -152,6 +152,9 @@ class _MascotBubbleState extends State<MascotBubble>
       position: _slideAnimation,
       child: FadeTransition(
         opacity: _fadeAnimation,
+        child: Semantics(
+        button: widget.onTap != null,
+        label: widget.message,
         child: GestureDetector(
           onTap: widget.onTap,
           child: Row(
