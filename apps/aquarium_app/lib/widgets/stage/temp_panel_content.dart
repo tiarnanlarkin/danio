@@ -350,7 +350,7 @@ class _HeroSection extends StatelessWidget {
               Text(
                 temp != null ? '${temp!.toStringAsFixed(1)}°C' : '--°C',
                 style: AppTypography.headlineLarge.copyWith(
-                  color: _kCharcoal,
+                  color: temp != null ? _kCharcoal : _kCharcoal.withAlpha(100),
                   fontWeight: FontWeight.w800,
                   fontSize: 42,
                   letterSpacing: -1.5,
@@ -359,7 +359,9 @@ class _HeroSection extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'current temperature',
+                temp != null
+                    ? 'current temperature'
+                    : 'no data yet',
                 style: AppTypography.labelSmall.copyWith(
                   color: _kCharcoal.withAlpha(110),
                   fontSize: 11,

@@ -1,6 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// Prevents double-tap / tap-spam on navigation actions.
+///
+/// Uses a [_busyCount] to allow concurrent navigations from different parts
+/// of the app (e.g. different tabs) while still blocking rapid re-taps on
+/// the same element.
 ///
 /// Usage:
 /// ```dart
@@ -8,27 +13,24 @@ import 'package:flutter/material.dart';
 /// onTap: () => NavigationThrottle.push(context, MyScreen(), route: RoomSlideRoute(page: MyScreen()));
 /// ```
 class NavigationThrottle {
-  static bool _isNavigating = false;
-  // ignore: unused_field — tracks the safety timer Future for logical pairing
-  static Future<void>? _safetyTimer;
+  /// Number of in-flight navigations. Replaces the old single bool flag
+  /// so that navigation in one tab doesn't block another tab.
+  static int _busyCount = 0;
+  static Timer? _safetyTimer;
 
-  /// Starts a 5-second safety-reset timer that clears the navigation lock
+  /// Starts a 2-second safety-reset timer that clears all navigation locks
   /// in case an exception or hang prevents the finally block from running.
-  /// Returns the Future so it can be cancelled on normal completion.
-  static Future<void> _startSafetyTimer() {
-    final timer = Future.delayed(const Duration(seconds: 5), () {
-      _isNavigating = false;
+  static void _startSafetyTimer() {
+    _safetyTimer?.cancel();
+    _safetyTimer = Timer(const Duration(seconds: 2), () {
+      _busyCount = 0;
     });
-    _safetyTimer = timer;
-    return timer;
   }
 
   /// Cancels the safety timer (called when navigation completes normally).
   static void _cancelSafetyTimer() {
+    _safetyTimer?.cancel();
     _safetyTimer = null;
-    // Future.delayed cannot be cancelled directly, but setting _safetyTimer
-    // to null and resetting _isNavigating in finally means the delayed
-    // callback's write is harmless (it just sets false again).
   }
 
   /// Push a route with tap-spam protection.
@@ -38,8 +40,8 @@ class NavigationThrottle {
     Widget page, {
     Route<T>? route,
   }) async {
-    if (_isNavigating) return null;
-    _isNavigating = true;
+    if (_busyCount > 0) return null;
+    _busyCount++;
     _startSafetyTimer();
     try {
       final result = await Navigator.push<T>(
@@ -49,7 +51,7 @@ class NavigationThrottle {
       return result;
     } finally {
       _cancelSafetyTimer();
-      _isNavigating = false;
+      _busyCount = 0;
     }
   }
 
@@ -59,8 +61,8 @@ class NavigationThrottle {
     String routeName, {
     Object? arguments,
   }) async {
-    if (_isNavigating) return null;
-    _isNavigating = true;
+    if (_busyCount > 0) return null;
+    _busyCount++;
     _startSafetyTimer();
     try {
       final result = await Navigator.pushNamed<T>(
@@ -71,15 +73,17 @@ class NavigationThrottle {
       return result;
     } finally {
       _cancelSafetyTimer();
-      _isNavigating = false;
+      _busyCount = 0;
     }
   }
 
   /// Reset the navigation lock (call in tests or edge cases).
   static void reset() {
-    _isNavigating = false;
+    _safetyTimer?.cancel();
+    _safetyTimer = null;
+    _busyCount = 0;
   }
 
   /// Whether navigation is currently in progress.
-  static bool get isNavigating => _isNavigating;
+  static bool get isNavigating => _busyCount > 0;
 }

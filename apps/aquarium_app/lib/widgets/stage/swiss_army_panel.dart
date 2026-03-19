@@ -91,6 +91,9 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
     final panelWidth = screenWidth * 0.72;
     final topPad = MediaQuery.of(context).padding.top;
     final bottomPad = MediaQuery.of(context).padding.bottom;
+    // Account for bottom nav bar so panel content stays visible above tabs.
+    const tabBarHeight = 64.0;
+    final effectiveBottom = bottomPad + tabBarHeight;
     final sign = widget.isLeft ? -1.0 : 1.0;
 
     return AnimatedBuilder(
@@ -107,7 +110,7 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
 
         return Positioned(
           top: topPad,
-          bottom: bottomPad,
+          bottom: effectiveBottom,
           left: widget.isLeft ? 0 : null,
           right: widget.isLeft ? null : 0,
           width: panelWidth,

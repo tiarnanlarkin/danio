@@ -291,7 +291,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     // Timestamp
                     Text('Date & Time', style: AppTypography.headlineSmall),
                     const SizedBox(height: AppSpacing.sm),
-                    InkWell(
+                    Semantics(
+                      button: true,
+                      label: 'Date and time picker. Tap to change date and time.',
+                      child: InkWell(
                       onTap: _pickDateTime,
                       borderRadius: AppRadius.mediumRadius,
                       child: Container(
@@ -319,6 +322,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                             ),
                           ],
                         ),
+                      ),
                       ),
                     ),
 
@@ -1312,18 +1316,22 @@ class _PhotoGrid extends StatelessWidget {
             Positioned(
               top: 4,
               right: 4,
-              child: InkWell(
-                onTap: () => onRemove(path),
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.xs),
-                  decoration: BoxDecoration(
-                    color: AppOverlays.black60,
-                    borderRadius: AppRadius.pillRadius,
-                  ),
-                  child: const Icon(
-                    Icons.close,
-                    size: AppIconSizes.xs,
-                    color: Colors.white,
+              child: Semantics(
+                button: true,
+                label: 'Remove photo',
+                child: InkWell(
+                  onTap: () => onRemove(path),
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.xs),
+                    decoration: BoxDecoration(
+                      color: AppOverlays.black60,
+                      borderRadius: AppRadius.pillRadius,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      size: AppIconSizes.xs,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

@@ -49,7 +49,7 @@ class PlacementChallengeCard extends ConsumerWidget {
             AppSpacing.md,
             0,
           ),
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppOverlays.accent10, AppOverlays.amber20],
@@ -59,7 +59,9 @@ class PlacementChallengeCard extends ConsumerWidget {
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: AppOverlays.accent30),
           ),
-          child: Column(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -144,6 +146,7 @@ class PlacementChallengeCard extends ConsumerWidget {
                 ],
               ),
             ],
+          ),
           ),
         );
       },

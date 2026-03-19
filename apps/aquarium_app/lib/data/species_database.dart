@@ -879,7 +879,7 @@ const List<SpeciesInfo> _allSpecies = [
     diet:
         'Omnivore - quality pellets, flakes, blanched vegetables (peas, spinach), bloodworms, brine shrimp',
     adultSizeCm: 25,
-    swimLevel: 'Mid',
+    swimLevel: 'Middle',
     description:
         'The most misunderstood aquarium fish. Despite the "goldfish bowl" myth, common goldfish need a minimum 120L tank with strong filtration. They produce more waste than tropical fish of the same size and can live 10-15 years (up to 40 in ideal conditions). Hardy, coldwater, and surprisingly intelligent - they can learn to recognise their owner.',
     compatibleWith: [

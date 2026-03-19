@@ -48,11 +48,15 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             title: const Text('Reminders'),
             onTap: () {
               Navigator.pop(ctx);
-              NavigationThrottle.push(
-                context,
-                const RemindersScreen(),
-                route: RoomSlideRoute(page: const RemindersScreen()),
-              );
+              // Use WidgetsBinding to ensure sheet is dismissed before pushing
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!context.mounted) return;
+                NavigationThrottle.push(
+                  context,
+                  const RemindersScreen(),
+                  route: RoomSlideRoute(page: const RemindersScreen()),
+                );
+              });
             },
           ),
           ListTile(

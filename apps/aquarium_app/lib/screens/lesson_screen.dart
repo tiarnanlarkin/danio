@@ -49,6 +49,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   bool _heartGained = false;
   bool _isCompletingLesson = false;
   bool _isExitingDueToHearts = false;
+  bool _isHeartsModalVisible = false; // Tracks when out-of-hearts modal is showing
   int? _levelBeforeLesson;
   DateTime? _lessonStartTime; // PS-11: Track actual lesson start time
   bool _showHint = false; // Personalisation: beginner hints
@@ -128,6 +129,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
+        // If hearts modal is showing, let the dialog handle the back press
+        // (dialog route gets priority). Flag is set so we don't double-fire.
+        if (_isHeartsModalVisible) return;
         // If we're programmatically exiting due to out-of-hearts, skip the
         // confirm dialog — the hearts modal already handled the user's choice.
         if (_isExitingDueToHearts) return;
@@ -917,10 +921,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                               // Wait for animation to finish
                               await Future.delayed(kQuizRevealDelay);
                               if (mounted) {
+                                setState(() => _isHeartsModalVisible = true);
+                                try {
                                 final result = await showOutOfHeartsModal(
                                   context,
                                 );
                                 if (result == 'practice' && mounted) {
+                                  setState(() => _isHeartsModalVisible = false);
                                   // Replace current lesson with the same lesson
                                   // in practice mode (no hearts consumed, gains
                                   // a heart on completion).
@@ -937,6 +944,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                                   // "Wait" or close — go back to the learn hub
                                   _isExitingDueToHearts = true;
                                   Navigator.of(context).pop();
+                                }
+                                } finally {
+                                  if (mounted) {
+                                    setState(() => _isHeartsModalVisible = false);
+                                  }
                                 }
                               }
                             }
