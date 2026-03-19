@@ -9,12 +9,16 @@ class TankListTile extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
+  /// Whether to show a trailing chevron (indicates navigability).
+  final bool showChevron;
+
   const TankListTile({
     super.key,
     required this.name,
     required this.volumeLitres,
     required this.isSelected,
     required this.onTap,
+    this.showChevron = false,
   });
 
   @override
@@ -42,6 +46,9 @@ class TankListTile extends StatelessWidget {
           fontSize: 12,
         ),
       ),
+      trailing: showChevron
+          ? Icon(Icons.chevron_right, color: context.textHint, size: 20)
+          : null,
       onTap: onTap,
     );
   }

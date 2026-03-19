@@ -481,8 +481,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   name: e.value.name,
                   volumeLitres: e.value.volumeLitres,
                   isSelected: e.key == _currentTankIndex,
-                  onTap: () => setState(() => _currentTankIndex = e.key),
+                  showChevron: true,
+                  onTap: () => _navigateToTankDetail(context, e.value),
                 )),
+                // Add New Tank action
+                ListTile(
+                  dense: true,
+                  leading: Icon(
+                    Icons.add_circle_outline_rounded,
+                    color: context.textSecondary.withAlpha(128),
+                    size: 20,
+                  ),
+                  title: Text(
+                    'Add New Tank',
+                    style: TextStyle(
+                      color: context.textSecondary.withAlpha(160),
+                      fontSize: 14,
+                    ),
+                  ),
+                  trailing: Icon(Icons.add, color: context.textHint, size: 18),
+                  onTap: () => _navigateToCreateTank(context),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.add_circle_outline, color: Color(0xFF4A9DB5)),
+                  title: const Text('Add New Tank'),
+                  onTap: () => _navigateToCreateTank(context),
+                ),
               ],
             ),
           ),
