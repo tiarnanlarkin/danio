@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/species_database.dart';
+import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
 
 /// Screen 8 — Feature Summary
@@ -121,6 +122,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
   }
 
   Widget _buildFishHeader() {
+    final spritePath = SpeciesSprites.thumbFor(widget.selectedFish.commonName);
     return Semantics(
       label:
           'Your ${widget.selectedFish.commonName} care guide is ready',
@@ -136,7 +138,14 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('🐟', style: TextStyle(fontSize: 48)),
+            spritePath != null
+                ? Image.asset(
+                    spritePath,
+                    width: 48,
+                    height: 48,
+                    fit: BoxFit.contain,
+                  )
+                : const Text('🐟', style: TextStyle(fontSize: 48)),
             const SizedBox(width: 12),
             Flexible(
               child: Text(

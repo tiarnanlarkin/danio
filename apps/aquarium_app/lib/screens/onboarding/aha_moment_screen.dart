@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/species_database.dart';
+import '../../data/species_sprites.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 
@@ -222,6 +223,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
 
   Widget _buildPhase1() {
     final fishName = widget.selectedFish.commonName;
+    final spritePath = SpeciesSprites.thumbFor(fishName);
 
     return AnimatedBuilder(
       animation: _overlayOpacity,
@@ -244,7 +246,16 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     border: Border.all(color: AppColors.onboardingAmber, width: 3),
                   ),
                   alignment: Alignment.center,
-                  child: const Text('🐠', style: TextStyle(fontSize: 48)),
+                  child: spritePath != null
+                      ? ClipOval(
+                          child: Image.asset(
+                            spritePath,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      : const Text('🐠', style: TextStyle(fontSize: 48)),
                 ),
               ),
 
@@ -435,6 +446,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
   // ─── Helpers ─────────────────────────────────────────────────────
 
   Widget _buildFishMarker(String fishName) {
+    final spritePath = SpeciesSprites.thumbFor(fishName);
     return Row(
       children: [
         Container(
@@ -446,7 +458,16 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
             border: Border.all(color: AppColors.onboardingAmber, width: 2),
           ),
           alignment: Alignment.center,
-          child: const Text('🐠', style: TextStyle(fontSize: 22)),
+          child: spritePath != null
+              ? ClipOval(
+                  child: Image.asset(
+                    spritePath,
+                    width: 34,
+                    height: 34,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              : const Text('🐠', style: TextStyle(fontSize: 22)),
         ),
         const SizedBox(width: AppSpacing.sm2),
         Text(
