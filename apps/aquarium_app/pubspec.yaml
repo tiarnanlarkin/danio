@@ -91,10 +91,10 @@ flutter:
     - assets/audio/celebrations/
     - assets/images/empty_states/
     - assets/images/onboarding/
-    - assets/images/illustrations/
     - assets/images/error_states/
     - assets/images/fish/
     - assets/images/fish/thumb/
+    - assets/images/placeholder.png
     - assets/icons/app_icon.png
     - assets/icons/badges/
     - assets/textures/
