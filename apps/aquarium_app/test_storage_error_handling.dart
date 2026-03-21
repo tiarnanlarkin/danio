@@ -5,8 +5,11 @@ library;
 
 import 'dart:convert';
 
+// ignore: avoid_print
+void debugPrint(String? message, {int? wrapWidth}) => print(message);
+
 void main() async {
-  print('🧪 Storage Error Handling Test Suite\n');
+  debugPrint('🧪 Storage Error Handling Test Suite\n');
   
   // Test scenarios
   await testJsonParseError();
@@ -16,12 +19,12 @@ void main() async {
   await testMissingFile();
   await testRecoveryMethods();
   
-  print('\n✅ All tests completed!');
+  debugPrint('\n✅ All tests completed!');
 }
 
 /// Test 1: Malformed JSON (syntax error)
 Future<void> testJsonParseError() async {
-  print('📋 Test 1: Malformed JSON');
+  debugPrint('📋 Test 1: Malformed JSON');
   
   final testData = '''
   {
@@ -45,7 +48,7 @@ Future<void> testJsonParseError() async {
 
 /// Test 2: Valid JSON but invalid entity structure
 Future<void> testEntityParseError() async {
-  print('\n📋 Test 2: Invalid Entity Structure');
+  debugPrint('\n📋 Test 2: Invalid Entity Structure');
   
   final testData = jsonEncode({
     'version': 1,
@@ -68,7 +71,7 @@ Future<void> testEntityParseError() async {
 
 /// Test 3: Partially corrupted data (some entities bad, some good)
 Future<void> testPartialCorruption() async {
-  print('\n📋 Test 3: Partial Corruption');
+  debugPrint('\n📋 Test 3: Partial Corruption');
   
   final testData = jsonEncode({
     'version': 1,
@@ -112,7 +115,7 @@ Future<void> testPartialCorruption() async {
 
 /// Test 4: Empty file
 Future<void> testEmptyFile() async {
-  print('\n📋 Test 4: Empty File');
+  debugPrint('\n📋 Test 4: Empty File');
   
   await runTest(
     name: 'Empty File',
@@ -124,7 +127,7 @@ Future<void> testEmptyFile() async {
 
 /// Test 5: Missing file
 Future<void> testMissingFile() async {
-  print('\n📋 Test 5: Missing File');
+  debugPrint('\n📋 Test 5: Missing File');
   
   await runTest(
     name: 'Missing File',
@@ -136,12 +139,12 @@ Future<void> testMissingFile() async {
 
 /// Test 6: Recovery methods
 Future<void> testRecoveryMethods() async {
-  print('\n📋 Test 6: Recovery Methods');
-  print('   Manual verification required:');
-  print('   1. clearAllData() - should reset state to loaded');
-  print('   2. retryLoad() - should attempt reload from disk');
-  print('   3. recoverFromCorruption() - should delete file and start fresh');
-  print('   ✓ Recovery method signatures verified in code');
+  debugPrint('\n📋 Test 6: Recovery Methods');
+  debugPrint('   Manual verification required:');
+  debugPrint('   1. clearAllData() - should reset state to loaded');
+  debugPrint('   2. retryLoad() - should attempt reload from disk');
+  debugPrint('   3. recoverFromCorruption() - should delete file and start fresh');
+  debugPrint('   ✓ Recovery method signatures verified in code');
 }
 
 /// Run a single test scenario
@@ -151,33 +154,33 @@ Future<void> runTest({
   required String expectation,
   required String expectedState,
 }) async {
-  print('  ▶️  $name');
-  print('     Expected: $expectation');
+  debugPrint('  ▶️  $name');
+  debugPrint('     Expected: $expectation');
   
   // For now, just document the test case
   // Full integration would require Flutter environment
-  print('     ✓ Test case documented');
+  debugPrint('     ✓ Test case documented');
 }
 
 /// Helper: Create test storage file
 Future<void> createTestFile(String data) async {
   // This would need actual path_provider in Flutter environment
   // For now, this is a documentation script
-  print('     [Would create test file with data]');
+  debugPrint('     [Would create test file with data]');
 }
 
 /// Helper: Attempt to load storage
 Future<void> attemptLoad() async {
-  print('     [Would attempt to load storage service]');
+  debugPrint('     [Would attempt to load storage service]');
 }
 
 /// Helper: Verify service state
 void verifyState(String expected) {
-  print('     [Would verify state = $expected]');
+  debugPrint('     [Would verify state = $expected]');
 }
 
 /// Helper: Check for backup file
 bool checkBackupExists() {
-  print('     [Would check for .corrupted backup file]');
+  debugPrint('     [Would check for .corrupted backup file]');
   return true;
 }

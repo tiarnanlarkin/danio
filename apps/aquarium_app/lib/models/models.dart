@@ -19,5 +19,4 @@ export 'gem_transaction.dart';
 export 'leaderboard.dart';
 export 'placement_test.dart';
 export 'shop_item.dart';
-export 'social.dart';
 export 'spaced_repetition.dart';
