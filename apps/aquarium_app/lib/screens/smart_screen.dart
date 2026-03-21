@@ -19,7 +19,6 @@ import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/first_visit_tooltip.dart';
 import 'compatibility_checker_screen.dart';
-import 'settings_screen.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
@@ -140,7 +139,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           e is OpenAIException && (e.statusCode == 401 || e.statusCode == 403);
       setState(
         () => _askResponse = isAuthError
-            ? 'Your API key appears to be invalid or expired. Please check your key in Smart Settings.'
+            ? 'Your API key appears to be invalid or expired.'
             : "Sorry, I couldn't answer that right now. Please check your connection and try again.",
       );
     } finally {
@@ -169,13 +168,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
             // API status / connectivity
             if (!openai.isConfigured)
-              _OfflineBanner(
-                onSettingsTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                  );
-                },
-              )
+              const _OfflineBanner()
             else
               ref.watch(isOnlineProvider)
                   ? _UsageChip(callCount: openai.apiCallsThisMonth)
@@ -189,7 +182,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               title: 'Fish & Plant ID',
               subtitle: openai.isConfigured
                   ? 'Snap a photo to identify species'
-                  : 'Enable AI in Settings to use this',
+                  : 'Requires AI setup',
               color: AppColors.primary,
               onTap: openai.isConfigured
                   ? () {
@@ -209,7 +202,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               title: 'Symptom Checker',
               subtitle: openai.isConfigured
                   ? 'Describe symptoms, get instant advice'
-                  : 'Enable AI in Settings to use this',
+                  : 'Requires AI setup',
               color: AppColors.error,
               onTap: openai.isConfigured
                   ? () {
@@ -231,7 +224,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               title: 'Weekly Care Plan',
               subtitle: openai.isConfigured
                   ? 'Your personalised maintenance schedule'
-                  : 'Enable AI in Settings to use this',
+                  : 'Requires AI setup',
               color: AppColors
                   .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
               onTap: openai.isConfigured
@@ -525,81 +518,55 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 // ── Subwidgets ──────────────────────────────────────────────────────────
 
 class _OfflineBanner extends StatelessWidget {
-  final VoidCallback? onSettingsTap;
-
-  const _OfflineBanner({this.onSettingsTap});
+  const _OfflineBanner();
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: 'AI Features settings. Coming in Danio Pro',
-      child: GestureDetector(
-      onTap: onSettingsTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.primaryAlpha08,
-              DanioColors.topaz.withValues(alpha: 0.08),
-            ],
-          ),
-          borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppColors.primaryAlpha15),
-        ),
-        child: Column(
-          children: [
-            Text('🤖', style: Theme.of(context).textTheme.headlineMedium!),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'AI Features — Coming in Danio Pro!',
-              style: AppTypography.titleSmall.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Smart fish identification, health diagnosis, and personalised '
-              'care plans are on the way.',
-              style: AppTypography.bodySmall.copyWith(
-                color: context.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.settings, size: 14, color: context.textHint),
-                const SizedBox(width: AppSpacing.xs),
-                Flexible(
-                  child: Text(
-                    'Tap here to connect your OpenAI API key in Settings.',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'The Compatibility Checker below works offline — no key needed! 👇',
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.primaryAlpha08,
+            DanioColors.topaz.withValues(alpha: 0.08),
           ],
         ),
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(color: AppColors.primaryAlpha15),
       ),
+      child: Column(
+        children: [
+          Text('🤖', style: Theme.of(context).textTheme.headlineMedium!),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Smart AI Features',
+            style: AppTypography.titleSmall.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'AI-powered fish identification, health diagnosis, and '
+            'personalised care plans require an OpenAI API key to be '
+            'configured at build time.',
+            style: AppTypography.bodySmall.copyWith(
+              color: context.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'The Compatibility Checker below works offline — no key needed! 👇',
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

@@ -3,18 +3,29 @@
 // Run: flutter test test/widget_tests/onboarding_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/onboarding/consent_screen.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
+/// Override that provides the mocked SharedPreferences through Riverpod,
+/// matching the ConsentScreen's use of shared_preferencesProvider.
+final _prefsOverride = sharedPreferencesProvider.overrideWith((ref) async {
+  return SharedPreferences.getInstance();
+});
+
 Widget _wrap({required VoidCallback onConsentGiven}) {
-  return MaterialApp(
-    home: ConsentScreen(onConsentGiven: onConsentGiven),
+  return ProviderScope(
+    overrides: [_prefsOverride],
+    child: MaterialApp(
+      home: ConsentScreen(onConsentGiven: onConsentGiven),
+    ),
   );
 }
 

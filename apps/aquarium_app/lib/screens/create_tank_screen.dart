@@ -348,7 +348,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
               .achievement(
                 'Multi-Tank Aquarist! \u{1F30A}',
                 subtitle:
-                    'Danio Pro will unlock advanced multi-tank features — stay tuned!',
+                    'You now have multiple tanks to manage!',
               );
         }
       }

@@ -237,17 +237,28 @@ void main() {
       await tester.pumpAndSettle();
 
       // All other toggles should still render fine
-      for (final label in [
-        'Light/Dark Mode',
+      // Note: scrollUntilVisible only scrolls forward (down). After toggling
+      // ambient, the list position is near "Day/Night Ambiance". We verify
+      // each tile by scrolling forward through the remaining labels.
+      final labelsBelow = [
         'Day/Night Ambiance',
         'Reduce Motion',
         'Haptic Feedback',
         'Task Reminders',
-      ]) {
+      ];
+      for (final label in labelsBelow) {
         await tester.scrollUntilVisible(find.text(label), 500.0);
         expect(find.text(label), findsOneWidget,
             reason: 'Expected "$label" to be present after ambient toggle');
       }
+
+      // "Light/Dark Mode" is above — verify it's still in the widget tree
+      // by scrolling back up with a drag, then checking.
+      await tester.drag(find.byType(ListView), const Offset(0, 3000));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Light/Dark Mode'), 500.0);
+      expect(find.text('Light/Dark Mode'), findsOneWidget,
+          reason: 'Expected "Light/Dark Mode" to be present after ambient toggle');
     });
   });
 }

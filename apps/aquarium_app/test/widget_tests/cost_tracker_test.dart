@@ -121,13 +121,13 @@ void main() {
       await tester.tap(find.text('Add First Expense'));
       await tester.pumpAndSettle();
 
-      // Fill description — use the one with "Description" label
-      final descField = find.widgetWithText(TextField, '');
-      // There are multiple empty TextFields — target the first
-      await tester.enterText(descField.first, 'Neon Tetras x6');
+      // Fill description — target the TextField with "Description" labelText
+      // (the labelText appears as a child Text widget when the field is empty)
+      final descField = find.widgetWithText(TextField, 'Description');
+      await tester.enterText(descField, 'Neon Tetras x6');
 
-      // Fill amount — target the last TextField
-      final amountField = find.byType(TextField).last;
+      // Fill amount — target the TextField with "Amount" labelText
+      final amountField = find.widgetWithText(TextField, 'Amount');
       await tester.enterText(amountField, '24.99');
 
       // Save

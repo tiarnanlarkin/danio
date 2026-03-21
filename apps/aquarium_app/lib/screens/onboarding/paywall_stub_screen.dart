@@ -5,11 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../data/species_database.dart';
 import '../../theme/app_theme.dart';
 
-/// Screen 8 — Paywall Stub
+/// Screen 8 — Feature Summary
 ///
-/// Production-quality paywall UI shown immediately after the aha moment.
-/// Currently a stub: tapping CTA shows a SnackBar and advances.
-/// No billing backend yet.
+/// Shows users what Danio offers — all features available, no paywall.
+/// Honest v1: no subscription, no trial, no fake pricing.
 class PaywallStubScreen extends StatefulWidget {
   final SpeciesInfo selectedFish;
   final VoidCallback onComplete;
@@ -28,17 +27,9 @@ class PaywallStubScreen extends StatefulWidget {
 
 class _PaywallStubScreenState extends State<PaywallStubScreen>
     with TickerProviderStateMixin {
-  // Amber brand colour from spec
-
   late final AnimationController _fishBounceController;
   late final CurvedAnimation _fishBounceCurve;
   late final Animation<double> _fishBounceAnim;
-
-  late final AnimationController _maybeLaterController;
-  late final CurvedAnimation _maybeLaterCurve;
-  late final Animation<double> _maybeLaterOpacity;
-
-  int _selectedPlan = 0; // 0 = annual (default)
 
   @override
   void initState() {
@@ -48,7 +39,6 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
         WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
             .disableAnimations;
 
-    // Fish header bounce: scale 1.0 → 1.05 → 1.0 over 300ms
     _fishBounceController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -56,25 +46,10 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
     _fishBounceCurve = CurvedAnimation(parent: _fishBounceController, curve: Curves.easeInOut);
     _fishBounceAnim = Tween<double>(begin: 1.0, end: 1.05).animate(_fishBounceCurve);
 
-    // "Maybe later" fades in 1s after build
-    _maybeLaterController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-    _maybeLaterCurve = CurvedAnimation(
-      parent: _maybeLaterController,
-      curve: Curves.easeIn,
-    );
-    _maybeLaterOpacity = _maybeLaterCurve;
-
     if (!disableAnimations) {
       _fishBounceController.forward();
-      Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) _maybeLaterController.forward();
-      });
     } else {
       _fishBounceController.value = 1.0;
-      _maybeLaterController.value = 1.0;
     }
   }
 
@@ -82,32 +57,12 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
   void dispose() {
     _fishBounceCurve.dispose();
     _fishBounceController.dispose();
-    _maybeLaterCurve.dispose();
-    _maybeLaterController.dispose();
     super.dispose();
   }
 
   void _onCtaTapped() {
     HapticFeedback.mediumImpact();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Subscription coming soon! Enjoy Danio free for now.',
-          style: GoogleFonts.nunito(fontWeight: FontWeight.w600),
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-    // Advance after snackbar is visible
-    Future.delayed(const Duration(milliseconds: 600), () {
-      if (mounted) widget.onComplete();
-    });
-  }
-
-  void _onSkipTapped() {
-    HapticFeedback.lightImpact();
-    widget.onSkip();
+    widget.onComplete();
   }
 
   @override
@@ -129,9 +84,9 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                     // Fish reference header
                     _buildFishHeader(),
                     const SizedBox(height: 24),
-                    // Paywall title
+                    // Title
                     Text(
-                      'Keep your fish alive, longer.',
+                      'Everything you need, right here.',
                       style: GoogleFonts.lora(
                         fontSize: 26,
                         fontWeight: FontWeight.w700,
@@ -139,21 +94,25 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Danio is free to use — no subscription needed.',
+                      style: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 28),
                     // Feature list
                     _buildFeatureList(),
-                    const SizedBox(height: 28),
-                    // Pricing block
-                    _buildPricingBlock(),
-                    const SizedBox(height: 20),
-                    // Trial pill
-                    _buildTrialPill(),
                     const SizedBox(height: 24),
                   ],
                 ),
               ),
             ),
-            // Bottom section: CTA + Maybe later + Legal
+            // Bottom section: CTA
             _buildBottomSection(bottomPadding),
           ],
         ),
@@ -233,184 +192,6 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
     );
   }
 
-  Widget _buildPricingBlock() {
-    return Column(
-      children: [
-        // Annual plan — pre-selected
-        _buildPlanTile(
-          index: 0,
-          price: '£1.67/month',
-          subtitle: 'Billed as £19.99/year',
-          badge: 'MOST POPULAR',
-          isLarge: true,
-        ),
-        const SizedBox(height: 10),
-        // Monthly plan
-        _buildPlanTile(
-          index: 1,
-          price: 'or £2.99/month',
-          subtitle: null,
-          badge: null,
-          isLarge: false,
-        ),
-        const SizedBox(height: 10),
-        // Lifetime plan
-        _buildPlanTile(
-          index: 2,
-          price: '£34.99 one-time',
-          subtitle: null,
-          badge: null,
-          isLarge: false,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPlanTile({
-    required int index,
-    required String price,
-    String? subtitle,
-    String? badge,
-    required bool isLarge,
-  }) {
-    final isSelected = _selectedPlan == index;
-
-    return Semantics(
-      label: '$price${subtitle != null ? ', $subtitle' : ''}${badge != null ? ', $badge' : ''}',
-      selected: isSelected,
-      button: true,
-      child: GestureDetector(
-        onTap: () {
-          HapticFeedback.selectionClick();
-          setState(() => _selectedPlan = index);
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: isLarge ? 18 : 14,
-          ),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFFFFF3E0) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected ? AppColors.onboardingAmber : AppColors.border,
-              width: isSelected ? 2 : 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          price,
-                          style: isLarge
-                              ? GoogleFonts.lora(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
-                                )
-                              : GoogleFonts.nunito(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: isSelected
-                                      ? AppColors.textPrimary
-                                      : AppColors.textSecondary,
-                                ),
-                        ),
-                        if (badge != null) ...[
-                          const SizedBox(width: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.onboardingAmber,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              badge,
-                              style: GoogleFonts.nunito(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: GoogleFonts.nunito(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              // Radio indicator
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: isSelected ? AppColors.onboardingAmber : AppColors.textHint,
-                    width: 2,
-                  ),
-                ),
-                child: isSelected
-                    ? Center(
-                        child: Container(
-                          width: 12,
-                          height: 12,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.onboardingAmber,
-                          ),
-                        ),
-                      )
-                    : null,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTrialPill() {
-    return Semantics(
-      label: '7-day free trial, cancel anytime',
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: AppColors.onboardingAmber,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-        ),
-        child: Text(
-          '7-day free trial · Cancel anytime',
-          style: GoogleFonts.nunito(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildBottomSection(double bottomPadding) {
     return Container(
       padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPadding + 16),
@@ -427,9 +208,8 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // CTA button
           Semantics(
-            label: 'Start my free trial',
+            label: 'Continue to setup',
             button: true,
             child: SizedBox(
               width: double.infinity,
@@ -445,7 +225,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                   elevation: 0,
                 ),
                 child: Text(
-                  'Start my free trial →',
+                  "Let's go! →",
                   style: GoogleFonts.nunito(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
@@ -453,40 +233,6 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 14),
-          // "Maybe later" — fades in after 1 second
-          FadeTransition(
-            opacity: _maybeLaterOpacity,
-            child: Semantics(
-              label: 'Maybe later, skip subscription',
-              button: true,
-              child: SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: TextButton(
-                  onPressed: _onSkipTapped,
-                  child: Text(
-                    'Maybe later',
-                    style: GoogleFonts.nunito(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textHint,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          // Legal footer
-          Text(
-            'Terms of Service · Privacy Policy',
-            style: GoogleFonts.nunito(
-              fontSize: 11,
-              color: AppColors.textHint,
-            ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
