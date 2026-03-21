@@ -1770,11 +1770,6 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
   late Animation<double> _bobAnimation;
   bool _facingRight = true;
 
-  /// Minimum non-zero duration to prevent infinite recursion in status
-  /// listener when reduce-motion is enabled (Duration.zero causes
-  /// completed → reverse → dismissed → forward → completed … in one frame).
-  static const _minDuration = Duration(milliseconds: 16);
-
   @override
   void initState() {
     super.initState();
@@ -1794,43 +1789,33 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
       CurvedAnimation(parent: _controller, curve: AppCurves.standardSine),
     );
 
-    // Start at offset position
-    _controller.value = widget.startOffset;
-
-    _controller.addStatusListener(_onAnimationStatus);
-
-    _controller.forward();
+    // Use repeat(reverse: true) for native ping-pong instead of manual
+    // forward()/reverse() status listeners. The manual approach caused
+    // stack overflow on relaunch when reduce-motion set duration to 16ms,
+    // allowing the animation to complete within a single frame and
+    // recurse infinitely via status callbacks.
+    _controller.repeat(reverse: true);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final disableMotion = MediaQuery.of(context).disableAnimations;
+    // When motion is reduced, use a very long duration so the fish barely
+    // moves. Must not be Duration.zero to avoid internal Flutter assertions.
     final targetDuration = disableMotion
-        ? _minDuration
+        ? const Duration(minutes: 5)
         : Duration(milliseconds: (widget.swimSpeed * 1000).toInt());
     if (_controller.duration != targetDuration) {
       _controller.duration = targetDuration;
     }
   }
 
-  void _onAnimationStatus(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      setState(() {
-        _facingRight = !_facingRight;
-      });
-      _controller.reverse();
-    } else if (status == AnimationStatus.dismissed) {
-      setState(() {
-        _facingRight = !_facingRight;
-      });
-      _controller.forward();
-    }
-  }
+  // Track the previous value to detect direction changes for flip.
+  double _previousValue = 0.0;
 
   @override
   void dispose() {
-    _controller.removeStatusListener(_onAnimationStatus);
     _controller.dispose();
     super.dispose();
   }
@@ -1840,6 +1825,17 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+        final value = _controller.value;
+
+        // Detect direction change for fish flip: when the animation
+        // value was increasing and now decreases (or vice versa), flip.
+        if (value >= _previousValue && _previousValue > 0.9) {
+          _facingRight = false; // swimming left (reverse phase)
+        } else if (value <= _previousValue && _previousValue < 0.1) {
+          _facingRight = true; // swimming right (forward phase)
+        }
+        _previousValue = value;
+
         final swimX = _swimAnimation.value * widget.tankWidth;
         final bobY = _bobAnimation.value * widget.verticalBob;
         final rawBaseY = widget.baseTop * widget.tankHeight;

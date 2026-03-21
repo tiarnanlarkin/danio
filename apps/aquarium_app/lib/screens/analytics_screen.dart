@@ -34,6 +34,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   DateTime? _customEnd;
   late Future<AnalyticsSummary> _analyticsFuture;
 
+  /// Monotonically increasing version counter. Incremented each time a new
+  /// analytics load is requested so that stale `compute()` results from
+  /// previous range selections are discarded.
+  int _loadVersion = 0;
+
   @override
   void initState() {
     super.initState();
@@ -41,9 +46,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   }
 
   void _refreshAnalytics() {
-    setState(() {
-      _analyticsFuture = _loadAnalytics();
-    });
+    _loadVersion++;
+    _analyticsFuture = _loadAnalytics();
   }
 
   /// Darkens a decorative colour to meet WCAG AA (4.5:1) for text on light bg.
@@ -129,8 +133,16 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     );
   }
 
-  /// Load analytics data using real user profile
+  /// Load analytics data using real user profile.
+  ///
+  /// Uses a [_loadVersion] counter so that when the user taps a different
+  /// range chip before a previous `compute()` finishes, the stale result
+  /// is discarded. This prevents the "Couldn't load your analytics" error
+  /// that occurred when rapid range switching caused old isolate results
+  /// to arrive out of order or fail.
   Future<AnalyticsSummary> _loadAnalytics() async {
+    final version = _loadVersion;
+
     final profile = ref.read(userProfileProvider).valueOrNull;
     if (profile == null) {
       // Return empty analytics when no profile is loaded yet
@@ -152,13 +164,38 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     // Lazy-load all paths for analytics (user explicitly navigated here)
     final allPaths = await lessonContentLazy.getAllPaths();
 
-    return AnalyticsService.generateSummaryAsync(
-      profile: profile,
-      allPaths: allPaths,
-      timeRange: _selectedRange,
-      customStart: _customStart,
-      customEnd: _customEnd,
-    );
+    // If the user has already tapped a different range, discard this result.
+    if (version != _loadVersion) {
+      // Return empty — the FutureBuilder for the newer version will handle display.
+      return AnalyticsSummary(
+        totalXP: profile.totalXp,
+        currentStreak: profile.currentStreak,
+        longestStreak: profile.longestStreak,
+        lessonsCompleted: profile.completedLessons.length,
+        totalLessons: allPaths.fold<int>(0, (sum, path) => sum + path.lessons.length),
+        timeSpentMinutes: 0,
+        recentDailyStats: const [],
+        recentWeeklyStats: const [],
+        insights: const [],
+        topicPerformance: const [],
+        predictions: const [],
+        generatedAt: DateTime.now(),
+      );
+    }
+
+    try {
+      return await AnalyticsService.generateSummaryAsync(
+        profile: profile,
+        allPaths: allPaths,
+        timeRange: _selectedRange,
+        customStart: _customStart,
+        customEnd: _customEnd,
+      );
+    } catch (e) {
+      logError('Analytics compute failed (v$version): $e', tag: 'AnalyticsScreen');
+      // Re-throw so FutureBuilder shows the error state with retry button.
+      rethrow;
+    }
   }
 
   /// Skeleton loader for analytics
@@ -240,8 +277,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           _selectedRange = range;
                           _customStart = null;
                           _customEnd = null;
-                          _analyticsFuture = _loadAnalytics();
                         });
+                        _refreshAnalytics();
                       }
                     },
                   );
