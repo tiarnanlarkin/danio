@@ -248,8 +248,8 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         return true;
 
       case ShopItemType.quizSecondChance:
-        // Quiz retry - just mark as available, quiz screen checks this
-        await _activateQuizRetry();
+      case ShopItemType.lessonHelper:
+        // These items are no longer sold; legacy inventory items are no-ops.
         return true;
 
       case ShopItemType.tankTheme:
@@ -263,10 +263,6 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
       case ShopItemType.celebrationEffect:
         // Celebration effects are automatically used once owned
-        return true;
-
-      case ShopItemType.lessonHelper:
-        // Lesson helper effects are checked during lessons
         return true;
 
       case ShopItemType.goalAdjust:
@@ -292,29 +288,6 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     updated[itemIndex] = updatedItem;
     await _save(updated);
     state = AsyncValue.data(updated);
-  }
-
-  /// Mark quiz retry as available
-  Future<void> _activateQuizRetry() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setBool('quiz_retry_available', true);
-  }
-
-  /// Check if quiz retry is available (and consume it)
-  Future<bool> consumeQuizRetry() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    final available = prefs.getBool('quiz_retry_available') ?? false;
-    if (available) {
-      await prefs.setBool('quiz_retry_available', false);
-      return true;
-    }
-    return false;
-  }
-
-  /// Check if quiz retry is available (without consuming)
-  Future<bool> isQuizRetryAvailable() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    return prefs.getBool('quiz_retry_available') ?? false;
   }
 
   /// Activate a time-based item (XP boost, etc.)

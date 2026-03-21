@@ -7,19 +7,6 @@ class ShopCatalog {
   static final List<ShopItem> allItems = [
     // ==================== POWER-UPS ====================
     ShopItem(
-      id: 'timer_boost',
-      name: 'Timer Boost',
-      description: '+30 seconds on your next timed lesson. Beat the clock!',
-      emoji: '⏱️',
-      category: ShopItemCategory.powerUps,
-      type: ShopItemType.lessonHelper,
-      gemCost: 5,
-      isConsumable: true,
-      quantity: 1,
-      orderIndex: 1,
-    ),
-
-    ShopItem(
       id: 'xp_boost_1h',
       name: '2x XP Boost',
       description: 'Double XP for 1 hour. Perfect for power learning sessions!',
@@ -30,44 +17,6 @@ class ShopCatalog {
       isConsumable: true,
       durationHours: 1,
       orderIndex: 2,
-    ),
-
-    ShopItem(
-      id: 'lesson_hints',
-      name: 'Lesson Helper',
-      description: 'Get helpful hints during your next lesson',
-      emoji: '💡',
-      category: ShopItemCategory.powerUps,
-      type: ShopItemType.lessonHelper,
-      gemCost: 15,
-      isConsumable: true,
-      quantity: 1,
-      orderIndex: 3,
-    ),
-
-    ShopItem(
-      id: 'quiz_retry',
-      name: 'Quiz Second Chance',
-      description: 'Retry wrong answers in your next quiz',
-      emoji: '🎯',
-      category: ShopItemCategory.powerUps,
-      type: ShopItemType.quizSecondChance,
-      gemCost: 20,
-      isConsumable: true,
-      quantity: 1,
-      orderIndex: 4,
-    ),
-
-    ShopItem(
-      id: 'bonus_skill',
-      name: 'Bonus Skill Unlock',
-      description: 'Unlock advanced content and bonus lessons',
-      emoji: '🎓',
-      category: ShopItemCategory.powerUps,
-      type: ShopItemType.lessonHelper,
-      gemCost: 15,
-      isConsumable: false,
-      orderIndex: 5,
     ),
 
     // ==================== EXTRAS ====================

@@ -236,9 +236,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
       case ShopItemType.xpBoost:
         return '2x XP active for 1 hour! ⚡';
       case ShopItemType.quizSecondChance:
-        return 'Quiz retry ready! 🎯';
       case ShopItemType.lessonHelper:
-        return 'Lesson helper activated! 💡';
+        return 'Item used!';
       case ShopItemType.goalAdjust:
         return 'Goal protection active! 🛡️';
       default:

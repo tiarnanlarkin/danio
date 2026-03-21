@@ -27,7 +27,6 @@ class SharedPreferencesBackup {
     'anomaly_history',
     'weekly_plan_cache',
     'spaced_repetition_',
-    'quiz_retry_available',
     'reduced_motion',
     'haptic_feedback',
     'analytics_consent',
