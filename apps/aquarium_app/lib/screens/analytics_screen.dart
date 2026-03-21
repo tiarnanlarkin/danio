@@ -50,6 +50,14 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     });
   }
 
+  /// Returns true when a summary has no meaningful data to display.
+  bool _isEmptySummary(AnalyticsSummary summary) {
+    return summary.totalXP == 0 &&
+        summary.lessonsCompleted == 0 &&
+        summary.currentStreak == 0 &&
+        summary.recentDailyStats.isEmpty;
+  }
+
   /// Darkens a decorative colour to meet WCAG AA (4.5:1) for text on light bg.
   /// Only adjusts if luminance suggests insufficient contrast with white.
   static Color _ensureTextContrast(Color color) {
@@ -94,6 +102,25 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 title: 'No analytics data available',
                 message:
                     'Complete some lessons to see your progress analytics.',
+              );
+            } else if (_isEmptySummary(summary)) {
+              final theme = Theme.of(context);
+              body = Center(
+                key: const ValueKey('analytics-empty'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.bar_chart_rounded, size: 64, color: theme.colorScheme.outline),
+                    const SizedBox(height: 16),
+                    Text('No data yet', style: theme.textTheme.titleMedium),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Complete lessons and log activities\nto see your progress here',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.outline),
+                    ),
+                  ],
+                ),
               );
             } else {
               body = SingleChildScrollView(

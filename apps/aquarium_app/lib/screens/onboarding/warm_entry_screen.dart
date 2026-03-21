@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/species_database.dart';
+import '../../data/species_sprites.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 
@@ -355,7 +356,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
           children: [
             Row(
               children: [
-                const Text('🐟', style: TextStyle(fontSize: 32)),
+                _buildFishSprite(fish),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -399,6 +400,23 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         ),
       ),
     );
+  }
+
+  Widget _buildFishSprite(SpeciesInfo fish) {
+    final thumbPath = SpeciesSprites.thumbFor(fish.commonName);
+    if (thumbPath != null) {
+      return SizedBox(
+        width: 48,
+        height: 48,
+        child: Image.asset(
+          thumbPath,
+          fit: BoxFit.contain,
+          errorBuilder: (_, __, ___) =>
+              const Text('🐟', style: TextStyle(fontSize: 32)),
+        ),
+      );
+    }
+    return const Text('🐟', style: TextStyle(fontSize: 32));
   }
 
   Widget _buildInfoChip({required IconData icon, required String label}) {
