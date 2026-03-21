@@ -47,7 +47,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
   void _refreshAnalytics() {
     _loadVersion++;
-    _analyticsFuture = _loadAnalytics();
+    setState(() {
+      _analyticsFuture = _loadAnalytics();
+    });
   }
 
   /// Darkens a decorative colour to meet WCAG AA (4.5:1) for text on light bg.
@@ -269,8 +271,26 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 .map((range) {
                   final isSelected = _selectedRange == range;
                   return ChoiceChip(
-                    label: Text(range.displayName),
+                    label: Text(
+                      range.displayName,
+                      style: TextStyle(
+                        color: isSelected
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.onSurface,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                      ),
+                    ),
                     selected: isSelected,
+                    selectedColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    side: BorderSide(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.outline,
+                      width: isSelected ? 2 : 1,
+                    ),
                     onSelected: (selected) {
                       if (selected) {
                         setState(() {

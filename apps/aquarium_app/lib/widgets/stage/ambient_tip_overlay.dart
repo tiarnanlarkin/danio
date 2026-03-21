@@ -116,9 +116,9 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
     if (_currentTip == null) return const SizedBox.shrink();
 
     return Align(
-      alignment: Alignment.bottomRight,
+      alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 140, right: 16),
+        padding: const EdgeInsets.only(bottom: 140, left: 16, right: 16),
         child: SlideTransition(
           position: _slideAnim,
           child: FadeTransition(
@@ -127,18 +127,24 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
               onPanEnd: (_) => _dismiss(),
               onTap: _dismiss,
               child: Container(
-                width: 220,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm2,
-                  vertical: AppSpacing.sm,
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm2,
                 ),
                 decoration: BoxDecoration(
                   color: widget.theme.glassCard,
-                  borderRadius: AppRadius.mediumRadius,
+                  borderRadius: AppRadius.largeRadius,
                   border: Border.all(
                     color: widget.theme.glassBorder,
-                    width: 0.5,
+                    width: 1.5,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(51),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                   image: const DecorationImage(
                     image: AssetImage('assets/textures/felt-teal.webp'),
                     fit: BoxFit.cover,
@@ -147,25 +153,34 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
                 ),
                 child: Row(
                   children: [
+                    Icon(
+                      Icons.lightbulb_outline_rounded,
+                      size: 20,
+                      color: widget.theme.accentCircles.isNotEmpty
+                          ? widget.theme.accentCircles[0]
+                          : widget.theme.textPrimary,
+                    ),
+                    const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: Text(
                         _currentTip!,
-                        style: AppTypography.bodySmall.copyWith(
+                        style: AppTypography.bodyMedium.copyWith(
                           color: widget.theme.textPrimary,
+                          fontWeight: FontWeight.w500,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    const SizedBox(width: AppSpacing.sm),
                     Semantics(
                       button: true,
                       label: 'Dismiss tip',
                       child: GestureDetector(
                         onTap: _dismiss,
                         child: Icon(
-                          Icons.close,
-                          size: 14,
+                          Icons.close_rounded,
+                          size: 18,
                           color: widget.theme.textSecondary,
                         ),
                       ),

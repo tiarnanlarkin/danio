@@ -219,11 +219,11 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 40),
-                // Personalised greeting
+                // Personalised greeting — changes based on name-entry phase
                 Semantics(
                   header: true,
                   child: Text(
-                    _greeting,
+                    _nameSubmitted ? _greeting : 'Almost there! 🐟',
                     style: GoogleFonts.lora(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -236,7 +236,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 // Name input (shown before the warm entry cards)
                 if (!_nameSubmitted) ...[
                   Text(
-                    "What's your name?",
+                    "What would you like to be called?",
                     style: GoogleFonts.nunito(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
