@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';
-import '../models/gem_transaction.dart';
 import '../data/achievements.dart';
 import '../services/achievement_service.dart';
 import '../services/notification_service.dart';
@@ -16,7 +15,6 @@ import '../widgets/achievement_unlocked_dialog.dart';
 import '../main.dart'; // For navigatorKey
 import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
-import 'gems_provider.dart';
 import 'package:danio/utils/logger.dart';
 
 /// Import sharedPreferencesProvider for shared access

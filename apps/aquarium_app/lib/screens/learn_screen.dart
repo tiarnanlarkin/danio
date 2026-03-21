@@ -10,7 +10,6 @@ import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
-import '../widgets/core/fish_loader.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/study_room_scene.dart';
 import 'lesson_screen.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
@@ -14,7 +13,6 @@ import 'about_screen.dart';
 import 'account_screen.dart';
 import 'notification_settings_screen.dart';
 import 'backup_restore_screen.dart';
-import 'disease_guide_screen.dart';
 import '../services/notification_service.dart';
 import '../providers/onboarding_provider.dart';
 import '../services/onboarding_service.dart';
@@ -29,7 +27,6 @@ import 'tank_detail/tank_detail_screen.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/room_navigation.dart';
-import '../utils/accessibility_utils.dart';
 import '../models/adaptive_difficulty.dart';
 import '../utils/navigation_throttle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -147,8 +144,8 @@ class SettingsScreen extends ConsumerWidget {
 
       (_) => const Divider(),
 
-      // About section
-      (_) => const _SectionHeader(title: 'About'),
+      // App Info section
+      (_) => const _SectionHeader(title: 'App Info'),
       (_) => AppListTile(
         leading: const Icon(Icons.water_drop),
         title: 'Danio',

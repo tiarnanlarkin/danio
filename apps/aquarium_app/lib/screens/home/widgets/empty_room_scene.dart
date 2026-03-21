@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
-import '../../../widgets/mascot/mascot_widgets.dart';
 import '../../../widgets/decorative_elements.dart';
 
 class EmptyRoomScene extends StatelessWidget {

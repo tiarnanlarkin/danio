@@ -6,8 +6,6 @@ import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
 import 'hearts_provider.dart';
 import 'user_profile_provider.dart';
-import 'room_theme_provider.dart';
-import '../theme/room_themes.dart';
 
 /// Provider for user's shop inventory
 final inventoryProvider =

@@ -138,7 +138,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           Text(
             '${(overallSkill * 100).toInt()}% Mastery',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
         ],
@@ -180,7 +180,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   size: AppIconSizes.xl,
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.4),
+                  ).colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
@@ -188,7 +188,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   style: TextStyle(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSurface.withOpacity(0.5),
+                    ).colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
@@ -197,7 +197,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSurface.withOpacity(0.5),
+                    ).colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -370,7 +370,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           child: Text(
             'Complete lessons to see your performance history',
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),
@@ -435,7 +435,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSurface.withOpacity(0.6),
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -500,7 +500,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         Text(
           'Override automatic difficulty for specific topics',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
         const SizedBox(height: AppSpacing.sm2),
@@ -542,7 +542,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: Theme.of(
                         context,
-                      ).colorScheme.onSurface.withOpacity(0.6),
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
               ],
@@ -645,7 +645,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withOpacity(0.7),
+                          ).colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -676,7 +676,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   style: TextStyle(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSurface.withOpacity(0.7),
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ),

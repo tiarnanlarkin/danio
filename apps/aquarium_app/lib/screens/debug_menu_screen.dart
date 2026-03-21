@@ -2,11 +2,9 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/user_profile_provider.dart';
 
 import '../widgets/core/app_list_tile.dart';
-import '../theme/app_theme.dart';
 import '../services/onboarding_service.dart';
 import '../providers/onboarding_provider.dart';
 import 'tab_navigator.dart';
@@ -17,7 +15,6 @@ import 'onboarding/paywall_stub_screen.dart';
 import 'onboarding/consent_screen.dart';
 
 // Screen imports — Main
-import 'home/home_screen.dart';
 
 // Screen imports — Tank
 import 'create_tank_screen.dart';

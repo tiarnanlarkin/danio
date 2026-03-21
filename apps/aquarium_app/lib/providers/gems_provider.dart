@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../models/gem_transaction.dart';
-import '../models/gem_economy.dart';
 import 'user_profile_provider.dart';
 
 const _uuid = Uuid();

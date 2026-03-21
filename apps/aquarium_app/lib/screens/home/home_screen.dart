@@ -23,7 +23,6 @@ import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../widgets/room_scene.dart';
 import '../../widgets/first_visit_tooltip.dart';
-import '../tab_navigator.dart';
 import '../onboarding/returning_user_flows.dart';
 import '../create_tank_screen.dart';
 import '../add_log_screen.dart';

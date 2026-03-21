@@ -2,7 +2,6 @@
 /// Part of the lazy-loaded lesson system
 library;
 
-import '../../models/tank.dart';
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
 

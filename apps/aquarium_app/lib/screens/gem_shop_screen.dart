@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:ui';
 import '../models/shop_item.dart';
-import '../models/purchase_result.dart';
 import '../providers/gems_provider.dart';
 import '../services/shop_service.dart';
 import '../providers/inventory_provider.dart'; // ownsItemProvider

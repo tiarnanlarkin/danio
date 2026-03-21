@@ -8,7 +8,6 @@ import '../providers/user_profile_provider.dart';
 import '../models/user_profile.dart' show ExperienceLevel;
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/achievement_provider.dart';
-import '../services/achievement_service.dart';
 import '../services/hearts_service.dart';
 import '../services/notification_service.dart';
 import '../widgets/hearts_widgets.dart';
@@ -914,6 +913,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                         });
 
                         // Announce result to screen readers
+                        // ignore: deprecated_member_use
                         SemanticsService.announce(
                           isCorrect
                               ? 'Correct!'
@@ -1301,7 +1301,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Theme.of(
                           context,
-                        ).colorScheme.onSurface.withOpacity(0.6),
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),

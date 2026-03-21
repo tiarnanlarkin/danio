@@ -2,7 +2,6 @@ import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/sync_service.dart';
-import '../services/conflict_resolver.dart';
 
 /// Debug/info dialog showing detailed sync status
 class SyncDebugDialog extends ConsumerWidget {

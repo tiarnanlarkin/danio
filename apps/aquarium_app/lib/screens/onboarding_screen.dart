@@ -9,7 +9,6 @@ import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/onboarding_service.dart';
 import '../services/notification_service.dart';
-import '../theme/app_theme.dart';
 import 'onboarding/welcome_screen.dart';
 import 'onboarding/experience_level_screen.dart';
 import 'onboarding/tank_status_screen.dart';

@@ -4,9 +4,7 @@ import '../models/learning.dart';
 import '../models/lesson_progress.dart';
 import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
-import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
-import '../utils/app_feedback.dart';
 import 'lesson_screen.dart';
 
 /// Practice screen showing lessons that need review based on spaced repetition

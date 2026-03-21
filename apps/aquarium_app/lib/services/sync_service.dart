@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import '../widgets/offline_indicator.dart';
 import 'conflict_resolver.dart';
 

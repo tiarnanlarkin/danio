@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';

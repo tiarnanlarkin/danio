@@ -881,7 +881,7 @@ abstract final class AppCardDecoration {
     color: Theme.of(context).cardColor,
     borderRadius: BorderRadius.circular(AppRadius.md),
     border: Border.all(
-      color: Theme.of(context).dividerColor.withOpacity(0.1),
+      color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
     ),
   );
 
@@ -1551,9 +1551,9 @@ class StatCard extends StatelessWidget {
         // Use Color.withValues for dynamic colors (unavoidable here)
         // but use static overlays where possible
         color: Color.fromRGBO(
-          cardColor.red,
-          cardColor.green,
-          cardColor.blue,
+          (cardColor.r * 255.0).round().clamp(0, 255),
+          (cardColor.g * 255.0).round().clamp(0, 255),
+          (cardColor.b * 255.0).round().clamp(0, 255),
           0.1,
         ),
         borderRadius: AppRadius.largeRadius,

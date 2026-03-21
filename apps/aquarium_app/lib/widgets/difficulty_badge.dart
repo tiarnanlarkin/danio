@@ -5,7 +5,6 @@ library;
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../models/adaptive_difficulty.dart';
 import '../services/difficulty_service.dart';
 

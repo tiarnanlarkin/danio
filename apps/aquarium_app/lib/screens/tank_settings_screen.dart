@@ -148,6 +148,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       ),
       const SizedBox(height: AppSpacing.sm2),
       DropdownButtonFormField<TankType>(
+        // ignore: deprecated_member_use
         value: _type,
         items: const [
           DropdownMenuItem(
@@ -260,14 +261,18 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           children: [
             RadioListTile<String>(
               value: 'tropical',
+              // ignore: deprecated_member_use
               groupValue: _waterType,
+              // ignore: deprecated_member_use
               onChanged: (v) => setState(() => _waterType = v!),
               title: const Text('Tropical'),
               subtitle: const Text('24-28°C • most community fish'),
             ),
             RadioListTile<String>(
               value: 'coldwater',
+              // ignore: deprecated_member_use
               groupValue: _waterType,
+              // ignore: deprecated_member_use
               onChanged: (v) => setState(() => _waterType = v!),
               title: const Text('Coldwater'),
               subtitle: const Text('15-22°C • goldfish etc.'),

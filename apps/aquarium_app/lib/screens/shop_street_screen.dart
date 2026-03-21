@@ -458,7 +458,7 @@ class _ShopSection extends StatelessWidget {
                     padding: const EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: Color(
-                        (color.value & 0x00FFFFFF) | 0x33000000,
+                        (color.toARGB32() & 0x00FFFFFF) | 0x33000000,
                       ), // 20% opacity
                       borderRadius: AppRadius.mediumRadius,
                     ),

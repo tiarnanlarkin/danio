@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../data/daily_tips.dart';
 import '../models/models.dart';
 import '../theme/app_theme.dart';

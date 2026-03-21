@@ -120,6 +120,7 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
                 ? Alignment.centerLeft
                 : Alignment.centerRight,
             transform: Matrix4.identity()
+              // ignore: deprecated_member_use
               ..translate(translateX, translateY)
               ..rotateZ(rotateZ),
             child: ClipRRect(

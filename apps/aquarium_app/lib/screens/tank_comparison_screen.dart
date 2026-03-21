@@ -154,6 +154,7 @@ class _TankSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
+      // ignore: deprecated_member_use
       value: selectedId,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),

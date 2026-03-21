@@ -516,7 +516,7 @@ class _SyncStatusCard extends ConsumerWidget {
       case CloudSyncStatus.disabled:
         icon = Icons.cloud_off;
         label = 'Cloud sync not active';
-        color = Theme.of(context).colorScheme.onSurface.withOpacity(0.4);
+        color = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4);
     }
 
     return Card(

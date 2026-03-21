@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/models.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';

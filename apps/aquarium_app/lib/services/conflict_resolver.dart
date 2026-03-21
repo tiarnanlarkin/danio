@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 /// Strategy for resolving conflicts between local and remote data
 enum ConflictResolutionStrategy {

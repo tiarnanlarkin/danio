@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import '../models/spaced_repetition.dart';
-import '../models/exercises.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/achievement_provider.dart' show achievementCheckerProvider;
-import '../services/review_queue_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/concept_display_names.dart';
 

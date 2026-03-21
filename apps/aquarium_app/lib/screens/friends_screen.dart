@@ -72,7 +72,7 @@ class FriendsScreen extends ConsumerWidget {
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.6),
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                   height: 1.5,
                 ),
               ),
@@ -85,7 +85,7 @@ class FriendsScreen extends ConsumerWidget {
                     size: 16,
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSurface.withOpacity(0.6),
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
@@ -93,7 +93,7 @@ class FriendsScreen extends ConsumerWidget {
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Theme.of(
                         context,
-                      ).colorScheme.onSurface.withOpacity(0.6),
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

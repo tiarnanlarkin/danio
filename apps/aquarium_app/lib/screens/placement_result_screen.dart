@@ -9,7 +9,6 @@ import '../models/learning.dart';
 import '../models/user_profile.dart';
 import '../data/lesson_content_lazy.dart';
 import '../providers/lesson_provider.dart';
-import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 // learning_style_screen.dart removed — no longer part of onboarding flow
 

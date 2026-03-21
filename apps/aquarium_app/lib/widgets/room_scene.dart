@@ -4,16 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
 import '../providers/room_theme_provider.dart';
 import '../theme/room_themes.dart';
-import 'ambient/ambient_bubbles.dart';
 import 'ambient/ambient_overlay.dart';
 import 'ambient/swaying_plant.dart';
 import 'effects/ripple_container.dart';
-import 'room/interactive_object.dart';
 import 'rive/rive_fish.dart';
-import 'rive/rive_water_effect.dart';
-import 'stage/stage_provider.dart';
 import 'stage/tank_glass_badge.dart';
-import 'stage/swiss_army_panel.dart';
 
 /// Water fill opacity — 0.92 lets the room background bleed through slightly.
 /// Adjust this constant to tune the water transparency across all gradient stops.

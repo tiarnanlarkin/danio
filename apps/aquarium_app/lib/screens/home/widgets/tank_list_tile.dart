@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
-import '../../../models/models.dart';
 
 /// A compact tank list tile for the bottom-plate tank switcher.
 class TankListTile extends StatelessWidget {

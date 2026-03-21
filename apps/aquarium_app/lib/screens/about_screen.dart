@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';

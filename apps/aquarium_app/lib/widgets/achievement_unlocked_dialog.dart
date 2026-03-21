@@ -6,7 +6,6 @@ import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:math';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';

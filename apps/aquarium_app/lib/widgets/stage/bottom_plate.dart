@@ -187,7 +187,7 @@ class BottomPlateState extends ConsumerState<BottomPlate>
               behavior: HitTestBehavior.translucent,
               onTap: () => collapse(),
               child: Container(
-                color: Colors.black.withOpacity(0.3 * _dragExtent.clamp(0.0, 1.0)),
+                color: Colors.black.withValues(alpha: 0.3 * _dragExtent.clamp(0.0, 1.0)),
               ),
             ),
           ),

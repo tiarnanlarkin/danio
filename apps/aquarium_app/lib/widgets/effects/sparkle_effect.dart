@@ -226,7 +226,7 @@ class _SparklePainter extends CustomPainter {
 
     // Add glow
     final glowPaint = Paint()
-      ..color = color.withAlpha((color.opacity * 0.3 * 255).round())
+      ..color = color.withAlpha((color.a * 0.3 * 255).round())
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawCircle(center, size * 0.8, glowPaint);
   }

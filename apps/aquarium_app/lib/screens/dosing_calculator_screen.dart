@@ -101,6 +101,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                   SizedBox(
                     width: 100,
                     child: DropdownButtonFormField<double>(
+                      // ignore: deprecated_member_use
                       value: _dosePerLitres,
                       decoration: const InputDecoration(
                         suffixText: 'L',

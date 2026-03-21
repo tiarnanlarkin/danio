@@ -257,7 +257,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                             size: AppIconSizes.xxl,
                             color: Theme.of(
                               context,
-                            ).colorScheme.onSurface.withOpacity(0.4),
+                            ).colorScheme.onSurface.withValues(alpha: 0.4),
                           ),
                           const SizedBox(height: AppSpacing.md),
                           Text(
@@ -266,7 +266,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                                 ?.copyWith(
                                   color: Theme.of(
                                     context,
-                                  ).colorScheme.onSurface.withOpacity(0.6),
+                                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                                 ),
                             textAlign: TextAlign.center,
                           ),
@@ -277,7 +277,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                                 ?.copyWith(
                                   color: Theme.of(
                                     context,
-                                  ).colorScheme.onSurface.withOpacity(0.45),
+                                  ).colorScheme.onSurface.withValues(alpha: 0.45),
                                 ),
                             textAlign: TextAlign.center,
                           ),

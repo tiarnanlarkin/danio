@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -1563,7 +1562,7 @@ class _LastFedInfo extends ConsumerWidget {
             child: Text(
               'No feedings logged yet — time to feed your fish! 🐟',
               style: AppTypography.bodySmall.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
           );
@@ -1585,7 +1584,7 @@ class _LastFedInfo extends ConsumerWidget {
               Icon(
                 Icons.restaurant,
                 size: 14,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
               const SizedBox(width: AppSpacing.xs),
               Text(
@@ -1593,7 +1592,7 @@ class _LastFedInfo extends ConsumerWidget {
                 style: AppTypography.bodySmall.copyWith(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withOpacity(0.6),
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],

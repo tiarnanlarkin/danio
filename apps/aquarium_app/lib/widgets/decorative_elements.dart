@@ -90,6 +90,7 @@ class PlantDecoration extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExcludeSemantics(
       child: Transform(
+        // ignore: deprecated_member_use
         transform: Matrix4.identity()..scale(flip ? -1.0 : 1.0, 1.0),
         alignment: Alignment.center,
         child: CustomPaint(

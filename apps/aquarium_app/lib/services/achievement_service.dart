@@ -2,7 +2,6 @@
 /// Integrates with user actions to award achievements automatically
 library;
 
-import 'package:flutter/foundation.dart';
 import '../models/achievements.dart';
 import '../models/user_profile.dart';
 import '../data/achievements.dart';
