@@ -77,6 +77,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
   }
 
+  void _goToStep(int step) {
+    if (step >= 0 && step < _totalPages) {
+      _pageController.animateToPage(
+        step,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   // ── Notification permission handler ──────────────────────────────────
   Future<void> _handleNotificationAllow() async {
     try {
@@ -198,11 +208,38 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         primaryTankType: TankType.freshwater,
         goals: [UserGoal.keepFishAlive],
       );
+      // Create a default 60L starter tank for the quick-start user
+      if (mounted) {
+        try {
+          final tankNotifier = ref.read(tankActionsProvider);
+          await tankNotifier.createTank(
+            name: 'My Tank',
+            type: TankType.freshwater,
+            volumeLitres: 60,
+          );
+        } catch (e) {
+          logError('[QuickStart] Tank creation failed: $e', tag: 'OnboardingScreen');
+        }
+      }
       // Same as _completeOnboarding: let the reactive router handle
       // the transition. No Navigator.popUntil.
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
+      if (!mounted) return;
       ref.invalidate(onboardingCompletedProvider);
+      // Show a disclosure about the default tank after navigation settles
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                "We've set up a 60L starter tank for you — you can change this in Settings",
+              ),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+      });
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -297,7 +334,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               if (_selectedFish == null ||
                   _experienceLevel == null ||
                   _tankStatus == null) {
-                return const SizedBox.shrink();
+                return _OnboardingFallback(onGoBack: () => _goToStep(5));
               }
               return AhaMomentScreen(
                 selectedFish: _selectedFish!,
@@ -310,7 +347,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Page 7: Paywall Stub
             Builder(builder: (context) {
               if (_selectedFish == null) {
-                return const SizedBox.shrink();
+                return _OnboardingFallback(onGoBack: () => _goToStep(5));
               }
               return PaywallStubScreen(
                 selectedFish: _selectedFish!,
@@ -330,7 +367,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               if (_selectedFish == null ||
                   _experienceLevel == null ||
                   _tankStatus == null) {
-                return const SizedBox.shrink();
+                return _OnboardingFallback(onGoBack: () => _goToStep(5));
               }
               return WarmEntryScreen(
                 selectedFish: _selectedFish!,
@@ -345,6 +382,42 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             }),
           ],
         ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Fallback widget shown when required onboarding state is missing.
+/// Prevents blank screens on pages 6, 7, and 9.
+class _OnboardingFallback extends StatelessWidget {
+  final VoidCallback onGoBack;
+
+  const _OnboardingFallback({required this.onGoBack});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+              const SizedBox(height: 16),
+              const Text(
+                'Something went wrong — let\'s go back',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 24),
+              FilledButton(
+                onPressed: onGoBack,
+                child: const Text('Go back'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -179,7 +179,7 @@ class SettingsScreen extends ConsumerWidget {
       (_) => AppListTile(
         leading: const Icon(Icons.download_outlined),
         title: 'Import Data',
-        subtitle: 'Restore from a backup file',
+        subtitle: 'Replace all app data with a backup file',
         onTap: () => _importData(context),
       ),
       (_) => AppListTile(
@@ -446,29 +446,28 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _importData(BuildContext context) async {
-    // Show warning dialog first
-    final confirmed = await showDialog<bool>(
+    // Show destructive confirmation dialog first
+    final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Import Data'),
+        title: const Text('Replace all data?'),
         content: const Text(
-          'This will replace ALL your current data with the imported file.\n\n'
-          'Make sure you have a backup of your current data first.',
+          'This will overwrite your current tanks, fish, logs, and settings with the backup file. This cannot be undone.',
         ),
         actions: [
           TextButton(
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
             child: const Text('Cancel'),
           ),
-          TextButton(
+          FilledButton(
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: Text('Import', style: TextStyle(color: AppColors.warning)),
+            child: const Text('Replace'),
           ),
         ],
       ),
     );
 
-    if (confirmed != true || !context.mounted) return;
+    if (confirm != true || !context.mounted) return;
 
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -491,15 +490,32 @@ class SettingsScreen extends ConsumerWidget {
       final contents = await file.readAsString();
 
       // Validate it's valid JSON
+      dynamic decoded;
       try {
-        jsonDecode(contents);
+        decoded = jsonDecode(contents);
       } on FormatException {
         if (context.mounted) {
           AppFeedback.dismiss(context);
           dismissLoadingInFinally = false;
           AppFeedback.showError(
             context,
-            'Invalid file format (not valid JSON)',
+            'Invalid backup file — expected Danio export format',
+          );
+        }
+        return;
+      }
+
+      // Validate that expected top-level keys exist (Danio export schema)
+      if (decoded is! Map ||
+          !decoded.containsKey('tanks') ||
+          !decoded.containsKey('livestock') ||
+          !decoded.containsKey('logs')) {
+        if (context.mounted) {
+          AppFeedback.dismiss(context);
+          dismissLoadingInFinally = false;
+          AppFeedback.showError(
+            context,
+            'Invalid backup file — expected Danio export format',
           );
         }
         return;
