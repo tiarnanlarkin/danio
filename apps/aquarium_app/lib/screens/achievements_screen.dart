@@ -372,7 +372,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   final achievement = entry.key;
                   final progress = entry.value;
                   final reduceMotion = MediaQuery.of(context).disableAnimations;
-                  return Semantics(
+                  final card = Semantics(
                         button: true,
                         label:
                             '${achievement.name}, ${achievement.description}, Unlocked',
@@ -430,19 +430,21 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                           ),
                         ),
                         ),
-                      )
-                      .animate(autoPlay: !reduceMotion)
+                      );
+                  // Skip animation when reduce-motion is on to avoid
+                  // invisible cards (autoPlay:false + fadeIn = stuck at 0).
+                  if (reduceMotion) return card;
+                  return card
+                      .animate()
                       .fadeIn(
-                        duration: reduceMotion ? 0.ms : 300.ms,
-                        delay: reduceMotion ? 0.ms : (index * 80).ms,
+                        duration: 300.ms,
+                        delay: (index * 80).ms,
                       )
                       .scale(
-                        begin: reduceMotion
-                            ? const Offset(1, 1)
-                            : const Offset(0.9, 0.9),
+                        begin: const Offset(0.9, 0.9),
                         end: const Offset(1, 1),
-                        duration: reduceMotion ? 0.ms : 300.ms,
-                        delay: reduceMotion ? 0.ms : (index * 80).ms,
+                        duration: 300.ms,
+                        delay: (index * 80).ms,
                       );
                 },
               ),
@@ -473,7 +475,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   ? ', ${progress.currentCount} of ${achievement.targetCount}'
                   : '';
               final reduceMotion = MediaQuery.of(context).disableAnimations;
-              return Semantics(
+              final card = Semantics(
                     button: true,
                     label:
                         '${achievement.name}, ${achievement.description}, ${isUnlocked ? "Unlocked" : "Locked"}$progressLabel',
@@ -488,19 +490,19 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                         ),
                       ),
                     ),
-                  )
-                  .animate(autoPlay: !reduceMotion)
+                  );
+              if (reduceMotion) return card;
+              return card
+                  .animate()
                   .fadeIn(
-                    duration: reduceMotion ? 0.ms : 250.ms,
-                    delay: reduceMotion ? 0.ms : (index * 40).ms,
+                    duration: 250.ms,
+                    delay: (index * 40).ms,
                   )
                   .scale(
-                    begin: reduceMotion
-                        ? const Offset(1, 1)
-                        : const Offset(0.95, 0.95),
+                    begin: const Offset(0.95, 0.95),
                     end: const Offset(1, 1),
-                    duration: reduceMotion ? 0.ms : 250.ms,
-                    delay: reduceMotion ? 0.ms : (index * 40).ms,
+                    duration: 250.ms,
+                    delay: (index * 40).ms,
                   );
             }, childCount: sortedAchievements.length),
           ),

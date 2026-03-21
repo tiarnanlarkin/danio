@@ -278,7 +278,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                               context,
                             ).disableAnimations;
 
-                            return _LivestockCard(
+                            final card = _LivestockCard(
                                   key: ValueKey(l.id),
                                   livestock: l,
                                   tank: tank,
@@ -300,17 +300,19 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                       _showEditDialog(context, ref, l),
                                   onDelete: () =>
                                       _confirmDelete(context, ref, l),
-                                )
-                                .animate(autoPlay: !reduceMotion)
+                                );
+                            if (reduceMotion) return card;
+                            return card
+                                .animate()
                                 .fadeIn(
-                                  duration: reduceMotion ? 0.ms : 300.ms,
-                                  delay: reduceMotion ? 0.ms : (index * 50).ms,
+                                  duration: 300.ms,
+                                  delay: (index * 50).ms,
                                 )
                                 .slideY(
-                                  begin: reduceMotion ? 0 : 0.2,
+                                  begin: 0.2,
                                   end: 0,
-                                  duration: reduceMotion ? 0.ms : 300.ms,
-                                  delay: reduceMotion ? 0.ms : (index * 50).ms,
+                                  duration: 300.ms,
+                                  delay: (index * 50).ms,
                                 );
                           },
                         ),
