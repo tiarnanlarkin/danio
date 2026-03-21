@@ -127,38 +127,44 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       }
 
       // 2. Add 10 XP from micro-lesson
-      try {
-        await ref.read(userProfileProvider.notifier).addXp(10);
-      } catch (e) {
-        logError('Onboarding: failed to award welcome XP: $e', tag: 'OnboardingScreen');
+      if (mounted) {
+        try {
+          await ref.read(userProfileProvider.notifier).addXp(10);
+        } catch (e) {
+          logError('Onboarding: failed to award welcome XP: $e', tag: 'OnboardingScreen');
+        }
       }
 
       // 2b. Create a default tank based on user's tank status
-      try {
-        final tankNotifier = ref.read(tankActionsProvider);
-        final tank = await tankNotifier.createTank(
-          name: _tankStatus == 'cycling'
-              ? 'Cycling Tank'
-              : _tankStatus == 'active'
-                  ? 'My Tank'
-                  : 'New Tank',
-          type: TankType.freshwater,
-          volumeLitres: 60,
-          notes: _selectedFish != null
-              ? 'Started with ${_selectedFish!.commonName}'
-              : null,
-        );
-        appLog('[Onboarding] Created default tank: ${tank.name} (${tank.id})', tag: 'OnboardingScreen');
-      } catch (e) {
-        logError('[Onboarding] Tank creation failed: $e', tag: 'OnboardingScreen');
+      if (mounted) {
+        try {
+          final tankNotifier = ref.read(tankActionsProvider);
+          final tank = await tankNotifier.createTank(
+            name: _tankStatus == 'cycling'
+                ? 'Cycling Tank'
+                : _tankStatus == 'active'
+                    ? 'My Tank'
+                    : 'New Tank',
+            type: TankType.freshwater,
+            volumeLitres: 60,
+            notes: _selectedFish != null
+                ? 'Started with ${_selectedFish!.commonName}'
+                : null,
+          );
+          appLog('[Onboarding] Created default tank: ${tank.name} (${tank.id})', tag: 'OnboardingScreen');
+        } catch (e) {
+          logError('[Onboarding] Tank creation failed: $e', tag: 'OnboardingScreen');
+        }
       }
 
       // 3. Schedule onboarding notifications
-      try {
-        final notificationService = NotificationService();
-        await notificationService.scheduleOnboardingSequence();
-      } catch (e) {
-        logError('Onboarding: failed to schedule onboarding notifications: $e', tag: 'OnboardingScreen');
+      if (mounted) {
+        try {
+          final notificationService = NotificationService();
+          await notificationService.scheduleOnboardingSequence();
+        } catch (e) {
+          logError('Onboarding: failed to schedule onboarding notifications: $e', tag: 'OnboardingScreen');
+        }
       }
 
       // 4. Complete onboarding via service + invalidate provider
@@ -167,8 +173,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Do NOT call Navigator.popUntil here — it races with the reactive
       // rebuild and can trigger provider lifecycle/disposal errors because
       // the OnboardingScreen is being disposed by the router simultaneously.
+      if (!mounted) return;
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
+      if (!mounted) return;
       ref.invalidate(onboardingCompletedProvider);
     } catch (e) {
       if (mounted) {

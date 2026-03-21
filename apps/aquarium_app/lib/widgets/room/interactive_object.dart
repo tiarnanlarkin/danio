@@ -82,14 +82,12 @@ class _InteractiveObjectState extends State<InteractiveObject>
   void initState() {
     super.initState();
 
-    final disableMotion = MediaQuery.of(context).disableAnimations;
-
     // Pulse animation (continuous subtle animation)
+    // Default durations here; adjusted for accessibility in
+    // didChangeDependencies (MediaQuery unavailable in initState).
     _pulseController = AnimationController(
       vsync: this,
-      duration: disableMotion
-          ? Duration.zero
-          : Duration(milliseconds: widget.isNewUser ? 1200 : 2000),
+      duration: Duration(milliseconds: widget.isNewUser ? 1200 : 2000),
     );
 
     _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -99,7 +97,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
     // Press animation (on tap)
     _pressController = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : AppDurations.short,
+      duration: AppDurations.short,
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
@@ -115,6 +113,23 @@ class _InteractiveObjectState extends State<InteractiveObject>
     } else {
       // Subtle occasional pulse for existing users
       _startSubtlePulse();
+    }
+  }
+
+  bool? _disableMotion;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    if (_disableMotion != disableMotion) {
+      _disableMotion = disableMotion;
+      // Update controller durations for accessibility preference.
+      // Safe to call even while animating — duration only affects future cycles.
+      _pulseController.duration = disableMotion
+          ? Duration.zero
+          : Duration(milliseconds: widget.isNewUser ? 1200 : 2000);
+      _pressController.duration = disableMotion ? Duration.zero : AppDurations.short;
     }
   }
 
