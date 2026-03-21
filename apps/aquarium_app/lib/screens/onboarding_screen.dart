@@ -223,6 +223,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
+          final nav = Navigator.of(context);
           final shouldExit = await showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
@@ -240,8 +241,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ],
             ),
           );
-          if (shouldExit == true && mounted) {
-            Navigator.of(context).pop();
+          if (shouldExit == true) {
+            nav.pop();
           }
         },
         child: Scaffold(

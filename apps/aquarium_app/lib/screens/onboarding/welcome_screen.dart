@@ -261,14 +261,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   opacity: _buttonOpacity,
                   child: Semantics(
                     button: true,
-                    label: 'Skip for now',
+                    label: 'Quick start with defaults',
                     child: GestureDetector(
                       onTap: () {
                         HapticFeedback.selectionClick();
                         widget.onLogin?.call();
                       },
                       child: Text(
-                        'Skip for now',
+                        'Quick start with defaults',
                         style: GoogleFonts.nunito(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

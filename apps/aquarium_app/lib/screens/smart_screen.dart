@@ -613,42 +613,50 @@ class _FeatureCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppRadius.md2Radius,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: color.withValues(alpha: 0.1),
-                child: Icon(icon, color: color),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      subtitle,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: context.textSecondary,
-                      ),
-                    ),
-                  ],
+    final isDisabled = onTap == null;
+
+    return Opacity(
+      opacity: isDisabled ? 0.6 : 1.0,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppRadius.md2Radius,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: color.withValues(alpha: 0.1),
+                  child: Icon(icon, color: color),
                 ),
-              ),
-              Icon(Icons.chevron_right, color: context.textSecondary),
-            ],
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        isDisabled ? 'Requires setup' : subtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (isDisabled)
+                  Icon(Icons.lock_outline, color: context.textSecondary)
+                else
+                  Icon(Icons.chevron_right, color: context.textSecondary),
+              ],
+            ),
           ),
         ),
       ),

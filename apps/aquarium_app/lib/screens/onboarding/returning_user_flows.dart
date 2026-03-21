@@ -379,14 +379,12 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
 class Day30CommittedCard extends StatelessWidget {
   final int lessonsCompleted;
   final int xpEarned;
-  final int speciesViewed;
   final VoidCallback onUpgrade;
 
   const Day30CommittedCard({
     super.key,
     required this.lessonsCompleted,
     required this.xpEarned,
-    required this.speciesViewed,
     required this.onUpgrade,
   });
 
@@ -394,7 +392,7 @@ class Day30CommittedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label:
-          '30 days of Danio. $lessonsCompleted lessons completed, $xpEarned XP earned, $speciesViewed species viewed.',
+          '30 days of Danio. $lessonsCompleted lessons completed, $xpEarned XP earned.',
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
@@ -421,8 +419,6 @@ class Day30CommittedCard extends StatelessWidget {
             _buildStatRow(Icons.menu_book_rounded, '$lessonsCompleted lessons completed'),
             const SizedBox(height: 10),
             _buildStatRow(Icons.star_rounded, '$xpEarned XP earned'),
-            const SizedBox(height: 10),
-            _buildStatRow(Icons.search_rounded, '$speciesViewed species viewed'),
             const SizedBox(height: 20),
             // Soft CTA
             Semantics(

@@ -179,13 +179,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           (prefs.getBool('seen_day30_committed') ?? false) == false) {
         final totalXp = profile.totalXp;
         final lessonsCompleted = profile.completedLessons.length;
-        // speciesViewed isn't tracked in the profile yet — use 0
-        // FIXME(sprint4): Track speciesViewed in UserProfile, wire it here
-        const speciesViewed = 0;
         milestoneCard = Day30CommittedCard(
           lessonsCompleted: lessonsCompleted,
           xpEarned: totalXp,
-          speciesViewed: speciesViewed,
           onUpgrade: () => Navigator.of(context).pop(),
         );
         prefsKey = 'seen_day30_committed';
