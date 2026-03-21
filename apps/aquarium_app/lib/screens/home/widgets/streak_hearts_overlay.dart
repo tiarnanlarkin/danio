@@ -111,61 +111,64 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
 
     final topPad = MediaQuery.of(context).padding.top;
 
+    // Fix 1: Show only ONE banner at a time (priority: streak > WC streak > low hearts).
+    // This prevents multiple banners stacking and covering interactive controls.
+    Widget? activeBanner;
+
+    if (streak > 0 && !_streakDismissed) {
+      activeBanner = Semantics(
+        liveRegion: true,
+        label: 'Learning streak: $streak days',
+        child: DismissibleBanner(
+          color: DanioColors.amberGold.withAlpha(230),
+          text: '\u{1F525} $streak day streak!',
+          textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+          onDismiss: () {
+            setState(() => _streakDismissed = true);
+            ref.read(sharedPreferencesProvider.future).then(
+              (p) => p.setInt('streak_banner_dismissed_at', streak),
+            );
+          },
+        ),
+      );
+    } else if (lowHearts && hearts.currentHearts >= 0 && !_heartsDismissed) {
+      activeBanner = Semantics(
+        liveRegion: true,
+        label: hearts.currentHearts == 0
+            ? 'No hearts remaining, waiting for refill'
+            : 'Last heart remaining',
+        child: DismissibleBanner(
+          color: AppColors.warning.withAlpha(210),
+          text: hearts.currentHearts == 0
+              ? '\u{1F494} No hearts left - wait for refill!'
+              : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
+          textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+          onDismiss: () => setState(() => _heartsDismissed = true),
+        ),
+      );
+    }
+
+    if (activeBanner == null) {
+      // If no streak/hearts banner, show the WC streak banner alone
+      return Positioned(
+        top: topPad + 8,
+        left: 16,
+        right: 80,
+        child: Semantics(liveRegion: true, child: const WcStreakBanner()),
+      );
+    }
+
     return Positioned(
       top: topPad + 8,
       left: 16,
       right: 80,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (streak > 0 && !_streakDismissed)
-            Semantics(
-              liveRegion: true,
-              label: 'Learning streak: $streak days',
-              child: DismissibleBanner(
-                color: DanioColors.amberGold.withAlpha(230),
-                text: '\u{1F525} $streak day streak!',
-                textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                onDismiss: () {
-                  setState(() => _streakDismissed = true);
-                  ref.read(sharedPreferencesProvider.future).then(
-                    (p) => p.setInt('streak_banner_dismissed_at', streak),
-                  );
-                },
-              ),
-            ),
-
-          Semantics(
-            liveRegion: true,
-            child: const WcStreakBanner(),
-          ),
-
-          if (lowHearts && hearts.currentHearts >= 0 && !_heartsDismissed) ...[
-            const SizedBox(height: AppSpacing.xs),
-            Semantics(
-              liveRegion: true,
-              label: hearts.currentHearts == 0
-                  ? 'No hearts remaining, waiting for refill'
-                  : 'Last heart remaining',
-              child: DismissibleBanner(
-                color: AppColors.warning.withAlpha(210),
-                text: hearts.currentHearts == 0
-                    ? '\u{1F494} No hearts left - wait for refill!'
-                    : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
-                textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-                onDismiss: () => setState(() => _heartsDismissed = true),
-              ),
-            ),
-          ],
-        ],
-      ),
+      child: activeBanner,
     );
   }
 }

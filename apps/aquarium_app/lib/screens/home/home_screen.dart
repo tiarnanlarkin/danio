@@ -58,6 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isNavigatingToCreate = false;
   bool _showWelcomeBanner = false;
   bool _showComebackBanner = false;
+  bool _demoModeDismissed = false;
   bool _showTankTooltip = true;
   bool _showHeartsTooltip = true;
   bool _showStageHandleTooltip = true;
@@ -465,14 +466,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           const StreakHeartsOverlay(),
 
-          // Demo tank banner
-          if (currentTank.isDemoTank)
+          // Demo tank banner (Fix 2: has dismiss × button)
+          if (currentTank.isDemoTank && !_demoModeDismissed)
             Positioned(
               top: MediaQuery.of(context).padding.top + 56,
               left: AppSpacing.md,
               right: AppSpacing.md,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+                padding: const EdgeInsets.only(left: AppSpacing.sm, top: AppSpacing.xs, bottom: AppSpacing.xs, right: AppSpacing.xs),
                 decoration: BoxDecoration(
                   color: AppColors.warning,
                   borderRadius: AppRadius.smallRadius,
@@ -490,6 +491,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           fontWeight: FontWeight.w600,
                         ),
                         overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Semantics(
+                      label: 'Dismiss demo mode banner',
+                      button: true,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _demoModeDismissed = true),
+                        child: const SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Center(
+                            child: Icon(Icons.close, size: 14, color: AppColors.onWarning),
+                          ),
+                        ),
                       ),
                     ),
                   ],

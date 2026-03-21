@@ -7,7 +7,6 @@ import '../widgets/hearts_widgets.dart';
 import '../widgets/first_visit_tooltip.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
-import 'achievements_screen.dart';
 import 'tab_navigator.dart';
 import '../utils/navigation_throttle.dart';
 
@@ -93,9 +92,10 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
 
   int _getPracticeHubItemCount(int dueCards, int totalCards) {
     // Hero card (1) + spacer + stats row + spacer +
-    // section header + spacer + 3 practice cards + 2 spacers +
-    // section header + spacer + 3 progress cards + 2 spacers = 19 items
-    return 19;
+    // section header + spacer + 2 practice cards + 1 spacer +
+    // section header + spacer + 3 progress cards + 2 spacers = 17 items
+    // (Achievements removed from Practice Modes — accessible via More tab)
+    return 17;
   }
 
   Widget _buildPracticeHubItem(
@@ -137,7 +137,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
               );
             },
           );
-        } else {
+        } else if (totalCards > 0) {
+          // Has cards but none are due — genuinely all caught up
           return _buildHeroCard(
             context,
             title: 'All Caught Up! 🎉',
@@ -145,6 +146,19 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             icon: Icons.check_circle,
             color: AppColors.success,
             actionLabel: 'Try a new lesson',
+            onTap: () {
+              ref.read(currentTabProvider.notifier).state = 0;
+            },
+          );
+        } else {
+          // No cards at all — user hasn't started yet
+          return _buildHeroCard(
+            context,
+            title: '🎴 No practice cards yet',
+            subtitle: 'Complete lessons to unlock flashcards for review',
+            icon: Icons.auto_stories,
+            color: AppColors.primary,
+            actionLabel: 'Start Learning →',
             onTap: () {
               ref.read(currentTabProvider.notifier).state = 0;
             },
@@ -209,25 +223,12 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           },
         );
       case 9:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 10: // Achievements card
-        return _buildPracticeCard(
-          context,
-          title: 'Achievements',
-          subtitle: 'View your practice milestones and badges',
-          icon: Icons.emoji_events,
-          iconColor: AppColors.success,
-          onTap: () {
-            NavigationThrottle.push(context, const AchievementsScreen());
-          },
-        );
-      case 11:
         return const SizedBox(height: AppSpacing.lg);
-      case 12: // Section: Your Progress
+      case 10: // Section: Your Progress
         return Text('Your Progress', style: AppTypography.headlineSmall);
-      case 13:
+      case 11:
         return const SizedBox(height: AppSpacing.sm2);
-      case 14: // Study Streak card — BUG-06: neutral look when streak=0
+      case 12: // Study Streak card — BUG-06: neutral look when streak=0
         {
           final streak = profile ?? 0;
           return _buildProgressCard(
@@ -242,9 +243,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             color: streak > 0 ? AppColors.warning : context.textSecondary,
           );
         }
-      case 15:
+      case 13:
         return const SizedBox(height: AppSpacing.sm2);
-      case 16: // Cards Mastered card
+      case 14: // Cards Mastered card
         return _buildProgressCard(
           context,
           title: 'Cards Mastered',
@@ -252,9 +253,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           icon: Icons.stars,
           color: AppColors.success,
         );
-      case 17:
+      case 15:
         return const SizedBox(height: AppSpacing.sm2);
-      case 18: // Practice Accuracy card — hidden until tracking is implemented
+      case 16: // Practice Accuracy card — hidden until tracking is implemented
         return const SizedBox.shrink();
       default:
         return const SizedBox.shrink();
