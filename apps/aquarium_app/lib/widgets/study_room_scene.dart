@@ -640,7 +640,7 @@ class _ProgressCard extends StatelessWidget {
                   // Fix 6: explicit 0.0 when no progress; track uses a
                   // clearly distinct light colour so an empty bar is visible.
                   value: progress.clamp(0.0, 1.0),
-                  backgroundColor: const Color(0x40FFFFFF), // white 25% — clearly visible against dark scene
+                  backgroundColor: const Color(0x66FFFFFF), // white 40% — clearly visible against dark scene
                   valueColor: const AlwaysStoppedAnimation<Color>(
                     StudyColors.gold,
                   ),

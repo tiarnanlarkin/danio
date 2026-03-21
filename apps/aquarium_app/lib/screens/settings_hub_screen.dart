@@ -134,7 +134,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
         child: PrimaryActionTile(
           icon: Icons.emoji_events,
           title: 'Achievements',
-          subtitle: 'Badges & achievements',
+          subtitle: 'Your badges & milestones',
           iconColor: AppColors.warning,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {

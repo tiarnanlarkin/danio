@@ -469,7 +469,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           // Demo tank banner (Fix 2: has dismiss × button)
           if (currentTank.isDemoTank && !_demoModeDismissed)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 56,
+              top: MediaQuery.of(context).padding.top + 100,
               left: AppSpacing.md,
               right: AppSpacing.md,
               child: Container(
