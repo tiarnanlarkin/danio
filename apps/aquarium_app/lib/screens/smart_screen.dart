@@ -548,9 +548,8 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'AI-powered fish identification, health diagnosis, and '
-            'personalised care plans require an OpenAI API key to be '
-            'configured at build time.',
+            'Some Smart features are coming soon. Fish ID, Symptom Checker, '
+            'and Weekly Care Plan will be available in a future update.',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
             ),
@@ -558,7 +557,7 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'The Compatibility Checker below works offline — no key needed! 👇',
+            'Compatibility Checker and Anomaly History work offline — ready to use! 👇',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w500,

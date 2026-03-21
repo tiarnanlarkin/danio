@@ -637,8 +637,10 @@ class _ProgressCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: AppRadius.xsRadius,
                 child: LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: StudyColors.background2,
+                  // Fix 6: explicit 0.0 when no progress; track uses a
+                  // clearly distinct light colour so an empty bar is visible.
+                  value: progress.clamp(0.0, 1.0),
+                  backgroundColor: const Color(0x40FFFFFF), // white 25% — clearly visible against dark scene
                   valueColor: const AlwaysStoppedAnimation<Color>(
                     StudyColors.gold,
                   ),
