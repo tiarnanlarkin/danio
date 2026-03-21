@@ -240,6 +240,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           _selectedRange = range;
                           _customStart = null;
                           _customEnd = null;
+                          _analyticsFuture = _loadAnalytics();
                         });
                       }
                     },

@@ -1374,9 +1374,10 @@ class _ThemedAquarium extends StatelessWidget {
             // BACK LAYER FISH (behind plants) - smaller, more distant
             if (useRiveFish && !reduceMotion) ...[
               // Small fish in back - behind the tall left plant
+              // Positioned away from tank edge to avoid ClipRRect corner clipping
               Positioned(
-                top: height * 0.25,
-                left: width * 0.02,
+                top: height * 0.28,
+                left: width * 0.08,
                 child: RiveFish(
                   fishType: RiveFishType.emotional,
                   size: height * 0.18,
@@ -1385,7 +1386,7 @@ class _ThemedAquarium extends StatelessWidget {
               // Small fish in back - behind right plant
               Positioned(
                 top: height * 0.35,
-                right: width * 0.02,
+                right: width * 0.08,
                 child: RiveFish(
                   fishType: RiveFishType.joystick,
                   size: height * 0.16,

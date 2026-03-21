@@ -147,6 +147,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
             SystemNavigator.pop();
           },
           child: Scaffold(
+            extendBody: true,
             body: Stack(
               children: [
                 // === Main Tab Content ===
