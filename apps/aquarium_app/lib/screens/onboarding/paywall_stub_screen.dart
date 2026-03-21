@@ -81,10 +81,10 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 20),
                     // Fish reference header
                     _buildFishHeader(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     // Title
                     Text(
                       'Everything you need, right here.',
@@ -95,7 +95,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     Text(
                       'Danio is free to use — no subscription needed.',
                       style: GoogleFonts.nunito(
@@ -105,10 +105,10 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 20),
                     // Feature list
                     _buildFeatureList(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -176,7 +176,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
       children: features
           .map(
             (f) => Padding(
-              padding: const EdgeInsets.only(bottom: 14),
+              padding: const EdgeInsets.only(bottom: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
