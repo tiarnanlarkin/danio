@@ -178,6 +178,19 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
   }
 }
 
+String _panelLabel(StagePanel panel) {
+  switch (panel) {
+    case StagePanel.temp:
+      return 'Temperature panel';
+    case StagePanel.waterQuality:
+      return 'Water quality panel';
+    case StagePanel.progress:
+      return 'Progress panel';
+    case StagePanel.tanks:
+      return 'Tanks panel';
+  }
+}
+
 /// Always-visible handle strip at screen edge, used to trigger panel open/close.
 class StageHandleStrip extends ConsumerWidget {
   final StagePanel panel;
@@ -194,7 +207,7 @@ class StageHandleStrip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Semantics(
-      label: 'Open stage panel',
+      label: 'Drag to resize panel: ${_panelLabel(panel)}',
       button: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,

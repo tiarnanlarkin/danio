@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,18 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+
+/// Returns the currency symbol for the current device locale.
+/// Falls back to '£' if the locale cannot be determined.
+String _localeCurrencySymbol() {
+  try {
+    final locale = Platform.localeName; // e.g. "en_GB", "en_US"
+    final format = NumberFormat.simpleCurrency(locale: locale);
+    return format.currencySymbol;
+  } catch (_) {
+    return '£';
+  }
+}
 
 class CostTrackerScreen extends ConsumerStatefulWidget {
   const CostTrackerScreen({super.key});
@@ -17,7 +30,7 @@ class CostTrackerScreen extends ConsumerStatefulWidget {
 
 class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   List<_Expense> _expenses = [];
-  String _currency = '£';
+  String _currency = _localeCurrencySymbol();
 
   @override
   void initState() {
@@ -28,7 +41,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   Future<void> _loadExpenses() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = prefs.getString('cost_tracker_expenses');
-    final currency = prefs.getString('cost_tracker_currency') ?? '£';
+    final currency = prefs.getString('cost_tracker_currency') ?? _localeCurrencySymbol();
 
     if (!mounted) return;
     if (json != null) {
@@ -283,7 +296,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
                     .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                     .toList(),
                 onChanged: (v) {
-                  setState(() => _currency = v ?? '£');
+                  setState(() => _currency = v ?? _localeCurrencySymbol());
                   _saveExpenses();
                   Navigator.maybePop(ctx);
                 },

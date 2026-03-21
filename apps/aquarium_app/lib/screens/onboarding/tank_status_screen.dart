@@ -386,10 +386,10 @@ class _ProgressDots extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Step ${currentIndex + 1} of 3',
+      label: 'Step ${currentIndex + 1} of 10',
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(3, (i) {
+        children: List.generate(10, (i) {
           final isFilled = i <= currentIndex;
           return Container(
             width: 8,
