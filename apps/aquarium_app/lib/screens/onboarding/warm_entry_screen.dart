@@ -188,9 +188,9 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       case 'active':
       default:
         if (name != null && name.isNotEmpty) {
-          return 'Welcome to your tank, $name 🐟';
+          return 'Welcome to Danio, $name 🐟';
         }
-        return 'Welcome to your tank 🐟';
+        return 'Welcome to Danio 🐟';
     }
   }
 
@@ -236,7 +236,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 // Name input (shown before the warm entry cards)
                 if (!_nameSubmitted) ...[
                   Text(
-                    'What should we call you?',
+                    "What's your name?",
                     style: GoogleFonts.nunito(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,

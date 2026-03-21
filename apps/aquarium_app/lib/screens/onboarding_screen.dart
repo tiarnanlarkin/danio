@@ -162,14 +162,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       }
 
       // 4. Complete onboarding via service + invalidate provider
+      // _AppRouter watches onboardingCompletedProvider and will reactively
+      // swap from OnboardingScreen to TabNavigator on the next frame.
+      // Do NOT call Navigator.popUntil here — it races with the reactive
+      // rebuild and can trigger provider lifecycle/disposal errors because
+      // the OnboardingScreen is being disposed by the router simultaneously.
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
       ref.invalidate(onboardingCompletedProvider);
-
-      // 5. Pop to root — AppRouter sees onboardingCompleted=true → TabNavigator
-      if (mounted) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -191,12 +191,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         primaryTankType: TankType.freshwater,
         goals: [UserGoal.keepFishAlive],
       );
+      // Same as _completeOnboarding: let the reactive router handle
+      // the transition. No Navigator.popUntil.
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
       ref.invalidate(onboardingCompletedProvider);
-      if (mounted) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -96,119 +96,130 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
   Widget build(BuildContext context) {
     final error = widget.error;
     final onRetry = widget.onRetry;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      home: Scaffold(
-        backgroundColor: isDark
-            ? const Color(0xFF1A2634)
-            : const Color(0xFFF5F1EB),
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Icon
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: AppColors.errorAlpha10,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.error_outline,
-                    size: AppIconSizes.xxl,
-                    color: AppColors.error,
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // Title
-                Text(
-                  'Oops! Something went wrong',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.textPrimary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                // Message
-                Text(
-                  'Don\'t worry, your data is safe. Try restarting the app or contact support if this keeps happening.',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: context.textSecondary),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // Retry button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: onRetry,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.md2),
-                      ),
+      theme: ThemeData.light(
+        useMaterial3: true,
+      ).copyWith(
+        scaffoldBackgroundColor: const Color(0xFFF5F1EB),
+      ),
+      darkTheme: ThemeData.dark(
+        useMaterial3: true,
+      ).copyWith(
+        scaffoldBackgroundColor: const Color(0xFF1A2634),
+      ),
+      themeMode: ThemeMode.system,
+      home: Builder(builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Scaffold(
+          backgroundColor: isDark
+              ? const Color(0xFF1A2634)
+              : const Color(0xFFF5F1EB),
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(AppSpacing.xl),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Icon
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: AppColors.errorAlpha10,
+                      shape: BoxShape.circle,
                     ),
-                    child: Text(
-                      'Try Again',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: const Icon(
+                      Icons.error_outline,
+                      size: AppIconSizes.xxl,
+                      color: AppColors.error,
                     ),
                   ),
-                ),
 
-                const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.xl),
 
-                // Show error details in debug mode
-                if (kDebugMode) ...[
+                  // Title
+                  Text(
+                    'Oops! Something went wrong',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.textPrimary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
                   const SizedBox(height: AppSpacing.md),
-                  OutlinedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Error Details'),
-                          content: SingleChildScrollView(
-                            child: Text(
-                              error.toString(),
-                              style: Theme.of(context).textTheme.bodySmall!
-                                  .copyWith(fontFamily: 'monospace'),
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.maybePop(context),
-                              child: const Text('Close'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    child: const Text('Show Technical Details'),
+
+                  // Message
+                  Text(
+                    'Don\'t worry, your data is safe. Try restarting the app or contact support if this keeps happening.',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(color: context.textSecondary),
+                    textAlign: TextAlign.center,
                   ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Retry button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: onRetry,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.md2),
+                        ),
+                      ),
+                      child: Text(
+                        'Try Again',
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: AppSpacing.md),
+
+                  // Show error details in debug mode
+                  if (kDebugMode) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    OutlinedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Error Details'),
+                            content: SingleChildScrollView(
+                              child: Text(
+                                error.toString(),
+                                style: Theme.of(context).textTheme.bodySmall!
+                                    .copyWith(fontFamily: 'monospace'),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.maybePop(context),
+                                child: const Text('Close'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: const Text('Show Technical Details'),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }
