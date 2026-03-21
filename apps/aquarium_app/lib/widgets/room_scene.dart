@@ -1770,14 +1770,16 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
   late Animation<double> _bobAnimation;
   bool _facingRight = true;
 
+  /// Minimum non-zero duration to prevent infinite recursion in status
+  /// listener when reduce-motion is enabled (Duration.zero causes
+  /// completed → reverse → dismissed → forward → completed … in one frame).
+  static const _minDuration = Duration(milliseconds: 16);
+
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: disableMotion
-          ? Duration.zero
-          : Duration(milliseconds: (widget.swimSpeed * 1000).toInt()),
+      duration: const Duration(milliseconds: 8000), // default; updated in didChangeDependencies
       vsync: this,
     );
 
@@ -1795,25 +1797,40 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
     // Start at offset position
     _controller.value = widget.startOffset;
 
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        setState(() {
-          _facingRight = !_facingRight;
-        });
-        _controller.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        setState(() {
-          _facingRight = !_facingRight;
-        });
-        _controller.forward();
-      }
-    });
+    _controller.addStatusListener(_onAnimationStatus);
 
     _controller.forward();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    final targetDuration = disableMotion
+        ? _minDuration
+        : Duration(milliseconds: (widget.swimSpeed * 1000).toInt());
+    if (_controller.duration != targetDuration) {
+      _controller.duration = targetDuration;
+    }
+  }
+
+  void _onAnimationStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      setState(() {
+        _facingRight = !_facingRight;
+      });
+      _controller.reverse();
+    } else if (status == AnimationStatus.dismissed) {
+      setState(() {
+        _facingRight = !_facingRight;
+      });
+      _controller.forward();
+    }
+  }
+
+  @override
   void dispose() {
+    _controller.removeStatusListener(_onAnimationStatus);
     _controller.dispose();
     super.dispose();
   }

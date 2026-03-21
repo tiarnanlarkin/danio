@@ -144,10 +144,15 @@ class AnalyticsService {
     DateTime end,
   ) {
     final stats = <DailyStats>[];
-    final current = DateTime(start.year, start.month, start.day);
+    var current = DateTime(start.year, start.month, start.day);
     final endDate = DateTime(end.year, end.month, end.day);
 
-    while (!current.isAfter(endDate)) {
+    // Safety cap: never iterate more than ~10 years of daily entries.
+    // This prevents pathological loops if date math goes wrong.
+    const maxDays = 365 * 10 + 1;
+    var dayCount = 0;
+
+    while (!current.isAfter(endDate) && dayCount < maxDays) {
       final dateKey =
           '${current.year}-${current.month.toString().padLeft(2, '0')}-${current.day.toString().padLeft(2, '0')}';
       final xp = profile.dailyXpHistory[dateKey] ?? 0;
@@ -165,7 +170,8 @@ class AnalyticsService {
         ),
       );
 
-      current.add(const Duration(days: 1));
+      current = current.add(const Duration(days: 1));
+      dayCount++;
     }
 
     return stats.reversed.toList(); // Most recent first
