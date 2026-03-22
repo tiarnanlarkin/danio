@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 /// Analytics service for aggregating stats, calculating trends, and generating insights
 /// Provides comprehensive progress analysis with AI-like recommendations
@@ -11,33 +10,6 @@ import 'package:danio/utils/logger.dart';
 
 /// Parameter bundle for [AnalyticsService.generateSummary] — must be a plain
 /// Dart class (no closures/native handles) so it can cross isolate boundaries.
-class _AnalyticsSummaryParams {
-  final UserProfile profile;
-  final List<LearningPath> allPaths;
-  final AnalyticsTimeRange timeRange;
-  final DateTime? customStart;
-  final DateTime? customEnd;
-
-  const _AnalyticsSummaryParams({
-    required this.profile,
-    required this.allPaths,
-    required this.timeRange,
-    this.customStart,
-    this.customEnd,
-  });
-}
-
-/// Top-level entry point required by [compute] — isolate callbacks must not be
-/// closures or instance methods.
-AnalyticsSummary _generateSummaryIsolate(_AnalyticsSummaryParams p) {
-  return AnalyticsService.generateSummary(
-    profile: p.profile,
-    allPaths: p.allPaths,
-    timeRange: p.timeRange,
-    customStart: p.customStart,
-    customEnd: p.customEnd,
-  );
-}
 
 /// Service for aggregating user analytics and generating AI-like insights.
 ///
@@ -124,16 +96,15 @@ class AnalyticsService {
     AnalyticsTimeRange timeRange = AnalyticsTimeRange.allTime,
     DateTime? customStart,
     DateTime? customEnd,
-  }) {
-    return compute(
-      _generateSummaryIsolate,
-      _AnalyticsSummaryParams(
-        profile: profile,
-        allPaths: allPaths,
-        timeRange: timeRange,
-        customStart: customStart,
-        customEnd: customEnd,
-      ),
+  }) async {
+    // Run synchronously — the computation is O(n) on a small dataset and
+    // compute() (isolate) struggles to serialise the full LearningPath graph.
+    return generateSummary(
+      profile: profile,
+      allPaths: allPaths,
+      timeRange: timeRange,
+      customStart: customStart,
+      customEnd: customEnd,
     );
   }
 

@@ -74,7 +74,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Progress Analytics'),
+        title: const Text('Analytics'),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
@@ -91,8 +91,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             body = _buildSkeletonLoader();
           } else if (snapshot.hasError) {
             body = AppErrorState(
-              title: 'Couldn\'t load your analytics',
-              message: 'Check your connection and give it another go!',
+              title: 'Couldn\'t load analytics',
+              message: 'Something went wrong. Tap to try again.',
               onRetry: _refreshAnalytics,
             );
           } else {

@@ -98,7 +98,7 @@ class AboutScreen extends StatelessWidget {
             const _FeatureItem(
               icon: Icons.set_meal,
               title: 'Species Database',
-              description: '45+ freshwater species with care requirements',
+              description: '120+ freshwater species with care requirements',
             ),
             const _FeatureItem(
               icon: Icons.shield,
