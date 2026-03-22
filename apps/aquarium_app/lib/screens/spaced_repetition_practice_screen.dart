@@ -542,7 +542,7 @@ class _SpacedRepetitionPracticeScreenState
               ),
               _buildStatRow(
                 'Current Streak',
-                '${srState.stats.currentStreak} days',
+                '${srState.stats.currentStreak} ${srState.stats.currentStreak == 1 ? 'day' : 'days'}',
               ),
             ],
           ),

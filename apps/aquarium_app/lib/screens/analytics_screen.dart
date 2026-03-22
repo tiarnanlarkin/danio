@@ -386,7 +386,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 child: _buildStatCard(
                   icon: Icons.local_fire_department,
                   label: 'Current Streak',
-                  value: '${summary.currentStreak} days',
+                  value: '${summary.currentStreak} ${summary.currentStreak == 1 ? "day" : "days"}',
                   color: AppColors.primary,
                 ),
               ),
@@ -421,7 +421,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             _buildStatCard(
               icon: Icons.emoji_events,
               label: 'Longest Streak',
-              value: '${summary.longestStreak} days',
+              value: '${summary.longestStreak} ${summary.longestStreak == 1 ? "day" : "days"}',
               color: AppColors.accentAlt,
               subtitle: 'Your personal best!',
             ),
@@ -1346,7 +1346,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 📊 My Aquarium Learning Progress
 
 🌟 Total XP: ${summary.totalXP}
-🔥 Current Streak: ${summary.currentStreak} days
+🔥 Current Streak: ${summary.currentStreak} ${summary.currentStreak == 1 ? 'day' : 'days'}
 📚 Lessons Completed: ${summary.lessonsCompleted}/${summary.totalLessons}
 ⏱️ Time Spent: ${summary.timeSpentFormatted}
 
