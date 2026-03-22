@@ -220,8 +220,22 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       );
     } catch (e) {
       logError('Analytics compute failed (v$version): $e', tag: 'AnalyticsScreen');
-      // Re-throw so FutureBuilder shows the error state with retry button.
-      rethrow;
+      // Return a minimal valid summary so the screen shows empty-state
+      // rather than the error state — avoids a red screen for new users.
+      return AnalyticsSummary(
+        totalXP: profile.totalXp,
+        currentStreak: profile.currentStreak,
+        longestStreak: profile.longestStreak,
+        lessonsCompleted: profile.completedLessons.length,
+        totalLessons: allPaths.fold<int>(0, (sum, p) => sum + p.lessons.length),
+        timeSpentMinutes: 0,
+        recentDailyStats: const [],
+        recentWeeklyStats: const [],
+        insights: const [],
+        topicPerformance: const [],
+        predictions: const [],
+        generatedAt: DateTime.now(),
+      );
     }
   }
 
