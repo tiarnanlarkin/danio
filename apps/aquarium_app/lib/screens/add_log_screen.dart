@@ -338,7 +338,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     TextFormField(
                       initialValue: _notes,
                       decoration: const InputDecoration(
-                        hintText: 'Any observations or notes...',
+                        hintText: 'e.g. fish behaviour, products added...',
                       ),
                       maxLines: 3,
                       onChanged: (v) => _notes = v,
@@ -642,7 +642,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           _WaterParamRow(
             fields: [
               _WaterParamField(
-                label: 'Ammonia (NH₃)',
+                label: 'Ammonia',
                 unit: 'ppm',
                 value: _ammonia,
                 onChanged: (v) => setState(() => _ammonia = v),
@@ -709,7 +709,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           const Divider(),
           const SizedBox(height: AppSpacing.md),
 
-          Text('Other', style: AppTypography.labelLarge),
+          Text('Other Parameters', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.sm2),
           _WaterParamRow(
             fields: [
