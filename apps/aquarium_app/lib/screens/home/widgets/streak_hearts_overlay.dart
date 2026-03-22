@@ -121,7 +121,7 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
         label: 'Learning streak: $streak days',
         child: DismissibleBanner(
           color: DanioColors.amberGold.withAlpha(230),
-          text: '\u{1F525} $streak day streak!',
+          text: '\u{1F525} $streak-day streak!',
           textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,

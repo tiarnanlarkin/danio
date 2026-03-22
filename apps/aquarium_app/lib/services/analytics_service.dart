@@ -384,7 +384,7 @@ class AnalyticsService {
         AnalyticsInsight(
           id: 'streak_milestone_${insightId++}',
           type: InsightType.achievement,
-          message: '🔥 ${profile.currentStreak} day streak!',
+          message: '🔥 ${profile.currentStreak}-day streak!',
           detailedMessage:
               'You\'ve been learning consistently for ${profile.currentStreak} days. That\'s dedication!',
           recommendation:

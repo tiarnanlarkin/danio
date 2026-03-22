@@ -867,7 +867,7 @@ class _StreakCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$streak day streak! 🔥',
+                  '$streak-day streak! 🔥',
                   style: AppTypography.labelLarge.copyWith(
                     color: AppColors.primary,
                   ),

@@ -192,7 +192,7 @@ class CyclingStatusCard extends StatelessWidget {
       case CyclingStatus.almostDone:
         return 'Nitrite is dropping and nitrate is rising. You\'re almost there! A few more days.';
       case CyclingStatus.cycled:
-        return 'Your tank can now process ammonia → nitrite → nitrate. Add fish slowly over several weeks.';
+        return 'Your tank can now convert ammonia to nitrite to nitrate. Add fish slowly over several weeks.';
       case CyclingStatus.unknown:
         return 'Log regular water tests (ammonia, nitrite, nitrate) to track your cycling progress.';
     }

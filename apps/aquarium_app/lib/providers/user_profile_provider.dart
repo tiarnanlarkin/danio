@@ -412,7 +412,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
                 await gemsNotifier.addGems(
                   amount: streakGems,
                   reason: GemEarnReason.streakMilestone,
-                  customReason: '$newStreak day streak!',
+                  customReason: '$newStreak-day streak!',
                 );
               }
             }

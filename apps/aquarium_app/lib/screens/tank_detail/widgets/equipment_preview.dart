@@ -54,7 +54,7 @@ class EquipmentPreview extends StatelessWidget {
                     Text(
                       e.name,
                       style: AppTypography.labelLarge,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(e.typeName, style: AppTypography.bodySmall),

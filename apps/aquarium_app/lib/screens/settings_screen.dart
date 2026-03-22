@@ -1119,7 +1119,7 @@ class _LearnCard extends ConsumerWidget {
                         if (stats.currentStreak > 0) ...[
                           const SizedBox(height: AppSpacing.xxs),
                           Text(
-                            '🔥 ${stats.currentStreak} day streak',
+                            '🔥 ${stats.currentStreak}-day streak',
                             style: AppTypography.bodySmall.copyWith(
                               color: Colors.white70,
                             ),

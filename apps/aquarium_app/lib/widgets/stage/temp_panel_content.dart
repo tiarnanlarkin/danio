@@ -257,7 +257,7 @@ class _Header extends StatelessWidget {
                 const Text('🔥', style: TextStyle(fontSize: 13)),
                 const SizedBox(width: 4),
                 Text(
-                  '$streak day streak',
+                  '$streak-day streak',
                   style: AppTypography.labelSmall.copyWith(
                     color: _kAmberGold,
                     fontWeight: FontWeight.w800,

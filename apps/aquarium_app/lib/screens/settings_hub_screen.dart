@@ -259,7 +259,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
   Widget _buildProfileCard(BuildContext context, String name, int level, int xp, int streak) {
     return Semantics(
-      label: '$name, Level $level, $xp XP, $streak day streak',
+      label: '$name, Level $level, $xp XP, $streak-day streak',
       child: CozyCard(
         child: Row(
           children: [
@@ -302,7 +302,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     // BUG-06: hide fire emoji when streak is 0
-                    '$streak day streak${streak > 0 ? " 🔥" : ""}',
+                    '$streak-day streak${streak > 0 ? " 🔥" : ""}',
                     style: AppTypography.bodySmall.copyWith(
                       color: streak > 0
                           ? AppColors.warning
