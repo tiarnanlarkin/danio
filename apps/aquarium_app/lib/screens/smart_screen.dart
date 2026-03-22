@@ -548,7 +548,7 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Some Smart features are coming soon. Fish ID, Symptom Checker, '
+            'Some Smart features are coming soon. Fish & Plant ID, Symptom Checker, '
             'and Weekly Care Plan will be available in a future update.',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
