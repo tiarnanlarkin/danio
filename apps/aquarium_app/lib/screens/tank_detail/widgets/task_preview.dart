@@ -96,10 +96,10 @@ class TaskTile extends StatelessWidget {
 
   String _formatDue(DateTime date) {
     final days = date.difference(DateTime.now()).inDays;
-    if (days < 0) return '${-days}d overdue';
+    if (days < 0) return '${-days} ${(-days) == 1 ? 'day' : 'days'} overdue';
     if (days == 0) return 'Due today';
     if (days == 1) return 'Due tomorrow';
-    if (days < 7) return 'Due in ${days}d';
+    if (days < 7) return 'Due in $days days';
     return 'Due ${DateFormat('MMM d').format(date)}';
   }
 }

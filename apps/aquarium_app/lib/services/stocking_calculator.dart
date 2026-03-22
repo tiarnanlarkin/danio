@@ -117,7 +117,6 @@ class StockingCalculator {
     } else {
       level = StockingLevel.overstocked;
       summary = 'Overstocked - risk of water quality issues.';
-      warnings.add('Tank may be overstocked.');
       suggestions.add('Consider rehoming some fish or upgrading tank size.');
     }
 

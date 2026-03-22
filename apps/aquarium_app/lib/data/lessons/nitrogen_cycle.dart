@@ -9,7 +9,7 @@ final nitrogenCyclePath = LearningPath(
   id: 'nitrogen_cycle',
   title: 'The Nitrogen Cycle',
   description:
-      'The #1 thing every fishkeeper must understand. This is why fish die in new tanks.',
+      'The #1 thing every fishkeeper must understand. Master this and your fish will thrive.',
   emoji: '🔄',
   recommendedFor: [ExperienceLevel.beginner],
   orderIndex: 0,

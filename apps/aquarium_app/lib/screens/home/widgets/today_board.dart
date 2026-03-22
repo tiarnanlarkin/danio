@@ -244,7 +244,7 @@ class _TaskRow extends StatelessWidget {
       dueLabel = 'today';
     } else {
       final days = task.daysUntilDue;
-      dueLabel = days != null ? 'in ${days}d' : '';
+      dueLabel = days != null ? 'in $days ${days == 1 ? 'day' : 'days'}' : '';
     }
 
     return Padding(

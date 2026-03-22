@@ -90,7 +90,7 @@ class LessonProvider extends StateNotifier<LessonState> {
       id: 'nitrogen_cycle',
       title: 'The Nitrogen Cycle',
       description:
-          'The #1 thing every fishkeeper must understand. This is why fish die in new tanks.',
+          'The #1 thing every fishkeeper must understand. Master this and your fish will thrive.',
       emoji: '🔄',
       orderIndex: 0,
       lessonIds: [
@@ -105,7 +105,7 @@ class LessonProvider extends StateNotifier<LessonState> {
     PathMetadata(
       id: 'water_parameters',
       title: 'Water Parameters 101',
-      description: 'Understanding pH, temperature, hardness and more',
+      description: 'Understanding pH, temperature, and water hardness',
       emoji: '💧',
       orderIndex: 1,
       lessonIds: ['wp_ph', 'wp_temp', 'wp_hardness', 'wp_stability'],

@@ -163,7 +163,7 @@ class LatestSnapshotCard extends StatelessWidget {
   }
 
   String _fmt(double? v, {required int decimals}) {
-    if (v == null) return '-';
+    if (v == null) return '–';
     return v.toStringAsFixed(decimals);
   }
 
@@ -250,7 +250,7 @@ class ParamPill extends StatelessWidget {
               Text(label, style: AppTypography.bodySmall),
               const SizedBox(height: AppSpacing.xxs),
               Text(
-                unit == null ? value : '$value $unit',
+                (unit == null || value == '–') ? value : '$value $unit',
                 style: AppTypography.labelLarge,
               ),
             ],

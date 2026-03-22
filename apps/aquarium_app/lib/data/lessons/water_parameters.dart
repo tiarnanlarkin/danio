@@ -8,7 +8,7 @@ import '../../models/user_profile.dart';
 final waterParametersPath = LearningPath(
   id: 'water_parameters',
   title: 'Water Parameters 101',
-  description: 'Understanding pH, temperature, hardness and more',
+  description: 'Understanding pH, temperature, and water hardness',
   emoji: '💧',
   recommendedFor: [ExperienceLevel.beginner],
   orderIndex: 1,

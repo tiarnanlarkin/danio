@@ -66,7 +66,10 @@ class TrendsRow extends StatelessWidget {
                 Text('Trends', style: AppTypography.headlineSmall),
                 const Spacer(),
                 Text(
-                  'last ${tests.length.clamp(0, 50)} tests',
+                  () {
+                    final n = tests.length.clamp(0, 50);
+                    return 'last $n ${n == 1 ? 'test' : 'tests'}';
+                  }(),
                   style: AppTypography.bodySmall,
                 ),
               ],

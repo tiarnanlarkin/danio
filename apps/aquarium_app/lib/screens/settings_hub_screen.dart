@@ -208,13 +208,13 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       // P3-003: wrap with ConstrainedBox so the card is never less than 80 px tall
       Semantics(
         button: true,
-        label: 'Backup and Restore, Back up and restore your data',
+        label: 'Backup and Restore, Export or sync your aquarium data',
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 80),
           child: PrimaryActionTile(
             icon: Icons.backup,
             title: 'Backup & Restore',
-            subtitle: 'Back up & restore your data',
+            subtitle: 'Export or sync your aquarium data',
             iconColor: context.textSecondary,
             trailing: const Icon(Icons.chevron_right),
             onTap: () {

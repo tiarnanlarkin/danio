@@ -519,10 +519,10 @@ class _EquipmentCard extends StatelessWidget {
                   Text(
                     daysUntil != null
                         ? (daysUntil < 0
-                              ? '${-daysUntil}d overdue'
+                              ? '${-daysUntil} ${(-daysUntil) == 1 ? 'day' : 'days'} overdue'
                               : (daysUntil == 0
                                     ? 'Due today'
-                                    : 'Due in ${daysUntil}d'))
+                                    : 'Due in $daysUntil ${daysUntil == 1 ? 'day' : 'days'}'))
                         : 'Service every ${equipment.maintenanceIntervalDays}d',
                     style: TextStyle(
                       color: isOverdue
