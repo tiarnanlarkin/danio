@@ -43,7 +43,6 @@ dependencies:
   floating_bubbles: ^2.6.2
 
   # Audio & Haptics
-  audioplayers: ^6.1.0
   
   # File handling
   path_provider: ^2.1.5
@@ -88,7 +87,6 @@ flutter:
   
   assets:
     - assets/rive/
-    - assets/audio/celebrations/
     - assets/images/empty_states/
     - assets/images/onboarding/
     - assets/images/error_states/
