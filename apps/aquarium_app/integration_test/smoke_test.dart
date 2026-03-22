@@ -126,6 +126,7 @@ void main() {
 
       if ($(NavigationBar).exists) {
         // Press back — should either show snackbar "press back again" or do nothing
+        // ignore: deprecated_member_use
         await $.native.pressBack();
         await $.pump(const Duration(seconds: 2));
 
