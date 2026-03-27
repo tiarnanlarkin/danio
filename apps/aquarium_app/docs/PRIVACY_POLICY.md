@@ -79,11 +79,11 @@ Social features are optional. You can participate in learning and tank managemen
 
 ## 3. Data We Do NOT Collect
 
-- **No advertising identifiers** — we do not use any advertising SDKs
-- **No analytics tracking** — we do not use third-party analytics platforms
+- **No advertising identifiers** — we do not use any advertising SDKs or ad networks
+- **No behavioural advertising** — analytics data (collected with consent via Firebase Analytics) is used solely to improve the app, never for advertising profiling
 - **No location data** — we do not access your GPS or location
 - **No contacts or call logs** — we do not access your address book or phone data
-- **No behavioural profiling** — we do not build profiles for advertising purposes
+- **No behavioural profiling for ads** — we do not build profiles for advertising purposes
 - **We never sell, rent, or share your data with advertisers or data brokers**
 
 ---
@@ -92,21 +92,38 @@ Social features are optional. You can participate in learning and tank managemen
 
 The App uses the following third-party services, only when you opt in to features that require them:
 
-### 4.1 Supabase
+### 4.1 Firebase Analytics (Google LLC)
+
+- **Purpose:** Anonymous app usage analytics to improve the app (with consent)
+- **Data processed:** Anonymous usage events, Firebase Installation ID, device/OS info
+- **Legal basis:** Consent — Art. 6(1)(a)
+- **Location:** Google LLC (USA), covered by EU–US Data Privacy Framework
+- **Privacy policy:** [https://policies.google.com/privacy](https://policies.google.com/privacy)
+
+### 4.2 Firebase Crashlytics (Google LLC)
+
+- **Purpose:** Crash reporting and app stability monitoring (with consent)
+- **Data processed:** Device OS version, app version, crash stack traces (no personal data)
+- **Legal basis:** Consent — Art. 6(1)(a); disabled if consent is declined or withdrawn
+- **Retention:** 90 days, then deleted
+- **Location:** Google LLC (USA)
+- **Privacy policy:** [https://policies.google.com/privacy](https://policies.google.com/privacy)
+
+### 4.3 Supabase
 
 - **Purpose:** Cloud sync, authentication, encrypted backup storage
 - **Data processed:** Account info, synced tank data, learning progress, encrypted photos, social data
 - **Location:** Supabase infrastructure (data may be processed in the EU/US)
 - **Privacy policy:** [https://supabase.com/privacy](https://supabase.com/privacy)
 
-### 4.2 OpenAI
+### 4.4 OpenAI
 
 - **Purpose:** AI-powered fish identification, symptom diagnosis, and stocking advice
-- **Data processed:** Photos and text you submit to AI features
+- **Data processed:** Photos you submit for fish identification AND text prompts/queries you enter for AI chat and advice features
 - **Retention:** OpenAI retains API inputs for up to 30 days for abuse monitoring, then deletes them. API data is not used for model training.
 - **Privacy policy:** [https://openai.com/policies/api-data-usage-policies](https://openai.com/policies/api-data-usage-policies)
 
-### 4.3 Google OAuth
+### 4.5 Google OAuth
 
 - **Purpose:** Optional sign-in method
 - **Data processed:** Basic profile info (email, name) provided by Google during authentication
@@ -121,10 +138,12 @@ Where we process your personal data, we rely on the following legal bases under 
 | Purpose | Legal Basis |
 |---|---|
 | Account creation and authentication | Performance of a contract (providing the service you requested) |
-| Cloud sync and backup | Your explicit consent (opt-in) |
-| AI feature processing | Your explicit consent (submitting data to AI features) |
-| Social features | Your explicit consent (opt-in) |
-| Responding to support requests | Legitimate interest |
+| Firebase Analytics | Your explicit consent — Art. 6(1)(a) (opt-in on first launch) |
+| Firebase Crashlytics | Your explicit consent — Art. 6(1)(a) (consent-based; disabled when consent is declined) |
+| Cloud sync and backup | Your explicit consent — Art. 6(1)(a) (opt-in) |
+| AI feature processing (photos and text prompts sent to OpenAI) | Your explicit consent — Art. 6(1)(a) (per use of AI features) |
+| Social features | Your explicit consent — Art. 6(1)(a) (opt-in) |
+| Responding to support requests | Legitimate interest — Art. 6(1)(f) |
 
 You may withdraw consent at any time by disabling the relevant feature in Settings or deleting your account.
 
@@ -162,7 +181,7 @@ Under the UK GDPR and Data Protection Act 2018, you have the following rights:
 ### How to Exercise Your Rights
 
 - **In-app:** Go to **Settings → Account** to export or delete all your data
-- **By email:** Contact us at [tiarnan.larkin@gmail.com](mailto:tiarnan.larkin@gmail.com)
+- **By email:** Contact us at [larkintiarnanbizz@gmail.com](mailto:larkintiarnanbizz@gmail.com)
 
 We will respond to all data rights requests within **30 days**.
 
@@ -172,7 +191,7 @@ If you are unsatisfied with our response, you have the right to lodge a complain
 
 ## 9. Children's Privacy
 
-Danio is not directed at children under the age of 13. We do not knowingly collect personal data from children under 13. If you believe a child under 13 has provided us with personal data, please contact us immediately at [tiarnan.larkin@gmail.com](mailto:tiarnan.larkin@gmail.com) and we will delete it promptly.
+Danio is not directed at children under the age of 13. We do not knowingly collect personal data from children under 13. If you believe a child under 13 has provided us with personal data, please contact us immediately at [larkintiarnanbizz@gmail.com](mailto:larkintiarnanbizz@gmail.com) and we will delete it promptly.
 
 The App is designed for users aged **13 and above**.
 
@@ -197,7 +216,7 @@ Continued use of the App after changes constitutes acceptance of the updated pol
 If you have any questions about this Privacy Policy or your personal data:
 
 **Tiarnan Larkin**
-Email: [tiarnan.larkin@gmail.com](mailto:tiarnan.larkin@gmail.com)
+Email: [larkintiarnanbizz@gmail.com](mailto:larkintiarnanbizz@gmail.com)
 Location: United Kingdom
 
 ---

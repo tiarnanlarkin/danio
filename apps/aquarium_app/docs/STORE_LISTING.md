@@ -132,6 +132,14 @@ Download Danio and start your fishkeeping journey today.
 
 ---
 
+## Contact Email (Play Console — Store Listing)
+
+```
+larkintiarnanbizz@gmail.com
+```
+
+---
+
 ## ASO Notes
 
 - **Title** contains the two highest-value keywords: "learn" and "fishkeeping"

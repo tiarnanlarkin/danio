@@ -52,7 +52,7 @@ Before planning, acknowledge the massive overnight sprint results already landed
 | # | Task | Source | Complexity | Notes |
 |---|------|--------|-----------|-------|
 | 8 | **Privacy Policy update** — add all 6 required sections: OpenAI disclosure, international transfers (US), retention periods, legal basis per activity, ICO complaint right, data deletion mechanism. Draft in `docs/privacy-policy-v2.md` for Tiarnan review before committing to asset. | PS-07, Themis §1.3 | M | ⚠️ REQUIRES TIARNAN REVIEW before merge |
-| 9 | **Data deletion mechanism** — add "Delete My Data" in Settings. Show confirmation dialog. Since no server accounts yet (Supabase dormant), clear all local data + show `privacy@tiarnanlarkin.com` email for any residual requests. | PS-08, Themis §5.2 | M | Minimum viable: email contact + local wipe |
+| 9 | **Data deletion mechanism** — add "Delete My Data" in Settings. Show confirmation dialog. Since no server accounts yet (Supabase dormant), clear all local data + show `larkintiarnanbizz@gmail.com` email for any residual requests. | PS-08, Themis §5.2 | M | Minimum viable: email contact + local wipe |
 | 10 | **GitHub Pages privacy policy** — update the live page at `tiarnanlarkin.github.io/danio/privacy-policy.html` with the approved v2 copy. | PS-07 | S | After Tiarnan approves copy |
 
 #### Sprint 1D: Broken Achievements (Hephaestus — ~40 min)

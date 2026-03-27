@@ -26,14 +26,14 @@
 
 | Question | Answer |
 |----------|--------|
-| **Data type** | Device or other IDs (Android Advertising ID) |
+| **Data type** | Device or other IDs (Firebase Installation ID) |
 | **Is this data collected, shared, or both?** | Collected and shared |
 | **Is this data processed ephemerally?** | No |
 | **Is this data required or can users choose?** | Optional (requires consent) |
 | **Why is this data collected?** | Analytics |
 | **Is this data shared with third parties?** | Yes — Google (Firebase Analytics) |
 | **Is this data encrypted in transit?** | Yes (HTTPS/TLS) |
-| **Can users request deletion?** | Yes (in-app "Delete My Data" + email privacy@tiarnanlarkin.com) |
+| **Can users request deletion?** | Yes (in-app "Delete My Data" + email larkintiarnanbizz@gmail.com) |
 
 ---
 
@@ -78,7 +78,22 @@
 | **Why is this data collected?** | App functionality (AI fish identification) |
 | **Is this data shared with third parties?** | Yes — OpenAI (US servers, retained up to 30 days per their policy) |
 | **Is this data encrypted in transit?** | Yes (HTTPS/TLS) |
-| **Can users request deletion?** | Yes (contact privacy@tiarnanlarkin.com) |
+| **Can users request deletion?** | Yes (contact larkintiarnanbizz@gmail.com) |
+
+---
+
+### User content — text (AI chat / prompts)
+
+| Question | Answer |
+|----------|--------|
+| **Data type** | User content — text (AI text prompts and chat queries) |
+| **Is this data collected, shared, or both?** | Shared (sent to OpenAI for processing, not stored permanently by Danio) |
+| **Is this data processed ephemerally?** | Yes (sent for real-time processing, not persisted by app) |
+| **Is this data required or can users choose?** | Optional (user explicitly triggers AI chat / text features) |
+| **Why is this data collected?** | App functionality (AI-powered fish advice, symptom diagnosis, stocking suggestions) |
+| **Is this data shared with third parties?** | Yes — OpenAI (US servers, retained up to 30 days per their policy) |
+| **Is this data encrypted in transit?** | Yes (HTTPS/TLS) |
+| **Can users request deletion?** | Yes (contact larkintiarnanbizz@gmail.com) |
 
 ---
 
@@ -87,7 +102,7 @@
 | Question | Answer |
 |----------|--------|
 | **Does your app provide a way for users to request that their data is deleted?** | Yes |
-| **Mechanism** | In-app: Settings → Danger Zone → "Delete My Data" button. Email: privacy@tiarnanlarkin.com |
+| **Mechanism** | In-app: Settings → Danger Zone → "Delete My Data" button. Email: larkintiarnanbizz@gmail.com |
 
 ---
 

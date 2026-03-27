@@ -291,7 +291,7 @@
   3. **Retention periods** — Firebase Analytics: 2 months; Crashlytics: 90 days; OpenAI images: 30 days; Local data: until app uninstall
   4. **Legal basis** — Consent for analytics (Art. 6(1)(a)); legitimate interest for crash reports (Art. 6(1)(f)); contract for core features (Art. 6(1)(b))
   5. **ICO complaint right** — "You have the right to lodge a complaint with the Information Commissioner's Office (ico.org.uk)"
-  6. **Data deletion** — Dedicated "Right to Erasure" section with email: `privacy@tiarnanlarkin.com` (or similar)
+  6. **Data deletion** — Dedicated "Right to Erasure" section with email: `larkintiarnanbizz@gmail.com` (or similar)
 - **Testing:**
   - [ ] All 6 sections present in draft
   - [ ] Tiarnan has reviewed and approved copy (**⚠️ BLOCKS MERGE**)
@@ -313,7 +313,7 @@
   1. Add "Delete My Data" option in Settings Hub or Account screen
   2. Tap → confirmation dialog: "This will permanently delete all your local data (tanks, progress, achievements). This cannot be undone."
   3. On confirm: clear all SharedPreferences, delete local JSON files, reset onboarding state, show "Data deleted" and return to onboarding
-  4. Since Supabase is dormant: also display `privacy@tiarnanlarkin.com` for any residual server-side deletion requests
+  4. Since Supabase is dormant: also display `larkintiarnanbizz@gmail.com` for any residual server-side deletion requests
   5. Link to this mechanism in Privacy Policy (PS-07)
 - **Testing:**
   - [ ] "Delete My Data" visible in settings
