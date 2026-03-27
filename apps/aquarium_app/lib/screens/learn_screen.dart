@@ -914,30 +914,7 @@ class _StreakCard extends StatelessWidget {
 }
 
 /// Path IDs with mostly stub/empty content — gated as "Coming Soon".
-const _comingSoonPathIds = {'advanced_topics'};
-
-/// Individual stub lessons with placeholder content — gated as "Coming Soon"
-/// within paths that also contain real, complete lessons.
-const _stubLessonIds = <String>{
-  // Fish Health stubs (fh_prevention is real content — keep accessible)
-  'fh_ich',
-  'fh_fin_rot',
-  'fh_fungal',
-  'fh_parasites',
-  'fh_hospital_tank',
-  // Species Care stubs (sc_betta, sc_goldfish are real — keep accessible)
-  'sc_tetras',
-  'sc_cichlids',
-  'sc_shrimp',
-  'sc_snails',
-  // Advanced Topics — all stubs (path-level gated too, but listed for completeness)
-  'at_breeding_livebearers',
-  'at_breeding_egg_layers',
-  'at_aquascaping',
-  'at_biotope',
-  'at_troubleshooting',
-  'at_water_chem',
-};
+const _comingSoonPathIds = <String>{};
 
 /// Lazy-loading learning path card.
 /// Shows metadata (emoji, title, description, progress) immediately.
@@ -1263,7 +1240,6 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
     return [
       const Divider(height: 1),
       ...path.lessons
-          .where((lesson) => !_stubLessonIds.contains(lesson.id))
           .map((lesson) {
         final isCompleted = widget.userCompletedLessons.contains(lesson.id);
         final isUnlocked = lesson.isUnlocked(widget.userCompletedLessons);

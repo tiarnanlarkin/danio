@@ -25,19 +25,38 @@ final advancedTopicsPath = LearningPath(
       estimatedMinutes: 7,
       sections: [
         const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Livebearer Family',
+        ),
+        const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Livebearers give birth to free-swimming fry (no eggs!). They\'re so easy they\'ll breed without any help from you.',
+              'Guppies, mollies, platies, and swordtails are livebearers — they give birth to fully-formed, free-swimming fry instead of laying eggs. They\'re the easiest fish to breed in the hobby. In fact, the hard part isn\'t getting them to breed — it\'s everything that comes after.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'The challenge isn\'t breeding - it\'s keeping the fry alive! Provide hiding spots (plants) and feed micro foods.',
+              'Male:female ratio matters. Keep 1 male for every 2–3 females. Too many males constantly harassing females causes stress, disease, and death. A 1:1 ratio will wear females out.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Gestation is approximately 28 days for guppies, slightly longer for mollies and platies — and it varies with temperature (warmer = faster). A gravid female develops a dark "gravid spot" near the tail and becomes noticeably rounder. When she squares off (the belly becomes boxy), birth is imminent.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Fry survival — Option 1: breeding box (separate the female before birth). Effective but stressful for the mother.\n• Fry survival — Option 2: heavily planted tank with java moss or guppy grass. More natural; some fry will be eaten, but it\'s lower stress.\n• First fry food: crushed flake and baby brine shrimp (BBS). BBS dramatically improves growth rate.\n• Feed fry 3–4 times daily in small amounts.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Breeding box or nursery net protects fry from being eaten. Feed 3-4 times daily for fast growth.',
+              'Basic colour genetics: in guppies, many colour patterns are X-linked (carried on the X chromosome). Males display the pattern; females carry it. Selective breeding involves tracking which females carry which traits.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Culling ethics: don\'t release unwanted fry into local waterways — it\'s illegal in most countries and can devastate native ecosystems. Rehome through fish clubs, sell to shops, or feed to larger fish (if you can stomach it).',
         ),
       ],
       quiz: Quiz(
@@ -46,55 +65,55 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_live_q1',
-            question: 'How do livebearers reproduce compared to most other fish?',
+            question: 'What male-to-female ratio is recommended for livebearers?',
             options: [
-              'They lay eggs on leaves',
-              'They build bubble nests',
-              'They give birth to free-swimming fry',
-              'They mouthbrood their eggs',
+              '3 males per female',
+              '1 male per female',
+              '1 male per 2–3 females',
+              'Equal numbers of each',
             ],
             correctIndex: 2,
             explanation:
-                'Livebearers like guppies, mollies, and platies give birth to live, free-swimming fry — no eggs involved!',
+                'Keep 1 male per 2–3 females. Too many males constantly harass females, causing chronic stress. A 1:1 ratio will exhaust females over time.',
           ),
           const QuizQuestion(
             id: 'at_live_q2',
-            question: 'What is the main challenge when breeding livebearers?',
+            question: 'How long is the approximate gestation period for guppies?',
             options: [
-              'Getting them to breed',
-              'Keeping the fry alive',
-              'Maintaining water temperature',
-              'Finding compatible pairs',
+              '7 days',
+              '28 days',
+              '60 days',
+              '90 days',
             ],
             correctIndex: 1,
             explanation:
-                'The real challenge isn\'t breeding — they\'ll do that on their own! It\'s keeping the tiny fry alive by providing hiding spots and micro foods.',
+                'Guppy gestation is approximately 28 days, varying with temperature. Warmer water shortens it slightly; cooler water lengthens it.',
           ),
           const QuizQuestion(
             id: 'at_live_q3',
-            question: 'How often should you feed fry for optimal growth?',
+            question: 'What food dramatically improves fry growth rate?',
             options: [
-              'Once a day',
-              'Twice a day',
-              '3-4 times daily',
-              'Once every other day',
+              'Large pellets',
+              'Algae wafers',
+              'Baby brine shrimp (BBS)',
+              'Adult flake food',
             ],
             correctIndex: 2,
             explanation:
-                'Feed fry 3-4 times daily with micro foods for fast, healthy growth. Small, frequent meals are much better than one large one.',
+                'Baby brine shrimp (BBS) are high in protein and perfectly sized for fry. They dramatically improve growth rates compared to crushed flake alone.',
           ),
           const QuizQuestion(
             id: 'at_live_q4',
-            question: 'What tool helps protect livebearer fry from being eaten by adults?',
+            question: 'Why should unwanted livebearer fry never be released into local waterways?',
             options: [
-              'A UV steriliser',
-              'A breeding box or nursery net',
-              'A stronger filter',
-              'A larger tank',
+              'They will die immediately in cold water',
+              'It is illegal in most countries and can devastate native ecosystems',
+              'They will spread disease to wild fish',
+              'They don\'t survive outside of aquariums',
             ],
             correctIndex: 1,
             explanation:
-                'A breeding box or nursery net separates fry from adult fish, giving them a safe space to grow until they\'re large enough to avoid being eaten.',
+                'Releasing aquarium fish is illegal in most countries. Invasive livebearers (especially guppies and mollies) can outcompete native species and cause serious ecological damage.',
           ),
         ],
       ),
@@ -110,14 +129,46 @@ final advancedTopicsPath = LearningPath(
       estimatedMinutes: 8,
       sections: [
         const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Conditioning Your Fish',
+        ),
+        const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Egg layers require more setup: spawning mops, caves, or flat stones depending on species. Water parameters must be perfect.',
+              'Before attempting to breed egg layers, "condition" both sexes for 1–2 weeks with high-protein live or frozen foods: bloodworms, brine shrimp, daphnia. This builds up nutrient reserves and triggers breeding readiness. Well-conditioned females become noticeably plumper with eggs.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Spawning Triggers',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Most egg layers need a trigger. A large cool water change (replacing 30–40% with slightly cooler water) mimics the rainy season and often initiates spawning. For some species, gradually raising temperature by 2–3°F over 24 hours works. Dawn light simulation (slowly brightening lighting) can also trigger spawning behaviour.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Egg scatterers (danios, tetras): scatter eggs randomly — remove parents IMMEDIATELY after spawning or they\'ll eat every egg\n• Egg depositors (corydoras): lay adhesive eggs on glass, leaves, or flat surfaces — parents usually leave eggs alone\n• Bubble nest builders (bettas, gouramis): male builds a foam nest at the surface and guards the eggs — remove the female after spawning',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Raising Fry',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Newly hatched fry absorb their yolk sac for the first 1–3 days. After that, they need microscopic food. Infusoria (single-celled organisms cultured in a jar of vegetable water) is ideal for the first few days. Then transition to baby brine shrimp, then crushed flake. Good beginner species: corydoras catfish and bristlenose plecos — both are egg depositors with reasonable fry survival.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Use a sponge filter in the breeding/fry tank. Regular filters will suck up fry. A gentle sponge filter provides aeration and biological filtration without becoming a fry trap.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Many fish eat their own eggs! Remove parents or use dividers after spawning.',
+              'Many egg-laying fish will eat their own eggs immediately after spawning. With scatterers like danios and tetras, remove parents the moment spawning is complete.',
         ),
       ],
       quiz: Quiz(
@@ -126,42 +177,55 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_egg_q1',
-            question: 'What setup do egg-laying fish need for breeding?',
+            question: 'What food is best for conditioning fish before breeding?',
             options: [
-              'A breeding box is always sufficient',
-              'Spawning mops, caves, or flat stones depending on species',
-              'No special setup needed',
-              'A heater set to 35°C',
-            ],
-            correctIndex: 1,
-            explanation:
-                'Egg layers are species-specific — they need the right spawning surface: mops for scatterers, caves for cave spawners, flat stones for egg depositors.',
-          ),
-          const QuizQuestion(
-            id: 'at_egg_q2',
-            question: 'What should you do after egg-laying fish have spawned?',
-            options: [
-              'Leave the parents in to guard the eggs',
-              'Remove the parents or use a divider to protect the eggs',
-              'Immediately add medication to the water',
-              'Turn off the filter',
-            ],
-            correctIndex: 1,
-            explanation:
-                'Many egg-laying fish eat their own eggs! Remove parents or use dividers after spawning to give the eggs a chance to develop.',
-          ),
-          const QuizQuestion(
-            id: 'at_egg_q3',
-            question: 'What must be perfect for egg layers to breed successfully?',
-            options: [
-              'Lighting duration',
-              'Tank decoration colour',
-              'Water parameters',
-              'Number of tank mates',
+              'Flake food fed twice daily',
+              'Algae wafers',
+              'High-protein live or frozen food (bloodworms, brine shrimp)',
+              'Vegetable matter only',
             ],
             correctIndex: 2,
             explanation:
-                'Water parameters (temperature, pH, hardness) must be spot-on for egg layers to trigger spawning. Different species have different requirements.',
+                'High-protein live or frozen foods (bloodworms, brine shrimp, daphnia) build the nutrient reserves fish need for egg production and successful spawning.',
+          ),
+          const QuizQuestion(
+            id: 'at_egg_q2',
+            question: 'What is a common spawning trigger for egg-laying fish?',
+            options: [
+              'Stopping feeding for a week',
+              'A large, slightly cool water change mimicking the rainy season',
+              'Adding salt to the water',
+              'Keeping lights off for 24 hours',
+            ],
+            correctIndex: 1,
+            explanation:
+                'A large, slightly cool water change mimics seasonal rainfall — a natural spawning trigger for many tropical fish. Combined with good conditioning, this often initiates breeding.',
+          ),
+          const QuizQuestion(
+            id: 'at_egg_q3',
+            question: 'What is the correct fry feeding sequence after egg layers hatch?',
+            options: [
+              'Crushed flake immediately from day one',
+              'Baby brine shrimp → infusoria → large pellets',
+              'Yolk sac absorption → infusoria → baby brine shrimp → crushed flake',
+              'Adult food crushed finely from birth',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Fry absorb their yolk sac for 1–3 days, then need infusoria (microscopic), then baby brine shrimp, then crushed flake as they grow. Rushing to large food causes starvation.',
+          ),
+          const QuizQuestion(
+            id: 'at_egg_q4',
+            question: 'What must you do immediately after egg scatterers (like danios) have spawned?',
+            options: [
+              'Add medication to prevent fungus',
+              'Remove the parents — they will eat the eggs',
+              'Raise the temperature to 90°F',
+              'Do a 50% water change',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Egg scatterers will eat their own eggs immediately. Remove parents the moment spawning is complete — every minute counts.',
           ),
         ],
       ),
@@ -178,14 +242,37 @@ final advancedTopicsPath = LearningPath(
       estimatedMinutes: 8,
       sections: [
         const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Three Major Styles',
+        ),
+        const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Aquascaping is underwater gardening. Use the rule of thirds, focal points, and layered depth to create stunning tanks.',
+              'Iwagumi is the most iconic style: minimalist, clean, focused on carefully arranged stones with low carpet plants (like dwarf hairgrass or Monte Carlo). Pioneered by Takashi Amano, it looks serene but is technically demanding. Dutch style is the opposite — dense, colourful plant variety arranged in "streets" with no visible hardscape. Colour, texture, and contrast between plant groups do all the visual work. Nature style recreates natural landscapes: mountains, riverbeds, forests — using a mix of hardscape and plants together.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Iwagumi (stones), Dutch (plant streets), Nature (Takashi Amano style) - each has principles you can learn!',
+              'Rule of thirds: place your focal point (main stone, driftwood, or plant group) at one of the four intersections of an imaginary 3×3 grid. Centred layouts look static; off-centre layouts feel dynamic.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Building the Scape',
+        ),
+        const LessonSection(
+          type: LessonSectionType.numberedList,
+          content:
+              '1. Plan on paper or digitally before touching the tank\n2. Add substrate: nutrient-rich base layer (e.g. Aquasoil) topped with a cap layer of sand or fine gravel\n3. Place hardscape (rocks, driftwood) first — this is your foundation\n4. Add plants: carpet species foreground, stem plants midground, tall background plants\n5. Fill with water slowly (use a plate or bag to avoid disturbing the substrate)\n6. Patience: a fully grown-in scape takes 2–6 months',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Odd numbers of rocks look more natural than even numbers. Three or five stones are more visually appealing than two or four — this is true in all natural landscapes.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'Takashi Amano started the Nature Aquarium movement in the 1990s. His book "Nature Aquarium World" transformed the hobby worldwide. He also founded ADA (Aqua Design Amano), the premium aquascaping equipment brand.',
         ),
       ],
       quiz: Quiz(
@@ -194,55 +281,55 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_aqua_q1',
-            question: 'What is aquascaping?',
-            options: [
-              'A method of filtering water with plants',
-              'The art of creating underwater landscapes in an aquarium',
-              'A technique for breeding fish with plants',
-              'A type of fish feeding schedule',
-            ],
-            correctIndex: 1,
-            explanation:
-                'Aquascaping is underwater gardening — designing and creating beautiful landscapes using plants, rocks, wood, and other materials within an aquarium.',
-          ),
-          const QuizQuestion(
-            id: 'at_aqua_q2',
-            question: 'Which design principle is important in aquascaping?',
-            options: [
-              'Symmetrical layouts',
-              'The rule of thirds and focal points',
-              'Using as many plant species as possible',
-              'Filling every inch of the tank',
-            ],
-            correctIndex: 1,
-            explanation:
-                'The rule of thirds and focal points create visual depth and balance. Like photography, placing key elements off-centre creates a more appealing composition.',
-          ),
-          const QuizQuestion(
-            id: 'at_aqua_q3',
-            question: 'Who is the famous aquascaper associated with the Nature style?',
-            options: [
-              'David Attenborough',
-              'Takashi Amano',
-              'Jacques Cousteau',
-              'Steve Jobs',
-            ],
-            correctIndex: 1,
-            explanation:
-                'Takashi Amano pioneered the Nature style of aquascaping, creating stunning, natural-looking planted tanks that inspired the modern aquascaping movement.',
-          ),
-          const QuizQuestion(
-            id: 'at_aqua_q4',
             question: 'What defines the Iwagumi aquascaping style?',
             options: [
-              'Dense planted "streets" of plants',
-              'A nature-style layout with wood and moss',
-              'Stone-focused layouts with minimal plants',
-              'A biotope recreation of a specific river',
+              'Dense, colourful plant streets with no hardscape',
+              'A recreation of a specific natural riverbed biotope',
+              'Minimalist stone-focused layout with carpet plants',
+              'Random placement of driftwood and artificial plants',
             ],
             correctIndex: 2,
             explanation:
-                'Iwagumi focuses on carefully arranged stones as the primary hardscape, with minimal, low-growing plants like carpet plants complementing the rockwork.',
+                'Iwagumi is minimalist and stone-focused. Carefully arranged rocks with low carpet plants create a serene, Japanese-influenced aesthetic.',
+          ),
+          const QuizQuestion(
+            id: 'at_aqua_q2',
+            question: 'Where should your focal point be placed according to the rule of thirds?',
+            options: [
+              'Dead centre of the tank',
+              'In the back corner',
+              'At one of the four intersections on a 3×3 grid',
+              'On the left or right wall',
+            ],
+            correctIndex: 2,
+            explanation:
+                'The rule of thirds places key elements at the intersections of a 3×3 grid — off-centre. This creates visual tension and dynamism that a centred focal point can\'t achieve.',
+          ),
+          const QuizQuestion(
+            id: 'at_aqua_q3',
+            question: 'What order should you follow when building an aquascape?',
+            options: [
+              'Plants first, then rocks, then substrate',
+              'Substrate first, then hardscape, then plants',
+              'Hardscape first, then substrate, then plants',
+              'Fill with water first, then add everything',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Always substrate first (the foundation), then hardscape (rocks and wood), then plants. This ensures proper planting depth and stable hardscape positioning.',
+          ),
+          const QuizQuestion(
+            id: 'at_aqua_q4',
+            question: 'How long does it typically take for an aquascape to fully grow in?',
+            options: [
+              '1–2 weeks',
+              '1 month',
+              '2–6 months',
+              '2 years',
+            ],
+            correctIndex: 2,
+            explanation:
+                'A fully grown aquascape takes 2–6 months depending on plants, lighting, and CO2. Patience is essential — the scape looks best after plants have filled in completely.',
           ),
         ],
       ),
@@ -258,14 +345,37 @@ final advancedTopicsPath = LearningPath(
       estimatedMinutes: 7,
       sections: [
         const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'What Is a Biotope?',
+        ),
+        const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Biotope tanks recreate real locations: Amazon blackwater, Lake Malawi rift, Asian rice paddy. Only species from that location, matching water chemistry.',
+              'A biotope aquarium recreates a specific natural habitat as accurately as possible — matching fish species, water chemistry, substrate, hardscape, and even plants to what you\'d actually find at that location. It\'s part science, part art. The goal isn\'t just "fish from Africa" — it\'s "this specific section of the Rio Negro in Brazil, circa the dry season."',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Three Popular Biotopes',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• **Amazon Blackwater:** Tannin-stained water (add Indian almond leaves, driftwood), pH 5.5–6.5, very soft water, sand substrate. Species: neon/cardinal tetras, angelfish, corydoras, apistogrammas.\n• **African Rift Lake (Malawi/Tanganyika):** Hard, alkaline pH 7.8–8.6, crushed coral or aragonite substrate, rock caves and stacks. Species: mbuna cichlids, peacock cichlids, Tropheus.\n• **Southeast Asian:** Moderate parameters, driftwood with java fern and crypts. Species: gouramis, rasboras, clown loaches, hillstream loaches.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'Research your chosen biotope thoroughly BEFORE buying anything. Species compatibility, water chemistry, and substrate all need to match the actual habitat. Getting this wrong means fish suffering in the wrong conditions.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Indian almond leaves (IAL) are the easiest way to start a blackwater biotope. They release tannins that lower pH, soften water, and have mild antibacterial properties. Replace them as they break down.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Biotope Aquarium Contests judge accuracy down to leaf litter species! Ultra-nerdy but beautiful.',
+              'Biotope Aquarium Contests judge accuracy down to leaf litter species! Serious competitors research the exact location, season, and even flood level of the habitat they\'re recreating.',
         ),
       ],
       quiz: Quiz(
@@ -274,42 +384,55 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_bio_q1',
-            question: 'What is a biotope aquarium?',
+            question: 'What is the pH range for an Amazon blackwater biotope?',
             options: [
-              'Any planted tank with fish and plants',
-              'A tank that recreates a specific natural habitat with matching species and water chemistry',
-              'A tank with artificial decorations',
-              'A brackish water tank',
-            ],
-            correctIndex: 1,
-            explanation:
-                'Biotope tanks recreate real natural locations — only using species and water chemistry from that specific habitat.',
-          ),
-          const QuizQuestion(
-            id: 'at_bio_q2',
-            question: 'Which of these is an example of a biotope setup?',
-            options: [
-              'A community tank with fish from different continents',
-              'Amazon blackwater with only South American species',
-              'A reef tank with coral and clownfish',
-              'A goldfish bowl with a plant',
-            ],
-            correctIndex: 1,
-            explanation:
-                'An Amazon blackwater biotope uses only species, water chemistry, and materials from that specific South American ecosystem.',
-          ),
-          const QuizQuestion(
-            id: 'at_bio_q3',
-            question: 'In biotope contests, what level of detail is judged?',
-            options: [
-              'Only the fish species',
-              'Only the water parameters',
-              'Accuracy down to leaf litter species',
-              'Only the overall appearance',
+              'pH 7.8–8.6',
+              'pH 7.0 exactly',
+              'pH 5.5–6.5',
+              'pH 8.5–9.5',
             ],
             correctIndex: 2,
             explanation:
-                'Biotope Aquarium Contests judge accuracy down to leaf litter species! It\'s a meticulous art form that values scientific accuracy as much as beauty.',
+                'Amazon blackwater rivers are soft and acidic — pH 5.5–6.5. Tannins from decaying leaves stain the water dark brown and lower pH naturally.',
+          ),
+          const QuizQuestion(
+            id: 'at_bio_q2',
+            question: 'What substrate is used in an African Rift Lake biotope?',
+            options: [
+              'Fine sand and Indian almond leaves',
+              'Plain gravel',
+              'Nutrient-rich planted tank substrate',
+              'Crushed coral or aragonite',
+            ],
+            correctIndex: 3,
+            explanation:
+                'Crushed coral or aragonite releases minerals that maintain the hard, alkaline water (pH 7.8–8.6) that Rift Lake cichlids require. It also mimics the rocky lake bed.',
+          ),
+          const QuizQuestion(
+            id: 'at_bio_q3',
+            question: 'What fish would you find in a Southeast Asian biotope?',
+            options: [
+              'Tetras, angelfish, and piranhas',
+              'Mbuna cichlids and Tropheus',
+              'Gouramis, rasboras, and loaches',
+              'Goldfish, koi, and oranda',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Southeast Asian rivers are home to gouramis, rasboras, loaches (including clown and hillstream loaches), and many barb species.',
+          ),
+          const QuizQuestion(
+            id: 'at_bio_q4',
+            question: 'What natural material releases tannins for an Amazon blackwater setup?',
+            options: [
+              'Crushed coral',
+              'Indian almond leaves',
+              'Lava rock',
+              'Play sand',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Indian almond leaves release tannins that stain the water, lower pH, soften water, and have mild antibacterial properties — perfect for blackwater biotopes.',
           ),
         ],
       ),
@@ -326,22 +449,36 @@ final advancedTopicsPath = LearningPath(
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
-          content: 'When Things Go Wrong',
-        ),
-        const LessonSection(
-          type: LessonSectionType.text,
-          content:
-              'Ammonia spike? 50% water change immediately. Cloudy water? Test parameters first - could be bacterial bloom (harmless) or ammonia (deadly).',
-        ),
-        const LessonSection(
-          type: LessonSectionType.keyPoint,
-          content:
-              'Never panic-clean! Gradual changes are safer than drastic ones. Test, then act.',
+          content: 'Emergency Scenarios',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• **Ammonia spike:** 50% water change + stop feeding\n• **Algae bloom:** Reduce light to 6 hours\n• **Cloudy water:** Test first, usually resolves in days\n• **Dead fish:** Remove immediately, test water, check tank mates',
+              '• **Ammonia spike:** Do a 50% water change IMMEDIATELY. Dose a dechlorinator like Seachem Prime (detoxifies ammonia for 24–48 hours). Stop feeding. Find the cause: dead fish hidden somewhere? Overfeeding? Filter crashed?\n• **Fish gasping at surface:** Increase surface agitation — lower the water level so the filter outflow splashes, or add an airstone. Do a water change. Check temperature (warm water holds less oxygen).\n• **Ich (white spots):** Raise temperature to 86°F (30°C) gradually over 24 hours + add aquarium salt (1 tbsp per 5 gallons). Treat for 2 full weeks — the temperature breaks the ich life cycle.\n• **Power outage:** Wrap the tank in blankets for insulation. A battery-powered air pump is the most important emergency item you can own. Don\'t feed during the outage.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'More Emergencies',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• **Fish jumped out:** If still alive and moist, wet your hands first (dry hands damage the slime coat), then gently return to the tank. Dim lights, add tannins for stress reduction, watch closely for 24 hours. Add a lid!\n• **Cloudy water:** White/grey = bacterial bloom (new tank), usually harmless, resolves in days. Green = algae (reduce light duration). White + ammonia smell = bacterial overload — test and act fast.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'Test before acting. Cloudy water could be harmless (bacterial bloom) or deadly (ammonia). A 5-minute test prevents a 5-hour mistake.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Never do a 100% water change in a crisis. It removes all beneficial bacteria and shocks fish with the chemistry difference. 50% maximum, done slowly.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Emergency kit every fishkeeper should have: Seachem Prime (ammonia detox), API Master Test Kit, aquarium salt, battery-powered air pump. These four items will save fish lives.',
         ),
       ],
       quiz: Quiz(
@@ -350,55 +487,55 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_trouble_q1',
-            question: 'What should you do FIRST in response to an ammonia spike?',
+            question: 'What is the first thing to do during an ammonia spike?',
             options: [
-              'Add medication',
-              'Do a 50% water change immediately and stop feeding',
+              'Add aquarium salt',
+              'Do a 50% water change immediately and dose Prime',
               'Turn off the filter',
-              'Add more fish to dilute the ammonia',
+              'Do a 100% water change',
             ],
             correctIndex: 1,
             explanation:
-                'A 50% water change dilutes toxic ammonia immediately. Stopping feeding reduces waste production. Never add more fish to an ammonia crisis!',
+                'A 50% water change halves the ammonia concentration immediately. Seachem Prime detoxifies remaining ammonia for 24–48 hours while you find and fix the cause.',
           ),
           const QuizQuestion(
             id: 'at_trouble_q2',
-            question: 'What should you do when your tank water is cloudy?',
+            question: 'How do you treat ich (white spot disease)?',
             options: [
-              'Do a 100% water change and replace all water',
-              'Add chemicals to clear the water',
-              'Test parameters first — it could be a harmless bacterial bloom',
-              'Turn off all equipment',
+              'Do nothing — it resolves on its own',
+              'Lower temperature to 65°F and add medication',
+              'Raise temperature to 86°F gradually + aquarium salt for 2 weeks',
+              'Do a 100% water change immediately',
             ],
             correctIndex: 2,
             explanation:
-                'Cloudy water could be a harmless bacterial bloom (which resolves on its own) or a deadly ammonia spike. Always test before taking action.',
+                'Heat (86°F) breaks the ich life cycle, and aquarium salt helps. Treat for 2 full weeks — ich has life stages where it\'s invisible but still present.',
           ),
           const QuizQuestion(
             id: 'at_trouble_q3',
-            question: 'If you have an algae bloom, what should you do?',
+            question: 'During a power outage, what is the single most important piece of emergency equipment?',
             options: [
-              'Add more fertiliser',
-              'Reduce lighting to 6 hours per day',
-              'Do nothing and wait',
-              'Replace all the water',
+              'A spare heater',
+              'A battery-powered air pump',
+              'A backup light',
+              'A water testing kit',
             ],
             correctIndex: 1,
             explanation:
-                'Reducing light duration to 6 hours starves algae of the light it needs to grow. This is often the simplest and most effective fix.',
+                'Fish can survive cold and dark, but they cannot survive without oxygen. A battery-powered air pump keeps the water oxygenated when the main filter goes down.',
           ),
           const QuizQuestion(
             id: 'at_trouble_q4',
-            question: 'Why should you "never panic-clean" your aquarium?',
+            question: 'What do different types of cloudy water indicate?',
             options: [
-              'It takes too much time',
-              'Gradual changes are safer than drastic ones for fish',
-              'It makes the water too clean',
-              'It removes all the algae fish need',
+              'All cloudy water is caused by ammonia',
+              'All cloudy water is harmless bacterial bloom',
+              'White/grey = bacterial bloom; green = algae; both need testing before acting',
+              'Cloudy water always means the cycle has crashed',
             ],
-            correctIndex: 1,
+            correctIndex: 2,
             explanation:
-                'Drastic changes can shock fish and crash the nitrogen cycle. Test first, then make gradual corrections. Slow and steady saves fish.',
+                'White/grey cloudy water is usually a harmless bacterial bloom in new tanks. Green cloudiness is algae. Always test parameters before treating — the cause determines the action.',
           ),
         ],
       ),
@@ -414,14 +551,41 @@ final advancedTopicsPath = LearningPath(
       estimatedMinutes: 10,
       sections: [
         const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'KH: The pH Guardian',
+        ),
+        const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Beyond pH: GH (hardness) measures calcium/magnesium, KH (alkalinity) is buffering capacity, TDS is total dissolved solids. Each matters for different species.',
+              'KH (carbonate hardness) is your water\'s buffering capacity — its ability to resist pH changes. Low KH means unstable pH. In planted tanks, CO2 lowers pH during the day; respiration raises it overnight. With low KH, this swing can be dramatic and stressful for fish. KH below 4 dKH is a red flag for pH crashes.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Stable water > perfect water. Don\'t chase numbers if fish are thriving. Match fish to your water, not water to random fish.',
+              'pH crash fix: if KH has been depleted, add crushed coral to the filter sock (slow, gentle buffer) or use baking soda as a temporary fix. Long-term: regular water changes replenish KH naturally.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'RO Water: Pure but Incomplete',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Reverse osmosis (RO) water has had virtually all minerals removed — it\'s almost pure H₂O. This sounds ideal, but it\'s actually useless without remineralisation. Fish and plants need minerals (calcium, magnesium, potassium). You must add them back using a remineraliser product (Salty Shrimp GH/KH+, Seachem Equilibrium) or simply mix RO with tap water at a ratio that achieves your target parameters.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'TDS (Total Dissolved Solids) measures everything dissolved in water — minerals, organics, medications, waste byproducts. High TDS doesn\'t automatically mean bad water; low TDS doesn\'t mean clean water. Context matters. A shrimp keeper targeting TDS 200 has very different goals than someone with high-TDS tap water trying to lower it for cardinal tetras.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Test Kit Accuracy',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'API liquid test kits beat strips every time. One critical tip for the nitrate test: shake bottle #2 vigorously for 30 seconds MINIMUM before use. The reagents settle and precipitate — if you don\'t shake thoroughly, you\'ll consistently read falsely low nitrate. Many fishkeepers have killed fish trusting inaccurate nitrate readings.',
         ),
       ],
       quiz: Quiz(
@@ -430,55 +594,55 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_chem_q1',
-            question: 'What does GH (General Hardness) measure?',
+            question: 'What is the role of KH in your aquarium?',
             options: [
-              'The pH level of the water',
-              'Calcium and magnesium levels',
-              'Buffering capacity',
-              'Total dissolved ammonia',
+              'KH measures calcium and magnesium concentration',
+              'KH buffers pH — preventing dangerous swings, especially overnight in planted tanks',
+              'KH removes chlorine from tap water',
+              'KH measures total dissolved solids',
             ],
             correctIndex: 1,
             explanation:
-                'GH measures the concentration of calcium and magnesium ions. It affects fish health, breeding, and which species thrive in your water.',
+                'KH is carbonate hardness — it buffers pH and prevents swings. Low KH (below 4 dKH) can lead to overnight pH crashes in planted tanks as CO2 levels change.',
           ),
           const QuizQuestion(
             id: 'at_chem_q2',
-            question: 'What is KH (carbonate hardness) responsible for?',
+            question: 'What is the problem with using pure RO water without remineralisation?',
             options: [
-              'Making water harder for fish to breathe',
-              'Buffering capacity — stabilising pH against changes',
-              'Removing chlorine from tap water',
-              'Measuring dissolved oxygen',
+              'RO water has too high a pH',
+              'RO water has no minerals — fish and plants need minerals to survive',
+              'RO water contains dangerous chemicals',
+              'RO water is too cold for tropical fish',
             ],
             correctIndex: 1,
             explanation:
-                'KH is your water\'s buffering capacity. Higher KH means pH is more stable and resistant to swings. Low KH can lead to dangerous pH crashes.',
+                'Pure RO water has had all minerals stripped out. Without remineralisation (adding back GH, KH, and trace minerals), fish and plants have none of the minerals essential for their biology.',
           ),
           const QuizQuestion(
             id: 'at_chem_q3',
-            question: 'What does TDS stand for and what does it measure?',
+            question: 'What does a high TDS reading tell you about your water?',
             options: [
-              'Total Dissolved Solids — all dissolved substances in water',
-              'Temperature Dissolved Salt — water salinity',
-              'Tank Disease Score — bacterial levels',
-              'Total Daily Surface — water evaporation rate',
+              'The water is definitely unsafe for fish',
+              'The water is clean and healthy',
+              'A lot of substances are dissolved, but TDS alone doesn\'t tell you what they are',
+              'The ammonia level is dangerously high',
             ],
-            correctIndex: 0,
+            correctIndex: 2,
             explanation:
-                'TDS (Total Dissolved Solids) measures everything dissolved in your water — minerals, organics, and more. Useful for monitoring water quality over time.',
+                'TDS measures everything dissolved — minerals, organics, waste. High TDS could be from healthy minerals or from accumulated waste. You need other tests to know which.',
           ),
           const QuizQuestion(
             id: 'at_chem_q4',
-            question: 'What is more important for fish health?',
+            question: 'Why must you shake the API Nitrate test Bottle #2 vigorously before use?',
             options: [
-              'Having perfect water parameters that constantly change',
-              'Having stable water even if it\'s not "textbook" perfect',
-              'Matching pH to 7.0 exactly',
-              'Using RO water for every tank',
+              'It\'s just a superstition — it makes no difference',
+              'The reagents precipitate and settle — not shaking causes falsely low nitrate readings',
+              'Shaking mixes in oxygen which activates the reagent',
+              'The bottle needs to be warmed up by movement',
             ],
             correctIndex: 1,
             explanation:
-                'Stable water is far better than perfect-but-fluctuating water. Match fish to your tap water rather than chasing ideal numbers with constant adjustments.',
+                'API Nitrate Bottle #2 reagents settle and clump at the bottom. Without 30+ seconds of vigorous shaking, the active ingredient is too dilute and you\'ll read lower nitrate than actually exists — a potentially fatal error.',
           ),
         ],
       ),

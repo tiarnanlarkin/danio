@@ -190,12 +190,45 @@ final speciesCarePath = LearningPath(
       description: 'Peaceful schooling fish perfect for community tanks',
       orderIndex: 2,
       xpReward: 50,
-      estimatedMinutes: 5,
+      estimatedMinutes: 6,
       sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Neons vs Cardinals',
+        ),
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Tetras are peaceful schoolers that need groups of 6+. Neon, cardinal, ember, and black skirt tetras are all excellent choices.',
+              'Neon tetras and cardinal tetras look similar — both have the iconic blue-and-red stripe — but there are key differences. Neons are hardier, cheaper, and more forgiving of water parameters. Cardinals are slightly larger, more vibrant (the red runs the full length of the body), but need softer, more acidic water to truly thrive.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'For beginners: start with neon tetras. For a mature, soft-water planted tank: cardinals are stunning. Never mix both species in the same school — they won\'t form cohesive groups.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Schooling Rules',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Tetras are schooling fish and must be kept in groups of at least 6 — ideally 10 or more. Fewer fish means stress, hiding, and sometimes aggression (nipping). A proper school moves together, shows bolder colouration, and is far more confident in the tank.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Water: pH 6.0–7.0, temperature 72–80°F (22–27°C)\n• Tank mates: corydoras, small rasboras, peaceful dwarf gouramis\n• Diet: varied — quality flake food + frozen brine shrimp or daphnia\n• Tank size: 10 gallon minimum for a school',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Neon Tetra Disease: watch for faded, blotchy patches on the body — especially where the blue stripe should be. There\'s no cure. Isolate affected fish immediately to protect the rest of the school.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'Cardinal tetras are one of the most exported fish in the world — most are wild-caught from the Amazon Basin. In Brazil, the sustainable wild harvest is so profitable it protects rainforest from deforestation.',
         ),
       ],
       quiz: Quiz(
@@ -204,42 +237,55 @@ final speciesCarePath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'sc_tet_q1',
-            question: 'What is the minimum group size for tetras?',
+            question: 'What is the minimum recommended school size for tetras?',
             options: [
-              '1-2',
-              '3-4',
-              '6 or more',
-              '10 or more',
+              '2 fish',
+              '4 fish',
+              '6 fish',
+              '12 fish',
             ],
             correctIndex: 2,
             explanation:
-                'Tetras are schooling fish and need groups of at least 6 to feel secure and display natural behaviour. Smaller groups lead to stress and hiding.',
+                'Tetras need at least 6 to form a proper school and feel secure. Fewer fish leads to stress, hiding, and potential fin-nipping.',
           ),
           const QuizQuestion(
             id: 'sc_tet_q2',
-            question: 'Which of these are popular tetra species?',
+            question: 'What should you do if you notice blotchy fading on a tetra\'s body?',
             options: [
-              'Neon, cardinal, ember, and black skirt',
-              'Betta, gourami, and angelfish',
-              'Oscar, discus, and ram',
-              'Goldfish, koi, and oranda',
+              'Raise the temperature and add salt',
+              'Isolate the fish immediately — it may have Neon Tetra Disease',
+              'Feed more protein-rich food',
+              'Do a 90% water change',
             ],
-            correctIndex: 0,
+            correctIndex: 1,
             explanation:
-                'Neon, cardinal, ember, and black skirt tetras are all popular, peaceful schooling fish great for community tanks.',
+                'Neon Tetra Disease has no cure. Isolating affected fish immediately is the only way to protect the rest of the school.',
           ),
           const QuizQuestion(
             id: 'sc_tet_q3',
-            question: 'What type of community fish are tetras?',
+            question: 'What pH range do tetras prefer?',
             options: [
-              'Aggressive predators',
-              'Large territorial cichlids',
-              'Peaceful schooling fish',
-              'Solitary bottom dwellers',
+              'pH 7.8–8.5 (hard alkaline)',
+              'pH 6.0–7.0 (soft acidic to neutral)',
+              'pH 8.0–9.0 (very alkaline)',
+              'pH 5.0–5.5 (very acidic)',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Tetras are from South American rivers and prefer soft, slightly acidic water — pH 6.0–7.0. Hard alkaline water stresses them over time.',
+          ),
+          const QuizQuestion(
+            id: 'sc_tet_q4',
+            question: 'How does a cardinal tetra differ from a neon tetra?',
+            options: [
+              'Cardinals are smaller and cheaper',
+              'Cardinals have red colouring on only the lower half of the body',
+              'Cardinals have full-length red colouring and are more vibrant but less hardy',
+              'Cardinals are freshwater fish; neons are saltwater',
             ],
             correctIndex: 2,
             explanation:
-                'Tetras are peaceful schooling fish that get along well with other community species. They\'re perfect for mixed community tanks.',
+                'Cardinals are more vibrant — red runs the full body length — but they need softer, more acidic water and are less forgiving for beginners than neons.',
           ),
         ],
       ),
@@ -252,12 +298,45 @@ final speciesCarePath = LearningPath(
       description: 'From peaceful Rams to aggressive Oscars',
       orderIndex: 3,
       xpReward: 50,
-      estimatedMinutes: 6,
+      estimatedMinutes: 7,
       sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'African vs South American Cichlids',
+        ),
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Cichlids have personality! African cichlids need hard water, South American need soft. Research your specific species.',
+              'Cichlids split into two very different worlds. African cichlids (from Lakes Malawi, Tanganyika, and Victoria) need hard, alkaline water — pH 7.8–8.6. They\'re aggressive, colourful, and need caves and rockwork. South American cichlids (rams, discus, angels, oscars) prefer softer, slightly acidic water and are generally less aggressive — though Oscars can be seriously rowdy.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'Never mix African and South American cichlids. Their water chemistry requirements are incompatible — one group will always be stressed.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Tank Size Matters',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Africans need a minimum of 55 gallons — the extra space dilutes aggression. South American species range from 30 gallons for dwarf cichlids (rams, apistogrammas) up to 75+ gallons for Oscars, which grow to 12–14 inches. Don\'t let a fish shop sell you a "small" Oscar for a 20-gallon tank.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• African cichlids: pH 7.8–8.6, 55 gal+, rock caves, slight overstocking reduces aggression\n• Dwarf SA cichlids (rams): pH 6.0–7.2, 30 gal+, driftwood and plants\n• Oscars: pH 6.5–7.5, 75 gal+, grow fast, very messy — need heavy filtration',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Aggression management for Africans: break lines of sight with rocks, keep fish of similar size, and slightly overstock. Counterintuitively, more fish means aggression is spread across the group rather than focused on one target.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Do not mix African and South American cichlids. Their water parameter needs are incompatible. One group will always suffer.',
         ),
       ],
       quiz: Quiz(
@@ -266,42 +345,55 @@ final speciesCarePath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'sc_cich_q1',
-            question: 'What type of water do African cichlids need?',
+            question: 'What water parameters do African cichlids need?',
             options: [
-              'Soft, acidic water',
-              'Hard, alkaline water',
-              'Brackish water',
-              'Pure RO water with no minerals',
-            ],
-            correctIndex: 1,
-            explanation:
-                'African cichlids (especially from Lake Malawi and Tanganyika) need hard, alkaline water. South American cichlids, by contrast, prefer softer, more acidic water.',
-          ),
-          const QuizQuestion(
-            id: 'sc_cich_q2',
-            question: 'What makes cichlids popular among fishkeepers?',
-            options: [
-              'They are the smallest aquarium fish',
-              'They are the easiest fish to breed',
-              'They have distinct personalities and interactive behaviour',
-              'They never need feeding',
+              'Soft, acidic water — pH 5.5–6.5',
+              'Neutral water — pH exactly 7.0',
+              'Hard, alkaline water — pH 7.8–8.6',
+              'Brackish water with added salt',
             ],
             correctIndex: 2,
             explanation:
-                'Cichlids are known for their personality! They recognise their owners, display fascinating behaviours, and can be surprisingly interactive — making them rewarding to keep.',
+                'African cichlids from the Rift Lakes need hard, alkaline water — pH 7.8–8.6. This replicates the mineral-rich water of Lakes Malawi and Tanganyika.',
+          ),
+          const QuizQuestion(
+            id: 'sc_cich_q2',
+            question: 'What is the minimum tank size recommended for African cichlids?',
+            options: [
+              '10 gallons',
+              '20 gallons',
+              '30 gallons',
+              '55 gallons',
+            ],
+            correctIndex: 3,
+            explanation:
+                'African cichlids need 55 gallons as a minimum. The extra space dilutes aggression and allows the natural territorial behaviours without constant fighting.',
           ),
           const QuizQuestion(
             id: 'sc_cich_q3',
-            question: 'Why is it important to research specific cichlid species before buying?',
+            question: 'Why should you never mix African and South American cichlids?',
             options: [
-              'All cichlids have identical care requirements',
-              'Water chemistry, temperament, and size vary dramatically between species',
-              'Cichlids are illegal in most countries',
-              'They all need the same diet',
+              'They look too similar and will breed',
+              'Their water chemistry requirements are incompatible',
+              'African cichlids will always eat South American ones',
+              'They can\'t be purchased from the same store',
             ],
             correctIndex: 1,
             explanation:
-                'Cichlids are incredibly diverse — from peaceful dwarf rams to aggressive Oscars. Water needs, temperament, tank size, and diet vary hugely between species and regions.',
+                'Africans need hard, alkaline water; South Americans need softer, more acidic water. Setting a compromise means both groups are stressed.',
+          ),
+          const QuizQuestion(
+            id: 'sc_cich_q4',
+            question: 'For African cichlids, how does overstocking help manage aggression?',
+            options: [
+              'More fish means less oxygen for fighting',
+              'Aggression is spread across the group instead of targeting one fish',
+              'Overcrowding makes cichlids too tired to fight',
+              'It doesn\'t help — overstocking always makes aggression worse',
+            ],
+            correctIndex: 1,
+            explanation:
+                'With African cichlids, slight overstocking spreads aggression across many targets rather than letting one fish be relentlessly bullied. Combined with rock caves and sight breaks, it works.',
           ),
         ],
       ),
@@ -314,12 +406,41 @@ final speciesCarePath = LearningPath(
       description: 'Tiny cleanup crew with surprising complexity',
       orderIndex: 4,
       xpReward: 50,
-      estimatedMinutes: 5,
+      estimatedMinutes: 6,
       sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Cherry Shrimp vs Amano Shrimp',
+        ),
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Cherry shrimp are hardy and breed readily. More sensitive species like Crystal Red require pristine water.',
+              'Cherry shrimp (Neocaridina) are the perfect beginner shrimp. They\'re hardy, accept a wide range of parameters, come in dozens of colour morphs (red, orange, yellow, blue, black), and breed readily in a healthy tank. Amano shrimp are larger (2 inches), transparent, and are the single best algae eaters in freshwater — but they won\'t breed in freshwater, so the colony won\'t grow.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'Target parameters for cherry shrimp: TDS 150–250, pH 6.5–7.5, GH 6–8. They\'re forgiving — but consistency matters more than perfection. Sudden changes kill shrimp faster than stable "imperfect" water.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              '⚠️ COPPER KILLS SHRIMP. Never use copper-based medications (many ich treatments contain copper) in a shrimp tank. Check every product label before adding anything to the water.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Shrimp need a fully cycled tank. Ammonia and nitrite will kill them instantly — they have no tolerance at all. Even small ammonia spikes that fish can handle will wipe out shrimp. Always cycle fully before adding them.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Cherry shrimp will breed on their own in a healthy, established tank with hiding spots (moss, dense plants). A small colony can grow to hundreds in a few months — a great sign your tank is thriving.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Cleanup crew role: algae grazing, biofilm, uneaten food\n• Safe tank mates: small tetras, rasboras, corydoras, snails\n• Avoid: angelfish, bettas (may eat shrimp), any copper medications\n• Minimum tank: 5 gallons for a shrimp-only setup',
         ),
       ],
       quiz: Quiz(
@@ -328,42 +449,55 @@ final speciesCarePath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'sc_shrimp_q1',
-            question: 'Which type of shrimp is considered hardy and breeds readily?',
+            question: 'Why is copper so dangerous in a shrimp tank?',
             options: [
-              'Crystal Red shrimp',
-              'Cherry shrimp',
-              'Amano shrimp',
-              'Bamboo shrimp',
+              'It makes the water turn blue',
+              'Copper is lethal to shrimp even at low concentrations',
+              'It prevents shrimp from breeding',
+              'It only affects Crystal Red shrimp, not cherries',
             ],
             correctIndex: 1,
             explanation:
-                'Cherry shrimp (Neocaridina davidi) are the hardiest and most beginner-friendly. They adapt to a wide range of parameters and breed readily in established tanks.',
+                'Copper is toxic to invertebrates including shrimp. Even trace amounts in medications can wipe out an entire colony. Always check product labels before adding anything to a shrimp tank.',
           ),
           const QuizQuestion(
             id: 'sc_shrimp_q2',
-            question: 'What do more sensitive shrimp species like Crystal Reds require?',
+            question: 'What is the recommended TDS range for cherry shrimp?',
             options: [
-              'Brackish water',
-              'Pristine water quality with specific parameters',
-              'No filtration',
-              'Extremely cold water',
+              '50–100',
+              '150–250',
+              '350–500',
+              '600–800',
             ],
             correctIndex: 1,
             explanation:
-                'Crystal Red shrimp and other high-grade Caridina species need pristine water with very specific GH, KH, and pH. They\'re beautiful but not for beginners.',
+                'Cherry shrimp do best with TDS 150–250. Too low means insufficient minerals; too high stresses them. This range supports healthy moulting and breeding.',
           ),
           const QuizQuestion(
             id: 'sc_shrimp_q3',
-            question: 'What secondary role do shrimp serve in a community tank?',
+            question: 'Why won\'t Amano shrimp breed in your freshwater tank?',
             options: [
-              'They control the temperature',
-              'They act as a cleanup crew eating algae and detritus',
-              'They protect other fish from predators',
-              'They oxygenate the water',
+              'Amano shrimp are all male',
+              'They need brackish or marine water for their larvae to develop',
+              'They only breed in water above 90°F',
+              'Amano shrimp reproduce asexually and don\'t need a mate',
             ],
             correctIndex: 1,
             explanation:
-                'Shrimp are excellent cleanup crew members — they graze on algae, biofilm, and uneaten food, helping keep the tank clean while being fascinating to watch.',
+                'Amano shrimp larvae need brackish or marine conditions to survive — which your freshwater tank can\'t provide. This means your Amano colony won\'t grow without purchasing more.',
+          ),
+          const QuizQuestion(
+            id: 'sc_shrimp_q4',
+            question: 'Why do shrimp require a fully cycled tank more strictly than fish?',
+            options: [
+              'Shrimp create more ammonia than fish',
+              'Shrimp have zero tolerance for ammonia and nitrite — even small amounts are lethal',
+              'Shrimp need the bacteria from cycling as a food source',
+              'It\'s just a recommendation, not a strict requirement',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Unlike fish which can tolerate brief ammonia spikes, shrimp will die even at trace levels. A fully cycled tank with zero ammonia and nitrite is non-negotiable before adding shrimp.',
           ),
         ],
       ),
@@ -377,12 +511,41 @@ final speciesCarePath = LearningPath(
           'Algae eaters that won\'t overrun your tank (if chosen right!)',
       orderIndex: 5,
       xpReward: 50,
-      estimatedMinutes: 5,
+      estimatedMinutes: 6,
       sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Three Main Types',
+        ),
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Nerite snails eat algae but can\'t breed in freshwater. Mystery snails are beautiful but can reproduce. Avoid pest snails!',
+              'Nerite snails are the gold standard for algae control. They eat virtually every type of algae, won\'t breed in freshwater (need brackish conditions for larvae), and stay small (1 inch). The catch: they lay tiny white eggs on every hard surface — glass, rocks, driftwood. Annoying but harmless.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Mystery snails (also called apple snails) are larger, more decorative, and can breed in freshwater — though slowly. They\'re peaceful and add character. Malaysian Trumpet Snails (MTS) are tiny cone-shaped snails that burrow through substrate, which actually aerates it and prevents compaction. They reproduce rapidly, but are rarely a problem in a well-maintained tank.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'MTS population explosion is almost always a sign of overfeeding. Cut back on food and the population naturally drops. They\'re feeding on excess — not causing the problem.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Nerite: best algae eater, won\'t breed in freshwater, lays white eggs on surfaces\n• Mystery: decorative, can breed, moderate bioload\n• MTS: substrate aerators, rapid breeders, indicator of overfeeding\n• Pest snails (bladder/pond): hitchhike on plants, reproduce fast — quarantine new plants!',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Pest snail management: reduce feeding first, then try assassin snails (Clea helena) — they hunt and eat other snails without touching plants or bothering fish.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Snails need calcium for healthy shells. In soft water, shells become pitted and thin. Add a small piece of cuttlebone or crushed coral to boost calcium levels.',
         ),
       ],
       quiz: Quiz(
@@ -391,42 +554,55 @@ final speciesCarePath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'sc_snail_q1',
-            question: 'Why are Nerite snails popular for algae control?',
+            question: 'Why won\'t Nerite snails breed in your freshwater tank?',
             options: [
-              'They reproduce very quickly',
-              'They eat algae but cannot breed in freshwater',
-              'They are the largest aquarium snails',
-              'They eat other snails',
+              'Nerite snails are all the same sex',
+              'They need brackish or marine water for their larvae to survive',
+              'Nerites only breed in water above 85°F',
+              'They eat their own eggs',
             ],
             correctIndex: 1,
             explanation:
-                'Nerite snails are fantastic algae eaters, and since they need brackish water to breed, they won\'t overrun your freshwater tank — a perfect combination!',
+                'Nerite larvae need brackish or marine conditions — which freshwater tanks can\'t provide. This makes them ideal: great algae control, no population explosion.',
           ),
           const QuizQuestion(
             id: 'sc_snail_q2',
-            question: 'What should you be cautious about with Mystery snails?',
+            question: 'What does a Malaysian Trumpet Snail population explosion usually indicate?',
             options: [
-              'They are venomous',
-              'They can reproduce and may overrun your tank',
-              'They eat live plants',
-              'They attack fish',
+              'The tank water is too cold',
+              'The tank is overfeeding — MTS thrive on excess food',
+              'The filter is broken',
+              'The pH is too high',
             ],
             correctIndex: 1,
             explanation:
-                'Mystery snails are beautiful and helpful, but unlike Nerites, they CAN reproduce in freshwater. Keep an eye on populations to prevent overbreeding.',
+                'MTS eat uneaten food and detritus. A population explosion means there\'s excess food in the tank. Cut back on feeding and numbers will drop naturally.',
           ),
           const QuizQuestion(
             id: 'sc_snail_q3',
-            question: 'What type of snails should you avoid introducing to your tank?',
+            question: 'Why do snails need calcium in their water?',
             options: [
-              'Nerite snails',
-              'Mystery snails',
-              'Pest snails (like bladder/pond snails)',
-              'All snails without exception',
+              'Calcium makes snails more active',
+              'Calcium is needed for shell growth and health — low calcium causes shell deterioration',
+              'Calcium prevents snail reproduction',
+              'Calcium is only needed for fish, not snails',
             ],
-            correctIndex: 2,
+            correctIndex: 1,
             explanation:
-                'Pest snails often hitchhike on plants and decorations. They multiply rapidly and can become a nuisance. Always inspect and quarantine new additions.',
+                'Snail shells are made of calcium carbonate. In soft, low-calcium water, shells become thin, pitted, and cracked. Cuttlebone or mineral supplements help.',
+          ),
+          const QuizQuestion(
+            id: 'sc_snail_q4',
+            question: 'What is the best natural method to control pest snail populations?',
+            options: [
+              'Add a strong chemical treatment to kill all snails',
+              'Reduce feeding and add assassin snails',
+              'Remove all plants from the tank',
+              'Raise the pH to 9.0',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Reducing feeding removes the food source that sustains the population. Assassin snails (Clea helena) actively hunt pest snails without harming plants or community fish.',
           ),
         ],
       ),
