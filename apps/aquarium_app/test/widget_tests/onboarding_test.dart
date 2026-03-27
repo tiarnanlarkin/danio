@@ -86,8 +86,11 @@ void main() {
       }));
       await tester.pump();
 
-      // Check age confirmation checkbox to enable buttons
-      await tester.tap(find.byType(Checkbox));
+      // Check age confirmation checkbox
+      await tester.tap(find.byType(Checkbox).at(0));
+      await tester.pump();
+      // Check ToS acceptance checkbox
+      await tester.tap(find.byType(Checkbox).at(1));
       await tester.pump();
 
       await tester.tap(find.text('Accept Analytics'));
@@ -117,8 +120,11 @@ void main() {
       }));
       await tester.pump();
 
-      // Check age confirmation checkbox to enable buttons
-      await tester.tap(find.byType(Checkbox));
+      // Check age confirmation checkbox
+      await tester.tap(find.byType(Checkbox).at(0));
+      await tester.pump();
+      // Check ToS acceptance checkbox
+      await tester.tap(find.byType(Checkbox).at(1));
       await tester.pump();
 
       await tester.tap(find.text('No Thanks'));
@@ -140,8 +146,11 @@ void main() {
       await tester.pumpWidget(_wrap(onConsentGiven: () => callCount++));
       await tester.pump();
 
-      // Check age confirmation checkbox to enable buttons
-      await tester.tap(find.byType(Checkbox));
+      // Check age confirmation checkbox
+      await tester.tap(find.byType(Checkbox).at(0));
+      await tester.pump();
+      // Check ToS acceptance checkbox
+      await tester.tap(find.byType(Checkbox).at(1));
       await tester.pump();
 
       await tester.tap(find.text('Accept Analytics'));
@@ -156,8 +165,11 @@ void main() {
       await tester.pumpWidget(_wrap(onConsentGiven: () => callCount++));
       await tester.pump();
 
-      // Check age confirmation checkbox to enable buttons
-      await tester.tap(find.byType(Checkbox));
+      // Check age confirmation checkbox
+      await tester.tap(find.byType(Checkbox).at(0));
+      await tester.pump();
+      // Check ToS acceptance checkbox
+      await tester.tap(find.byType(Checkbox).at(1));
       await tester.pump();
 
       await tester.tap(find.text('No Thanks'));
