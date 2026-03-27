@@ -33,8 +33,8 @@ Future<void> applyAnalyticsConsent(bool accepted) async {
 /// A clean Material Design screen that explains what data Danio collects and
 /// lets the user accept or decline analytics/crashlytics.
 ///
-/// Also collects age confirmation (REQUIRED R3) and surfaces links to the
-/// Terms of Service and Privacy Policy (REQUIRED R6).
+/// Also collects age confirmation (REQUIRED R3) and ToS acceptance (REQUIRED
+/// R6) before allowing the user to proceed.
 class ConsentScreen extends ConsumerStatefulWidget {
   const ConsentScreen({super.key, required this.onConsentGiven});
 
@@ -47,10 +47,12 @@ class ConsentScreen extends ConsumerStatefulWidget {
 
 class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   bool _ageConfirmed = false;
+  bool _tosAccepted = false;
 
   Future<void> _respond(bool accepted) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setBool(kGdprAnalyticsConsentKey, accepted);
+    await prefs.setBool('tos_accepted', true);
     await applyAnalyticsConsent(accepted);
     widget.onConsentGiven();
   }
@@ -65,6 +67,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool canProceed = _ageConfirmed && _tosAccepted;
 
     return Scaffold(
       body: SafeArea(
@@ -137,42 +140,66 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
                 ),
               ),
 
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.xs),
 
-              // ── ToS & Privacy Policy notice (REQUIRED R6) ───────────
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+              // ── ToS & Privacy Policy acceptance checkbox (REQUIRED R6) ──
+              Semantics(
+                label: 'Terms of Service and Privacy Policy acceptance checkbox',
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () => setState(() => _tosAccepted = !_tosAccepted),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: _tosAccepted,
+                          onChanged: (v) =>
+                              setState(() => _tosAccepted = v ?? false),
+                          activeColor: AppColors.primary,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: theme.textTheme.bodyMedium,
+                              children: [
+                                const TextSpan(
+                                  text: 'I have read and agree to the ',
+                                ),
+                                TextSpan(
+                                  text: 'Terms of Service',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.primary,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _launchUrl(
+                                          'https://tiarnanlarkin.github.io/danio/terms-of-service.html',
+                                        ),
+                                ),
+                                const TextSpan(text: ' and '),
+                                TextSpan(
+                                  text: 'Privacy Policy',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.primary,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _launchUrl(
+                                          'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
+                                        ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  children: [
-                    const TextSpan(text: 'By continuing, you agree to our '),
-                    TextSpan(
-                      text: 'Terms of Service',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.primary,
-                        decoration: TextDecoration.underline,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => _launchUrl(
-                              'https://danioapp.com/terms',
-                            ),
-                    ),
-                    const TextSpan(text: ' and '),
-                    TextSpan(
-                      text: 'Privacy Policy',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.primary,
-                        decoration: TextDecoration.underline,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => _launchUrl(
-                              'https://danioapp.com/privacy',
-                            ),
-                    ),
-                    const TextSpan(text: '.'),
-                  ],
                 ),
               ),
 
@@ -181,8 +208,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed:
-                      _ageConfirmed ? () => _respond(true) : null,
+                  onPressed: canProceed ? () => _respond(true) : null,
                   child: const Text('Accept Analytics'),
                 ),
               ),
@@ -190,8 +216,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed:
-                      _ageConfirmed ? () => _respond(false) : null,
+                  onPressed: canProceed ? () => _respond(false) : null,
                   child: const Text('No Thanks'),
                 ),
               ),

@@ -529,7 +529,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   void _openOnlineVersion() async {
     final url = Uri.parse(
-      'https://gist.github.com/tiarnanlarkin/ba344c0c023b4fd799227850963a35f3',
+      'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
     );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);

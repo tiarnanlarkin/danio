@@ -41,7 +41,7 @@
 
 | Question | Answer |
 |----------|--------|
-| **Data type** | App interactions (6 events: lesson_complete, tank_created, fish_added, streak_milestone, feature_used, fish_id_used) |
+| **Data type** | App interactions (screen views and navigation via Firebase screen tracking; custom analytics events are defined in code but not yet active — zero call sites) |
 | **Is this data collected, shared, or both?** | Collected and shared |
 | **Is this data processed ephemerally?** | No |
 | **Is this data required or can users choose?** | Optional (requires consent) |
@@ -102,7 +102,7 @@
 | Question | Answer |
 |----------|--------|
 | **Does your app provide a way for users to request that their data is deleted?** | Yes |
-| **Mechanism** | In-app: Settings → Danger Zone → "Delete My Data" button. Email: larkintiarnanbizz@gmail.com |
+| **Mechanism** | In-app: Settings → Delete My Data. Email: larkintiarnanbizz@gmail.com |
 
 ---
 

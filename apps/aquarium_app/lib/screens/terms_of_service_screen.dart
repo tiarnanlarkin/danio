@@ -223,7 +223,7 @@ class TermsOfServiceScreen extends StatelessWidget {
   Future<void> _openFullTerms() async {
     // GitHub Pages URL once repo is pushed
     final Uri url = Uri.parse(
-      'https://gist.github.com/tiarnanlarkin/36afa94b6fd4845761c1af28121c11e4',
+      'https://tiarnanlarkin.github.io/danio/terms-of-service.html',
     );
 
     try {

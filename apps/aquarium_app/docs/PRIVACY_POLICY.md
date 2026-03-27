@@ -1,7 +1,7 @@
 # Privacy Policy — Danio: Learn Fishkeeping
 
-**Last updated:** 24 February 2026
-**Effective date:** 24 February 2026
+**Last updated:** 27 March 2026
+**Effective date:** 27 March 2026
 
 Danio ("the App") is developed and operated by Tiarnan Larkin ("we", "us", "our"), an independent developer based in the United Kingdom.
 
@@ -27,7 +27,7 @@ If you choose to create an account, we collect:
 - **Display name** — chosen by you, shown in social features
 - **Avatar emoji** — chosen by you for profile display
 
-This data is stored in our cloud database hosted on [Supabase](https://supabase.com). You may use the App without creating an account.
+If you choose to create an account (cloud sync is not yet active), this data will be stored in our cloud database hosted on [Supabase](https://supabase.com). You may use the App without creating an account.
 
 ### 2.2 Tank Data
 
@@ -37,7 +37,7 @@ This data is stored in our cloud database hosted on [Supabase](https://supabase.
 - Equipment records
 - Maintenance tasks and schedules
 
-**Storage:** This data is stored locally on your device as JSON files. If you enable cloud sync, a copy is stored in your Supabase account. Cloud sync is optional and disabled by default.
+**Storage:** This data is stored locally on your device as JSON files. Cloud sync via Supabase is planned but not yet active. When available, it will be strictly opt-in.
 
 ### 2.3 Learning Progress
 
@@ -46,13 +46,13 @@ This data is stored in our cloud database hosted on [Supabase](https://supabase.
 - Experience points (XP), streaks, and levels
 - Achievements and badges earned
 
-**Storage:** Stored locally on your device using SharedPreferences. If you enable cloud sync, a copy is stored in your Supabase account.
+**Storage:** Stored locally on your device using SharedPreferences. Cloud sync via Supabase is planned but not yet active.
 
 ### 2.4 Photos (Optional)
 
 - Tank journal photos you choose to attach to journal entries
 
-**Storage:** Photos are stored locally on your device. If you enable cloud backup, photos are encrypted with **AES-256 encryption** before upload and stored in Supabase Storage. We cannot view the content of encrypted photos.
+**Storage:** Photos are stored locally on your device. Cloud backup via Supabase (with AES-256 encryption before upload) is planned but not yet active.
 
 ### 2.5 AI Interaction Data
 
@@ -65,15 +65,7 @@ When you use AI-powered features (fish identification, symptom diagnosis, stocki
 
 ### 2.6 Social Data
 
-If you opt in to social features (leaderboards, friends, leagues), the following is stored in Supabase:
-
-- Username
-- XP total and current streak
-- League placement
-- Friend connections
-- Activity feed data (e.g. achievements unlocked, milestones reached)
-
-Social features are optional. You can participate in learning and tank management without them.
+Social features (leaderboards, friends, leagues) and the associated Supabase cloud storage are planned but not yet active. When available, participation will be strictly opt-in.
 
 ---
 
@@ -109,11 +101,10 @@ The App uses the following third-party services, only when you opt in to feature
 - **Location:** Google LLC (USA)
 - **Privacy policy:** [https://policies.google.com/privacy](https://policies.google.com/privacy)
 
-### 4.3 Supabase
+### 4.3 Supabase (Planned — Not Yet Active)
 
-- **Purpose:** Cloud sync, authentication, encrypted backup storage
-- **Data processed:** Account info, synced tank data, learning progress, encrypted photos, social data
-- **Location:** Supabase infrastructure (data may be processed in the EU/US)
+- **Purpose:** Cloud sync, authentication, encrypted backup storage (planned for a future release)
+- **Status:** Not currently active. We will update this policy and request explicit consent before activation.
 - **Privacy policy:** [https://supabase.com/privacy](https://supabase.com/privacy)
 
 ### 4.4 OpenAI
@@ -152,9 +143,9 @@ You may withdraw consent at any time by disabling the relevant feature in Settin
 ## 6. Data Storage and Security
 
 - **Local data** is stored on your device and protected by your device's own security measures (encryption, PIN/biometric lock).
-- **Cloud data** is stored on Supabase servers with industry-standard security measures including encryption in transit (TLS) and at rest.
-- **Photo backups** are additionally encrypted with **AES-256** before upload.
-- **Passwords** are never stored by us — authentication is handled by Supabase Auth and Google OAuth using secure token-based flows.
+- **Cloud data** (when Supabase sync is activated in a future release) will be stored with industry-standard security including encryption in transit (TLS) and at rest.
+- **Photo backups** (future feature) will be additionally encrypted with **AES-256** before upload.
+- **Passwords** are never stored by us — authentication will use secure token-based flows via Supabase Auth and Google OAuth.
 
 ---
 
@@ -180,7 +171,8 @@ Under the UK GDPR and Data Protection Act 2018, you have the following rights:
 
 ### How to Exercise Your Rights
 
-- **In-app:** Go to **Settings → Account** to export or delete all your data
+- **In-app (delete):** Go to **Settings → Delete My Data**
+- **In-app (export):** Go to **Settings → Backup & Restore → Export**
 - **By email:** Contact us at [larkintiarnanbizz@gmail.com](mailto:larkintiarnanbizz@gmail.com)
 
 We will respond to all data rights requests within **30 days**.
@@ -199,7 +191,7 @@ The App is designed for users aged **13 and above**.
 
 ## 10. International Data Transfers
 
-If you enable cloud features, your data may be transferred to and processed in countries outside the United Kingdom, including the United States (where Supabase and OpenAI infrastructure may be located). Such transfers are protected by appropriate safeguards, including Standard Contractual Clauses (SCCs) where applicable.
+When you use AI features, your data is transferred to the United States (OpenAI). When cloud sync via Supabase is activated in a future release, data may also be transferred to the EU/US where Supabase infrastructure is located. All transfers comply with UK GDPR Chapter V and appropriate safeguards including Standard Contractual Clauses (SCCs).
 
 ---
 

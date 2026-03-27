@@ -82,17 +82,10 @@ Document your aquarium journey with photos and notes. Track plant growth, fish b
 🏆 STAY MOTIVATED
 • Daily streaks and XP rewards keep you consistent
 • Unlock achievements for milestones (first tank, first water test, 30-day streak)
-• Compete on leaderboards and join leagues
-• Connect with friends and share progress
+• 50 structured lessons with spaced repetition to build lasting knowledge
 
 ☁️ YOUR DATA, YOUR CHOICE
-Danio works 100% offline — no account required. Optionally sign in to:
-
-• Sync across devices
-• Back up your data (AES-256 encrypted)
-• Join social features (leaderboards, friends, leagues)
-
-We never sell your data. No ads. No tracking. Your aquarium data stays yours.
+Danio works 100% offline — no account required. We never sell your data. No ads. No tracking. Your aquarium data stays yours.
 
 🌿 PERFECT FOR
 • Beginners setting up their first aquarium

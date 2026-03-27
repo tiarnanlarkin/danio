@@ -81,12 +81,12 @@
 
         <div class="highlight">
             <div class="highlight-title">📱 Local App Data (stored on your device only)</div>
-            <p>Tank information, livestock records, water test logs, maintenance logs, photos you add to your journal, learning progress (lessons, quiz scores, XP, streaks, achievements), app settings, and scheduled reminders. All stored locally on your device using SharedPreferences and SQLite. <strong>This data never leaves your device unless you enable cloud sync.</strong></p>
+            <p>Tank information, livestock records, water test logs, maintenance logs, photos you add to your journal, learning progress (lessons, quiz scores, XP, streaks, achievements), app settings, and scheduled reminders. All stored locally on your device using SharedPreferences and JSON files. <strong>This data never leaves your device unless you enable cloud sync.</strong></p>
         </div>
 
         <div class="highlight">
             <div class="highlight-title">📊 Firebase Analytics (consent-based, opt-in)</div>
-            <p>When you give your consent on first launch, we collect anonymous usage data including up to 6 event types: page views, feature usage patterns, and screen navigation. This helps us understand how the app is used and improve it. Data is shared with <strong>Google LLC (USA)</strong> for processing via Firebase Analytics. You can withdraw consent at any time in Settings → Privacy.</p>
+            <p>When you give your consent on first launch, we collect anonymous usage data including screen views and navigation events via Firebase Analytics. Custom events are defined in code but not yet active. This helps us understand how the app is used and improve it. Data is shared with <strong>Google LLC (USA)</strong> for processing via Firebase Analytics. You can withdraw consent at any time in Settings → Privacy.</p>
         </div>
 
         <div class="highlight">
@@ -224,7 +224,9 @@
 
         <h3>How to Exercise Your Rights</h3>
         <ul>
-            <li><strong>In-app:</strong> Settings → Privacy to manage consent; Settings → Account → Delete Data to delete all local data</li>
+            <li><strong>In-app (delete):</strong> Settings → Delete My Data</li>
+            <li><strong>In-app (export):</strong> Settings → Backup &amp; Restore → Export</li>
+            <li><strong>In-app (consent):</strong> Settings → Privacy to manage analytics consent</li>
             <li><strong>By email:</strong> <a href="mailto:larkintiarnanbizz@gmail.com">larkintiarnanbizz@gmail.com</a> — we will respond within 30 days</li>
         </ul>
     </div>
@@ -235,7 +237,7 @@
         <ol>
             <li>Open the app and go to <strong>Settings</strong></li>
             <li>Navigate to <strong>Privacy</strong></li>
-            <li>Toggle <strong>Analytics</strong> and/or <strong>Crash Reporting</strong> off</li>
+            <li>Toggle the combined <strong>Analytics &amp; Crash Reports</strong> setting off</li>
         </ol>
         <p>When analytics is disabled, no usage events are sent to Google. When crash reporting is disabled, no crash data is sent to Firebase Crashlytics.</p>
     </div>
