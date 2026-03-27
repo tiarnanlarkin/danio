@@ -86,6 +86,10 @@ void main() {
       }));
       await tester.pump();
 
+      // Check age confirmation checkbox to enable buttons
+      await tester.tap(find.byType(Checkbox));
+      await tester.pump();
+
       await tester.tap(find.text('Accept Analytics'));
       await tester.pumpAndSettle();
 
@@ -113,6 +117,10 @@ void main() {
       }));
       await tester.pump();
 
+      // Check age confirmation checkbox to enable buttons
+      await tester.tap(find.byType(Checkbox));
+      await tester.pump();
+
       await tester.tap(find.text('No Thanks'));
       await tester.pumpAndSettle();
 
@@ -132,6 +140,10 @@ void main() {
       await tester.pumpWidget(_wrap(onConsentGiven: () => callCount++));
       await tester.pump();
 
+      // Check age confirmation checkbox to enable buttons
+      await tester.tap(find.byType(Checkbox));
+      await tester.pump();
+
       await tester.tap(find.text('Accept Analytics'));
       await tester.pumpAndSettle();
 
@@ -142,6 +154,10 @@ void main() {
       var callCount = 0;
 
       await tester.pumpWidget(_wrap(onConsentGiven: () => callCount++));
+      await tester.pump();
+
+      // Check age confirmation checkbox to enable buttons
+      await tester.tap(find.byType(Checkbox));
       await tester.pump();
 
       await tester.tap(find.text('No Thanks'));
