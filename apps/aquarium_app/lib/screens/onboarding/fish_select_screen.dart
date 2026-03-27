@@ -193,7 +193,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                       focusNode: _searchFocusNode,
                       style: GoogleFonts.nunito(fontSize: 15),
                       decoration: InputDecoration(
-                        hintText: 'Search 2,000+ species...',
+                        hintText: 'Search 125+ species...',
                         hintStyle: GoogleFonts.nunito(
                           fontSize: 15,
                           color: AppColors.textHint,

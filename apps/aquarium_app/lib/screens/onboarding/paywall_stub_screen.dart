@@ -166,7 +166,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
 
   Widget _buildFeatureList() {
     const features = [
-      'Full species care guides for 2,000+ fish',
+      'Full species care guides for 125+ fish (and growing)',
       'Water parameter tracking with smart alerts',
       'Tank compatibility checker',
       'Daily lessons to grow your fishkeeping skills',

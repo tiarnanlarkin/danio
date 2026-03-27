@@ -3,6 +3,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../theme/app_theme.dart';
 
@@ -30,21 +32,38 @@ Future<void> applyAnalyticsConsent(bool accepted) async {
 
 /// A clean Material Design screen that explains what data Danio collects and
 /// lets the user accept or decline analytics/crashlytics.
-class ConsentScreen extends ConsumerWidget {
+///
+/// Also collects age confirmation (REQUIRED R3) and surfaces links to the
+/// Terms of Service and Privacy Policy (REQUIRED R6).
+class ConsentScreen extends ConsumerStatefulWidget {
   const ConsentScreen({super.key, required this.onConsentGiven});
 
   /// Called after the user taps either button and the preference is persisted.
   final VoidCallback onConsentGiven;
 
-  Future<void> _respond(BuildContext context, WidgetRef ref, bool accepted) async {
+  @override
+  ConsumerState<ConsentScreen> createState() => _ConsentScreenState();
+}
+
+class _ConsentScreenState extends ConsumerState<ConsentScreen> {
+  bool _ageConfirmed = false;
+
+  Future<void> _respond(bool accepted) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setBool(kGdprAnalyticsConsentKey, accepted);
     await applyAnalyticsConsent(accepted);
-    onConsentGiven();
+    widget.onConsentGiven();
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -70,11 +89,11 @@ class ConsentScreen extends ConsumerWidget {
                 header: true,
                 child: Text(
                   'Your Privacy Matters',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
@@ -84,11 +103,86 @@ class ConsentScreen extends ConsumerWidget {
                 style: theme.textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // ── Age confirmation checkbox (REQUIRED R3) ──────────────
+              Semantics(
+                label: 'Age confirmation checkbox',
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () => setState(() => _ageConfirmed = !_ageConfirmed),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: _ageConfirmed,
+                          onChanged: (v) =>
+                              setState(() => _ageConfirmed = v ?? false),
+                          activeColor: AppColors.primary,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'I confirm I am 13 years of age or older',
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.sm),
+
+              // ── ToS & Privacy Policy notice (REQUIRED R6) ───────────
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                  children: [
+                    const TextSpan(text: 'By continuing, you agree to our '),
+                    TextSpan(
+                      text: 'Terms of Service',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => _launchUrl(
+                              'https://danioapp.com/terms',
+                            ),
+                    ),
+                    const TextSpan(text: ' and '),
+                    TextSpan(
+                      text: 'Privacy Policy',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => _launchUrl(
+                              'https://danioapp.com/privacy',
+                            ),
+                    ),
+                    const TextSpan(text: '.'),
+                  ],
+                ),
+              ),
+
               const Spacer(flex: 2),
+
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () => _respond(context, ref, true),
+                  onPressed:
+                      _ageConfirmed ? () => _respond(true) : null,
                   child: const Text('Accept Analytics'),
                 ),
               ),
@@ -96,7 +190,8 @@ class ConsentScreen extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () => _respond(context, ref, false),
+                  onPressed:
+                      _ageConfirmed ? () => _respond(false) : null,
                   child: const Text('No Thanks'),
                 ),
               ),

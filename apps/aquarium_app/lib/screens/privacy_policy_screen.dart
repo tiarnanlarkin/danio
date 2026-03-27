@@ -97,7 +97,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildSection(
               '2. Data Controller',
-              'The data controller responsible for your personal data is:\n\nTiarnan Larkin\nEmail: tiarnan.larkin@gmail.com\n\nFor any privacy-related inquiries, contact us at the email above. We aim to respond within 7 business days.',
+              'The data controller responsible for your personal data is:\n\nTiarnan Larkin\nEmail: larkintiarnanbizz@gmail.com\n\nFor any privacy-related inquiries, contact us at the email above. We aim to respond within 7 business days.',
             ),
 
             _buildSection(
@@ -189,7 +189,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             _buildRightCard(
               'Right to Erasure',
-              'You can request deletion of your personal data. In-app: Settings > Account > Delete Data. Or email tiarnan.larkin@gmail.com',
+              'You can request deletion of your personal data. In-app: Settings > Account > Delete Data. Or email larkintiarnanbizz@gmail.com',
               Icons.delete,
               context,
             ),
@@ -218,7 +218,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildBulletList([
               'In-app: Settings > Account > Delete Data — permanently removes all local data',
-              'Email request: Contact tiarnan.larkin@gmail.com and we will delete all data we hold within 30 days',
+              'Email request: Contact larkintiarnanbizz@gmail.com and we will delete all data we hold within 30 days',
               'Uninstall: Removing the app deletes all local data from your device',
               'Analytics opt-out: Disabling analytics in Settings stops further data collection',
             ], context),
@@ -497,7 +497,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     Text('Email', style: AppTypography.labelMedium),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
-                      'tiarnan.larkin@gmail.com',
+                      'larkintiarnanbizz@gmail.com',
                       style: AppTypography.bodyMedium.copyWith(
                         color: AppColors.primary,
                       ),

@@ -46,10 +46,10 @@ final List<Object> _preFirebaseErrors = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Allow runtime font fetching — Fredoka & Nunito are not bundled as .ttf
-  // assets, so GoogleFonts must fetch them on first use. They are cached by
-  // the package for subsequent launches.
-  GoogleFonts.config.allowRuntimeFetching = true;
+  // Fonts are bundled locally in assets/fonts/ (GDPR compliance — no runtime
+  // network requests to Google servers). GoogleFonts will serve from the
+  // bundled assets automatically.
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   // Lock orientation to portrait (lightweight, keeps first frame fast)
   await SystemChrome.setPreferredOrientations([

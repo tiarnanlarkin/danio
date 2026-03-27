@@ -709,7 +709,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               'For server-side data deletion requests, email '
-              'tiarnan.larkin@gmail.com',
+              'larkintiarnanbizz@gmail.com',
               style: AppTypography.bodySmall.copyWith(
                 fontStyle: FontStyle.italic,
               ),
