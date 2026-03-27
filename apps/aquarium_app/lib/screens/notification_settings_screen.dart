@@ -80,8 +80,8 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   title: const Text('Streak Reminders'),
                   subtitle: Text(
                     profile.streakRemindersEnabled
-                        ? 'Enabled - You\'ll get daily reminders'
-                        : 'Disabled - No streak reminders',
+                        ? 'Enabled — You\'ll get daily reminders'
+                        : 'Disabled — No streak reminders',
                   ),
                   value: profile.streakRemindersEnabled,
                   onChanged: (value) async {
@@ -158,7 +158,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   leading: const Icon(Icons.wb_sunny),
                   title: const Text('Morning Reminder'),
                   subtitle: Text(
-                    '${profile.morningReminderTime} - Start your day with a lesson',
+                    '${profile.morningReminderTime} — Start your day with a lesson',
                   ),
                   trailing: const Icon(Icons.access_time),
                   onTap: () => _selectTime(
@@ -196,7 +196,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   leading: const Icon(Icons.nightlight),
                   title: const Text('Late Night Reminder'),
                   subtitle: Text(
-                    '${profile.nightReminderTime} - Last chance to save your streak',
+                    '${profile.nightReminderTime} — Last chance to save your streak',
                   ),
                   trailing: const Icon(Icons.access_time),
                   onTap: () => _selectTime(

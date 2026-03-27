@@ -146,7 +146,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Sync your aquarium data across devices.\n'
-              'An account is optional - the app works fully offline.',
+              'An account is optional — the app works fully offline.',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -507,11 +507,11 @@ class _SyncStatusCard extends ConsumerWidget {
         color = AppColors.info;
       case CloudSyncStatus.offline:
         icon = Icons.cloud_off;
-        label = 'Offline - changes queued';
+        label = 'Offline — changes queued';
         color = AppColors.warning;
       case CloudSyncStatus.error:
         icon = Icons.error_outline;
-        label = 'Sync error - tap to retry';
+        label = 'Sync error — tap to retry';
         color = AppColors.error;
       case CloudSyncStatus.disabled:
         icon = Icons.cloud_off;

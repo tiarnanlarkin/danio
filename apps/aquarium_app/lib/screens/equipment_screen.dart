@@ -434,7 +434,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
 
             if (maintenance.isEmpty) {
               return Text(
-                'No maintenance logs yet.\n\nTip: tap "Mark Serviced" and it\'ll show up here and in Recent Activity!',
+                'No maintenance logs yet.\n\nTip: Tap "Mark Serviced" and it\'ll show up here and in Recent Activity.',
                 style: AppTypography.bodyMedium,
               );
             }

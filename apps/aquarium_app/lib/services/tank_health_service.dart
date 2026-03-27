@@ -65,7 +65,7 @@ class TankHealthService {
       } else {
         waterChangeScore = 5;
         factors.add(
-          'Water change very overdue — $daysSince days and counting!',
+          'Water change very overdue — $daysSince days since last change.',
         );
       }
     }
@@ -191,7 +191,7 @@ class TankHealthService {
       factors.add('Log more often for richer insights');
     } else if (recentLogs >= 1) {
       regularityScore = 8;
-      factors.add('Try logging at least weekly');
+      factors.add('Log a water test this week for better insights');
     } else {
       regularityScore = 0;
       factors.add('No activity logged recently — your fish are waiting! 🐟');

@@ -153,7 +153,7 @@ class LatestSnapshotCard extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Tip: tap a trend below to jump straight to charts.',
+              'Tip: Tap a trend below to jump straight to charts.',
               style: AppTypography.bodySmall,
             ),
           ],
