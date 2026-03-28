@@ -20,11 +20,17 @@ class _StageScrimState extends ConsumerState<StageScrim>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : AppDurations.long1,
+      duration: AppDurations.long1,
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _controller.duration = disableMotion ? Duration.zero : AppDurations.long1;
   }
 
   @override
