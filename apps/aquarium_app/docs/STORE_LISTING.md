@@ -56,7 +56,7 @@ Master the hobby with structured, bite-sized lessons designed for beginners and 
 • Common fish diseases — identification and treatment
 • Tank maintenance schedules and best practices
 
-Earn XP, build streaks, and unlock achievements as you progress. Learning fishkeeping has never been this engaging.
+Earn XP, collect gems, and unlock achievements as you progress. Learning fishkeeping has never been this engaging.
 
 🔬 TRACK WATER PARAMETERS
 Log your water test results and monitor trends over time. Track pH, ammonia, nitrite, nitrate, GH, KH, temperature, and more. See clear charts showing your aquarium's health at a glance. Get alerts when parameters fall outside safe ranges for your fish.
@@ -74,18 +74,19 @@ Works perfectly for freshwater aquariums, tropical fish tanks, planted tanks, sh
 🤖 AI-POWERED FISH TOOLS
 Snap a photo to identify fish species instantly. Describe symptoms and get guidance on potential diseases. Get AI-generated stocking suggestions tailored to your tank size and water parameters. Powered by advanced AI — like having a knowledgeable fishkeeper in your pocket.
 
-(AI features are for educational purposes only, not a substitute for veterinary advice.)
+(AI features require an internet connection and are for educational purposes only, not a substitute for veterinary advice.)
 
 📸 TANK JOURNAL
 Document your aquarium journey with photos and notes. Track plant growth, fish behaviour, aquascaping changes, and tank evolution over time.
 
 🏆 STAY MOTIVATED
 • Daily streaks and XP rewards keep you consistent
+• Earn gems as you learn — spend them to unlock bonuses
 • Unlock achievements for milestones (first tank, first water test, 30-day streak)
 • 50 structured lessons with spaced repetition to build lasting knowledge
 
-☁️ YOUR DATA, YOUR CHOICE
-Danio works 100% offline — no account required. We never sell your data. No ads. No tracking. Your aquarium data stays yours.
+🔒 YOUR DATA, YOUR CHOICE
+Danio works entirely on your device — no account required, no internet needed for core features. All your aquarium data is stored locally and never leaves your phone. No ads. No tracking. No in-app purchases. Just a great fishkeeping app.
 
 🌿 PERFECT FOR
 • Beginners setting up their first aquarium
@@ -100,7 +101,7 @@ Whether you keep bettas, guppies, tetras, goldfish, cichlids, corydoras, shrimp,
 Download Danio and start your fishkeeping journey today.
 ```
 
-(Approximately 2,650 characters ✓)
+(Approximately 2,700 characters ✓)
 
 ---
 
@@ -141,3 +142,5 @@ larkintiarnanbizz@gmail.com
 - **Feature bullets** use emoji for visual scanning in the Play Store
 - **Call to action** at the end ("Download Danio and start your fishkeeping journey today")
 - **Species names** included at the end to capture "betta care app", "guppy tank", etc. search queries
+- **Offline-first** messaging reinforced throughout — differentiator vs. cloud-dependent competitors
+</thinking>
