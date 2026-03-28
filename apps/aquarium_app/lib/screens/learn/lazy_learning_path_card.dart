@@ -23,12 +23,16 @@ class LazyLearningPathCard extends ConsumerStatefulWidget {
   final int totalLessons;
   final List<String> userCompletedLessons;
 
+  /// All path metadata — needed to evaluate cross-path prerequisites.
+  final List<PathMetadata> allPathMetadata;
+
   const LazyLearningPathCard({
     super.key,
     required this.metadata,
     required this.completedLessons,
     required this.totalLessons,
     required this.userCompletedLessons,
+    this.allPathMetadata = const [],
   });
 
   @override
@@ -49,12 +53,18 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isComingSoon = comingSoonPathIds.contains(meta.id);
 
+    // Cross-path prerequisite locking
+    final isPathLocked = !meta.isUnlocked(
+      widget.userCompletedLessons,
+      widget.allPathMetadata,
+    );
+
     final lessonState = ref.watch(lessonProvider);
     final loadedPath = lessonState.getPath(meta.id);
     final isLoading = lessonState.isPathLoading(meta.id);
 
     return Opacity(
-      opacity: isComingSoon ? 0.6 : 1.0,
+      opacity: (isComingSoon || isPathLocked) ? 0.6 : 1.0,
       child: Container(
         decoration: BoxDecoration(
           color: context.cardColor,
@@ -77,7 +87,9 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
         ),
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-          child: isComingSoon
+          child: isPathLocked
+              ? _buildPathLockedTile(context, meta)
+              : isComingSoon
               ? _buildComingSoonTile(context, meta, isDark)
               : ExpansionTile(
                   shape: RoundedRectangleBorder(
@@ -214,6 +226,88 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                 ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPathLockedTile(BuildContext context, PathMetadata meta) {
+    final prereqNames = meta.prerequisitePathIds.map((id) {
+      final found = widget.allPathMetadata.firstWhere(
+        (m) => m.id == id,
+        orElse: () => PathMetadata(
+          id: id,
+          title: id,
+          description: '',
+          emoji: '🔒',
+          orderIndex: 0,
+          lessonIds: const [],
+        ),
+      );
+      return '"${found.emoji} ${found.title}"';
+    }).join(', ');
+
+    return ListTile(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      leading: Container(
+        width: 52,
+        height: 52,
+        decoration: BoxDecoration(
+          color: context.surfaceVariant,
+          borderRadius: AppRadius.mediumRadius,
+        ),
+        child: const Center(
+          child: Icon(Icons.lock, size: 26),
+        ),
+      ),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              meta.title,
+              style: AppTypography.labelLarge.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
+            decoration: BoxDecoration(
+              color: context.surfaceVariant,
+              borderRadius: AppRadius.md2Radius,
+            ),
+            child: Text(
+              '🔒 Locked',
+              style: AppTypography.labelSmall.copyWith(
+                color: context.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: AppSpacing.xs),
+        child: Text(
+          'Complete $prereqNames first to unlock this path.',
+          style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      onTap: () {
+        DanioSnackBar.warning(
+          context,
+          'Complete $prereqNames first to unlock ${meta.emoji} ${meta.title} 🔒',
+        );
+      },
     );
   }
 

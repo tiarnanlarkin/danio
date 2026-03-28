@@ -13,6 +13,8 @@ final fishHealthPath = LearningPath(
   emoji: '🏥',
   recommendedFor: [ExperienceLevel.intermediate],
   orderIndex: 6,
+  // Requires a solid grasp of the nitrogen cycle before tackling disease
+  prerequisitePathIds: ['nitrogen_cycle'],
   lessons: [
     // Lesson 33: Disease Prevention 101
     Lesson(

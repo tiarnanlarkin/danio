@@ -30,6 +30,11 @@ class PathMetadata {
   final int orderIndex;
   final List<String> lessonIds; // Just IDs, not full lessons
 
+  /// Cross-path prerequisite path IDs — mirrors [LearningPath.prerequisitePathIds].
+  /// A path with entries here is locked until all lessons in each listed path
+  /// are completed.
+  final List<String> prerequisitePathIds;
+
   const PathMetadata({
     required this.id,
     required this.title,
@@ -37,7 +42,26 @@ class PathMetadata {
     required this.emoji,
     required this.orderIndex,
     required this.lessonIds,
+    this.prerequisitePathIds = const [],
   });
+
+  /// Build the id→lessonIds map from a list of [PathMetadata] for easy lookup.
+  static Map<String, List<String>> buildLessonIdMap(
+    List<PathMetadata> allMeta,
+  ) {
+    return {for (final m in allMeta) m.id: m.lessonIds};
+  }
+
+  /// Check whether this path is unlocked given the set of completed lesson IDs.
+  bool isUnlocked(List<String> completedLessons, List<PathMetadata> allMeta) {
+    if (prerequisitePathIds.isEmpty) return true;
+    final idMap = buildLessonIdMap(allMeta);
+    return prerequisitePathIds.every((prereqId) {
+      final ids = idMap[prereqId];
+      if (ids == null || ids.isEmpty) return true;
+      return ids.every((id) => completedLessons.contains(id));
+    });
+  }
 }
 
 /// State for lesson loading
@@ -188,6 +212,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'fh_parasites',
         'fh_hospital_tank',
       ],
+      prerequisitePathIds: ['nitrogen_cycle'],
     ),
     PathMetadata(
       id: 'species_care',

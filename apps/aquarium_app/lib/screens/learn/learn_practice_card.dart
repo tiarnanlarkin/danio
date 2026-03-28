@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/user_profile.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
-import '../practice_screen.dart';
+import '../../utils/navigation_throttle.dart';
+import '../spaced_repetition_practice_screen.dart';
 
 /// Practice mode card shown on the Learn screen when lessons need review.
 class LearnPracticeCard extends ConsumerWidget {
@@ -34,8 +35,9 @@ class LearnPracticeCard extends ConsumerWidget {
             'Practice Mode. $weakCount lesson${weakCount == 1 ? '' : 's'} need review. Review before you forget!',
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const PracticeScreen()),
+            NavigationThrottle.push(
+              context,
+              const SpacedRepetitionPracticeScreen(),
             );
           },
           borderRadius: AppRadius.mediumRadius,

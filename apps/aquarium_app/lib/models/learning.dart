@@ -18,6 +18,10 @@ class LearningPath {
   final List<Lesson> lessons;
   final int orderIndex;
 
+  /// Path IDs that must be fully completed before this path unlocks.
+  /// Cross-path prerequisites (e.g. fish_health requires nitrogen_cycle).
+  final List<String> prerequisitePathIds;
+
   const LearningPath({
     required this.id,
     required this.title,
@@ -27,6 +31,7 @@ class LearningPath {
     this.relevantTankTypes = const [],
     required this.lessons,
     this.orderIndex = 0,
+    this.prerequisitePathIds = const [],
   });
 
   int get totalXp => lessons.fold(0, (sum, l) => sum + l.xpReward);
@@ -34,6 +39,23 @@ class LearningPath {
   bool isRelevantFor(UserProfile profile) {
     if (relevantTankTypes.isEmpty) return true;
     return relevantTankTypes.contains(profile.primaryTankType);
+  }
+
+  /// Check whether this path is unlocked given the set of completed lesson IDs
+  /// and the map of path-id → total-lesson-count.
+  ///
+  /// A path is locked if any [prerequisitePathIds] path is not yet complete
+  /// (i.e. the user hasn't completed every lesson in that path).
+  bool isPathUnlocked({
+    required List<String> completedLessons,
+    required Map<String, List<String>> pathLessonIds,
+  }) {
+    if (prerequisitePathIds.isEmpty) return true;
+    return prerequisitePathIds.every((prereqPathId) {
+      final lessonIds = pathLessonIds[prereqPathId];
+      if (lessonIds == null || lessonIds.isEmpty) return true;
+      return lessonIds.every((id) => completedLessons.contains(id));
+    });
   }
 }
 

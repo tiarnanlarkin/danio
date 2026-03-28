@@ -484,15 +484,15 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                   metadata: meta,
                                   completedLessons: completedInPath,
                                   totalLessons: meta.lessonIds.length,
-                                  userCompletedLessons:
-                                      userCompleted,
+                                  userCompletedLessons: userCompleted,
+                                  allPathMetadata: metadata,
                                 )
                               : LazyLearningPathCard(
                                   metadata: meta,
                                   completedLessons: completedInPath,
                                   totalLessons: meta.lessonIds.length,
-                                  userCompletedLessons:
-                                      userCompleted,
+                                  userCompletedLessons: userCompleted,
+                                  allPathMetadata: metadata,
                                 )
                                 .animate()
                                 .fadeIn(

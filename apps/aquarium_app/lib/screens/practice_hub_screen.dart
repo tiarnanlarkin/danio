@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/spaced_repetition.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/hearts_widgets.dart';
 import '../widgets/first_visit_tooltip.dart';
 import 'spaced_repetition_practice_screen.dart';
-import 'practice_screen.dart';
 import 'tab_navigator.dart';
 import '../utils/navigation_throttle.dart';
 
@@ -91,11 +91,12 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   }
 
   int _getPracticeHubItemCount(int dueCards, int totalCards) {
-    // Hero card (1) + spacer + stats row + spacer +
-    // section header + spacer + 2 practice cards + 1 spacer +
-    // section header + spacer + 3 progress cards + 2 spacers = 17 items
-    // (Achievements removed from Practice Modes — accessible via More tab)
-    return 17;
+    // Hero (1) + spacer + stats row + spacer +
+    // section header (Practice Modes) + spacer + SR card + spacer +
+    // section header (Mastery Breakdown) + spacer + mastery widget + spacer +
+    // section header (Your Progress) + spacer +
+    // streak + spacer + mastered + spacer + accuracy = 19 items
+    return 19;
   }
 
   Widget _buildPracticeHubItem(
@@ -181,11 +182,11 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         return Text('Practice Modes', style: AppTypography.headlineSmall);
       case 5:
         return const SizedBox(height: AppSpacing.sm2);
-      case 6: // Spaced Repetition card
+      case 6: // Spaced Repetition card — PRIMARY practice mode
         return _buildPracticeCard(
           context,
           title: 'Spaced Repetition',
-          subtitle: 'Review cards based on memory strength',
+          subtitle: 'Review cards based on memory strength — the most effective way to learn',
           icon: Icons.psychology,
           iconColor: AppColors.primary,
           onTap: () {
@@ -196,25 +197,20 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           },
         );
       case 7:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 8: // Quick Practice card
-        return _buildPracticeCard(
-          context,
-          title: 'Quick Practice',
-          subtitle: 'Test your knowledge with random questions',
-          icon: Icons.flash_on,
-          iconColor: AppColors.warning,
-          onTap: () {
-            NavigationThrottle.push(context, const PracticeScreen());
-          },
-        );
-      case 9:
         return const SizedBox(height: AppSpacing.lg);
-      case 10: // Section: Your Progress
-        return Text('Your Progress', style: AppTypography.headlineSmall);
-      case 11:
+      case 8: // Section: Mastery Breakdown
+        return Text('Mastery Breakdown', style: AppTypography.headlineSmall);
+      case 9:
         return const SizedBox(height: AppSpacing.sm2);
-      case 12: // Study Streak card — BUG-06: neutral look when streak=0
+      case 10: // Mastery level breakdown
+        return _buildMasteryBreakdown(context, srState);
+      case 11:
+        return const SizedBox(height: AppSpacing.lg);
+      case 12: // Section: Your Progress
+        return Text('Your Progress', style: AppTypography.headlineSmall);
+      case 13:
+        return const SizedBox(height: AppSpacing.sm2);
+      case 14: // Study Streak card — BUG-06: neutral look when streak=0
         {
           final streak = profile ?? 0;
           return _buildProgressCard(
@@ -229,9 +225,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             color: streak > 0 ? AppColors.warning : context.textSecondary,
           );
         }
-      case 13:
+      case 15:
         return const SizedBox(height: AppSpacing.sm2);
-      case 14: // Cards Mastered card
+      case 16: // Cards Mastered card
         return _buildProgressCard(
           context,
           title: 'Cards Mastered',
@@ -239,10 +235,47 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           icon: Icons.stars,
           color: AppColors.success,
         );
-      case 15:
+      case 17:
         return const SizedBox(height: AppSpacing.sm2);
-      case 16: // Practice Accuracy card — hidden until tracking is implemented
-        return const SizedBox.shrink();
+      case 18: // Practice Accuracy — computed from ReviewCard history
+        {
+          final totalReviews = srState.stats.totalReviews;
+          final allCards = srState.cards;
+          final totalCorrect = allCards.fold<int>(
+            0,
+            (sum, card) => sum + card.correctCount,
+          );
+          if (totalReviews == 0) {
+            return _buildProgressCard(
+              context,
+              title: 'Practice Accuracy',
+              value: 'Complete a review session',
+              icon: Icons.track_changes,
+              color: context.textSecondary,
+            );
+          }
+          final accuracyPct = allCards.isEmpty
+              ? 0
+              : (totalCorrect /
+                    allCards.fold<int>(
+                      0,
+                      (sum, card) => sum + card.reviewCount,
+                    ) *
+                    100)
+                  .round();
+          final accuracyColor = accuracyPct >= 80
+              ? AppColors.success
+              : accuracyPct >= 60
+              ? AppColors.warning
+              : AppColors.error;
+          return _buildProgressCard(
+            context,
+            title: 'Practice Accuracy',
+            value: '$accuracyPct%',
+            icon: Icons.track_changes,
+            color: accuracyColor,
+          );
+        }
       default:
         return const SizedBox.shrink();
     }
@@ -379,6 +412,101 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
+      ),
+    );
+  }
+
+  Widget _buildMasteryBreakdown(
+    BuildContext context,
+    SpacedRepetitionState srState,
+  ) {
+    if (srState.stats.totalCards == 0) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Text(
+            'Complete lessons to earn flashcards and track your mastery here.',
+            style: AppTypography.bodyMedium.copyWith(
+              color: context.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    final byMastery = srState.stats.cardsByMastery;
+    final levels = [
+      MasteryLevel.mastered,
+      MasteryLevel.proficient,
+      MasteryLevel.familiar,
+      MasteryLevel.learning,
+      MasteryLevel.new_,
+    ];
+    final levelColors = {
+      MasteryLevel.mastered: AppColors.success,
+      MasteryLevel.proficient: AppColors.primary,
+      MasteryLevel.familiar: AppColors.warning,
+      MasteryLevel.learning: AppColors.secondary,
+      MasteryLevel.new_: context.textSecondary,
+    };
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: levels.map((level) {
+            final count = byMastery[level] ?? 0;
+            final total = srState.stats.totalCards;
+            final fraction = total > 0 ? count / total : 0.0;
+            final color = levelColors[level] ?? context.textSecondary;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+              child: Row(
+                children: [
+                  Text(
+                    level.emoji,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  SizedBox(
+                    width: 80,
+                    child: Text(
+                      level.displayName,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: AppRadius.xsRadius,
+                      child: LinearProgressIndicator(
+                        value: fraction,
+                        backgroundColor: context.surfaceVariant,
+                        valueColor: AlwaysStoppedAnimation<Color>(color),
+                        minHeight: 8,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  SizedBox(
+                    width: 28,
+                    child: Text(
+                      '$count',
+                      textAlign: TextAlign.end,
+                      style: AppTypography.labelSmall.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
