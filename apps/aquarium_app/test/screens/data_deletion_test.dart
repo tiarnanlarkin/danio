@@ -17,6 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/widgets/core/app_dialog.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -85,7 +86,7 @@ void main() {
       // At least one in the dialog title
       expect(
         find.descendant(
-          of: find.byType(AlertDialog),
+          of: find.byType(AppDialog),
           matching: find.text('Delete My Data'),
         ),
         findsOneWidget,
@@ -129,13 +130,13 @@ void main() {
       await tester.pumpAndSettle();
 
       // Dialog is present
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(AppDialog), findsOneWidget);
 
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
 
       // Dialog dismissed
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(AppDialog), findsNothing);
       // Settings screen still showing
       expect(find.byType(SettingsScreen), findsOneWidget);
     });
@@ -177,7 +178,7 @@ void main() {
       await tester.tap(find.text('Delete My Data'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(AppDialog), findsOneWidget);
 
       // Tap confirm — this triggers the deletion flow which calls:
       //   1. SharedPreferences.getInstance() + prefs.clear()
@@ -193,7 +194,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       // Dialog should be gone after confirmation
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(AppDialog), findsNothing);
 
       // Verify SharedPreferences was cleared
       final prefs = await SharedPreferences.getInstance();
