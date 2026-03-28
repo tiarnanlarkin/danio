@@ -61,7 +61,10 @@ class _StageScrimState extends ConsumerState<StageScrim>
         final value = _controller.value;
         if (value < 0.001) return const SizedBox.shrink();
 
-        return GestureDetector(
+        return Semantics(
+          label: 'Close panel',
+          button: true,
+          child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () => ref.read(stageProvider.notifier).closeAll(),
           child: ClipRect(
@@ -70,6 +73,7 @@ class _StageScrimState extends ConsumerState<StageScrim>
               child: Container(color: Color.fromRGBO(0, 0, 0, value * 0.25)),
             ),
           ),
+        ),
         );
       },
     );

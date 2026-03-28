@@ -123,10 +123,13 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
           position: _slideAnim,
           child: FadeTransition(
             opacity: _fadeAnim,
-            child: GestureDetector(
-              onPanEnd: (_) => _dismiss(),
-              onTap: _dismiss,
-              child: Container(
+            child: Semantics(
+              label: 'Tip card. Tap or swipe to dismiss.',
+              button: true,
+              child: GestureDetector(
+                onPanEnd: (_) => _dismiss(),
+                onTap: _dismiss,
+                child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm2,
@@ -192,6 +195,7 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

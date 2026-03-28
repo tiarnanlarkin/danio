@@ -183,11 +183,15 @@ class BottomPlateState extends ConsumerState<BottomPlate>
             left: 0,
             right: 0,
             height: screenHeight,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () => collapse(),
-              child: Container(
-                color: Colors.black.withValues(alpha: 0.3 * _dragExtent.clamp(0.0, 1.0)),
+            child: Semantics(
+              label: 'Collapse panel',
+              button: true,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => collapse(),
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.3 * _dragExtent.clamp(0.0, 1.0)),
+                ),
               ),
             ),
           ),

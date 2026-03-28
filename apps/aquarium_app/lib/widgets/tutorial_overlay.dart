@@ -116,7 +116,10 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
 
     return Material(
       color: Colors.black54,
-      child: GestureDetector(
+      child: Semantics(
+        label: 'Tutorial overlay. Tap anywhere to continue.',
+        button: true,
+        child: GestureDetector(
         onTap: _nextStep, // Tap anywhere to continue
         child: Stack(
           children: [
@@ -167,6 +170,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
           ],
         ),
       ),
+    ),
     );
   }
 

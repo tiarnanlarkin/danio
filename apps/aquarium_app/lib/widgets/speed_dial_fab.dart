@@ -75,9 +75,12 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
             // ── Blur scrim ──────────────────────────────────────────
             if (t > 0)
               Positioned.fill(
-                child: GestureDetector(
-                  onTap: _close,
-                  child: BackdropFilter(
+                child: Semantics(
+                  label: 'Close menu',
+                  button: true,
+                  child: GestureDetector(
+                    onTap: _close,
+                    child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 8 * t, sigmaY: 8 * t),
                     child: Container(
                       color: Color.fromARGB((140 * t).round(), 20, 20, 30),
@@ -85,6 +88,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
                   ),
                 ),
               ),
+            ),
 
             // ── Warm orange vignette from bottom-right ───────────────
             if (t > 0)

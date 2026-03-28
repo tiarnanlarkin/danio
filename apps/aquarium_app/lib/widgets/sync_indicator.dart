@@ -24,7 +24,10 @@ class SyncIndicator extends ConsumerWidget {
     final isSyncing = syncState.isSyncing;
     final hasConflicts = syncState.hasConflicts;
 
-    return GestureDetector(
+    return Semantics(
+      label: 'Sync status indicator',
+      button: kDebugMode,
+      child: GestureDetector(
       onTap: () {
         if (kDebugMode) {
           // Show detailed sync status dialog (debug only)
@@ -123,6 +126,7 @@ class SyncIndicator extends ConsumerWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
