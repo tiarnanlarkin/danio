@@ -261,7 +261,7 @@ class _SpacedRepetitionPracticeScreenState
                     Text(
                       '${srState.stats.totalCards} concepts learning',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: Colors.white70,
+                        color: AppColors.whiteAlpha70,
                       ),
                     ),
                   ],
@@ -303,7 +303,7 @@ class _SpacedRepetitionPracticeScreenState
   Widget _buildStatItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white70, size: AppIconSizes.sm),
+        Icon(icon, color: AppColors.whiteAlpha70, size: AppIconSizes.sm),
         const SizedBox(height: AppSpacing.xs),
         Text(
           value,
@@ -314,7 +314,7 @@ class _SpacedRepetitionPracticeScreenState
         ),
         Text(
           label,
-          style: AppTypography.labelSmall.copyWith(color: Colors.white70),
+          style: AppTypography.labelSmall.copyWith(color: AppColors.whiteAlpha70),
         ),
       ],
     );

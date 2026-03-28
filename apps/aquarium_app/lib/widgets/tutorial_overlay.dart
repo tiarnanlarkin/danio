@@ -118,7 +118,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
     }
 
     return Material(
-      color: Colors.black54,
+      color: AppColors.blackAlpha50,
       child: Semantics(
         label: 'Tutorial overlay. Tap anywhere to continue.',
         button: true,
@@ -246,7 +246,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                   step.title,
                   style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColors.blackAlpha85,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -255,7 +255,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                 Text(
                   step.description,
                   style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-                    color: Colors.black54,
+                    color: AppColors.blackAlpha50,
                     height: 1.4,
                   ),
                 ),

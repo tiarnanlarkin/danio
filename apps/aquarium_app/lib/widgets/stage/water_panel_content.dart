@@ -452,7 +452,7 @@ class _HealthScoreCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(180),
+        color: AppColors.whiteAlpha70,
         borderRadius: AppRadius.largeRadius,
         border: Border.all(color: color.withAlpha(60)),
         boxShadow: [
@@ -731,7 +731,7 @@ class _SparklineSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm2),
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(180),
+        color: AppColors.whiteAlpha70,
         borderRadius: AppRadius.largeRadius,
         border: Border.all(color: const Color(0xFF3BBFB0).withAlpha(50)),
       ),

@@ -414,7 +414,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                             backgroundColor: AppColors.onboardingAmber,
                             foregroundColor: AppColors.onPrimary,
                             disabledBackgroundColor: AppColors.onboardingAmber.withAlpha(153),
-                            disabledForegroundColor: Colors.white70,
+                            disabledForegroundColor: AppColors.whiteAlpha70,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(AppRadius.lg),

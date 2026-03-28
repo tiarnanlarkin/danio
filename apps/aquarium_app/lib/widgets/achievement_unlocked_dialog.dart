@@ -98,7 +98,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
     final gemReward = _getGemReward(widget.achievement.rarity);
 
     return Scaffold(
-      backgroundColor: Colors.black87,
+      backgroundColor: AppColors.blackAlpha85,
       body: Stack(
         children: [
           // Confetti - multiple blast directions for full coverage

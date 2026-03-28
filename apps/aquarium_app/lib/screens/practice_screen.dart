@@ -160,7 +160,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                           Text(
                             'Review lessons before you forget them',
                             style: AppTypography.bodyMedium.copyWith(
-                              color: Colors.white70,
+                              color: AppColors.whiteAlpha70,
                             ),
                           ),
                         ],

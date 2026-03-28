@@ -283,13 +283,13 @@ class AmbientTimeIndicator extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.white70),
+          Icon(icon, size: 14, color: AppColors.whiteAlpha70),
           const SizedBox(width: AppSpacing.xs),
           Text(
             config.name,
             style: Theme.of(
               context,
-            ).textTheme.bodySmall!.copyWith(color: Colors.white70),
+            ).textTheme.bodySmall!.copyWith(color: AppColors.whiteAlpha70),
           ),
         ],
       ),

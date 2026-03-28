@@ -176,7 +176,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           Text(
                             widget.gained ? 'Great job! 🎉' : 'Keep trying! 💪',
                             style: Theme.of(context).textTheme.titleMedium!
-                                .copyWith(color: Colors.white70),
+                                .copyWith(color: AppColors.whiteAlpha70),
                           ),
                         ],
                       ),

@@ -240,7 +240,7 @@ class _PhotoThumbnail extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black54,
+                    color: AppColors.blackAlpha50,
                     borderRadius: AppRadius.xsRadius,
                   ),
                   child: Text(
@@ -345,7 +345,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.md),
-              color: Colors.black87,
+              color: AppColors.blackAlpha85,
               child: Text(
                 photo.notes!,
                 style: AppTypography.bodyMedium.copyWith(color: AppColors.onPrimary),

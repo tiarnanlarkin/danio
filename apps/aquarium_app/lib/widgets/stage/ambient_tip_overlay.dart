@@ -143,7 +143,7 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(51),
+                      color: AppColors.blackAlpha20,
                       blurRadius: 16,
                       offset: const Offset(0, 4),
                     ),

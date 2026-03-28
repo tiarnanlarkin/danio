@@ -422,7 +422,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              const BubbleLoader.small(color: Colors.white70),
+              const BubbleLoader.small(color: AppColors.whiteAlpha70),
             ],
           ),
         ),

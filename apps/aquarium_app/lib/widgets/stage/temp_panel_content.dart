@@ -640,7 +640,7 @@ class _TrendSection extends StatelessWidget {
         // Sparkline chart
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withAlpha(200),
+            color: AppColors.whiteAlpha80,
             borderRadius: AppRadius.largeRadius,
             border: Border.all(color: _kTeal.withAlpha(50)),
             boxShadow: [
@@ -993,7 +993,7 @@ class _ThermometerPainter extends CustomPainter {
       Offset(cx - bulbRadius * 0.28, bulbCy - bulbRadius * 0.28),
       bulbRadius * 0.2,
       Paint()
-        ..color = Colors.white.withAlpha(130)
+        ..color = AppColors.whiteAlpha50
         ..style = PaintingStyle.fill,
     );
 

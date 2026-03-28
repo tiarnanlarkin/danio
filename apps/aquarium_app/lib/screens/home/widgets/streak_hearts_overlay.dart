@@ -44,7 +44,7 @@ class DismissibleBanner extends StatelessWidget {
                   width: 44,
                   height: 44,
                   child: Center(
-                    child: Icon(Icons.close, size: 14, color: Colors.white70),
+                    child: Icon(Icons.close, size: 14, color: AppColors.whiteAlpha70),
                   ),
                 ),
               ),

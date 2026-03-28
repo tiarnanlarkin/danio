@@ -121,7 +121,7 @@ class _RoomCard extends StatelessWidget {
             ),
             Text(
               description,
-              style: AppTypography.bodySmall.copyWith(color: Colors.white70),
+              style: AppTypography.bodySmall.copyWith(color: AppColors.whiteAlpha70),
             ),
           ],
         ),

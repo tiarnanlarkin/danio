@@ -101,7 +101,7 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
         : Colors.red;
 
     return Material(
-      color: Colors.black87,
+      color: AppColors.blackAlpha85,
       borderRadius: AppRadius.smallRadius,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.sm),
@@ -135,7 +135,7 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
         Text(
           '$label: ',
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            color: Colors.white70,
+            color: AppColors.whiteAlpha70,
             fontFamily: 'monospace',
           ),
         ),

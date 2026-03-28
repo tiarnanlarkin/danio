@@ -633,7 +633,7 @@ class _LearnCard extends ConsumerWidget {
                           Text(
                             '${stats.levelTitle} • ${stats.totalXp} XP',
                             style: AppTypography.bodySmall.copyWith(
-                              color: Colors.white70,
+                              color: AppColors.whiteAlpha70,
                             ),
                           ),
                           if (stats.currentStreak > 0) ...[
@@ -641,7 +641,7 @@ class _LearnCard extends ConsumerWidget {
                             Text(
                               '🔥 ${stats.currentStreak}-day streak',
                               style: AppTypography.bodySmall.copyWith(
-                                color: Colors.white70,
+                                color: AppColors.whiteAlpha70,
                               ),
                             ),
                             if (profile.$1 == true || profile.$2 == true) ...[
@@ -651,7 +651,7 @@ class _LearnCard extends ConsumerWidget {
                                     ? '🧊 Streak freeze available'
                                     : '🧊 Streak freeze used this week',
                                 style: AppTypography.bodySmall.copyWith(
-                                  color: Colors.white70,
+                                  color: AppColors.whiteAlpha70,
                                 ),
                               ),
                             ],
@@ -660,13 +660,13 @@ class _LearnCard extends ConsumerWidget {
                           Text(
                             'Start your learning journey',
                             style: AppTypography.bodySmall.copyWith(
-                              color: Colors.white70,
+                              color: AppColors.whiteAlpha70,
                             ),
                           ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right, color: Colors.white70),
+                  const Icon(Icons.chevron_right, color: AppColors.whiteAlpha70),
                 ],
               ),
             ),

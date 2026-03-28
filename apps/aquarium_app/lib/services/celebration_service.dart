@@ -344,7 +344,7 @@ class _CelebrationOverlayWrapperState
                   onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
                   child: FadeTransition(
                     opacity: _fadeAnimation,
-                    child: Container(color: Colors.black54),
+                    child: Container(color: AppColors.blackAlpha50),
                   ),
                 ),
               ),

@@ -491,7 +491,7 @@ class _ShopItemCard extends ConsumerWidget {
                           ),
                           child: const Icon(
                             Icons.lock_outline,
-                            color: Colors.white70,
+                            color: AppColors.whiteAlpha70,
                             size: 16,
                           ),
                         ),
