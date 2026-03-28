@@ -16,28 +16,6 @@ import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../utils/logger.dart';
 
-/// Gem Shop room theme — jewel/treasure gradient backgrounds and
-/// category-specific accent colours that don't exist in the shared palette.
-/// Text, glass, and achievement colours use AppColors / AppAchievementColors.
-class GemShopColors {
-  // Room gradient backgrounds (unique to Gem Shop)
-  static const background1 = Color(0xFF1A1A2E); // Deep navy
-  static const background2 = Color(0xFF16213E); // Dark blue
-  static const background3 = Color(0xFF0F1A2E); // Darker blue
-
-  // Gem-specific accents (no shared equivalent)
-  static const gemPrimary = Color(0xFF5FD9CF); // Turquoise
-  static const gemGlow = Color(0xFF95E1D3); // Light turquoise
-  static const powerUpColor = Color(0xFFFF7B7B); // Red — decorative only — not for text
-
-  // Pre-computed overlays for performance
-  static const gemPrimary20 = Color(0x335FD9CF); // 20%
-  static const gemPrimary30 = Color(0x4D5FD9CF); // 30%
-  static const gemPrimary50 = Color(0x805FD9CF); // 50%
-  static const gemGlow20 = Color(0x3395E1D3); // 20%
-  static const powerUpColor80 = Color(0xCCFF7B7B); // 80%
-}
-
 /// Main Gem Shop Screen
 class GemShopScreen extends ConsumerStatefulWidget {
   const GemShopScreen({super.key});
@@ -78,9 +56,9 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            GemShopColors.background1,
-            GemShopColors.background2,
-            GemShopColors.background3,
+            DanioColors.gemShopBackground1,
+            DanioColors.gemShopBackground2,
+            DanioColors.gemShopBackground3,
           ],
         ),
       ),
@@ -113,8 +91,8 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           ],
           bottom: TabBar(
             controller: _tabController,
-            indicatorColor: GemShopColors.gemPrimary,
-            labelColor: GemShopColors.gemPrimary,
+            indicatorColor: DanioColors.gemPrimary,
+            labelColor: DanioColors.gemPrimary,
             unselectedLabelColor: AppColors.textSecondaryDark,
             tabs: const [
               Tab(
@@ -166,9 +144,9 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 gravity: 0.2,
                 shouldLoop: false,
                 colors: const [
-                  GemShopColors.gemPrimary,
+                  DanioColors.gemPrimary,
                   AppAchievementColors.gold,
-                  GemShopColors.powerUpColor,
+                  DanioColors.gemPowerUp,
                   AppColors.success,
                   AppColors.primary,
                   DanioColors.coralAccent,
@@ -236,7 +214,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           builder: (ctx) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: AlertDialog(
-              backgroundColor: GemShopColors.background2,
+              backgroundColor: DanioColors.gemShopBackground2,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadius.largeRadius,
                 side: const BorderSide(color: AppColors.whiteAlpha20),
@@ -291,8 +269,8 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                               style: Theme.of(context).textTheme.titleLarge!
                                   .copyWith(
                                     color: canAfford
-                                        ? GemShopColors.gemPrimary
-                                        : GemShopColors.powerUpColor,
+                                        ? DanioColors.gemPrimary
+                                        : DanioColors.gemPowerUp,
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
@@ -331,7 +309,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                         'Not enough gems! Complete lessons to earn more.',
                         style: TextStyle(
                           // Use fully opaque powerUpColor for WCAG AA contrast on dark background
-                          color: GemShopColors.powerUpColor,
+                          color: DanioColors.gemPowerUp,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
@@ -409,9 +387,9 @@ class _ShopItemCard extends ConsumerWidget {
   Color _getCategoryColor() {
     switch (item.category) {
       case ShopItemCategory.powerUps:
-        return GemShopColors.powerUpColor;
+        return DanioColors.gemPowerUp;
       case ShopItemCategory.extras:
-        return GemShopColors.gemPrimary;
+        return DanioColors.gemPrimary;
       case ShopItemCategory.cosmetics:
         return AppAchievementColors.gold;
     }
@@ -625,13 +603,13 @@ class _GemBalanceChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [GemShopColors.gemPrimary30, GemShopColors.gemGlow20],
+            colors: [DanioColors.gemPrimary30, DanioColors.gemGlow20],
           ),
           borderRadius: AppRadius.largeRadius,
-          border: Border.all(color: GemShopColors.gemPrimary50, width: 2),
+          border: Border.all(color: DanioColors.gemPrimary50, width: 2),
           boxShadow: const [
             BoxShadow(
-              color: GemShopColors.gemPrimary30,
+              color: DanioColors.gemPrimary30,
               blurRadius: 10,
               spreadRadius: 1,
             ),

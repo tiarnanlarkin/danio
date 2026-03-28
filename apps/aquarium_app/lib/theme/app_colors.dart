@@ -472,6 +472,32 @@ class DanioColors {
   static const Color shelfWoodLight = Color(0xFFC49A6C);   // Shelf wood gradient — lighter tone
   static const Color shelfWoodDark1 = Color(0xFF4A3728);   // Shelf bracket gradient — dark tone
   static const Color shelfWoodDark2 = Color(0xFF3D2E22);   // Shelf bracket gradient — darker tone
+
+  // ── Gem Shop room backgrounds ────────────────────────────────────
+  static const Color gemShopBackground1 = Color(0xFF1A1A2E); // Deep navy
+  static const Color gemShopBackground2 = Color(0xFF16213E); // Dark blue
+  static const Color gemShopBackground3 = Color(0xFF0F1A2E); // Darkest blue
+  static const Color gemPrimary = Color(0xFF5FD9CF);          // Turquoise gem accent
+  static const Color gemGlow = Color(0xFF95E1D3);             // Light turquoise glow
+  static const Color gemPowerUp = Color(0xFFFF7B7B);          // Power-up red — decorative only
+
+  // Gem Shop pre-computed alphas
+  static const Color gemPrimary20 = Color(0x335FD9CF); // 20%
+  static const Color gemPrimary30 = Color(0x4D5FD9CF); // 30%
+  static const Color gemPrimary50 = Color(0x805FD9CF); // 50%
+  static const Color gemGlow20 = Color(0x3395E1D3);    // 20%
+  static const Color gemPowerUp80 = Color(0xCCFF7B7B); // 80%
+
+  // ── Inventory room backgrounds ───────────────────────────────────
+  static const Color inventoryBackground1 = Color(0xFF2D1B4E);     // Deep purple
+  static const Color inventoryBackground2 = Color(0xFF1F1337);     // Darker purple
+  static const Color inventoryBackground3 = Color(0xFF150D26);     // Deepest purple
+  static const Color inventoryBackground1Dark = Color(0xFF3A2660); // Dark mode
+  static const Color inventoryBackground2Dark = Color(0xFF2A1C48); // Dark mode
+  static const Color inventoryBackground3Dark = Color(0xFF1E1435); // Dark mode
+  static const Color inventoryConsumable = Color(0xFF4CAF50); // Green — decorative only
+  static const Color inventoryActive = Color(0xFF2196F3);     // Blue — decorative only
+  static const Color inventoryPermanent = Color(0xFFE91E63);  // Pink — decorative only
 }
 
 /// Text style tokens for the Danio app.
@@ -729,16 +755,3 @@ class AppOverlays {
   static const Color lightBlueGrey90 = Color(0xE6E8F4F8); // 90% - 0xFFE8F4F8
 }
 
-/// Border radius tokens.
-///
-/// Use the named `*Radius` getters for `BorderRadius` or the raw `double` constants
-/// for `BorderRadius.circular(AppRadius.md)`.
-///
-/// ```dart
-/// borderRadius: AppRadius.largeRadius        // BorderRadius.circular(24)
-/// borderRadius: AppRadius.pillRadius         // BorderRadius.circular(100)
-/// borderRadius: BorderRadius.circular(AppRadius.md)  // 16dp
-/// ```
-///
-/// Scale: `xs(4) → sm(8) → md2(12) → md(16) → lg2(20) → lg(24) → xl(32) → xxl(48) →
-/// pill(100) → full(999)`

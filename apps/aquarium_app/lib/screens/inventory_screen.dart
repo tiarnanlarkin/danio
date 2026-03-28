@@ -15,36 +15,6 @@ import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 
-/// Inventory room theme — treasure-chest gradient backgrounds and
-/// category-specific colours that don't exist in the shared palette.
-/// Text, glass, and common colours use AppColors.
-class InventoryColors {
-  InventoryColors._();
-
-  // Room gradient backgrounds (unique to Inventory)
-  static const background1 = Color(0xFF2D1B4E); // Deep purple
-  static const background2 = Color(0xFF1F1337); // Darker purple
-  static const background3 = Color(0xFF150D26); // Deepest purple
-
-  // Category accents (no shared equivalent)
-  static const consumableColor = Color(0xFF4CAF50); // Green — decorative only — not for text
-  static const activeColor = Color(0xFF2196F3); // Blue — decorative only — not for text
-  static const permanentColor = Color(0xFFE91E63); // Pink — decorative only — not for text
-
-  // Dark mode gradient adjustments
-  static const background1Dark = Color(0xFF3A2660);
-  static const background2Dark = Color(0xFF2A1C48);
-  static const background3Dark = Color(0xFF1E1435);
-
-  /// Returns gradient colors adapted to current brightness
-  static List<Color> gradientColors(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? [background1Dark, background2Dark, background3Dark]
-        : [background1, background2, background3];
-  }
-}
-
 /// Main Inventory Screen - View and USE owned items
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key});
@@ -74,7 +44,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     final inventoryAsync = ref.watch(inventoryProvider);
     final heartsState = ref.watch(heartsStateProvider);
 
-    final gradientColors = InventoryColors.gradientColors(context);
+    final gradientColors = (Theme.of(context).brightness == Brightness.dark
+        ? [DanioColors.inventoryBackground1Dark, DanioColors.inventoryBackground2Dark, DanioColors.inventoryBackground3Dark]
+        : [DanioColors.inventoryBackground1, DanioColors.inventoryBackground2, DanioColors.inventoryBackground3]);
 
     return Container(
       decoration: BoxDecoration(
@@ -228,8 +200,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: AlertDialog(
               backgroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? InventoryColors.background2Dark
-                  : InventoryColors.background2,
+                  ? DanioColors.inventoryBackground2Dark
+                  : DanioColors.inventoryBackground2,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadius.largeRadius,
                 side: const BorderSide(color: AppColors.whiteAlpha20),
@@ -387,11 +359,11 @@ class _InventoryItemCard extends StatelessWidget {
 
     final Color accentColor;
     if (item.isActive && !item.isExpired) {
-      accentColor = InventoryColors.activeColor;
+      accentColor = DanioColors.inventoryActive;
     } else if (shopItem.isConsumable) {
-      accentColor = InventoryColors.consumableColor;
+      accentColor = DanioColors.inventoryConsumable;
     } else {
-      accentColor = InventoryColors.permanentColor;
+      accentColor = DanioColors.inventoryPermanent;
     }
 
     return ClipRRect(
@@ -533,7 +505,7 @@ class _ExpiryTimerState extends State<_ExpiryTimer> {
         children: [
           const Icon(
             Icons.timer,
-            color: InventoryColors.activeColor,
+            color: DanioColors.inventoryActive,
             size: AppIconSizes.xs,
           ),
           const SizedBox(width: AppSpacing.xs),
