@@ -317,7 +317,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       range.displayName,
                       style: TextStyle(
                         color: isSelected
-                            ? Colors.white
+                            ? AppColors.onPrimary
                             : Theme.of(context).colorScheme.onSurface,
                         fontWeight: isSelected
                             ? FontWeight.w700
@@ -639,7 +639,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         return BarTooltipItem(
                           '${rod.toY.toInt()} XP',
-                          const TextStyle(color: Colors.white),
+                          const TextStyle(color: AppColors.onPrimary),
                         );
                       },
                     ),
@@ -1192,7 +1192,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     prediction.confidenceLabel,
                     style: Theme.of(
                       context,
-                    ).textTheme.labelSmall?.copyWith(color: Colors.white),
+                    ).textTheme.labelSmall?.copyWith(color: AppColors.onPrimary),
                   ),
                 ),
                 if (prediction.estimatedDate != null) ...[

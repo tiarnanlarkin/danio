@@ -241,7 +241,7 @@ class _SpacedRepetitionPracticeScreenState
             children: [
               const Icon(
                 Icons.auto_graph,
-                color: Colors.white,
+                color: AppColors.onPrimary,
                 size: AppIconSizes.lg,
               ),
               const SizedBox(width: AppSpacing.sm2),
@@ -252,7 +252,7 @@ class _SpacedRepetitionPracticeScreenState
                     Text(
                       'Your Progress',
                       style: AppTypography.headlineMedium.copyWith(
-                        color: Colors.white,
+                        color: AppColors.onPrimary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -306,7 +306,7 @@ class _SpacedRepetitionPracticeScreenState
         Text(
           value,
           style: AppTypography.headlineMedium.copyWith(
-            color: Colors.white,
+            color: AppColors.onPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),

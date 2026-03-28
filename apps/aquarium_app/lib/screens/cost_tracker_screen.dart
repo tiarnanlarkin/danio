@@ -13,6 +13,7 @@ import '../utils/app_feedback.dart';
 import '../utils/logger.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/danio_snack_bar.dart';
 
 /// Returns the currency symbol for the current device locale.
@@ -280,74 +281,60 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   }
 
   void _showSettings() {
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Settings'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('Currency'),
-              trailing: DropdownButton<String>(
-                value: _currency,
-                items: ['£', '\$', '€', '¥', 'A\$', 'C\$']
-                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                    .toList(),
-                onChanged: (v) {
-                  setState(() => _currency = v ?? _localeCurrencySymbol());
-                  _saveExpenses();
-                  Navigator.maybePop(ctx);
-                },
-              ),
+      title: 'Settings',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text('Currency'),
+            trailing: DropdownButton<String>(
+              value: _currency,
+              items: ['£', '\$', '€', '¥', 'A\$', 'C\$']
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
+              onChanged: (v) {
+                setState(() => _currency = v ?? _localeCurrencySymbol());
+                _saveExpenses();
+                Navigator.maybePop(context);
+              },
             ),
-            ListTile(
-              title: const Text('Clear All Data'),
-              trailing: IconButton(
-                tooltip: 'Delete expense',
-                icon: Icon(Icons.delete, color: AppColors.error),
-                onPressed: () {
-                  Navigator.maybePop(ctx);
-                  _confirmClear();
-                },
-              ),
+          ),
+          ListTile(
+            title: const Text('Clear All Data'),
+            trailing: IconButton(
+              tooltip: 'Delete expense',
+              icon: Icon(Icons.delete, color: AppColors.error),
+              onPressed: () {
+                Navigator.maybePop(context);
+                _confirmClear();
+              },
             ),
-          ],
-        ),
-        actions: [
-          AppButton(
-            label: 'Close',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
           ),
         ],
       ),
+      actions: [
+        AppButton(
+          label: 'Close',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 
   void _confirmClear() {
-    showDialog(
+    showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Clear All Expenses?'),
-        content: const Text('This cannot be undone.'),
-        actions: [
-          AppButton(
-            label: 'Cancel',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
-            onPressed: () {
-              setState(() => _expenses = []);
-              _saveExpenses();
-              Navigator.maybePop(ctx);
-            },
-            child: const Text('Clear All'),
-          ),
-        ],
-      ),
+      title: 'Clear All Expenses?',
+      message: 'This cannot be undone.',
+      destructiveLabel: 'Clear All',
+      onConfirm: () {
+        setState(() => _expenses = []);
+        _saveExpenses();
+      },
     );
   }
 }

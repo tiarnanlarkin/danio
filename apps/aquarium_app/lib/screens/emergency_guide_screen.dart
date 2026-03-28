@@ -11,7 +11,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Emergency Guide'),
         backgroundColor: AppColors.error,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.onPrimary,
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -260,7 +260,7 @@ class _EmergencyCard extends StatelessWidget {
           ),
           child: Text(
             urgency,
-            style: AppTypography.bodySmall.copyWith(color: Colors.white),
+            style: AppTypography.bodySmall.copyWith(color: AppColors.onPrimary),
           ),
         ),
         title: Text(title, style: AppTypography.labelLarge),

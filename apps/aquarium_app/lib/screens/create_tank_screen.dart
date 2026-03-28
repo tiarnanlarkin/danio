@@ -14,6 +14,7 @@ import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
 import '../utils/accessibility_utils.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import 'create_tank_screen/widgets/basic_info_page.dart';
 import 'create_tank_screen/widgets/size_page.dart';
 import 'create_tank_screen/widgets/water_type_page.dart';
@@ -59,26 +60,11 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       canPop: !_hasUnsavedData || _isCreating,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        final shouldPop = await showDialog<bool>(
+        final shouldPop = await showAppDestructiveDialog(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Discard new tank?'),
-            content: const Text(
-              'You have unsaved changes. Are you sure you want to go back?',
-            ),
-            actions: [
-              AppButton(
-                label: 'Cancel',
-                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-                variant: AppButtonVariant.text,
-              ),
-              AppButton(
-                label: 'Discard',
-                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-                variant: AppButtonVariant.destructive,
-              ),
-            ],
-          ),
+          title: 'Discard new tank?',
+          message: 'You have unsaved changes. Are you sure you want to go back?',
+          destructiveLabel: 'Discard',
         );
         if (shouldPop == true && context.mounted) {
           Navigator.maybePop(context);

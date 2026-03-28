@@ -22,6 +22,7 @@ import '../theme/app_theme.dart';
 import '../widgets/celebrations/water_change_celebration.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
 const _uuid = Uuid();
@@ -179,26 +180,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       canPop: !_hasUnsavedData || _isSaving,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        final shouldPop = await showDialog<bool>(
+        final shouldPop = await showAppDestructiveDialog(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Discard changes?'),
-            content: const Text(
-              'You have unsaved data. Are you sure you want to go back?',
-            ),
-            actions: [
-              AppButton(
-                label: 'Cancel',
-                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-                variant: AppButtonVariant.text,
-              ),
-              AppButton(
-                label: 'Discard',
-                onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-                variant: AppButtonVariant.destructive,
-              ),
-            ],
-          ),
+          title: 'Discard changes?',
+          message: 'You have unsaved data. Are you sure you want to go back?',
+          destructiveLabel: 'Discard',
         );
         if (shouldPop == true && context.mounted) {
           Navigator.maybePop(context);
@@ -1121,13 +1107,13 @@ class _TypeChip extends StatelessWidget {
             Icon(
               icon,
               size: 18,
-              color: isSelected ? Colors.white : context.textSecondary,
+              color: isSelected ? AppColors.onPrimary : context.textSecondary,
             ),
             const SizedBox(width: AppSpacing.xs2),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.white : context.textSecondary,
+                color: isSelected ? AppColors.onPrimary : context.textSecondary,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -1347,7 +1333,7 @@ class _PhotoGrid extends StatelessWidget {
                     child: const Icon(
                       Icons.close,
                       size: AppIconSizes.xs,
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                     ),
                   ),
                 ),

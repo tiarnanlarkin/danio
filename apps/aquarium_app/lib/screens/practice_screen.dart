@@ -140,7 +140,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                   children: [
                     const Icon(
                       Icons.fitness_center,
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                       size: 32,
                     ),
                     const SizedBox(width: AppSpacing.sm2),
@@ -151,7 +151,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                           Text(
                             'Practice Mode',
                             style: AppTypography.headlineMedium.copyWith(
-                              color: Colors.white,
+                              color: AppColors.onPrimary,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xs),

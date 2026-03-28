@@ -213,7 +213,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                               )
                             : null,
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: AppColors.card,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -360,7 +360,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
         AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.lg,
       ),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: AppColors.onPrimary,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
@@ -470,7 +470,7 @@ class _PopularTile extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26) // 10%
-                : Colors.white,
+                : AppColors.onPrimary,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
@@ -563,7 +563,7 @@ class _SearchResultCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26)
-                : Colors.white,
+                : AppColors.onPrimary,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
@@ -685,7 +685,7 @@ class _PulsingButtonState extends State<_PulsingButton>
         onPressed: widget.onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.onboardingAmber,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.onPrimary,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),

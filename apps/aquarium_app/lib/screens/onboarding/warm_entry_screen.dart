@@ -263,7 +263,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                                 color: AppColors.textHint,
                               ),
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: AppColors.card,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 14,
@@ -288,7 +288,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                           style: GoogleFonts.nunito(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                            color: AppColors.onPrimary,
                           ),
                         ),
                       ),
@@ -347,7 +347,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.onPrimary,
           borderRadius: BorderRadius.circular(20),
           boxShadow: AppShadows.soft,
         ),
@@ -453,7 +453,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.onPrimary,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.border, width: 1),
         ),

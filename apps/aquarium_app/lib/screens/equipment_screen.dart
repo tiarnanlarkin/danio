@@ -22,6 +22,7 @@ import '../utils/logger.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/core/bubble_loader.dart';
@@ -327,54 +328,40 @@ class EquipmentScreen extends ConsumerWidget {
     WidgetRef ref,
     Equipment equipment,
   ) {
-    showDialog(
+    showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Remove Equipment?'),
-        content: Text(
-          'Remove "${equipment.name}" from this tank? You can undo within 5 seconds.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Keep',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Remove Equipment',
-            onPressed: () async {
-              Navigator.maybePop(ctx);
-              try {
-                final storage = ref.read(storageServiceProvider);
-                await storage.deleteEquipment(equipment.id);
-                // Remove auto maintenance task (if any)
-                await storage.deleteTask(_maintenanceTaskId(equipment.id));
+      title: 'Remove Equipment?',
+      message: 'Remove "${equipment.name}" from this tank? You can undo within 5 seconds.',
+      destructiveLabel: 'Remove Equipment',
+      cancelLabel: 'Keep',
+      onConfirm: () async {
+        try {
+          final storage = ref.read(storageServiceProvider);
+          await storage.deleteEquipment(equipment.id);
+          // Remove auto maintenance task (if any)
+          await storage.deleteTask(_maintenanceTaskId(equipment.id));
+          ref.invalidate(equipmentProvider(tankId));
+          ref.invalidate(tasksProvider(tankId));
+          if (context.mounted) {
+            DanioSnackBar.show(
+              context,
+              '${equipment.name} removed',
+              duration: const Duration(seconds: 5),
+              actionLabel: 'Undo',
+              onAction: () async {
+                await storage.saveEquipment(equipment);
                 ref.invalidate(equipmentProvider(tankId));
                 ref.invalidate(tasksProvider(tankId));
-                if (context.mounted) {
-                  DanioSnackBar.show(
-                    context,
-                    '${equipment.name} removed',
-                    duration: const Duration(seconds: 5),
-                    actionLabel: 'Undo',
-                    onAction: () async {
-                      await storage.saveEquipment(equipment);
-                      ref.invalidate(equipmentProvider(tankId));
-                      ref.invalidate(tasksProvider(tankId));
-                    },
-                  );
-                }
-              } catch (e, st) {
-                logError('EquipmentScreen: equipment delete failed: $e', stackTrace: st, tag: 'EquipmentScreen');
-                if (context.mounted) {
-                  DanioSnackBar.error(context, 'Couldn\'t remove that equipment. Give it another go!');
-                }
-              }
-            },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+              },
+            );
+          }
+        } catch (e, st) {
+          logError('EquipmentScreen: equipment delete failed: $e', stackTrace: st, tag: 'EquipmentScreen');
+          if (context.mounted) {
+            DanioSnackBar.error(context, 'Couldn\'t remove that equipment. Give it another go!');
+          }
+        }
+      },
     );
   }
 
@@ -400,9 +387,9 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
-    return AlertDialog(
-      title: Text('History - ${equipment.name}'),
-      content: SizedBox(
+    return AppDialog(
+      title: 'History - ${equipment.name}',
+      child: SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(

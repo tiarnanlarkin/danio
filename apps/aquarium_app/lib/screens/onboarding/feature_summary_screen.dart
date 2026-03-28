@@ -229,7 +229,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                 onPressed: _onCtaTapped,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.onboardingAmber,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.onPrimary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),

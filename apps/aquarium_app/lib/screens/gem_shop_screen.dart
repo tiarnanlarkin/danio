@@ -560,7 +560,7 @@ class _ShopItemCard extends ConsumerWidget {
                               const Icon(
                                 Icons.check_circle,
                                 size: 14,
-                                color: Colors.white,
+                                color: AppColors.onPrimary,
                               ),
                               if (item.isConsumable && quantity > 0) ...[
                                 const SizedBox(width: AppSpacing.xs),
@@ -568,7 +568,7 @@ class _ShopItemCard extends ConsumerWidget {
                                   'x$quantity',
                                   style: Theme.of(context).textTheme.bodySmall!
                                       .copyWith(
-                                        color: Colors.white,
+                                        color: AppColors.onPrimary,
                                         fontWeight: FontWeight.bold,
                                       ),
                                 ),

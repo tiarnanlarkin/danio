@@ -412,7 +412,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                           onPressed: _ctaTapped ? null : _onCtaTap,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.onboardingAmber,
-                            foregroundColor: Colors.white,
+                            foregroundColor: AppColors.onPrimary,
                             disabledBackgroundColor: AppColors.onboardingAmber.withAlpha(153),
                             disabledForegroundColor: Colors.white70,
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -509,7 +509,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.onPrimary,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: AppColors.border),
           ),

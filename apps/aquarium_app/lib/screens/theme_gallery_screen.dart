@@ -30,7 +30,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
               title: Text(
                 'Theme Gallery',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary,
                   shadows: [Shadow(color: AppOverlays.black50, blurRadius: 8)],
                 ),
               ),
@@ -134,12 +134,12 @@ class ThemeGalleryScreen extends ConsumerWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.star, size: 12, color: Colors.white),
+                        const Icon(Icons.star, size: 12, color: AppColors.onPrimary),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           'PREMIUM',
                           style: AppTypography.labelSmall.copyWith(
-                            color: Colors.white,
+                            color: AppColors.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -219,9 +219,9 @@ class ThemeGalleryScreen extends ConsumerWidget {
         buttonTest: Color(0xFF32CD32),
         buttonWater: Color(0xFF00BFFF),
         buttonStats: Color(0xFFDDA0DD),
-        textPrimary: Colors.white,
+        textPrimary: AppColors.onPrimary,
         textSecondary: Color(0xB3FFFFFF),
-        accentCircles: [Color(0xFF00CED1), Color(0xFFFF6B6B), Colors.white],
+        accentCircles: [Color(0xFF00CED1), Color(0xFFFF6B6B), AppColors.onPrimary],
       ),
       const RoomTheme(
         name: 'Zen Garden',
@@ -287,7 +287,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
         buttonTest: Color(0xFF00FF7F),
         buttonWater: Color(0xFF00FFFF),
         buttonStats: Color(0xFFFF00FF),
-        textPrimary: Colors.white,
+        textPrimary: AppColors.onPrimary,
         textSecondary: Color(0xB3FFFFFF),
         accentCircles: [
           Color(0xFFFF00FF),
@@ -323,7 +323,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
         buttonTest: Color(0xFF6B8E23),
         buttonWater: Color(0xFFDEB887),
         buttonStats: Color(0xFFDC143C),
-        textPrimary: Colors.white,
+        textPrimary: AppColors.onPrimary,
         textSecondary: Color(0xB3FFFFFF),
         accentCircles: [
           Color(0xFFFF8C00),
@@ -351,7 +351,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
               ),
               child: const Icon(
                 Icons.star,
-                color: Colors.white,
+                color: AppColors.onPrimary,
                 size: AppIconSizes.sm,
               ),
             ),
@@ -504,13 +504,13 @@ class _CurrentThemePreview extends StatelessWidget {
                   const Icon(
                     Icons.check_circle,
                     size: AppIconSizes.xs,
-                    color: Colors.white,
+                    color: AppColors.onPrimary,
                   ),
                   const SizedBox(width: AppSpacing.xs2),
                   Text(
                     'Current: ${theme.name}',
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -592,7 +592,7 @@ class _ThemeCard extends StatelessWidget {
                         ),
                         child: const Icon(
                           Icons.lock,
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           size: 28,
                         ),
                       ),
@@ -619,7 +619,7 @@ class _ThemeCard extends StatelessWidget {
                     child: const Icon(
                       Icons.star,
                       size: 12,
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                     ),
                   ),
                 ),
@@ -638,7 +638,7 @@ class _ThemeCard extends StatelessWidget {
                     child: const Icon(
                       Icons.check,
                       size: AppIconSizes.xs,
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                     ),
                   ),
                 ),
@@ -667,7 +667,7 @@ class _ThemeCard extends StatelessWidget {
                       Text(
                         theme.name,
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

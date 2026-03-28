@@ -453,7 +453,7 @@ class TankDetailScreen extends ConsumerWidget {
                   flexibleSpace: FlexibleSpaceBar(
                     title: Text(
                       tank.name,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: AppColors.onPrimary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -485,7 +485,7 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.checklist, color: Colors.white),
+                      icon: const Icon(Icons.checklist, color: AppColors.onPrimary),
                       tooltip: 'Checklist',
                       onPressed: () => NavigationThrottle.push(
                         context,
@@ -498,7 +498,7 @@ class TankDetailScreen extends ConsumerWidget {
                     IconButton(
                       icon: const Icon(
                         Icons.photo_library_outlined,
-                        color: Colors.white,
+                        color: AppColors.onPrimary,
                       ),
                       tooltip: 'Gallery',
                       onPressed: () => NavigationThrottle.push(
@@ -509,7 +509,7 @@ class TankDetailScreen extends ConsumerWidget {
                     IconButton(
                       icon: const Icon(
                         Icons.book_outlined,
-                        color: Colors.white,
+                        color: AppColors.onPrimary,
                       ),
                       tooltip: 'Journal',
                       onPressed: () => NavigationThrottle.push(
@@ -518,7 +518,7 @@ class TankDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.show_chart, color: Colors.white),
+                      icon: const Icon(Icons.show_chart, color: AppColors.onPrimary),
                       tooltip: 'Charts',
                       onPressed: () => NavigationThrottle.push(
                         context,
@@ -526,7 +526,7 @@ class TankDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert, color: Colors.white),
+                      icon: const Icon(Icons.more_vert, color: AppColors.onPrimary),
                       onSelected: (value) {
                         switch (value) {
                           case 'settings':
@@ -958,7 +958,7 @@ class TankDetailScreen extends ConsumerWidget {
                           child: Text(
                             '$pending',
                             style: AppTypography.bodySmall.copyWith(
-                              color: Colors.white,
+                              color: AppColors.onPrimary,
                             ),
                           ),
                         );

@@ -53,7 +53,7 @@ class AboutScreen extends StatelessWidget {
                     child: const Icon(
                       Icons.water_drop,
                       size: 48,
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                     ),
                   ),
                 ),

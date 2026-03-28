@@ -17,6 +17,7 @@ import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
 import 'add_log_screen.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
@@ -791,78 +792,79 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   }
 
   void _showMultiParamDialog(BuildContext context, List<LogEntry> logs) {
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Compare Parameters'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Select 2-4 parameters to overlay on the same chart:'),
-            const SizedBox(height: AppSpacing.md),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: ['nitrate', 'nitrite', 'ammonia', 'ph', 'temp'].map((
-                param,
-              ) {
-                final isSelected = _selectedParams.contains(param);
-                return FilterChip(
-                  label: Text(_getParamTitle(param)),
-                  selected: isSelected,
-                  selectedColor: _getParamColor(param).withAlpha(76),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        if (_selectedParams.length < 4) {
-                          _selectedParams.add(param);
-                        }
-                      } else {
-                        _selectedParams.remove(param);
+      title: 'Compare Parameters',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('Select 2-4 parameters to overlay on the same chart:'),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: ['nitrate', 'nitrite', 'ammonia', 'ph', 'temp'].map((
+              param,
+            ) {
+              final isSelected = _selectedParams.contains(param);
+              return FilterChip(
+                label: Text(_getParamTitle(param)),
+                selected: isSelected,
+                selectedColor: _getParamColor(param).withAlpha(76),
+                onSelected: (selected) {
+                  setState(() {
+                    if (selected) {
+                      if (_selectedParams.length < 4) {
+                        _selectedParams.add(param);
                       }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-            if (_selectedParams.length >= 4)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'Maximum 4 parameters',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: context.textSecondary,
-                  ),
+                    } else {
+                      _selectedParams.remove(param);
+                    }
+                  });
+                },
+              );
+            }).toList(),
+          ),
+          if (_selectedParams.length >= 4)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                'Maximum 4 parameters',
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textSecondary,
                 ),
               ),
-          ],
-        ),
-        actions: [
-          AppButton(
-            label: 'Cancel',
-            onPressed: () {
-              setState(() {
-                _multiParamMode = false;
-                _selectedParams.clear();
-              });
-              Navigator.maybePop(ctx);
-            },
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Compare',
-            onPressed: _selectedParams.length >= 2
-                ? () {
-                    setState(() {
-                      _multiParamMode = true;
-                    });
-                    Navigator.maybePop(ctx);
-                  }
-                : null,
-            variant: AppButtonVariant.primary,
-          ),
+            ),
         ],
       ),
+      actions: [
+        AppButton(
+          label: 'Cancel',
+          onPressed: () {
+            setState(() {
+              _multiParamMode = false;
+              _selectedParams.clear();
+            });
+            Navigator.maybePop(context);
+          },
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
+          label: 'Compare',
+          onPressed: _selectedParams.length >= 2
+              ? () {
+                  setState(() {
+                    _multiParamMode = true;
+                  });
+                  Navigator.maybePop(context);
+                }
+              : null,
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 }

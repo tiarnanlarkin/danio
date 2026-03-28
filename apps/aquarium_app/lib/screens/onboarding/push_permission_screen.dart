@@ -151,7 +151,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.onboardingAmber,
-                            foregroundColor: Colors.white,
+                            foregroundColor: AppColors.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),

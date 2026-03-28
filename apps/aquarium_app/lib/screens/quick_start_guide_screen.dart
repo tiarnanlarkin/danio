@@ -341,7 +341,7 @@ class _StepCard extends StatelessWidget {
                     child: Text(
                       '$step',
                       style: AppTypography.labelLarge.copyWith(
-                        color: Colors.white,
+                        color: AppColors.onPrimary,
                       ),
                     ),
                   ),

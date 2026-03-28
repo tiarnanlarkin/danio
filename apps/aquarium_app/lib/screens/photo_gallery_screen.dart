@@ -246,7 +246,7 @@ class _PhotoThumbnail extends StatelessWidget {
                   child: Text(
                     DateFormat('d').format(photo.date),
                     style: AppTypography.bodySmall.copyWith(
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                     ),
                   ),
                 ),
@@ -292,10 +292,10 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
     final photo = widget.photos[_currentIndex];
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.backgroundDark,
+        foregroundColor: AppColors.onPrimary,
         title: Text(DateFormat('MMMM d, y').format(photo.date)),
         actions: [
           Center(
@@ -303,7 +303,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
               padding: const EdgeInsets.only(right: 16),
               child: Text(
                 '${_currentIndex + 1} / ${widget.photos.length}',
-                style: AppTypography.bodySmall.copyWith(color: Colors.white),
+                style: AppTypography.bodySmall.copyWith(color: AppColors.onPrimary),
               ),
             ),
           ),
@@ -325,7 +325,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
                     child: Container(
                       margin: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: AppColors.textPrimary,
                         borderRadius: AppRadius.mediumRadius,
                       ),
                       child: ClipRRect(
@@ -348,7 +348,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
               color: Colors.black87,
               child: Text(
                 photo.notes!,
-                style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.onPrimary),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),

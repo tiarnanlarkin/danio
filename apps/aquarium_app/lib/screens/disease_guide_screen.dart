@@ -136,7 +136,7 @@ class _DiseaseCard extends StatelessWidget {
                       child: Text(
                         disease.severity,
                         style: AppTypography.bodySmall.copyWith(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                         ),
                       ),
                     ),

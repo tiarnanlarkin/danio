@@ -9,6 +9,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
 /// Account screen - sign-in / profile / sync management.
@@ -48,27 +49,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         onPopInvokedWithResult: (didPop, result) {
           if (didPop) return;
           if (_emailController.text.isEmpty && _passwordController.text.isEmpty) return;
-          showDialog(
+          showAppDestructiveDialog(
             context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Unsaved Changes'),
-              content: const Text('You have unsaved changes. Discard them?'),
-              actions: [
-                AppButton(
-                  label: 'Keep Editing',
-                  onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx); },
-                  variant: AppButtonVariant.text,
-                ),
-                AppButton(
-                  label: 'Discard',
-                  onPressed: () {
-                    if (Navigator.canPop(ctx)) Navigator.pop(ctx);
-                    if (Navigator.canPop(context)) Navigator.pop(context);
-                  },
-                  variant: AppButtonVariant.destructive,
-                ),
-              ],
-            ),
+            title: 'Unsaved Changes',
+            message: 'You have unsaved changes. Discard them?',
+            destructiveLabel: 'Discard',
+            cancelLabel: 'Keep Editing',
+            onConfirm: () {
+              if (Navigator.canPop(context)) Navigator.pop(context);
+            },
           );
         },
         child: Scaffold(
@@ -214,15 +203,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ),
 
             // Submit button
-            FilledButton(
+            AppButton(
+              label: _isSignUp ? 'Create Account' : 'Sign In',
               onPressed: auth.isLoading ? null : _submit,
-              child: auth.isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(_isSignUp ? 'Create Account' : 'Sign In'),
+              isLoading: auth.isLoading,
+              isFullWidth: true,
+              variant: AppButtonVariant.primary,
             ),
             const SizedBox(height: AppSpacing.sm),
 
@@ -401,26 +387,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   }
 
   Future<void> _restoreBackup(BuildContext context) async {
-    final confirm = await showDialog<bool>(
+    final confirm = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Restore Backup?'),
-        content: const Text(
+      title: 'Restore Backup?',
+      message:
           'This will merge cloud data with your local data. '
           'Local data wins on conflicts.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Cancel',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            variant: AppButtonVariant.text,
-          ),
-          FilledButton(
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: const Text('Restore'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Restore',
     );
     if (confirm != true || !context.mounted) return;
 
@@ -439,29 +412,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   }
 
   void _signOut(BuildContext context) {
-    showDialog(
+    showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Sign Out?'),
-        content: const Text(
+      title: 'Sign Out?',
+      message:
           'Your local data will remain on this device. '
           'You can sign back in anytime to resume syncing.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Cancel',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.maybePop(ctx);
-              ref.read(authProvider.notifier).signOut();
-            },
-            child: const Text('Sign Out'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Sign Out',
+      onConfirm: () => ref.read(authProvider.notifier).signOut(),
     );
   }
 }

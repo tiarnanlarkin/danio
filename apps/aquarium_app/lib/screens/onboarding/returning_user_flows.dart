@@ -143,7 +143,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.onboardingAmber,
-                    foregroundColor: Colors.white,
+                    foregroundColor: AppColors.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -286,7 +286,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                     style: GoogleFonts.lora(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                       height: 1.3,
                     ),
                   ),
@@ -306,7 +306,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(50),
+                  color: AppColors.whiteAlpha20,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
                 child: Text(
@@ -314,7 +314,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                   style: GoogleFonts.nunito(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: AppColors.onPrimary,
                   ),
                 ),
               ),
@@ -337,7 +337,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(40),
+                      color: AppColors.whiteAlpha15,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -348,14 +348,14 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                             style: GoogleFonts.nunito(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: AppColors.onPrimary,
                             ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         const Icon(
                           Icons.chevron_right_rounded,
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           size: 20,
                         ),
                       ],
@@ -397,7 +397,7 @@ class Day30CommittedCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.onPrimary,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: AppColors.border, width: 1),
           boxShadow: AppShadows.soft,

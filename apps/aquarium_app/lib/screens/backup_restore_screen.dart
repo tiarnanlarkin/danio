@@ -20,6 +20,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
 import '../utils/logger.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 
 const _uuid = Uuid();
 
@@ -145,23 +146,15 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                 ],
 
                 const SizedBox(height: AppSpacing.md),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: (_isExporting || tanks.isEmpty)
-                        ? null
-                        : () => _exportData(tanks),
-                    icon: _isExporting
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.file_download),
-                    label: Text(
-                      _isExporting ? 'Exporting...' : 'Export Backup (ZIP)',
-                    ),
-                  ),
+                AppButton(
+                  label: _isExporting ? 'Exporting...' : 'Export Backup (ZIP)',
+                  onPressed: (_isExporting || tanks.isEmpty)
+                      ? null
+                      : () => _exportData(tanks),
+                  isLoading: _isExporting,
+                  leadingIcon: Icons.file_download,
+                  isFullWidth: true,
+                  variant: AppButtonVariant.primary,
                 ),
                 if (_lastBackup != null) ...[
                   const SizedBox(height: AppSpacing.sm),
@@ -208,21 +201,13 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ],
 
             const SizedBox(height: AppSpacing.sm2),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: _isImporting ? null : _importData,
-                icon: _isImporting
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.file_upload),
-                label: Text(
-                  _isImporting ? 'Importing...' : 'Select Backup File',
-                ),
-              ),
+            AppButton(
+              label: _isImporting ? 'Importing...' : 'Select Backup File',
+              onPressed: _isImporting ? null : _importData,
+              isLoading: _isImporting,
+              leadingIcon: Icons.file_upload,
+              isFullWidth: true,
+              variant: AppButtonVariant.primary,
             ),
           ],
         ),
@@ -478,26 +463,13 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       if (!mounted) return;
 
       // Show confirmation dialog
-      final confirmed = await showDialog<bool>(
+      final confirmed = await showAppConfirmDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Import Backup?'),
-          content: Text(
+        title: 'Import Backup?',
+        message:
             'This will import ${tanks.length} tank${tanks.length == 1 ? '' : 's'} with all photos.\n\n'
             'Your existing data will NOT be affected.',
-          ),
-          actions: [
-            AppButton(
-              label: 'Cancel',
-              onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-              variant: AppButtonVariant.text,
-            ),
-            FilledButton(
-              onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-              child: const Text('Import'),
-            ),
-          ],
-        ),
+        confirmLabel: 'Import',
       );
 
       if (confirmed != true) {

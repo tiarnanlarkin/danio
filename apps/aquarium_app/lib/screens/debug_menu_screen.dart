@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 
@@ -51,6 +52,7 @@ import 'analytics_screen.dart';
 import 'notification_settings_screen.dart';
 import 'privacy_policy_screen.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 
 class DebugMenuScreen extends ConsumerWidget {
   const DebugMenuScreen({super.key});
@@ -286,7 +288,7 @@ class DebugMenuScreen extends ConsumerWidget {
         appBar: AppBar(
           title: const Text('🐛 Debug Menu'),
           backgroundColor: Colors.orange.shade900,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.onPrimary,
         ),
         body: ListView.builder(
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -339,27 +341,13 @@ class DebugMenuScreen extends ConsumerWidget {
   }
 
   Future<void> _clearAllData(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('⚠️ Clear All Data'),
-        content: const Text(
+      title: '⚠️ Clear All Data',
+      message:
           'This will clear all SharedPreferences and reset app state.\n\n'
           'The app should be restarted after this.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Cancel',
-            onPressed: () => Navigator.of(ctx).pop(false),
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Clear',
-            onPressed: () => Navigator.of(ctx).pop(true),
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      destructiveLabel: 'Clear',
     );
 
     if (confirmed == true) {
