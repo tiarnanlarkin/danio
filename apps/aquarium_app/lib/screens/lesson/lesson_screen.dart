@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/learning.dart';
@@ -468,8 +470,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // PS-10 FIX: Increment persistent perfect-score counter
         if (isPerfect) {
-          // ignore: unawaited_futures
-          ref.read(userProfileProvider.notifier).incrementPerfectScoreCount();
+          unawaited(ref.read(userProfileProvider.notifier).incrementPerfectScoreCount());
         }
 
         // PS-11 FIX: Use actual elapsed time
@@ -491,8 +492,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             ? profile.perfectScoreCount + 1
             : profile.perfectScoreCount;
 
-        // ignore: unawaited_futures
-        () async {
+        unawaited(() async {
           try {
             await achievementChecker.checkAfterLesson(
               lessonsCompleted: profile.completedLessons.length + 1,
@@ -514,7 +514,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           } catch (e) {
             logError('Achievement check failed: $e', tag: 'LessonScreen');
           }
-        }();
+        }());
       }
 
       // P5-2: In-app review trigger
@@ -525,8 +525,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           quizLenForReview != null && _correctAnswers == quizLenForReview;
       final streakForReview = reviewProfile?.currentStreak ?? 0;
       if (isPerfectForReview || streakForReview >= 7) {
-        // ignore: unawaited_futures
-        () async {
+        unawaited(() async {
           try {
             final prefs = await ref.read(sharedPreferencesProvider.future);
             final alreadyRequested =
@@ -541,7 +540,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           } catch (e) {
             logError('In-app review failed: $e', tag: 'LessonScreen');
           }
-        }();
+        }());
       }
 
       if (mounted) {

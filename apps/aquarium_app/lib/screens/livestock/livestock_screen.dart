@@ -185,22 +185,12 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                         ],
                                       ),
                                       const Spacer(),
-                                      FilledButton.icon(
+                                      AppButton(
+                                        label: 'Feed',
                                         onPressed: () =>
                                             _quickFeed(context, ref),
-                                        icon: const Icon(
-                                          Icons.restaurant,
-                                          size: 18,
-                                        ),
-                                        label: const Text('Feed'),
-                                        style: FilledButton.styleFrom(
-                                          backgroundColor: AppColors.primary,
-                                          padding:
-                                              const EdgeInsets.symmetric(
-                                            horizontal: AppSpacing.md,
-                                            vertical: AppSpacing.sm,
-                                          ),
-                                        ),
+                                        leadingIcon: Icons.restaurant,
+                                        variant: AppButtonVariant.primary,
                                       ),
                                     ],
                                   ),

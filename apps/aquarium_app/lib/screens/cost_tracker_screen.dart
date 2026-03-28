@@ -401,10 +401,11 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.lg),
-            FilledButton.icon(
+            AppButton(
+              label: 'Add First Expense',
               onPressed: onAdd,
-              icon: const Icon(Icons.add),
-              label: const Text('Add First Expense'),
+              leadingIcon: Icons.add,
+              variant: AppButtonVariant.primary,
             ),
           ],
         ),
@@ -680,29 +681,28 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             },
           ),
           const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () {
-                final amount = double.tryParse(_amountController.text);
-                if (_descController.text.isEmpty || amount == null) {
-                  AppFeedback.showWarning(context, 'Please fill in all fields');
-                  return;
-                }
+          AppButton(
+            label: 'Save Expense',
+            onPressed: () {
+              final amount = double.tryParse(_amountController.text);
+              if (_descController.text.isEmpty || amount == null) {
+                AppFeedback.showWarning(context, 'Please fill in all fields');
+                return;
+              }
 
-                widget.onSave(
-                  _Expense(
-                    id: DateTime.now().millisecondsSinceEpoch.toString(),
-                    description: _descController.text,
-                    amount: amount,
-                    category: _category,
-                    date: _date,
-                  ),
-                );
-                Navigator.maybePop(context);
-              },
-              child: const Text('Save Expense'),
-            ),
+              widget.onSave(
+                _Expense(
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
+                  description: _descController.text,
+                  amount: amount,
+                  category: _category,
+                  date: _date,
+                ),
+              );
+              Navigator.maybePop(context);
+            },
+            variant: AppButtonVariant.primary,
+            isFullWidth: true,
           ),
         ],
       ),

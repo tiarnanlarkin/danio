@@ -5,6 +5,7 @@ import '../models/lesson_progress.dart';
 import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_button.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'lesson_screen.dart';
 
@@ -96,10 +97,11 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
-            FilledButton.icon(
+            AppButton(
+              label: 'Try a new lesson',
               onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-              icon: const Icon(Icons.auto_stories),
-              label: const Text('Try a new lesson'),
+              leadingIcon: Icons.auto_stories,
+              variant: AppButtonVariant.primary,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(

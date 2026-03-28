@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_button.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/core/bubble_loader.dart';
@@ -741,53 +742,54 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
 
             const SizedBox(height: AppSpacing.md),
 
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  final title = _titleController.text.trim();
-                  if (title.isEmpty) {
-                    AppFeedback.showWarning(
-                      context,
-                      'Please enter a reminder title',
-                    );
-                    return;
-                  }
-                  if (title.length > 100) {
-                    AppFeedback.showWarning(
-                      context,
-                      'Title must be 100 characters or fewer',
-                    );
-                    return;
-                  }
-
-                  final nextDue = DateTime(
-                    _dueDate.year,
-                    _dueDate.month,
-                    _dueDate.day,
-                    _dueTime.hour,
-                    _dueTime.minute,
+            AppButton(
+              label: 'Save Reminder',
+              isFullWidth: true,
+              variant: AppButtonVariant.primary,
+              onPressed: () {
+                final title = _titleController.text.trim();
+                if (title.isEmpty) {
+                  AppFeedback.showWarning(
+                    context,
+                    'Please enter a reminder title',
                   );
+                  return;
+                }
+                if (title.length > 100) {
+                  AppFeedback.showWarning(
+                    context,
+                    'Title must be 100 characters or fewer',
+                  );
+                  return;
+                }
 
-                  if (nextDue.isBefore(DateTime.now()) && !_isRecurring) {
-                    AppFeedback.showWarning(
-                      context,
-                      "This reminder is set in the past — it won't trigger. Please pick a future time.",
-                    );
-                    return;
-                  }
+                final nextDue = DateTime(
+                  _dueDate.year,
+                  _dueDate.month,
+                  _dueDate.day,
+                  _dueTime.hour,
+                  _dueTime.minute,
+                );
 
-                  widget.onSave(
-                    _Reminder(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      title: _titleController.text,
-                      notes: _notesController.text.isNotEmpty
-                          ? _notesController.text
-                          : null,
-                      category: _category,
-                      nextDue: nextDue,
-                      isRecurring: _isRecurring,
-                      frequency: _isRecurring ? _frequency : 'once',
+                if (nextDue.isBefore(DateTime.now()) && !_isRecurring) {
+                  AppFeedback.showWarning(
+                    context,
+                    "This reminder is set in the past — it won't trigger. Please pick a future time.",
+                  );
+                  return;
+                }
+
+                widget.onSave(
+                  _Reminder(
+                    id: DateTime.now().millisecondsSinceEpoch.toString(),
+                    title: _titleController.text,
+                    notes: _notesController.text.isNotEmpty
+                        ? _notesController.text
+                        : null,
+                    category: _category,
+                    nextDue: nextDue,
+                    isRecurring: _isRecurring,
+                    frequency: _isRecurring ? _frequency : 'once',
                     ),
                   );
                   Navigator.maybePop(context);

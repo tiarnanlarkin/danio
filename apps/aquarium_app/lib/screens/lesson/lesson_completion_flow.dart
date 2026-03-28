@@ -344,17 +344,19 @@ void showNextLessonOrPop(
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: AppButton(
+                    label: 'Back to Path',
                     onPressed: () => Navigator.of(ctx).pop(false),
-                    child: const Text('Back to Path'),
+                    variant: AppButtonVariant.secondary,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   flex: 2,
-                  child: FilledButton(
+                  child: AppButton(
+                    label: 'Start Next Lesson',
                     onPressed: () => Navigator.of(ctx).pop(true),
-                    child: const Text('Start Next Lesson'),
+                    variant: AppButtonVariant.primary,
                   ),
                 ),
               ],

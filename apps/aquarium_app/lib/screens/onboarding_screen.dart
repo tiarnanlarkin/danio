@@ -22,6 +22,7 @@ import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
 import '../utils/logger.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 
 /// Orchestrates the 10-screen onboarding flow.
@@ -391,9 +392,10 @@ class _OnboardingFallback extends StatelessWidget {
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 24),
-              FilledButton(
+              AppButton(
+                label: 'Go back',
                 onPressed: onGoBack,
-                child: const Text('Go back'),
+                variant: AppButtonVariant.primary,
               ),
             ],
           ),

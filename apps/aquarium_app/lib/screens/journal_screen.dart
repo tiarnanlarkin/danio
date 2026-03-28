@@ -7,6 +7,7 @@ import '../models/models.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_button.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
@@ -258,14 +259,13 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
             hint: 'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
           ),
           const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: _controller.text.trim().isEmpty
-                  ? null
-                  : () => widget.onSave(_controller.text.trim()),
-              child: const Text('Save Entry'),
-            ),
+          AppButton(
+            label: 'Save Entry',
+            onPressed: _controller.text.trim().isEmpty
+                ? null
+                : () => widget.onSave(_controller.text.trim()),
+            variant: AppButtonVariant.primary,
+            isFullWidth: true,
           ),
         ],
       ),
