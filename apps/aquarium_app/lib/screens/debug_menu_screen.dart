@@ -11,7 +11,7 @@ import 'tab_navigator.dart';
 
 // Screen imports — Onboarding
 import '../data/species_database.dart';
-import 'onboarding/paywall_stub_screen.dart';
+import 'onboarding/feature_summary_screen.dart';
 import 'onboarding/consent_screen.dart';
 
 // Screen imports — Main
@@ -225,7 +225,7 @@ class DebugMenuScreen extends ConsumerWidget {
               title: 'Paywall Stub',
               onTap: () => _push(
                 context,
-                PaywallStubScreen(
+                FeatureSummaryScreen(
                   selectedFish: const SpeciesInfo(
                     commonName: 'Test Fish',
                     scientificName: 'Testus testus',

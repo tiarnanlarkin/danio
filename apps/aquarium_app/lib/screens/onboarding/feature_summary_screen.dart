@@ -10,12 +10,12 @@ import '../../theme/app_theme.dart';
 ///
 /// Shows users what Danio offers — all features available, no paywall.
 /// Honest v1: no subscription, no trial, no fake pricing.
-class PaywallStubScreen extends StatefulWidget {
+class FeatureSummaryScreen extends StatefulWidget {
   final SpeciesInfo selectedFish;
   final VoidCallback onComplete;
   final VoidCallback onSkip;
 
-  const PaywallStubScreen({
+  const FeatureSummaryScreen({
     super.key,
     required this.selectedFish,
     required this.onComplete,
@@ -23,10 +23,10 @@ class PaywallStubScreen extends StatefulWidget {
   });
 
   @override
-  State<PaywallStubScreen> createState() => _PaywallStubScreenState();
+  State<FeatureSummaryScreen> createState() => _FeatureSummaryScreenState();
 }
 
-class _PaywallStubScreenState extends State<PaywallStubScreen>
+class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
     with TickerProviderStateMixin {
   late final AnimationController _fishBounceController;
   late final CurvedAnimation _fishBounceCurve;

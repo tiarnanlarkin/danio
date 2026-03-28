@@ -17,7 +17,7 @@ import 'onboarding/micro_lesson_screen.dart';
 import 'onboarding/xp_celebration_screen.dart';
 import 'onboarding/fish_select_screen.dart';
 import 'onboarding/aha_moment_screen.dart';
-import 'onboarding/paywall_stub_screen.dart';
+import 'onboarding/feature_summary_screen.dart';
 import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
 import 'package:danio/utils/logger.dart';
@@ -350,7 +350,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               if (_selectedFish == null) {
                 return _OnboardingFallback(onGoBack: () => _goToStep(5));
               }
-              return PaywallStubScreen(
+              return FeatureSummaryScreen(
                 selectedFish: _selectedFish!,
                 onComplete: _nextPage,
                 onSkip: _nextPage,
