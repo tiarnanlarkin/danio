@@ -151,8 +151,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       ),
       const SizedBox(height: AppSpacing.sm2),
       DropdownButtonFormField<TankType>(
-        // ignore: deprecated_member_use
-        value: _type,
+        initialValue: _type,
         items: const [
           DropdownMenuItem(
             value: TankType.freshwater,
@@ -260,27 +259,23 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       ),
       const SizedBox(height: AppSpacing.sm2),
       if (_type == TankType.freshwater)
-        Column(
-          children: [
-            RadioListTile<String>(
-              value: 'tropical',
-              // ignore: deprecated_member_use
-              groupValue: _waterType,
-              // ignore: deprecated_member_use
-              onChanged: (v) => setState(() => _waterType = v!),
-              title: const Text('Tropical'),
-              subtitle: const Text('24-28°C • most community fish'),
-            ),
-            RadioListTile<String>(
-              value: 'coldwater',
-              // ignore: deprecated_member_use
-              groupValue: _waterType,
-              // ignore: deprecated_member_use
-              onChanged: (v) => setState(() => _waterType = v!),
-              title: const Text('Coldwater'),
-              subtitle: const Text('15-22°C • goldfish etc.'),
-            ),
-          ],
+        RadioGroup<String>(
+          groupValue: _waterType,
+          onChanged: (v) => setState(() => _waterType = v!),
+          child: Column(
+            children: [
+              RadioListTile<String>(
+                value: 'tropical',
+                title: const Text('Tropical'),
+                subtitle: const Text('24-28°C • most community fish'),
+              ),
+              RadioListTile<String>(
+                value: 'coldwater',
+                title: const Text('Coldwater'),
+                subtitle: const Text('15-22°C • goldfish etc.'),
+              ),
+            ],
+          ),
         )
       else
         const Text('Marine targets not available yet.'),

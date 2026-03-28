@@ -16,6 +16,7 @@ import '../../utils/haptic_feedback.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../utils/skeleton_placeholders.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/app_card.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/core/bubble_loader.dart';
@@ -280,26 +281,12 @@ class TankDetailScreen extends ConsumerWidget {
     Tank tank,
   ) async {
     // P0-4 FIX: Show confirmation dialog before soft-deleting
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Tank?'),
-        content: Text(
-          'Delete ${tank.name}? This action can be undone for 5 seconds.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Keep Tank',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Delete Tank',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Delete Tank?',
+      message: 'Delete ${tank.name}? This action can be undone for 5 seconds.',
+      destructiveLabel: 'Delete Tank',
+      cancelLabel: 'Keep Tank',
     );
 
     if (confirmed != true || !context.mounted) return;

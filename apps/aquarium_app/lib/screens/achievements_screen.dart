@@ -3,6 +3,7 @@
 library;
 
 import '../theme/app_theme.dart';
+import '../widgets/core/app_button.dart';
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
@@ -283,10 +284,11 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          FilledButton.icon(
+                          AppButton(
+                            label: 'Start Learning',
                             onPressed: () => Navigator.of(context).pop(),
-                            icon: const Icon(Icons.school_outlined),
-                            label: const Text('Start Learning'),
+                            leadingIcon: Icons.school_outlined,
+                            variant: AppButtonVariant.primary,
                           ),
                         ],
                       ),

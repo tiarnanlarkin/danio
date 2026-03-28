@@ -651,8 +651,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
           ),
           const SizedBox(height: AppSpacing.sm2),
           DropdownButtonFormField<String>(
-            // ignore: deprecated_member_use
-            value: _category,
+            initialValue: _category,
             decoration: const InputDecoration(
               labelText: 'Category',
               border: OutlineInputBorder(),

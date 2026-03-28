@@ -89,10 +89,8 @@ class PlantDecoration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExcludeSemantics(
-      child: Transform(
-        // ignore: deprecated_member_use
-        transform: Matrix4.identity()..scale(flip ? -1.0 : 1.0, 1.0),
-        alignment: Alignment.center,
+      child: Transform.flip(
+        flipX: flip,
         child: CustomPaint(
           size: Size(height * 0.4, height),
           painter: _PlantPainter(color: color.withAlpha(51)),
