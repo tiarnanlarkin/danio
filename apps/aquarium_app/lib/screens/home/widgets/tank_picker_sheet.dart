@@ -4,6 +4,7 @@ import '../../../models/models.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/app_feedback.dart';
+import '../../../widgets/core/app_button.dart';
 
 class TankPickerSheet extends ConsumerStatefulWidget {
   final List<Tank> tanks;
@@ -65,16 +66,20 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
                 Text('Your Tanks', style: AppTypography.headlineSmall),
                 const Spacer(),
                 if (_hasReordered)
-                  TextButton.icon(
+                  AppButton(
+                    label: 'Save',
                     onPressed: _saveOrder,
-                    icon: const Icon(Icons.check, size: 18),
-                    label: const Text('Save'),
+                    leadingIcon: Icons.check,
+                    variant: AppButtonVariant.primary,
+                    size: AppButtonSize.small,
                   )
                 else
-                  TextButton.icon(
+                  AppButton(
+                    label: 'Add',
                     onPressed: widget.onAddTank,
-                    icon: const Icon(Icons.add, size: 18),
-                    label: const Text('Add'),
+                    leadingIcon: Icons.add,
+                    variant: AppButtonVariant.text,
+                    size: AppButtonSize.small,
                   ),
               ],
             ),

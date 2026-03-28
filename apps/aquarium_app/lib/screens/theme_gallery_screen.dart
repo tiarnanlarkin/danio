@@ -377,9 +377,10 @@ class ThemeGalleryScreen extends ConsumerWidget {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Got it',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Got it'),
+            variant: AppButtonVariant.text,
           ),
         ],
       ),

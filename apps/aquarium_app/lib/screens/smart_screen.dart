@@ -19,6 +19,7 @@ import '../widgets/offline_indicator.dart';
 import '../widgets/first_visit_tooltip.dart';
 import 'compatibility_checker_screen.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../widgets/core/app_button.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
@@ -419,13 +420,14 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                ElevatedButton.icon(
+                AppButton(
+                  label: 'Run Symptom Triage',
                   onPressed: () {
                     Navigator.maybePop(ctx);
                     // Navigate to symptom triage
                   },
-                  icon: const Icon(Icons.medical_services_outlined, size: 18),
-                  label: const Text('Run Symptom Triage'),
+                  leadingIcon: Icons.medical_services_outlined,
+                  variant: AppButtonVariant.primary,
                 ),
                 const Spacer(),
               ],

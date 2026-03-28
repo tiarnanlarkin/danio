@@ -124,9 +124,10 @@ class TermsOfServiceScreen extends StatelessWidget {
                     trailingIcon: Icons.open_in_new,
                   ),
                   const SizedBox(height: AppSpacing.sm2),
-                  TextButton(
+                  AppButton(
+                    label: 'Contact Us',
                     onPressed: () => _showContactInfo(context),
-                    child: const Text('Contact Us'),
+                    variant: AppButtonVariant.text,
                   ),
                 ],
               ),
@@ -275,9 +276,10 @@ class TermsOfServiceScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Close',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Close'),
+            variant: AppButtonVariant.text,
           ),
         ],
       ),

@@ -281,11 +281,13 @@ class TasksScreen extends ConsumerWidget {
         title: const Text('Delete Task?'),
         content: Text('Remove "${task.title}" from your task list?'),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Keep'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Delete Task',
             onPressed: () async {
               Navigator.maybePop(ctx);
               try {
@@ -297,10 +299,7 @@ class TasksScreen extends ConsumerWidget {
                 }
               }
             },
-            child: const Text(
-              'Delete Task',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),
@@ -432,9 +431,10 @@ class _TaskHistoryDialog extends ConsumerWidget {
         ),
       ),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'Close',
           onPressed: () => Navigator.maybePop(context),
-          child: const Text('Close'),
+          variant: AppButtonVariant.text,
         ),
       ],
     );

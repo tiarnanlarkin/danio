@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
 import '../utils/navigation_throttle.dart';
+import '../widgets/core/app_button.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -124,27 +125,30 @@ class AboutScreen extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                TextButton.icon(
-                  icon: const Icon(Icons.privacy_tip_outlined, size: 18),
-                  label: const Text('Privacy'),
+                AppButton(
+                  label: 'Privacy',
+                  leadingIcon: Icons.privacy_tip_outlined,
                   onPressed: () => _showPrivacyInfo(context),
+                  variant: AppButtonVariant.text,
                 ),
-                TextButton.icon(
-                  icon: const Icon(Icons.gavel, size: 18),
-                  label: const Text('Terms'),
+                AppButton(
+                  label: 'Terms',
+                  leadingIcon: Icons.gavel,
                   onPressed: () => NavigationThrottle.push(
                     context,
                     const TermsOfServiceScreen(),
                   ),
+                  variant: AppButtonVariant.text,
                 ),
-                TextButton.icon(
-                  icon: const Icon(Icons.code, size: 18),
-                  label: const Text('Licenses'),
+                AppButton(
+                  label: 'Licenses',
+                  leadingIcon: Icons.code,
                   onPressed: () => showLicensePage(
                     context: context,
                     applicationName: 'Danio',
                     applicationVersion: '1.0.0',
                   ),
+                  variant: AppButtonVariant.text,
                 ),
               ],
             ),

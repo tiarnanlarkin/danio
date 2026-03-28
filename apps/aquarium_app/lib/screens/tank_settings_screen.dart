@@ -379,16 +379,15 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         title: const Text('Unsaved Changes'),
         content: const Text('You have unsaved changes. Discard them?'),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep Editing',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            child: const Text('Keep Editing'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Discard',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: const Text(
-              'Discard',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),
@@ -456,16 +455,15 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           'This will remove all livestock, equipment, logs, and tasks. You\'ll have 5 seconds to undo.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep Tank',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            child: const Text('Keep Tank'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Delete Tank',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: const Text(
-              'Delete Tank',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

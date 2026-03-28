@@ -158,19 +158,20 @@ class WishlistScreen extends ConsumerWidget {
         title: const Text('Remove From Wishlist?'),
         content: Text('Remove "${item.name}" from your wishlist?'),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep',
             onPressed: () {
               if (Navigator.canPop(ctx)) Navigator.pop(ctx);
             },
-            child: const Text('Keep'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Remove Item',
             onPressed: () {
               ref.read(wishlistProvider.notifier).removeItem(item.id);
               if (Navigator.canPop(ctx)) Navigator.pop(ctx);
             },
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Remove Item'),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),
@@ -508,15 +509,13 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
             // Save button
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: AppButton(
+                label: _isEditing ? 'Save Changes' : 'Add to Wishlist',
                 onPressed: _nameController.text.trim().isNotEmpty
                     ? _save
                     : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: widget.accentColor,
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                ),
-                child: Text(_isEditing ? 'Save Changes' : 'Add to Wishlist'),
+                variant: AppButtonVariant.primary,
+                isFullWidth: true,
               ),
             ),
           ],
