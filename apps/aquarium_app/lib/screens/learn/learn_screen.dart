@@ -414,7 +414,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           const SizedBox(height: AppSpacing.sm),
                           Builder(
                             builder: (context) {
-                              final userCompleted = profile?.completedLessons ?? [];
+                              final userCompleted = profile.completedLessons ?? [];
                               final completedPaths = metadata.where((meta) {
                                 final done = meta.lessonIds
                                     .where(
@@ -465,7 +465,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final meta = metadata[index];
-                        final userCompleted = profile?.completedLessons ?? [];
+                        final userCompleted = profile.completedLessons ?? [];
                         final completedInPath = meta.lessonIds
                             .where(
                               (id) => userCompleted.contains(id),
