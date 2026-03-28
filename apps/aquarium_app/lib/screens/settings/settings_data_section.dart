@@ -226,56 +226,22 @@ Future<void> showPhotoStorageInfo(BuildContext context) async {
 
 /// Confirm and clear all local data.
 Future<void> confirmClearData(BuildContext context, WidgetRef ref) async {
-  final confirmed = await showDialog<bool>(
+  final confirmed = await showAppDestructiveDialog(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Clear All Data?'),
-      content: const Text(
+    title: 'Clear All Data?',
+    message:
         'This will permanently delete all your tanks, logs, tasks, and photos. This cannot be undone.',
-      ),
-      actions: [
-        AppButton(
-          label: 'Cancel',
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-          },
-          variant: AppButtonVariant.text,
-        ),
-        AppButton(
-          label: 'Delete Everything',
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-          },
-          variant: AppButtonVariant.destructive,
-        ),
-      ],
-    ),
+    destructiveLabel: 'Delete Everything',
   );
 
   if (confirmed != true || !context.mounted) return;
 
-  final reallyConfirmed = await showDialog<bool>(
+  final reallyConfirmed = await showAppDestructiveDialog(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Are you absolutely sure?'),
-      content: const Text('All data will be lost forever.'),
-      actions: [
-        AppButton(
-          label: 'No, keep my data',
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-          },
-          variant: AppButtonVariant.text,
-        ),
-        AppButton(
-          label: 'Yes, delete everything',
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-          },
-          variant: AppButtonVariant.destructive,
-        ),
-      ],
-    ),
+    title: 'Are you absolutely sure?',
+    message: 'All data will be lost forever.',
+    destructiveLabel: 'Yes, delete everything',
+    cancelLabel: 'No, keep my data',
   );
 
   if (reallyConfirmed != true || !context.mounted) return;
@@ -309,43 +275,44 @@ Future<void> confirmDeleteMyData(
   BuildContext context,
   WidgetRef ref,
 ) async {
-  final confirmed = await showDialog<bool>(
+  final confirmed = await showAppDialog<bool>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Delete My Data'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'This will permanently delete all your local data '
-            '(tanks, progress, achievements). This cannot be undone.',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'For server-side data deletion requests, email '
-            'larkintiarnanbizz@gmail.com',
-            style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
-          ),
-        ],
-      ),
-      actions: [
-        AppButton(
-          label: 'Cancel',
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-          },
-          variant: AppButtonVariant.text,
+    title: 'Delete My Data',
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'This will permanently delete all your local data '
+          '(tanks, progress, achievements). This cannot be undone.',
         ),
-        AppButton(
-          label: 'Delete Everything',
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-          },
-          variant: AppButtonVariant.destructive,
+        const SizedBox(height: AppSpacing.md),
+        const Text(
+          'For server-side data deletion requests, email '
+          'larkintiarnanbizz@gmail.com',
+          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
         ),
       ],
     ),
+    actions: [
+      AppButton(
+        label: 'Cancel',
+        onPressed: () {
+          if (Navigator.canPop(context)) Navigator.pop(context, false);
+        },
+        variant: AppButtonVariant.text,
+        isFullWidth: true,
+      ),
+      const SizedBox(height: AppSpacing.xs),
+      AppButton(
+        label: 'Delete Everything',
+        onPressed: () {
+          if (Navigator.canPop(context)) Navigator.pop(context, true);
+        },
+        variant: AppButtonVariant.destructive,
+        isFullWidth: true,
+      ),
+    ],
   );
 
   if (confirmed != true || !context.mounted) return;

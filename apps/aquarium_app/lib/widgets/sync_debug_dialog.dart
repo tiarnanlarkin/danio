@@ -2,6 +2,8 @@ import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/sync_service.dart';
+import 'core/app_button.dart';
+import 'core/app_dialog.dart';
 
 /// Debug/info dialog showing detailed sync status
 class SyncDebugDialog extends ConsumerWidget {
@@ -11,9 +13,9 @@ class SyncDebugDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncServiceProvider);
 
-    return AlertDialog(
-      title: const Text('Sync Status'),
-      content: SingleChildScrollView(
+    return AppDialog(
+      title: 'Sync Status',
+      child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,24 +159,32 @@ class SyncDebugDialog extends ConsumerWidget {
       ),
       actions: [
         if (syncState.hasQueuedActions) ...[
-          TextButton(
+          AppButton(
+            label: 'Clear Queue',
             onPressed: () {
               ref.read(syncServiceProvider.notifier).clearQueue();
               Navigator.of(context).pop();
             },
-            child: const Text('Clear Queue'),
+            variant: AppButtonVariant.text,
+            isFullWidth: true,
           ),
-          TextButton(
+          const SizedBox(height: AppSpacing.xs),
+          AppButton(
+            label: 'Sync Now',
             onPressed: () {
               ref.read(syncServiceProvider.notifier).syncNow();
               Navigator.of(context).pop();
             },
-            child: const Text('Sync Now'),
+            variant: AppButtonVariant.primary,
+            isFullWidth: true,
           ),
+          const SizedBox(height: AppSpacing.xs),
         ],
-        TextButton(
+        AppButton(
+          label: 'Close',
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../theme/app_theme.dart';
 import '../utils/logger.dart';
 
@@ -249,40 +250,39 @@ class TermsOfServiceScreen extends StatelessWidget {
   }
 
   void _showContactInfo(BuildContext context) {
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Contact Us'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'For questions about these Terms of Service:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildContactRow(
-              Icons.email,
-              'larkintiarnanbizz@gmail.com',
-              context,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            _buildContactRow(
-              Icons.person,
-              'Developer: Tiarnan Larkin',
-              context,
-            ),
-          ],
-        ),
-        actions: [
-          AppButton(
-            label: 'Close',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
+      title: 'Contact Us',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'For questions about these Terms of Service:',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _buildContactRow(
+            Icons.email,
+            'larkintiarnanbizz@gmail.com',
+            context,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _buildContactRow(
+            Icons.person,
+            'Developer: Tiarnan Larkin',
+            context,
           ),
         ],
       ),
+      actions: [
+        AppButton(
+          label: 'Close',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 

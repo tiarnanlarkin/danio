@@ -10,6 +10,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
@@ -374,24 +375,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
   }
 
   Future<void> _showUnsavedChangesDialog(BuildContext context) async {
-    final discard = await showDialog<bool>(
+    final discard = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Unsaved Changes'),
-        content: const Text('You have unsaved changes. Discard them?'),
-        actions: [
-          AppButton(
-            label: 'Keep Editing',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Discard',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Unsaved Changes',
+      message: 'You have unsaved changes. Discard them?',
+      destructiveLabel: 'Discard',
+      cancelLabel: 'Keep Editing',
     );
     if (discard == true && context.mounted) {
       Navigator.of(context).pop();
@@ -449,26 +438,13 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
   }
 
   Future<void> _confirmDelete() async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Tank?'),
-        content: const Text(
-          'This will remove all livestock, equipment, logs, and tasks. You\'ll have 5 seconds to undo.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Keep Tank',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Delete Tank',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Delete Tank?',
+      message:
+          "This will remove all livestock, equipment, logs, and tasks. You'll have 5 seconds to undo.",
+      destructiveLabel: 'Delete Tank',
+      cancelLabel: 'Keep Tank',
     );
 
     if (confirmed != true) return;

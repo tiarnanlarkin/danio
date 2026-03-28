@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../models/wishlist.dart';
@@ -177,38 +178,39 @@ class ShopStreetScreen extends ConsumerWidget {
       text: budget.monthlyBudget.toStringAsFixed(0),
     );
 
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Set Monthly Budget'),
-        content: TextField(
-          controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(
-            labelText: 'Budget amount',
-            prefixText: '£ ',
-          ),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-          ],
+      title: 'Set Monthly Budget',
+      child: TextField(
+        controller: controller,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        decoration: const InputDecoration(
+          labelText: 'Budget amount',
+          prefixText: '£ ',
         ),
-        actions: [
-          AppButton(
-            label: 'Cancel',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Save',
-            onPressed: () {
-              final amount = double.tryParse(controller.text) ?? 100;
-              ref.read(budgetProvider.notifier).setMonthlyBudget(amount);
-              Navigator.maybePop(ctx);
-            },
-            variant: AppButtonVariant.primary,
-          ),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
         ],
       ),
+      actions: [
+        AppButton(
+          label: 'Cancel',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
+          label: 'Save',
+          onPressed: () {
+            final amount = double.tryParse(controller.text) ?? 100;
+            ref.read(budgetProvider.notifier).setMonthlyBudget(amount);
+            Navigator.maybePop(context);
+          },
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
+        ),
+      ],
     ).whenComplete(() => controller.dispose());
   }
 
@@ -334,27 +336,13 @@ class ShopStreetScreen extends ConsumerWidget {
   }
 
   void _deleteShop(BuildContext context, WidgetRef ref, LocalShop shop) {
-    showDialog(
+    showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Remove Shop?'),
-        content: Text('Remove "${shop.name}" from your saved shops?'),
-        actions: [
-          AppButton(
-            label: 'Keep',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Remove Shop',
-            onPressed: () {
-              ref.read(localShopsProvider.notifier).removeShop(shop.id);
-              Navigator.maybePop(ctx);
-            },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Remove Shop?',
+      message: 'Remove "${shop.name}" from your saved shops?',
+      destructiveLabel: 'Remove Shop',
+      cancelLabel: 'Keep',
+      onConfirm: () => ref.read(localShopsProvider.notifier).removeShop(shop.id),
     );
   }
 }

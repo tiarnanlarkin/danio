@@ -5,6 +5,7 @@ import '../theme/app_theme.dart';
 import '../theme/room_themes.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 
 /// Theme Gallery Screen - Browse and select room visual themes
 /// Supports free and premium (locked) themes for future monetization
@@ -335,55 +336,34 @@ class ThemeGalleryScreen extends ConsumerWidget {
   }
 
   void _showPremiumDialog(BuildContext context) {
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
-                ),
-                borderRadius: AppRadius.mediumRadius,
-              ),
-              child: const Icon(
-                Icons.star,
-                color: AppColors.onPrimary,
-                size: AppIconSizes.sm,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm2),
-            const Text('Premium Theme'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Premium themes are on the way!',
-              style: Theme.of(context).textTheme.titleMedium!,
-            ),
-            const SizedBox(height: AppSpacing.sm2),
-            Text(
-              'Support the app and unlock exclusive themes with unique animations and special effects.',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge!.copyWith(color: context.textSecondary),
-            ),
-          ],
-        ),
-        actions: [
-          AppButton(
-            label: 'Got it',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
+      title: '⭐ Premium Theme',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Premium themes are on the way!',
+            style: Theme.of(context).textTheme.titleMedium!,
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          Text(
+            'Support the app and unlock exclusive themes with unique animations and special effects.',
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge!.copyWith(color: context.textSecondary),
           ),
         ],
       ),
+      actions: [
+        AppButton(
+          label: 'Got it',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 }

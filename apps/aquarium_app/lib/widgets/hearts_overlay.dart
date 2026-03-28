@@ -5,6 +5,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import 'core/app_button.dart';
+import 'core/app_dialog.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import 'dart:async';
@@ -320,31 +322,34 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   /// Show out of hearts dialog
   Future<String?> showOutOfHeartsDialog() async {
-    return showDialog<String>(
+    return showAppDialog<String>(
       context: context,
+      title: 'Out of Hearts',
+      icon: Icons.heart_broken,
+      iconColor: AppColors.error,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.heart_broken, color: AppColors.error),
-            SizedBox(width: AppSpacing.sm),
-            Text('Out of Hearts'),
-          ],
-        ),
-        content: const Text(
-          'You need hearts to continue lessons. Try practice mode to earn hearts or wait for them to refill!',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () { if (Navigator.canPop(context)) Navigator.pop(context, 'practice'); },
-            child: const Text('Practice Mode'),
-          ),
-          FilledButton(
-            onPressed: () { if (Navigator.canPop(context)) Navigator.pop(context, 'wait'); },
-            child: const Text('Got It'),
-          ),
-        ],
+      child: const Text(
+        'You need hearts to continue lessons. Try practice mode to earn hearts or wait for them to refill!',
       ),
+      actions: [
+        AppButton(
+          label: 'Practice Mode',
+          onPressed: () {
+            if (Navigator.canPop(context)) Navigator.pop(context, 'practice');
+          },
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
+          label: 'Got It',
+          onPressed: () {
+            if (Navigator.canPop(context)) Navigator.pop(context, 'wait');
+          },
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 }

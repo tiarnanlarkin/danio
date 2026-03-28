@@ -16,6 +16,7 @@ import '../theme/app_theme.dart';
 import '../utils/concept_display_names.dart';
 import '../utils/logger.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/danio_snack_bar.dart';
 
@@ -518,42 +519,41 @@ class _SpacedRepetitionPracticeScreenState
   void _showStatsDialog() {
     final srState = ref.read(spacedRepetitionProvider);
 
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Statistics'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildStatRow('Total Cards', srState.stats.totalCards.toString()),
-              _buildStatRow('Due Cards', srState.stats.dueCards.toString()),
-              _buildStatRow('Weak Cards', srState.stats.weakCards.toString()),
-              _buildStatRow('Mastered', srState.stats.masteredCards.toString()),
-              _buildStatRow(
-                'Average Strength',
-                '${(srState.stats.averageStrength * 100).round()}%',
-              ),
-              _buildStatRow(
-                'Reviews Today',
-                srState.stats.reviewsToday.toString(),
-              ),
-              _buildStatRow(
-                'Current Streak',
-                '${srState.stats.currentStreak} ${srState.stats.currentStreak == 1 ? 'day' : 'days'}',
-              ),
-            ],
-          ),
+      title: 'Statistics',
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildStatRow('Total Cards', srState.stats.totalCards.toString()),
+            _buildStatRow('Due Cards', srState.stats.dueCards.toString()),
+            _buildStatRow('Weak Cards', srState.stats.weakCards.toString()),
+            _buildStatRow('Mastered', srState.stats.masteredCards.toString()),
+            _buildStatRow(
+              'Average Strength',
+              '${(srState.stats.averageStrength * 100).round()}%',
+            ),
+            _buildStatRow(
+              'Reviews Today',
+              srState.stats.reviewsToday.toString(),
+            ),
+            _buildStatRow(
+              'Current Streak',
+              '${srState.stats.currentStreak} ${srState.stats.currentStreak == 1 ? 'day' : 'days'}',
+            ),
+          ],
         ),
-        actions: [
-          AppButton(
-            label: 'Close',
-            onPressed: () => Navigator.of(context).pop(),
-            variant: AppButtonVariant.text,
-          ),
-        ],
       ),
+      actions: [
+        AppButton(
+          label: 'Close',
+          onPressed: () => Navigator.of(context).pop(),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 
@@ -1076,15 +1076,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     final accuracy = (widget.session.score * 100).round();
     final totalXp = widget.session.totalXp;
 
-    return AlertDialog(
-      title: Row(
-        children: [
-          const Text('Session Complete!'),
-          const SizedBox(width: AppSpacing.sm),
-          const Text('🎉'),
-        ],
-      ),
-      content: Column(
+    return AppDialog(
+      title: 'Session Complete! 🎉',
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1165,6 +1159,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             Navigator.of(context).pop(); // Close session screen
           },
           variant: AppButtonVariant.primary,
+          isFullWidth: true,
         ),
       ],
     );
@@ -1208,80 +1203,77 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     final cardsReviewed = widget.session.results.length;
     final cardsRemaining = widget.session.cards.length - cardsReviewed;
 
-    return showDialog<bool>(
+    return showAppDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.exit_to_app, color: AppColors.warning),
-            SizedBox(width: AppSpacing.sm2),
-            Text('Exit Session?'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Your progress will be saved, but you\'ll need to start a new session to continue practicing.',
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm2),
-              decoration: BoxDecoration(
-                color: context.surfaceVariant,
-                borderRadius: AppRadius.smallRadius,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle,
-                        size: AppIconSizes.xs,
-                        color: AppColors.success,
-                      ),
-                      const SizedBox(width: AppSpacing.xs2),
-                      Text(
-                        'Cards reviewed: $cardsReviewed',
-                        style: AppTypography.bodySmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.pending,
-                        size: AppIconSizes.xs,
-                        color: context.textSecondary,
-                      ),
-                      const SizedBox(width: AppSpacing.xs2),
-                      Text(
-                        'Cards remaining: $cardsRemaining',
-                        style: AppTypography.bodySmall,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          AppButton(
-            label: 'Continue Session',
-            onPressed: () => Navigator.of(context).pop(false),
-            variant: AppButtonVariant.text,
+      title: 'Exit Session?',
+      icon: Icons.exit_to_app,
+      iconColor: AppColors.warning,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Your progress will be saved, but you\'ll need to start a new session to continue practicing.',
           ),
-          AppButton(
-            label: 'Exit',
-            onPressed: () => Navigator.of(context).pop(true),
-            variant: AppButtonVariant.destructive,
-          ),
+          const SizedBox(height: AppSpacing.md),
+          Builder(builder: (context) => Container(
+            padding: const EdgeInsets.all(AppSpacing.sm2),
+            decoration: BoxDecoration(
+              color: context.surfaceVariant,
+              borderRadius: AppRadius.smallRadius,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      size: AppIconSizes.xs,
+                      color: AppColors.success,
+                    ),
+                    const SizedBox(width: AppSpacing.xs2),
+                    Text(
+                      'Cards reviewed: $cardsReviewed',
+                      style: AppTypography.bodySmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Row(
+                  children: [
+                    Builder(builder: (context) => Icon(
+                      Icons.pending,
+                      size: AppIconSizes.xs,
+                      color: context.textSecondary,
+                    )),
+                    const SizedBox(width: AppSpacing.xs2),
+                    Text(
+                      'Cards remaining: $cardsRemaining',
+                      style: AppTypography.bodySmall,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )),
         ],
       ),
+      actions: [
+        AppButton(
+          label: 'Continue Session',
+          onPressed: () => Navigator.of(context).pop(false),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
+          label: 'Exit',
+          onPressed: () => Navigator.of(context).pop(true),
+          variant: AppButtonVariant.destructive,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 }

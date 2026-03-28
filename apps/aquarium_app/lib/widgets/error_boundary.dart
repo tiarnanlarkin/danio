@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'core/app_button.dart';
+import 'core/app_dialog.dart';
 import '../utils/logger.dart';
 
 /// Error boundary widget that catches errors and displays a friendly fallback UI
@@ -178,24 +179,24 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                     const SizedBox(height: AppSpacing.md),
                     OutlinedButton(
                       onPressed: () {
-                        showDialog(
+                        showAppDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Error Details'),
-                            content: SingleChildScrollView(
-                              child: Text(
-                                error.toString(),
-                                style: Theme.of(context).textTheme.bodySmall!
-                                    .copyWith(fontFamily: 'monospace'),
-                              ),
+                          title: 'Error Details',
+                          child: SingleChildScrollView(
+                            child: Text(
+                              error.toString(),
+                              style: Theme.of(context).textTheme.bodySmall!
+                                  .copyWith(fontFamily: 'monospace'),
                             ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.maybePop(context),
-                                child: const Text('Close'),
-                              ),
-                            ],
                           ),
+                          actions: [
+                            AppButton(
+                              label: 'Close',
+                              onPressed: () => Navigator.maybePop(context),
+                              variant: AppButtonVariant.text,
+                              isFullWidth: true,
+                            ),
+                          ],
                         );
                       },
                       child: const Text('Show Technical Details'),

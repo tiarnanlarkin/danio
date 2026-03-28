@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -217,36 +218,34 @@ class TasksScreen extends ConsumerWidget {
   }
 
   void _showSnoozeDialog(BuildContext context, WidgetRef ref, Task task) {
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Snooze Task'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('1 day'),
-              onTap: () {
-                Navigator.maybePop(ctx);
-                _snoozeTask(ref, task, 1);
-              },
-            ),
-            ListTile(
-              title: const Text('3 days'),
-              onTap: () {
-                Navigator.maybePop(ctx);
-                _snoozeTask(ref, task, 3);
-              },
-            ),
-            ListTile(
-              title: const Text('1 week'),
-              onTap: () {
-                Navigator.maybePop(ctx);
-                _snoozeTask(ref, task, 7);
-              },
-            ),
-          ],
-        ),
+      title: 'Snooze Task',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text('1 day'),
+            onTap: () {
+              Navigator.maybePop(context);
+              _snoozeTask(ref, task, 1);
+            },
+          ),
+          ListTile(
+            title: const Text('3 days'),
+            onTap: () {
+              Navigator.maybePop(context);
+              _snoozeTask(ref, task, 3);
+            },
+          ),
+          ListTile(
+            title: const Text('1 week'),
+            onTap: () {
+              Navigator.maybePop(context);
+              _snoozeTask(ref, task, 7);
+            },
+          ),
+        ],
       ),
     );
   }
@@ -273,35 +272,23 @@ class TasksScreen extends ConsumerWidget {
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref, Task task) {
-    showDialog(
+    showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Task?'),
-        content: Text('Remove "${task.title}" from your task list?'),
-        actions: [
-          AppButton(
-            label: 'Keep',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Delete Task',
-            onPressed: () async {
-              Navigator.maybePop(ctx);
-              try {
-                await ref.read(storageServiceProvider).deleteTask(task.id);
-                ref.invalidate(tasksProvider(tankId));
-              } catch (e, st) {
-                logError('TasksScreen: task delete failed: $e', stackTrace: st, tag: 'TasksScreen');
-                if (context.mounted) {
-                  DanioSnackBar.error(context, 'Couldn\'t delete that task. Give it another go!');
-                }
-              }
-            },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Delete Task?',
+      message: 'Remove "${task.title}" from your task list?',
+      destructiveLabel: 'Delete Task',
+      cancelLabel: 'Keep',
+      onConfirm: () async {
+        try {
+          await ref.read(storageServiceProvider).deleteTask(task.id);
+          ref.invalidate(tasksProvider(tankId));
+        } catch (e, st) {
+          logError('TasksScreen: task delete failed: $e', stackTrace: st, tag: 'TasksScreen');
+          if (context.mounted) {
+            DanioSnackBar.error(context, "Couldn't delete that task. Give it another go!");
+          }
+        }
+      },
     );
   }
 
@@ -357,9 +344,9 @@ class _TaskHistoryDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
-    return AlertDialog(
-      title: Text('History - ${task.title}'),
-      content: SizedBox(
+    return AppDialog(
+      title: 'History - ${task.title}',
+      child: SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(

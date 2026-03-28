@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/app_button.dart';
+import 'core/app_dialog.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/gems_provider.dart';
@@ -431,7 +432,8 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
-                      TextButton(
+                      AppButton(
+                        label: 'Get More',
                         onPressed: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).push(
@@ -440,7 +442,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                             ),
                           );
                         },
-                        child: const Text('Get More'),
+                        variant: AppButtonVariant.text,
                       ),
                     ],
                   ),
@@ -465,14 +467,14 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                 const SizedBox(height: AppSpacing.sm2),
 
                 // Wait button
-                OutlinedButton(
+                AppButton(
+                  label: 'Wait for Refill',
                   onPressed: () {
                     Navigator.of(context).pop('wait');
                   },
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),
-                  ),
-                  child: const Text('Wait for Refill'),
+                  variant: AppButtonVariant.secondary,
+                  isFullWidth: true,
+                  size: AppButtonSize.large,
                 ),
               ],
             ),

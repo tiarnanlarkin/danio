@@ -9,6 +9,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
 
 /// Screen to view and manage wishlist items for a category
@@ -151,29 +152,13 @@ class WishlistScreen extends ConsumerWidget {
   }
 
   void _deleteItem(BuildContext context, WidgetRef ref, WishlistItem item) {
-    showDialog(
+    showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Remove From Wishlist?'),
-        content: Text('Remove "${item.name}" from your wishlist?'),
-        actions: [
-          AppButton(
-            label: 'Keep',
-            onPressed: () {
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx);
-            },
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Remove Item',
-            onPressed: () {
-              ref.read(wishlistProvider.notifier).removeItem(item.id);
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx);
-            },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Remove From Wishlist?',
+      message: 'Remove "${item.name}" from your wishlist?',
+      destructiveLabel: 'Remove Item',
+      cancelLabel: 'Keep',
+      onConfirm: () => ref.read(wishlistProvider.notifier).removeItem(item.id),
     );
   }
 

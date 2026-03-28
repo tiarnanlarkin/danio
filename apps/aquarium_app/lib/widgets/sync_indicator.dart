@@ -1,4 +1,5 @@
 import '../theme/app_theme.dart';
+import 'core/app_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -111,11 +112,12 @@ class SyncIndicator extends ConsumerWidget {
               ),
             ),
             if (!isSyncing && syncState.hasQueuedActions)
-              TextButton(
+              AppButton(
+                label: 'Retry',
                 onPressed: () {
                   ref.read(syncServiceProvider.notifier).syncNow();
                 },
-                child: const Text('Retry'),
+                variant: AppButtonVariant.text,
               )
             else
               Icon(

@@ -30,6 +30,7 @@ import 'settings_notifications_section.dart';
 import 'widgets/guides_section.dart';
 import 'widgets/tools_section.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 import '../../widgets/app_bottom_sheet.dart';
 import '../../utils/logger.dart';
 
@@ -1062,9 +1063,9 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Configure AI'),
-      content: SingleChildScrollView(
+    return AppDialog(
+      title: 'Configure AI',
+      child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1124,12 +1125,15 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
         ),
       ),
       actions: [
-        if (_hasUserKey)
+        if (_hasUserKey) ...[
           AppButton(
             label: 'Remove key',
             onPressed: _isBusy ? null : _clearKey,
             variant: AppButtonVariant.destructive,
+            isFullWidth: true,
           ),
+          const SizedBox(height: AppSpacing.xs),
+        ],
         AppButton(
           label: 'Close',
           onPressed: () {
@@ -1137,16 +1141,15 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
             Navigator.maybePop(context);
           },
           variant: AppButtonVariant.text,
+          isFullWidth: true,
         ),
-        FilledButton(
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
+          label: 'Save',
           onPressed: _isBusy ? null : _saveKey,
-          child: _isBusy
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Save'),
+          isLoading: _isBusy,
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
         ),
       ],
     );

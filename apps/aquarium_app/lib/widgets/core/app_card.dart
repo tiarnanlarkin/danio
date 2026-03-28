@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
+import 'app_button.dart';
 
 /// Visual variant for cards
 enum AppCardVariant {
@@ -544,16 +545,11 @@ class ActionCard extends StatelessWidget {
             ),
           ],
           const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              onPressed: onAction,
-              style: TextButton.styleFrom(
-                foregroundColor: color,
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-              ),
-              child: Text(actionLabel),
-            ),
+          AppButton(
+            label: actionLabel,
+            onPressed: onAction,
+            variant: AppButtonVariant.text,
+            isFullWidth: true,
           ),
         ],
       ),

@@ -8,6 +8,7 @@ import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
 // enhanced_placement_test_screen.dart removed — no longer in use
 import '../theme/app_theme.dart';
+import 'core/app_button.dart';
 
 class PlacementChallengeCard extends ConsumerWidget {
   const PlacementChallengeCard({super.key});
@@ -111,36 +112,23 @@ class PlacementChallengeCard extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: FilledButton(
+                    child: AppButton(
+                      label: 'Take the test',
                       onPressed: () {
                         // Placement test screen removed — no-op for now
                       },
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.accent,
-                        foregroundColor: AppColors.onPrimary,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.sm2,
-                        ),
-                      ),
-                      child: const Text('Take the test'),
+                      variant: AppButtonVariant.primary,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm2),
-                  TextButton(
+                  AppButton(
+                    label: 'Skip for now',
                     onPressed: () {
                       ref
                           .read(userProfileProvider.notifier)
                           .skipPlacementTest();
                     },
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size(48, 48),
-                    ),
-                    child: Text(
-                      'Skip for now',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: context.textSecondary,
-                      ),
-                    ),
+                    variant: AppButtonVariant.text,
                   ),
                 ],
               ),

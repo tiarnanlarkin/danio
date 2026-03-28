@@ -215,9 +215,10 @@ class AppEmptyState extends StatelessWidget {
 
             if (secondaryActionLabel != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              TextButton(
+              AppButton(
+                label: secondaryActionLabel!,
                 onPressed: onSecondaryAction,
-                child: Text(secondaryActionLabel!),
+                variant: AppButtonVariant.text,
               ),
             ],
           ],
@@ -551,7 +552,11 @@ class AppErrorState extends StatelessWidget {
 
             if (showReportLink && onReport != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              TextButton(onPressed: onReport, child: Text('Report Issue')),
+              AppButton(
+                label: 'Report Issue',
+                onPressed: onReport,
+                variant: AppButtonVariant.text,
+              ),
             ],
           ],
         ),
