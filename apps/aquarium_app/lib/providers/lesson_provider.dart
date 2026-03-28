@@ -16,6 +16,11 @@ import '../data/lessons/equipment.dart' deferred as equipment;
 import '../data/lessons/fish_health.dart' deferred as fish_health;
 import '../data/lessons/species_care.dart' deferred as species_care;
 import '../data/lessons/advanced_topics.dart' deferred as advanced_topics;
+import '../data/lessons/equipment_expanded.dart' deferred as equipment_expanded;
+import '../data/lessons/species_care_expanded.dart' deferred as species_care_expanded;
+import '../data/lessons/aquascaping.dart' deferred as aquascaping;
+import '../data/lessons/breeding.dart' deferred as breeding;
+import '../data/lessons/troubleshooting.dart' deferred as troubleshooting;
 import '../utils/logger.dart';
 
 /// Lesson loading state
@@ -196,6 +201,11 @@ class LessonProvider extends StateNotifier<LessonState> {
         'eq_filters',
         'eq_heaters',
         'eq_lighting',
+        'eq_air_pumps',
+        'eq_co2_systems',
+        'eq_aquascape_tools',
+        'eq_substrate',
+        'eq_test_kits',
       ],
     ),
     PathMetadata(
@@ -227,6 +237,13 @@ class LessonProvider extends StateNotifier<LessonState> {
         'sc_cichlids',
         'sc_shrimp',
         'sc_snails',
+        'sc_corydoras',
+        'sc_livebearers',
+        'sc_rasboras',
+        'sc_angelfish',
+        'sc_plecos',
+        'sc_gouramis',
+        'sc_loaches',
       ],
     ),
     PathMetadata(
@@ -242,6 +259,45 @@ class LessonProvider extends StateNotifier<LessonState> {
         'at_biotope',
         'at_troubleshooting',
         'at_water_chem',
+      ],
+    ),
+    PathMetadata(
+      id: 'aquascaping',
+      title: 'Aquascaping & Design',
+      description:
+          'Create stunning aquatic landscapes — from layout principles to plant placement and maintenance',
+      emoji: '🌿',
+      orderIndex: 9,
+      lessonIds: [
+        'aq_layout_styles',
+        'aq_plant_zones',
+        'aq_fertilisation',
+        'aq_algae_management',
+      ],
+    ),
+    PathMetadata(
+      id: 'breeding_basics',
+      title: 'Breeding Basics',
+      description:
+          'Successfully breed fish in a home aquarium — from egg layers to livebearers',
+      emoji: '🥚',
+      orderIndex: 10,
+      lessonIds: [
+        'br_breeding_tank',
+        'br_raising_fry',
+        'br_egg_layers',
+      ],
+    ),
+    PathMetadata(
+      id: 'troubleshooting',
+      title: 'Troubleshooting & Emergencies',
+      description: 'Diagnose problems fast and respond before fish die',
+      emoji: '🚨',
+      orderIndex: 11,
+      lessonIds: [
+        'tr_emergency',
+        'tr_disease_diagnosis',
+        'tr_cloudy_water',
       ],
     ),
   ];
@@ -339,6 +395,15 @@ class LessonProvider extends StateNotifier<LessonState> {
       case 'advanced_topics':
         final module = await _loadAdvancedTopics();
         return module;
+      case 'aquascaping':
+        final module = await _loadAquascaping();
+        return module;
+      case 'breeding_basics':
+        final module = await _loadBreedingBasics();
+        return module;
+      case 'troubleshooting':
+        final module = await _loadTroubleshooting();
+        return module;
       default:
         return null;
     }
@@ -372,7 +437,20 @@ class LessonProvider extends StateNotifier<LessonState> {
 
   Future<LearningPath> _loadEquipment() async {
     await equipment.loadLibrary();
-    return equipment.equipmentPath;
+    await equipment_expanded.loadLibrary();
+    final basePath = equipment.equipmentPath;
+    return LearningPath(
+      id: basePath.id,
+      title: basePath.title,
+      description: basePath.description,
+      emoji: basePath.emoji,
+      recommendedFor: basePath.recommendedFor,
+      orderIndex: basePath.orderIndex,
+      lessons: [
+        ...basePath.lessons,
+        ...equipment_expanded.equipmentExpandedLessons,
+      ],
+    );
   }
 
   Future<LearningPath> _loadFishHealth() async {
@@ -382,12 +460,40 @@ class LessonProvider extends StateNotifier<LessonState> {
 
   Future<LearningPath> _loadSpeciesCare() async {
     await species_care.loadLibrary();
-    return species_care.speciesCarePath;
+    await species_care_expanded.loadLibrary();
+    final basePath = species_care.speciesCarePath;
+    return LearningPath(
+      id: basePath.id,
+      title: basePath.title,
+      description: basePath.description,
+      emoji: basePath.emoji,
+      recommendedFor: basePath.recommendedFor,
+      orderIndex: basePath.orderIndex,
+      lessons: [
+        ...basePath.lessons,
+        ...species_care_expanded.speciesCareExpandedLessons,
+      ],
+    );
   }
 
   Future<LearningPath> _loadAdvancedTopics() async {
     await advanced_topics.loadLibrary();
     return advanced_topics.advancedTopicsPath;
+  }
+
+  Future<LearningPath> _loadAquascaping() async {
+    await aquascaping.loadLibrary();
+    return aquascaping.aquascapingPath;
+  }
+
+  Future<LearningPath> _loadBreedingBasics() async {
+    await breeding.loadLibrary();
+    return breeding.breedingBasicsPath;
+  }
+
+  Future<LearningPath> _loadTroubleshooting() async {
+    await troubleshooting.loadLibrary();
+    return troubleshooting.troubleshootingPath;
   }
 
   /// Clear all loaded lessons (memory management)

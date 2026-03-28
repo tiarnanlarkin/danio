@@ -14,19 +14,26 @@ const Map<String, String> speciesLessonMap = {
   // Species Care path lessons
   'betta': 'sc_betta',
   'neon_tetra': 'sc_tetras',
-  'harlequin_rasbora': 'sc_tetras',
+  // harlequin_rasbora remapped from sc_tetras to dedicated lesson
+  'harlequin_rasbora': 'sc_rasboras',
   'cherry_barb': 'sc_tetras',
   'zebra_danio': 'ff_choosing',
-  'guppy': 'ff_choosing',
-  'molly': 'ff_acclimation',
-  'platy': 'ff_behavior',
-  'angelfish': 'sc_cichlids',
+  // guppy now also connects to dedicated livebearer lesson (default unlock preserved)
+  'guppy': 'sc_livebearers',
+  // molly and platy remapped from first_fish to dedicated livebearer lesson
+  'molly': 'sc_livebearers',
+  'platy': 'sc_livebearers',
+  // angelfish remapped from sc_cichlids to dedicated lesson
+  'angelfish': 'sc_angelfish',
   'amano_shrimp': 'sc_shrimp',
   'cherry_shrimp': 'sc_shrimp',
   'nerite_snail': 'sc_snails',
-  'otocinclus': 'planted_basics',
-  'bristlenose_pleco': 'maint_algae',
-  'bronze_corydoras': 'ff_quarantine',
+  // otocinclus remapped from planted_basics to dedicated pleco/algae eater lesson
+  'otocinclus': 'sc_plecos',
+  // bristlenose_pleco remapped from maint_algae to dedicated lesson
+  'bristlenose_pleco': 'sc_plecos',
+  // bronze_corydoras remapped from ff_quarantine to dedicated corydoras lesson
+  'bronze_corydoras': 'sc_corydoras',
 };
 
 /// Species unlocked by default without any lesson requirement.

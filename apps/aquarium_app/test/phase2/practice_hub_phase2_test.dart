@@ -23,7 +23,7 @@ void main() {
         // path metadata set is clean and contains only the expected 9 paths.
         final ids = LessonProvider.allPathMetadata.map((p) => p.id).toSet();
         // Sanity: exactly 9 real paths
-        expect(ids.length, equals(9));
+        expect(ids.length, equals(12));
         // None should be a placeholder quick-practice path
         expect(ids, isNot(contains('quick_practice')));
       },
@@ -163,7 +163,7 @@ void main() {
     test('PathMetadata.buildLessonIdMap returns correct map', () {
       final allMeta = LessonProvider.allPathMetadata;
       final map = PathMetadata.buildLessonIdMap(allMeta);
-      expect(map.length, equals(9));
+      expect(map.length, equals(12));
       expect(map.containsKey('nitrogen_cycle'), isTrue);
       expect(map['nitrogen_cycle'], isNotEmpty);
     });

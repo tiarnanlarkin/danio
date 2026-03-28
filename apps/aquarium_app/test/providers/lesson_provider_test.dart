@@ -10,8 +10,8 @@ import 'package:danio/providers/lesson_provider.dart';
 
 void main() {
   group('LessonProvider.allPathMetadata', () {
-    test('has exactly 9 paths', () {
-      expect(LessonProvider.allPathMetadata.length, equals(9));
+    test('has exactly 12 paths', () {
+      expect(LessonProvider.allPathMetadata.length, equals(12));
     });
 
     test('each path has a non-empty lessonIds list', () {
@@ -24,10 +24,10 @@ void main() {
       }
     });
 
-    test('total lesson count across all paths is 50', () {
+    test('total lesson count across all paths is 72', () {
       final total = LessonProvider.allPathMetadata
           .fold<int>(0, (sum, path) => sum + path.lessonIds.length);
-      expect(total, equals(50));
+      expect(total, equals(72));
     });
 
     test('no duplicate lesson IDs across all paths', () {
@@ -64,6 +64,9 @@ void main() {
           .map((p) => p.orderIndex)
           .toList()
         ..sort();
+      // Verify indices span 0..length-1 without gaps
+      expect(indices.first, equals(0));
+      expect(indices.last, equals(LessonProvider.allPathMetadata.length - 1));
       for (int i = 0; i < indices.length; i++) {
         expect(indices[i], equals(i));
       }

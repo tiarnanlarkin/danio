@@ -23,6 +23,33 @@ import 'package:danio/data/lessons/equipment.dart';
 import 'package:danio/data/lessons/fish_health.dart';
 import 'package:danio/data/lessons/species_care.dart';
 import 'package:danio/data/lessons/advanced_topics.dart';
+import 'package:danio/data/lessons/equipment_expanded.dart';
+import 'package:danio/data/lessons/species_care_expanded.dart';
+import 'package:danio/data/lessons/aquascaping.dart';
+import 'package:danio/data/lessons/breeding.dart';
+import 'package:danio/data/lessons/troubleshooting.dart';
+
+/// Build merged equipment path (base + expanded)
+LearningPath get _mergedEquipmentPath => LearningPath(
+      id: equipmentPath.id,
+      title: equipmentPath.title,
+      description: equipmentPath.description,
+      emoji: equipmentPath.emoji,
+      recommendedFor: equipmentPath.recommendedFor,
+      orderIndex: equipmentPath.orderIndex,
+      lessons: [...equipmentPath.lessons, ...equipmentExpandedLessons],
+    );
+
+/// Build merged species care path (base + expanded)
+LearningPath get _mergedSpeciesCarePath => LearningPath(
+      id: speciesCarePath.id,
+      title: speciesCarePath.title,
+      description: speciesCarePath.description,
+      emoji: speciesCarePath.emoji,
+      recommendedFor: speciesCarePath.recommendedFor,
+      orderIndex: speciesCarePath.orderIndex,
+      lessons: [...speciesCarePath.lessons, ...speciesCareExpandedLessons],
+    );
 
 /// All paths, combined for cross-file tests.
 List<LearningPath> get _allPaths => [
@@ -31,10 +58,13 @@ List<LearningPath> get _allPaths => [
       firstFishPath,
       maintenancePath,
       plantedTankPath,
-      equipmentPath,
+      _mergedEquipmentPath,
       fishHealthPath,
-      speciesCarePath,
+      _mergedSpeciesCarePath,
       advancedTopicsPath,
+      aquascapingPath,
+      breedingBasicsPath,
+      troubleshootingPath,
     ];
 
 /// All lessons across every path.
@@ -198,8 +228,8 @@ void main() {
       }
     });
 
-    test('total lesson count matches LessonProvider metadata (50)', () {
-      expect(_allLessons.length, equals(50));
+    test('total lesson count matches LessonProvider metadata (72)', () {
+      expect(_allLessons.length, equals(72));
     });
 
     test('each LearningPath ID matches its lessons pathId field', () {

@@ -8,16 +8,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:danio/providers/lesson_provider.dart';
 
-// We test the public behavior: all 9 paths are accessible via metadata,
+// We test the public behavior: all 12 paths are accessible via metadata,
 // and _comingSoonPathIds is empty (verified by testing in learn_screen.dart
 // behavior — we can't import private fields, but we can verify metadata).
 
 void main() {
   group('learn_screen stub gate', () {
-    test('all 9 paths are present in allPathMetadata', () {
+    test('all 12 paths are present in allPathMetadata', () {
       // If a path were coming soon / stubbed out, it might be removed from metadata.
-      // Having all 9 confirms nothing is hidden.
-      expect(LessonProvider.allPathMetadata.length, equals(9));
+      // Having all 12 confirms nothing is hidden.
+      expect(LessonProvider.allPathMetadata.length, equals(12));
     });
 
     test('advanced_topics path is present (not hidden)', () {
@@ -43,6 +43,9 @@ void main() {
         'fish_health',
         'species_care',
         'advanced_topics',
+        'aquascaping',
+        'breeding_basics',
+        'troubleshooting',
       };
       expect(ids, equals(expected));
     });

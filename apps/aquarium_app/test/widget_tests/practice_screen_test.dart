@@ -31,7 +31,7 @@ void main() {
     test('Practice Hub metadata has no Quick Practice path', () {
       final ids = LessonProvider.allPathMetadata.map((p) => p.id).toSet();
       expect(ids, isNot(contains('quick_practice')));
-      expect(ids.length, equals(9));
+      expect(ids.length, equals(12));
     });
 
     test('fish_health requires nitrogen_cycle (cross-path prereq enforced)', () {
