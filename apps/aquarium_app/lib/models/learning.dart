@@ -158,38 +158,6 @@ class QuizQuestion {
   });
 }
 
-/// @deprecated Use [AchievementRarity] from models/achievements.dart instead.
-/// Retained here for backward-compatibility with any code that hasn't migrated yet.
-/// [GemRewards.getAchievementReward] now accepts [AchievementRarity] directly.
-enum AchievementTier { bronze, silver, gold, platinum }
-
-extension AchievementTierExt on AchievementTier {
-  String get displayName {
-    switch (this) {
-      case AchievementTier.bronze:
-        return 'Bronze';
-      case AchievementTier.silver:
-        return 'Silver';
-      case AchievementTier.gold:
-        return 'Gold';
-      case AchievementTier.platinum:
-        return 'Platinum';
-    }
-  }
-
-  int get xpBonus {
-    switch (this) {
-      case AchievementTier.bronze:
-        return 25;
-      case AchievementTier.silver:
-        return 50;
-      case AchievementTier.gold:
-        return 100;
-      case AchievementTier.platinum:
-        return 200;
-    }
-  }
-}
 
 /// Daily tip with personalization
 @immutable

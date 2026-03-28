@@ -41,10 +41,10 @@ class DismissibleBanner extends StatelessWidget {
               child: GestureDetector(
                 onTap: onDismiss,
                 child: const SizedBox(
-                  width: 44,
-                  height: 44,
+                  width: 48,
+                  height: 48,
                   child: Center(
-                    child: Icon(Icons.close, size: 14, color: AppColors.whiteAlpha70),
+                    child: Icon(Icons.close, size: 16, color: AppColors.whiteAlpha70),
                   ),
                 ),
               ),

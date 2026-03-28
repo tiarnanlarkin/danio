@@ -51,16 +51,22 @@ class AddLogPhotoGrid extends StatelessWidget {
                 label: 'Remove photo',
                 child: InkWell(
                   onTap: () => onRemove(path),
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.xs),
-                    decoration: BoxDecoration(
-                      color: AppOverlays.black60,
-                      borderRadius: AppRadius.pillRadius,
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      size: AppIconSizes.xs,
-                      color: AppColors.onPrimary,
+                  child: SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSpacing.xs),
+                        decoration: BoxDecoration(
+                          color: AppOverlays.black60,
+                          borderRadius: AppRadius.pillRadius,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          size: AppIconSizes.xs,
+                          color: AppColors.onPrimary,
+                        ),
+                      ),
                     ),
                   ),
                 ),

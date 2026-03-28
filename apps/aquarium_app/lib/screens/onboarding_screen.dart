@@ -278,6 +278,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 setState(() => _experienceLevel = level);
                 _nextPage();
               },
+              onSkip: _quickStart,
             ),
 
             // Page 2: Tank Status

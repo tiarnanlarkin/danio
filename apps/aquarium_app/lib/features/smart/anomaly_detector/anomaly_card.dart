@@ -130,13 +130,18 @@ class _AnomalyRow extends ConsumerWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.close, size: 16),
-            visualDensity: VisualDensity.compact,
-            onPressed: () {
-              ref.read(anomalyHistoryProvider.notifier).dismiss(anomaly.id);
-            },
-            tooltip: 'Dismiss this alert',
+          // Minimum 48dp touch target (P1 accessibility fix)
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: IconButton(
+              icon: const Icon(Icons.close, size: 20),
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                ref.read(anomalyHistoryProvider.notifier).dismiss(anomaly.id);
+              },
+              tooltip: 'Dismiss this alert',
+            ),
           ),
         ],
       ),

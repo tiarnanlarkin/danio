@@ -53,6 +53,8 @@ class LearnStreakCard extends StatelessWidget {
                   style: AppTypography.labelLarge.copyWith(
                     color: AppColors.primary,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: AppSpacing.xxs),
                 Text(
@@ -60,6 +62,8 @@ class LearnStreakCard extends StatelessWidget {
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.primaryLight,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (hasFreeze || usedFreezeThisWeek) ...[
                   const SizedBox(height: AppSpacing.sm),
@@ -81,6 +85,8 @@ class LearnStreakCard extends StatelessWidget {
                                 ? AppColors.info
                                 : context.textHint,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

@@ -10,12 +10,18 @@ import '../../widgets/core/app_button.dart';
 ///
 /// Three tap-to-select cards collecting the user's fishkeeping experience.
 /// Communicates the chosen [ExperienceLevel] via [onSelected].
+/// The optional [onSkip] callback allows experienced users to bypass
+/// personalisation and use quick-start defaults.
 class ExperienceLevelScreen extends StatefulWidget {
   final ValueChanged<ExperienceLevel> onSelected;
+
+  /// Optional callback for experienced users who want to skip setup.
+  final VoidCallback? onSkip;
 
   const ExperienceLevelScreen({
     super.key,
     required this.onSelected,
+    this.onSkip,
   });
 
   @override
@@ -244,6 +250,34 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
                 size: AppButtonSize.large,
                 semanticsLabel: 'Continue',
               ),
+
+              if (widget.onSkip != null) ...[
+                const SizedBox(height: AppSpacing.sm2),
+                Semantics(
+                  button: true,
+                  label: 'Skip setup and use defaults',
+                  child: GestureDetector(
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      widget.onSkip?.call();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                      child: Text(
+                        'Skip setup',
+                        style: GoogleFonts.nunito(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                          decoration: TextDecoration.underline,
+                          decorationColor: AppColors.textHint,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
 
               const SizedBox(height: AppSpacing.xl),
             ],

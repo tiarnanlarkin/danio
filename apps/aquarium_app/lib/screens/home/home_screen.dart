@@ -500,10 +500,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: GestureDetector(
                         onTap: () => setState(() => _demoModeDismissed = true),
                         child: const SizedBox(
-                          width: 32,
-                          height: 32,
+                          width: 48,
+                          height: 48,
                           child: Center(
-                            child: Icon(Icons.close, size: 14, color: AppColors.onWarning),
+                            child: Icon(Icons.close, size: 18, color: AppColors.onWarning),
                           ),
                         ),
                       ),

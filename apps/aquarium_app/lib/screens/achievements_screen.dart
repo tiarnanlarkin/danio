@@ -3,7 +3,7 @@
 library;
 
 import '../theme/app_theme.dart';
-import '../widgets/core/app_button.dart';
+import '../widgets/core/empty_state_widget.dart';
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
@@ -248,51 +248,13 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
           // Achievement list with Recently Unlocked section
           Expanded(
             child: filteredAchievements.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.emoji_events_outlined,
-                            size: AppIconSizes.xxl,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.4),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            'No achievements unlocked yet!',
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withValues(alpha: 0.6),
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            'Complete lessons, log water tests, and care for your tank to earn your first badge!',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withValues(alpha: 0.45),
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          AppButton(
-                            label: 'Start Learning',
-                            onPressed: () => Navigator.of(context).pop(),
-                            leadingIcon: Icons.school_outlined,
-                            variant: AppButtonVariant.primary,
-                          ),
-                        ],
-                      ),
-                    ),
+                ? EmptyStateWidget(
+                    icon: Icons.emoji_events_outlined,
+                    title: 'No achievements yet!',
+                    description: 'Complete lessons, log water tests, and care for your tank to earn your first badge!',
+                    ctaLabel: 'Start Learning',
+                    ctaIcon: Icons.school_outlined,
+                    onCta: () => Navigator.of(context).pop(),
                   )
                 : RefreshIndicator(
                     onRefresh: () async {

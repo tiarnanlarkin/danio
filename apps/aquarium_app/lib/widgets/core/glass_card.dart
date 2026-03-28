@@ -42,6 +42,10 @@ class GlassCard extends StatefulWidget {
   final double? height;
   final bool enableHaptics;
 
+  /// Optional semantic label for accessibility. Recommended for non-button
+  /// GlassCards that contain informational content (e.g. stat cards).
+  final String? semanticLabel;
+
   const GlassCard({
     super.key,
     required this.child,
@@ -56,6 +60,7 @@ class GlassCard extends StatefulWidget {
     this.width,
     this.height,
     this.enableHaptics = true,
+    this.semanticLabel,
   });
 
   @override
@@ -162,6 +167,7 @@ class _GlassCardState extends State<GlassCard>
     if (widget.onTap != null || widget.onLongPress != null) {
       card = Semantics(
         button: widget.onTap != null,
+        label: widget.semanticLabel,
         child: GestureDetector(
           onTapDown: _handleTapDown,
           onTapUp: _handleTapUp,
@@ -170,6 +176,11 @@ class _GlassCardState extends State<GlassCard>
           onLongPress: _handleLongPress,
           child: card,
         ),
+      );
+    } else if (widget.semanticLabel != null) {
+      card = Semantics(
+        label: widget.semanticLabel,
+        child: card,
       );
     }
 
@@ -309,15 +320,23 @@ class _GlassCardState extends State<GlassCard>
 
   BoxDecoration _watercolorDecoration(bool isDark, BorderRadius radius) {
     final tint = widget.tintColor ?? AppColors.primary;
+    // In light mode, using blackAlpha80 as a gradient stop is unreadable.
+    // Use the design system's surface tokens instead (near-white ivory).
     return BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        colors: [
-          isDark ? AppColors.primaryAlpha12 : AppColors.primaryAlpha08,
-          isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha80,
-          isDark ? AppColors.primaryAlpha08 : AppColors.primaryAlpha05,
-        ],
+        colors: isDark
+            ? [
+                AppColors.primaryAlpha12,
+                AppColors.blackAlpha30,
+                AppColors.primaryAlpha08,
+              ]
+            : [
+                AppColors.primaryAlpha08,
+                AppColors.surfaceVariant,
+                AppColors.primaryAlpha05,
+              ],
         stops: const [0.0, 0.5, 1.0],
       ),
       borderRadius: radius,
