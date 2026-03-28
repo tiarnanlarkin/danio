@@ -110,6 +110,31 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         }
       }
 
+      // Load streak from the authoritative _streakKey (written by
+      // _updateReviewStreak). This ensures the streak survives across sessions
+      // even if _saveData hasn't been called yet. Fix for 1.4.
+      final streakJson = prefs.getString(_streakKey);
+      if (streakJson != null) {
+        try {
+          final streakData = jsonDecode(streakJson) as Map<String, dynamic>;
+          final storedStreak = streakData['currentStreak'] as int? ?? 0;
+          final lastDateStr = streakData['lastReviewDate'] as String?;
+          if (lastDateStr != null) {
+            final lastDate = DateTime.parse(lastDateStr);
+            final yesterday = DateTime.now().subtract(const Duration(days: 1));
+            // If last review was more than a day ago the streak is broken.
+            if (!_isSameDay(lastDate, DateTime.now()) &&
+                !_isSameDay(lastDate, yesterday)) {
+              streak = 0; // Reset — user missed a day
+            } else {
+              streak = storedStreak; // Trust the authoritative streak value
+            }
+          }
+        } catch (_) {
+          // Ignore parse errors — keep value loaded from statsKey
+        }
+      }
+
       // Calculate stats
       final stats = ReviewStats.fromCards(
         cards,
@@ -224,9 +249,16 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
           // Check if card already exists
           if (!state.cards.any((c) => c.conceptId == conceptId)) {
-            // Populate questionText from section content so the practice
-            // screen can display real content without re-loading lesson data.
-            final String? questionText = _safeStringField(section, 'content');
+            // Build a proper question from the section content.
+            // For keyPoint/tip/warning/funFact sections we use the content
+            // directly as the recall prompt — it IS the key point to remember.
+            // If content is very long (>200 chars) we trim it to the first
+            // sentence/segment so the card stays scannable.
+            final String? rawContent = _safeStringField(section, 'content');
+            final String? questionText = _buildSectionQuestionText(
+              sectionType: sectionType,
+              content: rawContent,
+            );
             final card = ReviewCard(
               id: '${conceptId}_${now.millisecondsSinceEpoch}_$sectionIndex',
               conceptId: conceptId,
@@ -309,6 +341,46 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       logError('Failed to seed review cards: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
       // Don't rethrow - lesson completion should still succeed
     }
+  }
+
+  /// Builds a concise, well-formed questionText for section-based review cards.
+  ///
+  /// The key point content IS the question prompt (what should the user recall?).
+  /// We trim to the first sentence/segment when the content is very long so
+  /// cards stay scannable. A readable prefix is added for warnings/tips so the
+  /// card makes sense in isolation.
+  String? _buildSectionQuestionText({
+    required String sectionType,
+    required String? content,
+  }) {
+    if (content == null || content.isEmpty) return null;
+
+    // Trim to a reasonable length — first sentence, capped at 200 chars.
+    String trimmed = content.trim();
+    // Try to find sentence boundary within the first 200 chars.
+    final endIdx = trimmed.length > 200 ? 200 : trimmed.length;
+    final segment = trimmed.substring(0, endIdx);
+    // Find last complete sentence.
+    final periodIdx = segment.lastIndexOf('. ');
+    final exclamIdx = segment.lastIndexOf('! ');
+    final questionIdx = segment.lastIndexOf('? ');
+    final breakIdx = [periodIdx, exclamIdx, questionIdx]
+        .where((i) => i > 40)
+        .fold<int>(-1, (best, i) => i > best ? i : best);
+    final questionBody = breakIdx > 0
+        ? trimmed.substring(0, breakIdx + 1)
+        : (trimmed.length > 200 ? '${trimmed.substring(0, 197)}…' : trimmed);
+
+    // Add a type-appropriate prefix so the card context is clear.
+    if (sectionType.contains('warning')) {
+      return '⚠️ $questionBody';
+    } else if (sectionType.contains('tip')) {
+      return '💡 $questionBody';
+    } else if (sectionType.contains('funFact')) {
+      return '🐟 $questionBody';
+    }
+    // keyPoint — use as-is.
+    return questionBody;
   }
 
   /// Safely read a named String field from a dynamic object (LessonSection /
@@ -531,9 +603,14 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     return ReviewQueueService.getForecast(state.cards, daysAhead: days);
   }
 
-  /// Calculate current streak
+  /// Calculate current streak from the in-memory state.
+  ///
+  /// The authoritative streak value is loaded from SharedPreferences during
+  /// [_loadData] (see the _streakKey block there) and kept up-to-date by
+  /// [_updateReviewStreak]. This method simply returns the current in-memory
+  /// value so that [reviewCard] can reference it synchronously when rebuilding
+  /// stats mid-session.
   int _calculateStreak() {
-    // Load streak data from storage
     return state.stats.currentStreak;
   }
 

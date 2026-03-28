@@ -87,14 +87,31 @@ class _RiveFishState extends State<RiveFish> {
       ];
 
       StateMachineController? controller;
+      String? matchedName;
       for (final name in stateMachineNames) {
         controller = StateMachineController.fromArtboard(artboard, name);
-        if (controller != null) break;
+        if (controller != null) {
+          matchedName = name;
+          break;
+        }
       }
 
       if (controller != null) {
         artboard.addController(controller);
         _setupInputs(controller);
+      } else {
+        // No known state machine name matched — warn so this is easy to diagnose.
+        appLog(
+          'RiveFish(${widget.fishType}): no state machine matched any known name '
+          '(tried: ${stateMachineNames.join(", ")}). '
+          'Fish will show placeholder icon. Check the .riv file for the correct name.',
+          tag: 'RiveFish',
+        );
+      }
+
+      if (matchedName != null) {
+        appLog('RiveFish(${widget.fishType}): loaded state machine "$matchedName"',
+            tag: 'RiveFish');
       }
 
       if (mounted) {
@@ -193,9 +210,20 @@ class _RiveFishState extends State<RiveFish> {
 
   @override
   Widget build(BuildContext context) {
-    if (_artboard == null) {
-      // Loading placeholder - transparent to not show loading spinners everywhere
-      return SizedBox(width: widget.size, height: widget.size);
+    if (_artboard == null || _controller == null) {
+      // Artboard failed to load or no state machine matched — show a simple
+      // fish icon placeholder so the tank doesn't have invisible gaps.
+      return SizedBox(
+        width: widget.size,
+        height: widget.size,
+        child: Center(
+          child: Icon(
+            Icons.set_meal,
+            size: widget.size * 0.6,
+            color: Colors.white.withAlpha(153),
+          ),
+        ),
+      );
     }
 
     Widget child = LayoutBuilder(

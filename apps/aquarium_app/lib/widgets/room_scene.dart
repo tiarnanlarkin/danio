@@ -82,13 +82,7 @@ class LivingRoomScene extends ConsumerWidget {
               Positioned.fill(
                 child: AmbientLightingOverlay(
                   child: ExcludeSemantics(
-                    child: Image.asset(
-                      _backgroundForTheme(ref.watch(roomThemeProvider)),
-                      fit: BoxFit.cover,
-                      cacheWidth: 1024,
-                      cacheHeight: 1024,
-                      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-                    ),
+                    child: _buildRoomBackground(ref.watch(roomThemeProvider)),
                   ),
                 ),
               ),
@@ -187,8 +181,9 @@ class LivingRoomScene extends ConsumerWidget {
 
 // === BACKGROUND IMAGE MAPPING ===
 
-/// Maps a [RoomThemeType] to the corresponding background image asset path.
-String _backgroundForTheme(RoomThemeType type) {
+/// Returns the asset path for themes that have a dedicated background image,
+/// or null for themes that use a gradient fallback.
+String? _backgroundAssetForTheme(RoomThemeType type) {
   switch (type) {
     case RoomThemeType.cozyLiving:
     case RoomThemeType.eveningGlow:
@@ -200,8 +195,53 @@ String _backgroundForTheme(RoomThemeType type) {
     case RoomThemeType.forest:
       return 'assets/backgrounds/room-bg-forest.webp';
     default:
-      return 'assets/backgrounds/room-bg-cozy-living.webp';
+      return null; // Use gradient fallback for remaining themes
   }
+}
+
+/// Returns an intentional gradient background for themes without a photo.
+/// Uses the theme's waterTop → background1 → background3 as gradient stops,
+/// giving each theme a unique, on-brand atmospheric feel.
+Widget _gradientFallbackForTheme(RoomThemeType type) {
+  final theme = RoomTheme.fromType(type);
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        stops: const [0.0, 0.45, 1.0],
+        colors: [
+          theme.waterTop,
+          theme.background1,
+          theme.background3,
+        ],
+      ),
+    ),
+    child: const SizedBox.expand(),
+  );
+}
+
+/// Builds the room background widget for [type].
+///
+/// For themes with a dedicated image: loads the image and falls back to the
+/// theme gradient if the asset fails to load (fixes 1.13 — no more black room).
+/// For themes without an image: renders the theme gradient directly (fixes 1.1).
+Widget _buildRoomBackground(RoomThemeType type) {
+  final assetPath = _backgroundAssetForTheme(type);
+  if (assetPath == null) {
+    // Gradient-only theme — intentional, not a fallback.
+    return _gradientFallbackForTheme(type);
+  }
+  return Image.asset(
+    assetPath,
+    fit: BoxFit.cover,
+    cacheWidth: 1024,
+    cacheHeight: 1024,
+    // Fix 1.13: return theme gradient instead of transparent SizedBox so the
+    // room never goes black when the asset fails to decode.
+    errorBuilder: (context, error, stackTrace) =>
+        _gradientFallbackForTheme(type),
+  );
 }
 
 // === SPARKLE (for whimsical/night themes) ===

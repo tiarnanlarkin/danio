@@ -97,15 +97,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   /// Waits for the user profile to load from the provider.
+  ///
+  /// Waits for [userProfileProvider] to finish loading by polling the
+  /// StateNotifierProvider until it emits a non-loading value.
+  /// Falls back gracefully if loading fails or times out.
   Future<UserProfile?> _waitForProfile() async {
-    // Fast path: already loaded
-    var profile = ref.read(userProfileProvider).valueOrNull;
-    if (profile != null) return profile;
+    // Fast path: already loaded synchronously.
+    final current = ref.read(userProfileProvider).valueOrNull;
+    if (current != null) return current;
 
-    // The provider is loading — give it a moment then check again.
-    await Future.delayed(const Duration(milliseconds: 300));
-    profile = ref.read(userProfileProvider).valueOrNull;
-    return profile;
+    // Poll until the async value resolves (loading → data or error).
+    // Timeout after 5 seconds to prevent infinite waits on slow devices.
+    const pollInterval = Duration(milliseconds: 100);
+    const timeout = Duration(seconds: 5);
+    final deadline = DateTime.now().add(timeout);
+
+    while (DateTime.now().isBefore(deadline)) {
+      await Future.delayed(pollInterval);
+      final state = ref.read(userProfileProvider);
+      if (state is AsyncData<UserProfile?>) return state.value;
+      if (state is AsyncError<UserProfile?>) return null;
+    }
+
+    // Timed out — return whatever is in state (may be null).
+    return ref.read(userProfileProvider).valueOrNull;
   }
 
   Future<void> _checkWelcomeBanner() async {

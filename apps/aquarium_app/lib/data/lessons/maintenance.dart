@@ -34,7 +34,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Aim for 25-50% water change weekly. This keeps nitrate low and maintains stable water parameters. For established tanks with low bioload, 20-25% weekly is sufficient. For tanks with high bioload, overstocking, or during cycling, increase to 30-40% weekly. Never change more than 50% at once as it disrupts beneficial bacteria. Water changes of 50-75% are perfectly safe when the new water is temperature-matched and dechlorinated — larger changes actually help maintain stable water parameters. The old "never change more than 25%" advice is outdated. Many experienced aquarists do 50%+ weekly changes without issues.',
+              'Aim for 25-50% water change weekly. This keeps nitrate low and maintains stable water parameters. For established tanks with low bioload, 20-25% weekly is sufficient. For tanks with high bioload, overstocking, or during cycling, increase to 30-40% weekly. Water changes of 50-75% are perfectly safe when the new water is temperature-matched and dechlorinated — larger changes actually help maintain stable water parameters in emergencies. The old "never change more than 25%" advice is outdated. Many experienced aquarists do 50%+ weekly changes without issues.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

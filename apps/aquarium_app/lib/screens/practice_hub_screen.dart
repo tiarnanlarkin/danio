@@ -123,26 +123,12 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
               );
             },
           );
-        } else if (totalCards > 0) {
-          return _buildHeroCard(
-            context,
-            title: 'Continue Learning',
-            subtitle: '$totalCards cards to practice',
-            icon: Icons.auto_stories,
-            color: AppColors.primary,
-            onTap: () {
-              NavigationThrottle.push(
-                context,
-                const SpacedRepetitionPracticeScreen(),
-              );
-            },
-          );
-        } else if (totalCards > 0) {
+        } else if (dueCards == 0 && totalCards > 0) {
           // Has cards but none are due — genuinely all caught up
           return _buildHeroCard(
             context,
             title: 'All Caught Up! 🎉',
-            subtitle: 'No cards to review right now.',
+            subtitle: 'No cards to review right now. Keep learning to unlock more!',
             icon: Icons.check_circle,
             color: AppColors.success,
             actionLabel: 'Try a new lesson',
