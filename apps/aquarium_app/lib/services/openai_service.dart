@@ -5,10 +5,7 @@ import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:danio/utils/logger.dart';
-
-/// OpenAI API key - passed via dart-define at build time.
-/// Usage: flutter run --dart-define=OPENAI_API_KEY=sk-...
-const String _apiKey = String.fromEnvironment('OPENAI_API_KEY');
+import 'ai_proxy_service.dart';
 
 /// Maximum prompt length in characters (≈16k tokens).
 const int _maxPromptChars = 32000;
@@ -92,7 +89,24 @@ class OpenAIService {
   OpenAIService({http.Client? client}) : _client = client ?? http.Client();
 
   /// Whether the API key is configured.
-  bool get isConfigured => _apiKey.isNotEmpty;
+  /// Synchronous check — uses cached/build-time key for quick UI decisions.
+  /// For a definitive async check, use [isConfiguredAsync].
+  bool get isConfigured {
+    // Fast path: check build-time key first, then cached prefs synchronously.
+    // AiProxyService.getApiKey() is async, so we use the build-time fallback
+    // here for backward-compatible synchronous callers (SmartScreen, etc.).
+    const buildKey = String.fromEnvironment('OPENAI_API_KEY');
+    return buildKey.isNotEmpty || _cachedUserKey != null;
+  }
+
+  /// Cached user key loaded at service initialisation (or on demand).
+  String? _cachedUserKey;
+
+  /// Async initialise — load user key into cache so [isConfigured] is accurate.
+  Future<void> init() async {
+    final key = await AiProxyService.getApiKey();
+    _cachedUserKey = key.isNotEmpty ? key : null;
+  }
 
   /// Chat completion (non-streaming).
   Future<ChatResult> chatCompletion({
@@ -102,7 +116,7 @@ class OpenAIService {
     int? maxTokens,
   }) async {
     _trackMonthlyUsage();
-    _assertConfigured();
+    await _assertConfigured();
     _guardPromptLength(messages);
     await _rateLimit();
 
@@ -135,7 +149,7 @@ class OpenAIService {
     int? maxTokens,
   }) async* {
     _trackMonthlyUsage();
-    _assertConfigured();
+    await _assertConfigured();
     _guardPromptLength(messages);
     await _rateLimit();
 
@@ -149,7 +163,7 @@ class OpenAIService {
 
     final request =
         http.Request('POST', Uri.parse('$_baseUrl/chat/completions'))
-          ..headers.addAll(_headers)
+          ..headers.addAll(await _headers())
           ..body = jsonEncode(body);
 
     final streamedResponse = await _client.send(request);
@@ -223,16 +237,23 @@ class OpenAIService {
 
   // --- Private helpers ---
 
-  Map<String, String> get _headers => {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $_apiKey',
-  };
+  Future<Map<String, String>> _headers() async {
+    final key = await AiProxyService.getApiKey();
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $key',
+    };
+  }
 
-  void _assertConfigured() {
-    if (!isConfigured) {
+  Future<void> _assertConfigured() async {
+    final key = await AiProxyService.getApiKey();
+    // Refresh cache for synchronous `isConfigured` getter.
+    _cachedUserKey = key.isNotEmpty ? key : null;
+    if (key.isEmpty) {
       throw const OpenAIException(
         'AI features unavailable — no API key provided. '
-        'Build with --dart-define=OPENAI_API_KEY=sk-... to enable.',
+        'Go to Settings → Smart Hub → Configure AI to add your OpenAI key, '
+        'or build with --dart-define=OPENAI_API_KEY=sk-...',
       );
     }
   }
@@ -284,7 +305,7 @@ class OpenAIService {
       attempt++;
       try {
         final response = await _client
-            .post(Uri.parse(url), headers: _headers, body: jsonEncode(body))
+            .post(Uri.parse(url), headers: await _headers(), body: jsonEncode(body))
             .timeout(_requestTimeout);
 
         if (response.statusCode == 200) return response;

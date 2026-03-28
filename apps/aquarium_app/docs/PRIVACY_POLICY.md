@@ -1,6 +1,6 @@
 # Privacy Policy — Danio: Learn Fishkeeping
 
-**Last updated:** 27 March 2026
+**Last updated:** 28 March 2026
 **Effective date:** 27 March 2026
 
 Danio ("the App") is developed and operated by Tiarnan Larkin ("we", "us", "our"), an independent developer based in the United Kingdom.
@@ -56,10 +56,14 @@ If you choose to create an account (cloud sync is not yet active), this data wil
 
 ### 2.5 AI Interaction Data
 
-When you use AI-powered features (fish identification, symptom diagnosis, stocking advice), the following may be sent to our AI provider:
+When you use AI-powered features, the following data is sent to our AI provider (OpenAI). A **one-time disclosure** is shown before any data is sent — accepting it covers all four AI features:
 
-- Photos you submit for fish identification
-- Text descriptions of symptoms or questions you enter
+| Feature | Data sent to OpenAI |
+|---|---|
+| **Fish ID** | Photos you submit for species identification |
+| **Symptom Triage** | Symptom descriptions you enter + water parameter values |
+| **Weekly Planner** | Tank names, setup details (volume, type), and livestock information (species, counts) |
+| **Anomaly Detector** | Water parameter data (pH, ammonia, nitrite, nitrate, temperature readings) |
 
 **Processing:** This data is sent to the OpenAI API for real-time processing. Results are cached locally on your device for convenience. **We do not store AI interaction data on our servers.** OpenAI's API data usage policy confirms that data submitted via their API is **not used to train their models**. See [OpenAI's API Data Usage Policy](https://openai.com/policies/api-data-usage-policies).
 
@@ -109,8 +113,13 @@ The App uses the following third-party services, only when you opt in to feature
 
 ### 4.4 OpenAI
 
-- **Purpose:** AI-powered fish identification, symptom diagnosis, and stocking advice
-- **Data processed:** Photos you submit for fish identification AND text prompts/queries you enter for AI chat and advice features
+- **Purpose:** AI-powered fish identification, symptom triage, weekly maintenance planning, and water parameter anomaly detection
+- **Data processed:**
+  - **Fish ID:** Photos you submit for species identification
+  - **Symptom Triage:** Symptom descriptions and water parameter values
+  - **Weekly Planner:** Tank names, setup details (volume, type), and livestock information (species, counts)
+  - **Anomaly Detector:** Water parameter data (pH, ammonia, nitrite, nitrate, temperature)
+- **Consent:** A one-time disclosure is shown before first use of any AI feature. Accepting once covers all four features.
 - **Retention:** OpenAI retains API inputs for up to 30 days for abuse monitoring, then deletes them. API data is not used for model training.
 - **Privacy policy:** [https://openai.com/policies/api-data-usage-policies](https://openai.com/policies/api-data-usage-policies)
 
@@ -132,7 +141,7 @@ Where we process your personal data, we rely on the following legal bases under 
 | Firebase Analytics | Your explicit consent — Art. 6(1)(a) (opt-in on first launch) |
 | Firebase Crashlytics | Your explicit consent — Art. 6(1)(a) (consent-based; disabled when consent is declined) |
 | Cloud sync and backup | Your explicit consent — Art. 6(1)(a) (opt-in) |
-| AI feature processing (photos and text prompts sent to OpenAI) | Your explicit consent — Art. 6(1)(a) (per use of AI features) |
+| AI feature processing (Fish ID photos, Symptom Triage text/parameters, Weekly Planner tank/livestock data, Anomaly Detector water parameters sent to OpenAI) | Your explicit consent — Art. 6(1)(a) (one-time disclosure before first use of any AI feature) |
 | Social features | Your explicit consent — Art. 6(1)(a) (opt-in) |
 | Responding to support requests | Legitimate interest — Art. 6(1)(f) |
 
@@ -153,7 +162,7 @@ You may withdraw consent at any time by disabling the relevant feature in Settin
 
 - **Local data** remains on your device until you delete it or uninstall the App.
 - **Cloud data** is retained for as long as you maintain an account. When you delete your account, all associated cloud data is permanently deleted within 30 days.
-- **AI interaction data** is cached locally and can be cleared at any time. We do not retain AI data server-side.
+- **AI interaction data** (Fish ID photos, Symptom Triage text/parameters, Weekly Planner tank/livestock data, Anomaly Detector water parameters) is cached locally and can be cleared at any time. OpenAI retains API data for a maximum of 30 days. We do not retain AI data server-side.
 
 ---
 

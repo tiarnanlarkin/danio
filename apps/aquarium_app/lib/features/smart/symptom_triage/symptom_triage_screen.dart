@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
@@ -63,6 +64,50 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     super.dispose();
   }
 
+  /// Key for persisting the OpenAI data disclosure acceptance.
+  static const _openaiDisclosureKey = 'openai_disclosure_accepted';
+
+  /// Shows a one-time disclosure about OpenAI data handling for Symptom Triage.
+  /// Returns `true` if the user accepts, `false` if they cancel.
+  Future<bool> _ensureOpenAIDisclosure() async {
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    if (prefs.getBool(_openaiDisclosureKey) == true) return true;
+
+    if (!mounted) return false;
+    final accepted = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('OpenAI Data Disclosure'),
+        content: const Text(
+          'Text you enter and water parameters are sent to OpenAI servers in '
+          'the US, retained up to 30 days per OpenAI\'s data retention policy. '
+          'OpenAI does not use API data to train their models.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
+            },
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
+            },
+            child: const Text('I Understand'),
+          ),
+        ],
+      ),
+    );
+
+    if (accepted == true) {
+      await prefs.setBool(_openaiDisclosureKey, true);
+      return true;
+    }
+    return false;
+  }
+
   void _nextStep() {
     if (_step == 0) {
       if (_selectedSymptoms.isEmpty &&
@@ -74,9 +119,15 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
       }
       setState(() => _step = 1);
     } else if (_step == 1) {
-      setState(() => _step = 2);
-      _runDiagnosis();
+      _advanceToDiagnosis();
     }
+  }
+
+  Future<void> _advanceToDiagnosis() async {
+    final accepted = await _ensureOpenAIDisclosure();
+    if (!accepted || !mounted) return;
+    setState(() => _step = 2);
+    _runDiagnosis();
   }
 
   Future<void> _runDiagnosis() async {

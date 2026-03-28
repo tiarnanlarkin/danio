@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/tank_provider.dart';
+import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
@@ -28,6 +29,9 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
 
   static const _dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+  /// Key for persisting the OpenAI data disclosure acceptance.
+  static const _openaiDisclosureKey = 'openai_disclosure_accepted';
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +43,53 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     });
   }
 
+  /// Shows a one-time disclosure about OpenAI data handling for Weekly Plan.
+  /// Returns `true` if the user accepts, `false` if they cancel.
+  Future<bool> _ensureOpenAIDisclosure() async {
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    if (prefs.getBool(_openaiDisclosureKey) == true) return true;
+
+    if (!mounted) return false;
+    final accepted = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('OpenAI Data Disclosure'),
+        content: const Text(
+          'Your tank names, setup details, and livestock information are sent '
+          'to OpenAI servers in the US, retained up to 30 days per OpenAI\'s '
+          'data retention policy. OpenAI does not use API data to train their '
+          'models.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
+            },
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
+            },
+            child: const Text('I Understand'),
+          ),
+        ],
+      ),
+    );
+
+    if (accepted == true) {
+      await prefs.setBool(_openaiDisclosureKey, true);
+      return true;
+    }
+    return false;
+  }
+
   Future<void> _generate() async {
+    // Ensure the user has accepted the OpenAI disclosure before proceeding.
+    final accepted = await _ensureOpenAIDisclosure();
+    if (!accepted || !mounted) return;
+
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
       setState(

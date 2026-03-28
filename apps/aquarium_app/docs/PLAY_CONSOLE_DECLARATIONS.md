@@ -82,18 +82,29 @@
 
 ---
 
-### User content — text (AI chat / prompts)
+### User content — text (AI features: Symptom Triage, Weekly Planner, Anomaly Detector)
 
 | Question | Answer |
 |----------|--------|
-| **Data type** | User content — text (AI text prompts and chat queries) |
+| **Data type** | User content — text (AI text prompts, symptom descriptions, tank/livestock data, water parameters) |
 | **Is this data collected, shared, or both?** | Shared (sent to OpenAI for processing, not stored permanently by Danio) |
 | **Is this data processed ephemerally?** | Yes (sent for real-time processing, not persisted by app) |
-| **Is this data required or can users choose?** | Optional (user explicitly triggers AI chat / text features) |
-| **Why is this data collected?** | App functionality (AI-powered fish advice, symptom diagnosis, stocking suggestions) |
+| **Is this data required or can users choose?** | Optional (user explicitly triggers AI features) |
+| **Why is this data collected?** | App functionality: Symptom Triage (fish health diagnosis), Weekly Planner (maintenance scheduling), Anomaly Detector (water parameter anomaly explanation) |
 | **Is this data shared with third parties?** | Yes — OpenAI (US servers, retained up to 30 days per their policy) |
 | **Is this data encrypted in transit?** | Yes (HTTPS/TLS) |
 | **Can users request deletion?** | Yes (contact larkintiarnanbizz@gmail.com) |
+
+**Note:** All four AI features (Fish ID, Symptom Triage, Weekly Planner, Anomaly Detector) share a single one-time consent mechanism stored in the `openai_disclosure_accepted` SharedPreferences key. Accepting once covers all features.
+
+---
+
+### SharedPreferences Consent Keys (Reference)
+
+| Key | Purpose |
+|-----|---------|
+| `gdpr_analytics_consent` | Stores whether the user has consented to Firebase Analytics and Crashlytics on first launch. `true` = consent given; `false` or absent = consent declined/not yet given. Controls whether Firebase Analytics and Crashlytics are active. |
+| `openai_disclosure_accepted` | Stores whether the user has accepted the one-time OpenAI data disclosure. `true` = accepted (covers all AI features: Fish ID, Symptom Triage, Weekly Planner, Anomaly Detector). Not set = user has not yet seen the disclosure. |
 
 ---
 

@@ -33,6 +33,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'onboarding/consent_screen.dart';
 import 'settings/widgets/guides_section.dart';
 import 'settings/widgets/tools_section.dart';
+import '../services/ai_proxy_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -126,6 +127,12 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
       (_) => const _NotificationsToggle(),
+
+      (_) => const Divider(),
+
+      // Smart Hub (AI features)
+      (_) => const _SectionHeader(title: 'Smart Hub'),
+      (_) => const _ConfigureAiTile(),
 
       (_) => const Divider(),
       // Tools section (extracted to ToolsSection widget)
@@ -1384,6 +1391,241 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
       subtitle: const Text('Send anonymous usage data to help improve Danio'),
       value: _enabled,
       onChanged: _toggle,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Smart Hub — Configure AI tile
+// ---------------------------------------------------------------------------
+
+/// Tile that opens the "Configure AI" dialog for managing the user's OpenAI
+/// API key. The key is stored encrypted on-device and never sent to Danio's
+/// servers.
+class _ConfigureAiTile extends StatefulWidget {
+  const _ConfigureAiTile();
+
+  @override
+  State<_ConfigureAiTile> createState() => _ConfigureAiTileState();
+}
+
+class _ConfigureAiTileState extends State<_ConfigureAiTile> {
+  bool _hasUserKey = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _reload();
+  }
+
+  Future<void> _reload() async {
+    final hasKey = await AiProxyService.hasUserKey;
+    if (mounted) setState(() => _hasUserKey = hasKey);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppListTile(
+      leading: const Icon(Icons.smart_toy_outlined),
+      title: 'Configure AI',
+      subtitle: _hasUserKey
+          ? 'Custom API key active — tap to manage'
+          : 'Add your OpenAI API key to enable Smart Hub features',
+      trailing: _hasUserKey
+          ? const Icon(Icons.check_circle, color: AppColors.success)
+          : null,
+      onTap: () => _showConfigureAiDialog(context),
+    );
+  }
+
+  Future<void> _showConfigureAiDialog(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => _ConfigureAiDialog(onDismissed: _reload),
+    );
+  }
+}
+
+class _ConfigureAiDialog extends StatefulWidget {
+  final VoidCallback onDismissed;
+
+  const _ConfigureAiDialog({required this.onDismissed});
+
+  @override
+  State<_ConfigureAiDialog> createState() => _ConfigureAiDialogState();
+}
+
+class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
+  final _controller = TextEditingController();
+  bool _obscureText = true;
+  bool _isBusy = false;
+  bool _hasUserKey = false;
+  String? _statusMessage;
+  bool _statusIsError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStatus();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadStatus() async {
+    final hasKey = await AiProxyService.hasUserKey;
+    if (mounted) setState(() => _hasUserKey = hasKey);
+  }
+
+  Future<void> _saveKey() async {
+    final key = _controller.text.trim();
+    if (key.isEmpty) return;
+    if (!key.startsWith('sk-')) {
+      setState(() {
+        _statusMessage = 'OpenAI keys start with "sk-". Double-check yours.';
+        _statusIsError = true;
+      });
+      return;
+    }
+    setState(() {
+      _isBusy = true;
+      _statusMessage = null;
+    });
+    try {
+      await AiProxyService.saveApiKey(key);
+      if (mounted) {
+        setState(() {
+          _hasUserKey = true;
+          _statusMessage = 'Key saved! Smart Hub features are now active.';
+          _statusIsError = false;
+          _isBusy = false;
+        });
+        _controller.clear();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _statusMessage = 'Couldn\'t save the key. Try again.';
+          _statusIsError = true;
+          _isBusy = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _clearKey() async {
+    setState(() => _isBusy = true);
+    try {
+      await AiProxyService.clearApiKey();
+      if (mounted) {
+        setState(() {
+          _hasUserKey = false;
+          _statusMessage = 'API key removed.';
+          _statusIsError = false;
+          _isBusy = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _statusMessage = 'Couldn\'t clear the key. Try again.';
+          _statusIsError = true;
+          _isBusy = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Configure AI'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Your key is stored locally on your device and never shared with us.',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            if (_hasUserKey) ...[
+              Row(
+                children: [
+                  const Icon(Icons.check_circle,
+                      color: AppColors.success, size: 20),
+                  const SizedBox(width: AppSpacing.sm),
+                  const Expanded(
+                    child: Text(
+                      'Custom API key is active.',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
+            TextField(
+              controller: _controller,
+              obscureText: _obscureText,
+              decoration: InputDecoration(
+                labelText: 'OpenAI API key',
+                hintText: 'sk-...',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () =>
+                      setState(() => _obscureText = !_obscureText),
+                ),
+              ),
+              maxLength: 200,
+              enabled: !_isBusy,
+            ),
+            if (_statusMessage != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                _statusMessage!,
+                style: TextStyle(
+                  color: _statusIsError ? AppColors.error : AppColors.success,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        if (_hasUserKey)
+          TextButton(
+            onPressed: _isBusy ? null : _clearKey,
+            child: Text(
+              'Remove key',
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        TextButton(
+          onPressed: () {
+            widget.onDismissed();
+            Navigator.maybePop(context);
+          },
+          child: const Text('Close'),
+        ),
+        FilledButton(
+          onPressed: _isBusy ? null : _saveKey,
+          child: _isBusy
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Save'),
+        ),
+      ],
     );
   }
 }

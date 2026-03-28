@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/models.dart';
@@ -142,8 +143,16 @@ class AnomalyDetectorService {
       }
     }
 
-    // --- AI explanation pass (if anomalies found, API available, and under rate limit) ---
+    // --- AI explanation pass (if anomalies found, API available, consent given, and under rate limit) ---
+    // Water parameter data is sent to OpenAI servers in the US, retained up to
+    // 30 days per OpenAI's data retention policy. Only proceed if the user has
+    // accepted the one-time OpenAI disclosure (openai_disclosure_accepted key).
+    final prefs = await SharedPreferences.getInstance();
+    final disclosureAccepted =
+        prefs.getBool('openai_disclosure_accepted') == true;
+
     if (anomalies.isNotEmpty &&
+        disclosureAccepted &&
         _openai.isConfigured &&
         _rateLimiter.canRequest(AIFeature.anomalyDetector)) {
       try {

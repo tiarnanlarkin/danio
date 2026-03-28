@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../models/models.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/accessibility_utils.dart';
@@ -44,6 +45,7 @@ class BasicInfoPage extends StatelessWidget {
               child: TextFormField(
                 initialValue: name,
                 maxLength: 50,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: const InputDecoration(
                   labelText: 'Tank name',
                   hintText: 'e.g., Living Room Tank',
