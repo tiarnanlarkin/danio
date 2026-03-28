@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/app_theme.dart';
 import 'stage_provider.dart';
+import '../../utils/logger.dart';
 
 /// A bottom plate that peeks from the bottom edge and can be dragged up.
 /// Only one plate can be expanded at a time (mutual exclusion via [BottomPlateController]).
@@ -104,8 +105,9 @@ class BottomPlateState extends ConsumerState<BottomPlate>
     // Safe to call during dispose since ConsumerState has access to ref
     try {
       ref.read(bottomPlateControllerProvider.notifier).registerClose(widget.plateId);
-    } catch (_) {
+    } catch (e) {
       // Provider may already be disposed during app shutdown
+      appLog('BottomPlate: provider already disposed on unregister: $e', tag: 'BottomPlate');
     }
   }
 

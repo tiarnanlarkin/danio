@@ -280,7 +280,8 @@ mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
     try {
       clearError();
       await operation();
-    } catch (e) {
+    } catch (e, st) {
+      logError('ErrorBoundary: guarded operation failed: $e', stackTrace: st, tag: 'ErrorBoundary');
       showError(errorMessage ?? 'Oops! We hit a snag. Give it another try.');
       onError?.call();
     }

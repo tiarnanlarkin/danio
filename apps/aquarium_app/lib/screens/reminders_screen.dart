@@ -1,15 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/user_profile_provider.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
+
+import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/app_bottom_sheet.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/core/bubble_loader.dart';
 import '../widgets/mascot/mascot_widgets.dart';
-import '../widgets/app_bottom_sheet.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});

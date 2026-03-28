@@ -9,6 +9,7 @@ import '../services/openai_service.dart';
 import '../features/smart/smart_providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/offline_indicator.dart';
+import '../utils/logger.dart';
 
 /// AI-powered tank compatibility checker.
 /// User enters a species, AI checks if it's compatible with their tank.
@@ -113,7 +114,8 @@ class _CompatibilityCheckerWidgetState
     } on OpenAIException catch (e) {
       if (!mounted) return;
       setState(() => _result = e.message);
-    } catch (e) {
+    } catch (e, st) {
+      logError('CompatibilityCheckerWidget: check failed: $e', stackTrace: st, tag: 'CompatibilityCheckerWidget');
       if (!mounted) return;
       setState(
         () => _result =

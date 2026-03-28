@@ -10,6 +10,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../utils/logger.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -433,7 +434,8 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         AppFeedback.showSuccess(context, 'Tank updated.');
         Navigator.maybePop(context);
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('TankSettingsScreen: tank update failed: $e', stackTrace: st, tag: 'TankSettingsScreen');
       if (mounted) {
         AppFeedback.showError(
           context,

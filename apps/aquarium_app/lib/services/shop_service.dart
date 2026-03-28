@@ -31,7 +31,8 @@ class ShopService {
     InventoryItem? item;
     try {
       item = inventory.firstWhere((inv) => inv.itemId == itemId);
-    } catch (_) {
+    } catch (e) {
+      // Item not found in inventory
       return false;
     }
 

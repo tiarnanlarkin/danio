@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/offline_indicator.dart';
+import '../utils/logger.dart';
 import 'conflict_resolver.dart';
 
 /// Types of actions that can be queued for sync
@@ -142,7 +143,8 @@ class SyncService extends StateNotifier<SyncState> {
               : null,
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('SyncService: failed to load sync queue, starting fresh: $e', stackTrace: st, tag: 'SyncService');
       // Failed to load queue - start fresh
       state = state.copyWith(
         queuedActions: [],
@@ -159,7 +161,8 @@ class SyncService extends StateNotifier<SyncState> {
         state.queuedActions.map((a) => a.toJson()).toList(),
       );
       await prefs.setString(_queueKey, queueJson);
-    } catch (e) {
+    } catch (e, st) {
+      logError('SyncService: failed to save sync queue: $e', stackTrace: st, tag: 'SyncService');
       state = state.copyWith(lastError: 'Failed to save sync queue: $e');
     }
   }
@@ -277,7 +280,8 @@ class SyncService extends StateNotifier<SyncState> {
         conflictsResolved: conflictsResolved,
         recentConflicts: conflicts.isNotEmpty ? conflicts : null,
       );
-    } catch (e) {
+    } catch (e, st) {
+      logError('SyncService: sync failed: $e', stackTrace: st, tag: 'SyncService');
       state = state.copyWith(isSyncing: false, lastError: 'Sync failed: $e');
     }
   }

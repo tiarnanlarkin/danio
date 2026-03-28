@@ -1,17 +1,19 @@
-import 'dart:math';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/user_profile_provider.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
+
+import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
-import '../widgets/danio_snack_bar.dart';
-import '../widgets/core/app_button.dart';
-import '../widgets/app_bottom_sheet.dart';
 import '../utils/logger.dart';
+import '../widgets/app_bottom_sheet.dart';
+import '../widgets/core/app_button.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// Returns the currency symbol for the current device locale.
 /// Falls back to '£' if the locale cannot be determined.

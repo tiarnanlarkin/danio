@@ -2,18 +2,21 @@
 /// Implements review sessions, adaptive difficulty, and progress tracking
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:async';
+
 import '../models/spaced_repetition.dart';
-import '../widgets/core/app_button.dart';
-import '../widgets/core/bubble_loader.dart';
+import '../providers/achievement_provider.dart' show achievementCheckerProvider;
+import '../providers/inventory_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
-import '../providers/inventory_provider.dart';
-import '../providers/achievement_provider.dart' show achievementCheckerProvider;
 import '../theme/app_theme.dart';
 import '../utils/concept_display_names.dart';
+import '../utils/logger.dart';
+import '../widgets/core/app_button.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/danio_snack_bar.dart';
 
 class SpacedRepetitionPracticeScreen extends ConsumerStatefulWidget {
@@ -500,7 +503,8 @@ class _SpacedRepetitionPracticeScreenState
       await ref
           .read(spacedRepetitionProvider.notifier)
           .startSession(mode: mode);
-    } catch (e) {
+    } catch (e, st) {
+      logError('SpacedRepetitionScreen: start session failed: $e', stackTrace: st, tag: 'SpacedRepetitionScreen');
       if (!mounted) return;
 
       DanioSnackBar.error(
@@ -1007,7 +1011,8 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           _errorMessage = null;
         });
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('SpacedRepetitionScreen: record answer failed: $e', stackTrace: st, tag: 'SpacedRepetitionScreen');
       if (mounted) {
         setState(() {
           _errorMessage =

@@ -94,7 +94,8 @@ class NotificationService {
         },
       );
       _initCompleter!.complete();
-    } catch (e) {
+    } catch (e, st) {
+      logError('NotificationService: initialization failed: $e', stackTrace: st, tag: 'NotificationService');
       _initCompleter!.completeError(e);
       _initCompleter = null;
       rethrow;
@@ -128,7 +129,8 @@ class NotificationService {
           _cachedScheduleMode = retriedCanExact
               ? AndroidScheduleMode.exactAllowWhileIdle
               : AndroidScheduleMode.inexactAllowWhileIdle;
-        } catch (_) {
+        } catch (e) {
+          appLog('NotificationService: exact alarm permission request failed, using inexact: $e', tag: 'NotificationService');
           _cachedScheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
         }
       } else {
@@ -183,7 +185,8 @@ class NotificationService {
     if (android == null) return true; // non-Android — not applicable
     try {
       return await android.canScheduleExactNotifications() ?? true;
-    } catch (_) {
+    } catch (e) {
+      appLog('NotificationService: canScheduleExactNotifications check failed: $e', tag: 'NotificationService');
       return false;
     }
   }

@@ -1,4 +1,6 @@
 
+import '../utils/logger.dart';
+
 /// Strategy for resolving conflicts between local and remote data
 enum ConflictResolutionStrategy {
   /// Most recent update wins (based on timestamp)
@@ -255,6 +257,7 @@ class ConflictResolver {
           }
         } catch (e) {
           // Failed to parse, try next field
+          appLog('ConflictResolver: failed to parse timestamp field: $e', tag: 'ConflictResolver');
         }
       }
     }

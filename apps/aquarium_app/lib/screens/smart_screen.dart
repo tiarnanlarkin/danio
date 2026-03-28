@@ -21,6 +21,7 @@ import 'compatibility_checker_screen.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../utils/logger.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
@@ -114,7 +115,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _askResponse = OpenAIUserMessages.timeout);
-    } catch (e) {
+    } catch (e, st) {
+      logError('SmartScreen: AI ask failed: $e', stackTrace: st, tag: 'SmartScreen');
       if (!mounted) return;
       final isAuthError =
           e is OpenAIException && (e.statusCode == 401 || e.statusCode == 403);

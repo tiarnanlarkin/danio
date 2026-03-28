@@ -1,25 +1,26 @@
-import '../theme/app_theme.dart';
-import 'package:flutter/material.dart';
+// Analytics Dashboard Screen - Comprehensive progress visualization
+// Features: charts, insights, trends, predictions, and export options
+import 'dart:convert';
+import 'dart:io';
 
-/// Analytics Dashboard Screen - Comprehensive progress visualization
-/// Features: charts, insights, trends, predictions, and export options
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
-import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import '../models/analytics.dart';
-import '../services/analytics_service.dart';
-import '../providers/user_profile_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
 import '../data/lesson_content_lazy.dart';
-import '../widgets/skeleton_loader.dart';
-import '../widgets/core/app_states.dart';
-import '../widgets/core/app_card.dart';
-import '../utils/logger.dart';
+import '../models/analytics.dart';
+import '../providers/user_profile_provider.dart';
+import '../services/analytics_service.dart';
+import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../utils/logger.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../widgets/core/app_card.dart';
+import '../widgets/core/app_states.dart';
+import '../widgets/skeleton_loader.dart';
 
 class AnalyticsScreen extends ConsumerStatefulWidget {
   const AnalyticsScreen({super.key});

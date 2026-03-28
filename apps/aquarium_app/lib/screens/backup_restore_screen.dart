@@ -416,7 +416,8 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       if (result.status == ShareResultStatus.success) {
         AppFeedback.showSuccess(context, 'Backup exported successfully!');
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('BackupRestoreScreen: backup export failed: $e', stackTrace: st, tag: 'BackupRestoreScreen');
       if (mounted) {
         AppFeedback.showError(
           context,
@@ -537,7 +538,8 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           );
         }
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('BackupRestoreScreen: backup import failed: $e', stackTrace: st, tag: 'BackupRestoreScreen');
       if (mounted) {
         AppFeedback.showError(
           context,

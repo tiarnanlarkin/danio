@@ -10,6 +10,7 @@ import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
+import '../utils/logger.dart';
 
 /// AI-powered stocking suggestion bottom sheet.
 ///
@@ -153,7 +154,8 @@ class _AiStockingSuggestionSheetState
           _loading = false;
         });
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('AiStockingSuggestion: suggestion failed: $e', stackTrace: st, tag: 'AiStockingSuggestion');
       if (mounted) {
         setState(() {
           _error = 'Could not get AI suggestion. Check your connection.';

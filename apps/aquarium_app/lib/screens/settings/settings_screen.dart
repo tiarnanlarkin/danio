@@ -1024,7 +1024,8 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
         });
         _controller.clear();
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('SettingsScreen: API key save failed: $e', stackTrace: st, tag: 'SettingsScreen');
       if (mounted) {
         setState(() {
           _statusMessage = 'Couldn\'t save the key. Try again.';
@@ -1047,7 +1048,8 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
           _isBusy = false;
         });
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('SettingsScreen: API key clear failed: $e', stackTrace: st, tag: 'SettingsScreen');
       if (mounted) {
         setState(() {
           _statusMessage = 'Couldn\'t clear the key. Try again.';

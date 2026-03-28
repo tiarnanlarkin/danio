@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:path/path.dart' as path;
+import '../utils/logger.dart';
 
 /// Service for optimizing image loading and caching
 class ImageCacheService {
@@ -137,10 +137,8 @@ class ImageCacheService {
       await outputFile.writeAsBytes(byteData.buffer.asUint8List());
 
       return outputPath;
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error compressing image: $e');
-      }
+    } catch (e, st) {
+      logError('ImageCacheService: image compression failed, falling back to copy: $e', stackTrace: st, tag: 'ImageCacheService');
       // Fallback: just copy the original file
       final directory = await getApplicationDocumentsDirectory();
       final tankDir = Directory('${directory.path}/tanks/$tankId/photos');

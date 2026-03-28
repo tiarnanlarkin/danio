@@ -69,8 +69,9 @@ class _RiveWaterEffectState extends State<RiveWaterEffect> {
         try {
           final animationController = SimpleAnimation('idle');
           artboard.addController(animationController);
-        } catch (_) {
+        } catch (e) {
           // Animation may not exist, that's ok
+          appLog('RiveWaterEffect: idle animation not available: $e', tag: 'RiveWaterEffect');
         }
       }
 

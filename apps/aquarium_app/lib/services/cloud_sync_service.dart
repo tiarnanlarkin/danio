@@ -705,7 +705,8 @@ class CloudSyncService {
           data: data,
         ),
       );
-    } catch (e) {
+    } catch (e, st) {
+      logError('CloudSyncService: sync operation failed, queuing for retry: $e', stackTrace: st, tag: 'CloudSyncService');
       // Network error - queue for retry
       await queueOfflineChange(
         OfflineQueueEntry(

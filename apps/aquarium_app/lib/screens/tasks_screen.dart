@@ -17,6 +17,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -290,7 +291,8 @@ class TasksScreen extends ConsumerWidget {
               try {
                 await ref.read(storageServiceProvider).deleteTask(task.id);
                 ref.invalidate(tasksProvider(tankId));
-              } catch (e) {
+              } catch (e, st) {
+                logError('TasksScreen: task delete failed: $e', stackTrace: st, tag: 'TasksScreen');
                 if (context.mounted) {
                   DanioSnackBar.error(context, 'Couldn\'t delete that task. Give it another go!');
                 }
@@ -783,7 +785,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       widget.ref.invalidate(tasksProvider(widget.tankId));
 
       if (mounted) Navigator.maybePop(context);
-    } catch (e) {
+    } catch (e, st) {
+      logError('TasksScreen: task save failed: $e', stackTrace: st, tag: 'TasksScreen');
       if (mounted) {
         AppFeedback.showError(context, 'Oops, something went wrong!');
       }

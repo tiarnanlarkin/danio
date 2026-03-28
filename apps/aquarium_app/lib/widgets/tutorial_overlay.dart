@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/logger.dart';
 
 /// Tutorial step configuration
 class TutorialStep {
@@ -112,6 +113,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
       }
     } catch (e) {
       // Target not found, show centered tooltip
+      appLog('TutorialOverlay: target widget not found for step, showing centered: $e', tag: 'TutorialOverlay');
     }
 
     return Material(

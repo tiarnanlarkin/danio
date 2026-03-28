@@ -1,31 +1,33 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import '../widgets/core/app_button.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:uuid/uuid.dart';
+
 import '../models/models.dart';
+import '../providers/inventory_provider.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
-import '../providers/inventory_provider.dart';
 import '../services/storage_service.dart';
 import '../services/xp_animation_service.dart';
-import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
-import '../widgets/danio_snack_bar.dart';
-import '../utils/skeleton_placeholders.dart';
-import '../widgets/core/app_card.dart';
-import '../widgets/core/bubble_loader.dart';
-import '../widgets/empty_state.dart';
-import '../widgets/core/app_states.dart';
-import '../widgets/mascot/mascot_widgets.dart';
-import '../widgets/app_bottom_sheet.dart';
+import '../utils/haptic_feedback.dart';
 import '../utils/logger.dart';
+import '../utils/skeleton_placeholders.dart';
+import '../widgets/app_bottom_sheet.dart';
+import '../widgets/core/app_button.dart';
+import '../widgets/core/app_card.dart';
+import '../widgets/core/app_states.dart';
+import '../widgets/core/bubble_loader.dart';
+import '../widgets/danio_snack_bar.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 const _uuid = Uuid();
 
