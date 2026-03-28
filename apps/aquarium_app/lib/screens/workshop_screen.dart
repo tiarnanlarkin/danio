@@ -19,36 +19,7 @@ import '../utils/navigation_throttle.dart';
 import '../widgets/danio_snack_bar.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
-/// Workshop colors - practical maker space theme
-/// Adapts slightly for dark mode to maintain readability
-class WorkshopColors {
-  WorkshopColors._();
 
-  static const background1 = Color(0xFF5D4E37); // Warm brown
-  static const background2 = Color(0xFF4A3F2E); // Darker brown
-  static const background3 = Color(0xFF3D3425); // Deep brown
-  static const accent = Color(0xFFA0AEC0); // Steel blue
-  static const accentWarm = Color(0xFFD4A574); // Warm gold
-  static const wood = Color(0xFF7A6548); // Light wood
-  static const metal = Color(0xFF6B7280); // Steel gray
-  static const glassCard = Color(0x20FFFFFF);
-  static const glassBorder = Color(0x30FFFFFF);
-  static const textPrimary = Color(0xFFF5F5F5);
-  static const textSecondary = Color(0xFFB8B0A0);
-
-  // Dark mode adjustments - lighter/desaturated browns
-  static const background1Dark = Color(0xFF6E5F48); // Lighter warm brown
-  static const background2Dark = Color(0xFF5B5039); // Lighter mid brown
-  static const background3Dark = Color(0xFF4E4430); // Lighter base brown
-
-  /// Returns gradient colors adapted to current brightness
-  static List<Color> gradientColors(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? [background1Dark, background2Dark, background3Dark]
-        : [background1, background2, background3];
-  }
-}
 
 /// Workshop Room - Tools & Calculators
 class WorkshopScreen extends ConsumerStatefulWidget {
@@ -85,7 +56,17 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: WorkshopColors.gradientColors(context),
+            colors: Theme.of(context).brightness == Brightness.dark
+                ? [
+                    DanioColors.workshopBackground1Dark,
+                    DanioColors.workshopBackground2Dark,
+                    DanioColors.workshopBackground3Dark,
+                  ]
+                : [
+                    DanioColors.workshopBackground1,
+                    DanioColors.workshopBackground2,
+                    DanioColors.workshopBackground3,
+                  ],
           ),
         ),
         child: SafeArea(
@@ -96,7 +77,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
               SliverAppBar(
                 title: const Text('🔧 Workshop'),
                 backgroundColor: Colors.transparent,
-                foregroundColor: WorkshopColors.textPrimary,
+                foregroundColor: AppColors.textPrimaryDark,
                 elevation: 0,
                 pinned: true,
               ),
@@ -169,7 +150,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.calculate,
                       title: 'Tank Volume',
                       subtitle: 'Calculate capacity',
-                      color: WorkshopColors.accent,
+                      color: DanioColors.workshopAccentSteel,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const TankVolumeCalculatorScreen(),
@@ -206,7 +187,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.build_circle,
                       title: 'Equipment',
                       subtitle: 'Manage gear',
-                      color: WorkshopColors.metal,
+                      color: DanioColors.workshopMetal,
                       onTap: () => _showEquipmentInfo(context),
                     ),
                     _ToolCard(
@@ -262,13 +243,13 @@ class _WorkshopHeader extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: WorkshopColors.glassCard,
+                  color: AppColors.whiteAlpha12,
                   borderRadius: AppRadius.mediumRadius,
-                  border: Border.all(color: WorkshopColors.glassBorder),
+                  border: Border.all(color: AppColors.whiteAlpha20),
                 ),
                 child: const Icon(
                   Icons.build,
-                  color: WorkshopColors.accentWarm,
+                  color: DanioColors.studyGold,
                   size: 28,
                 ),
               ),
@@ -281,7 +262,7 @@ class _WorkshopHeader extends ConsumerWidget {
                       '🔧 Workshop',
                       style: (Theme.of(context).textTheme.headlineSmall ?? const TextStyle())
                           .copyWith(
-                            color: WorkshopColors.textPrimary,
+                            color: AppColors.textPrimaryDark,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
@@ -289,7 +270,7 @@ class _WorkshopHeader extends ConsumerWidget {
                     Text(
                       'Tools & calculators',
                       style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-                        color: WorkshopColors.textSecondary,
+                        color: DanioColors.workshopTextSecondary,
                       ),
                     ),
                   ],
@@ -336,9 +317,9 @@ class _ToolCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: WorkshopColors.glassCard,
+              color: AppColors.whiteAlpha12,
               borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: WorkshopColors.glassBorder),
+              border: Border.all(color: AppColors.whiteAlpha20),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,7 +336,7 @@ class _ToolCard extends StatelessWidget {
                 Text(
                   title,
                   style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-                    color: WorkshopColors.textPrimary,
+                    color: AppColors.textPrimaryDark,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -363,7 +344,7 @@ class _ToolCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
-                    color: WorkshopColors.textSecondary,
+                    color: DanioColors.workshopTextSecondary,
                   ),
                 ),
               ],
@@ -388,9 +369,9 @@ class _QuickConversions extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
-              color: WorkshopColors.glassCard,
+              color: AppColors.whiteAlpha12,
               borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: WorkshopColors.glassBorder),
+              border: Border.all(color: AppColors.whiteAlpha20),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,7 +379,7 @@ class _QuickConversions extends StatelessWidget {
                 Text(
                   'Quick Reference',
                   style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
-                    color: WorkshopColors.textPrimary,
+                    color: AppColors.textPrimaryDark,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -432,13 +413,13 @@ class _ConversionRow extends StatelessWidget {
           Text(
             left,
             style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-              color: WorkshopColors.textSecondary,
+              color: DanioColors.workshopTextSecondary,
             ),
           ),
           Text(
             right,
             style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-              color: WorkshopColors.accentWarm,
+              color: DanioColors.studyGold,
               fontWeight: FontWeight.w500,
             ),
           ),
