@@ -957,10 +957,7 @@ class _ConfigureAiTileState extends State<_ConfigureAiTile> {
   }
 
   Future<void> _showConfigureAiDialog(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => _ConfigureAiDialog(onDismissed: _reload),
-    );
+    await _ConfigureAiDialog.show(context, _reload);
   }
 }
 
@@ -968,6 +965,13 @@ class _ConfigureAiDialog extends StatefulWidget {
   final VoidCallback onDismissed;
 
   const _ConfigureAiDialog({required this.onDismissed});
+
+  static Future<void> show(BuildContext context, VoidCallback onDismissed) {
+    return showDialog<void>(
+      context: context,
+      builder: (ctx) => _ConfigureAiDialog(onDismissed: onDismissed),
+    );
+  }
 
   @override
   State<_ConfigureAiDialog> createState() => _ConfigureAiDialogState();

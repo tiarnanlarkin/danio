@@ -188,10 +188,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       if (milestoneCard != null && mounted) {
-        await showDialog<void>(
+        await showAppDialog<void>(
           context: context,
           barrierDismissible: true,
-          builder: (_) => Dialog(backgroundColor: Colors.transparent, child: milestoneCard),
+          child: milestoneCard,
         );
         if (prefsKey != null) await prefs.setBool(prefsKey, true);
       }
