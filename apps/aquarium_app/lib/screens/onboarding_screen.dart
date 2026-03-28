@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../theme/app_theme.dart';
 import '../models/user_profile.dart';
 import '../models/tank.dart';
 import '../providers/onboarding_provider.dart';
