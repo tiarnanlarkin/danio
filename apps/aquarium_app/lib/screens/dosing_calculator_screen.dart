@@ -99,12 +99,12 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                   const Text('per'),
                   const SizedBox(width: AppSpacing.sm2),
                   SizedBox(
-                    width: 100,
+                    width: 110,
                     child: DropdownButtonFormField<double>(
                       initialValue: _dosePerLitres,
                       decoration: const InputDecoration(
                         suffixText: 'L',
-                        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.sm2),
+                        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
                       ),
                       items: [5, 10, 20, 25, 40, 50, 100].map((v) {
                         return DropdownMenuItem(
