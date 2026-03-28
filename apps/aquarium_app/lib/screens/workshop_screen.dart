@@ -16,6 +16,7 @@ import 'unit_converter_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'lighting_schedule_screen.dart';
 import '../utils/navigation_throttle.dart';
+import '../widgets/danio_snack_bar.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
 /// Workshop colors - practical maker space theme
@@ -71,13 +72,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
       await prefs.setBool('tab_4_workshop_visited', true);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🔧 The Workshop — calculators, guides, and tools'),
-            duration: Duration(seconds: 4),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        DanioSnackBar.info(context, '🔧 The Workshop — calculators, guides, and tools');
       });
     }
   }

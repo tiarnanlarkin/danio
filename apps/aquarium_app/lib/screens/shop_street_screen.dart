@@ -315,7 +315,7 @@ class ShopStreetScreen extends ConsumerWidget {
                               .read(localShopsProvider.notifier)
                               .updateShop(shop);
                         }
-                        Navigator.maybePop(ctx);
+                        Navigator.maybePop(context);
                       }
                     : null,
                 label: existingShop == null ? 'Add Shop' : 'Save Changes',

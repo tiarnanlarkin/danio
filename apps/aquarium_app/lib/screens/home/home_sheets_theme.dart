@@ -90,6 +90,5 @@ void showThemePicker(BuildContext context, WidgetRef ref) {
           const SizedBox(height: AppSpacing.md),
         ],
       ),
-    ),
   );
 }

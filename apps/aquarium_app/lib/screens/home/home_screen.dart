@@ -270,8 +270,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
     final selectedTanks = allTanks.where((t) => _selectedTankIds.contains(t.id)).toList();
     final tankNames = selectedTanks.map((t) => t.name).join(', ');
-    final messenger = ScaffoldMessenger.of(context);
-
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(

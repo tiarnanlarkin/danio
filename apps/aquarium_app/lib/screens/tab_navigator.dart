@@ -40,11 +40,6 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
   // Track last back button press for double-tap-to-exit
   DateTime? _lastBackPress;
 
-  // Cached ScaffoldMessengerState — looked up in didChangeDependencies so we
-  // never call ScaffoldMessenger.of(context) inside an async / PopScope
-  // callback where the widget may already be deactivated.
-  late ScaffoldMessengerState _scaffoldMessenger;
-
   // Animation for tab cross-fade
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
@@ -76,10 +71,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Cache a reference to ScaffoldMessengerState so we can safely call
-    // showSnackBar from inside PopScope.onPopInvoked, where the widget
-    // may already be deactivated (context.mounted can be false by that point).
-    _scaffoldMessenger = ScaffoldMessenger.of(context);
+
   }
 
   @override
