@@ -172,8 +172,8 @@ class TankActions {
       _ref.invalidate(tanksProvider);
 
       return tank;
-    } catch (e) {
-      // Let UI handle the error
+    } catch (e, st) {
+      logError('TankProvider.createTank failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -185,8 +185,8 @@ class TankActions {
       await _storage.saveTank(updated);
       _ref.invalidate(tanksProvider);
       _ref.invalidate(tankProvider(tank.id));
-    } catch (e) {
-      // Let UI handle the error
+    } catch (e, st) {
+      logError('TankProvider.updateTank failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -212,8 +212,8 @@ class TankActions {
     try {
       await _storage.deleteTank(id);
       _ref.invalidate(tanksProvider);
-    } catch (e) {
-      // Let UI handle the error
+    } catch (e, st) {
+      logError('TankProvider.permanentlyDeleteTank failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -225,7 +225,8 @@ class TankActions {
     try {
       await _storage.deleteAllTanks(ids);
       _ref.invalidate(tanksProvider);
-    } catch (e) {
+    } catch (e, st) {
+      logError('TankProvider.bulkDeleteTanks failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -246,7 +247,8 @@ class TankActions {
         await _storage.saveTanks(updates);
       }
       _ref.invalidate(tanksProvider);
-    } catch (e) {
+    } catch (e, st) {
+      logError('TankProvider.reorderTanks failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -257,8 +259,8 @@ class TankActions {
       await _storage.saveLivestock(livestock);
       _ref.invalidate(livestockProvider(livestock.tankId));
       return livestock;
-    } catch (e) {
-      // Let UI handle the error
+    } catch (e, st) {
+      logError('TankProvider.addLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -269,8 +271,8 @@ class TankActions {
       final updated = livestock.copyWith(updatedAt: DateTime.now());
       await _storage.saveLivestock(updated);
       _ref.invalidate(livestockProvider(livestock.tankId));
-    } catch (e) {
-      // Let UI handle the error
+    } catch (e, st) {
+      logError('TankProvider.updateLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -280,8 +282,8 @@ class TankActions {
     try {
       await _storage.deleteLivestock(id);
       _ref.invalidate(livestockProvider(tankId));
-    } catch (e) {
-      // Let UI handle the error
+    } catch (e, st) {
+      logError('TankProvider.deleteLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -311,8 +313,8 @@ class TankActions {
     try {
       await _storage.deleteLivestock(id);
       _ref.invalidate(livestockProvider(tankId));
-    } catch (e) {
-      // Let UI handle the error
+    } catch (e, st) {
+      logError('TankProvider.permanentlyDeleteLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -326,7 +328,8 @@ class TankActions {
       // Invalidate both tanks
       _ref.invalidate(livestockProvider(livestock.tankId));
       _ref.invalidate(livestockProvider(newTankId));
-    } catch (e) {
+    } catch (e, st) {
+      logError('TankProvider.moveLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
@@ -354,7 +357,8 @@ class TankActions {
 
       _ref.invalidate(livestockProvider(fromTankId));
       _ref.invalidate(livestockProvider(toTankId));
-    } catch (e) {
+    } catch (e, st) {
+      logError('TankProvider.bulkMoveLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
       rethrow;
     }
   }
