@@ -53,6 +53,7 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       // Look for XP text anywhere on screen
+      // ignore: unused_local_variable
       final xpFinder = find.textContaining('XP');
       // At minimum the screen should render with text widgets
       expect(find.byType(Text), findsWidgets);

@@ -16,6 +16,7 @@ import 'package:danio/models/spaced_repetition.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
+// ignore: unused_element
 final _emptyStats = ReviewStats(
   totalCards: 0,
   dueCards: 0,
@@ -27,6 +28,7 @@ final _emptyStats = ReviewStats(
   currentStreak: 0,
 );
 
+// ignore: unused_element
 final _emptySrState = SpacedRepetitionState(
   cards: const [],
   stats: ReviewStats(
