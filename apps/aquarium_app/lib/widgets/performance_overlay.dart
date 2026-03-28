@@ -3,6 +3,7 @@
 library;
 
 import '../theme/app_theme.dart';
+import 'core/bubble_loader.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -203,9 +204,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
         ],
       ),
       body: report == null
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            )
+          ? const Center(child: BubbleLoader())
           : ListView(
               padding: const EdgeInsets.all(AppSpacing.md),
               children: [

@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'core/bubble_loader.dart';
 
 /// Optimized network image with lazy loading and memory caching
 ///
@@ -58,18 +59,7 @@ class OptimizedNetworkImage extends StatelessWidget {
       fadeInDuration: fadeIn ? AppDurations.medium4 : Duration.zero,
       placeholder: (context, url) =>
           placeholder ??
-          Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor.withAlpha(128),
-                ),
-              ),
-            ),
-          ),
+          const Center(child: BubbleLoader.small()),
       errorWidget: (context, url, error) =>
           errorWidget ??
           Icon(

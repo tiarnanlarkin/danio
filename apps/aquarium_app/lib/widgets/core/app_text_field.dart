@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
+import 'bubble_loader.dart';
 
 /// Input states for text fields
 enum AppTextFieldState {
@@ -306,16 +307,9 @@ class _AppTextFieldState extends State<AppTextField> {
 
   Widget? _buildSuffix(bool isDark) {
     if (widget.isLoading) {
-      return Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm),
-        child: SizedBox(
-          width: AppIconSizes.sm,
-          height: AppIconSizes.sm,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation(context.textHint),
-          ),
-        ),
+      return const Padding(
+        padding: EdgeInsets.all(AppSpacing.sm),
+        child: BubbleLoader.small(),
       );
     }
 

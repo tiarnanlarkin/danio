@@ -32,6 +32,7 @@ import 'widgets/guides_section.dart';
 import 'widgets/tools_section.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
+import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/app_bottom_sheet.dart';
 import '../../utils/logger.dart';
 
@@ -710,11 +711,7 @@ class _GoalOptionState extends State<_GoalOption> {
 
     return ListTile(
       leading: _isLoading
-          ? const SizedBox(
-              width: 32,
-              height: 32,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
+          ? const BubbleLoader.small()
           : Text(
               widget.icon,
               style:

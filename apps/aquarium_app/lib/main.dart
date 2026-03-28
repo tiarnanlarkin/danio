@@ -27,6 +27,7 @@ import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
 import 'widgets/error_boundary.dart';
+import 'widgets/core/bubble_loader.dart';
 import 'utils/logger.dart';
 
 // Global navigator key for notification navigation
@@ -421,10 +422,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
-                strokeWidth: 2,
-              ),
+              const BubbleLoader.small(color: Colors.white70),
             ],
           ),
         ),

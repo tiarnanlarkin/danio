@@ -9,6 +9,7 @@ import '../services/openai_service.dart';
 import '../features/smart/smart_providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/offline_indicator.dart';
+import 'core/bubble_loader.dart';
 import '../utils/logger.dart';
 
 /// AI-powered tank compatibility checker.
@@ -187,7 +188,7 @@ class _CompatibilityCheckerWidgetState
               },
               loading: () => const SizedBox(
                 height: 48,
-                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                child: Center(child: BubbleLoader.small()),
               ),
               error: (_, __) => Text(
                 'Could not load tanks',
@@ -205,11 +206,7 @@ class _CompatibilityCheckerWidgetState
                 suffixIcon: _loading
                     ? const Padding(
                         padding: EdgeInsets.all(AppSpacing.sm2),
-                        child: SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
+                        child: BubbleLoader.small(),
                       )
                     : IconButton(
                         tooltip: 'Remove species',

@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import '../theme/app_theme.dart';
 import 'package:path/path.dart' as path;
 import '../utils/logger.dart';
+import '../widgets/core/bubble_loader.dart';
 
 /// Service for optimizing image loading and caching
 class ImageCacheService {
@@ -207,7 +208,7 @@ class CachedImage extends StatelessWidget {
 
         if (frame == null) {
           return placeholder ??
-              const Center(child: CircularProgressIndicator());
+              const Center(child: BubbleLoader.small());
         }
 
         return child;
