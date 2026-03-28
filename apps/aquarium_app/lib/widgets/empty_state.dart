@@ -327,10 +327,11 @@ class CompactEmptyState extends StatelessWidget {
           ),
           if (actionLabel != null && onAction != null) ...[
             const SizedBox(height: AppSpacing.md),
-            TextButton.icon(
+            AppButton(
+              label: actionLabel!,
               onPressed: onAction,
-              icon: const Icon(Icons.add, size: 18),
-              label: Text(actionLabel!),
+              leadingIcon: Icons.add,
+              variant: AppButtonVariant.text,
             ),
           ],
         ],

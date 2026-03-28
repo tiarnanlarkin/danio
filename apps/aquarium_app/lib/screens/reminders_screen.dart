@@ -794,8 +794,6 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                   );
                   Navigator.maybePop(context);
                 },
-                child: const Text('Save Reminder'),
-              ),
             ),
           ],
         ),

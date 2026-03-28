@@ -104,10 +104,11 @@ class _SpacedRepetitionPracticeScreenState
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.lg),
-            FilledButton.icon(
+            AppButton(
+              label: 'Try a new lesson',
               onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-              icon: const Icon(Icons.auto_stories),
-              label: const Text('Try a new lesson'),
+              leadingIcon: Icons.auto_stories,
+              variant: AppButtonVariant.primary,
             ),
             const SizedBox(height: AppSpacing.md),
             if (srState.stats.totalCards > 0) ...[
