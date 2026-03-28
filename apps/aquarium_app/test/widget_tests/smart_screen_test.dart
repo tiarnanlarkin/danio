@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/smart_screen.dart';
 import 'package:danio/features/smart/smart_providers.dart';
-import 'package:danio/features/smart/models/smart_models.dart';
 import 'package:danio/services/openai_service.dart';
 import 'package:danio/widgets/offline_indicator.dart';
 

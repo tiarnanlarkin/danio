@@ -9,13 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/home/home_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
-import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/room_theme_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/theme/room_themes.dart';
-import 'package:danio/models/models.dart';
-import 'package:danio/widgets/stage/stage_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
