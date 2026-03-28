@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'core/app_button.dart';
 
 /// Skeleton loader for a learning path card
 class PathCardSkeleton extends StatelessWidget {
@@ -266,10 +267,10 @@ class LessonErrorWidget extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: AppSpacing.lg),
-              ElevatedButton.icon(
+              AppButton(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Try Again'),
+                label: 'Try Again',
+                leadingIcon: Icons.refresh,
               ),
             ],
           ],

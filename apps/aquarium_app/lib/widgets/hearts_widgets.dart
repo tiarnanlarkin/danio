@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/app_button.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/gems_provider.dart';
@@ -452,15 +453,14 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
             Column(
               children: [
                 // Practice mode button
-                ElevatedButton.icon(
+                AppButton(
                   onPressed: () {
                     Navigator.of(context).pop('practice');
                   },
-                  icon: const Icon(Icons.fitness_center),
-                  label: const Text('Practice to Earn Heart'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),
-                  ),
+                  label: 'Practice to Earn Heart',
+                  leadingIcon: Icons.fitness_center,
+                  isFullWidth: true,
+                  size: AppButtonSize.large,
                 ),
                 const SizedBox(height: AppSpacing.sm2),
 

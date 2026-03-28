@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../widgets/core/app_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -417,9 +418,9 @@ class TankDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  ElevatedButton(
+                  AppButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Go Back'),
+                    label: 'Go Back',
                   ),
                 ],
               ),

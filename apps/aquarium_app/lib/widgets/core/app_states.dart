@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
+import 'app_button.dart';
 import 'bubble_loader.dart';
 
 /// Empty state variants for different contexts
@@ -206,20 +207,9 @@ class AppEmptyState extends StatelessWidget {
             // Actions
             if (actionLabel != null) ...[
               SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
-              ElevatedButton(
+              AppButton(
                 onPressed: onAction,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.smallRadius,
-                  ),
-                ),
-                child: Text(actionLabel!),
+                label: actionLabel!,
               ),
             ],
 
@@ -552,18 +542,10 @@ class AppErrorState extends StatelessWidget {
 
             if (onRetry != null) ...[
               SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
-              ElevatedButton.icon(
+              AppButton(
                 onPressed: onRetry,
-                icon: Icon(Icons.refresh, size: 18),
-                label: Text(retryLabel),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
-                  ),
-                ),
+                label: retryLabel,
+                leadingIcon: Icons.refresh,
               ),
             ],
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'core/app_button.dart';
 import 'mascot/mascot_widgets.dart';
 
 /// Empty state widgets with mascot support
@@ -278,16 +279,10 @@ class _EmptyStateState extends State<EmptyState> with TickerProviderStateMixin {
                 // Action button
                 if (widget.actionLabel != null && widget.onAction != null) ...[
                   const SizedBox(height: AppSpacing.lg),
-                  ElevatedButton.icon(
+                  AppButton(
                     onPressed: widget.onAction,
-                    icon: const Icon(Icons.add),
-                    label: Text(widget.actionLabel!),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.md,
-                      ),
-                    ),
+                    label: widget.actionLabel!,
+                    leadingIcon: Icons.add,
                   ),
                 ],
               ],

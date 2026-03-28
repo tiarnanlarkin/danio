@@ -1304,20 +1304,12 @@ class _BulkAddLivestockSheetState
               const SizedBox(height: AppSpacing.xs),
             ],
             const SizedBox(height: AppSpacing.md),
-            ElevatedButton.icon(
+            AppButton(
               onPressed: _isSaving ? null : _save,
-              icon: _isSaving
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.playlist_add),
-              label: Text(
-                _isSaving
-                    ? 'Adding...'
-                    : 'Add ${_items.isEmpty ? '' : '(${_items.length}) '}livestock',
-              ),
+              label: 'Add ${_items.isEmpty ? '' : '(${_items.length}) '}livestock',
+              leadingIcon: Icons.playlist_add,
+              isLoading: _isSaving,
+              isFullWidth: true,
             ),
           ],
         ),

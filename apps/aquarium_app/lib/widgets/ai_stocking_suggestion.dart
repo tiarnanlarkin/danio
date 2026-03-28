@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/app_button.dart';
 
 import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
@@ -233,9 +234,9 @@ class _AiStockingSuggestionSheetState
                         const SizedBox(height: AppSpacing.md),
                         Text(_error!, style: AppTypography.bodyMedium),
                         const SizedBox(height: AppSpacing.md),
-                        ElevatedButton(
+                        AppButton(
                           onPressed: _fetchSuggestion,
-                          child: const Text('Try Again'),
+                          label: 'Try Again',
                         ),
                       ],
                     ),

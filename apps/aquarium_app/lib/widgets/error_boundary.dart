@@ -2,6 +2,7 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'core/app_button.dart';
 import 'package:danio/utils/logger.dart';
 
 /// Error boundary widget that catches errors and displays a friendly fallback UI
@@ -163,25 +164,11 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                   const SizedBox(height: AppSpacing.xl),
 
                   // Retry button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: onRetry,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.md2),
-                        ),
-                      ),
-                      child: Text(
-                        'Try Again',
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                  AppButton(
+                    onPressed: onRetry,
+                    label: 'Try Again',
+                    isFullWidth: true,
+                    size: AppButtonSize.large,
                   ),
 
                   const SizedBox(height: AppSpacing.md),
