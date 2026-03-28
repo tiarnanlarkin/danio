@@ -1,7 +1,6 @@
-import 'dart:async';
-import '../utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../utils/debouncer.dart';
 import '../data/plant_database.dart';
 import '../widgets/core/app_text_field.dart';
 import '../models/learning.dart';
@@ -24,15 +23,25 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
   bool _lowTechOnly = false;
   final Set<String> _researchedPlants =
       {}; // Track researched plants this session
-  Timer? _debounce;
+
+  /// Debounce search input to avoid filtering on every keystroke
+  final _searchDebouncer = Debouncer(delay: const Duration(milliseconds: 250));
+
+  /// Cached filtered results — invalidated when filters change
+  List<PlantInfo>? _cachedFilteredPlants;
 
   @override
   void dispose() {
-    _debounce?.cancel();
+    _searchDebouncer.dispose();
     super.dispose();
   }
 
+  void _invalidateCache() {
+    _cachedFilteredPlants = null;
+  }
+
   List<PlantInfo> get _filteredPlants {
+    if (_cachedFilteredPlants != null) return _cachedFilteredPlants!;
     var results = PlantDatabase.plants;
 
     if (_searchQuery.isNotEmpty) {
@@ -59,6 +68,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
       results = results.where((p) => !p.needsCO2).toList();
     }
 
+    _cachedFilteredPlants = results;
     return results;
   }
 
@@ -76,8 +86,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
             child: AppSearchField(
               hint: 'Search plants...',
               onChanged: (v) {
-                _debounce?.cancel();
-                _debounce = Timer(kDebounceDuration, () {
+                _searchDebouncer.run(() {
                   setState(() => _searchQuery = v);
                 });
               },
