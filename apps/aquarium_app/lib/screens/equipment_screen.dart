@@ -366,7 +366,7 @@ class EquipmentScreen extends ConsumerWidget {
   }
 
   void _showEquipmentHistoryDialog(BuildContext context, Equipment equipment) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (_) =>
           _EquipmentHistoryDialog(tankId: tankId, equipment: equipment),

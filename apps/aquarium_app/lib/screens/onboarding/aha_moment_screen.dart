@@ -532,7 +532,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(
                       value,
                       style: GoogleFonts.nunito(
@@ -541,7 +541,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       subLabel,
                       style: GoogleFonts.nunito(

@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../theme/app_theme.dart';
 import '../../utils/logger.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Key used in SharedPreferences to persist the user's GDPR analytics consent.
 const String kGdprAnalyticsConsentKey = 'gdpr_analytics_consent';
@@ -130,7 +131,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
                             'I confirm I am 13 years of age or older',
@@ -164,7 +165,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: RichText(
                             text: TextSpan(
@@ -208,20 +209,18 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
 
               const Spacer(flex: 2),
 
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: canProceed ? () => _respond(true) : null,
-                  child: const Text('Accept Analytics'),
-                ),
+              AppButton(
+                label: 'Accept Analytics',
+                onPressed: canProceed ? () => _respond(true) : null,
+                variant: AppButtonVariant.primary,
+                isFullWidth: true,
               ),
               const SizedBox(height: AppSpacing.sm),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: canProceed ? () => _respond(false) : null,
-                  child: const Text('No Thanks'),
-                ),
+              AppButton(
+                label: 'No Thanks',
+                onPressed: canProceed ? () => _respond(false) : null,
+                variant: AppButtonVariant.secondary,
+                isFullWidth: true,
               ),
               const SizedBox(height: AppSpacing.lg),
             ],

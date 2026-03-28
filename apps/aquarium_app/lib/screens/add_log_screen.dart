@@ -1246,7 +1246,7 @@ class _ParameterField extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Icon(Icons.circle, color: statusColor, size: 12),
                     ],
                   )
@@ -1411,7 +1411,7 @@ class _CompactParamField extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Icon(Icons.circle, color: statusColor, size: 8),
                 ],
               ),

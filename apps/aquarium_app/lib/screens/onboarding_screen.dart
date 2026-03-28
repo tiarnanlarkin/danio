@@ -385,13 +385,13 @@ class _OnboardingFallback extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.error_outline, size: 64, color: AppColors.textHint),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               const Text(
                 'Something went wrong — let\'s go back',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               AppButton(
                 label: 'Go back',
                 onPressed: onGoBack,

@@ -93,7 +93,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
                 borderRadius: BorderRadius.circular(AppRadius.xxs),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             // Flame icon with flicker
             AnimatedBuilder(
               animation: _flickerScale,
@@ -105,7 +105,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
               },
               child: const Text('🔥', style: TextStyle(fontSize: 48)),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             // Headline
             Text(
               'Day 2 🔥 Your streak is alive. Keep it going.',
@@ -118,7 +118,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
               textAlign: TextAlign.center,
             ),
             if (widget.fishName != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 "Today's lesson is about ${widget.fishName}.",
                 style: GoogleFonts.nunito(
@@ -128,7 +128,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
                 textAlign: TextAlign.center,
               ),
             ],
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             // CTA button
             Semantics(
               label: 'Continue learning',
@@ -159,7 +159,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             // Later link
             Semantics(
               label: 'Later, dismiss streak prompt',
@@ -279,7 +279,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
             Row(
               children: [
                 const Text('🏆', style: TextStyle(fontSize: 36)),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     "7 days — You've earned Apprentice Fishkeeper",
@@ -293,7 +293,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             // XP bonus
             AnimatedBuilder(
               animation: _xpScale,
@@ -321,7 +321,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
             ),
             // Feature nudge
             if (widget.onFeatureTap != null) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Semantics(
                 label: 'Try the tank compatibility checker',
                 button: true,
@@ -352,7 +352,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         const Icon(
                           Icons.chevron_right_rounded,
                           color: AppColors.onPrimary,
@@ -414,12 +414,12 @@ class Day30CommittedCard extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             // Usage summary
             _buildStatRow(Icons.menu_book_rounded, '$lessonsCompleted lessons completed'),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.sm3),
             _buildStatRow(Icons.star_rounded, '$xpEarned XP earned'),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
             // Soft CTA
             Semantics(
               label: "See what's waiting for you, upgrade",
@@ -462,7 +462,7 @@ class Day30CommittedCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 18, color: AppColors.textSecondary),
-        const SizedBox(width: 10),
+        const SizedBox(width: AppSpacing.sm3),
         Text(
           text,
           style: GoogleFonts.nunito(

@@ -14,6 +14,7 @@ import '../widgets/mascot/mascot_widgets.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
 /// Main Gem Shop Screen
@@ -209,132 +210,88 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
     final gemBalance = ref.read(gemBalanceProvider);
     final canAfford = gemBalance >= item.gemCost;
 
-    return await showDialog<bool>(
+    return await showAppDialog<bool>(
           context: context,
-          builder: (ctx) => BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: AlertDialog(
-              backgroundColor: DanioColors.gemShopBackground2,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.largeRadius,
-                side: const BorderSide(color: AppColors.whiteAlpha20),
-              ),
-              title: Row(
-                children: [
-                  Text(
-                    item.emoji,
-                    style: Theme.of(context).textTheme.headlineMedium!,
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Expanded(
-                    child: Text(
-                      item.name,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: AppColors.textPrimaryDark,
+          title: '${item.emoji} ${item.name}',
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(item.description),
+              const SizedBox(height: AppSpacing.lg2),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppColors.whiteAlpha08,
+                  borderRadius: AppRadius.mediumRadius,
+                  border: Border.all(color: AppColors.whiteAlpha20),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Cost:', style: AppTypography.bodyMedium),
+                    Text(
+                      '${item.gemCost} 💎',
+                      style: AppTypography.titleMedium.copyWith(
+                        color: canAfford
+                            ? DanioColors.gemPrimary
+                            : DanioColors.gemPowerUp,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Your balance:', style: AppTypography.bodyMedium),
+                  Text('$gemBalance 💎', style: AppTypography.bodyMedium),
                 ],
               ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.description,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: AppColors.textSecondaryDark,
+              if (!canAfford)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.sm),
+                  child: Text(
+                    'Not enough gems! Complete lessons to earn more.',
+                    style: AppTypography.bodySmall.copyWith(
+                      // Use fully opaque powerUpColor for WCAG AA contrast on dark background
+                      color: DanioColors.gemPowerUp,
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg2),
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.whiteAlpha08,
-                      borderRadius: AppRadius.mediumRadius,
-                      border: Border.all(color: AppColors.whiteAlpha20),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Cost:',
-                          style: Theme.of(context).textTheme.titleMedium!
-                              .copyWith(color: AppColors.textSecondaryDark),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              '${item.gemCost}',
-                              style: Theme.of(context).textTheme.titleLarge!
-                                  .copyWith(
-                                    color: canAfford
-                                        ? DanioColors.gemPrimary
-                                        : DanioColors.gemPowerUp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
-                            Text(
-                              '💎',
-                              style: Theme.of(context).textTheme.titleLarge!,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Your balance:',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: AppColors.textSecondaryDark,
-                        ),
-                      ),
-                      Text(
-                        '$gemBalance 💎',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: AppColors.textPrimaryDark,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (!canAfford)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Text(
-                        'Not enough gems! Complete lessons to earn more.',
-                        style: TextStyle(
-                          // Use fully opaque powerUpColor for WCAG AA contrast on dark background
-                          color: DanioColors.gemPowerUp,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              actions: [
-                AppButton(
-                  label: 'Cancel',
-                  onPressed: _isPurchasing
-                      ? null
-                      : () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-                  variant: AppButtonVariant.text,
                 ),
-                AppButton(
-                  label: 'Purchase',
-                  onPressed: (canAfford && !_isPurchasing)
-                      ? () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); }
-                      : null,
-                  isLoading: _isPurchasing,
-                  variant: AppButtonVariant.primary,
-                ),
-              ],
-            ),
+            ],
           ),
+          actions: [
+            AppButton(
+              label: 'Cancel',
+              onPressed: _isPurchasing
+                  ? null
+                  : () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context, false);
+                      }
+                    },
+              variant: AppButtonVariant.text,
+              isFullWidth: true,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            AppButton(
+              label: 'Purchase',
+              onPressed: (canAfford && !_isPurchasing)
+                  ? () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context, true);
+                      }
+                    }
+                  : null,
+              isLoading: _isPurchasing,
+              variant: AppButtonVariant.primary,
+              isFullWidth: true,
+            ),
+          ],
         ) ??
         false;
   }

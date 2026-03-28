@@ -1062,7 +1062,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
     if (mounted) {
       // Show completion dialog
-      showDialog(
+      showDialog<void>(
         context: context,
         barrierDismissible: false,
         builder: (context) => _buildCompletionDialog(),

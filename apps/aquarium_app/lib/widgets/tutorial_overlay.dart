@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/logger.dart';
+import 'core/app_button.dart';
 
 /// Tutorial step configuration
 class TutorialStep {
@@ -275,10 +276,10 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Skip button
-            TextButton(
+            AppButton(
+              label: 'Skip Tutorial',
               onPressed: _skipTutorial,
-              style: TextButton.styleFrom(foregroundColor: Colors.white),
-              child: const Text('Skip Tutorial'),
+              variant: AppButtonVariant.text,
             ),
 
             // Progress dots
@@ -300,18 +301,10 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
             ),
 
             // Next/Done button
-            ElevatedButton(
+            AppButton(
+              label: _currentStep == widget.steps.length - 1 ? 'Got it!' : 'Next',
               onPressed: _nextStep,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.accent,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.largeRadius,
-                ),
-              ),
-              child: Text(
-                _currentStep == widget.steps.length - 1 ? 'Got it!' : 'Next',
-              ),
+              variant: AppButtonVariant.primary,
             ),
           ],
         ),
@@ -326,7 +319,7 @@ void showTutorialOverlay(
   required List<TutorialStep> steps,
   required VoidCallback onComplete,
 }) {
-  showDialog(
+  showDialog<void>(
     context: context,
     barrierDismissible: false,
     barrierColor: Colors.transparent,

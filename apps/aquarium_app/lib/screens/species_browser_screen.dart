@@ -143,9 +143,9 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text('🔍', style: TextStyle(fontSize: 48)),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.sm2),
                         Text('No matches', style: AppTypography.titleMedium),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         Text(
                           'Try a different name or clear filters',
                           style: AppTypography.bodyMedium.copyWith(

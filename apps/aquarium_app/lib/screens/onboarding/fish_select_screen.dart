@@ -337,7 +337,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
         vertical: AppSpacing.xs,
       ),
       itemCount: _searchResults.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
         final fish = _searchResults[index];
         final isSelected = _selectedFish == fish;
@@ -488,7 +488,7 @@ class _PopularTile extends StatelessWidget {
                 commonName: fish.commonName,
                 size: 40,
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpacing.xs2),
               // Common name
               Text(
                 fish.commonName,
@@ -579,7 +579,7 @@ class _SearchResultCard extends StatelessWidget {
                 commonName: fish.commonName,
                 size: 36,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               // Names
               Expanded(
                 child: Column(
@@ -614,7 +614,7 @@ class _SearchResultCard extends StatelessWidget {
                 ),
               ),
               if (isSelected) ...[
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 const Icon(Icons.check_circle, color: AppColors.onboardingAmber, size: 20),
               ],
             ],

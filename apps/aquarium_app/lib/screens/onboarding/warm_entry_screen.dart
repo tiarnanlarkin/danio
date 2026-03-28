@@ -219,7 +219,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: AppSpacing.xl2),
                 // Personalised greeting — changes based on name-entry phase
                 Semantics(
                   header: true,
@@ -233,7 +233,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.lg2),
                 // Name input (shown before the warm entry cards)
                 if (!_nameSubmitted) ...[
                   Text(
@@ -244,7 +244,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   Row(
                     children: [
                       Expanded(
@@ -276,7 +276,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       FilledButton(
                         onPressed: _submitName,
                         style: FilledButton.styleFrom(
@@ -294,7 +294,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -317,16 +317,16 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                     child: _buildFishCareCard(),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 // Lesson card
                 FadeTransition(
                   opacity: _lessonCardOpacity,
                   child: _buildLessonCard(),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 // XP progress bar
                 _buildXpBar(),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 // Streak counter
                 _buildStreakCounter(),
                 ], // end of _nameSubmitted else branch
@@ -357,7 +357,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
             Row(
               children: [
                 _buildFishSprite(fish),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,14 +382,14 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 _buildInfoChip(
                   icon: Icons.star_rounded,
                   label: fish.careLevel,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 _buildInfoChip(
                   icon: Icons.water_drop_rounded,
                   label: 'pH ${fish.minPh}–${fish.maxPh}',
@@ -432,7 +432,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: AppColors.onboardingAmber),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.xs2),
           Text(
             label,
             style: GoogleFonts.nunito(
@@ -472,7 +472,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 size: 22,
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: AppSpacing.sm4),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -485,7 +485,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.xxs),
                   Text(
                     _lessonTitle,
                     style: GoogleFonts.nunito(
@@ -535,7 +535,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           AnimatedBuilder(
             animation: _xpFill,
             builder: (context, _) {
@@ -579,7 +579,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
             },
             child: const Text('🔥', style: TextStyle(fontSize: 24)),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpacing.sm3),
           Text(
             'Day 1 streak',
             style: GoogleFonts.nunito(

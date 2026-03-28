@@ -101,7 +101,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                     children: [
                       // Illustration: fish tank with notification bell
                       _buildIllustration(),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: AppSpacing.xl2),
                       // Headline
                       Text(
                         "We'll tap you when something matters.",
@@ -113,7 +113,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       // Body
                       Text(
                         "Danio can alert you when your fish's water conditions "
@@ -167,7 +167,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: AppSpacing.sm4),
                     // Secondary link
                     Semantics(
                       label: 'Not right now, skip notifications',

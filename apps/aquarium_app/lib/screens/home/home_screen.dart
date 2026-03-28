@@ -43,6 +43,7 @@ import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 import '../../utils/logger.dart';
 
 /// HomeScreen - The Living Room in the House Navigator.
@@ -188,7 +189,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       if (milestoneCard != null && mounted) {
-        await showDialog(
+        await showDialog<void>(
           context: context,
           barrierDismissible: true,
           builder: (_) => Dialog(backgroundColor: Colors.transparent, child: milestoneCard),
@@ -266,20 +267,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
     final selectedTanks = allTanks.where((t) => _selectedTankIds.contains(t.id)).toList();
     final tankNames = selectedTanks.map((t) => t.name).join(', ');
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?'),
-        content: Text('Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.'),
-        actions: [
-          AppButton(label: 'Keep', onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); }, variant: AppButtonVariant.text),
-          AppButton(
-            label: 'Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?',
+      message: 'Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.',
+      destructiveLabel: 'Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}',
+      cancelLabel: 'Keep',
     );
     if (confirmed != true || !mounted) return;
     try {
@@ -530,7 +523,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 if (!_isSelectMode)
                   TankSwitcher(
                     tanks: tanks, currentIndex: _currentTankIndex,
@@ -546,7 +539,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onDeleteSelected: () => _bulkDelete(context, tanks),
                     onExportSelected: () => _bulkExport(context, tanks),
                   ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ...tanks.asMap().entries.map((e) => TankListTile(
                   name: e.value.name,
                   volumeLitres: e.value.volumeLitres,

@@ -313,7 +313,7 @@ class LessonCardWidget extends StatelessWidget {
                   size: AppIconSizes.xl,
                   color: context.textHint,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Visual guide on the way!',
                   style: AppTypography.bodySmall.copyWith(

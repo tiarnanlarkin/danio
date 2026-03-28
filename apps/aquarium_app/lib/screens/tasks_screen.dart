@@ -293,7 +293,7 @@ class TasksScreen extends ConsumerWidget {
   }
 
   void _showTaskHistoryDialog(BuildContext context, Task task) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (_) => _TaskHistoryDialog(tankId: tankId, task: task),
     );

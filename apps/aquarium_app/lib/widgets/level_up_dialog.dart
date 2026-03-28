@@ -32,7 +32,7 @@ class LevelUpDialog extends StatefulWidget {
     required int totalXp,
     String? unlockMessage,
   }) {
-    return showDialog(
+    return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (context) => LevelUpDialog(

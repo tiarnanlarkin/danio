@@ -273,7 +273,7 @@ class DebugMenuScreen extends ConsumerWidget {
               color: Colors.red.shade700,
               onTap: () => _clearAllData(context, ref),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
       ];
 
     return Theme(

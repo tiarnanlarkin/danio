@@ -81,10 +81,10 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.lg2),
                     // Fish reference header
                     _buildFishHeader(),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     // Title
                     Text(
                       'Everything you need, right here.',
@@ -95,7 +95,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Danio is free to use — no subscription needed.',
                       style: GoogleFonts.nunito(
@@ -105,10 +105,10 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.lg2),
                     // Feature list
                     _buildFeatureList(),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                   ],
                 ),
               ),
@@ -148,7 +148,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                     cacheHeight: 96,
                   )
                 : const Text('🐟', style: TextStyle(fontSize: 48)),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Flexible(
               child: Text(
                 'Your ${widget.selectedFish.commonName} care guide is ready.',
@@ -183,7 +183,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Icon(Icons.check_rounded, color: AppColors.onboardingAmber, size: 22),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
                       f,

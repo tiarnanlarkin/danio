@@ -177,7 +177,8 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                   // Show error details in debug mode
                   if (kDebugMode) ...[
                     const SizedBox(height: AppSpacing.md),
-                    OutlinedButton(
+                    AppButton(
+                      label: 'Show Technical Details',
                       onPressed: () {
                         showAppDialog(
                           context: context,
@@ -199,7 +200,7 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                           ],
                         );
                       },
-                      child: const Text('Show Technical Details'),
+                      variant: AppButtonVariant.secondary,
                     ),
                   ],
                 ],

@@ -16,7 +16,7 @@ Future<void> showAchievementUnlockedDialog({
   required Achievement achievement,
   required int xpAwarded,
 }) {
-  return showDialog(
+  return showDialog<void>(
     context: context,
     barrierDismissible: false, // Must tap button to dismiss
     builder: (context) => AchievementUnlockedDialog(

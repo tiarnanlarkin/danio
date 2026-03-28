@@ -170,8 +170,7 @@ class _CompatibilityCheckerWidgetState
                   });
                 }
                 return DropdownButtonFormField<String>(
-                  // ignore: deprecated_member_use
-                  value: _selectedTankId,
+                  initialValue: _selectedTankId,
                   decoration: const InputDecoration(
                     labelText: 'Select tank',
                     border: OutlineInputBorder(),

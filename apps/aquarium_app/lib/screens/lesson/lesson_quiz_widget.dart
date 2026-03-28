@@ -395,8 +395,8 @@ class LessonQuizWidget extends ConsumerWidget {
 
                       if (!answered) {
                         // Announce result to screen readers
-                        // ignore: deprecated_member_use
-                        SemanticsService.announce(
+                        SemanticsService.sendAnnouncement(
+                          View.of(context),
                           isCorrect
                               ? 'Correct!'
                               : 'Incorrect. The correct answer is ${question.options[question.correctIndex]}.',

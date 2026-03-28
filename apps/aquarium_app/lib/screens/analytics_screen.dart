@@ -114,9 +114,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.bar_chart_rounded, size: 64, color: theme.colorScheme.outline),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     Text('No data yet', style: theme.textTheme.titleMedium),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Complete lessons and log activities\nto see your progress here',
                       textAlign: TextAlign.center,

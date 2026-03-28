@@ -14,6 +14,7 @@ import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 
 /// Main Inventory Screen - View and USE owned items
 class InventoryScreen extends ConsumerStatefulWidget {
@@ -194,92 +195,12 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
   }
 
   Future<bool> _showUseDialog(ShopItem shopItem, InventoryItem item) async {
-    return await showDialog<bool>(
+    return await showAppConfirmDialog(
           context: context,
-          builder: (ctx) => BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: AlertDialog(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? DanioColors.inventoryBackground2Dark
-                  : DanioColors.inventoryBackground2,
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.largeRadius,
-                side: const BorderSide(color: AppColors.whiteAlpha20),
-              ),
-              title: Row(
-                children: [
-                  Text(
-                    shopItem.emoji,
-                    style: Theme.of(context).textTheme.headlineMedium!,
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Expanded(
-                    child: Text(
-                      'Use ${shopItem.name}?',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppColors.textPrimaryDark,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    shopItem.description,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondaryDark,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.sm2),
-                    decoration: BoxDecoration(
-                      color: AppColors.whiteAlpha08,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'You have:',
-                          style: TextStyle(
-                            color: AppColors.textSecondaryDark,
-                          ),
-                        ),
-                        Text(
-                          'x${item.quantity}',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                color: DanioColors.topaz,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                AppButton(
-                  label: 'Cancel',
-                  onPressed: () {
-                    if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-                  },
-                  variant: AppButtonVariant.text,
-                ),
-                AppButton(
-                  label: 'Use Now',
-                  onPressed: () {
-                    if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-                  },
-                  variant: AppButtonVariant.primary,
-                ),
-              ],
-            ),
-          ),
+          title: 'Use ${shopItem.name}?',
+          message: shopItem.description,
+          confirmLabel: 'Use Now',
+          cancelLabel: 'Cancel',
         ) ??
         false;
   }

@@ -32,7 +32,7 @@ class SyncIndicator extends ConsumerWidget {
       onTap: () {
         if (kDebugMode) {
           // Show detailed sync status dialog (debug only)
-          showDialog(
+          showDialog<void>(
             context: context,
             builder: (context) => const SyncDebugDialog(),
           );
