@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
+import '../../widgets/app_bottom_sheet.dart';
 import '../../widgets/core/app_button.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
@@ -27,18 +28,9 @@ void showFeedingInfo(BuildContext context, WidgetRef ref, String? tankId) {
           l.timestamp.day == today.day)
       .length;
 
-  showModalBottomSheet(
+  showAppBottomSheet(
     context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    builder: (ctx) => Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.lg2),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: AppRadius.largeRadius,
-      ),
-      child: Column(
+    child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -97,7 +89,7 @@ void showFeedingInfo(BuildContext context, WidgetRef ref, String? tankId) {
           const SizedBox(height: AppSpacing.md),
           AppButton(
             onPressed: () {
-              Navigator.maybePop(ctx);
+              Navigator.maybePop(context);
               NavigationThrottle.push(
                 context,
                 AddLogScreen(tankId: tankId, initialType: LogType.feeding),
@@ -111,24 +103,14 @@ void showFeedingInfo(BuildContext context, WidgetRef ref, String? tankId) {
           const SizedBox(height: AppSpacing.sm),
         ],
       ),
-    ),
   );
 }
 
 /// Plant care tips bottom sheet.
 void showPlantInfo(BuildContext context) {
-  showModalBottomSheet(
+  showAppBottomSheet(
     context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    builder: (ctx) => Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.lg2),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: AppRadius.largeRadius,
-      ),
-      child: Column(
+    child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -192,6 +174,5 @@ void showPlantInfo(BuildContext context) {
           const SizedBox(height: AppSpacing.sm),
         ],
       ),
-    ),
   );
 }

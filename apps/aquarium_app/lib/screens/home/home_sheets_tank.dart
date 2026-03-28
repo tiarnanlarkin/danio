@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
+import '../../widgets/app_bottom_sheet.dart';
 import '../../widgets/core/app_button.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/storage_provider.dart';
@@ -15,29 +16,13 @@ import '../search_screen.dart';
 
 /// Tank toolbox bottom sheet with navigation to reminders, journal, analytics, search.
 void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
-  showModalBottomSheet(
+  showAppBottomSheet(
     context: context,
-    backgroundColor: Colors.transparent,
-    builder: (ctx) => Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
+    padding: const EdgeInsets.all(AppSpacing.md),
+    child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.borderColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
           const SizedBox(height: AppSpacing.md),
           Semantics(
             header: true,
@@ -48,8 +33,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.notifications_outlined),
             title: const Text('Reminders'),
             onTap: () {
-              Navigator.maybePop(ctx);
-              // Use WidgetsBinding to ensure sheet is dismissed before pushing
+              Navigator.maybePop(context);
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!context.mounted) return;
                 NavigationThrottle.push(
@@ -64,7 +48,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.book_outlined),
             title: const Text('Tank Journal'),
             onTap: () {
-              Navigator.maybePop(ctx);
+              Navigator.maybePop(context);
               NavigationThrottle.push(
                 context,
                 JournalScreen(tankId: tankId),
@@ -76,7 +60,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.analytics_outlined),
             title: const Text('Analytics'),
             onTap: () {
-              Navigator.maybePop(ctx);
+              Navigator.maybePop(context);
               NavigationThrottle.push(context, const AnalyticsScreen());
             },
           ),
@@ -84,7 +68,7 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
             leading: const Icon(Icons.search),
             title: const Text('Species Search'),
             onTap: () {
-              Navigator.maybePop(ctx);
+              Navigator.maybePop(context);
               NavigationThrottle.push(
                 context,
                 const SearchScreen(),
@@ -95,7 +79,6 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
           SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
         ],
       ),
-    ),
   );
 }
 
@@ -105,13 +88,8 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
   final tempC = TextEditingController();
   final ammoniaC = TextEditingController();
 
-  showModalBottomSheet(
+  showAppDragSheet(
     context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
     builder: (ctx) => Padding(
       padding: EdgeInsets.only(
         left: 20,
