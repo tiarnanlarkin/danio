@@ -10,10 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/debug_menu_screen.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 Widget _wrap() {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
@@ -30,10 +26,6 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 void main() {
   setUp(() {
@@ -59,16 +51,16 @@ void main() {
       expect(find.text('Onboarding'), findsOneWidget);
     });
 
-    testWidgets('shows Tools section header', (tester) async {
-      await tester.pumpWidget(_wrap());
-      await _advance(tester);
-      expect(find.text('Tools'), findsOneWidget);
-    });
-
     testWidgets('shows ListView', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.byType(ListView), findsOneWidget);
+    });
+
+    testWidgets('shows Complete Onboarding tile', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+      expect(find.text('Complete Onboarding'), findsOneWidget);
     });
   });
 }
