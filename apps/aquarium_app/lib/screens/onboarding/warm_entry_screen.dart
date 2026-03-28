@@ -269,7 +269,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                                 vertical: 14,
                               ),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(AppRadius.md2),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -348,7 +348,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg2),
           boxShadow: AppShadows.soft,
         ),
         child: Column(
@@ -454,7 +454,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(color: AppColors.border, width: 1),
         ),
         child: Row(
@@ -464,7 +464,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
               height: 40,
               decoration: BoxDecoration(
                 color: AppColors.onboardingAmber.withAlpha(30),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadius.sm3),
               ),
               child: const Icon(
                 Icons.menu_book_rounded,
@@ -544,7 +544,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(AppRadius.xs),
                 ),
                 child: FractionallySizedBox(
                   alignment: Alignment.centerLeft,
@@ -552,7 +552,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                   child: Container(
                     decoration: BoxDecoration(
                       color: AppColors.onboardingAmber,
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(AppRadius.xs),
                     ),
                   ),
                 ),

@@ -2,21 +2,31 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 
+/// Scale: `xxs(2) → xs(4) → sm(8) → sm3(10) → md2(12) → sm4(14) → md(16) →
+/// lg2(20) → lg(24) → xl(32) → xxl(48) → pill(100) → full(999)`
+///
+/// Mirrors the AppSpacing scale for predictable sizing.
 class AppRadius {
+  static const double xxs = 2;  // Progress bar corners, hairline rounding
   static const double xs = 4;
   static const double sm = 8;
+  static const double sm3 = 10; // Between sm(8) and md2(12)
   static const double md2 = 12;
+  static const double sm4 = 14; // Between md2(12) and md(16)
   static const double md = 16;
-  static const double lg2 = 20; // Between md (16) and lg (24) — matches AppSpacing.lg2
+  static const double lg2 = 20; // Between md(16) and lg(24) — matches AppSpacing.lg2
   static const double lg = 24;
   static const double xl = 32;
   static const double xxl = 48;
   static const double pill = 100;
   static const double full = 999.0;
 
+  static BorderRadius get xxsRadius => BorderRadius.circular(xxs);
   static BorderRadius get xsRadius => BorderRadius.circular(xs);
   static BorderRadius get smallRadius => BorderRadius.circular(sm);
+  static BorderRadius get sm3Radius => BorderRadius.circular(sm3);
   static BorderRadius get md2Radius => BorderRadius.circular(md2);
+  static BorderRadius get sm4Radius => BorderRadius.circular(sm4);
   static BorderRadius get mediumRadius => BorderRadius.circular(md);
   static BorderRadius get largeRadius => BorderRadius.circular(lg);
   static BorderRadius get xlRadius => BorderRadius.circular(xl);

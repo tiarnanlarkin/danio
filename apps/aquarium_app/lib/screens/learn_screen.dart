@@ -11,6 +11,7 @@ import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/study_room_scene.dart';
@@ -533,32 +534,28 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
     final fact = facts[random.nextInt(facts.length)];
 
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Row(
-          children: [
-            Text('🐠 ', style: Theme.of(context).textTheme.headlineSmall!),
-            const Expanded(child: Text('Fish Fact!')),
-          ],
+      title: '🐠 Fish Fact!',
+      child: Text(fact, style: AppTypography.bodyLarge),
+      actions: [
+        AppButton(
+          label: 'Cool!',
+          onPressed: () => Navigator.of(context).pop(),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
         ),
-        content: Text(fact, style: AppTypography.bodyLarge),
-        actions: [
-          AppButton(
-            label: 'Cool!',
-            onPressed: () => Navigator.of(ctx).pop(),
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Another!',
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              _showRandomFishFact(context); // Show another
-            },
-            variant: AppButtonVariant.text,
-          ),
-        ],
-      ),
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
+          label: 'Another!',
+          onPressed: () {
+            Navigator.of(context).pop();
+            _showRandomFishFact(context);
+          },
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 }
@@ -1173,31 +1170,22 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
         ),
       ),
       onTap: () {
-        showDialog(
+        showAppDialog(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: Row(
-              children: [
-                Text(
-                  '${meta.emoji} ',
-                  style: Theme.of(context).textTheme.headlineSmall!,
-                ),
-                const Expanded(child: Text('Coming Soon!')),
-              ],
-            ),
-            content: Text(
-              'The "${meta.title}" path is coming soon — we\'re crafting something great! '
-              'Stay tuned 🐟',
-              style: AppTypography.bodyLarge,
-            ),
-            actions: [
-              AppButton(
-                label: 'Got it!',
-                onPressed: () => Navigator.of(ctx).pop(),
-                variant: AppButtonVariant.text,
-              ),
-            ],
+          title: '${meta.emoji} Coming Soon!',
+          child: Text(
+            'The "${meta.title}" path is coming soon — we\'re crafting something great! '
+            'Stay tuned 🐟',
+            style: AppTypography.bodyLarge,
           ),
+          actions: [
+            AppButton(
+              label: 'Got it!',
+              onPressed: () => Navigator.of(context).pop(),
+              variant: AppButtonVariant.text,
+              isFullWidth: true,
+            ),
+          ],
         );
       },
     );

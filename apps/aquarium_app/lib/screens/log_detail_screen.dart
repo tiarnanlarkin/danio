@@ -13,6 +13,7 @@ import '../theme/app_theme.dart';
 import 'add_log_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 
 class LogDetailScreen extends ConsumerWidget {
   final String tankId;
@@ -145,26 +146,12 @@ class LogDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     LogEntry log,
   ) async {
-    final ok = await showDialog<bool>(
+    final ok = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Log Entry?'),
-        content: const Text(
-          'This log will be removed. You can undo within 5 seconds.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Keep',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Delete Log',
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Delete Log Entry?',
+      message: 'This log will be removed. You can undo within 5 seconds.',
+      destructiveLabel: 'Delete Log',
+      cancelLabel: 'Keep',
     );
 
     if (ok != true) return;

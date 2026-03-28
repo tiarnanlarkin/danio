@@ -115,7 +115,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               Semantics(
                 label: 'Age confirmation checkbox',
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   onTap: () => setState(() => _ageConfirmed = !_ageConfirmed),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
@@ -149,7 +149,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               Semantics(
                 label: 'Terms of Service and Privacy Policy acceptance checkbox',
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   onTap: () => setState(() => _tosAccepted = !_tosAccepted),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),

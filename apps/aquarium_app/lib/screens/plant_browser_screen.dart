@@ -321,7 +321,7 @@ class _PlantDetailSheet extends StatelessWidget {
                 height: 4,
                 decoration: BoxDecoration(
                   color: context.textHint,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(AppRadius.xxs),
                 ),
               ),
             ),

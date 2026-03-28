@@ -18,6 +18,7 @@ import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
 import 'lesson_hearts_modal.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 
 export 'lesson_card_widget.dart';
 export 'lesson_quiz_widget.dart';
@@ -87,26 +88,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   /// Shows a confirmation dialog before discarding mid-quiz progress.
   Future<bool> _confirmExitQuiz() async {
     if (!_showQuiz || _quizComplete) return true;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Leave quiz?'),
-        content: const Text(
-          'Your quiz progress will be lost. You can retake it anytime.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Keep going',
-            onPressed: () => Navigator.of(ctx).pop(false),
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Leave',
-            onPressed: () => Navigator.of(ctx).pop(true),
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Leave quiz?',
+      message: 'Your quiz progress will be lost. You can retake it anytime.',
+      destructiveLabel: 'Leave',
+      cancelLabel: 'Keep going',
     );
     return confirmed ?? false;
   }

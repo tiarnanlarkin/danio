@@ -727,7 +727,7 @@ class _MiniRoomPreview extends StatelessWidget {
                   ],
                 ),
                 border: Border.all(color: theme.sand.withAlpha(204), width: 2),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppRadius.xxs),
               ),
             ),
           ),
@@ -741,7 +741,7 @@ class _MiniRoomPreview extends StatelessWidget {
               height: 10,
               decoration: BoxDecoration(
                 color: theme.sand.withAlpha(204),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppRadius.xxs),
               ),
             ),
           ),

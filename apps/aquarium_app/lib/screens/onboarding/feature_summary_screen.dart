@@ -231,7 +231,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                   backgroundColor: AppColors.onboardingAmber,
                   foregroundColor: AppColors.onPrimary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   elevation: 0,
                 ),

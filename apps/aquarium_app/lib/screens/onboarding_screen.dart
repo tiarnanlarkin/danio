@@ -23,6 +23,7 @@ import 'onboarding/warm_entry_screen.dart';
 import '../utils/logger.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 
 /// Orchestrates the 10-screen onboarding flow.
 ///
@@ -250,24 +251,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
           final nav = Navigator.of(context);
-          final shouldExit = await showDialog<bool>(
+          final shouldExit = await showAppDestructiveDialog(
             context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Exit onboarding?'),
-              content: const Text('Your progress won\'t be saved.'),
-              actions: [
-                AppButton(
-                  label: 'Cancel',
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  variant: AppButtonVariant.text,
-                ),
-                AppButton(
-                  label: 'Exit',
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  variant: AppButtonVariant.destructive,
-                ),
-              ],
-            ),
+            title: 'Exit onboarding?',
+            message: "Your progress won't be saved.",
+            destructiveLabel: 'Exit',
           );
           if (shouldExit == true) {
             nav.pop();

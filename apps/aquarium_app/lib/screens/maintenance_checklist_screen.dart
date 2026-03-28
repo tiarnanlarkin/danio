@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 
 class MaintenanceChecklistScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -289,32 +290,19 @@ class _MaintenanceChecklistScreenState
   }
 
   void _showResetDialog() {
-    showDialog(
+    showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Reset Checklist?'),
-        content: const Text(
-          'This will uncheck all completed items so you can start fresh.',
-        ),
-        actions: [
-          AppButton(
-            label: 'Keep Progress',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
-          ),
-          FilledButton(
-            onPressed: () {
-              setState(() {
-                _weeklyChecks = {};
-                _monthlyChecks = {};
-              });
-              _saveChecks();
-              Navigator.maybePop(ctx);
-            },
-            child: const Text('Reset'),
-          ),
-        ],
-      ),
+      title: 'Reset Checklist?',
+      message: 'This will uncheck all completed items so you can start fresh.',
+      confirmLabel: 'Reset',
+      cancelLabel: 'Keep Progress',
+      onConfirm: () {
+        setState(() {
+          _weeklyChecks = {};
+          _monthlyChecks = {};
+        });
+        _saveChecks();
+      },
     );
   }
 }

@@ -320,7 +320,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.onboardingAmber.withAlpha(26),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(AppRadius.lg2),
                 ),
                 child: Text(
                   'Your $fishName Profile',
@@ -417,7 +417,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                             disabledForegroundColor: Colors.white70,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
+                              borderRadius: BorderRadius.circular(AppRadius.lg),
                             ),
                             elevation: 0,
                           ),
@@ -510,7 +510,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.onPrimary,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppRadius.sm4),
             border: Border.all(color: AppColors.border),
           ),
           child: Row(

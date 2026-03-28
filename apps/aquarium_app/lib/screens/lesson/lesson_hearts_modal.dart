@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 
 /// Shows a one-time explanation of the hearts system on the user's first
 /// lesson.  Call from [initState] via [WidgetsBinding.addPostFrameCallback].
@@ -16,21 +17,20 @@ Future<void> maybeExplainHearts(
   if (explained) return;
   await prefs.setBool('hearts_explained', true);
   if (!context.mounted) return;
-  showDialog(
+  showAppDialog(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('❤️ Hearts'),
-      content: const Text(
-        'Hearts are your learning lives! You lose one per wrong quiz answer. '
-        'They refill over time, or you can use gems to refill instantly.',
-      ),
-      actions: [
-        AppButton(
-          label: 'Got it!',
-          onPressed: () => Navigator.of(ctx).pop(),
-          variant: AppButtonVariant.text,
-        ),
-      ],
+    title: '❤️ Hearts',
+    child: const Text(
+      'Hearts are your learning lives! You lose one per wrong quiz answer. '
+      'They refill over time, or you can use gems to refill instantly.',
     ),
+    actions: [
+      AppButton(
+        label: 'Got it!',
+        onPressed: () => Navigator.of(context).pop(),
+        variant: AppButtonVariant.text,
+        isFullWidth: true,
+      ),
+    ],
   );
 }

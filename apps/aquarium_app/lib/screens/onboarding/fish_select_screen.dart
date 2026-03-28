@@ -215,11 +215,11 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                         filled: true,
                         fillColor: AppColors.card,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppRadius.md2),
                           borderSide: BorderSide.none,
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppRadius.md2),
                           borderSide: const BorderSide(
                             color: AppColors.onboardingAmber,
                             width: 2,
@@ -471,7 +471,7 @@ class _PopularTile extends StatelessWidget {
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26) // 10%
                 : AppColors.onPrimary,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.md2),
             border: Border.all(
               color: isSelected
                   ? AppColors.onboardingAmber
@@ -564,7 +564,7 @@ class _SearchResultCard extends StatelessWidget {
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26)
                 : AppColors.onPrimary,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.md2),
             border: Border.all(
               color: isSelected
                   ? AppColors.onboardingAmber
@@ -688,7 +688,7 @@ class _PulsingButtonState extends State<_PulsingButton>
           foregroundColor: AppColors.onPrimary,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
           elevation: 0,
         ),

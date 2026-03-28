@@ -852,7 +852,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: color,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(AppRadius.xxs),
                     ),
                   ),
                 );
@@ -890,7 +890,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       height: 12,
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(AppRadius.xxs),
       ),
     );
   }

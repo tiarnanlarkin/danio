@@ -17,6 +17,7 @@ import '../../utils/haptic_feedback.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../utils/skeleton_placeholders.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/app_card.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/danio_snack_bar.dart';
@@ -421,25 +422,22 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       return;
     }
 
-    final selectedTank = await showDialog<Tank>(
+    final selectedTank = await showAppDialog<Tank>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Move to Tank'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: availableTanks
-              .map(
-                (tank) => ListTile(
-                  title: Text(tank.name),
-                  subtitle:
-                      Text('${tank.volumeLitres.toStringAsFixed(0)}L'),
-                  onTap: () {
-                    if (Navigator.canPop(ctx)) Navigator.pop(ctx, tank);
-                  },
-                ),
-              )
-              .toList(),
-        ),
+      title: 'Move to Tank',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: availableTanks
+            .map(
+              (tank) => ListTile(
+                title: Text(tank.name),
+                subtitle: Text('${tank.volumeLitres.toStringAsFixed(0)}L'),
+                onTap: () {
+                  if (Navigator.canPop(context)) Navigator.pop(context, tank);
+                },
+              ),
+            )
+            .toList(),
       ),
     );
 
@@ -487,28 +485,12 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         .map((l) => '${l.count}× ${l.commonName}')
         .join(', ');
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppDestructiveDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Remove ${_selectedLivestockIds.length} Livestock?'),
-        content: Text('Livestock to remove:\n\n$livestockNames'),
-        actions: [
-          AppButton(
-            label: 'Keep',
-            onPressed: () {
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-            },
-            variant: AppButtonVariant.text,
-          ),
-          AppButton(
-            label: 'Remove Livestock',
-            onPressed: () {
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-            },
-            variant: AppButtonVariant.destructive,
-          ),
-        ],
-      ),
+      title: 'Remove ${_selectedLivestockIds.length} Livestock?',
+      message: 'Livestock to remove:\n\n$livestockNames',
+      destructiveLabel: 'Remove Livestock',
+      cancelLabel: 'Keep',
     );
 
     if (confirmed != true || !context.mounted) return;

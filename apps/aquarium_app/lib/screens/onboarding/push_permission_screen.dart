@@ -153,7 +153,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                             backgroundColor: AppColors.onboardingAmber,
                             foregroundColor: AppColors.onPrimary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(AppRadius.md),
                             ),
                             elevation: 0,
                           ),

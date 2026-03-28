@@ -12,6 +12,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
 import '../../widgets/core/app_list_tile.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 import '../../utils/logger.dart';
 
 /// Data section for the settings screen.
@@ -93,29 +94,12 @@ Future<void> exportData(BuildContext context) async {
 
 /// Import data from a user-selected JSON file.
 Future<void> importData(BuildContext context) async {
-  final confirm = await showDialog<bool>(
+  final confirm = await showAppDestructiveDialog(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Replace all data?'),
-      content: const Text(
+    title: 'Replace all data?',
+    message:
         'This will overwrite your current tanks, fish, logs, and settings with the backup file. This cannot be undone.',
-      ),
-      actions: [
-        AppButton(
-          label: 'Cancel',
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-          },
-          variant: AppButtonVariant.text,
-        ),
-        FilledButton(
-          onPressed: () {
-            if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-          },
-          child: const Text('Replace'),
-        ),
-      ],
-    ),
+    destructiveLabel: 'Replace',
   );
 
   if (confirm != true || !context.mounted) return;
@@ -211,32 +195,31 @@ Future<void> showPhotoStorageInfo(BuildContext context) async {
   }
 
   if (context.mounted) {
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Photo Storage'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Location:\n${photoDir.path}'),
-            const SizedBox(height: AppSpacing.md),
-            Text('Photos stored: $photoCount'),
-            const SizedBox(height: AppSpacing.md),
-            const Text(
-              'Photos are stored locally on your device in the app\'s documents folder.',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-          ],
-        ),
-        actions: [
-          AppButton(
-            label: 'Got It',
-            onPressed: () => Navigator.maybePop(ctx),
-            variant: AppButtonVariant.text,
+      title: 'Photo Storage',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Location:\n${photoDir.path}'),
+          const SizedBox(height: AppSpacing.md),
+          Text('Photos stored: $photoCount'),
+          const SizedBox(height: AppSpacing.md),
+          const Text(
+            'Photos are stored locally on your device in the app\'s documents folder.',
+            style: TextStyle(fontStyle: FontStyle.italic),
           ),
         ],
       ),
+      actions: [
+        AppButton(
+          label: 'Got It',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 }

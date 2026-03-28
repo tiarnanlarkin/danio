@@ -90,7 +90,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
               height: 4,
               decoration: BoxDecoration(
                 color: AppColors.textHint.withAlpha(60),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(AppRadius.xxs),
               ),
             ),
             const SizedBox(height: 24),
@@ -145,7 +145,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
                     backgroundColor: AppColors.onboardingAmber,
                     foregroundColor: AppColors.onPrimary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.sm4),
                     ),
                     elevation: 0,
                   ),
@@ -269,7 +269,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
               AppColors.onboardingAmber.withAlpha(210),
             ],
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg2),
           boxShadow: AppShadows.soft,
         ),
         child: Column(
@@ -338,7 +338,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.whiteAlpha15,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppRadius.md2),
                     ),
                     child: Row(
                       children: [
@@ -398,7 +398,7 @@ class Day30CommittedCard extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg2),
           border: Border.all(color: AppColors.border, width: 1),
           boxShadow: AppShadows.soft,
         ),
@@ -438,7 +438,7 @@ class Day30CommittedCard extends StatelessWidget {
                       width: 1.5,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.sm4),
                     ),
                   ),
                   child: Text(
