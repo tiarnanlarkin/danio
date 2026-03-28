@@ -80,7 +80,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             // Last Updated
             Text(
-              'Last Updated: 18 March 2026',
+              'Last Updated: 28 March 2026',
               style: AppTypography.bodySmall.copyWith(
                 color: context.textSecondary,
                 fontStyle: FontStyle.italic,
@@ -236,8 +236,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ], context),
 
             _buildSection(
-              '11. Children\'s Privacy',
-              'Danio does not knowingly collect personal information from children under 13. Analytics consent is obtained before any data collection. Parents or guardians may contact us to request deletion of any child\'s data.',
+              '11. Children\'s Privacy (COPPA)',
+              'Danio is designed for general audiences, including users of all ages. We do not knowingly collect personal information from children under 13 years of age without verifiable parental consent.\n\nAll data collection (Firebase Analytics) is opt-in and requires explicit consent on first launch. If you believe a child under 13 has provided us with personal data without parental consent, please contact us immediately at larkintiarnanbizz@gmail.com and we will delete it promptly.\n\nParents and guardians may contact us to review, delete, or restrict the collection of their child\'s data at any time. The app contains no advertising directed at children and does not share children\'s data with third parties for commercial purposes.',
             ),
 
             _buildSection(

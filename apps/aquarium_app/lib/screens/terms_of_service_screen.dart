@@ -42,6 +42,22 @@ class TermsOfServiceScreen extends StatelessWidget {
 
             _buildSection(
               context,
+              icon: Icons.auto_awesome,
+              title: 'AI Features',
+              content:
+                  'Danio includes optional AI-powered features (Fish ID, Symptom Triage, '
+                  'Weekly Plan, Anomaly Detector) that use OpenAI\'s API. These features '
+                  'are clearly labelled within the app. AI-generated results are for '
+                  'informational purposes only and are not a substitute for professional '
+                  'veterinary or aquarium advice. By using these features, you consent '
+                  'to relevant data being sent to OpenAI\'s servers. Full details are in '
+                  'the Privacy Policy.',
+            ),
+
+            const SizedBox(height: AppSpacing.lg),
+
+            _buildSection(
+              context,
               icon: Icons.shield_outlined,
               title: 'No Warranties',
               content:
@@ -90,7 +106,7 @@ class TermsOfServiceScreen extends StatelessWidget {
 
             Center(
               child: Text(
-                'Last Updated: February 7, 2025',
+                'Last Updated: 28 March 2026',
                 style: AppTypography.bodySmall.copyWith(
                   color: context.textSecondary,
                 ),
@@ -247,7 +263,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             _buildContactRow(
               Icons.email,
-              'support@aquariumhobbyist.app',
+              'larkintiarnanbizz@gmail.com',
               context,
             ),
             const SizedBox(height: AppSpacing.sm),
