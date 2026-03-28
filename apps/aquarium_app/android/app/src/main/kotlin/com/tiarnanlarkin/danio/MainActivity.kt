@@ -1,5 +1,6 @@
 package com.tiarnanlarkin.danio
 
+import android.content.Intent
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -7,7 +8,11 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val ACCESSIBILITY_CHANNEL = "com.tiarnanlarkin.aquarium/accessibility"
-    
+
+    // QA fast-entry: debug-only deep link channel
+    private val QA_LINKS_CHANNEL = "danio/qa_links"
+    private var qaLinksChannel: MethodChannel? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         
@@ -31,5 +36,27 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // QA deep link channel — only registered in debug builds
+        if (BuildConfig.DEBUG) {
+            val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, QA_LINKS_CHANNEL)
+            qaLinksChannel = channel
+            channel.setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "getInitialUri" -> result.success(intent?.data?.toString())
+                    else -> result.notImplemented()
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (BuildConfig.DEBUG) {
+            val uri = intent.data?.toString()
+            if (uri != null && uri.startsWith("danio://qa")) {
+                qaLinksChannel?.invokeMethod("onNewIntent", uri)
+            }
+        }
     }
 }

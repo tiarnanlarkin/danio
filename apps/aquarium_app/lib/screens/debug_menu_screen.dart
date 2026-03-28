@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'dart:convert';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
@@ -52,6 +53,25 @@ import 'analytics_screen.dart';
 import 'notification_settings_screen.dart';
 import 'privacy_policy_screen.dart';
 import '../widgets/core/app_dialog.dart';
+
+// Screen imports — QA additions
+import 'workshop_screen.dart';
+import 'faq_screen.dart';
+import 'glossary_screen.dart';
+import 'theme_gallery_screen.dart';
+import 'quick_start_guide_screen.dart';
+import 'terms_of_service_screen.dart';
+import 'about_screen.dart';
+import 'learn/unlock_celebration_screen.dart';
+
+// Provider imports — QA state injection
+import '../providers/tank_provider.dart';
+import '../providers/species_unlock_provider.dart';
+import '../providers/room_theme_provider.dart';
+import '../providers/storage_provider.dart';
+import '../models/tank.dart';
+import '../models/livestock.dart';
+import '../data/species_unlock_map.dart';
 
 class DebugMenuScreen extends ConsumerWidget {
   const DebugMenuScreen({super.key});
@@ -206,6 +226,64 @@ class DebugMenuScreen extends ConsumerWidget {
             ),
             const Divider(),
 
+            // QA State Setup
+            _SectionHeader(title: 'QA State Setup'),
+            _DebugTile(
+              title: 'Seed Demo Tank',
+              subtitle: 'Creates QA Test Tank (60L, tropical) with 5 fish',
+              onTap: () => _seedDemoTank(context, ref),
+            ),
+            _DebugTile(
+              title: 'Set Energy: Full (5)',
+              subtitle: 'Restore hearts to max',
+              onTap: () => _setEnergy(context, ref, full: true),
+            ),
+            _DebugTile(
+              title: 'Set Energy: Empty (0)',
+              subtitle: 'Drain all hearts',
+              onTap: () => _setEnergy(context, ref, full: false),
+            ),
+            _DebugTile(
+              title: 'Set XP: 0',
+              onTap: () => _setXp(context, ref, 0),
+            ),
+            _DebugTile(
+              title: 'Set XP: 500',
+              onTap: () => _setXp(context, ref, 500),
+            ),
+            _DebugTile(
+              title: 'Set XP: 5000',
+              onTap: () => _setXp(context, ref, 5000),
+            ),
+            _DebugTile(
+              title: 'Set Streak: 0',
+              onTap: () => _setStreak(context, ref, 0),
+            ),
+            _DebugTile(
+              title: 'Set Streak: 7',
+              onTap: () => _setStreak(context, ref, 7),
+            ),
+            _DebugTile(
+              title: 'Set Streak: 30',
+              onTap: () => _setStreak(context, ref, 30),
+            ),
+            _DebugTile(
+              title: 'Unlock All Species',
+              subtitle: 'Unlocks every species in the database',
+              onTap: () => _unlockAllSpecies(context, ref),
+            ),
+            _DebugTile(
+              title: 'Reset Species to Defaults',
+              subtitle: 'zebra_danio, neon_tetra, guppy only',
+              onTap: () => _resetSpeciesToDefaults(context, ref),
+            ),
+            _DebugTile(
+              title: 'Cycle Room Theme →',
+              subtitle: 'Advance to the next room theme',
+              onTap: () => _cycleRoomTheme(context, ref),
+            ),
+            const Divider(),
+
             // Other Screens
             _SectionHeader(title: 'Other Screens'),
             _DebugTile(
@@ -223,6 +301,39 @@ class DebugMenuScreen extends ConsumerWidget {
             _DebugTile(
               title: 'Privacy Policy',
               onTap: () => _push(context, const PrivacyPolicyScreen()),
+            ),
+            _DebugTile(
+              title: 'Workshop',
+              onTap: () => _push(context, const WorkshopScreen()),
+            ),
+            _DebugTile(
+              title: 'FAQ',
+              onTap: () => _push(context, const FaqScreen()),
+            ),
+            _DebugTile(
+              title: 'Glossary',
+              onTap: () => _push(context, const GlossaryScreen()),
+            ),
+            _DebugTile(
+              title: 'Theme Gallery',
+              onTap: () => _push(context, const ThemeGalleryScreen()),
+            ),
+            _DebugTile(
+              title: 'Quick Start Guide',
+              onTap: () => _push(context, const QuickStartGuideScreen()),
+            ),
+            _DebugTile(
+              title: 'Terms of Service',
+              onTap: () => _push(context, const TermsOfServiceScreen()),
+            ),
+            _DebugTile(
+              title: 'About',
+              onTap: () => _push(context, const AboutScreen()),
+            ),
+            _DebugTile(
+              title: 'Unlock Celebration',
+              subtitle: 'Test with zebra_danio',
+              onTap: () => _push(context, const UnlockCelebrationScreen(speciesId: 'zebra_danio')),
             ),
             _DebugTile(
               title: 'Paywall Stub',
@@ -300,6 +411,155 @@ class DebugMenuScreen extends ConsumerWidget {
 
   void _push(BuildContext context, Widget screen) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
+  }
+
+  // ── QA State Injection helpers ──────────────────────────────────────────
+
+  Future<void> _seedDemoTank(BuildContext context, WidgetRef ref) async {
+    try {
+      final storage = ref.read(storageServiceProvider);
+      const tankId = 'debug-demo-tank';
+
+      // Create or overwrite the demo tank
+      final now = DateTime.now();
+      final tank = Tank(
+        id: tankId,
+        name: 'QA Test Tank',
+        type: TankType.freshwater,
+        volumeLitres: 60,
+        startDate: now,
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+        sortOrder: 9999,
+      );
+      await storage.saveTank(tank);
+
+      // Add 5 demo fish
+      final demoFish = [
+        ('zebra_danio', 'Zebra Danio'),
+        ('neon_tetra', 'Neon Tetra'),
+        ('guppy', 'Guppy'),
+        ('cherry_barb', 'Cherry Barb'),
+        ('bronze_corydoras', 'Bronze Corydoras'),
+      ];
+      for (final (speciesId, commonName) in demoFish) {
+        final livestock = Livestock(
+          id: 'debug-$speciesId',
+          tankId: tankId,
+          commonName: commonName,
+          count: 6,
+          dateAdded: now,
+          healthStatus: HealthStatus.healthy,
+          createdAt: now,
+          updatedAt: now,
+        );
+        await storage.saveLivestock(livestock);
+      }
+
+      ref.invalidate(tanksProvider);
+      ref.invalidate(tankProvider(tankId));
+      ref.invalidate(livestockProvider(tankId));
+
+      if (context.mounted) {
+        DanioSnackBar.success(context, 'Demo tank seeded: QA Test Tank (60L, 5 fish)');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Seed failed: $e');
+      }
+    }
+  }
+
+  Future<void> _setEnergy(BuildContext context, WidgetRef ref, {required bool full}) async {
+    try {
+      final notifier = ref.read(userProfileProvider.notifier);
+      await notifier.updateHearts(
+        hearts: full ? 5 : 0,
+        clearLastHeartRefill: !full,
+      );
+      if (context.mounted) {
+        DanioSnackBar.success(context, full ? 'Energy set to full (5)' : 'Energy drained (0)');
+      }
+    } catch (e) {
+      if (context.mounted) DanioSnackBar.error(context, 'Set energy failed: $e');
+    }
+  }
+
+  Future<void> _setXp(BuildContext context, WidgetRef ref, int xp) async {
+    try {
+      final current = ref.read(userProfileProvider).value;
+      if (current == null) {
+        if (context.mounted) DanioSnackBar.info(context, 'No profile loaded yet');
+        return;
+      }
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final updated = current.copyWith(totalXp: xp, updatedAt: DateTime.now());
+      await prefs.setString('user_profile', jsonEncode(updated.toJson()));
+      ref.invalidate(userProfileProvider);
+      if (context.mounted) DanioSnackBar.success(context, 'XP set to $xp');
+    } catch (e) {
+      if (context.mounted) DanioSnackBar.error(context, 'Set XP failed: $e');
+    }
+  }
+
+  Future<void> _setStreak(BuildContext context, WidgetRef ref, int streak) async {
+    try {
+      final current = ref.read(userProfileProvider).value;
+      if (current == null) {
+        if (context.mounted) DanioSnackBar.info(context, 'No profile loaded yet');
+        return;
+      }
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final updated = current.copyWith(currentStreak: streak, updatedAt: DateTime.now());
+      await prefs.setString('user_profile', jsonEncode(updated.toJson()));
+      ref.invalidate(userProfileProvider);
+      if (context.mounted) DanioSnackBar.success(context, 'Streak set to $streak days');
+    } catch (e) {
+      if (context.mounted) DanioSnackBar.error(context, 'Set streak failed: $e');
+    }
+  }
+
+  Future<void> _unlockAllSpecies(BuildContext context, WidgetRef ref) async {
+    try {
+      final notifier = ref.read(speciesUnlockProvider.notifier);
+      for (final speciesId in speciesLessonMap.keys) {
+        await notifier.unlockSpecies(speciesId);
+      }
+      // Also unlock defaults (no-op if already unlocked)
+      for (final speciesId in defaultUnlockedSpecies) {
+        await notifier.unlockSpecies(speciesId);
+      }
+      if (context.mounted) {
+        DanioSnackBar.success(context, 'All species unlocked');
+      }
+    } catch (e) {
+      if (context.mounted) DanioSnackBar.error(context, 'Unlock all failed: $e');
+    }
+  }
+
+  Future<void> _resetSpeciesToDefaults(BuildContext context, WidgetRef ref) async {
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      await prefs.setString(
+        'unlocked_species_v1',
+        jsonEncode(defaultUnlockedSpecies),
+      );
+      ref.invalidate(speciesUnlockProvider);
+      if (context.mounted) {
+        DanioSnackBar.success(context, 'Species reset to defaults (3)');
+      }
+    } catch (e) {
+      if (context.mounted) DanioSnackBar.error(context, 'Reset species failed: $e');
+    }
+  }
+
+  void _cycleRoomTheme(BuildContext context, WidgetRef ref) {
+    ref.read(roomThemeProvider.notifier).nextTheme();
+    final current = ref.read(roomThemeProvider);
+    if (context.mounted) {
+      DanioSnackBar.success(context, 'Room theme → ${current.name}');
+    }
   }
 
   Future<void> _switchTab(BuildContext context, WidgetRef ref, int index) async {

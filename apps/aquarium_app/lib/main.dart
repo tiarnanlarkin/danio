@@ -29,6 +29,7 @@ import 'widgets/performance_overlay.dart';
 import 'widgets/error_boundary.dart';
 import 'widgets/core/bubble_loader.dart';
 import 'utils/logger.dart';
+import 'services/debug_deep_link_service.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -372,6 +373,15 @@ class _AppRouterState extends ConsumerState<_AppRouter>
         if (mounted) {
           NotificationScheduler.instance.scheduleReviewNotifications(ref);
           NotificationScheduler.instance.scheduleStreakNotifications(ref);
+        }
+      });
+    }
+
+    // Initialise QA deep-link listener once the tab navigator is live.
+    if (kDebugMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          DebugDeepLinkService.instance.init(context, ref);
         }
       });
     }
