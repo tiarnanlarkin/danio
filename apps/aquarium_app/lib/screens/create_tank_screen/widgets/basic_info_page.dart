@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../models/models.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/accessibility_utils.dart';
+import '../../../utils/app_constants.dart';
 import '../../../widgets/danio_snack_bar.dart';
 
 /// First page of tank creation — name and type selection.

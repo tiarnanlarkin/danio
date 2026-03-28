@@ -1,14 +1,8 @@
 import 'dart:async';
 import '../utils/app_constants.dart';
-
-
 import 'package:flutter/material.dart';
-
 import '../theme/app_theme.dart';
-
 import '../widgets/core/app_text_field.dart';
-
-
 class DiseaseGuideScreen extends StatefulWidget {
   const DiseaseGuideScreen({super.key});
 

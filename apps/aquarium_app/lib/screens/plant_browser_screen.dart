@@ -1,28 +1,15 @@
 import 'dart:async';
 import '../utils/app_constants.dart';
-
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../data/plant_database.dart';
-
 import '../widgets/core/app_text_field.dart';
-
 import '../models/learning.dart';
-
 import '../providers/user_profile_provider.dart';
-
 import '../services/xp_animation_service.dart';
-
 import '../theme/app_theme.dart';
-
 import '../widgets/core/app_button.dart';
-
 import '../widgets/app_bottom_sheet.dart';
-
-
 class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});
 

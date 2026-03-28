@@ -1,31 +1,17 @@
 import 'dart:async';
 import '../utils/app_constants.dart';
-
-
 import '../widgets/core/app_states.dart';
-
 import 'package:flutter/material.dart';
-
 import '../widgets/core/bubble_loader.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../data/species_database.dart';
-
 import '../models/models.dart';
-
 import '../providers/tank_provider.dart';
-
 import '../theme/app_theme.dart';
-
 import 'livestock_detail_screen.dart';
-
 import 'tank_detail/tank_detail_screen.dart';
-
 import '../utils/navigation_throttle.dart';
-
 import '../widgets/app_bottom_sheet.dart';
-
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});

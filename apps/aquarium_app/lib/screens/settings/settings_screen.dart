@@ -1136,7 +1136,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
                       setState(() => _obscureText = !_obscureText),
                 ),
               ),
-              maxLength: 200,
+              maxLength: kNotesMaxLength,
               enabled: !_isBusy,
             ),
             if (_statusMessage != null) ...[

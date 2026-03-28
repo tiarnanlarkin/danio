@@ -137,7 +137,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       const SizedBox(height: AppSpacing.sm2),
       TextFormField(
         initialValue: _name,
-        maxLength: 50,
+        maxLength: kTankNameMaxLength,
         maxLengthEnforcement: MaxLengthEnforcement.enforced,
         decoration: const InputDecoration(labelText: 'Tank name'),
         textCapitalization: TextCapitalization.words,
