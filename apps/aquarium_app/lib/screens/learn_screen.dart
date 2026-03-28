@@ -1130,7 +1130,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       leading: Container(
         width: 52,
         height: 52,
@@ -1159,7 +1159,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
               color: DanioColors.amberGold.withValues(alpha: 0.15),
               borderRadius: AppRadius.md2Radius,
@@ -1178,7 +1178,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
         ],
       ),
       subtitle: Padding(
-        padding: const EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: AppSpacing.xs),
         child: Text(
           meta.description,
           style: AppTypography.bodySmall.copyWith(color: context.textSecondary),

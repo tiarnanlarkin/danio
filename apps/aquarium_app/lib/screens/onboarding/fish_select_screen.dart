@@ -477,7 +477,7 @@ class _PopularTile extends StatelessWidget {
               width: isSelected ? 2 : 1,
             ),
           ),
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

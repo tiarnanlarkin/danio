@@ -103,7 +103,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                   ),
                   Expanded(
                     child: ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
                       itemCount: filtered.length,
                       separatorBuilder: (_, __) =>
                           const SizedBox(height: AppSpacing.sm),
@@ -213,7 +213,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
           ),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
               itemCount: placeholders.length,
               separatorBuilder: (_, __) =>
                   const SizedBox(height: AppSpacing.sm),
@@ -550,7 +550,7 @@ class _FiltersSummaryBar extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm2, AppSpacing.md, AppSpacing.sm),
       child: Row(
         children: [
           Expanded(

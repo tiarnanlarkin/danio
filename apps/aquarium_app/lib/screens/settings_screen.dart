@@ -1049,7 +1049,7 @@ class _LearnCard extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2, vertical: AppSpacing.sm),
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(AppRadius.lg),

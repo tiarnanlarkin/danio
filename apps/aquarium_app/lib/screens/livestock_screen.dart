@@ -142,7 +142,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     slivers: [
                       // Header padding
                       const SliverPadding(
-                        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                        padding: EdgeInsets.only(top: AppSpacing.md, left: AppSpacing.md, right: AppSpacing.md),
                         sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
 
@@ -322,7 +322,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
                       // Bottom padding
                       const SliverPadding(
-                        padding: EdgeInsets.only(bottom: 16),
+                        padding: EdgeInsets.only(bottom: AppSpacing.md),
                         sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
                     ],
@@ -758,7 +758,7 @@ class _LivestockCard extends StatelessWidget {
     final level = hasIssues ? CompatibilityService.overallLevel(issues) : null;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
       color: isSelected
           ? AppColors.primaryAlpha15
           : (level == CompatibilityLevel.incompatible
@@ -848,12 +848,12 @@ class _LivestockCard extends StatelessWidget {
             // Health status chip
             if (livestock.healthStatus != HealthStatus.healthy)
               Padding(
-                padding: const EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(top: AppSpacing.xs),
                 child: _HealthChip(status: livestock.healthStatus),
               ),
             if (hasIssues && !isSelectMode)
               Padding(
-                padding: const EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.only(top: AppSpacing.xs),
                 child: Text(
                   '${issues.length} compatibility ${issues.length == 1 ? 'note' : 'notes'}',
                   style: AppTypography.bodySmall.copyWith(
@@ -1007,7 +1007,7 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
               // Suggestions
               if (_suggestions.isNotEmpty)
                 Container(
-                  margin: const EdgeInsets.only(top: 4),
+                  margin: const EdgeInsets.only(top: AppSpacing.xs),
                   decoration: BoxDecoration(
                     color: context.surfaceVariant,
                     borderRadius: AppRadius.smallRadius,

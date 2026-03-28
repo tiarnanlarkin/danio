@@ -496,7 +496,7 @@ class _EquipmentCard extends StatelessWidget {
     final daysUntil = equipment.daysUntilMaintenance;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
       color: isOverdue ? AppColors.warningAlpha05 : null,
       child: Column(
         children: [

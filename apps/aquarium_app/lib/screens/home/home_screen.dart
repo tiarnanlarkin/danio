@@ -520,7 +520,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             label: 'Today', emoji: '📋', tabColor: DanioColors.topaz,
             backgroundColor: Theme.of(context).colorScheme.surface,
             plateId: BottomPlateId.today,
-            child: Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), child: TodayBoardCard(tankId: currentTank.id)),
+            child: Padding(padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md), child: TodayBoardCard(tankId: currentTank.id)),
           ),
           ),
           Semantics(
@@ -591,7 +591,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             backgroundPainter: CustomPaint(painter: LeatherGrainPainter(), size: Size.infinite),
             plateId: BottomPlateId.progress,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
             ),
           ),

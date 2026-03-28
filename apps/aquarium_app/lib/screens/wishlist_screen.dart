@@ -209,7 +209,7 @@ class WishlistScreen extends ConsumerWidget {
               ),
               child: ListView.builder(
                 shrinkWrap: true,
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
@@ -254,7 +254,7 @@ class _WishlistItemCard extends StatelessWidget {
     return Semantics(
       button: true,
       child: Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: InkWell(
         onTap: onTap,
         borderRadius: AppRadius.mediumRadius,
@@ -513,7 +513,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                     : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: widget.accentColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                 ),
                 child: Text(_isEditing ? 'Save Changes' : 'Add to Wishlist'),
               ),
