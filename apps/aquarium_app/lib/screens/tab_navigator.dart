@@ -14,6 +14,7 @@ import 'learn_screen.dart';
 import 'practice_hub_screen.dart';
 import 'settings_hub_screen.dart';
 import 'smart_screen.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// Provider for current tab index
 final currentTabProvider = StateProvider<int>((ref) => 0); // Start at Learn tab
@@ -133,13 +134,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                 now.difference(_lastBackPress!) > const Duration(seconds: 2)) {
               // First back press - show toast
               _lastBackPress = now;
-              _scaffoldMessenger.showSnackBar(
-                const SnackBar(
-                  content: Text('Tap back once more to leave'),
-                  duration: Duration(seconds: 2),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
+              DanioSnackBar.info(context, 'Tap back once more to leave');
               return;
             }
 

@@ -14,6 +14,7 @@ import '../providers/inventory_provider.dart';
 import '../providers/achievement_provider.dart' show achievementCheckerProvider;
 import '../theme/app_theme.dart';
 import '../utils/concept_display_names.dart';
+import '../widgets/danio_snack_bar.dart';
 
 class SpacedRepetitionPracticeScreen extends ConsumerStatefulWidget {
   const SpacedRepetitionPracticeScreen({super.key});
@@ -502,17 +503,10 @@ class _SpacedRepetitionPracticeScreenState
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Couldn\'t start the session, try again'),
-          backgroundColor: AppColors.error,
-          duration: const Duration(seconds: 4),
-          action: SnackBarAction(
-            label: 'Retry',
-            textColor: Colors.white,
-            onPressed: () => _startSession(mode),
-          ),
-        ),
+      DanioSnackBar.error(
+        context,
+        'Couldn\'t start the session, try again',
+        onRetry: () => _startSession(mode),
       );
     }
   }
@@ -1021,17 +1015,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
         // Show SnackBar with retry option
         // Card scheduling errors will not break review flow (handled in provider)
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Couldn\'t record that answer, try again'),
-            backgroundColor: AppColors.warning,
-            duration: const Duration(seconds: 4),
-            action: SnackBarAction(
-              label: 'Retry',
-              textColor: Colors.white,
-              onPressed: () => _recordAnswer(correct),
-            ),
-          ),
+        DanioSnackBar.error(
+          context,
+          'Couldn\'t record that answer, try again',
+          onRetry: () => _recordAnswer(correct),
         );
       }
     } finally {

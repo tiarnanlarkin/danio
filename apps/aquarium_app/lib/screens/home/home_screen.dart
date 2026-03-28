@@ -42,6 +42,7 @@ import 'widgets/streak_hearts_overlay.dart';
 import 'widgets/room_control_fab.dart';
 import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
+import '../../widgets/danio_snack_bar.dart';
 
 /// HomeScreen - The Living Room in the House Navigator.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -262,7 +263,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
     if (_selectedTankIds.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Pick some tanks first!')));
+        DanioSnackBar.warning(context, 'Pick some tanks first!');
       }
       return;
     }
@@ -289,16 +290,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       await ref.read(tankActionsProvider).bulkDeleteTanks(_selectedTankIds.toList());
       if (mounted) {
         setState(() { _isSelectMode = false; _selectedTankIds.clear(); _currentTankIndex = 0; });
-        messenger.showSnackBar(SnackBar(content: Text('${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted')));
+        DanioSnackBar.success(context, '${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted');
       }
     } catch (_) {
-      if (mounted) messenger.showSnackBar(const SnackBar(content: Text('Couldn\'t delete those tanks, try again in a moment')));
+      if (mounted) DanioSnackBar.error(context, 'Couldn\'t delete those tanks, try again in a moment');
     }
   }
 
   Future<void> _bulkExport(BuildContext context, List<Tank> allTanks) async {
     if (_selectedTankIds.isEmpty) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Pick some tanks first!')));
+      if (mounted) DanioSnackBar.warning(context, 'Pick some tanks first!');
       return;
     }
     if (mounted) {

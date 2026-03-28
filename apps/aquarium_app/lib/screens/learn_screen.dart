@@ -23,6 +23,7 @@ import '../widgets/learning_streak_badge.dart';
 import '../widgets/placement_challenge_card.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/first_visit_tooltip.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -191,21 +192,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     ref.listen<bool>(streakFreezeUsedProvider, (prev, next) {
       if (next && mounted) {
         ref.read(streakFreezeUsedProvider.notifier).state = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Row(
-              children: [
-                Text('🧊', style: TextStyle(fontSize: 20)),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text('Streak freeze used! Your streak was saved.'),
-                ),
-              ],
-            ),
-            duration: Duration(seconds: 4),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        DanioSnackBar.info(context, '🧊 Streak freeze used! Your streak was saved.');
       }
     });
 
@@ -526,11 +513,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   void _showRandomFishFact(BuildContext context) {
     final species = SpeciesDatabase.species;
     if (species.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Fish facts are still loading — check back shortly!'),
-        ),
-      );
+      DanioSnackBar.info(context, 'Fish facts are still loading — check back shortly!');
       return;
     }
 
@@ -1301,14 +1284,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                   );
                 }
               : () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Complete the previous lesson to unlock this one 🔒',
-                      ),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+                  DanioSnackBar.warning(context, 'Complete the previous lesson to unlock this one 🔒');
                 },
         );
       }),

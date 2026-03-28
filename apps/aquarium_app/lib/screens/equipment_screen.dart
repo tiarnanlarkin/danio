@@ -17,6 +17,7 @@ import '../services/xp_animation_service.dart';
 import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/danio_snack_bar.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/empty_state.dart';
@@ -366,13 +367,7 @@ class EquipmentScreen extends ConsumerWidget {
                 }
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Couldn\'t remove that equipment. Give it another go!',
-                      ),
-                    ),
-                  );
+                  DanioSnackBar.error(context, 'Couldn\'t remove that equipment. Give it another go!');
                 }
               }
             },

@@ -12,6 +12,7 @@ import '../widgets/empty_state.dart';
 import 'inventory_screen.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../utils/navigation_throttle.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// Gem Shop room theme — jewel/treasure gradient backgrounds and
 /// category-specific accent colours that don't exist in the shared palette.
@@ -199,54 +200,22 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
         _confettiController.play();
 
         // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Text(
-                  item.emoji,
-                  style: Theme.of(context).textTheme.headlineSmall!,
-                ),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Text(
-                    'Purchased ${item.name}!',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: AppColors.success,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        DanioSnackBar.success(context, 'Purchased ${item.name}!');
       } else {
         // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              result.errorMessage ??
-                  'Couldn\'t complete this purchase. Give it another go!',
-            ),
-            backgroundColor: AppColors.error,
-          ),
+        DanioSnackBar.error(
+          context,
+          result.errorMessage ?? 'Couldn\'t complete this purchase. Give it another go!',
         );
       }
     } catch (e) {
       // Handle provider errors (atomic transaction failures)
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Oops! We hit a snag. Give it another go!'),
-          backgroundColor: AppColors.error,
-          duration: const Duration(seconds: 4),
-          action: SnackBarAction(
-            label: 'Retry',
-            textColor: Colors.white,
-            onPressed: () => _handlePurchase(item),
-          ),
-        ),
+      DanioSnackBar.error(
+        context,
+        'Oops! We hit a snag. Give it another go!',
+        onRetry: () => _handlePurchase(item),
       );
     } finally {
       if (mounted) {

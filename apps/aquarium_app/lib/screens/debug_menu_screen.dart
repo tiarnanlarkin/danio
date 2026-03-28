@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 
 import '../widgets/core/app_list_tile.dart';
+import '../widgets/danio_snack_bar.dart';
 import '../services/onboarding_service.dart';
 import '../providers/onboarding_provider.dart';
 import 'tab_navigator.dart';
@@ -363,9 +364,7 @@ class DebugMenuScreen extends ConsumerWidget {
       final prefs = await ref.read(sharedPreferencesProvider.future);
       await prefs.clear();
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('All data cleared. Restart the app.')),
-        );
+        DanioSnackBar.info(context, 'All data cleared. Restart the app.');
       }
     }
   }

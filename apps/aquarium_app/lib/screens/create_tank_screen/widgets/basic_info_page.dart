@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../models/models.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/accessibility_utils.dart';
+import '../../../widgets/danio_snack_bar.dart';
 
 /// First page of tank creation — name and type selection.
 class BasicInfoPage extends StatelessWidget {
@@ -110,23 +111,7 @@ class _TypeSelector extends StatelessWidget {
             isSelected: selected == TankType.marine,
             isDisabled: true,
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    children: const [
-                      Icon(Icons.waves, color: Colors.white),
-                      SizedBox(width: AppSpacing.sm2),
-                      Expanded(
-                        child: Text(
-                          'Marine tanks are on the way — stay tuned! 🐠🦀🐙',
-                        ),
-                      ),
-                    ],
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                  duration: const Duration(seconds: 3),
-                ),
-              );
+              DanioSnackBar.info(context, 'Marine tanks are on the way — stay tuned! 🐠🦀🐙');
             },
           ),
         ),

@@ -7,6 +7,7 @@ import '../services/cloud_backup_service.dart';
 import '../services/cloud_sync_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// Account screen - sign-in / profile / sync management.
 ///
@@ -376,37 +377,23 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   void _forgotPassword() {
     final email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Pop your email in first!')));
+      DanioSnackBar.warning(context, 'Pop your email in first!');
       return;
     }
     ref.read(authProvider.notifier).resetPassword(email);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Password reset email sent!')));
+    DanioSnackBar.success(context, 'Password reset email sent!');
   }
 
   Future<void> _createBackup(BuildContext context) async {
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Creating encrypted backup...')),
-      );
+      DanioSnackBar.info(context, 'Creating encrypted backup...');
       await CloudBackupService.instance.createAndUploadBackup();
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Backup uploaded successfully ✓')),
-        );
+        DanioSnackBar.success(context, 'Backup uploaded successfully ✓');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Backup didn\'t go through. Check your connection and try again!',
-            ),
-          ),
-        );
+        DanioSnackBar.error(context, 'Backup didn\'t go through. Check your connection and try again!');
       }
     }
   }
@@ -435,24 +422,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     if (confirm != true || !context.mounted) return;
 
     try {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Restoring backup...')));
+      DanioSnackBar.info(context, 'Restoring backup...');
       await CloudBackupService.instance.downloadAndRestoreBackup();
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Backup restored successfully ✓')),
-        );
+        DanioSnackBar.success(context, 'Backup restored successfully ✓');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Restore didn\'t go through. Check your connection and try again!',
-            ),
-          ),
-        );
+        DanioSnackBar.error(context, 'Restore didn\'t go through. Check your connection and try again!');
       }
     }
   }

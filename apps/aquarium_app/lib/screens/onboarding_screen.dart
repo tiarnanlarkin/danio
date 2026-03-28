@@ -21,6 +21,7 @@ import 'onboarding/feature_summary_screen.dart';
 import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
 import 'package:danio/utils/logger.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// Orchestrates the 10-screen onboarding flow.
 ///
@@ -190,11 +191,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ref.invalidate(onboardingCompletedProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Something went wrong. Give it another go!"),
-          ),
-        );
+        DanioSnackBar.error(context, 'Something went wrong. Give it another go!');
       }
     }
   }
@@ -231,23 +228,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Show a disclosure about the default tank after navigation settles
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                "We've set up a 60L starter tank for you — you can change this in Settings",
-              ),
-              duration: Duration(seconds: 5),
-            ),
-          );
+          DanioSnackBar.info(context, "We've set up a 60L starter tank for you — you can change this in Settings");
         }
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Couldn't get started. Give it another go!"),
-          ),
-        );
+        DanioSnackBar.error(context, "Couldn't get started. Give it another go!");
       }
     }
   }

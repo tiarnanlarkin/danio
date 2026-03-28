@@ -12,6 +12,7 @@ import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/danio_snack_bar.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
@@ -292,13 +293,7 @@ class TasksScreen extends ConsumerWidget {
                 ref.invalidate(tasksProvider(tankId));
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Couldn\'t delete that task. Give it another go!',
-                      ),
-                    ),
-                  );
+                  DanioSnackBar.error(context, 'Couldn\'t delete that task. Give it another go!');
                 }
               }
             },

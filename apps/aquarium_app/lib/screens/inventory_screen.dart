@@ -11,6 +11,7 @@ import '../providers/hearts_provider.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// Inventory room theme — treasure-chest gradient backgrounds and
 /// category-specific colours that don't exist in the shared palette.
@@ -196,34 +197,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     if (!mounted) return;
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              Text(
-                shopItem.emoji,
-                style: Theme.of(context).textTheme.headlineSmall!,
-              ),
-              const SizedBox(width: AppSpacing.sm2),
-              Expanded(
-                child: Text(
-                  _getUseSuccessMessage(shopItem),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-          backgroundColor: AppColors.success,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      DanioSnackBar.success(context, _getUseSuccessMessage(shopItem));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Couldn\'t use that item, try again'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      DanioSnackBar.error(context, 'Couldn\'t use that item, try again');
     }
   }
 

@@ -18,31 +18,11 @@ import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/first_visit_tooltip.dart';
 import 'compatibility_checker_screen.dart';
+import '../widgets/danio_snack_bar.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Row(
-        children: [
-          const Icon(Icons.wifi_off, size: 20),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              "You're offline — AI features require an internet connection.",
-            ),
-          ),
-        ],
-      ),
-      action: SnackBarAction(
-        label: 'Dismiss',
-        onPressed: () =>
-            ScaffoldMessenger.of(context).hideCurrentSnackBar(),
-      ),
-      behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 4),
-    ),
-  );
+  DanioSnackBar.warning(context, "You're offline — AI features require an internet connection.");
 }
 
 /// Smart Hub - central screen for all AI-powered features.
