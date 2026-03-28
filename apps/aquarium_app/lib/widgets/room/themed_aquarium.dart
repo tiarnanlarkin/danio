@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import '../ambient/swaying_plant.dart';
+import 'fish_tap_interaction.dart';
 import 'plant_painters.dart';
 import 'tank_fish_manager.dart';
 
@@ -160,6 +161,17 @@ class ThemedAquarium extends StatelessWidget {
                   ),
                 ),
               ),
+
+            // ── FISH TAP INTERACTION ──────────────────────────────────────
+            // Transparent layer that detects taps, triggers fish wiggle,
+            // shows a splash ripple and species name tooltip.
+            Positioned.fill(
+              child: TankTapInteractionLayer(
+                tankWidth: width,
+                tankHeight: height,
+                speciesName: 'fish', // generic; TankFishManager picks species
+              ),
+            ),
 
             // Top light bar
             Positioned(

@@ -2,6 +2,8 @@
 /// Displays a floating "+XP" text that animates upward and fades out
 library;
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
@@ -26,23 +28,31 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  late Animation<int> _countUpAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      duration: AppDurations.celebration,
-      vsync: this,
+    // Scale celebration duration by XP amount (larger reward = bigger moment)
+    final baseDuration = AppDurations.celebration;
+    final scale = math.min(1.0 + widget.xpAmount / 200.0, 2.0);
+    final duration = Duration(
+      milliseconds: (baseDuration.inMilliseconds * scale).round(),
     );
 
-    // Slide upward animation
-    _slideAnimation =
-        Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1.5)).animate(
-          CurvedAnimation(parent: _controller, curve: AppCurves.emphasized),
-        );
+    _controller = AnimationController(duration: duration, vsync: this);
 
-    // Fade out animation (starts fading after 50% of animation)
+    // Slide upward animation — larger XP goes higher
+    final slideEnd = -1.0 - (widget.xpAmount / 100.0).clamp(0.0, 1.0);
+    _slideAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset(0, slideEnd),
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: AppCurves.emphasized),
+    );
+
+    // Fade out (starts at 50%)
     _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _controller,
@@ -50,18 +60,19 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
       ),
     );
 
-    // Scale animation (slight bounce at start)
+    // Scale — larger XP gets a bigger pop
+    final maxScale = math.min(1.2 + widget.xpAmount / 100.0 * 0.15, 1.5);
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween<double>(
           begin: 0.5,
-          end: 1.2,
+          end: maxScale,
         ).chain(CurveTween(curve: AppCurves.standardDecelerate)),
         weight: 30,
       ),
       TweenSequenceItem(
         tween: Tween<double>(
-          begin: 1.2,
+          begin: maxScale,
           end: 1.0,
         ).chain(CurveTween(curve: AppCurves.standard)),
         weight: 20,
@@ -69,7 +80,14 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 50),
     ]).animate(_controller);
 
-    // Start animation
+    // Count-up: number ticks from 0 to xpAmount over the first 60% of animation
+    _countUpAnimation = IntTween(begin: 0, end: widget.xpAmount).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      ),
+    );
+
     _controller.forward().then((_) {
       widget.onComplete?.call();
     });
@@ -81,81 +99,66 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
     super.dispose();
   }
 
+  Widget _buildContent({required int displayXp, required double fontSize}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg2,
+        vertical: AppSpacing.sm2,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.warning, AppColors.warningAlpha80],
+        ),
+        borderRadius: AppRadius.largeRadius,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.warningAlpha40,
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.star, color: Colors.white, size: AppIconSizes.md),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            '+$displayXp XP',
+            style: AppTypography.headlineSmall.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    // Font size scales with XP amount
+    final fontSize = math.min(18.0 + widget.xpAmount / 50.0 * 4.0, 32.0);
+
     if (reduceMotion) {
-      // Show static "+XP" text without animation
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2, vertical: AppSpacing.sm2),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.warning, AppColors.warningAlpha80],
-          ),
-          borderRadius: AppRadius.largeRadius,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.star, color: Colors.white, size: AppIconSizes.md),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              '+${widget.xpAmount} XP',
-              style: AppTypography.headlineSmall.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      );
+      return _buildContent(displayXp: widget.xpAmount, fontSize: fontSize);
     }
 
     return AnimatedBuilder(
       animation: _controller,
-      builder: (context, child) {
+      builder: (context, _) {
         return SlideTransition(
           position: _slideAnimation,
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: ScaleTransition(
               scale: _scaleAnimation,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg2,
-                  vertical: AppSpacing.sm2,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.warning, AppColors.warningAlpha80],
-                  ),
-                  borderRadius: AppRadius.largeRadius,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.warningAlpha40,
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      color: Colors.white,
-                      size: AppIconSizes.md,
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      '+${widget.xpAmount} XP',
-                      style: AppTypography.headlineSmall.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+              child: _buildContent(
+                displayXp: _countUpAnimation.value,
+                fontSize: fontSize,
               ),
             ),
           ),

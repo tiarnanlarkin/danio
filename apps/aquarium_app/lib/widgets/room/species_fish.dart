@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'fish_tap_interaction.dart';
+
 /// A single fish rendered using its species sprite from assets/images/fish/.
 ///
 /// ## Animation
@@ -155,10 +157,13 @@ class _SpeciesFishState extends State<SpeciesFish>
   Widget build(BuildContext context) {
     final disableMotion = MediaQuery.of(context).disableAnimations;
 
-    // Vertical bob
+    // Vertical bob — amplitude increases during an excited wiggle
+    final wiggleMult = FishWiggleHelper.amplitudeMultiplier();
     final phase =
         2 * math.pi * ((_lastElapsed / widget.bobPeriod) + widget.phaseOffset);
-    final bobY = disableMotion ? 0.0 : math.sin(phase) * widget.bobAmplitude;
+    final bobY = disableMotion
+        ? 0.0
+        : math.sin(phase) * widget.bobAmplitude * wiggleMult;
 
     final rawTop = widget.baseTop * widget.tankHeight + bobY;
     final clampedTop = rawTop.clamp(

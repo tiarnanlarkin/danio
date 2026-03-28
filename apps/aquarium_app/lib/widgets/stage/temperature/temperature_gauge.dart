@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -522,4 +525,301 @@ class ThermometerPainter extends CustomPainter {
       old.fillFraction != fillFraction ||
       old.optimalMin != optimalMin ||
       old.optimalMax != optimalMax;
+}
+
+// ── Coloured Arc Indicator ────────────────────────────────────────────────────
+
+/// A semicircular arc that sweeps from blue (cold) → green (ideal) → red (hot).
+/// The current temperature position is marked with a small pointer dot.
+class TempArcIndicator extends StatelessWidget {
+  final double? temp;
+  final double gaugeMin;
+  final double gaugeMax;
+  final double optimalMin;
+  final double optimalMax;
+  final Animation<double> fillAnim;
+
+  const TempArcIndicator({
+    super.key,
+    required this.temp,
+    required this.gaugeMin,
+    required this.gaugeMax,
+    required this.optimalMin,
+    required this.optimalMax,
+    required this.fillAnim,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: fillAnim,
+      builder: (context, _) {
+        final fraction = temp != null
+            ? ((temp! - gaugeMin) / (gaugeMax - gaugeMin)).clamp(0.0, 1.0)
+            : null;
+        final animFraction = fraction != null
+            ? Curves.easeOutCubic.transform(fillAnim.value) * fraction
+            : null;
+        return CustomPaint(
+          painter: _ArcPainter(
+            tempFraction: animFraction,
+            optFracMin: (optimalMin - gaugeMin) / (gaugeMax - gaugeMin),
+            optFracMax: (optimalMax - gaugeMin) / (gaugeMax - gaugeMin),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ArcPainter extends CustomPainter {
+  final double? tempFraction;
+  final double optFracMin;
+  final double optFracMax;
+
+  const _ArcPainter({
+    required this.tempFraction,
+    required this.optFracMin,
+    required this.optFracMax,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centre = Offset(size.width / 2, size.height * 0.88);
+    final radius = size.width * 0.44;
+    const startAngle = math.pi; // left side
+    const sweepAngle = math.pi; // half circle
+
+    // Track background
+    canvas.drawArc(
+      Rect.fromCircle(center: centre, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      Paint()
+        ..color = kTempCharcoal.withAlpha(18)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 10
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // Gradient arc: blue → green → red
+    final gradientShader = SweepGradient(
+      startAngle: startAngle,
+      endAngle: startAngle + sweepAngle,
+      colors: const [
+        Color(0xFF3B9FE0), // cold blue
+        Color(0xFF3B9FE0),
+        Color(0xFF1E8449), // ideal green
+        Color(0xFFE8B800), // warm amber
+        Color(0xFFC0392B), // hot red
+      ],
+      stops: const [0.0, 0.25, 0.50, 0.75, 1.0],
+    ).createShader(Rect.fromCircle(center: centre, radius: radius));
+
+    canvas.drawArc(
+      Rect.fromCircle(center: centre, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      Paint()
+        ..shader = gradientShader
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 10
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // Pointer dot at current temperature position
+    if (tempFraction != null) {
+      final angle = startAngle + sweepAngle * tempFraction!;
+      final dx = centre.dx + radius * math.cos(angle);
+      final dy = centre.dy + radius * math.sin(angle);
+      canvas.drawCircle(
+        Offset(dx, dy),
+        7,
+        Paint()..color = Colors.white..style = PaintingStyle.fill,
+      );
+      canvas.drawCircle(
+        Offset(dx, dy),
+        7,
+        Paint()
+          ..color = kTempCharcoal.withAlpha(80)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _ArcPainter old) =>
+      old.tempFraction != tempFraction;
+}
+
+// ── Pulsing Glow ──────────────────────────────────────────────────────────────
+
+/// Wraps [child] in a gentle pulsing green glow when [active] is true.
+/// Respects reduced motion — shows static glow when animations disabled.
+class TempPulsingGlow extends StatefulWidget {
+  final bool active;
+  final Widget child;
+
+  const TempPulsingGlow({super.key, required this.active, required this.child});
+
+  @override
+  State<TempPulsingGlow> createState() => _TempPulsingGlowState();
+}
+
+class _TempPulsingGlowState extends State<TempPulsingGlow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat(reverse: true);
+    _pulse = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!widget.active) return widget.child;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: AppRadius.largeRadius,
+          boxShadow: [
+            BoxShadow(
+              color: kTempGreen.withAlpha(60),
+              blurRadius: 16,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: widget.child,
+      );
+    }
+    return AnimatedBuilder(
+      animation: _pulse,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: AppRadius.largeRadius,
+            boxShadow: [
+              BoxShadow(
+                color: kTempGreen.withAlpha((30 + 50 * _pulse.value).round()),
+                blurRadius: 12 + 12 * _pulse.value,
+                spreadRadius: _pulse.value * 3,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: widget.child,
+    );
+  }
+}
+
+// ── Glass Panel Container ─────────────────────────────────────────────────────
+
+/// Glassmorphism container for the temperature panel.
+/// Blur sigma 8, white 12% fill, 20px radius.
+class TempGlassPanel extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+
+  const TempGlassPanel({super.key, required this.child, this.padding});
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(31), // 12% fill
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              border: Border.all(
+                color: Colors.white.withAlpha(51), // 20% border
+                width: 1.0,
+              ),
+            ),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Slide+Fade Entry Animation ────────────────────────────────────────────────
+
+/// Wraps a panel widget in a slide-from-right + fade entry animation.
+/// Duration 300ms, easeOutCubic. Respects reduced motion.
+class TempPanelEntryAnimation extends StatefulWidget {
+  final Widget child;
+
+  const TempPanelEntryAnimation({super.key, required this.child});
+
+  @override
+  State<TempPanelEntryAnimation> createState() =>
+      _TempPanelEntryAnimationState();
+}
+
+class _TempPanelEntryAnimationState extends State<TempPanelEntryAnimation>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _slide;
+  late Animation<double> _fade;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _slide = Tween<Offset>(
+      begin: const Offset(0.12, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _fade = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) return widget.child;
+    return SlideTransition(
+      position: _slide,
+      child: FadeTransition(opacity: _fade, child: widget.child),
+    );
+  }
 }

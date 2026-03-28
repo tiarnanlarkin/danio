@@ -40,10 +40,17 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
   static const double _snapHalf = 0.45;
   static const double _snapFull = 0.92;
 
+  int _currentTab = 0;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() => _currentTab = _tabController.index);
+      }
+    });
   }
 
   @override
@@ -83,7 +90,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -95,7 +102,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                       child: Container(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                       ),
                     ),
                   ),
@@ -113,25 +120,36 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                         onSnapFull: () => _snapTo(_snapFull),
                       ),
 
-                      // Tab content
+                      // Tab content with fade-slide transition
                       Expanded(
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: [
-                            _TabContent(
-                              scrollController: scrollController,
-                              child: widget.progressContent,
-                            ),
-                            _TabContent(
-                              scrollController: scrollController,
-                              child: widget.tanksContent,
-                            ),
-                            _TabContent(
-                              scrollController: scrollController,
-                              child: widget.todayContent,
-                            ),
-                          ],
-                        ),
+                        child: reducedMotion
+                            ? TabBarView(
+                                controller: _tabController,
+                                children: [
+                                  _TabContent(
+                                    scrollController: scrollController,
+                                    child: widget.progressContent,
+                                  ),
+                                  _TabContent(
+                                    scrollController: scrollController,
+                                    child: widget.tanksContent,
+                                  ),
+                                  _TabContent(
+                                    scrollController: scrollController,
+                                    child: widget.todayContent,
+                                  ),
+                                ],
+                              )
+                            : _AnimatedTabContent(
+                                tabController: _tabController,
+                                scrollController: scrollController,
+                                currentTab: _currentTab,
+                                contents: [
+                                  widget.progressContent,
+                                  widget.tanksContent,
+                                  widget.todayContent,
+                                ],
+                              ),
                       ),
 
                       // Bottom safe area padding
@@ -178,7 +196,7 @@ class _SheetHeader extends StatelessWidget {
             width: 32,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -191,7 +209,7 @@ class _SheetHeader extends StatelessWidget {
           indicatorColor: Colors.transparent,
           dividerColor: Colors.transparent,
           labelColor: Colors.white,
-          unselectedLabelColor: Colors.white.withOpacity(0.5),
+          unselectedLabelColor: Colors.white.withValues(alpha: 0.5),
           labelStyle: AppTypography.labelMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -250,7 +268,7 @@ class _PillPainter extends BoxPainter {
     final top = offset.dy + size.height - pillHeight - 4;
 
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.9)
+      ..color = Colors.white.withValues(alpha: 0.9)
       ..style = PaintingStyle.fill;
 
     canvas.drawRRect(
@@ -259,6 +277,74 @@ class _PillPainter extends BoxPainter {
         const Radius.circular(2),
       ),
       paint,
+    );
+  }
+}
+
+// ── Animated Tab Content ──────────────────────────────────────────────────────
+
+/// Replaces plain [TabBarView] with an [AnimatedSwitcher] that performs a
+/// slide + fade transition when the active tab changes.
+///
+/// The slide direction matches the tab direction (left = slide left, etc.).
+class _AnimatedTabContent extends StatefulWidget {
+  final TabController tabController;
+  final ScrollController scrollController;
+  final int currentTab;
+  final List<Widget> contents;
+
+  const _AnimatedTabContent({
+    required this.tabController,
+    required this.scrollController,
+    required this.currentTab,
+    required this.contents,
+  });
+
+  @override
+  State<_AnimatedTabContent> createState() => _AnimatedTabContentState();
+}
+
+class _AnimatedTabContentState extends State<_AnimatedTabContent> {
+  int _previousTab = 0;
+
+  @override
+  void didUpdateWidget(_AnimatedTabContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.currentTab != widget.currentTab) {
+      _previousTab = oldWidget.currentTab;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final goingRight = widget.currentTab > _previousTab;
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        // Determine direction for this specific child
+        final isIncoming = child.key == ValueKey(widget.currentTab);
+        final slideBegin = isIncoming
+            ? Offset(goingRight ? 0.15 : -0.15, 0.0)
+            : Offset(goingRight ? -0.15 : 0.15, 0.0);
+
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: slideBegin,
+            end: Offset.zero,
+          ).animate(animation),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      child: KeyedSubtree(
+        key: ValueKey(widget.currentTab),
+        child: _TabContent(
+          scrollController: widget.scrollController,
+          child: widget.contents[widget.currentTab],
+        ),
+      ),
     );
   }
 }

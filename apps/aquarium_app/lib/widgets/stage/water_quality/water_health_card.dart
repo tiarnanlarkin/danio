@@ -74,10 +74,10 @@ class WqHealthScoreCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Progress ring
+          // Progress ring — large and prominent
           SizedBox(
-            width: 72,
-            height: 72,
+            width: 90,
+            height: 90,
             child: AnimatedBuilder(
               animation: ringAnim,
               builder: (context, _) {
@@ -89,15 +89,28 @@ class WqHealthScoreCard extends StatelessWidget {
                     color: color,
                   ),
                   child: Center(
-                    child: Text(
-                      health == WqHealthStatus.noData
-                          ? '--'
-                          : '${(score * 100).round()}%',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: color,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 14,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          health == WqHealthStatus.noData
+                              ? '--'
+                              : '${(score * 100).round()}%',
+                          style: AppTypography.labelLarge.copyWith(
+                            color: color,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 18,
+                          ),
+                        ),
+                        if (health != WqHealthStatus.noData)
+                          Text(
+                            'Health',
+                            style: AppTypography.labelSmall.copyWith(
+                              color: kWqCharcoal.withAlpha(120),
+                              fontSize: 9,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 );
@@ -212,7 +225,7 @@ class WqProgressRingPainter extends CustomPainter {
       Paint()
         ..color = color.withAlpha(30)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 6
+        ..strokeWidth = 8
         ..strokeCap = StrokeCap.round,
     );
 
@@ -226,7 +239,7 @@ class WqProgressRingPainter extends CustomPainter {
         Paint()
           ..color = color
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 6
+          ..strokeWidth = 8
           ..strokeCap = StrokeCap.round,
       );
     }

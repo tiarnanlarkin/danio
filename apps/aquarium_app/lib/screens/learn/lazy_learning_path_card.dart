@@ -8,6 +8,7 @@ import '../../utils/navigation_throttle.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/bubble_loader.dart';
+import '../../widgets/core/pressable_card.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../lesson_screen.dart';
 
@@ -421,59 +422,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
         final isCompleted = widget.userCompletedLessons.contains(lesson.id);
         final isUnlocked = lesson.isUnlocked(widget.userCompletedLessons);
 
-        return ListTile(
-          leading: Hero(
-            tag: 'lesson-${lesson.id}',
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: isCompleted
-                      ? AppOverlays.success20
-                      : isUnlocked
-                      ? AppOverlays.primary10
-                      : context.surfaceVariant,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isCompleted
-                      ? Icons.check
-                      : isUnlocked
-                      ? Icons.play_arrow
-                      : Icons.lock,
-                  size: 18,
-                  color: isCompleted
-                      ? AppColors.success
-                      : isUnlocked
-                      ? AppColors.primary
-                      : context.textHint,
-                ),
-              ),
-            ),
-          ),
-          title: Text(
-            lesson.title,
-            style: AppTypography.bodyMedium.copyWith(
-              color: isUnlocked ? null : context.textHint,
-            ),
-          ),
-          subtitle: Text(
-            '${lesson.estimatedMinutes} min • ${lesson.xpReward} XP',
-            style: AppTypography.bodySmall.copyWith(
-              color: context.textSecondary,
-            ),
-          ),
-          trailing: isCompleted
-              ? Text(
-                  '+${lesson.xpReward} XP',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.primary,
-                  ),
-                )
-              : null,
-          enabled: isUnlocked,
+        return PressableCard(
           onTap: isUnlocked
               ? () {
                   NavigationThrottle.push(
@@ -487,6 +436,61 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                     'Complete the previous lesson to unlock this one 🔒',
                   );
                 },
+          child: ListTile(
+            leading: Hero(
+              tag: 'lesson-${lesson.id}',
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: isCompleted
+                        ? AppOverlays.success20
+                        : isUnlocked
+                        ? AppOverlays.primary10
+                        : context.surfaceVariant,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isCompleted
+                        ? Icons.check
+                        : isUnlocked
+                        ? Icons.play_arrow
+                        : Icons.lock,
+                    size: 18,
+                    color: isCompleted
+                        ? AppColors.success
+                        : isUnlocked
+                        ? AppColors.primary
+                        : context.textHint,
+                  ),
+                ),
+              ),
+            ),
+            title: Text(
+              lesson.title,
+              style: AppTypography.bodyMedium.copyWith(
+                color: isUnlocked ? null : context.textHint,
+              ),
+            ),
+            subtitle: Text(
+              '${lesson.estimatedMinutes} min • ${lesson.xpReward} XP',
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+              ),
+            ),
+            trailing: isCompleted
+                ? Text(
+                    '+${lesson.xpReward} XP',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  )
+                : null,
+            enabled: isUnlocked,
+            onTap: null, // handled by PressableCard
+          ),
         );
       }),
     ];

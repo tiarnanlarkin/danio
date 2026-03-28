@@ -6,6 +6,7 @@ import '../../models/user_profile.dart' show ExperienceLevel;
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/quiz/quiz_answer_option.dart';
 
 /// Renders a single quiz question with answer options, hint support, and
 /// the "Check Answer" / "Next Question" / "See Results" bottom action.
@@ -232,92 +233,14 @@ class LessonQuizWidget extends ConsumerWidget {
                 final isSelected = selectedAnswer == optionIndex;
                 final isCorrect = optionIndex == question.correctIndex;
 
-                Color? bgColor;
-                Color? borderColor;
-                IconData? icon;
-
-                if (answered) {
-                  if (isCorrect) {
-                    bgColor = AppOverlays.success10;
-                    borderColor = AppColors.success;
-                    icon = Icons.check_circle;
-                  } else if (isSelected && !isCorrect) {
-                    bgColor = AppOverlays.error10;
-                    borderColor = AppColors.error;
-                    icon = Icons.cancel;
-                  }
-                } else if (isSelected) {
-                  bgColor = AppOverlays.primary10;
-                  borderColor = AppColors.primary;
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
-                  child: Semantics(
-                    button: true,
-                    label:
-                        'Option ${String.fromCharCode(65 + optionIndex)}: $option',
-                    selected: selectedAnswer == optionIndex,
-                    child: InkWell(
-                      onTap: answered
-                          ? null
-                          : () => onSelectAnswer(optionIndex),
-                      borderRadius: AppRadius.mediumRadius,
-                      child: Container(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: BoxDecoration(
-                          color: bgColor ?? context.surfaceColor,
-                          borderRadius: AppRadius.mediumRadius,
-                          border: Border.all(
-                            color: borderColor ?? context.surfaceVariant,
-                            width: borderColor != null ? 2 : 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: isSelected && !answered
-                                    ? AppColors.primary
-                                    : context.surfaceVariant,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: icon != null
-                                    ? Icon(
-                                        icon,
-                                        size: AppIconSizes.sm,
-                                        color: isCorrect
-                                            ? AppColors.success
-                                            : AppColors.error,
-                                      )
-                                    : Text(
-                                        String.fromCharCode(65 + optionIndex),
-                                        style:
-                                            AppTypography.labelLarge.copyWith(
-                                          color: isSelected && !answered
-                                              ? AppColors.onPrimary
-                                              : context.textSecondary,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.sm2),
-                            Expanded(
-                              child: Text(
-                                option,
-                                style: AppTypography.bodyLarge,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 4,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                return QuizAnswerOption(
+                  key: ValueKey('quiz_option_${currentQuizQuestion}_$optionIndex'),
+                  optionIndex: optionIndex,
+                  option: option,
+                  isSelected: isSelected,
+                  isCorrect: isCorrect,
+                  answered: answered,
+                  onTap: () => onSelectAnswer(optionIndex),
                 );
               }
 
