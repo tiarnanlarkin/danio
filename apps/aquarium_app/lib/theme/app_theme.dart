@@ -481,6 +481,30 @@ class AppTypography {
     letterSpacing: 1.5,
     height: 1.4,
   );
+
+  // ──────────────────────────────────────────────────────────────────
+  // Lesson / educational content aliases — Lora serif
+  // Use these for lesson cards, fact panels, and reading-weight prose.
+  // Hephaestus will apply these at the correct call sites in Wave 4.
+  // ──────────────────────────────────────────────────────────────────
+  static TextStyle get lessonBody => GoogleFonts.lora(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 1.6,
+  );
+
+  static TextStyle get lessonBodyLarge => GoogleFonts.lora(
+    fontSize: 17,
+    fontWeight: FontWeight.w400,
+    height: 1.6,
+  );
+
+  static TextStyle get lessonQuote => GoogleFonts.lora(
+    fontSize: 15,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.italic,
+    height: 1.6,
+  );
 }
 
 class AppSpacing {
@@ -827,6 +851,7 @@ class AppRadius {
   static const double sm = 8;
   static const double md2 = 12;
   static const double md = 16;
+  static const double lg2 = 20; // Between md (16) and lg (24) — matches AppSpacing.lg2
   static const double lg = 24;
   static const double xl = 32;
   static const double xxl = 48;
@@ -1043,26 +1068,40 @@ const _kDanioPageTransitionsTheme = PageTransitionsTheme(
 );
 
 class AppTheme {
-  // FIXME(THEME): Migrate remaining _textTheme references to AppTypography. Blocked by layout regression risk.
-  /// Nunito + Lora typography pairing (Apollo design brief)
-  /// Nunito: headers, buttons, labels, UI text (warm, rounded)
-  /// Lora: body text, lesson content (serif, credible)
+  /// Unified type scale — single source of truth.
+  ///
+  /// Font roles:
+  ///   Fredoka  → display / headline / titleLarge: playful brand moments, screen titles
+  ///   Nunito   → titleMedium down through labelSmall: UI chrome, body text, navigation
+  ///
+  /// Lora (lesson content) is NOT in the Material TextTheme because 300+ call sites use
+  /// textTheme for UI chrome. Lora is exposed via AppTypography.lesson* semantic aliases.
+  /// See plans/typography-spec.md for full rationale.
   static TextTheme get _textTheme => TextTheme(
-    displayLarge: GoogleFonts.nunito(fontSize: 32, fontWeight: FontWeight.w800),
-    displayMedium: GoogleFonts.nunito(fontSize: 28, fontWeight: FontWeight.w700),
-    displaySmall: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w700),
-    headlineLarge: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w700),
-    headlineMedium: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w600),
-    headlineSmall: GoogleFonts.nunito(fontSize: 18, fontWeight: FontWeight.w600),
-    titleLarge: GoogleFonts.nunito(fontSize: 18, fontWeight: FontWeight.w700),
-    titleMedium: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
-    titleSmall: GoogleFonts.nunito(fontSize: 14, fontWeight: FontWeight.w600),
-    bodyLarge: GoogleFonts.lora(fontSize: 16, fontWeight: FontWeight.w400),
-    bodyMedium: GoogleFonts.lora(fontSize: 14, fontWeight: FontWeight.w400),
-    bodySmall: GoogleFonts.lora(fontSize: 12, fontWeight: FontWeight.w400),
-    labelLarge: GoogleFonts.nunito(fontSize: 14, fontWeight: FontWeight.w700),
-    labelMedium: GoogleFonts.nunito(fontSize: 12, fontWeight: FontWeight.w600),
-    labelSmall: GoogleFonts.nunito(fontSize: 11, fontWeight: FontWeight.w500),
+    // ── Display (Fredoka — hero/splash, largest impact text) ──────
+    displayLarge: GoogleFonts.fredoka(fontSize: 40, fontWeight: FontWeight.w700, letterSpacing: -0.5, height: 1.2),
+    displayMedium: GoogleFonts.fredoka(fontSize: 34, fontWeight: FontWeight.w700, letterSpacing: -0.5, height: 1.2),
+    displaySmall: GoogleFonts.fredoka(fontSize: 28, fontWeight: FontWeight.w600, letterSpacing: -0.3, height: 1.25),
+
+    // ── Headline (Fredoka — section headings, card titles) ────────
+    headlineLarge: GoogleFonts.fredoka(fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: -0.5, height: 1.2),
+    headlineMedium: GoogleFonts.fredoka(fontSize: 24, fontWeight: FontWeight.w600, letterSpacing: -0.3, height: 1.3),
+    headlineSmall: GoogleFonts.fredoka(fontSize: 20, fontWeight: FontWeight.w600, letterSpacing: -0.2, height: 1.3),
+
+    // ── Title (Fredoka large, Nunito medium/small) ────────────────
+    titleLarge: GoogleFonts.fredoka(fontSize: 22, fontWeight: FontWeight.w600, letterSpacing: -0.2, height: 1.3),
+    titleMedium: GoogleFonts.nunito(fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -0.1, height: 1.3),
+    titleSmall: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0, height: 1.3),
+
+    // ── Body (Nunito — readable, friendly UI prose) ───────────────
+    bodyLarge: GoogleFonts.nunito(fontSize: 17, fontWeight: FontWeight.w400, height: 1.5),
+    bodyMedium: GoogleFonts.nunito(fontSize: 15, fontWeight: FontWeight.w400, height: 1.5),
+    bodySmall: GoogleFonts.nunito(fontSize: 13, fontWeight: FontWeight.w400, height: 1.4),
+
+    // ── Label (Nunito — buttons, chips, navigation) ───────────────
+    labelLarge: GoogleFonts.nunito(fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: 0.1),
+    labelMedium: GoogleFonts.nunito(fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.1),
+    labelSmall: GoogleFonts.nunito(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.2),
   );
 
   static ThemeData get light {
