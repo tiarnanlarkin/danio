@@ -68,28 +68,7 @@ class LivestockCard extends StatelessWidget {
                     tag: 'livestock-${livestock.id}',
                     child: Material(
                       type: MaterialType.transparency,
-                      child: CircleAvatar(
-                        backgroundColor: AppOverlays.primary10,
-                        backgroundImage: livestock.imageUrl != null
-                            ? CachedNetworkImageProvider(livestock.imageUrl!)
-                            : (SpeciesSprites.thumbFor(livestock.commonName) !=
-                                    null
-                                ? AssetImage(
-                                    SpeciesSprites.thumbFor(
-                                      livestock.commonName,
-                                    )!,
-                                  )
-                                : null),
-                        onBackgroundImageError: (_, __) {},
-                        child: livestock.imageUrl == null &&
-                                SpeciesSprites.thumbFor(livestock.commonName) ==
-                                    null
-                            ? const Icon(
-                                Icons.set_meal,
-                                color: AppColors.primary,
-                              )
-                            : null,
-                      ),
+                      child: _LivestockAvatar(livestock: livestock),
                     ),
                   ),
                   if (hasIssues)
@@ -177,6 +156,35 @@ class LivestockCard extends StatelessWidget {
               ),
         onTap: onTap,
       ),
+    );
+  }
+}
+
+/// Livestock avatar that correctly handles the [CircleAvatar] assertion:
+/// `onBackgroundImageError` must be null when `backgroundImage` is null.
+class _LivestockAvatar extends StatelessWidget {
+  const _LivestockAvatar({required this.livestock});
+  final Livestock livestock;
+
+  @override
+  Widget build(BuildContext context) {
+    final ImageProvider<Object>? bgImage;
+    if (livestock.imageUrl != null) {
+      bgImage = CachedNetworkImageProvider(livestock.imageUrl!);
+    } else {
+      final thumb = SpeciesSprites.thumbFor(livestock.commonName);
+      bgImage = thumb != null ? AssetImage(thumb) : null;
+    }
+
+    return CircleAvatar(
+      backgroundColor: AppOverlays.primary10,
+      backgroundImage: bgImage,
+      // onBackgroundImageError must only be set when backgroundImage != null
+      // to avoid Flutter's assertion: backgroundImage != null || onBackgroundImageError == null
+      onBackgroundImageError: bgImage != null ? (_, __) {} : null,
+      child: bgImage == null
+          ? const Icon(Icons.set_meal, color: AppColors.primary)
+          : null,
     );
   }
 }
