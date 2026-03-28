@@ -13,6 +13,8 @@ import '../data/achievements.dart';
 import '../services/achievement_service.dart';
 import '../services/notification_service.dart';
 import '../widgets/achievement_unlocked_dialog.dart';
+import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../main.dart'; // For navigatorKey
 import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
@@ -552,111 +554,75 @@ class AchievementChecker {
       (sum, r) => sum + _getGemReward(r.achievement.rarity),
     );
 
-    await showDialog(
+    await showAppDialog(
       context: context,
+      title: '${results.length} Achievements Unlocked! 🎉',
       barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1a1a2e),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.lg2),
+      actions: [
+        AppButton(
+          label: 'Awesome!',
+          onPressed: () => Navigator.of(context).pop(),
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
         ),
-        title: Text(
-          '${results.length} Achievements Unlocked! 🎉',
-          style: const TextStyle(
-            color: AppColors.onPrimary,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // List each achievement
-            ...results.map(
-              (r) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Text(
-                      r.achievement.icon,
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        r.achievement.name,
-                        style: const TextStyle(
-                          color: AppColors.onPrimary,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Rewards summary
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.whiteAlpha10,
-                borderRadius: AppRadius.md2Radius,
-              ),
+      ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // List each achievement
+          ...results.map(
+            (r) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    children: [
-                      const Text('⭐', style: TextStyle(fontSize: 20)),
-                      Text(
-                        '+$totalXp XP',
-                        style: const TextStyle(
-                          color: AppColors.onPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    r.achievement.icon,
+                    style: const TextStyle(fontSize: 24),
                   ),
-                  Column(
-                    children: [
-                      const Text('💎', style: TextStyle(fontSize: 20)),
-                      Text(
-                        '+$totalGems Gems',
-                        style: const TextStyle(
-                          color: AppColors.onPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      r.achievement.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-        actions: [
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.card,
-                foregroundColor: const Color(0xFF1a1a2e),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.md2Radius,
+          ),
+          const SizedBox(height: 16),
+          // Rewards summary
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: AppOverlays.black10,
+              borderRadius: AppRadius.md2Radius,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    const Text('⭐', style: TextStyle(fontSize: 20)),
+                    Text(
+                      '+$totalXp XP',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-              ),
-              child: const Text(
-                'Awesome!',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                Column(
+                  children: [
+                    const Text('💎', style: TextStyle(fontSize: 20)),
+                    Text(
+                      '+$totalGems Gems',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-              ),
+              ],
             ),
           ),
         ],

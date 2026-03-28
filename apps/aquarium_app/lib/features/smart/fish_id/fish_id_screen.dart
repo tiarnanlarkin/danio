@@ -11,6 +11,8 @@ import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/core/app_button.dart';
+import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/optimized_image.dart';
 import '../../../widgets/offline_indicator.dart';
@@ -99,27 +101,16 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     if (prefs.getBool(_openaiDisclosureKey) == true) return true;
 
     if (!mounted) return false;
-    final accepted = await showDialog<bool>(
+    final accepted = await showAppConfirmDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Text('OpenAI Data Disclosure'),
-        content: const Text(
+      title: 'OpenAI Data Disclosure',
+      message:
           'Photos you submit are sent to OpenAI\'s servers in the '
           'United States for identification. OpenAI may retain them '
           'for up to 30 days.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: const Text('I Understand'),
-          ),
-        ],
-      ),
+      confirmLabel: 'I Understand',
+      cancelLabel: 'Cancel',
+      barrierDismissible: false,
     );
 
     if (accepted == true) {
@@ -263,22 +254,26 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
               Row(
                 children: [
                   Expanded(
-                    child: FilledButton.icon(
+                    child: AppButton(
+                      label: 'Camera',
                       onPressed: _loading
                           ? null
                           : () => _pickImage(ImageSource.camera),
-                      icon: const Icon(Icons.camera_alt),
-                      label: const Text('Camera'),
+                      leadingIcon: Icons.camera_alt,
+                      variant: AppButtonVariant.primary,
+                      isFullWidth: true,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
-                    child: OutlinedButton.icon(
+                    child: AppButton(
+                      label: 'Gallery',
                       onPressed: _loading
                           ? null
                           : () => _pickImage(ImageSource.gallery),
-                      icon: const Icon(Icons.photo_library),
-                      label: const Text('Gallery'),
+                      leadingIcon: Icons.photo_library,
+                      variant: AppButtonVariant.secondary,
+                      isFullWidth: true,
                     ),
                   ),
                 ],
@@ -550,17 +545,16 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             const SizedBox(height: AppSpacing.md),
 
             // Add to tank button
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: () {
-                  // Pop back with result data that can be used to pre-fill
-                  // the add livestock flow.
-                  Navigator.of(context).pop(r);
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('Add to My Tank'),
-              ),
+            AppButton(
+              label: 'Add to My Tank',
+              onPressed: () {
+                // Pop back with result data that can be used to pre-fill
+                // the add livestock flow.
+                Navigator.of(context).pop(r);
+              },
+              leadingIcon: Icons.add,
+              variant: AppButtonVariant.primary,
+              isFullWidth: true,
             ),
             const SizedBox(height: AppSpacing.md),
             // AI disclosure badge

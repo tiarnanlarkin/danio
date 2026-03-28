@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 1 — Welcome / Hook
 ///
@@ -226,32 +227,16 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   position: _buttonSlide,
                   child: FadeTransition(
                     opacity: _buttonOpacity,
-                    child: Semantics(
-                      button: true,
-                      label: 'Let\'s get started',
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            widget.onNext();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.onboardingAmber,
-                            foregroundColor: AppColors.textPrimary,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(AppRadius.lg),
-                            ),
-                            textStyle: GoogleFonts.nunito(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          child: const Text('Let\'s get started →'),
-                        ),
-                      ),
+                    child: AppButton(
+                      label: "Let's get started →",
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        widget.onNext();
+                      },
+                      variant: AppButtonVariant.primary,
+                      isFullWidth: true,
+                      size: AppButtonSize.large,
+                      semanticsLabel: "Let's get started",
                     ),
                   ),
                 ),

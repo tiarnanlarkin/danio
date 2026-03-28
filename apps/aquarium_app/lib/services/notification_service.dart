@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart'; // For TimeOfDay
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../widgets/core/app_dialog.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/models.dart';
@@ -201,29 +202,16 @@ class NotificationService {
     if (canExact) return true;
     if (!context.mounted) return false;
 
-    final openSettings = await showDialog<bool>(
+    final openSettings = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Reliable reminders'),
-        content: const Text(
+      title: 'Reliable reminders',
+      message:
           'To send reminder notifications at the exact time you choose, '
           'Danio needs permission to schedule alarms. This ensures your '
           'streak reminders and task notifications arrive on time.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Not now'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop(true);
-              _openAppSettings();
-            },
-            child: const Text('Open settings'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Open settings',
+      cancelLabel: 'Not now',
+      onConfirm: _openAppSettings,
     );
 
     return openSettings ?? false;

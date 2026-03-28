@@ -6,6 +6,7 @@ import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 10 — Warm App Entry
 ///
@@ -277,35 +278,20 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm2),
-                      FilledButton(
+                      AppButton(
+                        label: 'Next →',
                         onPressed: _submitName,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.onboardingAmber,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        ),
-                        child: Text(
-                          'Next →',
-                          style: GoogleFonts.nunito(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.onPrimary,
-                          ),
-                        ),
+                        variant: AppButtonVariant.primary,
                       ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(
+                    child: AppButton(
+                      label: 'Skip',
                       onPressed: _submitName,
-                      child: Text(
-                        'Skip',
-                        style: GoogleFonts.nunito(
-                          fontSize: 13,
-                          color: AppColors.textHint,
-                        ),
-                      ),
+                      variant: AppButtonVariant.text,
                     ),
                   ),
                 ] else ...[

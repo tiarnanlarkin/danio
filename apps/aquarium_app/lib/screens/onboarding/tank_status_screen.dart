@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 3 — Tank Status
 ///
@@ -230,41 +231,18 @@ class _TankStatusScreenState extends State<TankStatusScreen>
               ),
 
               // Continue button
-              Semantics(
-                button: true,
-                enabled: _selected != null,
+              AppButton(
                 label: 'Continue',
-                child: AnimatedContainer(
-                  duration: AppDurations.medium1,
-                  curve: AppCurves.standard,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: _selected != null
-                        ? () {
-                            HapticFeedback.mediumImpact();
-                            widget.onSelected(_selected!);
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          _selected != null ? AppColors.onboardingAmber : AppColors.border,
-                      foregroundColor: _selected != null
-                          ? AppColors.textPrimary
-                          : AppColors.textSecondary,
-                      disabledBackgroundColor: AppColors.border,
-                      disabledForegroundColor: AppColors.textSecondary,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.lg),
-                      ),
-                      textStyle: GoogleFonts.nunito(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    child: const Text('Continue'),
-                  ),
-                ),
+                onPressed: _selected != null
+                    ? () {
+                        HapticFeedback.mediumImpact();
+                        widget.onSelected(_selected!);
+                      }
+                    : null,
+                variant: AppButtonVariant.primary,
+                isFullWidth: true,
+                size: AppButtonSize.large,
+                semanticsLabel: 'Continue',
               ),
 
               const SizedBox(height: AppSpacing.xl),

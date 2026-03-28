@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 // =============================================================================
 // Returning User Flow Widgets
@@ -130,58 +131,28 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
             ],
             const SizedBox(height: AppSpacing.lg),
             // CTA button
-            Semantics(
-              label: 'Continue learning',
-              button: true,
-              child: SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    widget.onContinue();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.onboardingAmber,
-                    foregroundColor: AppColors.onPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.sm4),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    'Continue learning →',
-                    style: GoogleFonts.nunito(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
+            AppButton(
+              label: 'Continue learning →',
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                widget.onContinue();
+              },
+              variant: AppButtonVariant.primary,
+              isFullWidth: true,
+              size: AppButtonSize.large,
+              semanticsLabel: 'Continue learning',
             ),
             const SizedBox(height: AppSpacing.sm2),
             // Later link
-            Semantics(
-              label: 'Later, dismiss streak prompt',
-              button: true,
-              child: SizedBox(
-                width: double.infinity,
-                height: 44,
-                child: TextButton(
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    widget.onDismiss();
-                  },
-                  child: Text(
-                    'Later',
-                    style: GoogleFonts.nunito(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textHint,
-                    ),
-                  ),
-                ),
-              ),
+            AppButton(
+              label: 'Later',
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                widget.onDismiss();
+              },
+              variant: AppButtonVariant.text,
+              isFullWidth: true,
+              semanticsLabel: 'Later, dismiss streak prompt',
             ),
           ],
         ),

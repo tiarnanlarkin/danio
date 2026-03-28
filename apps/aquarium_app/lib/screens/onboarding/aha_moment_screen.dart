@@ -6,6 +6,7 @@ import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 7 — Personalised Fish Care Reveal (THE AHA MOMENT)
 ///
@@ -403,35 +404,13 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     const SizedBox(height: AppSpacing.lg),
 
                     // CTA
-                    Semantics(
-                      button: true,
-                      label: 'Start your journey',
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _ctaTapped ? null : _onCtaTap,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.onboardingAmber,
-                            foregroundColor: AppColors.onPrimary,
-                            disabledBackgroundColor: AppColors.onboardingAmber.withAlpha(153),
-                            disabledForegroundColor: AppColors.whiteAlpha70,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(AppRadius.lg),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            _ctaTapped
-                                ? '...'
-                                : 'Start your journey →',
-                            style: GoogleFonts.nunito(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
+                    AppButton(
+                      label: _ctaTapped ? '...' : 'Start your journey →',
+                      onPressed: _ctaTapped ? null : _onCtaTap,
+                      variant: AppButtonVariant.primary,
+                      isFullWidth: true,
+                      size: AppButtonSize.large,
+                      semanticsLabel: 'Start your journey',
                     ),
                   ],
                 ),

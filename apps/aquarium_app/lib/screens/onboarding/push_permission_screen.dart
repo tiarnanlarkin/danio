@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 9 — Push Notification Pre-Prompt
 ///
@@ -138,58 +139,28 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Primary button
-                    Semantics(
-                      label: 'Yes, keep me informed',
-                      button: true,
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            HapticFeedback.mediumImpact();
-                            widget.onAllow();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.onboardingAmber,
-                            foregroundColor: AppColors.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(AppRadius.md),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            'Yes, keep me informed →',
-                            style: GoogleFonts.nunito(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ),
+                    AppButton(
+                      label: 'Yes, keep me informed →',
+                      onPressed: () {
+                        HapticFeedback.mediumImpact();
+                        widget.onAllow();
+                      },
+                      variant: AppButtonVariant.primary,
+                      isFullWidth: true,
+                      size: AppButtonSize.large,
+                      semanticsLabel: 'Yes, keep me informed',
                     ),
                     const SizedBox(height: AppSpacing.sm4),
                     // Secondary link
-                    Semantics(
-                      label: 'Not right now, skip notifications',
-                      button: true,
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: TextButton(
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            widget.onSkip();
-                          },
-                          child: Text(
-                            'Not right now',
-                            style: GoogleFonts.nunito(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textHint,
-                            ),
-                          ),
-                        ),
-                      ),
+                    AppButton(
+                      label: 'Not right now',
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        widget.onSkip();
+                      },
+                      variant: AppButtonVariant.text,
+                      isFullWidth: true,
+                      semanticsLabel: 'Not right now, skip notifications',
                     ),
                   ],
                 ),

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:confetti/confetti.dart';
 import '../../theme/app_theme.dart';
+import '../core/app_button.dart';
 import 'confetti_overlay.dart';
 
 /// Full-screen level up celebration overlay
@@ -283,22 +284,10 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                       _buildLevelTitle(),
                     ],
                     const SizedBox(height: AppSpacing.xl),
-                    ElevatedButton(
+                    AppButton(
+                      label: 'Continue',
                       onPressed: _dismiss,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        backgroundColor: DanioColors.amethyst,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: Text(
-                        'Continue',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      variant: AppButtonVariant.primary,
                     ),
                   ],
                 ),
@@ -406,22 +395,10 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                   // Continue button instead of just tap hint
                   FadeTransition(
                     opacity: _overlayFade,
-                    child: ElevatedButton(
+                    child: AppButton(
+                      label: 'Continue',
                       onPressed: _dismiss,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        backgroundColor: DanioColors.amethyst,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: Text(
-                        'Continue',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      variant: AppButtonVariant.primary,
                     ),
                   ),
 

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 5 — First XP Earned (Celebration)
 ///
@@ -328,33 +329,16 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                     position: _buttonSlide,
                     child: FadeTransition(
                       opacity: _buttonOpacity,
-                      child: Semantics(
-                        button: true,
-                        label: 'Add my fish',
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              HapticFeedback.mediumImpact();
-                              widget.onNext();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.onboardingAmber,
-                              foregroundColor: const Color(0xFF2D3436),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(AppRadius.lg),
-                              ),
-                              textStyle: GoogleFonts.nunito(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            child: const Text('Add my fish →'),
-                          ),
-                        ),
+                      child: AppButton(
+                        label: 'Add my fish →',
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          widget.onNext();
+                        },
+                        variant: AppButtonVariant.primary,
+                        isFullWidth: true,
+                        size: AppButtonSize.large,
+                        semanticsLabel: 'Add my fish',
                       ),
                     ),
                   ),

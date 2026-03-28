@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 6 — Fish Selection
 ///
@@ -681,24 +682,10 @@ class _PulsingButtonState extends State<_PulsingButton>
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: _scale,
-      child: ElevatedButton(
+      child: AppButton(
+        label: 'This is my fish →',
         onPressed: widget.onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.onboardingAmber,
-          foregroundColor: AppColors.onPrimary,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          'This is my fish →',
-          style: GoogleFonts.nunito(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        variant: AppButtonVariant.primary,
       ),
     );
   }

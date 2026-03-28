@@ -303,36 +303,13 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       if (mounted) {
         AppHaptics.success(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
         final nav = Navigator.of(context);
-        final messenger = ScaffoldMessenger.of(context);
         final tankName = _name.trim();
-        nav.pop();
-        messenger.showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(
-                  Icons.check_circle,
-                  color: AppColors.onSuccess,
-                  size: 20,
-                ),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Text(
-                    '$tankName created! +${XpRewards.createTank} XP',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.onSuccess,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-            margin: const EdgeInsets.all(AppSpacing.md),
-          ),
+        AppFeedback.showSuccess(
+          context,
+          '$tankName created! +${XpRewards.createTank} XP',
+          duration: const Duration(seconds: 2),
         );
+        nav.pop();
 
         final tanks = ref.read(tanksProvider).value ?? [];
         if (tanks.length <= 1) {

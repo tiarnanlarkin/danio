@@ -10,6 +10,8 @@ import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/core/app_button.dart';
+import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
@@ -51,32 +53,17 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     if (prefs.getBool(_openaiDisclosureKey) == true) return true;
 
     if (!mounted) return false;
-    final accepted = await showDialog<bool>(
+    final accepted = await showAppConfirmDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Text('OpenAI Data Disclosure'),
-        content: const Text(
+      title: 'OpenAI Data Disclosure',
+      message:
           'Your tank names, setup details, and livestock information are sent '
           'to OpenAI servers in the US, retained up to 30 days per OpenAI\'s '
           'data retention policy. OpenAI does not use API data to train their '
           'models.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-            },
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-            },
-            child: const Text('I Understand'),
-          ),
-        ],
-      ),
+      confirmLabel: 'I Understand',
+      cancelLabel: 'Cancel',
+      barrierDismissible: false,
     );
 
     if (accepted == true) {
@@ -267,7 +254,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             const SizedBox(height: AppSpacing.md),
             Text(_error!, textAlign: TextAlign.center),
             const SizedBox(height: AppSpacing.md),
-            FilledButton(onPressed: _generate, child: const Text('Retry')),
+            AppButton(label: 'Retry', onPressed: _generate, variant: AppButtonVariant.primary),
           ],
         ),
       ),
@@ -286,10 +273,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: AppSpacing.sm),
-          FilledButton(
-            onPressed: _generate,
-            child: const Text('Generate Plan'),
-          ),
+          AppButton(label: 'Generate Plan', onPressed: _generate, variant: AppButtonVariant.primary),
         ],
       ),
     );
@@ -345,13 +329,12 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: _generate,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Regenerate Plan'),
-            ),
+          AppButton(
+            label: 'Regenerate Plan',
+            onPressed: _generate,
+            leadingIcon: Icons.refresh,
+            variant: AppButtonVariant.secondary,
+            isFullWidth: true,
           ),
         ],
       ),

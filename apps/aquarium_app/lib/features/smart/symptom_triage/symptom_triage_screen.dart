@@ -9,6 +9,8 @@ import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/core/app_button.dart';
+import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/danio_snack_bar.dart';
 import '../../../widgets/offline_indicator.dart';
@@ -76,31 +78,16 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     if (prefs.getBool(_openaiDisclosureKey) == true) return true;
 
     if (!mounted) return false;
-    final accepted = await showDialog<bool>(
+    final accepted = await showAppConfirmDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Text('OpenAI Data Disclosure'),
-        content: const Text(
+      title: 'OpenAI Data Disclosure',
+      message:
           'Text you enter and water parameters are sent to OpenAI servers in '
           'the US, retained up to 30 days per OpenAI\'s data retention policy. '
           'OpenAI does not use API data to train their models.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
-            },
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
-            },
-            child: const Text('I Understand'),
-          ),
-        ],
-      ),
+      confirmLabel: 'I Understand',
+      cancelLabel: 'Cancel',
+      barrierDismissible: false,
     );
 
     if (accepted == true) {
@@ -256,15 +243,17 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
             padding: const EdgeInsets.only(top: AppSpacing.md),
             child: Row(
               children: [
-                FilledButton(
+                AppButton(
+                  label: _step == 1 ? 'Get Diagnosis' : 'Next',
                   onPressed: details.onStepContinue,
-                  child: Text(_step == 1 ? 'Get Diagnosis' : 'Next'),
+                  variant: AppButtonVariant.primary,
                 ),
                 if (_step > 0) ...[
                   const SizedBox(width: AppSpacing.sm),
-                  TextButton(
+                  AppButton(
+                    label: 'Back',
                     onPressed: details.onStepCancel,
-                    child: const Text('Back'),
+                    variant: AppButtonVariant.text,
                   ),
                 ],
               ],
@@ -434,14 +423,15 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              TextButton(
+              AppButton(
+                label: 'Try Again',
                 onPressed: () {
                   setState(() {
                     _step = 1;
                     _error = null;
                   });
                 },
-                child: const Text('Try Again'),
+                variant: AppButtonVariant.text,
               ),
             ],
           ),
@@ -500,18 +490,21 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
+                child: AppButton(
+                  label: 'Save to Journal',
                   onPressed: () {
                     // Save to journal - pop with the diagnosis text.
                     Navigator.of(context).pop(_diagnosis);
                   },
-                  icon: const Icon(Icons.book),
-                  label: const Text('Save to Journal'),
+                  leadingIcon: Icons.book,
+                  variant: AppButtonVariant.secondary,
+                  isFullWidth: true,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: FilledButton.icon(
+                child: AppButton(
+                  label: 'New Triage',
                   onPressed: () {
                     setState(() {
                       _step = 0;
@@ -520,8 +513,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                       _freeTextController.clear();
                     });
                   },
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('New Triage'),
+                  leadingIcon: Icons.refresh,
+                  variant: AppButtonVariant.primary,
+                  isFullWidth: true,
                 ),
               ),
             ],

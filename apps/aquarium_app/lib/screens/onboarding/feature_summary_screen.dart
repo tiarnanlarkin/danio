@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 8 — Feature Summary
 ///
@@ -219,31 +220,13 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Semantics(
-            label: 'Continue to setup',
-            button: true,
-            child: SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _onCtaTapped,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.onboardingAmber,
-                  foregroundColor: AppColors.onPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.md),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  "Let's go! →",
-                  style: GoogleFonts.nunito(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ),
+          AppButton(
+            label: "Let's go! →",
+            onPressed: _onCtaTapped,
+            variant: AppButtonVariant.primary,
+            isFullWidth: true,
+            size: AppButtonSize.large,
+            semanticsLabel: 'Continue to setup',
           ),
         ],
       ),

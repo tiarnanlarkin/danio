@@ -5,6 +5,7 @@ library;
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'core/app_button.dart';
 
 /// Full-screen celebration dialog shown when user levels up.
 ///
@@ -227,25 +228,12 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     const SizedBox(height: AppSpacing.lg),
 
                     // Continue button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: AppRadius.largeRadius,
-                          ),
-                          elevation: AppElevation.level0,
-                        ),
-                        child: Text(
-                          'Continue',
-                          style: Theme.of(context).textTheme.titleLarge!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                    AppButton(
+                      label: 'Continue',
+                      onPressed: () => Navigator.of(context).pop(),
+                      variant: AppButtonVariant.primary,
+                      isFullWidth: true,
+                      size: AppButtonSize.large,
                     ),
                   ],
                 ),

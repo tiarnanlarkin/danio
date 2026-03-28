@@ -9,6 +9,7 @@ import 'package:confetti/confetti.dart';
 import 'dart:math';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';
+import 'core/app_button.dart';
 
 /// Show full-screen achievement unlocked dialog
 Future<void> showAchievementUnlockedDialog({
@@ -290,30 +291,12 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                         // "Awesome!" button
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: rarityColor,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: AppRadius.mediumRadius,
-                                ),
-                                elevation: AppElevation.level3,
-                              ),
-                              child: Text(
-                                'Awesome!',
-                                style: Theme.of(context).textTheme.titleLarge!
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1,
-                                    ),
-                              ),
-                            ),
+                          child: AppButton(
+                            label: 'Awesome!',
+                            onPressed: () => Navigator.of(context).pop(),
+                            variant: AppButtonVariant.primary,
+                            isFullWidth: true,
+                            size: AppButtonSize.large,
                           ),
                         ),
 

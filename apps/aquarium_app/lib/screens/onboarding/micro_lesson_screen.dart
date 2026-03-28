@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Screen 4 — Micro-Lesson: "The #1 Mistake"
 ///
@@ -240,34 +241,18 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                 position: _gotItSlide,
                 child: FadeTransition(
                   opacity: _gotItOpacity,
-                  child: Semantics(
-                    button: true,
-                    label: 'Got it',
-                    child: SizedBox(
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: _answered
-                            ? () {
-                                HapticFeedback.mediumImpact();
-                                widget.onComplete();
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.onboardingAmber,
-                          foregroundColor: AppColors.textPrimary,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.lg),
-                          ),
-                          textStyle: GoogleFonts.nunito(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        child: const Text('Got it →'),
-                      ),
-                    ),
+                  child: AppButton(
+                    label: 'Got it →',
+                    onPressed: _answered
+                        ? () {
+                            HapticFeedback.mediumImpact();
+                            widget.onComplete();
+                          }
+                        : null,
+                    variant: AppButtonVariant.primary,
+                    isFullWidth: true,
+                    size: AppButtonSize.large,
+                    semanticsLabel: 'Got it',
                   ),
                 ),
               ),
