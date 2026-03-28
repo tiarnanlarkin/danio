@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-/// Standardised bottom sheet helper for the app.
+/// Standardised bottom sheet helpers for the Danio app.
 ///
-/// Three variants:
-/// - [showAppBottomSheet] — card-style sheet with margin/padding (Pattern A)
-/// - [showAppDragSheet] — Material 3 drag-handle sheet (Pattern B)
-/// - [showAppScrollableSheet] — DraggableScrollableSheet wrapper (Pattern C)
+/// Three variants cover the common patterns:
+/// - [showAppBottomSheet] — Pattern A: card-style sheet floating above the scaffold.
+/// - [showAppDragSheet] — Pattern B: Material 3 sheet with a native drag handle.
+/// - [showAppScrollableSheet] — Pattern C: [DraggableScrollableSheet] for tall content.
 ///
-/// Usage:
+/// ## Choosing a pattern
+/// | Pattern | When to use |
+/// |---------|-------------|
+/// | A — [showAppBottomSheet] | Confirmations, quick-add forms, filter panels |
+/// | B — [showAppDragSheet] | Resizable settings or detail sheets |
+/// | C — [showAppScrollableSheet] | Long scrollable lists (fish picker, history) |
+///
+/// ## Basic usage
 /// ```dart
 /// showAppBottomSheet(
 ///   context: context,
@@ -16,7 +23,18 @@ import '../theme/app_theme.dart';
 /// );
 /// ```
 
-/// Pattern A: card-style with rounded corners, margin, and padding.
+/// Pattern A — card-style sheet with rounded corners, side margin, and inner padding.
+///
+/// The sheet floats above the scaffold edges (via [margin]) and has a themed
+/// background matching the scaffold colour. Suitable for most bottom sheet needs.
+///
+/// - [child] — content to display inside the sheet.
+/// - [padding] — inner padding; defaults to [AppSpacing.lg2] on all sides.
+/// - [margin] — outer margin from screen edges; defaults to [AppSpacing.md] on all sides.
+/// - [isScrollControlled] — when `true` (default) the sheet can grow to fill the screen.
+/// - [maxHeightFraction] — optional cap as a fraction of screen height (e.g. `0.85`).
+///
+/// Returns a `Future` that resolves to the value passed to `Navigator.pop`.
 Future<T?> showAppBottomSheet<T>({
   required BuildContext context,
   required Widget child,
@@ -55,7 +73,16 @@ Future<T?> showAppBottomSheet<T>({
   );
 }
 
-/// Pattern B: Material 3 native sheet with drag handle.
+/// Pattern B — Material 3 native sheet with a built-in drag handle.
+///
+/// The handle allows users to resize the sheet by dragging. Sheet shape uses
+/// [AppRadius.lg] top corners.
+///
+/// - [builder] — receives a [BuildContext] and returns the sheet content.
+/// - [isScrollControlled] — when `true` (default) the sheet can fill the screen.
+/// - [useSafeArea] — when `true` (default) the sheet respects safe-area insets.
+///
+/// Returns a `Future` that resolves to the value passed to `Navigator.pop`.
 Future<T?> showAppDragSheet<T>({
   required BuildContext context,
   required Widget Function(BuildContext) builder,
@@ -74,7 +101,27 @@ Future<T?> showAppDragSheet<T>({
   );
 }
 
-/// Pattern C: scrollable content sheet.
+/// Pattern C — scrollable content sheet backed by [DraggableScrollableSheet].
+///
+/// Use when the sheet content is a long scrollable list (fish picker, parameter history).
+/// The [builder] receives both a [BuildContext] and a [ScrollController] — pass the
+/// controller to your [ListView] or [CustomScrollView] to enable seamless scrolling.
+///
+/// - [initialSize] — initial height as a fraction of screen height (default `0.5`).
+/// - [minSize] — minimum fraction the sheet can be dragged to (default `0.25`).
+/// - [maxSize] — maximum fraction the sheet can expand to (default `0.9`).
+///
+/// ```dart
+/// showAppScrollableSheet(
+///   context: context,
+///   builder: (ctx, scrollController) => ListView(
+///     controller: scrollController,
+///     children: fishList.map((f) => FishTile(fish: f)).toList(),
+///   ),
+/// );
+/// ```
+///
+/// Returns a `Future` that resolves to the value passed to `Navigator.pop`.
 Future<T?> showAppScrollableSheet<T>({
   required BuildContext context,
   required Widget Function(BuildContext, ScrollController) builder,

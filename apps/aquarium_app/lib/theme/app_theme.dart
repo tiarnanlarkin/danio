@@ -5,6 +5,20 @@ import 'package:google_fonts/google_fonts.dart';
 /// Aquarium App Theme - Soft, organic, calming design
 /// Inspired by glassmorphism, neumorphism, and aquatic aesthetics
 
+/// All colour tokens for the Danio app.
+///
+/// ## Usage
+/// ```dart
+/// Container(color: AppColors.primary)
+/// Text('Hello', style: TextStyle(color: AppColors.textPrimary))
+/// ```
+///
+/// ## Rules
+/// - Tokens ending in `Text` are WCAG AA safe for text on light backgrounds.
+/// - Tokens ending in `Dark` are the dark-mode equivalent of the base token.
+/// - **Never use** `Color.withOpacity()` — use the pre-computed `*Alpha*` constants instead.
+///
+/// See also: [AppOverlays] for pre-computed alpha overlays, [DanioColors] for brand accent names.
 class AppColors {
   // Primary palette - Danio Amber-Gold brand
   static const Color primary = Color(
@@ -346,8 +360,10 @@ class AppColors {
   );
 }
 
-/// Danio brand colours - use these for new UI following the brand guide
-/// Material constants for the stage system textures and surfaces
+/// Material constants for the stage system textures and surfaces.
+///
+/// Provides base colours for leather grain materials and lighting pulse animations
+/// used in the cosy room / stage scene system.
 class DanioMaterials {
   // Leather grain
   static const Color cognacBase = Color(0xFFC68B3E);
@@ -358,6 +374,19 @@ class DanioMaterials {
   static const Color coolBluePulse = Color(0x0F64B5F6); // 6% cool blue
 }
 
+/// Named brand colour palette for Danio.
+///
+/// Prefer these for new UI components where a semantic name is clearer than a hex value.
+/// Each decorative colour has a `*Text` paired token that is WCAG AA compliant for text
+/// on light backgrounds.
+///
+/// ```dart
+/// // Decorative (backgrounds, icons, illustrations)
+/// color: DanioColors.tealWater
+///
+/// // WCAG AA safe for text
+/// color: DanioColors.tealWaterText
+/// ```
 class DanioColors {
   static const Color amberGold = Color(0xFFC8884A); // Decorative amber — not for text
   static const Color amberGoldText = Color(0xFF9A6830); // WCAG AA text on light bg (4.6:1)
@@ -382,6 +411,26 @@ class DanioColors {
   static const Color topaz = Color(0xFFE8A84A);
 }
 
+/// Text style tokens for the Danio app.
+///
+/// ## Font Roles
+/// | Font | Use |
+/// |------|-----|
+/// | **Fredoka** | Display / headline — brand "wow" moments (≥ 20 px) |
+/// | **Nunito** | UI chrome — titles, labels, body, navigation |
+/// | **Lora** | Lesson content only — educational reading prose |
+///
+/// ## Usage
+/// ```dart
+/// Text('My Tank', style: AppTypography.headlineSmall)
+/// Text('body copy', style: AppTypography.body)
+/// Text(lessonText, style: AppTypography.lessonBody)
+/// ```
+///
+/// Both `AppTypography.*` and `Theme.of(context).textTheme.*` return identical styles —
+/// use whichever reads more clearly at the call site.
+///
+/// See also: `plans/typography-spec.md` for full font rationale.
 class AppTypography {
   static const String fontFamily = 'Nunito'; // Base font family
 
@@ -507,6 +556,18 @@ class AppTypography {
   );
 }
 
+/// Spacing scale for layout — padding, gaps, margins.
+///
+/// All values are in logical pixels (dp).
+///
+/// ```dart
+/// SizedBox(height: AppSpacing.md)         // 16dp
+/// EdgeInsets.all(AppSpacing.lg)           // 24dp
+/// EdgeInsets.symmetric(horizontal: AppSpacing.xl) // 32dp
+/// ```
+///
+/// Scale: `hairline(1) → xxs(2) → xs(4) → xs2(6) → sm(8) → sm3(10) → sm2(12) →
+/// sm4(14) → md(16) → lg2(20) → lg(24) → xl(32) → xl2(40) → xxl(48) → xxxl(64)`
 class AppSpacing {
   static const double hairline = 1;
   static const double xxs = 2;
@@ -525,8 +586,15 @@ class AppSpacing {
   static const double xxxl = 64;
 }
 
-/// Material Design 3 Touch Target Sizes
-/// Ensures all interactive elements are accessible and easy to tap
+/// Material Design 3 touch target size constants.
+///
+/// The minimum interactive element height/width is **48dp**. Use [adaptive] to
+/// choose between [small], [medium], and [large] based on screen width.
+///
+/// ```dart
+/// SizedBox(height: AppTouchTargets.minimum)       // 48dp hard floor
+/// SizedBox(height: AppTouchTargets.adaptive(context)) // adaptive
+/// ```
 class AppTouchTargets {
   // Minimum touch target size (Material Design 3)
   static const double minimum = 48.0;
@@ -570,7 +638,12 @@ class AppTouchTargets {
   }
 }
 
-/// Material Design 3 minimum padding for touch targets
+/// Pre-built [EdgeInsets] to pad small interactive elements up to the 48dp minimum touch target.
+///
+/// ```dart
+/// // Wrap a 24dp icon to get a 48dp touch target
+/// Padding(padding: AppTouchPadding.for24Icon, child: Icon(Icons.close, size: 24))
+/// ```
 class AppTouchPadding {
   // Padding to achieve 48dp minimum from smaller elements
   static const EdgeInsets for24Icon = EdgeInsets.all(12.0);
@@ -587,7 +660,12 @@ class AppTouchPadding {
   static const EdgeInsets minimum = EdgeInsets.all(4.0);
 }
 
-/// Animation durations (Material 3 aligned)
+/// Animation duration constants (Material 3 aligned).
+///
+/// ```dart
+/// AnimatedContainer(duration: AppDurations.medium4)  // 300ms — standard transition
+/// AnimatedOpacity(duration: AppDurations.short)       // 100ms — quick fade
+/// ```
 class AppDurations {
   static const Duration extraShort = Duration(milliseconds: 50);
   static const Duration short = Duration(milliseconds: 100);
@@ -602,7 +680,14 @@ class AppDurations {
   static const Duration celebration = Duration(milliseconds: 1500);
 }
 
-/// Animation curves (Material 3 motion)
+/// Animation curve constants (Material 3 motion system).
+///
+/// Use [emphasized] for most transitions (easeOutCubic), [elastic] for playful
+/// bounce moments, and [bounce] for celebratory animations.
+///
+/// ```dart
+/// CurvedAnimation(parent: animation, curve: AppCurves.emphasized)
+/// ```
 class AppCurves {
   static const Curve emphasized = Curves.easeOutCubic;
   static const Curve emphasizedDecelerate = Curves.easeOutCirc;
@@ -615,7 +700,12 @@ class AppCurves {
   static const Curve bounce = Curves.bounceOut;
 }
 
-/// Standard icon sizes
+/// Standard icon size constants.
+///
+/// ```dart
+/// Icon(Icons.water, size: AppIconSizes.md)  // 24dp — standard
+/// Icon(Icons.close, size: AppIconSizes.sm)  // 20dp — compact
+/// ```
 class AppIconSizes {
   static const double xs = 16.0;
   static const double sm = 20.0;
@@ -625,7 +715,12 @@ class AppIconSizes {
   static const double xxl = 64.0;
 }
 
-/// Achievement tier colors
+/// Achievement tier colour constants (Bronze → Diamond).
+///
+/// ```dart
+/// Icon(Icons.star, color: AppAchievementColors.gold)
+/// Icon(Icons.star, color: AppAchievementColors.forTier('platinum'))
+/// ```
 class AppAchievementColors {
   static const Color bronze = Color(0xFFCD7F32);
   static const Color silver = Color(0xFFC0C0C0);
@@ -652,7 +747,20 @@ class AppAchievementColors {
   }
 }
 
-/// Pre-computed overlay colors (avoid withOpacity() rebuilds)
+/// Pre-computed semi-transparent overlay colours.
+///
+/// Use instead of `color.withOpacity()` — these are compile-time constants and
+/// create **zero** object allocations at runtime.
+///
+/// Naming convention: `[colour][pct]` where pct is the opacity percentage.
+///
+/// ```dart
+/// color: AppOverlays.black20      // black at 20% opacity
+/// color: AppOverlays.primary10    // primary amber at 10%
+/// color: AppOverlays.white50      // white at 50% — glass overlays
+/// ```
+///
+/// See also: [AppColors] `*Alpha*` constants which follow the `[colour]Alpha[pct]` naming.
 class AppOverlays {
   // White overlays
   static const Color white5 = Color(0x0DFFFFFF); // 5%
@@ -846,6 +954,19 @@ class AppOverlays {
   static const Color lightBlueGrey90 = Color(0xE6E8F4F8); // 90% - 0xFFE8F4F8
 }
 
+/// Border radius tokens.
+///
+/// Use the named `*Radius` getters for `BorderRadius` or the raw `double` constants
+/// for `BorderRadius.circular(AppRadius.md)`.
+///
+/// ```dart
+/// borderRadius: AppRadius.largeRadius        // BorderRadius.circular(24)
+/// borderRadius: AppRadius.pillRadius         // BorderRadius.circular(100)
+/// borderRadius: BorderRadius.circular(AppRadius.md)  // 16dp
+/// ```
+///
+/// Scale: `xs(4) → sm(8) → md2(12) → md(16) → lg2(20) → lg(24) → xl(32) → xxl(48) →
+/// pill(100) → full(999)`
 class AppRadius {
   static const double xs = 4;
   static const double sm = 8;
@@ -868,7 +989,16 @@ class AppRadius {
   static BorderRadius get fullRadius => BorderRadius.circular(full);
 }
 
-/// Elevation scale for consistent shadow/depth levels
+/// Elevation scale and pre-built [BoxShadow] constants.
+///
+/// Use numeric levels for `Material.elevation` and `BoxShadow` constants for
+/// custom `BoxDecoration`:
+///
+/// ```dart
+/// elevation: AppElevation.level2         // 4dp — card
+/// boxShadow: [AppElevation.sm]           // soft card shadow
+/// boxShadow: [AppElevation.lg]           // prominent shadow
+/// ```
 class AppElevation {
   static const double level0 = 0;
   static const double level1 = 2;
@@ -899,9 +1029,24 @@ class AppElevation {
   );
 }
 
-/// Standard card decoration recipes — use these for consistent card styling.
-/// For the full interactive card widget, see widgets/core/app_card.dart.
+/// Static [BoxDecoration] recipes for common card styles.
+///
+/// Use these when you need a styled container without the overhead of the full
+/// [AppCard] widget. For interactive cards (tappable, variants, padding presets),
+/// use `AppCard` from `lib/widgets/core/app_card.dart` instead.
+///
+/// ```dart
+/// Container(
+///   decoration: AppCardDecoration.elevated(context),
+///   child: ...,
+/// )
+/// ```
 abstract final class AppCardDecoration {
+  /// Plain white card with a thin neutral border.
+  ///
+  /// Use for most list items and neutral content groupings.
+
+  /// Returns a [BoxDecoration] for a standard white card with a thin border.
   static BoxDecoration standard(BuildContext context) => BoxDecoration(
     color: Theme.of(context).cardColor,
     borderRadius: BorderRadius.circular(AppRadius.md),
@@ -910,12 +1055,14 @@ abstract final class AppCardDecoration {
     ),
   );
 
+  /// Returns a [BoxDecoration] for a card with a soft shadow (no border).
   static BoxDecoration elevated(BuildContext context) => BoxDecoration(
     color: Theme.of(context).cardColor,
     borderRadius: BorderRadius.circular(AppRadius.md),
     boxShadow: [AppElevation.sm],
   );
 
+  /// Returns a [BoxDecoration] for a transparent card with a visible border.
   static BoxDecoration outlined(BuildContext context) => BoxDecoration(
     color: Colors.transparent,
     borderRadius: BorderRadius.circular(AppRadius.md),
@@ -923,6 +1070,15 @@ abstract final class AppCardDecoration {
   );
 }
 
+/// Pre-built [BoxShadow] lists for consistent depth and surface separation.
+///
+/// ```dart
+/// decoration: BoxDecoration(boxShadow: AppShadows.soft)     // light, everyday cards
+/// decoration: BoxDecoration(boxShadow: AppShadows.medium)   // modal cards
+/// decoration: BoxDecoration(boxShadow: AppShadows.elevated) // bottom sheets, modals
+/// decoration: BoxDecoration(boxShadow: AppShadows.glow)     // amber glow on CTAs
+/// decoration: BoxDecoration(boxShadow: AppShadows.cozyWarm) // room/home elements
+/// ```
 class AppShadows {
   // Soft, subtle shadows for depth
   static const List<BoxShadow> soft = [
@@ -1067,6 +1223,21 @@ const _kDanioPageTransitionsTheme = PageTransitionsTheme(
   },
 );
 
+/// Entry point for the Danio [ThemeData].
+///
+/// Apply in your [MaterialApp]:
+/// ```dart
+/// MaterialApp(
+///   theme: AppTheme.light,
+///   darkTheme: AppTheme.dark,
+///   themeMode: ThemeMode.system,
+///   scrollBehavior: const DanioScrollBehavior(),
+/// )
+/// ```
+///
+/// Both themes share the same [_textTheme] (Fredoka + Nunito) and the same
+/// page transition builder. Dark mode applies warm-charcoal backgrounds rather
+/// than the cold blue-grey typical of Material defaults.
 class AppTheme {
   /// Unified type scale — single source of truth.
   ///
@@ -1619,8 +1790,13 @@ class StatCard extends StatelessWidget {
   }
 }
 
-/// Custom scroll behavior that removes the glow effect and uses
-/// clamping physics for a cleaner, iOS-inspired feel across platforms.
+/// Custom [ScrollBehavior] that removes Android's glow/stretch overscroll effect
+/// and enforces clamping physics for a clean, cross-platform feel.
+///
+/// Pass to [MaterialApp.scrollBehavior]:
+/// ```dart
+/// MaterialApp(scrollBehavior: const DanioScrollBehavior(), ...)
+/// ```
 class DanioScrollBehavior extends ScrollBehavior {
   const DanioScrollBehavior();
 
@@ -1640,6 +1816,14 @@ class DanioScrollBehavior extends ScrollBehavior {
   }
 }
 
+/// [BuildContext] extension that resolves theme-aware colours without manual
+/// `Theme.of(context).brightness` checks.
+///
+/// ```dart
+/// color: context.textPrimary        // light or dark text colour, automatically resolved
+/// color: context.backgroundColor    // scaffold background for current brightness
+/// color: context.primaryColor       // primary (bright in light, light in dark)
+/// ```
 extension AdaptiveColors on BuildContext {
   bool get _isDark => Theme.of(this).brightness == Brightness.dark;
   Color get textPrimary =>
