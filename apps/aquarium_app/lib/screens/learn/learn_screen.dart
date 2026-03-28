@@ -12,6 +12,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/app_states.dart';
+import '../../widgets/core/glass_card.dart';
 import '../../widgets/study_room_scene.dart';
 import '../onboarding_screen.dart';
 import '../parameter_guide_screen.dart';
@@ -25,6 +26,7 @@ import 'learn_review_banner.dart';
 import 'learn_practice_card.dart';
 import 'learn_streak_card.dart';
 import 'lazy_learning_path_card.dart';
+import '../story/story_browser_screen.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -391,6 +393,11 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     child: LearnPracticeCard(profile: profile!),
                   ),
 
+                  // Interactive stories section
+                  SliverToBoxAdapter(
+                    child: _StoriesSection(),
+                  ),
+
                   // Learning paths header with overall progress
                   SliverToBoxAdapter(
                     key: _firstPathKey,
@@ -574,6 +581,72 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           isFullWidth: true,
         ),
       ],
+    );
+  }
+}
+
+/// Section in the Learn tab that links to interactive stories.
+class _StoriesSection extends StatelessWidget {
+  const _StoriesSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: GlassCard(
+        semanticLabel: 'Interactive Stories',
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const StoryBrowserScreen(),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
+                child: const Center(
+                  child: Text('📖', style: TextStyle(fontSize: 24)),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Interactive Stories',
+                      style: AppTypography.titleSmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxs),
+                    Text(
+                      'Learn through choose-your-own-adventure scenarios',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.textSecondary,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

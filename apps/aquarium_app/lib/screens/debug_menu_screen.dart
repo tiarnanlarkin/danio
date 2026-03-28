@@ -77,6 +77,7 @@ import '../models/livestock.dart';
 import '../models/spaced_repetition.dart';
 import '../data/species_unlock_map.dart';
 import '../utils/debug_state_overrides.dart';
+import 'story/story_browser_screen.dart';
 
 class DebugMenuScreen extends ConsumerStatefulWidget {
   const DebugMenuScreen({super.key});
@@ -422,6 +423,10 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       _DebugTile(
         title: 'Glossary',
         onTap: () => _push(context, const GlossaryScreen()),
+      ),
+      _DebugTile(
+        title: 'Story Browser',
+        onTap: () => _push(context, const StoryBrowserScreen()),
       ),
       _DebugTile(
         title: 'Theme Gallery',
