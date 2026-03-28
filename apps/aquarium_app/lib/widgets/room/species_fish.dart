@@ -155,6 +155,10 @@ class _SpeciesFishState extends State<SpeciesFish>
 
   @override
   Widget build(BuildContext context) {
+    // Guard: tank dimensions not yet measured — don't render (avoids
+    // Transform.scale with invalid matrix and clamp(min > max) errors).
+    if (_spriteSize <= 0) return const SizedBox.shrink();
+
     final disableMotion = MediaQuery.of(context).disableAnimations;
 
     // Vertical bob — amplitude increases during an excited wiggle

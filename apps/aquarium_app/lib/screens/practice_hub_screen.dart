@@ -467,7 +467,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                 children: [
                   Text(
                     level.emoji,
-                    style: const TextStyle(fontSize: 16),
+                    style: AppTypography.bodyMedium,
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   SizedBox(

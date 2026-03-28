@@ -135,6 +135,7 @@ class LivingRoomScene extends ConsumerWidget {
                       theme: theme,
                       useRiveFish: useRiveFish,
                       reduceMotion: MediaQuery.of(context).disableAnimations,
+                      tankId: tankId,
                     ),
                   ),
                 ),

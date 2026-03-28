@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
-// enhanced_placement_test_screen.dart removed — no longer in use
+import '../screens/spaced_repetition_practice_screen.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import 'core/app_button.dart';
 
 class PlacementChallengeCard extends ConsumerWidget {
@@ -115,7 +116,10 @@ class PlacementChallengeCard extends ConsumerWidget {
                     child: AppButton(
                       label: 'Take the test',
                       onPressed: () {
-                        // Placement test screen removed — no-op for now
+                        NavigationThrottle.push(
+                          context,
+                          const SpacedRepetitionPracticeScreen(),
+                        );
                       },
                       variant: AppButtonVariant.primary,
                     ),

@@ -79,6 +79,12 @@ class _TankFishManagerState extends ConsumerState<TankFishManager>
 
   @override
   Widget build(BuildContext context) {
+    // Guard: dimensions not yet measured — return empty to avoid downstream
+    // invalid-matrix errors in SpeciesFish.
+    if (widget.tankWidth <= 0 || widget.tankHeight <= 0) {
+      return const SizedBox.shrink();
+    }
+
     final unlocked = ref.watch(speciesUnlockProvider).toList()..sort();
 
     // Optionally filter to livestock the user actually owns in this tank

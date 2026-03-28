@@ -97,12 +97,13 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
               ),
               child: Stack(
                 children: [
-                  // Glassmorphism backdrop
+                  // Glassmorphism backdrop — opacity 0.28 so the panel is
+                  // visible against the room background at the peek snap point.
                   Positioned.fill(
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                       child: Container(
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: Colors.white.withValues(alpha: 0.28),
                       ),
                     ),
                   ),
@@ -193,10 +194,10 @@ class _SheetHeader extends StatelessWidget {
         const SizedBox(height: 10),
         Center(
           child: Container(
-            width: 32,
+            width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.3),
+              color: Colors.white.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
