@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide PerformanceOverlay;
 import 'package:flutter/services.dart';
@@ -5,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'data/species_database.dart';
+import 'data/plant_database.dart';
 import 'providers/onboarding_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/user_profile_provider.dart';
@@ -118,6 +121,15 @@ void main() async {
     }
 
     // ── Upgrade error handlers to Crashlytics now that Firebase is ready ──
+    //
+    // GDPR SAFETY: applyAnalyticsConsent() is called above BEFORE this block,
+    // so Crashlytics collection is already disabled when the user has not yet
+    // given (or has declined) consent.  Installing the handlers here is safe
+    // because the Crashlytics SDK will not transmit any data when collection
+    // is disabled — errors are silently dropped.
+    //
+    // The pre-Firebase error buffer (below) is also flushed only after consent
+    // has been applied, so no pre-consent data reaches Firebase servers.
     if (kReleaseMode && firebaseInitialized) {
       FlutterError.onError =
           FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -127,7 +139,9 @@ void main() async {
         return true;
       };
 
-      // Flush any errors that occurred before Firebase was ready
+      // Flush any errors that occurred before Firebase was ready.
+      // Safe: consent has already been applied above; if collection is
+      // disabled (no consent) recordError() is a no-op on the network layer.
       if (_preFirebaseErrors.isNotEmpty) {
         for (final error in _preFirebaseErrors) {
           FirebaseCrashlytics.instance.recordError(error, null, fatal: false);
@@ -139,6 +153,12 @@ void main() async {
     // Initialize Supabase (safe to call - returns false if credentials are
     // placeholders, and the app continues in offline-only mode).
     await SupabaseService.initialize();
+
+    // Pre-warm database indices so the first user interaction is instant.
+    // Both calls defer to the next microtask then do their work, keeping
+    // this post-frame callback non-blocking.
+    unawaited(SpeciesDatabase.prewarm());
+    unawaited(PlantDatabase.prewarm());
 
     // Start performance monitoring in debug mode if enabled
     if (_enablePerformanceMonitoring) {

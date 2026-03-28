@@ -1283,4 +1283,15 @@ class PlantDatabase {
         )
         .toList();
   }
+
+  /// Pre-warm the database by touching the const list on a post-frame idle
+  /// tick, ensuring the Dart VM has resolved it before user interaction.
+  ///
+  /// Safe to call multiple times — the const list is already compiled in, so
+  /// subsequent calls are essentially free.
+  static Future<void> prewarm() async {
+    await Future.delayed(Duration.zero);
+    // Access the list to trigger any VM-level lazy work.
+    final _ = plants.length;
+  }
 }

@@ -68,6 +68,20 @@ class SpeciesDatabase {
     _initialized = true;
   }
 
+  /// Pre-warm the lookup indices off the critical path.
+  ///
+  /// Call this from a post-frame callback (or any idle moment) so the first
+  /// real access to [lookup]/[species] is instant rather than blocking the UI
+  /// thread while 200+ entries are indexed.
+  ///
+  /// Safe to call multiple times — subsequent calls are no-ops.
+  static Future<void> prewarm() async {
+    if (_initialized) return;
+    // Defer to next microtask so the caller's frame completes first.
+    await Future.delayed(Duration.zero);
+    _ensureInitialized();
+  }
+
   /// Find species by common or scientific name (case-insensitive, partial match).
   static SpeciesInfo? lookup(String name) {
     _ensureInitialized();
