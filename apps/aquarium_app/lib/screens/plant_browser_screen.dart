@@ -87,7 +87,12 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
               hint: 'Search plants...',
               onChanged: (v) {
                 _searchDebouncer.run(() {
-                  setState(() => _searchQuery = v);
+                  if (mounted) {
+                    setState(() {
+                      _searchQuery = v;
+                      _invalidateCache();
+                    });
+                  }
                 });
               },
             ),
@@ -102,7 +107,10 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
                 FilterChip(
                   label: const Text('Low Tech'),
                   selected: _lowTechOnly,
-                  onSelected: (v) => setState(() => _lowTechOnly = v),
+                  onSelected: (v) => setState(() {
+                    _lowTechOnly = v;
+                    _invalidateCache();
+                  }),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 _buildDifficultyChip('Easy'),
@@ -138,6 +146,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
                       _difficultyFilter = null;
                       _placementFilter = null;
                       _lowTechOnly = false;
+                      _invalidateCache();
                     }),
                     variant: AppButtonVariant.text,
                     size: AppButtonSize.small,
@@ -166,8 +175,10 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
     return FilterChip(
       label: Text(difficulty),
       selected: _difficultyFilter == difficulty,
-      onSelected: (v) =>
-          setState(() => _difficultyFilter = v ? difficulty : null),
+      onSelected: (v) => setState(() {
+        _difficultyFilter = v ? difficulty : null;
+        _invalidateCache();
+      }),
     );
   }
 
@@ -175,8 +186,10 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
     return FilterChip(
       label: Text(placement),
       selected: _placementFilter == placement,
-      onSelected: (v) =>
-          setState(() => _placementFilter = v ? placement : null),
+      onSelected: (v) => setState(() {
+        _placementFilter = v ? placement : null;
+        _invalidateCache();
+      }),
     );
   }
 
