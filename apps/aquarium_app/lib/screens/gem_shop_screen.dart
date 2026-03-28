@@ -13,6 +13,7 @@ import 'inventory_screen.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../widgets/core/app_button.dart';
 
 /// Gem Shop room theme — jewel/treasure gradient backgrounds and
 /// category-specific accent colours that don't exist in the shared palette.
@@ -336,44 +337,20 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 ],
               ),
               actions: [
-                TextButton(
+                AppButton(
+                  label: 'Cancel',
                   onPressed: _isPurchasing
                       ? null
                       : () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: AppColors.textSecondaryDark),
-                  ),
+                  variant: AppButtonVariant.text,
                 ),
-                ElevatedButton(
+                AppButton(
+                  label: 'Purchase',
                   onPressed: (canAfford && !_isPurchasing)
                       ? () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); }
                       : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: GemShopColors.gemPrimary,
-                    disabledBackgroundColor: AppColors.blackAlpha30,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                  ),
-                  child: _isPurchasing
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(
-                              GemShopColors.background1,
-                            ),
-                          ),
-                        )
-                      : const Text(
-                          'Purchase',
-                          style: TextStyle(
-                            color: GemShopColors.background1,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                  isLoading: _isPurchasing,
+                  variant: AppButtonVariant.primary,
                 ),
               ],
             ),

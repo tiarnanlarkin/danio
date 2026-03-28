@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/accessibility_utils.dart';
+import '../../../widgets/core/app_button.dart';
 
 /// Third page of tank creation — water type and start date.
 class WaterTypePage extends StatelessWidget {
@@ -126,9 +127,11 @@ class WaterTypePage extends StatelessWidget {
             child: Semantics(
               label: A11yLabels.button('Set start date to today'),
               button: true,
-              child: TextButton(
+              child: AppButton(
+                label: 'Set to today',
                 onPressed: () => onStartDateChanged(DateTime.now()),
-                child: const Text('Set to today'),
+                variant: AppButtonVariant.text,
+                size: AppButtonSize.small,
               ),
             ),
           ),

@@ -82,7 +82,7 @@ class PlantDecoration extends StatelessWidget {
   const PlantDecoration({
     super.key,
     this.height = 120,
-    this.color = const Color(0xFF7AC29A),
+    this.color = DanioColors.plantDecoration,
     this.flip = false,
   });
 
@@ -163,7 +163,7 @@ class NotebookCard extends StatelessWidget {
       angle: (rotation ?? 0) * math.pi / 180,
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2A3A4A) : const Color(0xFFFFFDF8),
+          color: isDark ? DanioColors.notebookDark : DanioColors.notebookLight,
           borderRadius: AppRadius.smallRadius,
           boxShadow: [
             BoxShadow(
@@ -174,7 +174,7 @@ class NotebookCard extends StatelessWidget {
           ],
           // Subtle paper texture border
           border: Border.all(
-            color: isDark ? AppOverlays.white5 : const Color(0xFFE8E4DC),
+            color: isDark ? AppOverlays.white5 : DanioColors.notebookBorderLight,
             width: 1,
           ),
         ),
@@ -233,7 +233,7 @@ class TabletCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E2A38) : const Color(0xFF3D4852),
+        color: isDark ? DanioColors.aquariumFrameDark : DanioColors.aquariumFrameLight,
         borderRadius: AppRadius.mediumRadius,
         boxShadow: [
           BoxShadow(
@@ -248,7 +248,7 @@ class TabletCard extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               screenColor ??
-              (isDark ? const Color(0xFF243447) : const Color(0xFFF0F4F8)),
+              (isDark ? DanioColors.aquariumScreenDark : DanioColors.aquariumScreenLight),
           borderRadius: AppRadius.mediumRadius,
         ),
         padding: padding ?? const EdgeInsets.all(AppSpacing.md),
@@ -287,8 +287,8 @@ class ShelfDecoration extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: isDark
-                  ? [const Color(0xFF4A3728), const Color(0xFF3D2E22)]
-                  : [const Color(0xFFD4A574), const Color(0xFFC49A6C)],
+                  ? [DanioColors.shelfWoodDark1, DanioColors.shelfWoodDark2]
+                  : [DanioColors.studyGold, DanioColors.shelfWoodLight],
             ),
             borderRadius: const BorderRadius.vertical(
               bottom: Radius.circular(4),
@@ -331,8 +331,8 @@ class _ShelfBracket extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: isDark
-              ? [const Color(0xFF3D2E22), AppColors.successAlpha100]
-              : [const Color(0xFFC49A6C), AppColors.successAlpha100],
+              ? [DanioColors.shelfWoodDark2, AppColors.successAlpha100]
+              : [DanioColors.shelfWoodLight, AppColors.successAlpha100],
         ),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
       ),
@@ -421,7 +421,7 @@ class WindowDecoration extends StatelessWidget {
             : AppOverlays.lightBlueGrey80,
         borderRadius: AppRadius.smallRadius,
         border: Border.all(
-          color: isDark ? AppOverlays.white10 : const Color(0xFFD4D0C8),
+          color: isDark ? AppOverlays.white10 : DanioColors.windowFrameLight,
           width: 6,
         ),
       ),
@@ -436,8 +436,8 @@ class WindowDecoration extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: isDark
-                      ? [const Color(0xFF2D3E50), const Color(0xFF1A2634)]
-                      : [const Color(0xFFB8D4E3), const Color(0xFFD4E8F0)],
+                      ? [DanioColors.windowPaneDark1, DanioColors.windowPaneDark2]
+                      : [DanioColors.windowPaneLight1, DanioColors.windowPaneLight2],
                 ),
                 borderRadius: AppRadius.xsRadius,
               ),
@@ -446,7 +446,7 @@ class WindowDecoration extends StatelessWidget {
           // Window divider
           Container(
             height: 6,
-            color: isDark ? AppOverlays.white10 : const Color(0xFFD4D0C8),
+            color: isDark ? AppOverlays.white10 : DanioColors.windowFrameLight,
           ),
           // Bottom pane
           Expanded(
@@ -457,8 +457,8 @@ class WindowDecoration extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: isDark
-                      ? [const Color(0xFF2D3E50), const Color(0xFF1A2634)]
-                      : [const Color(0xFFD4E8F0), const Color(0xFFE8F4F8)],
+                      ? [DanioColors.windowPaneDark1, DanioColors.windowPaneDark2]
+                      : [DanioColors.windowPaneLight2, DanioColors.windowPaneLight3],
                 ),
                 borderRadius: AppRadius.xsRadius,
               ),
@@ -534,7 +534,7 @@ class WaterWave extends StatelessWidget {
   const WaterWave({
     super.key,
     this.height = 40,
-    this.color = const Color(0xFF85C7DE),
+    this.color = DanioColors.waterWave,
   });
 
   @override

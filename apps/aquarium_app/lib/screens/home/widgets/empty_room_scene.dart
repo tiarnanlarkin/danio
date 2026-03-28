@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/decorative_elements.dart';
+import '../../../widgets/core/app_button.dart';
 
 class EmptyRoomScene extends StatelessWidget {
   final VoidCallback onCreateTank;
@@ -185,28 +186,17 @@ class EmptyRoomScene extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg2),
-                ElevatedButton.icon(
+                AppButton(
+                  label: 'Add my tank',
                   onPressed: onCreateTank,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add my tank'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: DanioColors.tealWater,
-                    foregroundColor: AppColors.onPrimary,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
-                      vertical: AppSpacing.sm2,
-                    ),
-                  ),
+                  leadingIcon: Icons.add,
+                  variant: AppButtonVariant.primary,
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                TextButton(
+                AppButton(
+                  label: 'Explore a demo tank first',
                   onPressed: onLoadDemo,
-                  child: Text(
-                    'Explore a demo tank first',
-                    style: AppTypography.labelMedium.copyWith(
-                      color: DanioColors.amberText,
-                    ),
-                  ),
+                  variant: AppButtonVariant.text,
                 ),
               ],
             ),

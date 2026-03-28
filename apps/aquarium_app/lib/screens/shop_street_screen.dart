@@ -106,7 +106,7 @@ class ShopStreetScreen extends ConsumerWidget {
                       title: '🌿 Plant Wishlist',
                       subtitle: 'Plants to add to your tank',
                       icon: Icons.eco,
-                      color: const Color(0xFFFFCA28),
+                      color: DanioColors.wishlistAmber,
                       itemCount: plantCount,
                       onTap: () => NavigationThrottle.push(
                         context,
@@ -118,7 +118,7 @@ class ShopStreetScreen extends ConsumerWidget {
                       title: '🛠️ Equipment Wishlist',
                       subtitle: 'Gear upgrades planned',
                       icon: Icons.build,
-                      color: const Color(0xFFFFCA28),
+                      color: DanioColors.wishlistAmber,
                       itemCount: equipmentCount,
                       onTap: () => NavigationThrottle.push(
                         context,

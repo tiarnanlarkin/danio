@@ -41,7 +41,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Green Water',
       appearance: 'Cloudy green water, can\'t see through tank',
-      color: const Color(0xFF81C784),
+      color: DanioColors.algaeGreenLight,
       causes: [
         'Excess light (especially direct sunlight)',
         'High ammonia/nutrients',
@@ -59,7 +59,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Hair/Thread Algae',
       appearance: 'Long green filaments, looks like hair or threads',
-      color: const Color(0xFF43A047),
+      color: DanioColors.algaeGreenBright,
       causes: [
         'Excess light',
         'Low CO2',
@@ -78,7 +78,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Black Beard Algae (BBA)',
       appearance: 'Dark fuzzy tufts on edges of plants, equipment, hardscape',
-      color: const Color(0xFF424242),
+      color: DanioColors.algaeBlack,
       causes: ['Fluctuating CO2', 'Low/unstable CO2', 'Poor flow'],
       solutions: [
         'Stabilize CO2 levels (consistency is key)',
@@ -92,7 +92,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Staghorn Algae',
       appearance: 'Grey/green branching strands, looks like deer antlers',
-      color: const Color(0xFF9E9E9E),
+      color: DanioColors.algaeStaghorn,
       causes: ['Low CO2', 'Poor circulation', 'Organic waste buildup'],
       solutions: [
         'Increase CO2',
@@ -152,7 +152,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Rhizoclonium',
       appearance: 'Fine cottony threads, often confused with hair algae',
-      color: const Color(0xFFA5D6A7),
+      color: DanioColors.algaeGreenPale,
       causes: ['Very low CO2', 'New setup', 'Ammonia from soil'],
       solutions: [
         'Increase CO2 significantly',

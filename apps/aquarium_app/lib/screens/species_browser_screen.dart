@@ -7,6 +7,7 @@ import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/debouncer.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/core/app_button.dart';
 
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../widgets/core/app_button.dart';
 
 /// Shows a one-time explanation of the hearts system on the user's first
 /// lesson.  Call from [initState] via [WidgetsBinding.addPostFrameCallback].
@@ -24,9 +25,10 @@ Future<void> maybeExplainHearts(
         'They refill over time, or you can use gems to refill instantly.',
       ),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'Got it!',
           onPressed: () => Navigator.of(ctx).pop(),
-          child: const Text('Got it!'),
+          variant: AppButtonVariant.text,
         ),
       ],
     ),

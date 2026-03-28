@@ -50,6 +50,7 @@ import 'achievements_screen.dart';
 import 'analytics_screen.dart';
 import 'notification_settings_screen.dart';
 import 'privacy_policy_screen.dart';
+import '../widgets/core/app_button.dart';
 
 class DebugMenuScreen extends ConsumerWidget {
   const DebugMenuScreen({super.key});
@@ -347,14 +348,15 @@ class DebugMenuScreen extends ConsumerWidget {
           'The app should be restarted after this.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cancel',
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Clear',
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Clear'),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

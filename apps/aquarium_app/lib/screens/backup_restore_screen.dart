@@ -19,6 +19,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
 import 'package:danio/utils/logger.dart';
+import '../widgets/core/app_button.dart';
 
 const _uuid = Uuid();
 
@@ -485,9 +486,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             'Your existing data will NOT be affected.',
           ),
           actions: [
-            TextButton(
+            AppButton(
+              label: 'Cancel',
               onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-              child: const Text('Cancel'),
+              variant: AppButtonVariant.text,
             ),
             FilledButton(
               onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },

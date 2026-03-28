@@ -334,11 +334,13 @@ class EquipmentScreen extends ConsumerWidget {
           'Remove "${equipment.name}" from this tank? You can undo within 5 seconds.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Keep'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Remove Equipment',
             onPressed: () async {
               Navigator.maybePop(ctx);
               try {
@@ -371,10 +373,7 @@ class EquipmentScreen extends ConsumerWidget {
                 }
               }
             },
-            child: const Text(
-              'Remove Equipment',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),
@@ -461,9 +460,10 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
         ),
       ),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'Close',
           onPressed: () => Navigator.maybePop(context),
-          child: const Text('Close'),
+          variant: AppButtonVariant.text,
         ),
       ],
     );

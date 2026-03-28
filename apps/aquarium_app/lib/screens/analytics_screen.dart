@@ -835,13 +835,13 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       ? context.surfaceVariant
                       : context.borderColor;
                 } else if (dayData.xp < 25) {
-                  color = const Color(0xFFA5D6A7);
+                  color = DanioColors.algaeGreenPale;
                 } else if (dayData.xp < 50) {
-                  color = const Color(0xFF66BB6A);
+                  color = DanioColors.algaeGreenBright;
                 } else if (dayData.xp < 100) {
                   color = DanioColors.emeraldGreen;
                 } else {
-                  color = const Color(0xFF2E7D32);
+                  color = DanioColors.algaeGreenDark;
                 }
 
                 return Tooltip(
@@ -868,10 +868,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     ? context.surfaceVariant
                     : context.borderColor,
               ),
-              _buildLegendBox(const Color(0xFFA5D6A7)),
-              _buildLegendBox(const Color(0xFF66BB6A)),
+              _buildLegendBox(DanioColors.algaeGreenPale),
+              _buildLegendBox(DanioColors.algaeGreenBright),
               _buildLegendBox(DanioColors.emeraldGreen),
-              _buildLegendBox(const Color(0xFF2E7D32)),
+              _buildLegendBox(DanioColors.algaeGreenDark),
               const SizedBox(width: AppSpacing.xs),
               Text('More', style: Theme.of(context).textTheme.labelSmall),
             ],

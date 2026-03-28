@@ -66,13 +66,15 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
               'You have unsaved changes. Are you sure you want to go back?',
             ),
             actions: [
-              TextButton(
+              AppButton(
+                label: 'Cancel',
                 onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-                child: const Text('Cancel'),
+                variant: AppButtonVariant.text,
               ),
-              TextButton(
+              AppButton(
+                label: 'Discard',
                 onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-                child: const Text('Discard'),
+                variant: AppButtonVariant.destructive,
               ),
             ],
           ),

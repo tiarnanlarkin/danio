@@ -16,6 +16,7 @@ import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
 import 'add_log_screen.dart';
+import '../widgets/core/app_button.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -835,7 +836,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cancel',
             onPressed: () {
               setState(() {
                 _multiParamMode = false;
@@ -843,9 +845,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               });
               Navigator.maybePop(ctx);
             },
-            child: const Text('Cancel'),
+            variant: AppButtonVariant.text,
           ),
-          ElevatedButton(
+          AppButton(
+            label: 'Compare',
             onPressed: _selectedParams.length >= 2
                 ? () {
                     setState(() {
@@ -854,7 +857,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                     Navigator.maybePop(ctx);
                   }
                 : null,
-            child: const Text('Compare'),
+            variant: AppButtonVariant.primary,
           ),
         ],
       ),

@@ -7,6 +7,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_button.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
   final String tankId;

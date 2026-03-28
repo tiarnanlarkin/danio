@@ -29,6 +29,7 @@ import 'settings_debug_section.dart';
 import 'settings_notifications_section.dart';
 import 'widgets/guides_section.dart';
 import 'widgets/tools_section.dart';
+import '../../widgets/core/app_button.dart';
 
 export 'settings_account_section.dart';
 export 'settings_data_section.dart';

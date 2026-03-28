@@ -543,16 +543,18 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
         ),
         content: Text(fact, style: AppTypography.bodyLarge),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cool!',
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cool!'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Another!',
             onPressed: () {
               Navigator.of(ctx).pop();
               _showRandomFishFact(context); // Show another
             },
-            child: const Text('Another!'),
+            variant: AppButtonVariant.text,
           ),
         ],
       ),
@@ -1188,9 +1190,10 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
               style: AppTypography.bodyLarge,
             ),
             actions: [
-              TextButton(
+              AppButton(
+                label: 'Got it!',
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Got it!'),
+                variant: AppButtonVariant.text,
               ),
             ],
           ),

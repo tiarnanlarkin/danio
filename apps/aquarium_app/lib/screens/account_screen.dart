@@ -8,6 +8,7 @@ import '../services/cloud_sync_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../widgets/core/app_button.dart';
 
 /// Account screen - sign-in / profile / sync management.
 ///
@@ -52,19 +53,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               title: const Text('Unsaved Changes'),
               content: const Text('You have unsaved changes. Discard them?'),
               actions: [
-                TextButton(
+                AppButton(
+                  label: 'Keep Editing',
                   onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx); },
-                  child: const Text('Keep Editing'),
+                  variant: AppButtonVariant.text,
                 ),
-                TextButton(
+                AppButton(
+                  label: 'Discard',
                   onPressed: () {
                     if (Navigator.canPop(ctx)) Navigator.pop(ctx);
                     if (Navigator.canPop(context)) Navigator.pop(context);
                   },
-                  child: const Text(
-                    'Discard',
-                    style: TextStyle(color: AppColors.error),
-                  ),
+                  variant: AppButtonVariant.destructive,
                 ),
               ],
             ),
@@ -226,20 +226,20 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             const SizedBox(height: AppSpacing.sm),
 
             // Toggle sign-up / sign-in
-            TextButton(
+            AppButton(
+              label: _isSignUp
+                  ? 'Already have an account? Sign in'
+                  : "Don't have an account? Sign up",
               onPressed: () => setState(() => _isSignUp = !_isSignUp),
-              child: Text(
-                _isSignUp
-                    ? 'Already have an account? Sign in'
-                    : "Don't have an account? Sign up",
-              ),
+              variant: AppButtonVariant.text,
             ),
 
             // Forgot password
             if (!_isSignUp)
-              TextButton(
+              AppButton(
+                label: 'Forgot password?',
                 onPressed: _forgotPassword,
-                child: const Text('Forgot password?'),
+                variant: AppButtonVariant.text,
               ),
 
             const SizedBox(height: AppSpacing.lg),
@@ -408,9 +408,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           'Local data wins on conflicts.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cancel',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            child: const Text('Cancel'),
+            variant: AppButtonVariant.text,
           ),
           FilledButton(
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
@@ -444,9 +445,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           'You can sign back in anytime to resume syncing.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cancel',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Cancel'),
+            variant: AppButtonVariant.text,
           ),
           FilledButton(
             onPressed: () {

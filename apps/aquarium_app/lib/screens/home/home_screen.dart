@@ -43,6 +43,7 @@ import 'widgets/room_control_fab.dart';
 import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
 import '../../widgets/danio_snack_bar.dart';
+import '../../widgets/core/app_button.dart';
 
 /// HomeScreen - The Living Room in the House Navigator.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -277,10 +278,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: Text('Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?'),
         content: Text('Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.'),
         actions: [
-          TextButton(onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); }, child: const Text('Keep')),
-          TextButton(
+          AppButton(label: 'Keep', onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); }, variant: AppButtonVariant.text),
+          AppButton(
+            label: 'Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: Text('Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}', style: const TextStyle(color: AppColors.error)),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_button.dart';
 
 /// Returns the currency symbol for the current device locale.
 /// Falls back to '£' if the locale cannot be determined.
@@ -316,9 +317,10 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Close',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Close'),
+            variant: AppButtonVariant.text,
           ),
         ],
       ),
@@ -332,9 +334,10 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         title: const Text('Clear All Expenses?'),
         content: const Text('This cannot be undone.'),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cancel',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Cancel'),
+            variant: AppButtonVariant.text,
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.error),

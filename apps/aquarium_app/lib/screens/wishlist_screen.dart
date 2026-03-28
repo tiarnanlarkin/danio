@@ -8,6 +8,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+import '../widgets/core/app_button.dart';
 
 /// Screen to view and manage wishlist items for a category
 class WishlistScreen extends ConsumerWidget {
@@ -33,7 +34,7 @@ class WishlistScreen extends ConsumerWidget {
       case WishlistCategory.plant:
         return AppColors.success;
       case WishlistCategory.equipment:
-        return const Color(0xFFFFB300);
+        return DanioColors.equipmentGold;
     }
   }
 

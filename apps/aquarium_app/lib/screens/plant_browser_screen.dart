@@ -8,6 +8,7 @@ import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_button.dart';
 
 class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});

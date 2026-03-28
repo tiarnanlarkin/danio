@@ -4,6 +4,7 @@ import '../providers/room_theme_provider.dart';
 import '../theme/app_theme.dart';
 import '../theme/room_themes.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_button.dart';
 
 /// Theme Gallery Screen - Browse and select room visual themes
 /// Supports free and premium (locked) themes for future monetization

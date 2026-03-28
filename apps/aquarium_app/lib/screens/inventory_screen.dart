@@ -12,6 +12,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../widgets/core/app_button.dart';
 
 /// Inventory room theme — treasure-chest gradient backgrounds and
 /// category-specific colours that don't exist in the shared palette.
@@ -291,32 +292,19 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                 ],
               ),
               actions: [
-                TextButton(
+                AppButton(
+                  label: 'Cancel',
                   onPressed: () {
                     if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
                   },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: AppColors.textSecondaryDark),
-                  ),
+                  variant: AppButtonVariant.text,
                 ),
-                ElevatedButton(
+                AppButton(
+                  label: 'Use Now',
                   onPressed: () {
                     if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: InventoryColors.consumableColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                  ),
-                  child: const Text(
-                    'Use Now',
-                    style: TextStyle(
-                      color: AppColors.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  variant: AppButtonVariant.primary,
                 ),
               ],
             ),
@@ -479,25 +467,12 @@ class _InventoryItemCard extends StatelessWidget {
                 ),
                 // Use button
                 if (showUseButton && item.quantity > 0)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => onUse?.call(item),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: accentColor,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: AppRadius.smallRadius,
-                        ),
-                      ),
-                      child: Text(
-                        'USE',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.onPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  AppButton(
+                    label: 'USE',
+                    onPressed: () => onUse?.call(item),
+                    variant: AppButtonVariant.primary,
+                    isFullWidth: true,
+                    size: AppButtonSize.small,
                   ),
               ],
             ),

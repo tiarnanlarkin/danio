@@ -17,6 +17,7 @@ import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
 import 'lesson_hearts_modal.dart';
+import '../../widgets/core/app_button.dart';
 
 export 'lesson_card_widget.dart';
 export 'lesson_quiz_widget.dart';
@@ -94,13 +95,15 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           'Your quiz progress will be lost. You can retake it anytime.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep going',
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Keep going'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Leave',
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Leave'),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

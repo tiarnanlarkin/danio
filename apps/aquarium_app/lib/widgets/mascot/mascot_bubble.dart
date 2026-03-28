@@ -313,25 +313,25 @@ class _MascotBubbleState extends State<MascotBubble>
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [DanioColors.tealWater, Color(0xFF4A8A92)],
+          colors: [DanioColors.tealWater, DanioColors.mascotThinkingDark],
         );
       case MascotMood.celebrating:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+          colors: [DanioColors.mascotCelebrate1, DanioColors.mascotCelebrate2],
         );
       case MascotMood.encouraging:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF9F6847), Color(0xFFE8A87C)],
+          colors: [DanioColors.mascotEncourage1, DanioColors.mascotEncourage2],
         );
       case MascotMood.curious:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFC5A3FF), Color(0xFF9F7AEA)],
+          colors: [DanioColors.mascotCurious1, DanioColors.mascotCurious2],
         );
       case MascotMood.waving:
         return AppColors.primaryGradient;
@@ -468,19 +468,19 @@ class _MascotAvatarState extends State<MascotAvatar>
         );
       case MascotMood.thinking:
         return const LinearGradient(
-          colors: [DanioColors.tealWater, Color(0xFF4A8A92)],
+          colors: [DanioColors.tealWater, DanioColors.mascotThinkingDark],
         );
       case MascotMood.celebrating:
         return const LinearGradient(
-          colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+          colors: [DanioColors.mascotCelebrate1, DanioColors.mascotCelebrate2],
         );
       case MascotMood.encouraging:
         return const LinearGradient(
-          colors: [Color(0xFF9F6847), Color(0xFFE8A87C)],
+          colors: [DanioColors.mascotEncourage1, DanioColors.mascotEncourage2],
         );
       case MascotMood.curious:
         return const LinearGradient(
-          colors: [Color(0xFFC5A3FF), Color(0xFF9F7AEA)],
+          colors: [DanioColors.mascotCurious1, DanioColors.mascotCurious2],
         );
       case MascotMood.waving:
         return AppColors.primaryGradient;

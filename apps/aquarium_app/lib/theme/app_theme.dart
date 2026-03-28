@@ -409,6 +409,56 @@ class DanioColors {
   static const Color sapphireBlue = Color(0xFF4A7BC8);
   static const Color amethyst = Color(0xFF8B6BAE);
   static const Color topaz = Color(0xFFE8A84A);
+
+  // ── Algae guide type indicators ──────────────────────────────────
+  // Used in AlgaeGuideScreen to colour-code algae types by appearance.
+  static const Color algaeGreenPale = Color(0xFFA5D6A7);   // Rhizoclonium / very light green
+  static const Color algaeGreenLight = Color(0xFF81C784);  // Green water / light green
+  static const Color algaeGreenBright = Color(0xFF66BB6A); // Hair algae / medium green
+  static const Color algaeGreenDark = Color(0xFF2E7D32);   // Heavy algae / deep green (also analytics heatmap)
+  static const Color algaeBlack = Color(0xFF424242);       // Black beard algae indicator
+  static const Color algaeStaghorn = Color(0xFF9E9E9E);    // Staghorn algae / neutral grey
+
+  // ── Wishlist / workshop tool card accents ────────────────────────
+  static const Color wishlistAmber = Color(0xFFFFCA28);    // Wishlist section + workshop tool card accent
+  static const Color equipmentGold = Color(0xFFFFB300);    // Equipment wishlist accent (deeper gold)
+
+  // ── Mascot mood gradient colours ─────────────────────────────────
+  static const Color mascotCelebrate1 = Color(0xFFFFD700); // Celebrating mood — gradient start (gold)
+  static const Color mascotCelebrate2 = Color(0xFFFFA500); // Celebrating mood — gradient end (orange)
+  static const Color mascotThinkingDark = Color(0xFF4A8A92); // Thinking mood — dark teal pair for DanioColors.tealWater
+  static const Color mascotEncourage1 = Color(0xFF9F6847);   // Encouraging mood — warm brown
+  static const Color mascotEncourage2 = Color(0xFFE8A87C);   // Encouraging mood — soft amber
+  static const Color mascotCurious1 = Color(0xFFC5A3FF);     // Curious mood — soft lavender
+  static const Color mascotCurious2 = Color(0xFF9F7AEA);     // Curious mood — mid purple
+
+  // ── Level up overlay accent ──────────────────────────────────────
+  static const Color levelUpFuchsia = Color(0xFFD946EF);   // Level-up ring pulse — fuchsia highlight
+
+  // ── Decorative element defaults ──────────────────────────────────
+  static const Color plantDecoration = Color(0xFF7AC29A);  // Default PlantDecoration widget colour
+  static const Color waterWave = Color(0xFF85C7DE);        // Default WaterWave widget colour
+
+  // ── Decorative surface tones (notebook / aquarium frame) ─────────
+  static const Color notebookDark = Color(0xFF2A3A4A);     // Notebook card background (dark mode)
+  static const Color notebookLight = Color(0xFFFFFDF8);    // Notebook card background (light mode)
+  static const Color notebookBorderLight = Color(0xFFE8E4DC); // Notebook card border (light mode)
+  static const Color aquariumFrameLight = Color(0xFF3D4852); // Aquarium frame shell (light mode)
+  static const Color aquariumFrameDark = Color(0xFF1E2A38);  // Aquarium frame shell (dark mode)
+  static const Color aquariumScreenLight = Color(0xFFF0F4F8); // Aquarium screen glass (light mode)
+  static const Color aquariumScreenDark = Color(0xFF243447);  // Aquarium screen glass (dark mode)
+  static const Color windowFrameLight = Color(0xFFD4D0C8);  // Window widget frame/divider (light mode)
+  static const Color windowPaneLight1 = Color(0xFFB8D4E3);  // Window pane top gradient (light mode)
+  static const Color windowPaneLight2 = Color(0xFFD4E8F0);  // Window pane mid gradient (light mode)
+  static const Color windowPaneDark1 = Color(0xFF2D3E50);   // Window pane top gradient (dark mode)
+  static const Color windowPaneDark2 = Color(0xFF1A2634);   // Window pane bottom gradient (dark mode)
+  static const Color windowPaneLight3 = Color(0xFFE8F4F8);  // Window bottom pane gradient light (lightest sky blue)
+
+  // ── Shelf / wood bracket tones ───────────────────────────────────
+  static const Color studyGold = Color(0xFFD4A574);        // Study-room warm gold (base for studyGoldAlpha*)
+  static const Color shelfWoodLight = Color(0xFFC49A6C);   // Shelf wood gradient — lighter tone
+  static const Color shelfWoodDark1 = Color(0xFF4A3728);   // Shelf bracket gradient — dark tone
+  static const Color shelfWoodDark2 = Color(0xFF3D2E22);   // Shelf bracket gradient — darker tone
 }
 
 /// Text style tokens for the Danio app.

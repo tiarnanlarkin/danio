@@ -124,7 +124,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.water_drop,
                       title: 'Water Change',
                       subtitle: 'Calculate changes',
-                      color: const Color(0xFFFFCA28),
+                      color: DanioColors.wishlistAmber,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const WaterChangeCalculatorScreen(),
@@ -144,7 +144,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.science,
                       title: 'CO₂ Calculator',
                       subtitle: 'From pH & KH',
-                      color: const Color(0xFFFFCA28),
+                      color: DanioColors.wishlistAmber,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const Co2CalculatorScreen(),

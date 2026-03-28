@@ -186,13 +186,15 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               'You have unsaved data. Are you sure you want to go back?',
             ),
             actions: [
-              TextButton(
+              AppButton(
+                label: 'Cancel',
                 onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-                child: const Text('Cancel'),
+                variant: AppButtonVariant.text,
               ),
-              TextButton(
+              AppButton(
+                label: 'Discard',
                 onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-                child: const Text('Discard'),
+                variant: AppButtonVariant.destructive,
               ),
             ],
           ),
@@ -259,23 +261,15 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                             style: AppTypography.bodySmall,
                           ),
                         ),
-                        TextButton.icon(
+                        AppButton(
+                          label: 'Add',
                           onPressed: (_isSaving || _isPickingImages)
                               ? null
                               : _pickImages,
-                          icon: _isPickingImages
-                              ? const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.add_photo_alternate_outlined,
-                                  size: 18,
-                                ),
-                          label: const Text('Add'),
+                          leadingIcon: Icons.add_photo_alternate_outlined,
+                          isLoading: _isPickingImages,
+                          variant: AppButtonVariant.text,
+                          size: AppButtonSize.small,
                         ),
                       ],
                     ),
@@ -317,10 +311,12 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                               style: AppTypography.bodyLarge,
                             ),
                             const Spacer(),
-                            TextButton(
+                            AppButton(
+                              label: 'Now',
                               onPressed: () =>
                                   setState(() => _timestamp = DateTime.now()),
-                              child: const Text('Now'),
+                              variant: AppButtonVariant.text,
+                              size: AppButtonSize.small,
                             ),
                           ],
                         ),
@@ -465,7 +461,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     ),
                   ),
                 ),
-                TextButton(
+                AppButton(
+                  label: 'Clear',
                   onPressed: () {
                     setState(() {
                       _temperature = null;
@@ -478,11 +475,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                       _phosphate = null;
                     });
                   },
-                  style: TextButton.styleFrom(
-                    foregroundColor: context.textSecondary,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                  child: const Text('Clear'),
+                  variant: AppButtonVariant.text,
+                  size: AppButtonSize.small,
                 ),
               ],
             ),

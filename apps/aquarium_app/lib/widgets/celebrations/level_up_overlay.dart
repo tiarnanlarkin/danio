@@ -196,11 +196,11 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
 
   Color _getSparkleColor(int index) {
     const colors = [
-      Color(0xFFE8A84A), // Gold
-      Color(0xFFD97706), // Amber
-      Color(0xFFFFE082), // Light gold
-      Color(0xFFFFFFFF), // White
-      Color(0xFFB45309), // Deep gold
+      DanioColors.topaz,        // Gold
+      AppColors.primaryLight,   // Amber
+      Color(0xFFFFE082),        // Light gold — intentionally decorative sparkle, no shared token
+      Colors.white,             // White sparkle
+      AppColors.primary,        // Deep gold
     ];
     return colors[index];
   }
@@ -290,7 +290,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                           horizontal: 32,
                           vertical: 16,
                         ),
-                        backgroundColor: const Color(0xFF8B6BAE),
+                        backgroundColor: DanioColors.amethyst,
                         foregroundColor: Colors.white,
                       ),
                       child: Text(
@@ -413,7 +413,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                           horizontal: 32,
                           vertical: 16,
                         ),
-                        backgroundColor: const Color(0xFF8B6BAE),
+                        backgroundColor: DanioColors.amethyst,
                         foregroundColor: Colors.white,
                       ),
                       child: Text(
@@ -451,9 +451,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     return ShaderMask(
       shaderCallback: (bounds) => const LinearGradient(
         colors: [
-          Color(0xFFE8A84A), // Gold
-          Color(0xFFB45309), // Orange
-          Color(0xFFE8A84A), // Gold
+          DanioColors.topaz,   // Gold
+          AppColors.primary,   // Deep amber
+          DanioColors.topaz,   // Gold
         ],
         stops: [0.0, 0.5, 1.0],
       ).createShader(bounds),
@@ -465,11 +465,11 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
           letterSpacing: 4,
           shadows: [
             Shadow(
-              color: const Color(0xFFE8A84A).withValues(alpha: 0.8),
+              color: DanioColors.topaz.withValues(alpha: 0.8),
               blurRadius: 20,
             ),
             Shadow(
-              color: const Color(0xFFB45309).withValues(alpha: 0.6),
+              color: AppColors.primary.withValues(alpha: 0.6),
               blurRadius: 40,
             ),
           ],
@@ -491,23 +491,21 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFF2A3548), // Indigo
-                Color(0xFF8B6BAE), // Purple
-                Color(0xFFD946EF), // Fuchsia
+                DanioColors.deepViolet,
+                DanioColors.amethyst,
+                DanioColors.levelUpFuchsia,
               ],
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(
-                  0xFF8B6BAE,
-                ).withValues(alpha: 0.4 + _glowPulse.value * 0.4),
+                color: DanioColors.amethyst
+                    .withValues(alpha: 0.4 + _glowPulse.value * 0.4),
                 blurRadius: 30 + _glowPulse.value * 20,
                 spreadRadius: 5 + _glowPulse.value * 10,
               ),
               BoxShadow(
-                color: const Color(
-                  0xFFD946EF,
-                ).withValues(alpha: 0.3 + _glowPulse.value * 0.3),
+                color: DanioColors.levelUpFuchsia
+                    .withValues(alpha: 0.3 + _glowPulse.value * 0.3),
                 blurRadius: 50 + _glowPulse.value * 30,
                 spreadRadius: 10,
               ),
