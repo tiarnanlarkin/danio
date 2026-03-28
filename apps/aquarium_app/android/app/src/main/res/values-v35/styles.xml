@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 15 (API 35) enforces edge-to-edge by default.
+         The app already opts in via SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge)
+         in main.dart, so we explicitly confirm we do NOT opt out of enforcement. -->
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">false</item>
+    </style>
+</resources>
