@@ -1,17 +1,20 @@
-// Widget tests for TermsOfServiceScreen.
+// Widget tests for FriendsScreen.
 //
-// Run: flutter test test/widget_tests/terms_of_service_screen_test.dart
+// Run: flutter test test/widget_tests/friends_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:danio/screens/terms_of_service_screen.dart';
+import 'package:danio/screens/friends_screen.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() => const MaterialApp(home: TermsOfServiceScreen());
+Widget _wrap() => const ProviderScope(
+      child: MaterialApp(home: FriendsScreen()),
+    );
 
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
@@ -23,35 +26,35 @@ Future<void> _advance(WidgetTester tester) async {
 // ---------------------------------------------------------------------------
 
 void main() {
-  group('TermsOfServiceScreen', () {
+  group('FriendsScreen', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.byType(TermsOfServiceScreen), findsOneWidget);
+      expect(find.byType(FriendsScreen), findsOneWidget);
     });
 
-    testWidgets('shows Terms of Service app bar title', (tester) async {
+    testWidgets('shows Friends app bar title', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('Terms of Service'), findsWidgets);
+      expect(find.text('Friends'), findsOneWidget);
     });
 
-    testWidgets('shows Educational Use Only section', (tester) async {
+    testWidgets('shows Social Features heading', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('Educational Use Only'), findsOneWidget);
+      expect(find.text('Social Features'), findsOneWidget);
     });
 
-    testWidgets('shows scrollable content', (tester) async {
+    testWidgets('shows On the Way badge', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.byType(SingleChildScrollView), findsOneWidget);
+      expect(find.text('On the Way!'), findsOneWidget);
     });
 
-    testWidgets('shows View Full Terms button', (tester) async {
+    testWidgets('shows people outline icon', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('View Full Terms'), findsOneWidget);
+      expect(find.byIcon(Icons.people_outline), findsOneWidget);
     });
   });
 }
