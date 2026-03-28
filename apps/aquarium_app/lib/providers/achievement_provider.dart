@@ -15,7 +15,7 @@ import '../widgets/achievement_unlocked_dialog.dart';
 import '../main.dart'; // For navigatorKey
 import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Import sharedPreferencesProvider for shared access
 // (exported from user_profile_provider.dart via import above)

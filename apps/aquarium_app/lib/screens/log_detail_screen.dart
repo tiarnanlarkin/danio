@@ -152,16 +152,15 @@ class LogDetailScreen extends ConsumerWidget {
           'This log will be removed. You can undo within 5 seconds.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            child: const Text('Keep'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Delete Log',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: const Text(
-              'Delete Log',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

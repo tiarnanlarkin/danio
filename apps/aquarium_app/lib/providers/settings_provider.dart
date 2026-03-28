@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 import 'user_profile_provider.dart';
 
 /// Theme mode preference

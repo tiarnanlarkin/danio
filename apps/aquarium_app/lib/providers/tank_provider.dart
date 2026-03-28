@@ -5,7 +5,7 @@ import '../models/models.dart';
 import '../services/storage_service.dart';
 import '../services/sample_data.dart';
 import 'storage_provider.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 const _uuid = Uuid();
 

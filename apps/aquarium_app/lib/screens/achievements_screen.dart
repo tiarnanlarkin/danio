@@ -2,7 +2,7 @@
 /// Displays all achievements with filtering, sorting, and progress tracking
 library;
 
-import 'package:danio/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';

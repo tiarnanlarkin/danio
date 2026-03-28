@@ -6,7 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
-import 'package:danio/utils/logger.dart';
+import '../../utils/logger.dart';
 
 /// Animated water wave effect using Rive
 ///

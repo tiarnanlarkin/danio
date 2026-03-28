@@ -9,7 +9,7 @@
 import '../../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-import 'package:danio/utils/logger.dart';
+import '../../utils/logger.dart';
 
 /// Types of Rive fish available
 enum RiveFishType { puffer, joystick, emotional }

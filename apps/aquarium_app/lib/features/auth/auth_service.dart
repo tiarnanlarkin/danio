@@ -1,7 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/supabase_service.dart';
-import 'package:danio/utils/logger.dart';
+import '../../utils/logger.dart';
 
 /// Authentication service wrapping Supabase Auth.
 ///

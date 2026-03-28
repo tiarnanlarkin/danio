@@ -1,4 +1,4 @@
-import 'package:danio/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 /// Analytics Dashboard Screen - Comprehensive progress visualization
@@ -17,7 +17,7 @@ import '../data/lesson_content_lazy.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/core/app_card.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 import '../utils/app_feedback.dart';
 
 class AnalyticsScreen extends ConsumerStatefulWidget {

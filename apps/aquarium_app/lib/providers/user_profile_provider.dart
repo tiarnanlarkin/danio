@@ -21,7 +21,7 @@ import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
 import '../services/offline_aware_service.dart';
 import '../utils/debouncer.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Shared provider for SharedPreferences. All providers and services should
 /// use this instead of calling SharedPreferences.getInstance() directly, so

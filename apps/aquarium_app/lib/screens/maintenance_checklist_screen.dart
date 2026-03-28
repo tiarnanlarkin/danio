@@ -297,9 +297,10 @@ class _MaintenanceChecklistScreenState
           'This will uncheck all completed items so you can start fresh.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep Progress',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Keep Progress'),
+            variant: AppButtonVariant.text,
           ),
           FilledButton(
             onPressed: () {

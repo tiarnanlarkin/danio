@@ -7,7 +7,7 @@ import 'package:synchronized/synchronized.dart';
 
 import '../models/models.dart';
 import 'storage_service.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Custom exception for storage corruption/parse failures
 class StorageCorruptionException implements Exception {

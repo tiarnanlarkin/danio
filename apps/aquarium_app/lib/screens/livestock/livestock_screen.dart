@@ -25,7 +25,7 @@ import 'livestock_add_dialog.dart';
 import 'livestock_bulk_add_dialog.dart';
 import 'livestock_card.dart';
 import 'livestock_last_fed.dart';
-import 'package:danio/utils/logger.dart';
+import '../../utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -72,14 +72,11 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         title: Text(_isSelectMode ? 'Select Livestock' : 'Livestock'),
         actions: [
           if (_isSelectMode)
-            TextButton(
+            AppButton(
+              label: 'Cancel',
               onPressed: _toggleSelectMode,
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
+              variant: AppButtonVariant.text,
+              size: AppButtonSize.small,
             )
           else
             PopupMenuButton<String>(
@@ -245,7 +242,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                   const Spacer(),
                                   if (_selectedLivestockIds.length <
                                       livestock.length)
-                                    TextButton(
+                                    AppButton(
+                                      label: 'Select All',
                                       onPressed: () {
                                         setState(() {
                                           _selectedLivestockIds.addAll(
@@ -253,16 +251,19 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                           );
                                         });
                                       },
-                                      child: const Text('Select All'),
+                                      variant: AppButtonVariant.text,
+                                      size: AppButtonSize.small,
                                     )
                                   else
-                                    TextButton(
+                                    AppButton(
+                                      label: 'Clear',
                                       onPressed: () {
                                         setState(() {
                                           _selectedLivestockIds.clear();
                                         });
                                       },
-                                      child: const Text('Clear'),
+                                      variant: AppButtonVariant.text,
+                                      size: AppButtonSize.small,
                                     ),
                                 ],
                               ),
@@ -488,20 +489,19 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         title: Text('Remove ${_selectedLivestockIds.length} Livestock?'),
         content: Text('Livestock to remove:\n\n$livestockNames'),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep',
             onPressed: () {
               if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
             },
-            child: const Text('Keep'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Remove Livestock',
             onPressed: () {
               if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
             },
-            child: const Text(
-              'Remove Livestock',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

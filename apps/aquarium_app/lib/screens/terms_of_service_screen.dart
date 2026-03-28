@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/core/app_button.dart';
 import '../theme/app_theme.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 class TermsOfServiceScreen extends StatelessWidget {
   const TermsOfServiceScreen({super.key});

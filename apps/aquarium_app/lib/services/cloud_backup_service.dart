@@ -8,7 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show FileOptions;
 import '../models/models.dart';
 import 'local_json_storage_service.dart';
 import 'supabase_service.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Encrypted backup service - serialises all local data to JSON, encrypts with
 /// AES-256 using a key derived from the user's UID + a salt, and uploads to

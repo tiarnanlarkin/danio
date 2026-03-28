@@ -11,7 +11,7 @@ import '../services/review_queue_service.dart';
 import '../services/notification_service.dart';
 import 'achievement_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 // Provider for spaced repetition state
 final spacedRepetitionProvider =

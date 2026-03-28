@@ -1,4 +1,4 @@
-import 'package:danio/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 // Skeleton loading screens for better perceived performance
 // Provides visual placeholders while content loads
 

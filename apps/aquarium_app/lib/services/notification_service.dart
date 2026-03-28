@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/models.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 // Notification IDs for streak reminders
 const int _morningNotificationId = 1000;

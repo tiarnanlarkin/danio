@@ -2,7 +2,7 @@
 ///
 /// This barrel file exports all core UI components for easy importing:
 /// ```dart
-/// import 'package:danio/widgets/core/core_widgets.dart';
+/// import 'core_widgets.dart';
 /// ```
 library;
 

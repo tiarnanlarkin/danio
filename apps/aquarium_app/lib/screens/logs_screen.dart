@@ -280,14 +280,16 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                             style: AppTypography.headlineSmall,
                           ),
                         ),
-                        TextButton(
+                        AppButton(
+                          label: 'Clear',
                           onPressed: () {
                             setModalState(() {
                               workingTypes = <LogType>{};
                               workingRange = null;
                             });
                           },
-                          child: const Text('Clear'),
+                          variant: AppButtonVariant.text,
+                          size: AppButtonSize.small,
                         ),
                       ],
                     ),
@@ -558,10 +560,12 @@ class _FiltersSummaryBar extends StatelessWidget {
                 ? Text('All activity', style: AppTypography.bodySmall)
                 : Wrap(spacing: 8, runSpacing: 8, children: chips),
           ),
-          TextButton.icon(
+          AppButton(
+            label: 'Edit',
             onPressed: onEdit,
-            icon: const Icon(Icons.tune, size: 18),
-            label: const Text('Edit'),
+            leadingIcon: Icons.tune,
+            variant: AppButtonVariant.text,
+            size: AppButtonSize.small,
           ),
           if (onClear != null)
             IconButton(

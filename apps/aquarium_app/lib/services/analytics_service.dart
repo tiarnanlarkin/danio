@@ -6,7 +6,7 @@ import '../models/analytics.dart';
 import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../models/leaderboard.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Parameter bundle for [AnalyticsService.generateSummary] — must be a plain
 /// Dart class (no closures/native handles) so it can cross isolate boundaries.

@@ -5,7 +5,7 @@ import '../../providers/user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'models/smart_models.dart';
-import 'package:danio/utils/logger.dart';
+import '../../utils/logger.dart';
 
 const _uuid = Uuid();
 

@@ -1,5 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Singleton wrapper around Supabase client.
 ///

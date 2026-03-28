@@ -2,7 +2,7 @@
 /// Shows real-time FPS, frame time, and memory metrics during development
 library;
 
-import 'package:danio/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';

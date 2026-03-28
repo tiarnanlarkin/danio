@@ -10,7 +10,7 @@ import '../features/auth/auth_provider.dart';
 import '../models/models.dart';
 import 'local_json_storage_service.dart';
 import 'supabase_service.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 // ---------------------------------------------------------------------------
 // Sync status

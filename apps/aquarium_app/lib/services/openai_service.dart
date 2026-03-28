@@ -4,7 +4,7 @@ import 'dart:math' as math;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 import 'ai_proxy_service.dart';
 
 /// Maximum prompt length in characters (≈16k tokens).

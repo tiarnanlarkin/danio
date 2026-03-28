@@ -2,7 +2,7 @@ import 'dart:async';
 import '../providers/user_profile_provider.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Per-feature rate limiter for AI API calls.
 ///

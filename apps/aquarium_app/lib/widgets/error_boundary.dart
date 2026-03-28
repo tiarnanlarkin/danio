@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'core/app_button.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Error boundary widget that catches errors and displays a friendly fallback UI
 ///

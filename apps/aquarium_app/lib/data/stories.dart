@@ -4,7 +4,7 @@
 library;
 
 import '../models/story.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 class Stories {
   // ==========================================

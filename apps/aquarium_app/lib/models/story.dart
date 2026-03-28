@@ -5,7 +5,7 @@ library;
 
 import 'package:flutter/foundation.dart';
 import 'user_profile.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Difficulty level for stories
 enum StoryDifficulty { beginner, intermediate, advanced }

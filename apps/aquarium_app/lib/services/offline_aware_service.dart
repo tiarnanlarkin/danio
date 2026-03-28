@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/offline_indicator.dart';
 import 'sync_service.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// A helper service that wraps actions to make them offline-aware
 /// Automatically queues actions when offline and executes them when online

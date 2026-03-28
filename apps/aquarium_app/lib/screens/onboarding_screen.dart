@@ -20,7 +20,7 @@ import 'onboarding/aha_moment_screen.dart';
 import 'onboarding/feature_summary_screen.dart';
 import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 

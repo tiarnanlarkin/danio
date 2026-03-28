@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'user_profile_provider.dart';
 import '../theme/room_themes.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Provider for room visual theme selection
 final roomThemeProvider =

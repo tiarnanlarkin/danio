@@ -2,7 +2,7 @@
 /// Shows locked/unlocked state with progress bar
 library;
 
-import 'package:danio/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/achievements.dart';

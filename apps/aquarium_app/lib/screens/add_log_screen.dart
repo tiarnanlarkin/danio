@@ -21,7 +21,7 @@ import '../theme/app_theme.dart';
 import '../widgets/celebrations/water_change_celebration.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 const _uuid = Uuid();
 

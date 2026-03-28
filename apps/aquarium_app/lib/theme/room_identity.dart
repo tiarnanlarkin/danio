@@ -1,4 +1,4 @@
-import 'package:danio/theme/app_theme.dart';
+import 'app_theme.dart';
 import 'package:flutter/material.dart';
 
 /// Shared cozy room identity tokens used across navigation and headers.

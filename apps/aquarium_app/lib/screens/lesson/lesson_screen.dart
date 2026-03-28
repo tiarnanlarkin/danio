@@ -12,7 +12,7 @@ import '../../utils/app_constants.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/haptic_feedback.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:danio/utils/logger.dart';
+import '../../utils/logger.dart';
 import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';

@@ -27,7 +27,7 @@ import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
 import 'widgets/error_boundary.dart';
-import 'package:danio/utils/logger.dart';
+import 'utils/logger.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

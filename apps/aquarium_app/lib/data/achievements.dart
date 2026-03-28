@@ -3,7 +3,7 @@
 library;
 
 import '../models/achievements.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// All available achievements in the app
 class AchievementDefinitions {

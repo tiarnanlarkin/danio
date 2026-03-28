@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'user_profile_provider.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Reduced motion state and configuration
 class ReducedMotionState {

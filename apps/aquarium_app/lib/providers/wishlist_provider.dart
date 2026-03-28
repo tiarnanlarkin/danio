@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/wishlist.dart';
 import 'user_profile_provider.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Keys for SharedPreferences storage
 const _wishlistKey = 'wishlist_items';

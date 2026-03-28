@@ -2,7 +2,7 @@
 /// Shows difficulty level with color-coded styling
 library;
 
-import 'package:danio/theme/app_theme.dart';
+import '../theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';

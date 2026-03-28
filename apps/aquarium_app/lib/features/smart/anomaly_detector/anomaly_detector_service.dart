@@ -9,7 +9,7 @@ import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
-import 'package:danio/utils/logger.dart';
+import '../../../utils/logger.dart';
 
 const _uuid = Uuid();
 

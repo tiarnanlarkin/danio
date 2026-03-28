@@ -1,6 +1,6 @@
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:danio/utils/logger.dart';
+import '../utils/logger.dart';
 
 /// Systematic in-app review prompt service.
 ///
