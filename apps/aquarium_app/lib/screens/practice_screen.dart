@@ -5,6 +5,7 @@ import '../models/lesson_progress.dart';
 import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'lesson_screen.dart';
 
 /// Practice screen showing lessons that need review based on spaced repetition
@@ -56,9 +57,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       body: weakLessons.isEmpty
           ? _buildEmptyState(context)
           : !_pathsLoaded
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            )
+          ? const Center(child: BubbleLoader())
           : _buildPracticeList(context, ref, weakLessons),
     );
   }

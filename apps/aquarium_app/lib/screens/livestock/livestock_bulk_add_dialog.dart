@@ -11,6 +11,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_text_field.dart';
+import '../../utils/logger.dart';
 
 const _bulkUuid = Uuid();
 
@@ -181,7 +182,8 @@ class _LivestockBulkAddDialogState
           'Welcome aboard, new friends! \u{1F420} ${_items.length} added',
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('LivestockBulkAddDialog: bulk save failed: $e', stackTrace: st, tag: 'LivestockBulkAddDialog');
       if (mounted) {
         AppFeedback.showError(
           context,

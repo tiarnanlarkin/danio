@@ -462,7 +462,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           'Moved ${_selectedLivestockIds.length} livestock to ${selectedTank.name}',
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('LivestockScreen: bulk move failed: $e', stackTrace: st, tag: 'LivestockScreen');
       if (context.mounted) {
         AppFeedback.showError(
           context,
@@ -536,7 +537,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           },
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('LivestockScreen: livestock delete failed: $e', stackTrace: st, tag: 'LivestockScreen');
       if (mounted) {
         AppFeedback.showError(
           context,

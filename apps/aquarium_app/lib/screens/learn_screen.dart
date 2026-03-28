@@ -12,6 +12,7 @@ import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_states.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/study_room_scene.dart';
 import 'lesson_screen.dart';
 import 'parameter_guide_screen.dart';
@@ -1208,13 +1209,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
         const Divider(height: 1),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
-          child: Center(
-            child: SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ),
+          child: Center(child: BubbleLoader.small()),
         ),
       ];
     }

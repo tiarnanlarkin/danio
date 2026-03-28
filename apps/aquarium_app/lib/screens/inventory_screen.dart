@@ -8,6 +8,7 @@ import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/hearts_provider.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
@@ -125,9 +126,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           ),
         ),
         body: inventoryAsync.when(
-          loading: () => const Center(
-            child: CircularProgressIndicator(color: DanioColors.topaz),
-          ),
+          loading: () => const Center(child: BubbleLoader()),
           error: (e, _) => AppErrorState(
             title: 'Couldn\'t load your inventory',
             message: 'Please check your connection and try again.',

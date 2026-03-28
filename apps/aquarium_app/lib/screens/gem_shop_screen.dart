@@ -14,6 +14,7 @@ import '../widgets/mascot/mascot_widgets.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../utils/logger.dart';
 
 /// Gem Shop room theme — jewel/treasure gradient backgrounds and
 /// category-specific accent colours that don't exist in the shared palette.
@@ -209,7 +210,8 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           result.errorMessage ?? 'Couldn\'t complete this purchase. Give it another go!',
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('GemShopScreen: purchase failed: $e', stackTrace: st, tag: 'GemShopScreen');
       // Handle provider errors (atomic transaction failures)
       if (!mounted) return;
 

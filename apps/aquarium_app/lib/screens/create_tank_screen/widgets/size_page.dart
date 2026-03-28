@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/accessibility_utils.dart';
+import '../../../utils/logger.dart';
 
 /// Second page of tank creation — volume and dimensions.
 class SizePage extends StatefulWidget {
@@ -58,7 +59,9 @@ class _SizePageState extends State<SizePage> {
           double.tryParse(currentText) != widget.volumeLitres) {
         _volumeController.text = newText;
       }
-    } catch (_) {}
+    } catch (e) {
+      appLog('SizePage: volume controller update failed: $e', tag: 'SizePage');
+    }
   }
 
   @override

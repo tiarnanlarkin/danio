@@ -875,7 +875,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             if (_isSubmitting)
               const Column(
                 children: [
-                  CircularProgressIndicator(color: AppColors.primary),
+                  BubbleLoader(),
                   SizedBox(height: AppSpacing.sm),
                   Text('Saving your answer...'),
                 ],

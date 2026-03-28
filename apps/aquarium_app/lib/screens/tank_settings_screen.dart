@@ -7,6 +7,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 
@@ -42,9 +43,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
     return tankAsync.when(
       loading: () => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
-        ),
+        body: Center(child: BubbleLoader()),
       ),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Tank Settings')),

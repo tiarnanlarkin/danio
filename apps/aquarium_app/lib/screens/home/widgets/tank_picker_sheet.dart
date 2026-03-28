@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/models.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../theme/app_theme.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/app_feedback.dart';
 import '../../../widgets/core/app_button.dart';
 
@@ -212,7 +213,8 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
         Navigator.maybePop(context);
         AppFeedback.showSuccess(context, 'Tank order saved');
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('TankPickerSheet: reorder save failed: $e', stackTrace: st, tag: 'TankPickerSheet');
       if (mounted) {
         AppFeedback.showError(
           context,

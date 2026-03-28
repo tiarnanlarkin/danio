@@ -6,6 +6,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_states.dart';
+import '../widgets/core/bubble_loader.dart';
 
 /// Interactive Nitrogen Cycle Assistant - guides beginners through tank cycling.
 ///
@@ -25,7 +26,7 @@ class CyclingAssistantScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Nitrogen Cycle Assistant')),
       body: tankAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => AppErrorState(
           title: 'Couldn\'t load tank',
           message: 'Something went wrong loading your tank data.',
@@ -42,7 +43,7 @@ class CyclingAssistantScreen extends ConsumerWidget {
             );
           }
           return logsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+            loading: () => const Center(child: BubbleLoader()),
             error: (e, _) => AppErrorState(
               title: 'Couldn\'t load logs',
               message:

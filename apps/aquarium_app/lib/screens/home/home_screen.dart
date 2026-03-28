@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
@@ -44,6 +43,7 @@ import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_button.dart';
+import '../../utils/logger.dart';
 
 /// HomeScreen - The Living Room in the House Navigator.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -143,10 +143,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (lastStr != todayStr && lastStr != yesterdayStr && mounted) {
         setState(() => _showComebackBanner = true);
       }
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Comeback banner check failed: $e');
-      }
+    } catch (e, st) {
+      logError('HomeScreen: comeback banner check failed: $e', stackTrace: st, tag: 'HomeScreen');
     }
   }
 
@@ -197,10 +195,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
         if (prefsKey != null) await prefs.setBool(prefsKey, true);
       }
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Returning user flow check failed: $e');
-      }
+    } catch (e, st) {
+      logError('HomeScreen: returning user flow check failed: $e', stackTrace: st, tag: 'HomeScreen');
     }
   }
 
@@ -292,7 +288,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         setState(() { _isSelectMode = false; _selectedTankIds.clear(); _currentTankIndex = 0; });
         DanioSnackBar.success(context, '${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted');
       }
-    } catch (_) {
+    } catch (e, st) {
+      logError('HomeScreen: bulk delete tanks failed: $e', stackTrace: st, tag: 'HomeScreen');
       if (mounted) DanioSnackBar.error(context, 'Couldn\'t delete those tanks, try again in a moment');
     }
   }
@@ -338,10 +335,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ref.invalidate(tanksProvider);
             try {
               await ref.read(tanksProvider.future).timeout(const Duration(seconds: 3), onTimeout: () => [demoTank]);
-            } catch (e) {
-              if (kDebugMode) {
-                debugPrint('Demo tank refresh after delete failed: $e');
-              }
+            } catch (e, st) {
+              logError('HomeScreen: demo tank refresh after delete failed: $e', stackTrace: st, tag: 'HomeScreen');
             }
             if (context.mounted) _navigateToTankDetail(context, demoTank);
           },

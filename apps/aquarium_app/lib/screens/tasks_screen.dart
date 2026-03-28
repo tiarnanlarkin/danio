@@ -362,9 +362,7 @@ class _TaskHistoryDialog extends ConsumerWidget {
         child: logsAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
+            child: Center(child: BubbleLoader.small()),
           ),
           error: (err, _) => AppErrorState(
             compact: true,

@@ -20,10 +20,12 @@ import '../utils/app_feedback.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -360,7 +362,8 @@ class EquipmentScreen extends ConsumerWidget {
                     },
                   );
                 }
-              } catch (e) {
+              } catch (e, st) {
+                logError('EquipmentScreen: equipment delete failed: $e', stackTrace: st, tag: 'EquipmentScreen');
                 if (context.mounted) {
                   DanioSnackBar.error(context, 'Couldn\'t remove that equipment. Give it another go!');
                 }
@@ -402,9 +405,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
         child: logsAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
+            child: Center(child: BubbleLoader.small()),
           ),
           error: (err, _) => AppErrorState(
             compact: true,
@@ -799,7 +800,8 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       widget.ref.invalidate(tasksProvider(widget.tankId));
 
       if (mounted) Navigator.maybePop(context);
-    } catch (e) {
+    } catch (e, st) {
+      logError('EquipmentScreen: equipment save failed: $e', stackTrace: st, tag: 'EquipmentScreen');
       if (mounted) {
         AppFeedback.showError(
           context,
