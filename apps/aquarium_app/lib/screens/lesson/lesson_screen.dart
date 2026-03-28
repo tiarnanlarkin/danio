@@ -377,6 +377,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               .read(userProfileProvider.notifier)
               .reviewLesson(widget.lesson.id, practiceXp);
         } catch (e) {
+          logError('LessonScreen: reviewLesson failed, falling back to addXp: $e', tag: 'LessonScreen');
           try {
             await ref.read(userProfileProvider.notifier).addXp(practiceXp);
           } catch (e) {

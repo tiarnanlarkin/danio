@@ -31,8 +31,8 @@ class ShopService {
     InventoryItem? item;
     try {
       item = inventory.firstWhere((inv) => inv.itemId == itemId);
-    } catch (e) {
-      // Item not found in inventory
+    } on StateError {
+      // Item not found in inventory — expected path
       return false;
     }
 
