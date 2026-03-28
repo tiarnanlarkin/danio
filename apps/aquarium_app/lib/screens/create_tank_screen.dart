@@ -102,6 +102,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 children: [
                   // Progress indicator

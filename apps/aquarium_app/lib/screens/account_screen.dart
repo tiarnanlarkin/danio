@@ -128,6 +128,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Form(
         key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

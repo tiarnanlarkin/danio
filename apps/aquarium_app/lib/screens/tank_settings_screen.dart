@@ -112,6 +112,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: ListView.builder(
                 padding: EdgeInsets.only(
                   left: AppSpacing.md,

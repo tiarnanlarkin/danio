@@ -25,7 +25,7 @@ class CyclingAssistantScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Nitrogen Cycle Assistant')),
       body: tankAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
         error: (e, _) => AppErrorState(
           title: 'Couldn\'t load tank',
           message: 'Something went wrong loading your tank data.',
@@ -42,7 +42,7 @@ class CyclingAssistantScreen extends ConsumerWidget {
             );
           }
           return logsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
             error: (e, _) => AppErrorState(
               title: 'Couldn\'t load logs',
               message:

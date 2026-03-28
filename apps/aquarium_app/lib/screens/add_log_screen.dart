@@ -223,6 +223,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
