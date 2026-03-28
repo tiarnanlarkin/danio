@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'app_bottom_sheet.dart';
 import 'core/app_button.dart';
 
 import '../services/api_rate_limiter.dart';
@@ -36,28 +37,16 @@ class AiStockingSuggestionSheet extends ConsumerStatefulWidget {
     required double stockingPercent,
     String waterType = 'freshwater',
   }) {
-    showModalBottomSheet(
+    showAppScrollableSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        maxChildSize: 0.9,
-        minChildSize: 0.3,
-        builder: (_, controller) => Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(AppRadius.lg),
-            ),
-          ),
-          child: AiStockingSuggestionSheet(
-            tankLitres: tankLitres,
-            currentFish: currentFish,
-            stockingPercent: stockingPercent,
-            waterType: waterType,
-          ),
-        ),
+      initialSize: 0.6,
+      maxSize: 0.9,
+      minSize: 0.3,
+      builder: (ctx, _) => AiStockingSuggestionSheet(
+        tankLitres: tankLitres,
+        currentFish: currentFish,
+        stockingPercent: stockingPercent,
+        waterType: waterType,
       ),
     );
   }

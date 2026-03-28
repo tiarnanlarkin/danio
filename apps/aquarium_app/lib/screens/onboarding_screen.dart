@@ -190,7 +190,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       await service.completeOnboarding();
       if (!mounted) return;
       ref.invalidate(onboardingCompletedProvider);
-    } catch (e) {
+    } catch (e, st) {
+      logError('OnboardingScreen: onboarding completion failed: $e', stackTrace: st, tag: 'OnboardingScreen');
       if (mounted) {
         DanioSnackBar.error(context, 'Something went wrong. Give it another go!');
       }
@@ -232,7 +233,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           DanioSnackBar.info(context, "We've set up a 60L starter tank for you — you can change this in Settings");
         }
       });
-    } catch (e) {
+    } catch (e, st) {
+      logError('OnboardingScreen: quick start failed: $e', stackTrace: st, tag: 'OnboardingScreen');
       if (mounted) {
         DanioSnackBar.error(context, "Couldn't get started. Give it another go!");
       }

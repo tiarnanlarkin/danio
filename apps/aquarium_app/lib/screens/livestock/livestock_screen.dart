@@ -582,7 +582,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         ref.showXpAnimation(effectiveXp);
         AppFeedback.showSuccess(context, 'Feeding logged! \u{1F41F}');
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('LivestockScreen: quick feed log failed: $e', stackTrace: st, tag: 'LivestockScreen');
       if (context.mounted) {
         AppFeedback.showError(
           context,

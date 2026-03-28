@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'app_bottom_sheet.dart';
 import '../screens/learn_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/shop_street_screen.dart';
@@ -135,31 +136,14 @@ void showRoomNavigationSheet(
   String? tankId,
   String? tankName,
 }) {
-  showModalBottomSheet(
+  showAppDragSheet(
     context: context,
-    backgroundColor: Colors.transparent,
-    builder: (ctx) => Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle
-          Container(
-            margin: const EdgeInsets.only(top: 12),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.outlineVariant,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          RoomNavigation(tankId: tankId, tankName: tankName),
-          const SizedBox(height: AppSpacing.md),
-        ],
-      ),
+    builder: (ctx) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RoomNavigation(tankId: tankId, tankName: tankName),
+        const SizedBox(height: AppSpacing.md),
+      ],
     ),
   );
 }

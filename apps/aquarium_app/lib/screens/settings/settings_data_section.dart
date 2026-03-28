@@ -12,6 +12,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
 import '../../widgets/core/app_list_tile.dart';
 import '../../widgets/core/app_button.dart';
+import '../../utils/logger.dart';
 
 /// Data section for the settings screen.
 /// Handles export, import, photo storage info, and clear/delete data actions.

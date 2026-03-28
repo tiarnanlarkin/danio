@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../theme/app_theme.dart';
+import '../../utils/logger.dart';
 
 /// Key used in SharedPreferences to persist the user's GDPR analytics consent.
 const String kGdprAnalyticsConsentKey = 'gdpr_analytics_consent';
@@ -18,15 +19,17 @@ const String kGdprAnalyticsConsentKey = 'gdpr_analytics_consent';
 Future<void> applyAnalyticsConsent(bool accepted) async {
   try {
     await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(accepted);
-  } catch (_) {
+  } catch (e) {
     // Firebase may not be initialised — safe to ignore.
+    appLog('ConsentScreen: Firebase Analytics not available: $e', tag: 'ConsentScreen');
   }
   try {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
       accepted,
     );
-  } catch (_) {
+  } catch (e) {
     // Firebase may not be initialised — safe to ignore.
+    appLog('ConsentScreen: Firebase Crashlytics not available: $e', tag: 'ConsentScreen');
   }
 }
 
