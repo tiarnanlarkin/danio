@@ -20,7 +20,7 @@ class StreakMilestoneCelebration extends StatefulWidget {
   /// Show as an overlay
   static void show(BuildContext context, int streakDays) {
     // Only celebrate milestones
-    if (![3, 7, 14, 30, 50, 100].contains(streakDays)) return;
+    if (![3, 7, 14, 30, 60, 100].contains(streakDays)) return;
 
     HapticFeedback.heavyImpact();
 
@@ -48,18 +48,18 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
 
   String get _emoji {
     if (widget.streakDays >= 100) return '\u{1F451}';
-    if (widget.streakDays >= 50) return '\u{2B50}';
-    if (widget.streakDays >= 30) return '\u{1F3C6}';
-    if (widget.streakDays >= 14) return '\u{1F4AA}';
+    if (widget.streakDays >= 60) return '\u{1F3C6}';
+    if (widget.streakDays >= 30) return '\u{1F4AA}';
+    if (widget.streakDays >= 14) return '\u{1F31F}';
     if (widget.streakDays >= 7) return '\u{1F525}';
     return '\u{2728}';
   }
 
   String get _message {
     if (widget.streakDays >= 100) return 'Legendary! 100-day streak!';
-    if (widget.streakDays >= 50) return 'Incredible! 50-day streak!';
-    if (widget.streakDays >= 30) return 'A whole month! Unstoppable!';
-    if (widget.streakDays >= 14) return '2-week warrior! Keep going!';
+    if (widget.streakDays >= 60) return 'Two months straight! Unstoppable!';
+    if (widget.streakDays >= 30) return 'A whole month! Keep it burning!';
+    if (widget.streakDays >= 14) return '2-week warrior! You\'re dedicated!';
     if (widget.streakDays >= 7) {
       return '${widget.streakDays}-day streak! You\'re on fire!';
     }

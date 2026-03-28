@@ -3,7 +3,7 @@
 library;
 
 import 'package:flutter/foundation.dart';
-import 'learning.dart';
+import 'achievements.dart';
 
 @immutable
 class GemRewards {
@@ -60,16 +60,16 @@ class GemRewards {
     return levelUp; // Default for other levels
   }
 
-  /// Calculate gems for achievement tier
-  static int getAchievementReward(AchievementTier tier) {
-    switch (tier) {
-      case AchievementTier.bronze:
+  /// Calculate gems for achievement rarity
+  static int getAchievementReward(AchievementRarity rarity) {
+    switch (rarity) {
+      case AchievementRarity.bronze:
         return achievementBronze;
-      case AchievementTier.silver:
+      case AchievementRarity.silver:
         return achievementSilver;
-      case AchievementTier.gold:
+      case AchievementRarity.gold:
         return achievementGold;
-      case AchievementTier.platinum:
+      case AchievementRarity.platinum:
         return achievementPlatinum;
     }
   }

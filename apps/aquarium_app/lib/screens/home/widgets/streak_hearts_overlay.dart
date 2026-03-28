@@ -138,13 +138,13 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
       activeBanner = Semantics(
         liveRegion: true,
         label: hearts.currentHearts == 0
-            ? 'No hearts remaining, waiting for refill'
-            : 'Last heart remaining',
+            ? 'No energy remaining, refilling over time'
+            : 'Low energy — last charge',
         child: DismissibleBanner(
-          color: AppColors.warning.withAlpha(210),
+          color: const Color(0xD0FFA000),
           text: hearts.currentHearts == 0
-              ? '\u{1F494} No hearts left - wait for refill!'
-              : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
+              ? '\u{26A1} Energy out — bonus XP paused while refilling'
+              : '\u{26A1} Low energy — almost out of bonus XP',
           textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w500,

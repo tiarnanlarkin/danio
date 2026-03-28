@@ -159,13 +159,13 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            widget.gained ? Icons.favorite : Icons.heart_broken,
+                            widget.gained ? Icons.flash_on : Icons.flash_off,
                             size: 80,
                             color: Colors.white,
                           ),
                           const SizedBox(height: AppSpacing.md),
                           Text(
-                            widget.gained ? '+1 Heart' : '-1 Heart',
+                            widget.gained ? '+1 ⚡ Energy' : '-1 ⚡ Energy',
                             style: Theme.of(context).textTheme.headlineMedium!
                                 .copyWith(
                                   fontWeight: FontWeight.bold,
@@ -174,7 +174,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           Text(
-                            widget.gained ? 'Great job! 🎉' : 'Keep trying! 💪',
+                            widget.gained ? 'Great job! 🎉' : 'Keep going! 💪',
                             style: Theme.of(context).textTheme.titleMedium!
                                 .copyWith(color: AppColors.whiteAlpha70),
                           ),
@@ -260,7 +260,7 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(
-                      Icons.favorite,
+                      Icons.flash_on,
                       color: Colors.white,
                       size: AppIconSizes.xs,
                     ),
@@ -270,7 +270,7 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                       builder: (_, __, ___) {
                         final now = heartsService.getTimeUntilNextRefill(profile);
                         return Text(
-                          'Next heart in ${heartsService.formatTimeRemaining(now ?? timeUntilRefill)}',
+                          'Next ⚡ in ${heartsService.formatTimeRemaining(now ?? timeUntilRefill)}',
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -320,31 +320,22 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     return heartsService.hasHeartsAvailable;
   }
 
-  /// Show out of hearts dialog
+  /// Show energy info dialog (informational — does not block learning)
   Future<String?> showOutOfHeartsDialog() async {
     return showAppDialog<String>(
       context: context,
-      title: 'Out of Hearts',
-      icon: Icons.heart_broken,
-      iconColor: AppColors.error,
-      barrierDismissible: false,
+      title: '⚡ Energy Depleted',
+      icon: Icons.flash_off,
+      iconColor: const Color(0xFFFFA000),
+      barrierDismissible: true,
       child: const Text(
-        'You need hearts to continue lessons. Try practice mode to earn hearts or wait for them to refill!',
+        'Your energy is out, but you can keep learning! Bonus XP is paused until energy refills. It restores 1 charge every 30 minutes.',
       ),
       actions: [
         AppButton(
-          label: 'Practice Mode',
+          label: 'Keep Learning',
           onPressed: () {
-            if (Navigator.canPop(context)) Navigator.pop(context, 'practice');
-          },
-          variant: AppButtonVariant.text,
-          isFullWidth: true,
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        AppButton(
-          label: 'Got It',
-          onPressed: () {
-            if (Navigator.canPop(context)) Navigator.pop(context, 'wait');
+            if (Navigator.canPop(context)) Navigator.pop(context, 'continue');
           },
           variant: AppButtonVariant.primary,
           isFullWidth: true,

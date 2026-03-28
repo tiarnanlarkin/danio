@@ -5,9 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../models/tank.dart'; // For TankType enum
 import '../models/user_profile.dart';
-import '../models/learning.dart'; // AchievementTier
-import '../data/achievements.dart'; // New canonical achievement definitions
-import '../models/achievements.dart'; // AchievementRarity
+import '../models/learning.dart'; // XpRewards, DailyTip, Lesson, etc.
+import '../data/achievements.dart'; // New canonical achievement definitions (re-exports AchievementRarity)
 import '../models/daily_goal.dart';
 import '../models/lesson_progress.dart';
 import '../models/gem_economy.dart';
@@ -896,11 +895,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     await _saveImmediate(updated);
     state = AsyncValue.data(updated);
 
-    // Award gems for achievement — map rarity to legacy tier for GemRewards
+    // Award gems for achievement
     if (newAchievement != null) {
-      final effectiveTier = _rarityToTier(newAchievement.rarity);
       final gemsNotifier = ref.read(gemsProvider.notifier);
-      final gemReward = GemRewards.getAchievementReward(effectiveTier);
+      final gemReward = GemRewards.getAchievementReward(newAchievement.rarity);
       await gemsNotifier.addGems(
         amount: gemReward,
         reason: GemEarnReason.achievementUnlock,
@@ -1202,19 +1200,6 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
   }
 }
 
-/// Maps new AchievementRarity to legacy AchievementTier for GemRewards compat.
-AchievementTier _rarityToTier(AchievementRarity rarity) {
-  switch (rarity) {
-    case AchievementRarity.bronze:
-      return AchievementTier.bronze;
-    case AchievementRarity.silver:
-      return AchievementTier.silver;
-    case AchievementRarity.gold:
-      return AchievementTier.gold;
-    case AchievementRarity.platinum:
-      return AchievementTier.platinum;
-  }
-}
 
 /// Lifecycle observer that flushes pending profile saves when the app
 /// is paused or detached, preventing XP/data loss on sudden app kill.

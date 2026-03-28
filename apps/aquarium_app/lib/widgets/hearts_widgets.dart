@@ -1,5 +1,6 @@
-/// UI widgets for the hearts/lives system
-/// Includes hearts indicator, animations, and "out of hearts" modal
+/// UI widgets for the energy system (previously hearts/lives)
+/// Includes energy indicator, animations, and "low energy" info modal.
+/// Energy is a soft pacing signal — depleted energy does NOT block learning.
 library;
 
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import 'dart:async';
 
-/// Heart indicator widget for app bar (shows current/max hearts)
+/// Energy indicator widget for app bar (shows current/max energy)
 class HeartIndicator extends ConsumerWidget {
   final bool compact;
 
@@ -21,29 +22,30 @@ class HeartIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hearts = ref.watch(
+    final energy = ref.watch(
       userProfileProvider.select((a) => a.value?.hearts),
     );
-    if (hearts == null) return const SizedBox.shrink();
+    if (energy == null) return const SizedBox.shrink();
 
-    final maxHearts = HeartsConfig.maxHearts;
+    final maxEnergy = HeartsConfig.maxHearts;
+    final isEmpty = energy <= 0;
 
     // Compact mode: dark overlay style for use on scene backgrounds
-    // Full mode: standard error-tinted style
+    // Full mode: standard amber/warning tinted style for energy
     final bgColor = compact
         ? const Color(0x55000000)
-        : (hearts == 0 ? AppOverlays.error10 : AppOverlays.error15);
+        : (isEmpty ? const Color(0x1AFFA000) : const Color(0x26FFA000));
     final borderColor = compact
         ? const Color(0x40FFFFFF)
-        : (hearts == 0 ? AppColors.error : AppOverlays.error30);
+        : (isEmpty ? const Color(0xFFFFA000) : const Color(0x4DFFA000));
     final iconColor = compact
         ? Colors.white
-        : (hearts > 0 ? AppColors.error : AppOverlays.error50);
-    final textColor = compact ? Colors.white : AppColors.error;
+        : (isEmpty ? const Color(0x80FFA000) : const Color(0xFFFFA000));
+    final textColor = compact ? Colors.white : const Color(0xFFFFA000);
 
     return Semantics(
       liveRegion: true,
-      label: '$hearts of $maxHearts hearts remaining',
+      label: '$energy of $maxEnergy energy remaining',
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: compact ? 8 : 12,
@@ -58,13 +60,13 @@ class HeartIndicator extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              hearts > 0 ? Icons.favorite : Icons.favorite_border,
+              isEmpty ? Icons.flash_off : Icons.flash_on,
               size: compact ? 14 : 16,
               color: iconColor,
             ),
             SizedBox(width: compact ? 4 : 6),
             Text(
-              '$hearts/$maxHearts',
+              '$energy/$maxEnergy',
               style:
                   (compact ? AppTypography.labelSmall : AppTypography.labelMedium)
                       .copyWith(color: textColor, fontWeight: FontWeight.bold),
@@ -115,11 +117,11 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppOverlays.error10, AppOverlays.error5],
+        gradient: const LinearGradient(
+          colors: [Color(0x1AFFA000), Color(0x0DFFA000)],
         ),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppOverlays.error20),
+        border: Border.all(color: const Color(0x33FFA000)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,8 +132,8 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                 (filled) => Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: Icon(
-                    filled ? Icons.favorite : Icons.favorite_border,
-                    color: filled ? AppColors.error : AppOverlays.error30,
+                    filled ? Icons.flash_on : Icons.flash_off,
+                    color: filled ? const Color(0xFFFFA000) : const Color(0x4DFFA000),
                     size: 32,
                   ),
                 ),
@@ -153,7 +155,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                     ),
                     const SizedBox(width: AppSpacing.xs2),
                     Text(
-                      'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
+                      'Next ⚡ in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                       style: AppTypography.bodySmall.copyWith(
                         color: context.textSecondary,
                       ),
@@ -162,7 +164,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                 );
               }
               return Text(
-                'Hearts are full!',
+                '⚡ Energy is full!',
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.success,
                   fontWeight: FontWeight.w600,
@@ -272,17 +274,17 @@ class _HeartAnimationState extends State<HeartAnimation>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    widget.gained ? Icons.favorite : Icons.heart_broken,
-                    color: widget.gained ? AppColors.success : AppColors.error,
+                    widget.gained ? Icons.flash_on : Icons.flash_off,
+                    color: widget.gained ? AppColors.success : const Color(0xFFFFA000),
                     size: AppIconSizes.xxl,
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    widget.gained ? '+1' : '-1',
+                    widget.gained ? '+1 ⚡' : '-1 ⚡',
                     style: AppTypography.headlineLarge.copyWith(
                       color: widget.gained
                           ? AppColors.success
-                          : AppColors.error,
+                          : const Color(0xFFFFA000),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -296,7 +298,8 @@ class _HeartAnimationState extends State<HeartAnimation>
   }
 }
 
-/// "Out of Hearts" modal with options
+/// Energy depleted info modal — informational only, does NOT block learning.
+/// Explains that the user can continue without bonus XP.
 class OutOfHeartsModal extends ConsumerStatefulWidget {
   const OutOfHeartsModal({super.key});
 
@@ -340,17 +343,17 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Sad emoji
+            // Energy icon
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(
-                color: AppOverlays.error10,
+              decoration: const BoxDecoration(
+                color: Color(0x1AFFA000),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
-                  '💔',
+                  '⚡',
                   style: (Theme.of(context).textTheme.headlineMedium ?? const TextStyle()).copyWith(fontSize: 56),
                 ),
               ),
@@ -359,15 +362,15 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
 
             // Title
             Text(
-              'Out of Hearts',
+              'Energy Depleted',
               style: AppTypography.headlineLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.sm2),
 
-            // Description
+            // Description — explicitly tells user they can keep learning
             Text(
-              'You need hearts to continue lessons. Try practice mode or wait for hearts to refill!',
+              'Your energy is out, but you can keep learning! Bonus XP is paused until your energy refills. No pressure to stop.',
               style: AppTypography.bodyMedium.copyWith(
                 color: context.textSecondary,
               ),
@@ -393,7 +396,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                       Icon(Icons.schedule, color: AppColors.primary),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
+                        'Next ⚡ in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -406,7 +409,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
             ),
             const SizedBox(height: AppSpacing.lg),
 
-            // Gem balance indicator
+            // Gem balance — refill option
             Builder(
               builder: (context) {
                 final gemBalance = ref.watch(gemBalanceProvider);
@@ -432,9 +435,9 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       AppButton(
-                        label: 'Get More',
+                        label: 'Refill Energy',
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop('shop');
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => const GemShopScreen(),
@@ -450,26 +453,23 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // Options
+            // Actions — continue or dismiss
             Column(
               children: [
-                // Practice mode button
                 AppButton(
                   onPressed: () {
-                    Navigator.of(context).pop('practice');
+                    Navigator.of(context).pop('continue');
                   },
-                  label: 'Practice to Earn Heart',
-                  leadingIcon: Icons.fitness_center,
+                  label: 'Keep Learning',
+                  leadingIcon: Icons.play_arrow,
                   isFullWidth: true,
                   size: AppButtonSize.large,
                 ),
                 const SizedBox(height: AppSpacing.sm2),
-
-                // Wait button
                 AppButton(
-                  label: 'Wait for Refill',
+                  label: 'Take a Break',
                   onPressed: () {
-                    Navigator.of(context).pop('wait');
+                    Navigator.of(context).pop('break');
                   },
                   variant: AppButtonVariant.secondary,
                   isFullWidth: true,
@@ -484,16 +484,16 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
   }
 }
 
-/// Show the out of hearts modal
+/// Show the energy info modal (informational only, does not block)
 Future<String?> showOutOfHeartsModal(BuildContext context) {
   return showDialog<String>(
     context: context,
-    barrierDismissible: false,
+    barrierDismissible: true,
     builder: (context) => const OutOfHeartsModal(),
   );
 }
 
-/// Compact hearts display for lesson screens
+/// Compact energy display for lesson screens
 class CompactHeartsDisplay extends ConsumerWidget {
   const CompactHeartsDisplay({super.key});
 
@@ -512,8 +512,8 @@ class CompactHeartsDisplay extends ConsumerWidget {
             (filled) => Padding(
               padding: const EdgeInsets.only(right: 4),
               child: Icon(
-                filled ? Icons.favorite : Icons.favorite_border,
-                color: filled ? AppColors.error : AppOverlays.error30,
+                filled ? Icons.flash_on : Icons.flash_off,
+                color: filled ? const Color(0xFFFFA000) : const Color(0x4DFFA000),
                 size: AppIconSizes.sm,
               ),
             ),

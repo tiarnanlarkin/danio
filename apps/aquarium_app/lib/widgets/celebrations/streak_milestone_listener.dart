@@ -26,7 +26,7 @@ class _StreakMilestoneListenerState
     extends ConsumerState<StreakMilestoneListener> {
   bool _isShowing = false;
 
-  static const _milestones = {3, 7, 14, 30, 50, 100};
+  static const _milestones = {3, 7, 14, 30, 60, 100};
 
   @override
   Widget build(BuildContext context) {
@@ -96,9 +96,9 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
 
   String get _emoji {
     if (widget.streakDays >= 100) return '\u{1F451}';
-    if (widget.streakDays >= 50) return '\u{2B50}';
-    if (widget.streakDays >= 30) return '\u{1F3C6}';
-    if (widget.streakDays >= 14) return '\u{1F4AA}';
+    if (widget.streakDays >= 60) return '\u{1F3C6}';
+    if (widget.streakDays >= 30) return '\u{1F4AA}';
+    if (widget.streakDays >= 14) return '\u{1F31F}';
     if (widget.streakDays >= 7) return '\u{1F525}';
     return '\u{2728}';
   }
@@ -107,11 +107,11 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
     if (widget.streakDays >= 100) {
       return 'Legendary! ${widget.streakDays}-day streak!';
     }
-    if (widget.streakDays >= 50) {
-      return 'Incredible! ${widget.streakDays}-day streak!';
+    if (widget.streakDays >= 60) {
+      return 'Two months straight! Unstoppable!';
     }
-    if (widget.streakDays >= 30) return 'A whole month! Unstoppable!';
-    if (widget.streakDays >= 14) return '2-week warrior! Keep going!';
+    if (widget.streakDays >= 30) return 'A whole month! Keep it burning!';
+    if (widget.streakDays >= 14) return '2-week warrior! You\'re dedicated!';
     if (widget.streakDays >= 7) {
       return '${widget.streakDays}-day streak! You\'re on fire!';
     }

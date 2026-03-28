@@ -268,44 +268,31 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         if (isCorrect) _correctAnswers++;
       });
 
-      // Handle hearts (only in non-practice mode)
+      // Handle energy (only in non-practice mode)
+      // Energy loss never blocks progression — it just means no bonus XP.
       if (!widget.isPracticeMode && !isCorrect) {
         final heartsService = ref.read(heartsServiceProvider);
-        final lostHeart = await heartsService.loseHeart();
+        final lostEnergy = await heartsService.loseHeart();
 
-        if (lostHeart && mounted) {
+        if (lostEnergy && mounted) {
           setState(() {
             _showHeartAnimation = true;
             _heartGained = false;
           });
 
-          // Check if out of hearts
-          if (!heartsService.hasHeartsAvailable) {
+          // Energy depleted: show a soft info snackbar but do NOT exit.
+          // The user can still continue — they just won't earn bonus XP.
+          if (!heartsService.hasHeartsAvailable && mounted) {
             await Future.delayed(kQuizRevealDelay);
             if (mounted) {
-              setState(() => _isHeartsModalVisible = true);
-              try {
-                final result = await showOutOfHeartsModal(context);
-                if (result == 'practice' && mounted) {
-                  setState(() => _isHeartsModalVisible = false);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => LessonScreen(
-                        lesson: widget.lesson,
-                        pathTitle: widget.pathTitle,
-                        isPracticeMode: true,
-                      ),
-                    ),
-                  );
-                } else if (mounted) {
-                  _isExitingDueToHearts = true;
-                  Navigator.of(context).pop();
-                }
-              } finally {
-                if (mounted) {
-                  setState(() => _isHeartsModalVisible = false);
-                }
-              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    '⚡ Energy depleted — keep going! No bonus XP until it refills.',
+                  ),
+                  duration: Duration(seconds: 3),
+                ),
+              );
             }
           }
         }
@@ -409,8 +396,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           AppFeedback.showSuccess(
             context,
             gainedHeart
-                ? 'Practice complete!$xpMsg +1 heart ❤️'
-                : 'Practice complete!$xpMsg (hearts full)',
+                ? 'Practice complete!$xpMsg +1 ⚡ energy'
+                : 'Practice complete!$xpMsg (energy full)',
           );
           Navigator.of(context).pop();
         }

@@ -314,7 +314,7 @@ class _HeartsDisplay extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('❤️', style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith()),
+        Text('⚡', style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith()),
         const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Column(
@@ -327,7 +327,7 @@ class _HeartsDisplay extends StatelessWidget {
                     '$current',
                     style: AppTypography.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: current > 0 ? AppColors.error : context.textHint,
+                      color: current > 0 ? const Color(0xFFFFA000) : context.textHint,
                     ),
                   ),
                   Text(
@@ -347,7 +347,7 @@ class _HeartsDisplay extends StatelessWidget {
                 )
               else
                 Text(
-                  'hearts',
+                  'energy',
                   style: AppTypography.labelSmall.copyWith(
                     color: context.textSecondary,
                   ),

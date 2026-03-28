@@ -504,9 +504,9 @@ class AchievementDefinitions {
 
   static const heartCollector = Achievement(
     id: 'heart_collector',
-    name: 'Full Hearts',
-    description: 'A full week with all hearts intact! Flawless performance.',
-    icon: '❤️',
+    name: 'Full Energy',
+    description: 'A full week with maximum energy! Flawless performance.',
+    icon: '⚡',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.special,
   );
@@ -530,6 +530,62 @@ class AchievementDefinitions {
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
     targetCount: 7,
+  );
+
+  // ========================================================================
+  // TANK MILESTONES (5 achievements)
+  // ========================================================================
+
+  static const firstFish = Achievement(
+    id: 'first_fish',
+    name: 'First Resident',
+    description:
+        'You added your first fish! Welcome to the hobby. They\'re counting on you.',
+    icon: '🐟',
+    rarity: AchievementRarity.bronze,
+    category: AchievementCategory.engagement,
+  );
+
+  static const fiveSpecies = Achievement(
+    id: 'five_species',
+    name: 'Mixed Community',
+    description:
+        'Five species in your tank! You\'re building a proper community aquarium.',
+    icon: '🐠',
+    rarity: AchievementRarity.silver,
+    category: AchievementCategory.engagement,
+    targetCount: 5,
+  );
+
+  static const firstWaterTest = Achievement(
+    id: 'first_water_test',
+    name: 'Water Tester',
+    description:
+        'First water test logged! Regular testing is the hallmark of a responsible keeper.',
+    icon: '🧪',
+    rarity: AchievementRarity.bronze,
+    category: AchievementCategory.engagement,
+  );
+
+  static const firstWaterChange = Achievement(
+    id: 'first_water_change',
+    name: 'Water Changer',
+    description:
+        'First water change logged! Your fish can breathe easy — literally.',
+    icon: '💧',
+    rarity: AchievementRarity.bronze,
+    category: AchievementCategory.engagement,
+  );
+
+  static const nitrogenCyclePath = Achievement(
+    id: 'nitrogen_cycle_path',
+    name: 'Cycle Complete',
+    description:
+        'You completed the Nitrogen Cycle learning path! The most important concept in fishkeeping — mastered.',
+    icon: '🔬',
+    rarity: AchievementRarity.gold,
+    category: AchievementCategory.learningProgress,
+    isHidden: true,
   );
 
   // ========================================================================
@@ -626,9 +682,9 @@ class AchievementDefinitions {
   // ALL ACHIEVEMENTS LIST
   // ========================================================================
 
-  /// All achievements (55 total)
+  /// All achievements (67 total)
   static final List<Achievement> all = [
-    // Learning Progress (11)
+    // Learning Progress (12)
     firstLesson,
     lessons10,
     lessons50,
@@ -640,6 +696,7 @@ class AchievementDefinitions {
     plantsMaster,
     livestockMaster,
     placement,
+    nitrogenCyclePath,
 
     // Streaks (13)
     streak3,
@@ -666,7 +723,7 @@ class AchievementDefinitions {
     xp25000,
     xp50000,
 
-    // Special (11)
+    // Special (12)
     earlyBird,
     nightOwl,
     perfectionist,
@@ -680,7 +737,7 @@ class AchievementDefinitions {
     heartCollector,
     leagueClimber,
 
-    // Engagement (12)
+    // Engagement (17)
     dailyTips10,
     dailyTips50,
     dailyTips100,
@@ -692,6 +749,11 @@ class AchievementDefinitions {
     reviews10,
     reviews50,
     reviews100,
+    // Tank milestones
+    firstFish,
+    fiveSpecies,
+    firstWaterTest,
+    firstWaterChange,
   ];
 
   /// Get achievement by ID

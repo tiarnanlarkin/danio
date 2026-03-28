@@ -49,9 +49,9 @@ class ShopCatalog {
 
     ShopItem(
       id: 'hearts_refill',
-      name: 'Hearts Refill',
-      description: 'Instantly restore all hearts to full',
-      emoji: '❤️',
+      name: 'Energy Refill',
+      description: 'Instantly restore all energy to full — bonus XP is back!',
+      emoji: '⚡',
       category: ShopItemCategory.extras,
       type: ShopItemType.heartsRefill,
       gemCost: 50,

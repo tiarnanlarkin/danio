@@ -4,7 +4,7 @@ import '../../providers/user_profile_provider.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 
-/// Shows a one-time explanation of the hearts system on the user's first
+/// Shows a one-time explanation of the energy system on the user's first
 /// lesson.  Call from [initState] via [WidgetsBinding.addPostFrameCallback].
 Future<void> maybeExplainHearts(
   BuildContext context,
@@ -19,10 +19,11 @@ Future<void> maybeExplainHearts(
   if (!context.mounted) return;
   showAppDialog(
     context: context,
-    title: '❤️ Hearts',
+    title: '⚡ Energy',
     child: const Text(
-      'Hearts are your learning lives! You lose one per wrong quiz answer. '
-      'They refill over time, or you can use gems to refill instantly.',
+      'Energy gives you bonus XP! You lose a little per wrong answer, '
+      'and it refills over time (1 charge every 30 minutes). '
+      'Running out never stops you learning — it just pauses the bonus.',
     ),
     actions: [
       AppButton(

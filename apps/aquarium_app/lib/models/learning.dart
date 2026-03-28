@@ -158,7 +158,9 @@ class QuizQuestion {
   });
 }
 
-/// Achievement tier used by GemRewards for gem calculations.
+/// @deprecated Use [AchievementRarity] from models/achievements.dart instead.
+/// Retained here for backward-compatibility with any code that hasn't migrated yet.
+/// [GemRewards.getAchievementReward] now accepts [AchievementRarity] directly.
 enum AchievementTier { bronze, silver, gold, platinum }
 
 extension AchievementTierExt on AchievementTier {
@@ -225,9 +227,19 @@ class DailyTip {
 
 /// XP reward values for different actions
 class XpRewards {
+  // Lesson completion
   static const int lessonComplete = 50;
+
+  // Quiz rewards (pass bonus is awarded on top of the question XP)
   static const int quizPass = 25;
-  static const int quizPerfect = 50;
+  static const int quizPerfect = 50; // Perfect score bonus (on top of quizPass)
+
+  // Per-question XP scaled by difficulty
+  static const int quizQuestionEasy = 10;
+  static const int quizQuestionMedium = 20;
+  static const int quizQuestionHard = 30;
+
+  // Tank management activities
   static const int waterTest = 15;
   static const int waterChange = 10;
   static const int taskComplete = 20;
@@ -241,4 +253,18 @@ class XpRewards {
   static const int addEquipment = 10;
   static const int speciesResearched = 5;
   static const int plantResearched = 5;
+
+  /// Get XP for a quiz question by difficulty label.
+  /// Falls back to [quizQuestionMedium] for unknown values.
+  static int forQuizQuestion(String? difficulty) {
+    switch (difficulty?.toLowerCase()) {
+      case 'easy':
+        return quizQuestionEasy;
+      case 'hard':
+        return quizQuestionHard;
+      case 'medium':
+      default:
+        return quizQuestionMedium;
+    }
+  }
 }

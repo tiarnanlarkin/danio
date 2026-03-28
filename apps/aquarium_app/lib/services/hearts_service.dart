@@ -1,19 +1,22 @@
-/// Hearts/Lives system service
-/// Manages heart deduction, auto-refill, and practice mode rewards
+/// Energy system service (previously Hearts/Lives)
+/// Manages energy deduction, auto-refill, and practice mode rewards.
+///
+/// Unlike the old hearts system, depleted energy does NOT block learning.
+/// It is a soft pacing signal — users earn bonus XP while they have energy,
+/// and can keep going when it's depleted, just without the bonus.
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
 
-/// Constants for hearts system
+/// Constants for energy system (maps to the legacy hearts fields in storage)
 class HeartsConfig {
   static const int maxHearts = 5;
   static const int startingHearts = 5;
-  static const Duration refillInterval = Duration(
-    minutes: 60,
-  ); // 1 hour per heart (5 hours for full refill)
-  static const int practiceReward = 1; // Hearts earned for completing practice
+  /// 1 energy regenerates every 30 minutes (full bar in 2.5 hours)
+  static const Duration refillInterval = Duration(minutes: 30);
+  static const int practiceReward = 1; // Energy earned for completing practice
 }
 
 /// Provider for hearts service
