@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,7 +26,7 @@ class NotificationScheduler {
         time: const TimeOfDay(hour: 9, minute: 0),
       );
     } catch (e) {
-      logError(kDebugMode, tag: 'NotificationScheduler');
+      logError('Failed to schedule review notifications: $e', tag: 'NotificationScheduler');
     }
   }
 
@@ -51,7 +50,7 @@ class NotificationScheduler {
         todayXp: todayXp,
       );
     } catch (e) {
-      logError(kDebugMode, tag: 'NotificationScheduler');
+      logError('Failed to schedule streak notifications: $e', tag: 'NotificationScheduler');
     }
   }
 }

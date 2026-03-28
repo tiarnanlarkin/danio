@@ -114,9 +114,9 @@ void main() async {
     try {
       await Firebase.initializeApp();
       firebaseInitialized = true;
-      appLog(kDebugMode, tag: 'Main');
+      appLog('Firebase initialised successfully', tag: 'Main');
     } catch (e) {
-      logError(kDebugMode, tag: 'Main');
+      logError('Firebase initialisation failed: $e', tag: 'Main');
     }
 
     // ── Apply persisted GDPR analytics consent ──
