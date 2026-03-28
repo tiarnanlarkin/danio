@@ -31,15 +31,21 @@ class _QuickAddFabState extends State<QuickAddFab>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: disableMotion ? Duration.zero : AppDurations.medium2,
+      duration: AppDurations.medium2,
       vsync: this,
     );
     _expandAnimation = CurvedAnimation(
       parent: _controller,
       curve: AppCurves.standardDecelerate,
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _controller.duration = disableMotion ? Duration.zero : AppDurations.medium2;
   }
 
   @override

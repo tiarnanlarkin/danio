@@ -93,11 +93,9 @@ class _MascotBubbleState extends State<MascotBubble>
   void initState() {
     super.initState();
 
-    final disableMotion = MediaQuery.of(context).disableAnimations;
-
-    // Bubble entrance animation
+    // Bubble entrance animation — duration adjusted in didChangeDependencies
     _bubbleController = AnimationController(
-      duration: disableMotion ? Duration.zero : AppDurations.long2,
+      duration: AppDurations.long2,
       vsync: this,
     );
 
@@ -122,7 +120,7 @@ class _MascotBubbleState extends State<MascotBubble>
 
     // Fish bobbing animation (continuous)
     _fishController = AnimationController(
-      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
 
@@ -137,6 +135,14 @@ class _MascotBubbleState extends State<MascotBubble>
       _bubbleController.value = 1.0;
     }
     _fishController.repeat(reverse: true);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _bubbleController.duration = disableMotion ? Duration.zero : AppDurations.long2;
+    _fishController.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 2000);
   }
 
   @override
