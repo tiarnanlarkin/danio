@@ -72,7 +72,8 @@ void main() {
       await tester.pump();
 
       await tester.enterText(find.byType(TextField), 'Neon');
-      await tester.pump();
+      // Wait for the 300ms debounce to fire before checking results.
+      await tester.pump(const Duration(milliseconds: 350));
 
       // Search results should appear if species match
       // The database has Neon Tetra — results should show
@@ -86,7 +87,7 @@ void main() {
       await tester.pump();
 
       await tester.enterText(find.byType(TextField), 'Neon');
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
 
       // Find and tap the first search result (add button)
       final addButtons = find.byIcon(Icons.add_circle_outline);
@@ -107,7 +108,7 @@ void main() {
 
       // Add a species
       await tester.enterText(find.byType(TextField), 'Neon');
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
 
       final addButtons = find.byIcon(Icons.add_circle_outline);
       if (addButtons.evaluate().isNotEmpty) {
@@ -137,7 +138,7 @@ void main() {
 
       // Add first species
       await tester.enterText(find.byType(TextField), 'Neon');
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
       final addButtons1 = find.byIcon(Icons.add_circle_outline);
       if (addButtons1.evaluate().isEmpty) return;
       await tester.tap(addButtons1.first);
@@ -145,7 +146,7 @@ void main() {
 
       // Add second species
       await tester.enterText(find.byType(TextField), 'Guppy');
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
       final addButtons2 = find.byIcon(Icons.add_circle_outline);
       if (addButtons2.evaluate().isEmpty) return;
       await tester.tap(addButtons2.first);
@@ -174,12 +175,11 @@ void main() {
       // Add two species
       for (final query in ['Neon', 'Guppy']) {
         await tester.enterText(find.byType(TextField), query);
-        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 350));
         final addBtn = find.byIcon(Icons.add_circle_outline);
         if (addBtn.evaluate().isEmpty) return;
         await tester.tap(addBtn.first);
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 300));
       }
 
       // Should show "Recommended Setup" header
