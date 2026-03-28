@@ -311,16 +311,19 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
 
     return Material(
       type: MaterialType.transparency,
-      child: GestureDetector(
-        onTap: _dismiss,
-        behavior: HitTestBehavior.opaque,
-        child: Stack(
-          children: [
-            // Dark overlay
-            FadeTransition(
-              opacity: _overlayFade,
-              child: Container(color: AppOverlays.black60),
-            ),
+      child: Semantics(
+        label: 'Dismiss level up notification',
+        button: true,
+        child: GestureDetector(
+          onTap: _dismiss,
+          behavior: HitTestBehavior.opaque,
+          child: Stack(
+            children: [
+              // Dark overlay
+              FadeTransition(
+                opacity: _overlayFade,
+                child: Container(color: AppOverlays.black60),
+              ),
 
             // Sparkle particles
             AnimatedBuilder(
@@ -438,6 +441,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
               ),
             ),
           ],
+          ),
         ),
       ),
     );

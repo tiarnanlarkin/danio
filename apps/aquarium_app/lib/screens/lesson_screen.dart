@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import '../widgets/core/app_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 import '../providers/lesson_provider.dart';
@@ -333,7 +334,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             ],
           ),
           child: SafeArea(
-            child: ElevatedButton(
+            child: AppButton(
               onPressed: _isCompletingLesson
                   ? null
                   : () {
@@ -343,32 +344,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                         _completeLesson();
                       }
                     },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 56),
-              ),
-              child: _isCompletingLesson
-                  ? const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.onPrimary,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: AppSpacing.sm2),
-                        Text('Completing...'),
-                      ],
-                    )
-                  : Text(
-                      widget.lesson.quiz != null
-                          ? 'Take Quiz'
-                          : 'Complete Lesson',
-                    ),
+              label: widget.lesson.quiz != null ? 'Take Quiz' : 'Complete Lesson',
+              isLoading: _isCompletingLesson,
+              isFullWidth: true,
+              size: AppButtonSize.large,
             ),
           ),
         ),
@@ -897,7 +876,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             ],
           ),
           child: SafeArea(
-            child: ElevatedButton(
+            child: AppButton(
               onPressed: _selectedAnswer == null
                   ? null
                   : () async {
@@ -990,16 +969,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                         }
                       }
                     },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 56),
-              ),
-              child: Text(
-                !_answered
-                    ? 'Check Answer'
-                    : _currentQuizQuestion < quiz.questions.length - 1
-                    ? 'Next Question'
-                    : 'See Results',
-              ),
+              label: !_answered
+                  ? 'Check Answer'
+                  : _currentQuizQuestion < quiz.questions.length - 1
+                  ? 'Next Question'
+                  : 'See Results',
+              isFullWidth: true,
+              size: AppButtonSize.large,
             ),
           ),
         ),
@@ -1107,32 +1083,14 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         Container(
           padding: const EdgeInsets.all(AppSpacing.lg2),
           child: SafeArea(
-            child: ElevatedButton(
+            child: AppButton(
               onPressed: _isCompletingLesson
                   ? null
                   : () => _completeLesson(bonusXp: bonusXp),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 56),
-              ),
-              child: _isCompletingLesson
-                  ? const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.onPrimary,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: AppSpacing.sm2),
-                        Text('Completing...'),
-                      ],
-                    )
-                  : const Text('Complete Lesson'),
+              label: 'Complete Lesson',
+              isLoading: _isCompletingLesson,
+              isFullWidth: true,
+              size: AppButtonSize.large,
             ),
           ),
         ),

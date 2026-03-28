@@ -108,13 +108,16 @@ class TodayBoardCard extends ConsumerWidget {
       icon = Icons.menu_book;
     }
 
-    return GestureDetector(
-      onTap: () => ref.read(currentTabProvider.notifier).state = targetTab,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
+    return Semantics(
+      label: label,
+      button: true,
+      child: GestureDetector(
+        onTap: () => ref.read(currentTabProvider.notifier).state = targetTab,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
         decoration: BoxDecoration(
           color: AppOverlays.white80,
           borderRadius: AppRadius.mediumRadius,
@@ -145,6 +148,7 @@ class TodayBoardCard extends ConsumerWidget {
               color: context.textSecondary,
             ),
           ],
+        ),
         ),
       ),
     );

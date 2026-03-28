@@ -47,30 +47,34 @@ class _RippleContainerState extends State<RippleContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (details) => _addRipple(details.localPosition),
-      child: Stack(
-        children: [
-          // The wrapped child widget
-          widget.child,
+    return Semantics(
+      label: widget.onTap != null ? 'Interactive area' : null,
+      button: widget.onTap != null,
+      child: GestureDetector(
+        onTapDown: (details) => _addRipple(details.localPosition),
+        child: Stack(
+          children: [
+            // The wrapped child widget
+            widget.child,
 
-          // Overlay for ripple effects
-          Positioned.fill(
-            child: IgnorePointer(
-              child: Stack(
-                children: _ripples
-                    .map(
-                      (ripple) => WaterRipple(
-                        key: ValueKey(ripple.id),
-                        position: ripple.position,
-                        onComplete: () => _removeRipple(ripple.id),
-                      ),
-                    )
-                    .toList(),
+            // Overlay for ripple effects
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Stack(
+                  children: _ripples
+                      .map(
+                        (ripple) => WaterRipple(
+                          key: ValueKey(ripple.id),
+                          position: ripple.position,
+                          onComplete: () => _removeRipple(ripple.id),
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

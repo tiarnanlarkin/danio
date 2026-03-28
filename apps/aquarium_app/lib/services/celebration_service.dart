@@ -337,11 +337,15 @@ class _CelebrationOverlayWrapperState
           children: [
             // Semi-transparent backdrop for non-standard celebrations
             if (hasOverlay)
-              GestureDetector(
-                onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Container(color: Colors.black54),
+              Semantics(
+                label: 'Dismiss celebration',
+                button: true,
+                child: GestureDetector(
+                  onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: Container(color: Colors.black54),
+                  ),
                 ),
               ),
 
@@ -396,12 +400,15 @@ class _CelebrationOverlayWrapperState
       CelebrationLevel.standard => '✨',
     };
 
-    return GestureDetector(
-      onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
-      child: Container(
-        margin: const EdgeInsets.all(AppSpacing.xl),
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
-        decoration: BoxDecoration(
+    return Semantics(
+      label: 'Dismiss ${celebration.level.name} notification',
+      button: true,
+      child: GestureDetector(
+        onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
+        child: Container(
+          margin: const EdgeInsets.all(AppSpacing.xl),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+          decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -452,6 +459,7 @@ class _CelebrationOverlayWrapperState
               ).textTheme.bodySmall!.copyWith(color: AppColors.whiteAlpha70),
             ),
           ],
+        ),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import '../models/spaced_repetition.dart';
+import '../widgets/core/app_button.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
@@ -888,40 +889,24 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: ElevatedButton(
+                    child: AppButton(
                       onPressed: () => _recordAnswer(false),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.error,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(0, 56),
-                      ),
-                      child: const Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.close),
-                          SizedBox(height: AppSpacing.xs),
-                          Text('Forgot'),
-                        ],
-                      ),
+                      variant: AppButtonVariant.destructive,
+                      label: 'Forgot',
+                      leadingIcon: Icons.close,
+                      isFullWidth: true,
+                      size: AppButtonSize.large,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm2),
                   Expanded(
-                    child: ElevatedButton(
+                    child: AppButton(
                       onPressed: () => _recordAnswer(true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.success,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(0, 56),
-                      ),
-                      child: const Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.check),
-                          SizedBox(height: AppSpacing.xs),
-                          Text('Remembered'),
-                        ],
-                      ),
+                      variant: AppButtonVariant.primary,
+                      label: 'Remembered',
+                      leadingIcon: Icons.check,
+                      isFullWidth: true,
+                      size: AppButtonSize.large,
                     ),
                   ),
                 ],
@@ -982,16 +967,12 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          ElevatedButton(
+          AppButton(
             onPressed: _nextCard,
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 48),
-            ),
-            child: Text(
-              _currentCardIndex < widget.session.cards.length - 1
-                  ? 'Next Card'
-                  : 'Complete Session',
-            ),
+            label: _currentCardIndex < widget.session.cards.length - 1
+                ? 'Next Card'
+                : 'Complete Session',
+            isFullWidth: true,
           ),
         ],
       ),

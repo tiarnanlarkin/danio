@@ -99,59 +99,70 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _dismiss,
-      child: FadeTransition(
-        opacity: _fadeAnimation,
-        child: SlideTransition(
-          position: _slideAnimation,
-          child: Container(
-            margin: const EdgeInsets.only(top: AppSpacing.md),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm2,
-            ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: AppRadius.mediumRadius,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.blackAlpha15,
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                if (widget.emoji != null) ...[
-                  Text(
-                    widget.emoji!,
-                    style: Theme.of(context).textTheme.headlineSmall,
+    return Semantics(
+      label: 'Dismiss tooltip',
+      button: true,
+      child: GestureDetector(
+        onTap: _dismiss,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: Container(
+              margin: const EdgeInsets.only(top: AppSpacing.md),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm2,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: AppRadius.mediumRadius,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.blackAlpha15,
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  if (widget.emoji != null) ...[
+                    Text(
+                      widget.emoji!,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                  ],
+                  Expanded(
+                    child: Text(
+                      widget.message,
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: context.textPrimary,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
+                  Semantics(
+                    label: 'Close tooltip',
+                    button: true,
+                    child: GestureDetector(
+                      onTap: _dismiss,
+                      child: SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: Center(
+                          child: Icon(
+                            Icons.close,
+                            size: 18,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
-                Expanded(
-                  child: Text(
-                    widget.message,
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: context.textPrimary,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                GestureDetector(
-                  onTap: _dismiss,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    child: Icon(
-                      Icons.close,
-                      size: 18,
-                      color: context.textSecondary,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
