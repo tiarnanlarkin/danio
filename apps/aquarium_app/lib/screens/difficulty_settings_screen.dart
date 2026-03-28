@@ -443,7 +443,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           ),
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 12,
+              horizontal: AppSpacing.sm2,
               vertical: AppSpacing.xs2,
             ),
             decoration: BoxDecoration(

@@ -454,7 +454,7 @@ class _HeartsChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 12,
+        horizontal: AppSpacing.sm2,
         vertical: AppSpacing.xs2,
       ),
       decoration: BoxDecoration(

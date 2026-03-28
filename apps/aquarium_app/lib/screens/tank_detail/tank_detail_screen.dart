@@ -313,55 +313,17 @@ class TankDetailScreen extends ConsumerWidget {
     // Calling AppFeedback.showSuccess(context, ...) after pop() would throw
     // "Looking up a deactivated widget's ancestor is unsafe".
     // Use pre-captured messenger — this route is already popped.
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          '${tank.name} deleted',
-          style: AppTypography.bodyMedium,
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: kSnackbarDuration,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            // Restore the tank
-            actions.undoDeleteTank(tankId);
-            // Use the ancestor messenger directly — the detail route is gone.
-            AppHaptics.success();
-            messenger.showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle,
-                      color: AppColors.onSuccess,
-                      size: 20,
-                    ),
-                    const SizedBox(width: AppSpacing.sm2),
-                    Expanded(
-                      child: Text(
-                        '${tank.name} restored',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.onSuccess,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                backgroundColor: AppColors.success,
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                margin: const EdgeInsets.all(AppSpacing.md),
-              ),
-            );
-          },
-        ),
-      ),
+    AppFeedback.showNeutralViaMessenger(
+      messenger,
+      '${tank.name} deleted',
+      duration: kSnackbarDuration,
+      actionLabel: 'Undo',
+      onAction: () {
+        // Restore the tank
+        actions.undoDeleteTank(tankId);
+        // Use the ancestor messenger directly — the detail route is gone.
+        AppFeedback.showSuccessViaMessenger(messenger, '${tank.name} restored');
+      },
     );
   }
 

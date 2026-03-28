@@ -378,7 +378,7 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm3,
-        vertical: 4,
+        vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
         color: context.surfaceVariant,

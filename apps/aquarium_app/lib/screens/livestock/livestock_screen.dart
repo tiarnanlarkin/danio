@@ -678,29 +678,20 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     );
 
     // Use pre-captured messenger — context may be deactivated in callbacks.
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          '${livestock.count}× ${livestock.commonName} removed',
-          style: AppTypography.bodyMedium,
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: kSnackbarDuration,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            actions.undoDeleteLivestock(livestock.id, widget.tankId);
-            if (context.mounted) {
-              AppFeedback.showSuccess(
-                context,
-                '${livestock.commonName} restored',
-              );
-            }
-          },
-        ),
-      ),
+    AppFeedback.showNeutralViaMessenger(
+      messenger,
+      '${livestock.count}× ${livestock.commonName} removed',
+      duration: kSnackbarDuration,
+      actionLabel: 'Undo',
+      onAction: () {
+        actions.undoDeleteLivestock(livestock.id, widget.tankId);
+        if (context.mounted) {
+          AppFeedback.showSuccess(
+            context,
+            '${livestock.commonName} restored',
+          );
+        }
+      },
     );
   }
 }

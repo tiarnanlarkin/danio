@@ -272,7 +272,7 @@ class _WaterTestCard extends StatelessWidget {
     final value = (v == null || v == 'null') ? '-' : v;
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 12,
+        horizontal: AppSpacing.sm2,
         vertical: AppSpacing.sm3,
       ),
       decoration: BoxDecoration(

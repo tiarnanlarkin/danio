@@ -681,7 +681,7 @@ class _CompanionChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm3,
-        vertical: 4,
+        vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
         color: Color((color.toARGB32() & 0x00FFFFFF) | 0x19000000), // 10% opacity

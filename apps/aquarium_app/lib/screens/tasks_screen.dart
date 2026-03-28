@@ -455,7 +455,7 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 8,
+              horizontal: AppSpacing.sm,
               vertical: AppSpacing.xxs,
             ),
             decoration: BoxDecoration(

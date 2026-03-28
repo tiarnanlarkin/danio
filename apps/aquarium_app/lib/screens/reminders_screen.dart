@@ -379,7 +379,7 @@ class _SectionHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
-              vertical: 2,
+              vertical: AppSpacing.xxs,
             ),
             decoration: BoxDecoration(
               color: (color ?? AppColors.primary).withAlpha(26),

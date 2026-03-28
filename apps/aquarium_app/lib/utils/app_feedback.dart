@@ -219,4 +219,66 @@ class AppFeedback {
   static void dismiss(BuildContext context) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
   }
+
+  // ── Pre-captured messenger variants ──────────────────────────────────────
+  //
+  // Use these when context is no longer safe (e.g. after Navigator.pop()).
+  // Pass a [ScaffoldMessengerState] captured before the context is deactivated.
+
+  /// Show a neutral snackbar via a pre-captured [ScaffoldMessengerState].
+  static void showNeutralViaMessenger(
+    ScaffoldMessengerState messenger,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+    Duration duration = const Duration(seconds: 4),
+  }) {
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(message, style: AppTypography.bodyMedium),
+        behavior: SnackBarBehavior.floating,
+        duration: duration,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        action: (actionLabel != null && onAction != null)
+            ? SnackBarAction(label: actionLabel, onPressed: onAction)
+            : null,
+      ),
+    );
+  }
+
+  /// Show a success snackbar via a pre-captured [ScaffoldMessengerState].
+  static void showSuccessViaMessenger(
+    ScaffoldMessengerState messenger,
+    String message,
+  ) {
+    AppHaptics.success();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(
+              Icons.check_circle,
+              color: AppColors.onSuccess,
+              size: 20,
+            ),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                message,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.onSuccess,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+        margin: const EdgeInsets.all(AppSpacing.md),
+      ),
+    );
+  }
 }

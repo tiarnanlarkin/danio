@@ -352,7 +352,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           (v) => DataCell(
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 4,
+                horizontal: AppSpacing.xs,
                 vertical: AppSpacing.xxs,
               ),
               decoration: BoxDecoration(

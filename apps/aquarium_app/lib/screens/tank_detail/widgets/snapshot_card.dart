@@ -227,7 +227,7 @@ class ParamPill extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 12,
+        horizontal: AppSpacing.sm2,
         vertical: AppSpacing.sm3,
       ),
       decoration: BoxDecoration(

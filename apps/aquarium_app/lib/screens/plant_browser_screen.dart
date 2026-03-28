@@ -278,7 +278,7 @@ class _MiniChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.xs2,
-        vertical: 2,
+        vertical: AppSpacing.xxs,
       ),
       decoration: BoxDecoration(
         color: color.withAlpha(26),

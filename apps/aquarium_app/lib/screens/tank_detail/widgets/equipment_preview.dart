@@ -36,7 +36,7 @@ class EquipmentPreview extends StatelessWidget {
           return Container(
             width: 120,
             margin: EdgeInsets.only(
-              right: index < equipment.length - 1 ? 12 : 0,
+              right: index < equipment.length - 1  ? AppSpacing.sm2 : 0,
             ),
             child: Card(
               margin: EdgeInsets.zero,

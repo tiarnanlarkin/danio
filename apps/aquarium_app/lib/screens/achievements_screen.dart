@@ -382,7 +382,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                         child: Container(
                           width: 160,
                           margin: EdgeInsets.only(
-                            right: index < recentlyUnlocked.length - 1 ? 12 : 0,
+                            right: index < recentlyUnlocked.length - 1  ? AppSpacing.sm2 : 0,
                           ),
                           child: ShimmerGlow(
                             glowColor: AppColors.primary,

@@ -472,7 +472,7 @@ class _CurrentThemePreview extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm2,
-                vertical: 6,
+                vertical: AppSpacing.xs2,
               ),
               decoration: BoxDecoration(
                 color: AppOverlays.white20,
