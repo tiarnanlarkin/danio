@@ -289,13 +289,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (confirmed != true || !mounted) return;
     try {
       await ref.read(tankActionsProvider).bulkDeleteTanks(_selectedTankIds.toList());
-      if (mounted) {
+      if (context.mounted) {
         setState(() { _isSelectMode = false; _selectedTankIds.clear(); _currentTankIndex = 0; });
         DanioSnackBar.success(context, '${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted');
       }
     } catch (e, st) {
       logError('HomeScreen: bulk delete tanks failed: $e', stackTrace: st, tag: 'HomeScreen');
-      if (mounted) DanioSnackBar.error(context, 'Couldn\'t delete those tanks, try again in a moment');
+      if (context.mounted) DanioSnackBar.error(context, 'Couldn\'t delete those tanks, try again in a moment');
     }
   }
 

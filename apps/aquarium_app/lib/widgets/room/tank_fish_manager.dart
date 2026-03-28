@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/species_unlock_map.dart';
 import '../../providers/species_unlock_provider.dart';
 import '../../providers/tank_provider.dart';
 import 'animated_swimming_fish.dart';
@@ -232,19 +233,17 @@ class _TankFishManagerState extends ConsumerState<TankFishManager>
 
   /// Convert a livestock common name (e.g. "Neon Tetra") to a species ID
   /// (e.g. "neon_tetra") for cross-referencing with unlock map.
+  ///
+  /// Derives valid species IDs from [speciesDisplayNames] (the single source
+  /// of truth in species_unlock_map.dart) rather than a hardcoded set, so
+  /// adding a new species only requires updating that map.
   static String? _nameToSpeciesId(String commonName) {
     final id = commonName
         .toLowerCase()
-        .replaceAll(RegExp(r"[^a-z0-9]+"), '_')
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
         .replaceAll(RegExp(r'^_|_$'), '');
-    // Validate against known species IDs
-    const known = {
-      'betta', 'neon_tetra', 'harlequin_rasbora', 'cherry_barb',
-      'zebra_danio', 'guppy', 'molly', 'platy', 'angelfish',
-      'amano_shrimp', 'cherry_shrimp', 'nerite_snail', 'otocinclus',
-      'bristlenose_pleco', 'bronze_corydoras',
-    };
-    return known.contains(id) ? id : null;
+    // Validate against species IDs from the single source of truth.
+    return speciesDisplayNames.containsKey(id) ? id : null;
   }
 }
 
