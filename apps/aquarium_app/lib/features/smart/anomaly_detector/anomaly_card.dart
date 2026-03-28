@@ -59,6 +59,24 @@ class AnomalyCard extends ConsumerWidget {
                       ),
                     ),
                   ),
+                if (anomalies.any((a) => a.aiExplanation != null))
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.xs),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.auto_awesome, size: 10),
+                        const SizedBox(width: 4),
+                        Text(
+                          'AI-assisted analysis',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: context.textSecondary,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),

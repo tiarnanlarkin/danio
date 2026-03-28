@@ -559,6 +559,23 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                 label: const Text('Add to My Tank'),
               ),
             ),
+            const SizedBox(height: AppSpacing.md),
+            // AI disclosure badge
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.auto_awesome, size: 12, color: AppColors.primary),
+                const SizedBox(width: 4),
+                Text(
+                  'AI-generated identification · Results may not be 100% accurate',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: context.textSecondary,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ],
         ),
       ),

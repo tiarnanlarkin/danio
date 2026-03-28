@@ -327,6 +327,21 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
               color: context.textSecondary,
             ),
           ),
+          const SizedBox(height: AppSpacing.xs),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.auto_awesome, size: 12, color: context.textSecondary),
+              const SizedBox(width: 4),
+              Text(
+                'AI-generated plan · Always verify with your tank\'s specific needs',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: context.textSecondary,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(
             width: double.infinity,

@@ -477,6 +477,23 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         ],
 
         if (!_streaming && _diagnosis.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          // AI disclosure notice
+          Row(
+            children: [
+              Icon(Icons.auto_awesome, size: 12, color: context.textSecondary),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  'AI-generated diagnosis · Not a substitute for veterinary advice',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: context.textSecondary,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
