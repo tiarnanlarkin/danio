@@ -465,7 +465,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                         getTitlesWidget: (value, meta) {
                           return Text(
                             value.toInt().toString(),
-                            style: const TextStyle(fontSize: 10),
+                            style: AppTypography.labelSmall,
                           );
                         },
                       ),
@@ -482,7 +482,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                               padding: const EdgeInsets.only(top: 8),
                               child: Text(
                                 DateFormat('M/d').format(date),
-                                style: const TextStyle(fontSize: 10),
+                                style: AppTypography.labelSmall,
                               ),
                             );
                           }
@@ -580,7 +580,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                         getTitlesWidget: (value, meta) {
                           return Text(
                             value.toInt().toString(),
-                            style: const TextStyle(fontSize: 10),
+                            style: AppTypography.labelSmall,
                           );
                         },
                       ),
@@ -596,7 +596,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                               padding: const EdgeInsets.only(top: 8),
                               child: Text(
                                 DateFormat('E').format(date)[0],
-                                style: const TextStyle(fontSize: 12),
+                                style: AppTypography.labelSmall,
                               ),
                             );
                           }

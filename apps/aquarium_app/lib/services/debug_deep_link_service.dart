@@ -44,7 +44,7 @@ class DebugDeepLinkService {
 
     // 1. Check if the app was cold-started by an intent.
     _kQaChannel.invokeMethod<String>('getInitialUri').then((uri) {
-      if (uri != null && uri.isNotEmpty) {
+      if (uri != null && uri.isNotEmpty && context.mounted) {
         _handleUri(uri, context, ref);
       }
     }).catchError((Object e) {
@@ -55,7 +55,7 @@ class DebugDeepLinkService {
     _kQaChannel.setMethodCallHandler((call) async {
       if (call.method == 'onNewIntent') {
         final uri = call.arguments as String?;
-        if (uri != null && uri.isNotEmpty) {
+        if (uri != null && uri.isNotEmpty && context.mounted) {
           _handleUri(uri, context, ref);
         }
       }

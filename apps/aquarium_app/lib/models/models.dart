@@ -17,6 +17,5 @@ export 'exercises.dart';
 export 'gem_economy.dart';
 export 'gem_transaction.dart';
 export 'leaderboard.dart';
-export 'placement_test.dart';
 export 'shop_item.dart';
 export 'spaced_repetition.dart';

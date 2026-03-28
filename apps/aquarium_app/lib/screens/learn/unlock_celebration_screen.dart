@@ -105,7 +105,6 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                       style: AppTypography.headlineLarge.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 30,
                       ),
                       textAlign: TextAlign.center,
                     ),
