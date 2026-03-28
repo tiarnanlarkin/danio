@@ -93,7 +93,7 @@ void main() {
       await _advance(tester);
 
       await tester.tap(find.text('Skip'));
-      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(seconds: 3)); // drain 2.5s timer
 
       // After skip, name input disappears and warm entry cards appear
       expect(find.byType(TextField), findsNothing);
