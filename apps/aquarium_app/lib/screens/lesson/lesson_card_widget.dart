@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/learning.dart';
 import '../../theme/app_theme.dart';
-import '../../utils/app_constants.dart';
 import '../../widgets/core/app_button.dart';
 
 /// Renders the lesson content card (text, sections) and the "Take Quiz"

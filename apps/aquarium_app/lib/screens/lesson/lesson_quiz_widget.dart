@@ -5,7 +5,6 @@ import '../../models/learning.dart';
 import '../../models/user_profile.dart' show ExperienceLevel;
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
-import '../../utils/app_constants.dart';
 import '../../widgets/core/app_button.dart';
 
 /// Renders a single quiz question with answer options, hint support, and
