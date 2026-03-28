@@ -10,6 +10,7 @@ import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_button.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/study_room_scene.dart';
 import 'lesson_screen.dart';
@@ -324,21 +325,16 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                             style: Theme.of(context).textTheme.titleLarge!,
                           ),
                           const SizedBox(height: AppSpacing.lg),
-                          ElevatedButton.icon(
+                          AppButton(
                             onPressed: () {
                               NavigationThrottle.push(
                                 context,
                                 const OnboardingScreen(),
                               );
                             },
-                            icon: const Icon(Icons.arrow_forward),
-                            label: const Text('Create Profile'),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32,
-                                vertical: 16,
-                              ),
-                            ),
+                            trailingIcon: Icons.arrow_forward,
+                            label: 'Create Profile',
+                            size: AppButtonSize.large,
                           ),
                           const SizedBox(height: AppSpacing.xl),
                           // Getting started hints to fill empty space

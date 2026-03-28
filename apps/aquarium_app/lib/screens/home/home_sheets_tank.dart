@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
+import '../../widgets/core/app_button.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -154,12 +155,11 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.save),
-              label: const Text('Save & Earn 10 XP'),
-              onPressed: () async {
+          AppButton(
+            label: 'Save & Earn 10 XP',
+            leadingIcon: Icons.save,
+            isFullWidth: true,
+            onPressed: () async {
                 final ph = double.tryParse(phC.text);
                 final temp = double.tryParse(tempC.text);
                 final ammonia = double.tryParse(ammoniaC.text);
@@ -185,7 +185,6 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
                 ref.invalidate(allLogsProvider(tank.id));
                 await ref.read(userProfileProvider.notifier).addXp(10);
               },
-            ),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/models.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/core/app_button.dart';
 
 class SelectionModePanel extends StatelessWidget {
   final List<Tank> tanks;
@@ -130,37 +131,23 @@ class SelectionModePanel extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: ElevatedButton.icon(
+              child: AppButton(
                 onPressed: selectedIds.isEmpty ? null : onDeleteSelected,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: AppColors.onPrimary,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                ),
-                icon: const Icon(Icons.delete_outline, size: AppIconSizes.sm),
-                label: const Text('Delete'),
+                variant: AppButtonVariant.destructive,
+                label: 'Delete',
+                leadingIcon: Icons.delete_outline,
+                isFullWidth: true,
+                size: AppButtonSize.large,
               ),
             ),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
-              child: ElevatedButton.icon(
+              child: AppButton(
                 onPressed: selectedIds.isEmpty ? null : onExportSelected,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.onPrimary,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                ),
-                icon: const Icon(
-                  Icons.file_download_outlined,
-                  size: AppIconSizes.sm,
-                ),
-                label: const Text('Export'),
+                label: 'Export',
+                leadingIcon: Icons.file_download_outlined,
+                isFullWidth: true,
+                size: AppButtonSize.large,
               ),
             ),
           ],

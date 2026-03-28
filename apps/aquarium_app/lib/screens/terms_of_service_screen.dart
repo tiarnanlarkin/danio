@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../widgets/core/app_button.dart';
 import '../theme/app_theme.dart';
 import 'package:danio/utils/logger.dart';
 
@@ -101,16 +102,10 @@ class TermsOfServiceScreen extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  ElevatedButton.icon(
+                  AppButton(
                     onPressed: () => _openFullTerms(),
-                    icon: const Icon(Icons.open_in_new, size: 18),
-                    label: const Text('View Full Terms'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                    ),
+                    label: 'View Full Terms',
+                    trailingIcon: Icons.open_in_new,
                   ),
                   const SizedBox(height: AppSpacing.sm2),
                   TextButton(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../widgets/core/app_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../models/wishlist.dart';
@@ -293,39 +294,35 @@ class ShopStreetScreen extends ConsumerWidget {
                 maxLines: 2,
               ),
               const SizedBox(height: AppSpacing.lg),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: nameController.text.trim().isNotEmpty
-                      ? () {
-                          final shop = LocalShop(
-                            id: existingShop?.id,
-                            name: nameController.text.trim(),
-                            address: addressController.text.trim().isEmpty
-                                ? null
-                                : addressController.text.trim(),
-                            distanceMiles: double.tryParse(
-                              distanceController.text,
-                            ),
-                            notes: notesController.text.trim().isEmpty
-                                ? null
-                                : notesController.text.trim(),
-                          );
+              AppButton(
+                onPressed: nameController.text.trim().isNotEmpty
+                    ? () {
+                        final shop = LocalShop(
+                          id: existingShop?.id,
+                          name: nameController.text.trim(),
+                          address: addressController.text.trim().isEmpty
+                              ? null
+                              : addressController.text.trim(),
+                          distanceMiles: double.tryParse(
+                            distanceController.text,
+                          ),
+                          notes: notesController.text.trim().isEmpty
+                              ? null
+                              : notesController.text.trim(),
+                        );
 
-                          if (existingShop == null) {
-                            ref.read(localShopsProvider.notifier).addShop(shop);
-                          } else {
-                            ref
-                                .read(localShopsProvider.notifier)
-                                .updateShop(shop);
-                          }
-                          Navigator.maybePop(ctx);
+                        if (existingShop == null) {
+                          ref.read(localShopsProvider.notifier).addShop(shop);
+                        } else {
+                          ref
+                              .read(localShopsProvider.notifier)
+                              .updateShop(shop);
                         }
-                      : null,
-                  child: Text(
-                    existingShop == null ? 'Add Shop' : 'Save Changes',
-                  ),
-                ),
+                        Navigator.maybePop(ctx);
+                      }
+                    : null,
+                label: existingShop == null ? 'Add Shop' : 'Save Changes',
+                isFullWidth: true,
               ),
             ],
           ),

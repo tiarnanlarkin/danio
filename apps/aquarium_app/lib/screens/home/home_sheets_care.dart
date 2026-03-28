@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
+import '../../widgets/core/app_button.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_page_routes.dart';
@@ -94,20 +95,18 @@ void showFeedingInfo(BuildContext context, WidgetRef ref, String? tankId) {
             style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
           ),
           const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.maybePop(ctx);
-                NavigationThrottle.push(
-                  context,
-                  AddLogScreen(tankId: tankId, initialType: LogType.feeding),
-                  route: RoomSlideRoute(page: AddLogScreen(tankId: tankId, initialType: LogType.feeding)),
-                );
-              },
-              icon: const Icon(Icons.restaurant, size: 18),
-              label: const Text('Log Feeding'),
-            ),
+          AppButton(
+            onPressed: () {
+              Navigator.maybePop(ctx);
+              NavigationThrottle.push(
+                context,
+                AddLogScreen(tankId: tankId, initialType: LogType.feeding),
+                route: RoomSlideRoute(page: AddLogScreen(tankId: tankId, initialType: LogType.feeding)),
+              );
+            },
+            label: 'Log Feeding',
+            leadingIcon: Icons.restaurant,
+            isFullWidth: true,
           ),
           const SizedBox(height: AppSpacing.sm),
         ],
