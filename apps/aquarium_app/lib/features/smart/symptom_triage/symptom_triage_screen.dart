@@ -10,6 +10,7 @@ import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/core/bubble_loader.dart';
+import '../../../widgets/danio_snack_bar.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../smart_providers.dart';
 
@@ -112,9 +113,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     if (_step == 0) {
       if (_selectedSymptoms.isEmpty &&
           _freeTextController.text.trim().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Select at least one symptom')),
-        );
+        DanioSnackBar.show(context, 'Select at least one symptom');
         return;
       }
       setState(() => _step = 1);

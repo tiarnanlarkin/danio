@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../widgets/core/app_button.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -746,15 +747,11 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
             ],
 
             const SizedBox(height: AppSpacing.lg),
-            ElevatedButton(
+            AppButton(
               onPressed: _isSaving ? null : _save,
-              child: _isSaving
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(widget.existing != null ? 'Save' : 'Add'),
+              label: widget.existing != null ? 'Save' : 'Add',
+              isLoading: _isSaving,
+              isFullWidth: true,
             ),
           ],
         ),

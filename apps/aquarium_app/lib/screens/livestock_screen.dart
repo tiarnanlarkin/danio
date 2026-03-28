@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../widgets/core/app_button.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -344,36 +345,25 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: ElevatedButton.icon(
+                          child: AppButton(
                             onPressed: () =>
                                 _bulkMoveLivestock(context, ref, livestock),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                            ),
-                            icon: const Icon(
-                              Icons.move_down,
-                              size: AppIconSizes.sm,
-                            ),
-                            label: const Text('Move to Tank'),
+                            label: 'Move to Tank',
+                            leadingIcon: Icons.move_down,
+                            isFullWidth: true,
+                            size: AppButtonSize.large,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm2),
                         Expanded(
-                          child: ElevatedButton.icon(
+                          child: AppButton(
                             onPressed: () =>
                                 _bulkDelete(context, ref, livestock),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.error,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                            ),
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              size: AppIconSizes.sm,
-                            ),
-                            label: const Text('Delete'),
+                            variant: AppButtonVariant.destructive,
+                            label: 'Delete',
+                            leadingIcon: Icons.delete_outline,
+                            isFullWidth: true,
+                            size: AppButtonSize.large,
                           ),
                         ),
                       ],
@@ -1109,15 +1099,11 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: AppSpacing.lg),
-              ElevatedButton(
+              AppButton(
                 onPressed: _isSaving ? null : _save,
-                child: _isSaving
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(widget.existing != null ? 'Save' : 'Add'),
+                label: widget.existing != null ? 'Save' : 'Add',
+                isLoading: _isSaving,
+                isFullWidth: true,
               ),
             ],
           ),

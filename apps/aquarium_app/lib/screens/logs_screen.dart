@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/material.dart';
+import '../widgets/core/app_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -341,7 +342,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                     ),
 
                     const SizedBox(height: AppSpacing.md),
-                    ElevatedButton(
+                    AppButton(
                       onPressed: hasChanges
                           ? () {
                               setState(() {
@@ -351,7 +352,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                               Navigator.maybePop(ctx);
                             }
                           : () => Navigator.maybePop(ctx),
-                      child: Text(hasChanges ? 'Apply' : 'Done'),
+                      label: hasChanges ? 'Apply' : 'Done',
+                      isFullWidth: true,
                     ),
                   ],
                 ),
