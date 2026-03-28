@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_text_field.dart';
@@ -11,6 +13,13 @@ class DiseaseGuideScreen extends StatefulWidget {
 
 class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
   String _searchQuery = '';
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +42,12 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: AppSearchField(
               hint: 'Search by disease or symptom...',
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: (v) {
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 300), () {
+                  setState(() => _searchQuery = v);
+                });
+              },
             ),
           ),
 

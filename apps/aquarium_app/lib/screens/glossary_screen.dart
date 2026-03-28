@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_text_field.dart';
@@ -12,6 +14,13 @@ class GlossaryScreen extends StatefulWidget {
 class _GlossaryScreenState extends State<GlossaryScreen> {
   String _searchQuery = '';
   String? _selectedCategory;
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   List<_GlossaryTerm> get _filteredTerms {
     var results = _allTerms;
@@ -47,7 +56,12 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: AppSearchField(
               hint: 'Search terms...',
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: (v) {
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 300), () {
+                  setState(() => _searchQuery = v);
+                });
+              },
             ),
           ),
 
