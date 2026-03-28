@@ -81,7 +81,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
     return Semantics(
       label: 'Day 2 streak prompt',
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -230,7 +230,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
       label: '7 day milestone, you earned Apprentice Fishkeeper, plus 50 XP bonus',
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -275,7 +275,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                 );
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.xs2),
                 decoration: BoxDecoration(
                   color: AppColors.whiteAlpha20,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -304,8 +304,8 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 12,
+                      horizontal: AppSpacing.sm4,
+                      vertical: AppSpacing.sm2,
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.whiteAlpha15,
@@ -366,7 +366,7 @@ class Day30CommittedCard extends StatelessWidget {
           '30 days of Danio. $lessonsCompleted lessons completed, $xpEarned XP earned.',
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
           borderRadius: BorderRadius.circular(AppRadius.lg2),

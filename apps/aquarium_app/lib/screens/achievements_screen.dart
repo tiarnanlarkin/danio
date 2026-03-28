@@ -211,7 +211,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                 // Filter by category
                 ...AchievementCategory.values.map((category) {
                   return Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: AppSpacing.sm),
                     child: FilterChip(
                       label: Text('${category.icon} ${category.displayName}'),
                       selected: _selectedCategory == category,
@@ -229,7 +229,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                 // Filter by rarity
                 ...AchievementRarity.values.map((rarity) {
                   return Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: AppSpacing.sm),
                     child: FilterChip(
                       label: Text(rarity.displayName),
                       selected: _selectedRarity == rarity,
@@ -354,7 +354,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
         if (recentlyUnlocked.isNotEmpty) ...[
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
               child: Text(
                 '🎉 Recently Unlocked',
                 style: Theme.of(
@@ -368,7 +368,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               height: 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 itemCount: recentlyUnlocked.length,
                 itemBuilder: (context, index) {
                   final entry = recentlyUnlocked[index];

@@ -435,8 +435,8 @@ class _ShopItemCard extends ConsumerWidget {
                           // Price
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
+                              horizontal: AppSpacing.sm2,
+                              vertical: AppSpacing.xs2,
                             ),
                             decoration: BoxDecoration(
                               color: categoryColor.withAlpha(51),
@@ -484,7 +484,7 @@ class _ShopItemCard extends ConsumerWidget {
                         top: 8,
                         right: 8,
                         child: Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(AppSpacing.xs2),
                           decoration: BoxDecoration(
                             color: AppColors.blackAlpha60,
                             shape: BoxShape.circle,
@@ -504,8 +504,8 @@ class _ShopItemCard extends ConsumerWidget {
                         right: 8,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
                           ),
                           decoration: BoxDecoration(
                             color: categoryColor,
@@ -557,7 +557,7 @@ class _GemBalanceChip extends StatelessWidget {
       label: 'Gem balance: $balance gems',
       readOnly: true,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [DanioColors.gemPrimary30, DanioColors.gemGlow20],

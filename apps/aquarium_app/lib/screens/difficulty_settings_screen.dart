@@ -95,8 +95,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                  horizontal: AppSpacing.sm2,
+                  vertical: AppSpacing.xs2,
                 ),
                 decoration: BoxDecoration(
                   color: Color(
@@ -221,7 +221,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           );
 
       return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
         child: AppCard(
           padding: AppCardPadding.standard,
           child: Column(
@@ -241,8 +241,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   if (hasMastery)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
                         color: AppOverlays.amber20,
@@ -307,7 +307,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
 
   Widget _buildStatChip(String label, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
@@ -402,7 +402,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     final scorePercent = (record.accuracy * 100).toInt();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         children: [
           Container(
@@ -524,7 +524,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         children: [
           Expanded(

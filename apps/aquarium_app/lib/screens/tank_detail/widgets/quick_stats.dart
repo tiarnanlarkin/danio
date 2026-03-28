@@ -225,7 +225,7 @@ class _CountChip extends StatelessWidget {
       label: Text(label, style: AppTypography.bodySmall),
       backgroundColor: AppColors.primaryAlpha08,
       side: BorderSide.none,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
     );

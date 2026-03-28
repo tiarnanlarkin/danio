@@ -117,7 +117,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                     .take(5)
                     .map(
                       (t) => Padding(
-                        padding: const EdgeInsets.only(left: 32, top: 4),
+                        padding: const EdgeInsets.only(left: AppSpacing.xl, top: AppSpacing.xs),
                         child: Text(
                           '• ${t.name}',
                           style: AppTypography.bodySmall,
@@ -126,7 +126,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                     ),
                 if (tanks.length > 5)
                   Padding(
-                    padding: const EdgeInsets.only(left: 32, top: 4),
+                    padding: const EdgeInsets.only(left: AppSpacing.xl, top: AppSpacing.xs),
                     child: Text(
                       '... and ${tanks.length - 5} more',
                       style: AppTypography.bodySmall,
@@ -869,7 +869,7 @@ class _ExportItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         children: [
           Icon(icon, size: 18, color: context.textSecondary),

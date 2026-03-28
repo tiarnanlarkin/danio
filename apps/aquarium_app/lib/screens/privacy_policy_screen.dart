@@ -325,7 +325,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   Widget _buildSummaryItem(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           const Icon(Icons.circle, color: AppColors.primary, size: 8),
@@ -338,7 +338,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   Widget _buildSummaryCardBullet(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           const Icon(Icons.circle, color: AppColors.primary, size: 8),
@@ -351,7 +351,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   Widget _buildSection(String title, String content) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -369,17 +369,17 @@ class PrivacyPolicyScreen extends StatelessWidget {
     bool isNegative = false,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, bottom: 24),
+      padding: const EdgeInsets.only(left: AppSpacing.md, bottom: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: items.map((item) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 4),
+                  padding: const EdgeInsets.only(top: AppSpacing.xs),
                   child: Icon(
                     isNegative ? Icons.close : Icons.circle,
                     size: isNegative ? 16 : 8,
@@ -403,7 +403,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   Widget _buildHighlight(String title, String content, IconData icon) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 24),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.primary5,
@@ -440,7 +440,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     BuildContext context,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.success5,
@@ -473,7 +473,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   Widget _buildContactCard(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 24),
+      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: context.cardColor,

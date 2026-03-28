@@ -373,7 +373,7 @@ class _ProgressDots extends StatelessWidget {
           return Container(
             width: 8,
             height: 8,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isFilled ? AppColors.onboardingAmber : AppColors.border,

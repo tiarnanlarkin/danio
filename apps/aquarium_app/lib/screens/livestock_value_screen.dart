@@ -181,7 +181,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                 final itemIndex = index - 6;
                 final item = livestock[itemIndex];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: AppCard(
                     padding: AppCardPadding.compact,
                     child: Row(
@@ -224,8 +224,8 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                               isDense: true,
                               border: const OutlineInputBorder(),
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 8,
+                                horizontal: AppSpacing.sm,
+                                vertical: AppSpacing.sm,
                               ),
                             ),
                             keyboardType: const TextInputType.numberWithOptions(
@@ -315,7 +315,7 @@ class _TipRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

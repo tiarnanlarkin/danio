@@ -290,7 +290,7 @@ class DebugMenuScreen extends ConsumerWidget {
           foregroundColor: AppColors.onPrimary,
         ),
         body: ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           itemBuilder: (context, index) => items[index],
           itemCount: items.length,
         ),
@@ -368,7 +368,7 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm2, AppSpacing.md, AppSpacing.xs),
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(

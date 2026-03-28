@@ -23,7 +23,7 @@ class XpSourceRow extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm2),
           Expanded(child: Text(label, style: AppTypography.bodyMedium)),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
               color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,

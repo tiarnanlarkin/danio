@@ -42,7 +42,7 @@ class StockingIndicator extends StatelessWidget {
     final color = _levelColor();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       child: Card(
         margin: EdgeInsets.zero,
         child: Padding(

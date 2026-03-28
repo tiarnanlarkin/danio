@@ -92,9 +92,9 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
     context: context,
     builder: (ctx) => Padding(
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 16,
+        left: AppSpacing.lg2,
+        right: AppSpacing.lg2,
+        top: AppSpacing.md,
         bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
       ),
       child: Column(

@@ -124,8 +124,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 const SizedBox(width: AppSpacing.sm),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
                     color: AppOverlays.accent20,
@@ -145,17 +145,17 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           actions: [
             if (!widget.isPracticeMode) ...[
               const Padding(
-                padding: EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: AppSpacing.sm),
                 child: Center(child: HeartIndicator(compact: true)),
               ),
             ],
             Padding(
-              padding: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.only(right: AppSpacing.md),
               child: Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                    horizontal: AppSpacing.sm2,
+                    vertical: AppSpacing.xs2,
                   ),
                   decoration: BoxDecoration(
                     color: AppOverlays.accent20,

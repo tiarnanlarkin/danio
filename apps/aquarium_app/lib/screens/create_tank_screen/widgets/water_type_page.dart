@@ -83,8 +83,8 @@ class WaterTypePage extends StatelessWidget {
                 borderRadius: AppRadius.mediumRadius,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm4,
                   ),
                   decoration: BoxDecoration(
                     color: context.surfaceVariant,

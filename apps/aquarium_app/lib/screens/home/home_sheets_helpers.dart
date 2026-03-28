@@ -16,7 +16,7 @@ String timeAgo(DateTime dt) {
 /// A parameter row for info sheets.
 Widget buildParamRow(BuildContext context, String label, String value, String ideal) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
+    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
     child: Row(
       children: [
         Expanded(child: Text(label, style: AppTypography.bodyMedium)),

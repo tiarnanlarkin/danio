@@ -227,8 +227,8 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                           ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm4,
                         ),
                       ),
                     ),
@@ -560,7 +560,7 @@ class _SearchResultCard extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.sm2),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26)

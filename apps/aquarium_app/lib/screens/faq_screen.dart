@@ -214,7 +214,7 @@ class _FaqSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm2),
           child: Text(title, style: AppTypography.headlineSmall),
         ),
         ...items,
@@ -243,7 +243,7 @@ class _FaqItemState extends State<_FaqItem> {
       button: true,
       label: '${widget.question}${_expanded ? ", expanded" : ""}',
       child: Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: InkWell(
         onTap: () => setState(() => _expanded = !_expanded),
         borderRadius: AppRadius.mediumRadius,

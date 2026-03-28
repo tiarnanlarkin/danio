@@ -142,7 +142,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
               // Notification times section header
               if (enabledIndex == 1) {
                 return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
                   child: Text(
                     'Reminder Times',
                     style: AppTypography.labelLarge.copyWith(
@@ -298,7 +298,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
 
   Widget _buildInfoRow(String emoji, String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

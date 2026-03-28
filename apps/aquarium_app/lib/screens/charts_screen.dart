@@ -632,7 +632,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 final index = value.toInt();
                 if (index >= 0 && index < logs.length && index % 3 == 0) {
                   return Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: Text(
                       DateFormat('M/d').format(logs[index].timestamp),
                       style: AppTypography.bodySmall,
@@ -782,7 +782,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           const SizedBox(height: AppSpacing.sm),
           ...issues.map(
             (issue) => Padding(
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.only(bottom: AppSpacing.xs),
               child: Text(issue, style: AppTypography.bodySmall),
             ),
           ),
@@ -827,7 +827,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           ),
           if (_selectedParams.length >= 4)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Text(
                 'Maximum 4 parameters',
                 style: AppTypography.bodySmall.copyWith(

@@ -96,7 +96,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -134,7 +134,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
               ),
               // Bottom buttons
               Padding(
-                padding: EdgeInsets.fromLTRB(24, 0, 24, bottomPadding + 24),
+                padding: EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, bottomPadding + AppSpacing.lg),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

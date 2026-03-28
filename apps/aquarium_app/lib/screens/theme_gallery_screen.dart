@@ -56,8 +56,8 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
+                      horizontal: AppSpacing.sm3,
+                      vertical: AppSpacing.xs,
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.successAlpha15,
@@ -123,8 +123,8 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
+                      horizontal: AppSpacing.sm3,
+                      vertical: AppSpacing.xs,
                     ),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
@@ -587,8 +587,8 @@ class _ThemeCard extends StatelessWidget {
                   right: 8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 3,
+                      horizontal: AppSpacing.xs2,
+                      vertical: AppSpacing.xs,
                     ),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
@@ -630,8 +630,8 @@ class _ThemeCard extends StatelessWidget {
                 right: 0,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
+                    horizontal: AppSpacing.sm2,
+                    vertical: AppSpacing.sm3,
                   ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

@@ -381,7 +381,7 @@ class _CompatibilityCheckerScreenState
                       const SizedBox(height: AppSpacing.sm),
                       ...issues.map(
                         (issue) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                           child: AppCard(
                             padding: AppCardPadding.none,
                             child: ListTile(

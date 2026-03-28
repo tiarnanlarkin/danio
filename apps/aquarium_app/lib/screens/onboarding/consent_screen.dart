@@ -119,7 +119,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   onTap: () => setState(() => _ageConfirmed = !_ageConfirmed),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -153,7 +153,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   onTap: () => setState(() => _tosAccepted = !_tosAccepted),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [

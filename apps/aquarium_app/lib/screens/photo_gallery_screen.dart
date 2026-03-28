@@ -74,7 +74,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
             slivers: [
               // Top padding
               const SliverPadding(
-                padding: EdgeInsets.only(top: 16),
+                padding: EdgeInsets.only(top: AppSpacing.md),
                 sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
 
@@ -87,7 +87,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
                   ),
                   sliver: SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                       child: Row(
                         children: [
                           Text(months[i], style: AppTypography.headlineSmall),
@@ -134,7 +134,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
 
               // Bottom padding
               const SliverPadding(
-                padding: EdgeInsets.only(bottom: 16),
+                padding: EdgeInsets.only(bottom: AppSpacing.md),
                 sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
             ],
@@ -236,8 +236,8 @@ class _PhotoThumbnail extends StatelessWidget {
                 right: 4,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
+                    horizontal: AppSpacing.xs2,
+                    vertical: AppSpacing.xxs,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.blackAlpha50,
@@ -300,7 +300,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
         actions: [
           Center(
             child: Padding(
-              padding: const EdgeInsets.only(right: 16),
+              padding: const EdgeInsets.only(right: AppSpacing.md),
               child: Text(
                 '${_currentIndex + 1} / ${widget.photos.length}',
                 style: AppTypography.bodySmall.copyWith(color: AppColors.onPrimary),

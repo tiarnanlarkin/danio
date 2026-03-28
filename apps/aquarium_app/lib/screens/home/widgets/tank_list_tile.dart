@@ -47,7 +47,7 @@ class TankListTile extends StatelessWidget {
           if (isDemoTank) ...[
             const SizedBox(width: AppSpacing.xs2),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs2, vertical: AppSpacing.hairline),
               decoration: BoxDecoration(
                 color: AppColors.primary.withAlpha(30),
                 borderRadius: AppRadius.xsRadius,

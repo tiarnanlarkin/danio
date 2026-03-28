@@ -368,7 +368,7 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.xl, AppSpacing.lg2, AppSpacing.sm2),
       child: Row(
         children: [
           Container(
@@ -836,7 +836,7 @@ class _ReducedMotionToggle extends ConsumerWidget {
         if (reducedMotion.systemPreference &&
             reducedMotion.userOverride == false)
           Padding(
-            padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+            padding: const EdgeInsets.fromLTRB(72, 0, AppSpacing.md, AppSpacing.sm2),
             child: Text(
               'ℹ️ Your system has animations disabled, but you\'ve manually enabled them in this app.',
               style: AppTypography.bodySmall.copyWith(
@@ -847,7 +847,7 @@ class _ReducedMotionToggle extends ConsumerWidget {
           ),
         if (reducedMotion.isEnabled)
           Padding(
-            padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+            padding: const EdgeInsets.fromLTRB(72, 0, AppSpacing.md, AppSpacing.sm2),
             child: Text(
               'Benefits: Reduces motion sickness, improves battery life, and makes the app more comfortable for users with vestibular disorders.',
               style: AppTypography.bodySmall.copyWith(

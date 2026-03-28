@@ -316,8 +316,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
               // Amber header pill
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 6,
+                  horizontal: AppSpacing.sm4,
+                  vertical: AppSpacing.xs2,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.onboardingAmber.withAlpha(26),

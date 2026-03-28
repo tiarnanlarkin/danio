@@ -48,7 +48,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
         children: [
           // Handle
           Container(
-            margin: const EdgeInsets.only(top: 12),
+            margin: const EdgeInsets.only(top: AppSpacing.sm2),
             width: 40,
             height: 4,
             decoration: BoxDecoration(
@@ -93,7 +93,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
             ),
             child: ReorderableListView.builder(
               shrinkWrap: true,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
               itemCount: _tanks.length,
               onReorder: (oldIndex, newIndex) {
                 setState(() {
@@ -112,7 +112,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
 
                 return Container(
                   key: ValueKey(tank.id),
-                  margin: const EdgeInsets.only(bottom: 8),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppOverlays.primary10
@@ -125,8 +125,8 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
                   child: ListTile(
                     onTap: () => widget.onSelected(_tanks.indexOf(tank)),
                     contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
                     ),
                     leading: Container(
                       width: 48,
@@ -177,7 +177,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
           // Hint
           if (_hasReordered)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2, vertical: AppSpacing.sm),
               child: Row(
                 children: [
                   Icon(

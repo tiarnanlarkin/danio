@@ -77,7 +77,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                 const SizedBox(width: AppSpacing.sm),
                 ...categories.map(
                   (c) => Padding(
-                    padding: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: AppSpacing.sm),
                     child: FilterChip(
                       label: Text(c),
                       selected: _selectedCategory == c,
@@ -124,7 +124,7 @@ class _TermCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Column(
@@ -137,8 +137,8 @@ class _TermCard extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xxs,
                   ),
                   decoration: BoxDecoration(
                     color: AppOverlays.primary10,

@@ -79,7 +79,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 child: Column(
                   children: [
                     const SizedBox(height: AppSpacing.lg2),
@@ -179,7 +179,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
       children: features
           .map(
             (f) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm3),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -206,7 +206,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
 
   Widget _buildBottomSection(double bottomPadding) {
     return Container(
-      padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPadding + 16),
+      padding: EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, bottomPadding + AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.onboardingWarmCream,
         boxShadow: [

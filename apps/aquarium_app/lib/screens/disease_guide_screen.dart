@@ -101,7 +101,7 @@ class _DiseaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: ExpansionTile(
         leading: Container(
           width: 40,
@@ -116,7 +116,7 @@ class _DiseaseCard extends StatelessWidget {
         subtitle: Text(disease.cause, style: AppTypography.bodySmall),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -125,8 +125,8 @@ class _DiseaseCard extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
                         color: disease.severityColor,
@@ -159,8 +159,8 @@ class _DiseaseCard extends StatelessWidget {
                       .map(
                         (s) => Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                            horizontal: AppSpacing.sm3,
+                            vertical: AppSpacing.xs,
                           ),
                           decoration: BoxDecoration(
                             color: context.surfaceVariant,
@@ -204,7 +204,7 @@ class _DiseaseCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 ...disease.prevention.map(
                   (p) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

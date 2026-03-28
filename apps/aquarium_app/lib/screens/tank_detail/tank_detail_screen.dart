@@ -935,8 +935,8 @@ class TankDetailScreen extends ConsumerWidget {
                         if (pending == 0) return null;
                         return Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xxs,
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.warning,

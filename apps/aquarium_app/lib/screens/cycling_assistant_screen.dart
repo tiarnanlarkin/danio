@@ -747,7 +747,7 @@ class _ActionItems extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm2),
           ...actions.map(
             (a) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

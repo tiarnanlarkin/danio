@@ -238,7 +238,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
         final strength = progress.currentStrength;
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
           child: _buildLessonCard(
             context,
             ref,
@@ -319,8 +319,8 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                    horizontal: AppSpacing.sm2,
+                    vertical: AppSpacing.xs2,
                   ),
                   decoration: BoxDecoration(
                     color: AppOverlays.accent20,

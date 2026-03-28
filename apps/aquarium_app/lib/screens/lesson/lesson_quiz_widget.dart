@@ -131,7 +131,7 @@ class LessonQuizWidget extends ConsumerWidget {
 
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2),
             itemCount:
                 3 +
                 hintExtraItems +
@@ -252,7 +252,7 @@ class LessonQuizWidget extends ConsumerWidget {
                 }
 
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
                   child: Semantics(
                     button: true,
                     label:

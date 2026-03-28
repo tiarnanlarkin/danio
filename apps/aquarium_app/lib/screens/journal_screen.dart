@@ -78,7 +78,7 @@ class JournalScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                       child: Text(month, style: AppTypography.headlineSmall),
                     ),
                     ...entries.map((e) => _JournalEntryCard(entry: e)),
@@ -136,7 +136,7 @@ class _JournalEntryCard extends StatelessWidget {
     final timeStr = DateFormat('h:mm a').format(entry.timestamp);
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -230,7 +230,7 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomPadding),
+      padding: EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.md + bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

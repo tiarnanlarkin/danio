@@ -60,9 +60,9 @@ class _LivestockBulkAddDialogState
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 16,
+        left: AppSpacing.md,
+        right: AppSpacing.md,
+        top: AppSpacing.md,
         bottom: max(
               MediaQuery.of(context).viewInsets.bottom,
               MediaQuery.of(context).viewPadding.bottom,

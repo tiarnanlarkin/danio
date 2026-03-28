@@ -315,8 +315,8 @@ class _InventoryItemCard extends StatelessWidget {
                     if (item.quantity > 1 || shopItem.isConsumable)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.xs,
                         ),
                         decoration: BoxDecoration(
                           color: accentColor,
@@ -416,7 +416,7 @@ class _ExpiryTimerState extends State<_ExpiryTimer> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: AppColors.infoAlpha20,
         borderRadius: AppRadius.smallRadius,

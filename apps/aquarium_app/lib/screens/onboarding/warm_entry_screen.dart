@@ -216,7 +216,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         },
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -266,8 +266,8 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                               filled: true,
                               fillColor: AppColors.card,
                               contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
+                                horizontal: AppSpacing.md,
+                                vertical: AppSpacing.sm4,
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(AppRadius.md2),
@@ -331,7 +331,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
           '${fish.commonName}, care level ${fish.careLevel}, pH ${fish.minPh} to ${fish.maxPh}',
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
           borderRadius: BorderRadius.circular(AppRadius.lg2),
@@ -409,7 +409,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
 
   Widget _buildInfoChip({required IconData icon, required String label}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
         color: AppColors.onboardingWarmCream,
         borderRadius: BorderRadius.circular(AppRadius.pill),

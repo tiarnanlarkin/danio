@@ -104,7 +104,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                       initialValue: _dosePerLitres,
                       decoration: const InputDecoration(
                         suffixText: 'L',
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.sm2),
                       ),
                       items: [5, 10, 20, 25, 40, 50, 100].map((v) {
                         return DropdownMenuItem(
@@ -255,7 +255,7 @@ class _ResultRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -283,7 +283,7 @@ class _ProductPreset extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: AppCard(
         padding: AppCardPadding.none,
         onTap: onTap,

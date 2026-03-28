@@ -254,7 +254,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
           // Search results
           if (_searchResults.isNotEmpty)
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: AppRadius.mediumRadius,
@@ -300,7 +300,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     itemBuilder: (ctx, i) {
                       final entry = _stock[i];
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 8),
+                        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                         child: ListTile(
                           title: Text(entry.species.commonName),
                           subtitle: Text(

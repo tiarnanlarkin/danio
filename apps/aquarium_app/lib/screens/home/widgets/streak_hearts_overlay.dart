@@ -26,7 +26,7 @@ class DismissibleBanner extends StatelessWidget {
     return Semantics(
       liveRegion: true,
       child: Container(
-        padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 4),
+        padding: const EdgeInsets.only(left: AppSpacing.sm3, top: AppSpacing.xs, bottom: AppSpacing.xs, right: AppSpacing.xs),
         decoration: BoxDecoration(
           color: color,
           borderRadius: AppRadius.mediumRadius,

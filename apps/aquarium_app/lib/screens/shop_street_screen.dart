@@ -471,8 +471,8 @@ class _ShopSection extends StatelessWidget {
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                      horizontal: AppSpacing.sm2,
+                      vertical: AppSpacing.xs2,
                     ),
                     decoration: BoxDecoration(
                       color: itemCount > 0
@@ -726,7 +726,7 @@ class _ShopTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: InkWell(
         onTap: onTap,
         borderRadius: AppRadius.mediumRadius,

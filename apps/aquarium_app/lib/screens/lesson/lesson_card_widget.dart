@@ -84,7 +84,7 @@ class LessonCardWidget extends StatelessWidget {
                 final sectionIndex = index - 4;
                 final section = lesson.sections[sectionIndex];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: _buildSection(context, section),
                 );
               }
@@ -272,7 +272,7 @@ class LessonCardWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: items.map((item) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: Text(
                 item,
                 style: AppTypography.bodyLarge.copyWith(height: 1.5),
@@ -287,7 +287,7 @@ class LessonCardWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: items.map((item) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: Text(
                 item,
                 style: AppTypography.bodyLarge.copyWith(height: 1.5),

@@ -86,7 +86,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                     child: Icon(Icons.compare_arrows),
                   ),
                   Expanded(
@@ -157,7 +157,7 @@ class _TankSelector extends StatelessWidget {
       initialValue: selectedId,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: AppSpacing.sm),
       ),
       items: tanks
           .where((t) => t.id != excludeId)
@@ -184,7 +184,7 @@ class _ComparisonSection extends StatelessWidget {
     if (rows.isEmpty) return const SizedBox();
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(

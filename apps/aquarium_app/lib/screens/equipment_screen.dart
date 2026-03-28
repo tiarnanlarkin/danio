@@ -537,7 +537,7 @@ class _EquipmentCard extends StatelessWidget {
           ),
           if (equipment.lastServiced != null)
             Padding(
-              padding: const EdgeInsets.only(left: 72, right: 16, bottom: 12),
+              padding: const EdgeInsets.only(left: 72, right: AppSpacing.md, bottom: AppSpacing.sm2),
               child: Row(
                 children: [
                   Icon(Icons.history, size: 14, color: context.textHint),
@@ -629,9 +629,9 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       policy: OrderedTraversalPolicy(),
       child: Padding(
         padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
+          left: AppSpacing.md,
+          right: AppSpacing.md,
+          top: AppSpacing.md,
           bottom: max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom) + 16,
         ),
         child: SingleChildScrollView(
