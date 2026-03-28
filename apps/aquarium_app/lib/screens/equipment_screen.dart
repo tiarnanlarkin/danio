@@ -389,6 +389,13 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
 
     return AppDialog(
       title: 'History - ${equipment.name}',
+      actions: [
+        AppButton(
+          label: 'Close',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+        ),
+      ],
       child: SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(
@@ -442,13 +449,6 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
           },
         ),
       ),
-      actions: [
-        AppButton(
-          label: 'Close',
-          onPressed: () => Navigator.maybePop(context),
-          variant: AppButtonVariant.text,
-        ),
-      ],
     );
   }
 }

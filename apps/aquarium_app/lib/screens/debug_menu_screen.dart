@@ -51,7 +51,6 @@ import 'achievements_screen.dart';
 import 'analytics_screen.dart';
 import 'notification_settings_screen.dart';
 import 'privacy_policy_screen.dart';
-import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 
 class DebugMenuScreen extends ConsumerWidget {

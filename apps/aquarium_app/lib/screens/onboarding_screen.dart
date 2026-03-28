@@ -22,7 +22,6 @@ import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
 import '../utils/logger.dart';
 import '../widgets/danio_snack_bar.dart';
-import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 
 /// Orchestrates the 10-screen onboarding flow.

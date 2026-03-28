@@ -115,8 +115,8 @@ Future<T?> showAppDialog<T>({
       title: title,
       icon: icon,
       iconColor: iconColor,
-      child: child,
       actions: actions,
+      child: child,
     ),
   );
 }
@@ -139,7 +139,6 @@ Future<bool?> showAppConfirmDialog({
     barrierDismissible: barrierDismissible,
     builder: (ctx) => AppDialog(
       title: title,
-      child: Text(message),
       actions: [
         AppButton(
           label: cancelLabel,
@@ -160,6 +159,7 @@ Future<bool?> showAppConfirmDialog({
           isFullWidth: true,
         ),
       ],
+      child: Text(message),
     ),
   );
 }
@@ -184,7 +184,6 @@ Future<bool?> showAppDestructiveDialog({
       title: title,
       icon: Icons.warning_amber_rounded,
       iconColor: AppColors.error,
-      child: Text(message),
       actions: [
         AppButton(
           label: cancelLabel,
@@ -205,6 +204,7 @@ Future<bool?> showAppDestructiveDialog({
           isFullWidth: true,
         ),
       ],
+      child: Text(message),
     ),
   );
 }

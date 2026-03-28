@@ -12,7 +12,6 @@ import '../services/image_cache_service.dart';
 import '../theme/app_theme.dart';
 import 'add_log_screen.dart';
 import '../utils/navigation_throttle.dart';
-import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 
 class LogDetailScreen extends ConsumerWidget {

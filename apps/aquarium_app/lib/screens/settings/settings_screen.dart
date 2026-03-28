@@ -1065,6 +1065,34 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   Widget build(BuildContext context) {
     return AppDialog(
       title: 'Configure AI',
+      actions: [
+        if (_hasUserKey) ...[
+          AppButton(
+            label: 'Remove key',
+            onPressed: _isBusy ? null : _clearKey,
+            variant: AppButtonVariant.destructive,
+            isFullWidth: true,
+          ),
+          const SizedBox(height: AppSpacing.xs),
+        ],
+        AppButton(
+          label: 'Close',
+          onPressed: () {
+            widget.onDismissed();
+            Navigator.maybePop(context);
+          },
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
+          label: 'Save',
+          onPressed: _isBusy ? null : _saveKey,
+          isLoading: _isBusy,
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
+        ),
+      ],
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1124,34 +1152,6 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
           ],
         ),
       ),
-      actions: [
-        if (_hasUserKey) ...[
-          AppButton(
-            label: 'Remove key',
-            onPressed: _isBusy ? null : _clearKey,
-            variant: AppButtonVariant.destructive,
-            isFullWidth: true,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-        ],
-        AppButton(
-          label: 'Close',
-          onPressed: () {
-            widget.onDismissed();
-            Navigator.maybePop(context);
-          },
-          variant: AppButtonVariant.text,
-          isFullWidth: true,
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        AppButton(
-          label: 'Save',
-          onPressed: _isBusy ? null : _saveKey,
-          isLoading: _isBusy,
-          variant: AppButtonVariant.primary,
-          isFullWidth: true,
-        ),
-      ],
     );
   }
 }

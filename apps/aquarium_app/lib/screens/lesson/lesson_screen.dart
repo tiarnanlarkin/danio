@@ -17,7 +17,6 @@ import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
 import 'lesson_hearts_modal.dart';
-import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 
 export 'lesson_card_widget.dart';

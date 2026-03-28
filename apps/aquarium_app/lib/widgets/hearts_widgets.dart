@@ -5,7 +5,6 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/app_button.dart';
-import 'core/app_dialog.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/gems_provider.dart';

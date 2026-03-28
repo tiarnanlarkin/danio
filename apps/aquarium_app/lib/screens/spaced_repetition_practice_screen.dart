@@ -1078,6 +1078,17 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
     return AppDialog(
       title: 'Session Complete! 🎉',
+      actions: [
+        AppButton(
+          label: 'Done',
+          onPressed: () {
+            Navigator.of(context).pop(); // Close dialog
+            Navigator.of(context).pop(); // Close session screen
+          },
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
+        ),
+      ],
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1151,17 +1162,6 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           ),
         ],
       ),
-      actions: [
-        AppButton(
-          label: 'Done',
-          onPressed: () {
-            Navigator.of(context).pop(); // Close dialog
-            Navigator.of(context).pop(); // Close session screen
-          },
-          variant: AppButtonVariant.primary,
-          isFullWidth: true,
-        ),
-      ],
     );
   }
 

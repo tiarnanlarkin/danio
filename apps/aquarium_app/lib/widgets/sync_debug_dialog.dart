@@ -15,6 +15,36 @@ class SyncDebugDialog extends ConsumerWidget {
 
     return AppDialog(
       title: 'Sync Status',
+      actions: [
+        if (syncState.hasQueuedActions) ...[
+          AppButton(
+            label: 'Clear Queue',
+            onPressed: () {
+              ref.read(syncServiceProvider.notifier).clearQueue();
+              Navigator.of(context).pop();
+            },
+            variant: AppButtonVariant.text,
+            isFullWidth: true,
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          AppButton(
+            label: 'Sync Now',
+            onPressed: () {
+              ref.read(syncServiceProvider.notifier).syncNow();
+              Navigator.of(context).pop();
+            },
+            variant: AppButtonVariant.primary,
+            isFullWidth: true,
+          ),
+          const SizedBox(height: AppSpacing.xs),
+        ],
+        AppButton(
+          label: 'Close',
+          onPressed: () => Navigator.of(context).pop(),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+      ],
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -157,36 +187,6 @@ class SyncDebugDialog extends ConsumerWidget {
           ],
         ),
       ),
-      actions: [
-        if (syncState.hasQueuedActions) ...[
-          AppButton(
-            label: 'Clear Queue',
-            onPressed: () {
-              ref.read(syncServiceProvider.notifier).clearQueue();
-              Navigator.of(context).pop();
-            },
-            variant: AppButtonVariant.text,
-            isFullWidth: true,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          AppButton(
-            label: 'Sync Now',
-            onPressed: () {
-              ref.read(syncServiceProvider.notifier).syncNow();
-              Navigator.of(context).pop();
-            },
-            variant: AppButtonVariant.primary,
-            isFullWidth: true,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-        ],
-        AppButton(
-          label: 'Close',
-          onPressed: () => Navigator.of(context).pop(),
-          variant: AppButtonVariant.text,
-          isFullWidth: true,
-        ),
-      ],
     );
   }
 

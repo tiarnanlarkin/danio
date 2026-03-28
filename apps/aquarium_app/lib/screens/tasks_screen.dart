@@ -346,6 +346,13 @@ class _TaskHistoryDialog extends ConsumerWidget {
 
     return AppDialog(
       title: 'History - ${task.title}',
+      actions: [
+        AppButton(
+          label: 'Close',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+        ),
+      ],
       child: SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(
@@ -414,13 +421,6 @@ class _TaskHistoryDialog extends ConsumerWidget {
           },
         ),
       ),
-      actions: [
-        AppButton(
-          label: 'Close',
-          onPressed: () => Navigator.maybePop(context),
-          variant: AppButtonVariant.text,
-        ),
-      ],
     );
   }
 }
