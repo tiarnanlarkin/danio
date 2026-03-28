@@ -49,6 +49,14 @@ final List<Object> _preFirebaseErrors = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Enable edge-to-edge display (transparent status/nav bars)
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  ));
+
   // Fonts are bundled locally in assets/fonts/ (GDPR compliance — no runtime
   // network requests to Google servers). GoogleFonts will serve from the
   // bundled assets automatically.
