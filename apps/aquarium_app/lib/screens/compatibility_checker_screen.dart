@@ -20,6 +20,13 @@ class _CompatibilityCheckerScreenState
     extends ConsumerState<CompatibilityCheckerScreen> {
   final List<SpeciesInfo> _selectedSpecies = [];
   String _searchQuery = '';
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   List<SpeciesInfo> get _searchResults {
     if (_searchQuery.isEmpty) return [];
@@ -226,7 +233,12 @@ class _CompatibilityCheckerScreenState
             padding: const EdgeInsets.all(AppSpacing.md),
             child: AppSearchField(
               hint: 'Search fish to add...',
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: (v) {
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 300), () {
+                  setState(() => _searchQuery = v);
+                });
+              },
             ),
           ),
 

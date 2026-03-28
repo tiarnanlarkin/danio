@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../widgets/core/app_states.dart';
 import 'package:flutter/material.dart';
 import '../widgets/core/bubble_loader.dart';
@@ -20,6 +22,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _searchController = TextEditingController();
   String _query = '';
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -28,6 +31,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -48,7 +52,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               border: InputBorder.none,
               filled: false,
             ),
-            onChanged: (value) => setState(() => _query = value.toLowerCase()),
+            onChanged: (value) {
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 300), () {
+                  setState(() => _query = value.toLowerCase());
+                });
+              },
           ),
           actions: [
             if (_query.isNotEmpty)

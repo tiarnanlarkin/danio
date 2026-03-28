@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../data/species_database.dart';
@@ -19,9 +21,11 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
 
   final List<_StockEntry> _stock = [];
   String _searchQuery = '';
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _tankVolumeController.dispose();
     _filterRatingController.dispose();
     super.dispose();
@@ -239,7 +243,12 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: AppSearchField(
               hint: 'Search fish to add...',
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: (v) {
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 300), () {
+                  setState(() => _searchQuery = v);
+                });
+              },
             ),
           ),
 
