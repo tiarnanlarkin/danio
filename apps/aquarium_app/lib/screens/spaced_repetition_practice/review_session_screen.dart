@@ -495,15 +495,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         );
 
     if (mounted) {
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => _buildCompletionDialog(),
-      );
+      _showCompletionDialog();
     }
   }
 
-  Widget _buildCompletionDialog() {
+  void _showCompletionDialog() {
     final totalCards = widget.session.cards.length;
     final correctCards =
         widget.session.results.where((r) => r.correct).length;
@@ -511,8 +507,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     final accuracy = (widget.session.score * 100).round();
     final totalXp = widget.session.totalXp;
 
-    return AppDialog(
+    showAppDialog<void>(
+      context: context,
       title: 'Session Complete! 🎉',
+      barrierDismissible: false,
       actions: [
         AppButton(
           label: 'Done',
