@@ -14,41 +14,7 @@ import 'wishlist_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/app_bottom_sheet.dart';
 
-/// Shop Street colors - fresh outdoor market theme
-/// Adapts slightly for dark mode to maintain readability
-class ShopColors {
-  ShopColors._();
 
-  static const background1 = Color(0xFF4A7C59); // Forest green
-  static const background2 = Color(0xFF3D6B4A); // Darker green
-  static const background3 = Color(0xFF2F5A3B); // Deep green
-  static const accent = Color(0xFFD97706); // Sunny yellow
-  static const accentLight = Color(0xFFFFF0DC); // Light yellow
-  static const wood = Color(0xFF8B7355); // Market stall wood
-  static const awning = Color(0xFFE74C3C); // Red awning
-  static const glassCard = Color(0x20FFFFFF);
-  static const glassBorder = Color(0x30FFFFFF);
-  static const textPrimary = Color(0xFFF5F5F5);
-  static const textSecondary = Color(0xFFCDBFAE); // Warm secondary text
-
-  // Pre-computed alpha variants for performance
-  static const accentAlpha20 = Color(0x33D97706); // 20% opacity
-  static const textSecondaryAlpha50 = Color(0x80CDBFAE); // 50% opacity
-  static const textSecondaryAlpha70 = Color(0xB3CDBFAE); // 70% opacity
-
-  // Dark mode adjustments - slightly lighter/desaturated greens
-  static const background1Dark = Color(0xFF5A8E6A); // Lighter forest green
-  static const background2Dark = Color(0xFF4D7D5C); // Lighter mid green
-  static const background3Dark = Color(0xFF3F6C4D); // Lighter base green
-
-  /// Returns gradient colors adapted to current brightness
-  static List<Color> gradientColors(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? [background1Dark, background2Dark, background3Dark]
-        : [background1, background2, background3];
-  }
-}
 
 /// Shop Street Room - Wishlist & Shopping
 class ShopStreetScreen extends ConsumerWidget {
@@ -68,7 +34,17 @@ class ShopStreetScreen extends ConsumerWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: ShopColors.gradientColors(context),
+            colors: Theme.of(context).brightness == Brightness.dark
+                ? [
+                    DanioColors.shopStreetBackground1Dark,
+                    DanioColors.shopStreetBackground2Dark,
+                    DanioColors.shopStreetBackground3Dark,
+                  ]
+                : [
+                    DanioColors.shopStreetBackground1,
+                    DanioColors.shopStreetBackground2,
+                    DanioColors.shopStreetBackground3,
+                  ],
           ),
         ),
         child: SafeArea(
@@ -736,7 +712,7 @@ class _ShopTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: ShopColors.background3,
+                color: DanioColors.shopStreetBackground3,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: const Icon(

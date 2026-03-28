@@ -473,6 +473,25 @@ class DanioColors {
   static const Color shelfWoodDark1 = Color(0xFF4A3728);   // Shelf bracket gradient — dark tone
   static const Color shelfWoodDark2 = Color(0xFF3D2E22);   // Shelf bracket gradient — darker tone
 
+  // ── Shop Street room backgrounds ─────────────────────────────────
+  static const Color shopStreetBackground1 = Color(0xFF4A7C59); // Forest green
+  static const Color shopStreetBackground2 = Color(0xFF3D6B4A); // Darker green
+  static const Color shopStreetBackground3 = Color(0xFF2F5A3B); // Deep green
+  static const Color shopStreetBackground1Dark = Color(0xFF5A8E6A); // Lighter forest green (dark mode)
+  static const Color shopStreetBackground2Dark = Color(0xFF4D7D5C); // Lighter mid green (dark mode)
+  static const Color shopStreetBackground3Dark = Color(0xFF3F6C4D); // Lighter base green (dark mode)
+
+  // ── Workshop room backgrounds ─────────────────────────────────────
+  static const Color workshopBackground1 = Color(0xFF5D4E37); // Warm brown
+  static const Color workshopBackground2 = Color(0xFF4A3F2E); // Darker brown
+  static const Color workshopBackground3 = Color(0xFF3D3425); // Deep brown
+  static const Color workshopBackground1Dark = Color(0xFF6E5F48); // Lighter warm brown (dark mode)
+  static const Color workshopBackground2Dark = Color(0xFF5B5039); // Lighter mid brown (dark mode)
+  static const Color workshopBackground3Dark = Color(0xFF4E4430); // Lighter base brown (dark mode)
+  static const Color workshopAccentSteel = Color(0xFFA0AEC0); // Steel blue — tool card accent
+  static const Color workshopMetal = Color(0xFF6B7280); // Steel gray — equipment card accent
+  static const Color workshopTextSecondary = Color(0xFFB8B0A0); // Warm subdued text on dark brown bg
+
   // ── Gem Shop room backgrounds ────────────────────────────────────
   static const Color gemShopBackground1 = Color(0xFF1A1A2E); // Deep navy
   static const Color gemShopBackground2 = Color(0xFF16213E); // Dark blue
