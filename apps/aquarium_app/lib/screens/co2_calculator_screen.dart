@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/core/app_text_field.dart';
 
 class Co2CalculatorScreen extends StatefulWidget {
   const Co2CalculatorScreen({super.key});
@@ -136,16 +137,11 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
       Row(
         children: [
           Expanded(
-            child: TextField(
+            child: AppTextField(
               controller: _phController,
-              decoration: const InputDecoration(
-                labelText: 'pH',
-                border: OutlineInputBorder(),
-                helperText: '0.1 – 14.0',
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              label: 'pH',
+              hint: '0.1 – 14.0',
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
               ],
@@ -154,16 +150,11 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
-            child: TextField(
+            child: AppTextField(
               controller: _khController,
-              decoration: const InputDecoration(
-                labelText: 'KH (dKH)',
-                border: OutlineInputBorder(),
-                helperText: '0.1 – 50 dKH',
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
+              label: 'KH (dKH)',
+              hint: '0.1 – 50 dKH',
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
               ],

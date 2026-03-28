@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../data/species_database.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_text_field.dart';
 
 class StockingCalculatorScreen extends StatefulWidget {
   const StockingCalculatorScreen({super.key});
@@ -145,13 +146,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: TextField(
+                  child: AppTextField(
                     controller: _tankVolumeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Tank (L)',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
+                    label: 'Tank (L)',
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onChanged: (_) => setState(() {}),
@@ -160,14 +157,10 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   flex: 2,
-                  child: TextField(
+                  child: AppTextField(
                     controller: _filterRatingController,
-                    decoration: const InputDecoration(
-                      labelText: 'Filter ×',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                      helperText: '1.0 = standard',
-                    ),
+                    label: 'Filter ×',
+                    hint: '1.0 = standard',
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
@@ -244,15 +237,8 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
           // Search
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search fish to add...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                filled: true,
-              ),
+            child: AppSearchField(
+              hint: 'Search fish to add...',
               onChanged: (v) => setState(() => _searchQuery = v),
             ),
           ),

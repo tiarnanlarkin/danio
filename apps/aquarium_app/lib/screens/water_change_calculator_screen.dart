@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/core/app_text_field.dart';
 
 class WaterChangeCalculatorScreen extends StatefulWidget {
   const WaterChangeCalculatorScreen({super.key});
@@ -191,13 +192,9 @@ class _WaterChangeCalculatorScreenState
           Text('Tank Info', style: AppTypography.headlineSmall),
           const SizedBox(height: AppSpacing.sm2),
 
-          TextField(
+          AppTextField(
             controller: _tankVolumeController,
-            decoration: const InputDecoration(
-              labelText: 'Tank Volume',
-              suffixText: 'litres',
-              border: OutlineInputBorder(),
-            ),
+            label: 'Tank Volume (litres)',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (_) => _calculate(),
@@ -208,14 +205,10 @@ class _WaterChangeCalculatorScreenState
           Text('Nitrate Levels', style: AppTypography.headlineSmall),
           const SizedBox(height: AppSpacing.sm2),
 
-          TextField(
+          AppTextField(
             controller: _currentNitrateController,
-            decoration: const InputDecoration(
-              labelText: 'Current Nitrate',
-              suffixText: 'ppm',
-              border: OutlineInputBorder(),
-              helperText: 'What your test kit shows now',
-            ),
+            label: 'Current Nitrate (ppm)',
+            helperText: 'What your test kit shows now',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (_) => _calculate(),
@@ -223,14 +216,10 @@ class _WaterChangeCalculatorScreenState
 
           const SizedBox(height: AppSpacing.sm2),
 
-          TextField(
+          AppTextField(
             controller: _targetNitrateController,
-            decoration: const InputDecoration(
-              labelText: 'Target Nitrate',
-              suffixText: 'ppm',
-              border: OutlineInputBorder(),
-              helperText: 'Usually 10-20 ppm for most tanks',
-            ),
+            label: 'Target Nitrate (ppm)',
+            helperText: 'Usually 10-20 ppm for most tanks',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (_) => _calculate(),
@@ -238,14 +227,10 @@ class _WaterChangeCalculatorScreenState
 
           const SizedBox(height: AppSpacing.sm2),
 
-          TextField(
+          AppTextField(
             controller: _tapNitrateController,
-            decoration: const InputDecoration(
-              labelText: 'Tap Water Nitrate',
-              suffixText: 'ppm',
-              border: OutlineInputBorder(),
-              helperText: 'Test your tap water! Often 0-10 ppm',
-            ),
+            label: 'Tap Water Nitrate (ppm)',
+            helperText: 'Test your tap water! Often 0-10 ppm',
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (_) => _calculate(),

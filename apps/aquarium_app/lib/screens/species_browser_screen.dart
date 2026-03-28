@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../widgets/core/app_text_field.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
@@ -70,29 +71,18 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: Semantics(
-              label: 'Search fish database',
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'Search fish',
-                  hintText: 'Search fish by name...',
-                  prefixIcon: const Icon(Icons.search, semanticLabel: ''),
-                  border: OutlineInputBorder(
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                  filled: true,
-                ),
-                onChanged: (v) {
-                  _searchDebouncer.run(() {
-                    if (mounted) {
-                      setState(() {
-                        _searchQuery = v;
-                        _invalidateCache();
-                      });
-                    }
-                  });
-                },
-              ),
+            child: AppSearchField(
+              hint: 'Search fish by name...',
+              onChanged: (v) {
+                _searchDebouncer.run(() {
+                  if (mounted) {
+                    setState(() {
+                      _searchQuery = v;
+                      _invalidateCache();
+                    });
+                  }
+                });
+              },
             ),
           ),
 

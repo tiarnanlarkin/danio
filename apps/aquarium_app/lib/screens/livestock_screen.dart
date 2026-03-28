@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_text_field.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1085,16 +1086,13 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
                 ),
               ),
               const SizedBox(height: AppSpacing.sm2),
-              TextFormField(
+              AppTextField(
                 controller: _countController,
-                decoration: InputDecoration(
-                  labelText: 'Count *',
-                  hintText:
-                      _selectedSpecies != null &&
-                          _selectedSpecies!.minSchoolSize > 1
-                      ? 'Recommended: ${_selectedSpecies!.minSchoolSize}+'
-                      : 'How many?',
-                ),
+                label: 'Count *',
+                hint: _selectedSpecies != null &&
+                    _selectedSpecies!.minSchoolSize > 1
+                    ? 'Recommended: ${_selectedSpecies!.minSchoolSize}+'
+                    : 'How many?',
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -1270,14 +1268,12 @@ class _BulkAddLivestockSheetState
               ),
             ),
             const SizedBox(height: AppSpacing.sm2),
-            TextField(
+            AppTextField(
               controller: _controller,
               maxLines: 8,
-              decoration: InputDecoration(
-                labelText: 'List',
-                hintText: 'Neon Tetra, 12\nCorydoras x6\n2 Mystery Snail',
-                errorText: _parseError,
-              ),
+              label: 'List',
+              hint: 'Neon Tetra, 12\nCorydoras x6\n2 Mystery Snail',
+              errorText: _parseError,
               textCapitalization: TextCapitalization.words,
             ),
             const SizedBox(height: AppSpacing.sm2),

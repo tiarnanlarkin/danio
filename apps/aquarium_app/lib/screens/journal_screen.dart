@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/app_text_field.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -251,15 +252,11 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
             style: AppTypography.bodySmall,
           ),
           const SizedBox(height: AppSpacing.md),
-          TextField(
+          AppTextField(
             controller: _controller,
             focusNode: _focusNode,
             maxLines: 6,
-            decoration: const InputDecoration(
-              hintText:
-                  'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
-              border: OutlineInputBorder(),
-            ),
+            hint: 'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
           ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(

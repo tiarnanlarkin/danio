@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/plant_database.dart';
+import '../widgets/core/app_text_field.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/xp_animation_service.dart';
@@ -62,15 +63,8 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
           // Search
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search plants...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                filled: true,
-              ),
+            child: AppSearchField(
+              hint: 'Search plants...',
               onChanged: (v) => setState(() => _searchQuery = v),
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../widgets/core/app_text_field.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
@@ -221,15 +222,8 @@ class _CompatibilityCheckerScreenState
           // Search bar
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search fish to add...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                filled: true,
-              ),
+            child: AppSearchField(
+              hint: 'Search fish to add...',
               onChanged: (v) => setState(() => _searchQuery = v),
             ),
           ),

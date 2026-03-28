@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_text_field.dart';
 
 class DiseaseGuideScreen extends StatefulWidget {
   const DiseaseGuideScreen({super.key});
@@ -30,15 +31,8 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
           // Search
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search by disease or symptom...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                filled: true,
-              ),
+            child: AppSearchField(
+              hint: 'Search by disease or symptom...',
               onChanged: (v) => setState(() => _searchQuery = v),
             ),
           ),
