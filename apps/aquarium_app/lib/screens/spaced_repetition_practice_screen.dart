@@ -543,9 +543,10 @@ class _SpacedRepetitionPracticeScreenState
           ),
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Close',
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            variant: AppButtonVariant.text,
           ),
         ],
       ),
@@ -1152,15 +1153,13 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         ],
       ),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'Done',
           onPressed: () {
             Navigator.of(context).pop(); // Close dialog
             Navigator.of(context).pop(); // Close session screen
           },
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          ),
-          child: const Text('Done'),
+          variant: AppButtonVariant.primary,
         ),
       ],
     );
@@ -1266,14 +1265,15 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Continue Session',
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Continue Session'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Exit',
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Exit'),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

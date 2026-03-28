@@ -99,11 +99,12 @@ Future<void> importData(BuildContext context) async {
         'This will overwrite your current tanks, fish, logs, and settings with the backup file. This cannot be undone.',
       ),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'Cancel',
           onPressed: () {
             if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
           },
-          child: const Text('Cancel'),
+          variant: AppButtonVariant.text,
         ),
         FilledButton(
           onPressed: () {
@@ -226,9 +227,10 @@ Future<void> showPhotoStorageInfo(BuildContext context) async {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Got It',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Got It'),
+            variant: AppButtonVariant.text,
           ),
         ],
       ),
@@ -246,20 +248,19 @@ Future<void> confirmClearData(BuildContext context, WidgetRef ref) async {
         'This will permanently delete all your tanks, logs, tasks, and photos. This cannot be undone.',
       ),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'Cancel',
           onPressed: () {
             if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
           },
-          child: const Text('Cancel'),
+          variant: AppButtonVariant.text,
         ),
-        TextButton(
+        AppButton(
+          label: 'Delete Everything',
           onPressed: () {
             if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
           },
-          child: Text(
-            'Delete Everything',
-            style: TextStyle(color: AppColors.error),
-          ),
+          variant: AppButtonVariant.destructive,
         ),
       ],
     ),
@@ -273,20 +274,19 @@ Future<void> confirmClearData(BuildContext context, WidgetRef ref) async {
       title: const Text('Are you absolutely sure?'),
       content: const Text('All data will be lost forever.'),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'No, keep my data',
           onPressed: () {
             if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
           },
-          child: const Text('No, keep my data'),
+          variant: AppButtonVariant.text,
         ),
-        TextButton(
+        AppButton(
+          label: 'Yes, delete everything',
           onPressed: () {
             if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
           },
-          child: Text(
-            'Yes, delete everything',
-            style: TextStyle(color: AppColors.error),
-          ),
+          variant: AppButtonVariant.destructive,
         ),
       ],
     ),
@@ -343,20 +343,19 @@ Future<void> confirmDeleteMyData(
         ],
       ),
       actions: [
-        TextButton(
+        AppButton(
+          label: 'Cancel',
           onPressed: () {
             if (Navigator.canPop(ctx)) Navigator.pop(ctx, false);
           },
-          child: const Text('Cancel'),
+          variant: AppButtonVariant.text,
         ),
-        TextButton(
+        AppButton(
+          label: 'Delete Everything',
           onPressed: () {
             if (Navigator.canPop(ctx)) Navigator.pop(ctx, true);
           },
-          child: Text(
-            'Delete Everything',
-            style: TextStyle(color: AppColors.error),
-          ),
+          variant: AppButtonVariant.destructive,
         ),
       ],
     ),

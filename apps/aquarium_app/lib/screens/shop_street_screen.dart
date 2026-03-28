@@ -192,17 +192,19 @@ class ShopStreetScreen extends ConsumerWidget {
           ],
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cancel',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Cancel'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Save',
             onPressed: () {
               final amount = double.tryParse(controller.text) ?? 100;
               ref.read(budgetProvider.notifier).setMonthlyBudget(amount);
               Navigator.maybePop(ctx);
             },
-            child: const Text('Save'),
+            variant: AppButtonVariant.primary,
           ),
         ],
       ),
@@ -343,17 +345,18 @@ class ShopStreetScreen extends ConsumerWidget {
         title: const Text('Remove Shop?'),
         content: Text('Remove "${shop.name}" from your saved shops?'),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep',
             onPressed: () => Navigator.maybePop(ctx),
-            child: const Text('Keep'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Remove Shop',
             onPressed: () {
               ref.read(localShopsProvider.notifier).removeShop(shop.id);
               Navigator.maybePop(ctx);
             },
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Remove Shop'),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),
@@ -710,13 +713,11 @@ class _LocalShopsCard extends StatelessWidget {
               if (shops.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm2),
               Center(
-                child: TextButton.icon(
+                child: AppButton(
+                  label: 'Add a shop',
                   onPressed: onAddShop,
-                  icon: const Icon(Icons.add, size: 18),
-                  label: const Text('Add a shop'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppColors.primaryLight,
-                  ),
+                  leadingIcon: Icons.add,
+                  variant: AppButtonVariant.text,
                 ),
               ),
               ],

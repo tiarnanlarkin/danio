@@ -222,12 +222,12 @@ class SubstrateGuideScreen extends StatelessWidget {
                 _LayerRow(
                   layer: 'Top',
                   material: 'Sand or fine gravel cap (3-5cm)',
-                  color: Colors.brown.shade300,
+                  color: DanioColors.substrateSand,
                 ),
                 _LayerRow(
                   layer: 'Bottom',
                   material: 'Organic potting soil (2-3cm)',
-                  color: Colors.brown.shade800,
+                  color: DanioColors.substrateSoil,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
@@ -243,7 +243,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                 _LayerRow(
                   layer: 'Top',
                   material: 'Aquasoil (5-8cm)',
-                  color: Colors.brown.shade600,
+                  color: DanioColors.substrateAquasoil,
                 ),
                 _LayerRow(
                   layer: 'Middle',
@@ -255,7 +255,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                 _LayerRow(
                   layer: 'Bottom',
                   material: 'Substrate fertilizer (optional)',
-                  color: Colors.brown.shade900,
+                  color: DanioColors.substrateBase,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(

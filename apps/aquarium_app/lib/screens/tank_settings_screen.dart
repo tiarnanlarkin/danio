@@ -97,15 +97,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           appBar: AppBar(
             title: const Text('Tank Settings'),
             actions: [
-              TextButton(
+              AppButton(
+                label: 'Save',
                 onPressed: _isSaving ? null : () => _save(tank),
-                child: _isSaving
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Save'),
+                isLoading: _isSaving,
+                variant: AppButtonVariant.primary,
+                size: AppButtonSize.small,
               ),
             ],
           ),

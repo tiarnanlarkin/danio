@@ -27,7 +27,7 @@ class SectionHeader extends StatelessWidget {
           ],
           const Spacer(),
           if (onViewAll != null)
-            TextButton(onPressed: onViewAll, child: const Text('View All')),
+            AppButton(label: 'View All', onPressed: onViewAll, variant: AppButtonVariant.text, size: AppButtonSize.small),
         ],
       ),
     );

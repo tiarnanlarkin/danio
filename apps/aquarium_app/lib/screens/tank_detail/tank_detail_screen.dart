@@ -288,16 +288,15 @@ class TankDetailScreen extends ConsumerWidget {
           'Delete ${tank.name}? This action can be undone for 5 seconds.',
         ),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Keep Tank',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, false); },
-            child: const Text('Keep Tank'),
+            variant: AppButtonVariant.text,
           ),
-          TextButton(
+          AppButton(
+            label: 'Delete Tank',
             onPressed: () { if (Navigator.canPop(ctx)) Navigator.pop(ctx, true); },
-            child: const Text(
-              'Delete Tank',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
         ],
       ),

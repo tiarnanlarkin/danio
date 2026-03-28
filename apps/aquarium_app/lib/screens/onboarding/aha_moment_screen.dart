@@ -6,7 +6,6 @@ import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/core/app_button.dart';
 
 /// Screen 7 — Personalised Fish Care Reveal (THE AHA MOMENT)
 ///

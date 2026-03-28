@@ -190,28 +190,24 @@ class TestTubeRack extends StatelessWidget {
   }
 
   Color _ammoniaColor(double? val) {
-    if (val == null) return Colors.grey.shade300;
-    if (val < 0.25) return Colors.yellow.shade200;
-    if (val < 1.0) return Colors.green.shade300;
-    return Colors.green.shade600;
+    if (val == null) return DanioColors.paramAmmoniaNull;
+    if (val < 0.25) return DanioColors.paramAmmoniaLow;
+    if (val < 1.0) return DanioColors.paramAmmoniaMid;
+    return DanioColors.paramAmmoniaHigh;
   }
 
   Color _nitriteColor(double? val) {
-    if (val == null) return Colors.grey.shade300;
-    if (val < 0.25) {
-      return Colors.purple.shade100; // semantic color — nitrite level indicator
-    }
-    if (val < 1.0) {
-      return Colors.purple.shade300; // semantic color — nitrite level indicator
-    }
-    return Colors.purple.shade600; // semantic color — nitrite level indicator
+    if (val == null) return DanioColors.paramAmmoniaNull;
+    if (val < 0.25) return DanioColors.paramNitriteLow;
+    if (val < 1.0) return DanioColors.paramNitriteMid;
+    return DanioColors.paramNitriteHigh;
   }
 
   Color _nitrateColor(double? val) {
-    if (val == null) return Colors.grey.shade300;
-    if (val < 20) return Colors.orange.shade100;
-    if (val < 40) return Colors.orange.shade300;
-    return Colors.orange.shade600;
+    if (val == null) return DanioColors.paramAmmoniaNull;
+    if (val < 20) return DanioColors.paramNitrateLow;
+    if (val < 40) return DanioColors.paramNitrateMid;
+    return DanioColors.paramNitrateHigh;
   }
 }
 
@@ -447,7 +443,7 @@ class _FilterPainter extends CustomPainter {
               Offset(x, y),
               2,
               Paint()
-                ..color = Colors.grey.shade400
+                ..color = DanioColors.filterFloss
                 ..style = PaintingStyle.stroke,
             );
           }
@@ -463,7 +459,7 @@ class _FilterPainter extends CustomPainter {
               rect.top + random.nextDouble() * rect.height,
             ),
             1,
-            Paint()..color = Colors.grey.shade800,
+            Paint()..color = DanioColors.filterCarbon,
           );
         }
         break;
@@ -795,13 +791,13 @@ class _LightPainter extends CustomPainter {
       panelRect,
       Paint()
         ..color = isOn
-            ? Color.lerp(const Color(0xFF4A5568), Colors.yellow, brightness)!
-            : const Color(0xFF4A5568),
+            ? Color.lerp(DanioColors.ledPanelDark, DanioColors.ledYellow, brightness)!
+            : DanioColors.ledPanelDark,
     );
 
     // LED dots
     final ledPaint = Paint()
-      ..color = isOn ? AppColors.whiteAlpha08 : const Color(0xFF718096);
+      ..color = isOn ? AppColors.whiteAlpha08 : DanioColors.ledPanelOff;
 
     for (var x = panelRect.left + 6; x < panelRect.right - 6; x += 8) {
       canvas.drawCircle(Offset(x, panelRect.center.dy), 2, ledPaint);

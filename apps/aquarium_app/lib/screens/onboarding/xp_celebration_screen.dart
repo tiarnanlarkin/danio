@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
-import '../../widgets/core/app_button.dart';
 
 /// Screen 5 — First XP Earned (Celebration)
 ///

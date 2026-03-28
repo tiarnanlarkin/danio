@@ -121,13 +121,15 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                 ),
                 const Spacer(),
                 if (_careLevelFilter != null || _temperamentFilter != null)
-                  TextButton(
+                  AppButton(
+                    label: 'Clear filters',
                     onPressed: () => setState(() {
                       _careLevelFilter = null;
                       _temperamentFilter = null;
                       _invalidateCache();
                     }),
-                    child: const Text('Clear filters'),
+                    variant: AppButtonVariant.text,
+                    size: AppButtonSize.small,
                   ),
               ],
             ),

@@ -123,13 +123,15 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
                 if (_difficultyFilter != null ||
                     _placementFilter != null ||
                     _lowTechOnly)
-                  TextButton(
+                  AppButton(
+                    label: 'Clear filters',
                     onPressed: () => setState(() {
                       _difficultyFilter = null;
                       _placementFilter = null;
                       _lowTechOnly = false;
                     }),
-                    child: const Text('Clear filters'),
+                    variant: AppButtonVariant.text,
+                    size: AppButtonSize.small,
                   ),
               ],
             ),

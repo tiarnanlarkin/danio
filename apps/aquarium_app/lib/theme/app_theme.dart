@@ -454,6 +454,38 @@ class DanioColors {
   static const Color windowPaneDark2 = Color(0xFF1A2634);   // Window pane bottom gradient (dark mode)
   static const Color windowPaneLight3 = Color(0xFFE8F4F8);  // Window bottom pane gradient light (lightest sky blue)
 
+  // ── Filter media painter tones ───────────────────────────────────
+  // Used in _FilterPainter (hobby_items.dart) for aquarium filter media visuals.
+  static const Color filterFloss = Color(0xFFBDBDBD);      // Filter floss / wool stroke (light grey)
+  static const Color filterCarbon = Color(0xFF424242);     // Activated carbon specks (near-black, shares algaeBlack)
+  // LED panel tones — for aquarium light painter
+  static const Color ledPanelDark = Color(0xFF4A5568);     // LED panel off-state (dark blue-grey)
+  static const Color ledPanelOff = Color(0xFF718096);      // LED panel dot off-state (mid grey)
+  static const Color ledYellow = Color(0xFFFFEB3B);        // LED light on-state — pure yellow (lerp target)
+
+  // ── Water parameter test-tube indicator tones ───────────────────
+  // Used in WaterTestWidget / hobby_items.dart to indicate parameter levels.
+  // Ammonia scale
+  static const Color paramAmmoniaNull = Color(0xFFE0E0E0);  // No reading — matches AppColors.border
+  static const Color paramAmmoniaLow = Color(0xFFFFF59D);   // Ammonia < 0.25 ppm — safe (pale yellow)
+  static const Color paramAmmoniaMid = Color(0xFF81C784);   // Ammonia 0.25–1.0 ppm — caution (matches algaeGreenLight)
+  static const Color paramAmmoniaHigh = Color(0xFF43A047);  // Ammonia > 1.0 ppm — danger (matches algaeGreenBright)
+  // Nitrite scale (purple — distinct from ammonia/nitrate)
+  static const Color paramNitriteLow = Color(0xFFE1BEE7);   // Nitrite < 0.25 ppm — safe (pale purple)
+  static const Color paramNitriteMid = Color(0xFFBA68C8);   // Nitrite 0.25–1.0 ppm — caution
+  static const Color paramNitriteHigh = Color(0xFF8E24AA);  // Nitrite > 1.0 ppm — danger
+  // Nitrate scale (orange — distinct from above)
+  static const Color paramNitrateLow = Color(0xFFFFE0B2);   // Nitrate < 20 ppm — safe (pale orange)
+  static const Color paramNitrateMid = Color(0xFFFFB74D);   // Nitrate 20–40 ppm — caution
+  static const Color paramNitrateHigh = Color(0xFFFB8C00);  // Nitrate > 40 ppm — elevated
+
+  // ── Substrate layer indicator tones ─────────────────────────────
+  // Used in SubstrateGuideScreen to colour-code substrate depth layers.
+  static const Color substrateSand = Color(0xFFA1887F);    // Sand / fine gravel cap layer (light brown)
+  static const Color substrateAquasoil = Color(0xFF6D4C41); // Aquasoil / mid layer (dark brown)
+  static const Color substrateSoil = Color(0xFF4E342E);    // Potting soil layer (very dark brown)
+  static const Color substrateBase = Color(0xFF3E2723);    // Deep base substrate (darkest brown)
+
   // ── Shelf / wood bracket tones ───────────────────────────────────
   static const Color studyGold = Color(0xFFD4A574);        // Study-room warm gold (base for studyGoldAlpha*)
   static const Color shelfWoodLight = Color(0xFFC49A6C);   // Shelf wood gradient — lighter tone

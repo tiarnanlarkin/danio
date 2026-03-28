@@ -254,13 +254,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               title: const Text('Exit onboarding?'),
               content: const Text('Your progress won\'t be saved.'),
               actions: [
-                TextButton(
+                AppButton(
+                  label: 'Cancel',
                   onPressed: () => Navigator.of(ctx).pop(false),
-                  child: const Text('Cancel'),
+                  variant: AppButtonVariant.text,
                 ),
-                TextButton(
+                AppButton(
+                  label: 'Exit',
                   onPressed: () => Navigator.of(ctx).pop(true),
-                  child: const Text('Exit'),
+                  variant: AppButtonVariant.destructive,
                 ),
               ],
             ),
@@ -392,7 +394,7 @@ class _OnboardingFallback extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+              const Icon(Icons.error_outline, size: 64, color: AppColors.textHint),
               const SizedBox(height: 16),
               const Text(
                 'Something went wrong — let\'s go back',

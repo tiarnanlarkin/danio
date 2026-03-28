@@ -1122,19 +1122,18 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
       ),
       actions: [
         if (_hasUserKey)
-          TextButton(
+          AppButton(
+            label: 'Remove key',
             onPressed: _isBusy ? null : _clearKey,
-            child: Text(
-              'Remove key',
-              style: TextStyle(color: AppColors.error),
-            ),
+            variant: AppButtonVariant.destructive,
           ),
-        TextButton(
+        AppButton(
+          label: 'Close',
           onPressed: () {
             widget.onDismissed();
             Navigator.maybePop(context);
           },
-          child: const Text('Close'),
+          variant: AppButtonVariant.text,
         ),
         FilledButton(
           onPressed: _isBusy ? null : _saveKey,
