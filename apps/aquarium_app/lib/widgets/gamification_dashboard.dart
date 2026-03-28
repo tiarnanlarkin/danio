@@ -47,7 +47,7 @@ class GamificationDashboard extends ConsumerWidget {
         // and daily-goal changes only rebuild their own row.
         final content = Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 12,
+            horizontal: AppSpacing.sm2,
             vertical: AppSpacing.sm4,
           ),
           child: Column(
@@ -411,7 +411,7 @@ class _DailyGoalProgress extends StatelessWidget {
             if (isComplete)
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
+                  horizontal: AppSpacing.sm,
                   vertical: AppSpacing.xxs,
                 ),
                 decoration: BoxDecoration(
@@ -520,7 +520,7 @@ class _MiniStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: AppOverlays.black20,
         borderRadius: AppRadius.mediumRadius,

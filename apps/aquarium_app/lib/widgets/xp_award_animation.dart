@@ -87,7 +87,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
     if (reduceMotion) {
       // Show static "+XP" text without animation
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2, vertical: AppSpacing.sm2),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.warning, AppColors.warningAlpha80],
@@ -122,8 +122,8 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
               scale: _scaleAnimation,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
+                  horizontal: AppSpacing.lg2,
+                  vertical: AppSpacing.sm2,
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(

@@ -156,7 +156,7 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
                           child: Container(
                             width: 40,
                             height: 4,
-                            margin: const EdgeInsets.only(top: 8, bottom: 8),
+                            margin: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.sm),
                             decoration: BoxDecoration(
                               color: context.textHint,
                               borderRadius: AppRadius.xxsRadius,

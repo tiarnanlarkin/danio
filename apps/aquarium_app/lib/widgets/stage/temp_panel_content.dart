@@ -131,13 +131,13 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
       color: _kCream,
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm4, AppSpacing.md, AppSpacing.lg2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // ── Header ───────────────────────────────────────────────────
             _Header(streak: streak),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.sm4),
 
             // ── Hero: Thermometer + big readout ──────────────────────────
             _HeroSection(
@@ -151,11 +151,11 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
               lastEntry: lastEntry,
               formatTimestamp: _formatTimestamp,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.sm4),
 
             // ── Divider ──────────────────────────────────────────────────
             Container(height: 1, color: _kTeal.withAlpha(40)),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.sm4),
 
             // ── 7-Day Trend section ──────────────────────────────────────
             _TrendSection(
@@ -164,7 +164,7 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
               maxTemp: maxTemp,
               avgTemp: avgTemp,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpacing.sm4),
 
             // ── Log Temperature button ───────────────────────────────────
             _LogButton(tankId: widget.tankId),
@@ -245,7 +245,7 @@ class _Header extends StatelessWidget {
         const Spacer(),
         if (streak > 0)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
               color: _kAmberGold.withAlpha(30),
               borderRadius: AppRadius.pillRadius,
@@ -358,7 +358,7 @@ class _HeroSection extends StatelessWidget {
                   height: 1.0,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
                 temp != null
                     ? 'current temperature'
@@ -368,20 +368,20 @@ class _HeroSection extends StatelessWidget {
                   fontSize: 11,
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpacing.sm4),
 
               // Status badge
               if (status != null) _StatusBadge(status: status!),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpacing.sm4),
 
               // Optimal range indicator
               _OptimalRangeRow(min: optimalMin, max: optimalMax),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
 
               // Fish decorations — stacked at different heights
               const _FishDecorations(),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
 
               // Last logged timestamp
               if (lastEntry != null)
@@ -475,7 +475,7 @@ class _OptimalRangeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
         color: _kGreen.withAlpha(20),
         borderRadius: AppRadius.pillRadius,
@@ -569,7 +569,7 @@ class _StatusBadge extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: AppRadius.largeRadius,
@@ -635,7 +635,7 @@ class _TrendSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.sm3),
 
         // Sparkline chart
         Container(
@@ -655,7 +655,7 @@ class _TrendSection extends StatelessWidget {
             children: [
               // Chart area
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                padding: const EdgeInsets.fromLTRB(AppSpacing.sm2, AppSpacing.sm2, AppSpacing.sm2, AppSpacing.xs),
                 child: SizedBox(
                   height: 72,
                   child: sparkData.length >= 2
@@ -678,18 +678,18 @@ class _TrendSection extends StatelessWidget {
               // Day labels under chart
               if (sparkData.length >= 2)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+                  padding: const EdgeInsets.fromLTRB(AppSpacing.sm2, 0, AppSpacing.sm2, AppSpacing.sm3),
                   child: _DayLabels(count: sparkData.length),
                 ),
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppSpacing.sm3),
 
         // Stats row
         if (minTemp != null && maxTemp != null && avgTemp != null)
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm3, horizontal: AppSpacing.xs),
             child: Row(
               children: [
                 _StatCell(
@@ -742,7 +742,7 @@ class _StatCell extends StatelessWidget {
               height: 1.0,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             label,
             style: AppTypography.labelSmall.copyWith(
@@ -764,7 +764,7 @@ class _StatDivider extends StatelessWidget {
       width: 1,
       height: 28,
       color: _kCharcoal.withAlpha(30),
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
     );
   }
 }

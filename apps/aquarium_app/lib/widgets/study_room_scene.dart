@@ -508,7 +508,7 @@ class _GlassBadge extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: 16,
+            horizontal: AppSpacing.md,
             vertical: AppSpacing.sm3,
           ),
           decoration: BoxDecoration(

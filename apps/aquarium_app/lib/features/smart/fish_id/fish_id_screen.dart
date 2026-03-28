@@ -530,7 +530,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             const SizedBox(height: AppSpacing.xs),
             ...r.careTips.map(
               (tip) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
+                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

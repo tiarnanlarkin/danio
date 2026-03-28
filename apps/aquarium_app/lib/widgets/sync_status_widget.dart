@@ -51,7 +51,7 @@ class SyncStatusWidget extends ConsumerWidget {
     return Tooltip(
       message: tooltip,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
         child: status == CloudSyncStatus.syncing
             ? SizedBox(
                 width: 20,

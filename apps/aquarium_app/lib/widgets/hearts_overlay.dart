@@ -135,8 +135,8 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                     angle: _rotationAnimation.value,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 24,
+                        horizontal: AppSpacing.xl,
+                        vertical: AppSpacing.lg,
                       ),
                       decoration: BoxDecoration(
                         color: widget.gained
@@ -253,8 +253,8 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
               color: AppColors.errorAlpha90,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16,
+                  vertical: AppSpacing.sm,
+                  horizontal: AppSpacing.md,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

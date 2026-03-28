@@ -272,7 +272,7 @@ class BottomPlateState extends ConsumerState<BottomPlate>
                                   Container(
                                     width: 20,
                                     height: 3,
-                                    margin: const EdgeInsets.only(right: 8),
+                                    margin: const EdgeInsets.only(right: AppSpacing.sm),
                                     decoration: BoxDecoration(
                                       color: widget.tabColor != null
                                           ? Colors.white.withValues(alpha: 0.5)

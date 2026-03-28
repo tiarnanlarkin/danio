@@ -300,7 +300,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
     bool meetsTarget,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         children: [
           Expanded(
@@ -368,7 +368,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
             ...rebuilds.take(10).map((entry) {
               final isHigh = entry.value > 50;
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                 child: Row(
                   children: [
                     Expanded(
@@ -379,8 +379,8 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xxs,
                       ),
                       decoration: BoxDecoration(
                         color: isHigh

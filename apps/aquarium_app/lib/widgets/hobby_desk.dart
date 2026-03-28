@@ -100,7 +100,7 @@ class HobbyDesk extends StatelessWidget {
           // Divider (desk edge)
           Container(
             height: 4,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
             decoration: BoxDecoration(
               color: const Color(0xFFC4A574),
               borderRadius: AppRadius.xxsRadius,
@@ -253,7 +253,7 @@ class ItemDetailPopup extends StatelessWidget {
               children: rows
                   .map(
                     (row) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                       child: Row(
                         children: [
                           Text(row.label, style: AppTypography.bodySmall),

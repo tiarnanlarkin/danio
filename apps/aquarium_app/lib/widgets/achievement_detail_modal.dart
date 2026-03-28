@@ -107,7 +107,7 @@ class AchievementDetailModal extends StatelessWidget {
             // Rarity badge
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 16,
+                horizontal: AppSpacing.md,
                 vertical: AppSpacing.xs2,
               ),
               decoration: BoxDecoration(
@@ -141,7 +141,7 @@ class AchievementDetailModal extends StatelessWidget {
             // Category badge
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 12,
+                horizontal: AppSpacing.sm2,
                 vertical: AppSpacing.xs2,
               ),
               decoration: BoxDecoration(

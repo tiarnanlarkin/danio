@@ -211,7 +211,7 @@ class XpCounter extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: EdgeInsets.all(compact ? 4 : 6),
+          padding: EdgeInsets.all(compact ? AppSpacing.xs : AppSpacing.xs2),
           decoration: BoxDecoration(
             color: AppColors.xpAlpha20,
             shape: BoxShape.circle,

@@ -279,7 +279,7 @@ class ShelfDecoration extends StatelessWidget {
         // Shelf
         Container(
           height: shelfThickness,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
+          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -323,7 +323,7 @@ class _ShelfBracket extends StatelessWidget {
     return Container(
       width: 16,
       height: 24,
-      margin: const EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

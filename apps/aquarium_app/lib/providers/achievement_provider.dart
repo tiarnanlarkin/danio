@@ -572,14 +572,14 @@ class AchievementChecker {
           // List each achievement
           ...results.map(
             (r) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
               child: Row(
                 children: [
                   Text(
                     r.achievement.icon,
                     style: const TextStyle(fontSize: 24),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
                       r.achievement.name,
@@ -593,10 +593,10 @@ class AchievementChecker {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           // Rewards summary
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm2),
             decoration: BoxDecoration(
               color: AppOverlays.black10,
               borderRadius: AppRadius.md2Radius,

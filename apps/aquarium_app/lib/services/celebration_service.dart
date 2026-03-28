@@ -407,7 +407,7 @@ class _CelebrationOverlayWrapperState
         onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
         child: Container(
           margin: const EdgeInsets.all(AppSpacing.xl),
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl2, vertical: AppSpacing.xl),
           decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,

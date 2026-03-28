@@ -59,7 +59,7 @@ class _TankGlassBadgeState extends State<TankGlassBadge>
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
           child: Container(
             height: 24,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3),
             decoration: BoxDecoration(
               color: widget.theme.glassCard,
               borderRadius: AppRadius.pillRadius,

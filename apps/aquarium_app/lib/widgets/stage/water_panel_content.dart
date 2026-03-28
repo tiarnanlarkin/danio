@@ -688,7 +688,7 @@ class _ParamCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.xs2,
-              vertical: 2,
+              vertical: AppSpacing.xxs,
             ),
             decoration: BoxDecoration(
               color: bg,

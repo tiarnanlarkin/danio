@@ -118,7 +118,7 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 140, left: 16, right: 16),
+        padding: const EdgeInsets.only(bottom: 140, left: AppSpacing.md, right: AppSpacing.md),
         child: SlideTransition(
           position: _slideAnim,
           child: FadeTransition(

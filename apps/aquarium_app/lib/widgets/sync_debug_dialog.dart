@@ -90,7 +90,7 @@ class SyncDebugDialog extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               ...syncState.recentConflicts.map(
                 (conflict) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -128,7 +128,7 @@ class SyncDebugDialog extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               ...syncState.queuedActions.map(
                 (action) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: Row(
                     children: [
                       Icon(_getActionIcon(action.type), size: AppIconSizes.xs),

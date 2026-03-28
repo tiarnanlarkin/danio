@@ -275,7 +275,7 @@ class AmbientTimeIndicator extends ConsumerWidget {
     final icon = _getIcon(ambientState.currentPeriod);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: AppOverlays.black30,
         borderRadius: BorderRadius.circular(AppRadius.md2),

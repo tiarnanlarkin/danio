@@ -134,8 +134,8 @@ class PerformanceTrendWidget extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm + 2,
-        vertical: AppSpacing.xs + 1,
+        horizontal: AppSpacing.sm3,
+        vertical: AppSpacing.xs2,
       ),
       decoration: BoxDecoration(
         color: color.withAlpha(26),

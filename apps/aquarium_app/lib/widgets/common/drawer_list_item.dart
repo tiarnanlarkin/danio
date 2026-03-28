@@ -63,7 +63,7 @@ class DrawerListItem extends StatelessWidget {
       );
     } else if (badgeCount != null && badgeCount! > 0) {
       badge = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs2, vertical: AppSpacing.xxs),
         decoration: BoxDecoration(
           color: AppColors.error,
           borderRadius: BorderRadius.circular(AppRadius.pill),
