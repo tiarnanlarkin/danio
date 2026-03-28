@@ -144,6 +144,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             child: Image.asset(
               'assets/images/onboarding/onboarding_journey_bg.webp',
               fit: BoxFit.cover,
+              cacheWidth: 800,
+              cacheHeight: 1600,
               errorBuilder: (_, __, ___) => Container(
                 color: AppColors.textPrimary,
               ),

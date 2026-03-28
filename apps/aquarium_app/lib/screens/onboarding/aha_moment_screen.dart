@@ -253,6 +253,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                             width: 80,
                             height: 80,
                             fit: BoxFit.contain,
+                            cacheWidth: 160,
+                            cacheHeight: 160,
                           ),
                         )
                       : const Text('🐠', style: TextStyle(fontSize: 48)),
@@ -465,6 +467,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     width: 34,
                     height: 34,
                     fit: BoxFit.contain,
+                    cacheWidth: 68,
+                    cacheHeight: 68,
                   ),
                 )
               : const Text('🐠', style: TextStyle(fontSize: 22)),

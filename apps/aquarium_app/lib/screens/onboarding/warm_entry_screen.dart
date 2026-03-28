@@ -411,6 +411,8 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         child: Image.asset(
           thumbPath,
           fit: BoxFit.contain,
+          cacheWidth: 96,
+          cacheHeight: 96,
           errorBuilder: (_, __, ___) =>
               const Text('🐟', style: TextStyle(fontSize: 32)),
         ),

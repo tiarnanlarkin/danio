@@ -424,6 +424,8 @@ class _FishSpriteImage extends StatelessWidget {
           height: size,
           fit: BoxFit.cover,
           semanticLabel: commonName,
+          cacheWidth: (size * 2).toInt(),
+          cacheHeight: (size * 2).toInt(),
           errorBuilder: (_, __, ___) => _fallbackEmoji,
         ),
       );
