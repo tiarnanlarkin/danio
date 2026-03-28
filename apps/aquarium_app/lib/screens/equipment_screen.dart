@@ -366,28 +366,8 @@ class EquipmentScreen extends ConsumerWidget {
   }
 
   void _showEquipmentHistoryDialog(BuildContext context, Equipment equipment) {
-    showDialog<void>(
+    showAppDialog<void>(
       context: context,
-      builder: (_) =>
-          _EquipmentHistoryDialog(tankId: tankId, equipment: equipment),
-    );
-  }
-}
-
-class _EquipmentHistoryDialog extends ConsumerWidget {
-  final String tankId;
-  final Equipment equipment;
-
-  const _EquipmentHistoryDialog({
-    required this.tankId,
-    required this.equipment,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final logsAsync = ref.watch(allLogsProvider(tankId));
-
-    return AppDialog(
       title: 'History - ${equipment.name}',
       actions: [
         AppButton(
@@ -396,7 +376,26 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
           variant: AppButtonVariant.text,
         ),
       ],
-      child: SizedBox(
+      child: _EquipmentHistoryContent(tankId: tankId, equipment: equipment),
+    );
+  }
+}
+
+/// Content widget for the equipment history dialog.
+class _EquipmentHistoryContent extends ConsumerWidget {
+  final String tankId;
+  final Equipment equipment;
+
+  const _EquipmentHistoryContent({
+    required this.tankId,
+    required this.equipment,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logsAsync = ref.watch(allLogsProvider(tankId));
+
+    return SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(
@@ -448,7 +447,6 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
             );
           },
         ),
-      ),
     );
   }
 }

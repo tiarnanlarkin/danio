@@ -293,9 +293,17 @@ class TasksScreen extends ConsumerWidget {
   }
 
   void _showTaskHistoryDialog(BuildContext context, Task task) {
-    showDialog<void>(
+    showAppDialog<void>(
       context: context,
-      builder: (_) => _TaskHistoryDialog(tankId: tankId, task: task),
+      title: 'History - ${task.title}',
+      actions: [
+        AppButton(
+          label: 'Close',
+          onPressed: () => Navigator.maybePop(context),
+          variant: AppButtonVariant.text,
+        ),
+      ],
+      child: _TaskHistoryContent(tankId: tankId, task: task),
     );
   }
 }
@@ -334,26 +342,18 @@ class _TaskListItem {
   factory _TaskListItem.spacer() => _TaskListItem._(isSpacer: true);
 }
 
-class _TaskHistoryDialog extends ConsumerWidget {
+/// Content widget for the task history dialog.
+class _TaskHistoryContent extends ConsumerWidget {
   final String tankId;
   final Task task;
 
-  const _TaskHistoryDialog({required this.tankId, required this.task});
+  const _TaskHistoryContent({required this.tankId, required this.task});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
-    return AppDialog(
-      title: 'History - ${task.title}',
-      actions: [
-        AppButton(
-          label: 'Close',
-          onPressed: () => Navigator.maybePop(context),
-          variant: AppButtonVariant.text,
-        ),
-      ],
-      child: SizedBox(
+    return SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(
@@ -420,7 +420,6 @@ class _TaskHistoryDialog extends ConsumerWidget {
             );
           },
         ),
-      ),
     );
   }
 }
