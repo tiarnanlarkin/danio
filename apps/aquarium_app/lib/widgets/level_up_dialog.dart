@@ -290,7 +290,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       : BoxShape.rectangle,
                   borderRadius: random.nextBool()
                       ? null
-                      : BorderRadius.circular(2),
+                      : AppRadius.xxsRadius,
                 ),
               ),
             ),

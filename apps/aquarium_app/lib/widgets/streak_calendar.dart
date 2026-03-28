@@ -309,7 +309,7 @@ class _DayCell extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: AppRadius.xxsRadius,
           border: goal.isToday
               ? Border.all(color: AppColors.primary, width: 2)
               : null,
@@ -397,7 +397,7 @@ class _LegendCell extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: AppRadius.xxsRadius,
       ),
     );
   }

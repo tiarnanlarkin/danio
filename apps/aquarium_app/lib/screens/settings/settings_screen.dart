@@ -380,7 +380,7 @@ class _SectionHeader extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [AppColors.primary, AppColors.primaryAlpha50],
               ),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: AppRadius.xxsRadius,
             ),
           ),
           const SizedBox(width: AppSpacing.sm2),

@@ -53,7 +53,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
             height: 4,
             decoration: BoxDecoration(
               color: AppOverlays.textHint30,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: AppRadius.xxsRadius,
             ),
           ),
 

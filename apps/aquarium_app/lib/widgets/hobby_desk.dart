@@ -103,7 +103,7 @@ class HobbyDesk extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               color: const Color(0xFFC4A574),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: AppRadius.xxsRadius,
               boxShadow: [
                 BoxShadow(
                   color: AppOverlays.black10,
@@ -448,7 +448,7 @@ class MiniTankScene extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [Color(0xFFD4A574), Color(0xFFC49A6C)],
                 ),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: AppRadius.xxsRadius,
                 boxShadow: [
                   BoxShadow(
                     color: AppOverlays.black15,

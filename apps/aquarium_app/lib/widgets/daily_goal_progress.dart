@@ -237,7 +237,7 @@ class DailyGoalCard extends ConsumerWidget {
                             AppColors.primary,
                           ),
                           minHeight: 4,
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: AppRadius.xxsRadius,
                         ),
                       ],
                     ],

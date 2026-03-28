@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../theme/app_theme.dart';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';
 import '../data/achievements.dart';
@@ -557,12 +558,12 @@ class AchievementChecker {
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1a1a2e),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg2),
         ),
         title: Text(
           '${results.length} Achievements Unlocked! 🎉',
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.onPrimary,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -586,7 +587,7 @@ class AchievementChecker {
                       child: Text(
                         r.achievement.name,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),
@@ -601,8 +602,8 @@ class AchievementChecker {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white.withAlpha(25),
-                borderRadius: BorderRadius.circular(12),
+                color: AppColors.whiteAlpha10,
+                borderRadius: AppRadius.md2Radius,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -613,7 +614,7 @@ class AchievementChecker {
                       Text(
                         '+$totalXp XP',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -625,7 +626,7 @@ class AchievementChecker {
                       Text(
                         '+$totalGems Gems',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -642,11 +643,11 @@ class AchievementChecker {
             child: ElevatedButton(
               onPressed: () => Navigator.of(ctx).pop(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.card,
                 foregroundColor: const Color(0xFF1a1a2e),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.md2Radius,
                 ),
               ),
               child: const Text(

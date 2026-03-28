@@ -159,7 +159,7 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
                             margin: const EdgeInsets.only(top: 8, bottom: 8),
                             decoration: BoxDecoration(
                               color: context.textHint,
-                              borderRadius: BorderRadius.circular(2),
+                              borderRadius: AppRadius.xxsRadius,
                             ),
                           ),
                         ),

@@ -841,7 +841,7 @@ class _LogButton extends StatelessWidget {
           elevation: 0,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.md2Radius,
           ),
         ),
       ),

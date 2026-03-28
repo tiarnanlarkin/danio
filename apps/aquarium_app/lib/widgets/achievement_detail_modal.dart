@@ -48,7 +48,7 @@ class AchievementDetailModal extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: AppRadius.xxsRadius,
               ),
             ),
 
