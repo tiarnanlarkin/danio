@@ -537,7 +537,7 @@ class _EquipmentCard extends StatelessWidget {
           ),
           if (equipment.lastServiced != null)
             Padding(
-              padding: const EdgeInsets.only(left: 72, right: AppSpacing.md, bottom: AppSpacing.sm2),
+              padding: const EdgeInsets.only(left: AppSpacing.xxxl, right: AppSpacing.md, bottom: AppSpacing.sm2),
               child: Row(
                 children: [
                   Icon(Icons.history, size: 14, color: context.textHint),
