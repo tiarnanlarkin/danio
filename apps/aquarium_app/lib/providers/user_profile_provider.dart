@@ -87,6 +87,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         state = const AsyncValue.data(null);
       }
     } catch (e, st) {
+      logError('UserProfileProvider: _load failed: $e', stackTrace: st, tag: 'UserProfileProvider');
       state = AsyncValue.error(e, st);
     }
   }

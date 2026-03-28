@@ -124,6 +124,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
       state = AsyncValue.data(gemsState);
     } catch (e, st) {
+      logError('GemsProvider: _load failed: $e', stackTrace: st, tag: 'GemsProvider');
       state = AsyncValue.error(e, st);
     }
   }

@@ -73,6 +73,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
       state = AsyncValue.data(inventory);
     } catch (e, st) {
+      logError('InventoryProvider: _load failed: $e', stackTrace: st, tag: 'InventoryProvider');
       state = AsyncValue.error(e, st);
     }
   }
