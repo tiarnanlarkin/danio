@@ -9,6 +9,7 @@ import '../providers/user_profile_provider.dart';
 import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});
@@ -187,18 +188,13 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
 
     if (!context.mounted) return;
 
-    showModalBottomSheet(
+    showAppScrollableSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.85,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (_, scrollController) =>
-            _PlantDetailSheet(plant: plant, scrollController: scrollController),
-      ),
+      initialSize: 0.85,
+      minSize: 0.5,
+      maxSize: 0.95,
+      builder: (_, scrollController) =>
+          _PlantDetailSheet(plant: plant, scrollController: scrollController),
     );
   }
 }

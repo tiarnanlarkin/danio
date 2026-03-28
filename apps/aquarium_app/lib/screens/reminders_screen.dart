@@ -8,6 +8,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -51,10 +52,8 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   }
 
   void _addReminder() {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (ctx) => _AddReminderSheet(
         onSave: (reminder) {
           setState(() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../models/models.dart';
 import '../../../theme/app_theme.dart';
 import 'tank_picker_sheet.dart';
+import '../../../widgets/app_bottom_sheet.dart';
 
 class TankSwitcher extends StatelessWidget {
   final List<Tank> tanks;
@@ -116,19 +117,18 @@ class TankSwitcher extends StatelessWidget {
   }
 
   void _showTankPicker(BuildContext context) {
-    showModalBottomSheet(
+    showAppBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => TankPickerSheet(
+      padding: EdgeInsets.zero,
+      child: TankPickerSheet(
         tanks: tanks,
         currentIndex: currentIndex,
         onSelected: (index) {
           onChanged(index);
-          Navigator.maybePop(ctx);
+          Navigator.maybePop(context);
         },
         onAddTank: () {
-          Navigator.maybePop(ctx);
+          Navigator.maybePop(context);
           onAddTank();
         },
       ),

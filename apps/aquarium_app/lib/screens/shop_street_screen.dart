@@ -11,6 +11,7 @@ import '../utils/app_constants.dart';
 import 'gem_shop_screen.dart';
 import 'wishlist_screen.dart';
 import '../utils/navigation_throttle.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 /// Shop Street colors - fresh outdoor market theme
 /// Adapts slightly for dark mode to maintain readability
@@ -241,17 +242,11 @@ class ShopStreetScreen extends ConsumerWidget {
       text: existingShop?.notes ?? '',
     );
 
-    showModalBottomSheet<void>(
+    showAppBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: AppRadius.largeRadius,
-        ),
+      padding: EdgeInsets.zero,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(

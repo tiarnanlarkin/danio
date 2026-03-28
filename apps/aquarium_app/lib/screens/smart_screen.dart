@@ -20,6 +20,7 @@ import '../widgets/first_visit_tooltip.dart';
 import 'compatibility_checker_screen.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
@@ -377,16 +378,12 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
   void _showAnomalyHistory(BuildContext context, WidgetRef ref) {
     final anomalies = ref.read(anomalyHistoryProvider);
-    showModalBottomSheet(
+    showAppScrollableSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        maxChildSize: 0.9,
-        minChildSize: 0.3,
-        expand: false,
-        builder: (ctx, scrollController) {
+      initialSize: 0.6,
+      maxSize: 0.9,
+      minSize: 0.3,
+      builder: (ctx, scrollController) {
           if (anomalies.isEmpty) {
             return Column(
               children: [
@@ -474,7 +471,6 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             },
           );
         },
-      ),
     );
   }
 

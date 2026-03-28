@@ -30,6 +30,7 @@ import 'settings_notifications_section.dart';
 import 'widgets/guides_section.dart';
 import 'widgets/tools_section.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/app_bottom_sheet.dart';
 
 export 'settings_account_section.dart';
 export 'settings_data_section.dart';
@@ -244,9 +245,8 @@ class SettingsScreen extends ConsumerWidget {
     final profile = ref.read(userProfileProvider).value;
     final currentGoal = profile?.dailyXpGoal ?? 50;
 
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -413,9 +413,8 @@ void _showThemePicker(
   WidgetRef ref,
   AppThemeMode current,
 ) {
-  showModalBottomSheet(
+  showAppDragSheet(
     context: context,
-    showDragHandle: true,
     builder: (ctx) => SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,

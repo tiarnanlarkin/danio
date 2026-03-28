@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/hobby_desk.dart';
+import '../../widgets/app_bottom_sheet.dart';
 
 /// Helper to format a DateTime as a friendly relative string.
 String timeAgo(DateTime dt) {
@@ -40,18 +41,15 @@ void showItemSheet(
   required Color color,
   required List<ItemDetailRow> rows,
 }) {
-  showModalBottomSheet(
+  showAppBottomSheet(
     context: context,
-    backgroundColor: Colors.transparent,
-    builder: (ctx) => Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      child: ItemDetailPopup(
-        title: title,
-        icon: icon,
-        accentColor: color,
-        rows: rows,
-        onClose: () => Navigator.maybePop(ctx),
-      ),
+    padding: EdgeInsets.zero,
+    child: ItemDetailPopup(
+      title: title,
+      icon: icon,
+      accentColor: color,
+      rows: rows,
+      onClose: () => Navigator.maybePop(context),
     ),
   );
 }

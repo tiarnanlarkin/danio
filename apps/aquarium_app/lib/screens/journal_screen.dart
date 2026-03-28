@@ -10,6 +10,7 @@ import '../theme/app_theme.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class JournalScreen extends ConsumerWidget {
   final String tankId;
@@ -97,10 +98,8 @@ class JournalScreen extends ConsumerWidget {
   }
 
   void _addJournalEntry(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (ctx) => _NewJournalEntrySheet(
         tankId: tankId,
         onSave: (notes) async {

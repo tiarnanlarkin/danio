@@ -16,6 +16,7 @@ import '../widgets/mascot/mascot_widgets.dart';
 import 'add_log_screen.dart';
 import 'log_detail_screen.dart';
 import '../utils/navigation_throttle.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class LogsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -254,10 +255,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
     Set<LogType> workingTypes = Set<LogType>.from(initialTypes);
     DateTimeRange? workingRange = initialRange;
 
-    await showModalBottomSheet<void>(
+    await showAppDragSheet<void>(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
@@ -368,9 +367,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
   }
 
   void _showAddLogSheet(BuildContext context) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
       builder: (ctx) => SafeArea(
         child: Wrap(
           children: [

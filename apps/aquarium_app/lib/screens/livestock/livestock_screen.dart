@@ -26,6 +26,7 @@ import 'livestock_bulk_add_dialog.dart';
 import 'livestock_card.dart';
 import 'livestock_last_fed.dart';
 import '../../utils/logger.dart';
+import '../../widgets/app_bottom_sheet.dart';
 
 const _uuid = Uuid();
 
@@ -640,19 +641,15 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) => LivestockAddDialog(tankId: widget.tankId),
     );
   }
 
   void _showBulkAddDialog(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) => LivestockBulkAddDialog(tankId: widget.tankId),
     );
   }
@@ -662,10 +659,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     WidgetRef ref,
     Livestock livestock,
   ) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) =>
           LivestockAddDialog(tankId: widget.tankId, existing: livestock),
     );

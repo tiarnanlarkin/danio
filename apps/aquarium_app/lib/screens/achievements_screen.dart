@@ -13,6 +13,7 @@ import '../widgets/effects/shimmer_glow.dart';
 import '../providers/achievement_provider.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/achievement_detail_modal.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class AchievementsScreen extends ConsumerStatefulWidget {
   const AchievementsScreen({super.key});
@@ -516,12 +517,10 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
     Achievement achievement,
     AchievementProgress progress,
   ) {
-    showModalBottomSheet(
+    showAppBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) =>
-          AchievementDetailModal(achievement: achievement, progress: progress),
+      padding: EdgeInsets.zero,
+      child: AchievementDetailModal(achievement: achievement, progress: progress),
     );
   }
 }

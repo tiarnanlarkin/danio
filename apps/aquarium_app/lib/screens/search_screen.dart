@@ -11,6 +11,7 @@ import '../theme/app_theme.dart';
 import 'livestock_detail_screen.dart';
 import 'tank_detail/tank_detail_screen.dart';
 import '../utils/navigation_throttle.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -301,16 +302,12 @@ class _SearchResults extends StatelessWidget {
   }
 
   void _showSpeciesInfo(BuildContext context, SpeciesInfo species) {
-    showModalBottomSheet(
+    showAppScrollableSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.7,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (_, scrollController) => SingleChildScrollView(
+      initialSize: 0.7,
+      minSize: 0.5,
+      maxSize: 0.95,
+      builder: (_, scrollController) => SingleChildScrollView(
           controller: scrollController,
           padding: const EdgeInsets.all(AppSpacing.lg2),
           child: Column(
@@ -367,7 +364,6 @@ class _SearchResults extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }

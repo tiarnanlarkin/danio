@@ -16,6 +16,7 @@ import '../widgets/danio_snack_bar.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 const _uuid = Uuid();
 
@@ -257,19 +258,15 @@ class TasksScreen extends ConsumerWidget {
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) => _AddTaskSheet(tankId: tankId, ref: ref),
     );
   }
 
   void _showEditDialog(BuildContext context, WidgetRef ref, Task task) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) => _AddTaskSheet(tankId: tankId, ref: ref, existing: task),
     );
   }

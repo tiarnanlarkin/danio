@@ -9,6 +9,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 /// Screen to view and manage wishlist items for a category
 class WishlistScreen extends ConsumerWidget {
@@ -106,33 +107,31 @@ class WishlistScreen extends ConsumerWidget {
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    showAppBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _AddEditItemSheet(
+      padding: EdgeInsets.zero,
+      child: _AddEditItemSheet(
         category: category,
         accentColor: _accentColor,
         onSave: (item) {
           ref.read(wishlistProvider.notifier).addItem(item);
-          if (Navigator.canPop(ctx)) Navigator.pop(ctx);
+          Navigator.maybePop(context);
         },
       ),
     );
   }
 
   void _showEditDialog(BuildContext context, WidgetRef ref, WishlistItem item) {
-    showModalBottomSheet(
+    showAppBottomSheet(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => _AddEditItemSheet(
+      padding: EdgeInsets.zero,
+      child: _AddEditItemSheet(
         category: category,
         accentColor: _accentColor,
         existingItem: item,
         onSave: (updated) {
           ref.read(wishlistProvider.notifier).updateItem(updated);
-          if (Navigator.canPop(ctx)) Navigator.pop(ctx);
+          Navigator.maybePop(context);
         },
       ),
     );
@@ -183,50 +182,40 @@ class WishlistScreen extends ConsumerWidget {
     WidgetRef ref,
     List<WishlistItem> items,
   ) {
-    showModalBottomSheet(
+    showAppBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: AppRadius.largeRadius,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg2),
-              child: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: AppColors.success),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Text('Purchased Items', style: AppTypography.headlineSmall),
-                ],
-              ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.check_circle, color: AppColors.success),
+              const SizedBox(width: AppSpacing.sm2),
+              Text('Purchased Items', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.4,
             ),
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.4,
-              ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return ListTile(
-                    leading: Icon(Icons.check_circle, color: _accentColor),
-                    title: Text(item.name),
-                    subtitle: item.purchasedAt != null
-                        ? Text('Purchased ${_formatDate(item.purchasedAt!)}')
-                        : null,
-                  );
-                },
-              ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return ListTile(
+                  leading: Icon(Icons.check_circle, color: _accentColor),
+                  title: Text(item.name),
+                  subtitle: item.purchasedAt != null
+                      ? Text('Purchased ${_formatDate(item.purchasedAt!)}')
+                      : null,
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

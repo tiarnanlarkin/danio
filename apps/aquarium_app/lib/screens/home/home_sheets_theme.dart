@@ -3,23 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
+import '../../widgets/app_bottom_sheet.dart';
 
 /// Room theme picker bottom sheet.
 void showThemePicker(BuildContext context, WidgetRef ref) {
-  showModalBottomSheet(
+  showAppBottomSheet(
     context: context,
-    backgroundColor: Colors.transparent,
-    builder: (ctx) => Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.lg2),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: AppRadius.largeRadius,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
           Row(
             children: [
               const Icon(Icons.palette, size: AppIconSizes.md),
@@ -44,7 +37,7 @@ void showThemePicker(BuildContext context, WidgetRef ref) {
                 child: GestureDetector(
                   onTap: () {
                     ref.read(roomThemeProvider.notifier).setTheme(type);
-                    Navigator.maybePop(ctx);
+                    Navigator.maybePop(context);
                   },
                   child: Container(
                     width: 100,

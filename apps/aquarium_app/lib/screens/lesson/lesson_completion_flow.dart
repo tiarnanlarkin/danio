@@ -9,6 +9,7 @@ import '../../widgets/core/app_button.dart';
 import '../../widgets/level_up_dialog.dart';
 import '../../widgets/xp_award_animation.dart';
 import 'lesson_screen.dart';
+import '../../widgets/app_bottom_sheet.dart';
 
 /// Renders the quiz results screen (score, XP earned, pass/fail state) and the
 /// "Complete Lesson" action.  Also contains the helpers for showing the next-
@@ -276,13 +277,8 @@ void showNextLessonOrPop(
   }
 
   // Show next lesson bottom sheet
-  showModalBottomSheet<bool>(
+  showAppDragSheet<bool>(
     context: context,
-    showDragHandle: true,
-    isDismissible: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-    ),
     builder: (ctx) {
       final theme = Theme.of(ctx);
       return Padding(

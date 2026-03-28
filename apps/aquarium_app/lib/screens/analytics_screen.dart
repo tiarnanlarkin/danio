@@ -19,6 +19,7 @@ import '../widgets/core/app_states.dart';
 import '../widgets/core/app_card.dart';
 import '../utils/logger.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class AnalyticsScreen extends ConsumerStatefulWidget {
   const AnalyticsScreen({super.key});
@@ -1227,9 +1228,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
     if (!context.mounted) return;
 
-    await showModalBottomSheet(
+    await showAppDragSheet(
       context: context,
-      showDragHandle: true,
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,

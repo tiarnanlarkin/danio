@@ -8,6 +8,7 @@ import '../theme/app_theme.dart';
 import '../utils/debouncer.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});
@@ -220,19 +221,14 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
 
     if (!context.mounted) return;
 
-    showModalBottomSheet(
+    showAppScrollableSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (ctx) => DraggableScrollableSheet(
-        initialChildSize: 0.85,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        expand: false,
-        builder: (_, scrollController) => _SpeciesDetailSheet(
-          species: species,
-          scrollController: scrollController,
-        ),
+      initialSize: 0.85,
+      minSize: 0.5,
+      maxSize: 0.95,
+      builder: (_, scrollController) => _SpeciesDetailSheet(
+        species: species,
+        scrollController: scrollController,
       ),
     );
   }

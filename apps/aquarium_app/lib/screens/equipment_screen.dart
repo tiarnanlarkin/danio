@@ -23,6 +23,7 @@ import '../widgets/core/app_card.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 const _uuid = Uuid();
 
@@ -233,10 +234,8 @@ class EquipmentScreen extends ConsumerWidget {
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) => _AddEquipmentSheet(tankId: tankId, ref: ref),
     );
   }
@@ -246,10 +245,8 @@ class EquipmentScreen extends ConsumerWidget {
     WidgetRef ref,
     Equipment equipment,
   ) {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (_) =>
           _AddEquipmentSheet(tankId: tankId, ref: ref, existing: equipment),
     );

@@ -9,6 +9,7 @@ import 'dart:convert';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 /// Returns the currency symbol for the current device locale.
 /// Falls back to '£' if the locale cannot be determined.
@@ -62,10 +63,8 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   }
 
   void _addExpense() {
-    showModalBottomSheet(
+    showAppDragSheet(
       context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
       builder: (ctx) => _AddExpenseSheet(
         currency: _currency,
         onSave: (expense) {
