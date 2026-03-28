@@ -333,10 +333,6 @@ extension MasteryLevelExt on MasteryLevel {
   }
 }
 
-// ==========================================
-// REVIEW ATTEMPT
-// ==========================================
-
 /// Record of a single review attempt
 @immutable
 class ReviewAttempt {
