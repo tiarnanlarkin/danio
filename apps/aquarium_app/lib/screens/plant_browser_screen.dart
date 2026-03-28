@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/plant_database.dart';
@@ -21,6 +23,13 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
   bool _lowTechOnly = false;
   final Set<String> _researchedPlants =
       {}; // Track researched plants this session
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   List<PlantInfo> get _filteredPlants {
     var results = PlantDatabase.plants;
@@ -65,7 +74,12 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: AppSearchField(
               hint: 'Search plants...',
-              onChanged: (v) => setState(() => _searchQuery = v),
+              onChanged: (v) {
+                _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 300), () {
+                  setState(() => _searchQuery = v);
+                });
+              },
             ),
           ),
 
