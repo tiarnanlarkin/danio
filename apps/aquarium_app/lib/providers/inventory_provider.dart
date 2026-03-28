@@ -6,6 +6,7 @@ import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
 import 'hearts_provider.dart';
 import 'user_profile_provider.dart';
+import '../utils/logger.dart';
 
 /// Provider for user's shop inventory
 final inventoryProvider =
@@ -63,9 +64,10 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
                 .read(userProfileProvider.notifier)
                 .updateProfile(inventory: []);
           }
-        } catch (_) {
+        } catch (e) {
           // Migration is best-effort — if profile isn't loaded yet, we'll
           // try again next time inventory loads.
+          logError('InventoryProvider: migration best-effort failed: $e', tag: 'InventoryProvider');
         }
       }
 
@@ -163,7 +165,8 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       }
 
       return true;
-    } catch (e) {
+    } catch (e, st) {
+      logError('InventoryProvider: purchase failed, compensating refund: $e', stackTrace: st, tag: 'InventoryProvider');
       // Compensating refund: inventory save failed, give gems back
       await gemsNotifier.refund(
         amount: item.gemCost,

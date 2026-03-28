@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../models/gem_transaction.dart';
 import 'user_profile_provider.dart';
+import '../utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -146,7 +147,8 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         }
         await prefs.setString(_key, jsonEncode(gemsState.toJson()));
         await _saveCumulative(prefs);
-      } catch (e) {
+      } catch (e, st) {
+        logError('GemsProvider: save failed: $e', stackTrace: st, tag: 'GemsProvider');
         throw Exception('Failed to save gems data: $e');
       }
     });
@@ -280,7 +282,8 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         await _save(updatedState);
         state = AsyncValue.data(updatedState);
         return true;
-      } catch (e) {
+      } catch (e, st) {
+        logError('GemsProvider: spend failed, rolling back: $e', stackTrace: st, tag: 'GemsProvider');
         // Rollback: restore original state
         state = AsyncValue.data(originalState);
         rethrow;

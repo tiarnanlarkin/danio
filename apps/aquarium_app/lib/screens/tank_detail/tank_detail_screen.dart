@@ -325,10 +325,17 @@ class TankDetailScreen extends ConsumerWidget {
     // TankDetailScreen route that has already been popped and is deactivated.
     // Calling AppFeedback.showSuccess(context, ...) after pop() would throw
     // "Looking up a deactivated widget's ancestor is unsafe".
+    // Use pre-captured messenger — this route is already popped.
     messenger.showSnackBar(
       SnackBar(
-        content: Text('${tank.name} deleted'),
+        content: Text(
+          '${tank.name} deleted',
+          style: AppTypography.bodyMedium,
+        ),
+        behavior: SnackBarBehavior.floating,
         duration: kSnackbarDuration,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+        margin: const EdgeInsets.all(AppSpacing.md),
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
@@ -342,7 +349,7 @@ class TankDetailScreen extends ConsumerWidget {
                   children: [
                     const Icon(
                       Icons.check_circle,
-                      color: Colors.white,
+                      color: AppColors.onSuccess,
                       size: 20,
                     ),
                     const SizedBox(width: AppSpacing.sm2),
@@ -350,7 +357,7 @@ class TankDetailScreen extends ConsumerWidget {
                       child: Text(
                         '${tank.name} restored',
                         style: AppTypography.bodyMedium.copyWith(
-                          color: Colors.white,
+                          color: AppColors.onSuccess,
                         ),
                       ),
                     ),

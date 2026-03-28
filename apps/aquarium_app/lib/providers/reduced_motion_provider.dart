@@ -109,8 +109,8 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
       final result = await platform.invokeMethod<double>('getAnimationScale');
       return result ?? 1.0;
     } catch (e) {
-      // If platform channel not implemented, check via MediaQuery
-      // This is a fallback - not as accurate but works
+      // If platform channel not implemented, fall back to default
+      appLog('ReducedMotionProvider: platform channel unavailable, defaulting to 1.0: $e', tag: 'ReducedMotionProvider');
       return 1.0;
     }
   }

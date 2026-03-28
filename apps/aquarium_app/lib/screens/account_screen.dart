@@ -9,6 +9,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../utils/logger.dart';
 
 /// Account screen - sign-in / profile / sync management.
 ///
@@ -391,7 +392,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       if (context.mounted) {
         DanioSnackBar.success(context, 'Backup uploaded successfully ✓');
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('AccountScreen: cloud backup failed: $e', stackTrace: st, tag: 'AccountScreen');
       if (context.mounted) {
         DanioSnackBar.error(context, 'Backup didn\'t go through. Check your connection and try again!');
       }
@@ -428,7 +430,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       if (context.mounted) {
         DanioSnackBar.success(context, 'Backup restored successfully ✓');
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('AccountScreen: cloud restore failed: $e', stackTrace: st, tag: 'AccountScreen');
       if (context.mounted) {
         DanioSnackBar.error(context, 'Restore didn\'t go through. Check your connection and try again!');
       }

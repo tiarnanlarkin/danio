@@ -869,7 +869,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       if (picked.length > remaining && mounted) {
         AppFeedback.showInfo(context, 'Added $remaining photos (max 5)');
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('AddLogScreen: photo pick failed: $e', stackTrace: st, tag: 'AddLogScreen');
       if (mounted) {
         AppFeedback.showError(
           context,
@@ -1027,7 +1028,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           '${log.typeName} logged! +$effectiveXp XP',
         );
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('AddLogScreen: save failed: $e', stackTrace: st, tag: 'AddLogScreen');
       if (mounted) {
         AppFeedback.showError(
           context,

@@ -384,8 +384,9 @@ class TankActions {
 
         // Note: livestock, equipment, logs would need separate handling
         // with updated tankId references if we wanted full import
-      } catch (_) {
+      } catch (e) {
         // Skip tanks that fail to parse
+        logError('TankProvider: skipping tank that failed to parse: $e', tag: 'TankProvider');
         continue;
       }
     }

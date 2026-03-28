@@ -14,6 +14,7 @@ import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
+import '../../../utils/logger.dart';
 
 /// Screen that generates and displays a personalised weekly maintenance plan.
 class WeeklyPlanScreen extends ConsumerStatefulWidget {
@@ -204,7 +205,8 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     } on OpenAIException catch (e) {
       if (!mounted) return;
       setState(() => _error = e.message);
-    } catch (e) {
+    } catch (e, st) {
+      logError('WeeklyPlanScreen: plan generation failed: $e', stackTrace: st, tag: 'WeeklyPlanScreen');
       if (!mounted) return;
       setState(
         () => _error = 'Couldn\'t generate your plan. Try again in a moment.',

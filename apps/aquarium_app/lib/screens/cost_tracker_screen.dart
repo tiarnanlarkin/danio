@@ -8,8 +8,10 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../utils/logger.dart';
 
 /// Returns the currency symbol for the current device locale.
 /// Falls back to '£' if the locale cannot be determined.
@@ -18,7 +20,8 @@ String _localeCurrencySymbol() {
     final locale = Platform.localeName; // e.g. "en_GB", "en_US"
     final format = NumberFormat.simpleCurrency(locale: locale);
     return format.currencySymbol;
-  } catch (_) {
+  } catch (e) {
+    appLog('CostTrackerScreen: locale currency lookup failed, using £: $e', tag: 'CostTrackerScreen');
     return '£';
   }
 }
@@ -84,22 +87,16 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     });
     _saveExpenses();
 
-    // Use native snackbar for undo functionality (AppFeedback doesn't support actions yet)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Deleted: ${expense.description}'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _expenses.insert(index, expense);
-            });
-            _saveExpenses();
-          },
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 4),
-      ),
+    DanioSnackBar.show(
+      context,
+      'Deleted: ${expense.description}',
+      actionLabel: 'Undo',
+      onAction: () {
+        setState(() {
+          _expenses.insert(index, expense);
+        });
+        _saveExpenses();
+      },
     );
   }
 

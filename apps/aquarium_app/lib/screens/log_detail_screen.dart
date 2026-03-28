@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/core/bubble_loader.dart';
+import '../widgets/danio_snack_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
@@ -174,20 +175,16 @@ class LogDetailScreen extends ConsumerWidget {
     ref.invalidate(allLogsProvider(tankId));
 
     if (context.mounted) {
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.showSnackBar(
-        SnackBar(
-          content: const Text('Log deleted'),
-          duration: const Duration(seconds: 5),
-          action: SnackBarAction(
-            label: 'UNDO',
-            onPressed: () async {
-              await storage.saveLog(log);
-              ref.invalidate(logsProvider(tankId));
-              ref.invalidate(allLogsProvider(tankId));
-            },
-          ),
-        ),
+      DanioSnackBar.show(
+        context,
+        'Log deleted',
+        duration: const Duration(seconds: 5),
+        actionLabel: 'Undo',
+        onAction: () async {
+          await storage.saveLog(log);
+          ref.invalidate(logsProvider(tankId));
+          ref.invalidate(allLogsProvider(tankId));
+        },
       );
       Navigator.maybePop(context);
     }

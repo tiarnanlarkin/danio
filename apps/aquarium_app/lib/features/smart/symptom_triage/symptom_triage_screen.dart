@@ -13,6 +13,7 @@ import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/danio_snack_bar.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../smart_providers.dart';
+import '../../../utils/logger.dart';
 
 /// Common fish health symptoms for quick-select chips.
 const _commonSymptoms = [
@@ -228,7 +229,8 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     } on OpenAIException catch (e) {
       if (!mounted) return;
       setState(() => _error = e.message);
-    } catch (e) {
+    } catch (e, st) {
+      logError('SymptomTriageScreen: triage failed: $e', stackTrace: st, tag: 'SymptomTriageScreen');
       if (!mounted) return;
       setState(() => _error = 'Something went wrong. Give it another go!');
     } finally {

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/danio_snack_bar.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/mascot/mascot_widgets.dart';
@@ -132,23 +133,17 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     });
     _saveReminders();
 
-    // Use native snackbar for undo functionality (AppFeedback doesn't support actions yet)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Deleted: ${reminder.title}'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _reminders.insert(index, reminder);
-              _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
-            });
-            _saveReminders();
-          },
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 4),
-      ),
+    DanioSnackBar.show(
+      context,
+      'Deleted: ${reminder.title}',
+      actionLabel: 'Undo',
+      onAction: () {
+        setState(() {
+          _reminders.insert(index, reminder);
+          _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
+        });
+        _saveReminders();
+      },
     );
   }
 

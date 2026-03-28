@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,10 +69,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     ref.read(sharedPreferencesProvider.future).then((prefs) async {
       try {
         await prefs.setString(_key, jsonEncode(toSave.toJson()));
-      } catch (e) {
-        if (kDebugMode) {
-          debugPrint('Warning: profile save failed on lifecycle pause: $e');
-        }
+      } catch (e, st) {
+        logError('UserProfileProvider: profile save failed on lifecycle pause: $e', stackTrace: st, tag: 'UserProfileProvider');
       }
     });
   }
@@ -424,11 +421,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
                 reason: GemEarnReason.dailyGoalMet,
               );
             }
-          } catch (e) {
+          } catch (e, st) {
             // Gem awarding failed — log but don't break XP recording.
-            if (kDebugMode) {
-              debugPrint('Warning: gem award failed in recordActivity: $e');
-            }
+            logError('UserProfileProvider: gem award failed in recordActivity: $e', stackTrace: st, tag: 'UserProfileProvider');
           }
         },
       );

@@ -17,6 +17,7 @@ import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
 import 'add_log_screen.dart';
 import '../widgets/core/app_button.dart';
+import '../utils/logger.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -550,7 +551,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       await file.writeAsString(buffer.toString());
 
       await Share.shareXFiles([XFile(file.path)], subject: 'Water Test Export');
-    } catch (e) {
+    } catch (e, st) {
+      logError('ChartsScreen: CSV export failed: $e', stackTrace: st, tag: 'ChartsScreen');
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;

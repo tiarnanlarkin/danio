@@ -18,6 +18,7 @@ import '../../utils/skeleton_placeholders.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_card.dart';
 import '../../widgets/core/app_states.dart';
+import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/mascot/mascot_widgets.dart';
 import '../livestock_detail_screen.dart';
@@ -522,20 +523,17 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           _isSelectMode = false;
           _selectedLivestockIds.clear();
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${selectedLivestock.length} livestock removed'),
-            duration: kSnackbarDuration,
-            action: SnackBarAction(
-              label: 'Undo All',
-              onPressed: () {
-                for (final id in deletedIds) {
-                  actions.undoDeleteLivestock(id, widget.tankId);
-                }
-                AppFeedback.showSuccess(context, 'Livestock restored');
-              },
-            ),
-          ),
+        DanioSnackBar.show(
+          context,
+          '${selectedLivestock.length} livestock removed',
+          duration: kSnackbarDuration,
+          actionLabel: 'Undo All',
+          onAction: () {
+            for (final id in deletedIds) {
+              actions.undoDeleteLivestock(id, widget.tankId);
+            }
+            AppFeedback.showSuccess(context, 'Livestock restored');
+          },
         );
       }
     } catch (e) {
@@ -703,11 +701,17 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       },
     );
 
+    // Use pre-captured messenger — context may be deactivated in callbacks.
     messenger.showSnackBar(
       SnackBar(
-        content:
-            Text('${livestock.count}× ${livestock.commonName} removed'),
+        content: Text(
+          '${livestock.count}× ${livestock.commonName} removed',
+          style: AppTypography.bodyMedium,
+        ),
+        behavior: SnackBarBehavior.floating,
         duration: kSnackbarDuration,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+        margin: const EdgeInsets.all(AppSpacing.md),
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {

@@ -7,6 +7,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
@@ -486,18 +487,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         ..pop()
         ..pop();
 
-      // Show SnackBar with Undo option
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Tank deleted'),
-          duration: kSnackbarDuration,
-          action: SnackBarAction(
-            label: 'UNDO',
-            onPressed: () {
-              actions.undoDeleteTank(widget.tankId);
-            },
-          ),
-        ),
+      DanioSnackBar.show(
+        context,
+        'Tank deleted',
+        duration: kSnackbarDuration,
+        actionLabel: 'Undo',
+        onAction: () => actions.undoDeleteTank(widget.tankId),
       );
     }
   }

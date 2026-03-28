@@ -16,6 +16,7 @@ import '../data/lessons/equipment.dart' deferred as equipment;
 import '../data/lessons/fish_health.dart' deferred as fish_health;
 import '../data/lessons/species_care.dart' deferred as species_care;
 import '../data/lessons/advanced_topics.dart' deferred as advanced_topics;
+import '../utils/logger.dart';
 
 /// Lesson loading state
 enum LessonLoadState { notLoaded, loading, loaded, error }
@@ -252,7 +253,8 @@ class LessonProvider extends StateNotifier<LessonState> {
       } else {
         throw Exception('Path $pathId not found');
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('LessonProvider: failed to load path $pathId: $e', stackTrace: st, tag: 'LessonProvider');
       state = state.copyWith(
         pathLoadStates: {
           ...state.pathLoadStates,

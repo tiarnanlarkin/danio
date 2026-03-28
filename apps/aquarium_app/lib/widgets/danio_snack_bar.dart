@@ -43,15 +43,26 @@ abstract class DanioSnackBar {
   ///
   /// * [type] defaults to [SnackType.neutral].
   /// * Pass [onRetry] to add a Retry action (only used with [SnackType.error]).
+  /// * Pass [actionLabel] + [onAction] to add a custom action button.
+  /// * Pass [duration] to override the default display time.
   static void show(
     BuildContext context,
     String message, {
     SnackType type = SnackType.neutral,
     VoidCallback? onRetry,
+    String? actionLabel,
+    VoidCallback? onAction,
+    Duration? duration,
   }) {
     switch (type) {
       case SnackType.success:
-        AppFeedback.showSuccess(context, message);
+        AppFeedback.showSuccess(
+          context,
+          message,
+          actionLabel: actionLabel,
+          onAction: onAction,
+          duration: duration ?? const Duration(seconds: 2),
+        );
       case SnackType.error:
         AppFeedback.showError(context, message, onRetry: onRetry);
       case SnackType.info:
@@ -59,13 +70,30 @@ abstract class DanioSnackBar {
       case SnackType.warning:
         AppFeedback.showWarning(context, message);
       case SnackType.neutral:
-        AppFeedback.show(context, message);
+        AppFeedback.show(
+          context,
+          message,
+          actionLabel: actionLabel,
+          onAction: onAction,
+          duration: duration ?? const Duration(seconds: 4),
+        );
     }
   }
 
   /// Convenience: show a success snack bar.
-  static void success(BuildContext context, String message) =>
-      AppFeedback.showSuccess(context, message);
+  static void success(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+    Duration? duration,
+  }) => AppFeedback.showSuccess(
+    context,
+    message,
+    actionLabel: actionLabel,
+    onAction: onAction,
+    duration: duration ?? const Duration(seconds: 2),
+  );
 
   /// Convenience: show an error snack bar.
   static void error(

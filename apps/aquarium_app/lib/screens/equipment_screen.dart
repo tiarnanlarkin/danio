@@ -348,20 +348,16 @@ class EquipmentScreen extends ConsumerWidget {
                 ref.invalidate(equipmentProvider(tankId));
                 ref.invalidate(tasksProvider(tankId));
                 if (context.mounted) {
-                  final messenger = ScaffoldMessenger.of(context);
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: Text('${equipment.name} removed'),
-                      duration: const Duration(seconds: 5),
-                      action: SnackBarAction(
-                        label: 'UNDO',
-                        onPressed: () async {
-                          await storage.saveEquipment(equipment);
-                          ref.invalidate(equipmentProvider(tankId));
-                          ref.invalidate(tasksProvider(tankId));
-                        },
-                      ),
-                    ),
+                  DanioSnackBar.show(
+                    context,
+                    '${equipment.name} removed',
+                    duration: const Duration(seconds: 5),
+                    actionLabel: 'Undo',
+                    onAction: () async {
+                      await storage.saveEquipment(equipment);
+                      ref.invalidate(equipmentProvider(tankId));
+                      ref.invalidate(tasksProvider(tankId));
+                    },
                   );
                 }
               } catch (e) {

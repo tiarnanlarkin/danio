@@ -17,6 +17,7 @@ import '../widgets/core/app_button.dart';
 import 'create_tank_screen/widgets/basic_info_page.dart';
 import 'create_tank_screen/widgets/size_page.dart';
 import 'create_tank_screen/widgets/water_type_page.dart';
+import '../utils/logger.dart';
 
 class CreateTankScreen extends ConsumerStatefulWidget {
   const CreateTankScreen({super.key});
@@ -238,7 +239,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       if (!_formKey.currentState!.validate()) return;
       try {
         FocusManager.instance.primaryFocus?.unfocus();
-      } catch (_) {}
+      } catch (e) {
+        appLog('CreateTankScreen: unfocus failed: $e', tag: 'CreateTankScreen');
+      }
       AppHaptics.light(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
       _pageController.nextPage(
         duration: AppDurations.medium4,
@@ -306,8 +309,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             lessonsCompleted: profile.completedLessons.length,
           );
           await achievementChecker.checkAllAchievements(stats: stats);
-        } catch (e) {
-          debugPrint('Achievement check failed: $e');
+        } catch (e, st) {
+          logError('CreateTankScreen: achievement check failed: $e', stackTrace: st, tag: 'CreateTankScreen');
         }
       }
 
@@ -321,17 +324,26 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.check_circle, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
+                const Icon(
+                  Icons.check_circle,
+                  color: AppColors.onSuccess,
+                  size: 20,
+                ),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
-                  child: Text('$tankName created! +${XpRewards.createTank} XP'),
+                  child: Text(
+                    '$tankName created! +${XpRewards.createTank} XP',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.onSuccess,
+                    ),
+                  ),
                 ),
               ],
             ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 2),
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
             margin: const EdgeInsets.all(AppSpacing.md),
           ),
         );
@@ -355,7 +367,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
               );
         }
       }
-    } catch (e) {
+    } catch (e, st) {
+      logError('CreateTankScreen: tank creation failed: $e', stackTrace: st, tag: 'CreateTankScreen');
       if (mounted) {
         AppHaptics.error(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
         AppFeedback.showError(

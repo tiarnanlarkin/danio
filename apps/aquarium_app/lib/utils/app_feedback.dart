@@ -11,7 +11,13 @@ import 'haptic_feedback.dart';
 /// ```
 class AppFeedback {
   /// Show success message with green background + haptic
-  static void showSuccess(BuildContext context, String message) {
+  static void showSuccess(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+    Duration duration = const Duration(seconds: 2),
+  }) {
     AppHaptics.success();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -35,9 +41,16 @@ class AppFeedback {
         ),
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
+        duration: duration,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
+        action: (actionLabel != null && onAction != null)
+            ? SnackBarAction(
+                label: actionLabel,
+                textColor: AppColors.onSuccess,
+                onPressed: onAction,
+              )
+            : null,
       ),
     );
   }
@@ -145,14 +158,23 @@ class AppFeedback {
   }
 
   /// Show generic message (neutral)
-  static void show(BuildContext context, String message) {
+  static void show(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+    Duration duration = const Duration(seconds: 4),
+  }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message, style: AppTypography.bodyMedium),
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
+        duration: duration,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
+        action: (actionLabel != null && onAction != null)
+            ? SnackBarAction(label: actionLabel, onPressed: onAction)
+            : null,
       ),
     );
   }

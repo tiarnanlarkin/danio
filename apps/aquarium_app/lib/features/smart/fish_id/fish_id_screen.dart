@@ -16,6 +16,7 @@ import '../../../widgets/optimized_image.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
+import '../../../utils/logger.dart';
 
 /// Screen for identifying fish or aquatic plants via camera/gallery.
 class FishIdScreen extends ConsumerStatefulWidget {
@@ -81,7 +82,8 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       });
 
       await _identify();
-    } catch (e) {
+    } catch (e, st) {
+      logError('FishIdScreen: image pick failed: $e', stackTrace: st, tag: 'FishIdScreen');
       if (!mounted) return;
       setState(() => _error = 'Couldn\'t grab that image. Try again?');
     }
@@ -227,7 +229,8 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         _error = e.message;
         _loading = false;
       });
-    } catch (e) {
+    } catch (e, st) {
+      logError('FishIdScreen: identification failed: $e', stackTrace: st, tag: 'FishIdScreen');
       if (!mounted) return;
       setState(() {
         _error = 'Couldn\'t identify that fish. Try a clearer photo!';
