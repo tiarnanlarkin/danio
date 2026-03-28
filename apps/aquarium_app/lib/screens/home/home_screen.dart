@@ -42,7 +42,6 @@ import 'widgets/room_control_fab.dart';
 import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
 import '../../widgets/danio_snack_bar.dart';
-import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../utils/logger.dart';
 
