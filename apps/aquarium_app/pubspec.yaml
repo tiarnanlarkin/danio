@@ -10,8 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  
   # State management
   flutter_riverpod: ^2.6.1
   
@@ -40,7 +38,6 @@ dependencies:
   rive: ^0.13.0
   confetti: ^0.7.0
   skeletonizer: ^2.1.2
-  floating_bubbles: ^2.6.2
 
   # Audio & Haptics
   
@@ -66,7 +63,6 @@ dependencies:
   # Encryption for backup
   encrypt: ^5.0.3
   crypto: ^3.0.6
-  pointycastle: ^3.9.1
   
   # Firebase (configuration pending - see android/app/FIREBASE_SETUP.md)
   firebase_core: ^2.24.2
@@ -87,9 +83,7 @@ flutter:
   
   assets:
     - assets/rive/
-    - assets/images/empty_states/
     - assets/images/onboarding/
-    - assets/images/error_states/
     - assets/images/fish/
     - assets/images/fish/thumb/
     - assets/images/placeholder.png
