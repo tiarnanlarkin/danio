@@ -31,6 +31,7 @@ import 'widgets/guides_section.dart';
 import 'widgets/tools_section.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/app_bottom_sheet.dart';
+import '../../utils/logger.dart';
 
 export 'settings_account_section.dart';
 export 'settings_data_section.dart';
@@ -188,7 +189,8 @@ class SettingsScreen extends ConsumerWidget {
                 TankDetailScreen(tankId: demoTank.id),
               );
             }
-          } catch (e) {
+          } catch (e, st) {
+            logError('SettingsScreen: add sample tank failed: $e', stackTrace: st, tag: 'SettingsScreen');
             if (context.mounted) {
               AppFeedback.showError(
                 context,

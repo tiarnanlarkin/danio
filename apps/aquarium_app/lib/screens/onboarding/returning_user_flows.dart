@@ -14,7 +14,7 @@ import '../../theme/app_theme.dart';
 
 /// Day 2 — Bottom sheet streak prompt
 ///
-/// Show via `showModalBottomSheet` when the user returns on Day 2.
+/// Show via `showAppBottomSheet` when the user returns on Day 2.
 /// Flame icon with animated flicker, streak message, and CTA.
 class Day2StreakPrompt extends StatefulWidget {
   final String? fishName;

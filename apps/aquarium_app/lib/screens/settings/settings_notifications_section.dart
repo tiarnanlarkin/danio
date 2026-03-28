@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/settings_provider.dart';
 import '../../services/notification_service.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/logger.dart';
 import '../../utils/app_feedback.dart';
 import '../../widgets/core/app_list_tile.dart';
 import '../notification_settings_screen.dart';
@@ -105,7 +106,8 @@ Future<void> _testNotification(BuildContext context) async {
     if (context.mounted) {
       AppFeedback.showSuccess(context, 'Test notification sent!');
     }
-  } catch (e) {
+  } catch (e, st) {
+    logError('SettingsNotificationsSection: test notification failed: $e', stackTrace: st, tag: 'SettingsNotificationsSection');
     if (context.mounted) {
       AppFeedback.showError(
         context,

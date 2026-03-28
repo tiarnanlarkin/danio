@@ -74,7 +74,8 @@ Future<void> exportData(BuildContext context) async {
 
     await Share.shareXFiles([XFile(dataFile.path)],
         subject: 'Danio Data Export');
-  } catch (e) {
+  } catch (e, st) {
+    logError('SettingsDataSection: export failed: $e', stackTrace: st, tag: 'SettingsDataSection');
     if (context.mounted) {
       AppFeedback.dismiss(context);
       dismissLoadingInFinally = false;
@@ -181,7 +182,8 @@ Future<void> importData(BuildContext context) async {
         'Data imported! Restart the app to see changes.',
       );
     }
-  } catch (e) {
+  } catch (e, st) {
+    logError('SettingsDataSection: import failed: $e', stackTrace: st, tag: 'SettingsDataSection');
     if (context.mounted) {
       AppFeedback.dismiss(context);
       dismissLoadingInFinally = false;
@@ -311,7 +313,8 @@ Future<void> confirmClearData(BuildContext context, WidgetRef ref) async {
         rootNavigator: true,
       ).popUntil((route) => route.isFirst);
     }
-  } catch (e) {
+  } catch (e, st) {
+    logError('SettingsDataSection: clear data failed: $e', stackTrace: st, tag: 'SettingsDataSection');
     if (context.mounted) {
       AppFeedback.showError(context, 'Couldn\'t clear data. Try again!');
     }
@@ -382,7 +385,8 @@ Future<void> confirmDeleteMyData(
         rootNavigator: true,
       ).popUntil((route) => route.isFirst);
     }
-  } catch (e) {
+  } catch (e, st) {
+    logError('SettingsDataSection: delete data failed: $e', stackTrace: st, tag: 'SettingsDataSection');
     if (context.mounted) {
       AppFeedback.showError(context, 'Couldn\'t delete data. Try again!');
     }
