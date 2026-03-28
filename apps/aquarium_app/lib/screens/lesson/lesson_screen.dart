@@ -20,6 +20,8 @@ import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
 import 'lesson_hearts_modal.dart';
 import '../../widgets/core/app_dialog.dart';
+import '../../providers/species_unlock_provider.dart';
+import '../learn/unlock_celebration_screen.dart';
 
 export 'lesson_card_widget.dart';
 export 'lesson_quiz_widget.dart';
@@ -323,7 +325,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
   }
 
-  /// Show XP animation and check for level-up.
+  /// Show XP animation, then check for species unlock, then level-up/next.
   void _showXpAnimation(int xpAmount) {
     if (!mounted) return;
     showLessonXpAnimation(
@@ -331,20 +333,38 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       ref,
       xpAmount,
       levelBeforeLesson: _levelBeforeLesson,
-      onComplete: () {
-        if (mounted) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              showNextLessonOrPop(
-                context,
-                ref,
-                widget.lesson,
-                widget.pathTitle,
-                widget.isPracticeMode,
-              );
-            }
-          });
+      onComplete: () async {
+        if (!mounted) return;
+
+        // Check if this lesson unlocked a new species
+        final newSpeciesId = await ref
+            .read(speciesUnlockProvider.notifier)
+            .checkLessonUnlock(widget.lesson.id);
+
+        if (!mounted) return;
+
+        if (newSpeciesId != null) {
+          // Show unlock celebration screen, then continue to next lesson flow
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) =>
+                  UnlockCelebrationScreen(speciesId: newSpeciesId),
+            ),
+          );
+          if (!mounted) return;
         }
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            showNextLessonOrPop(
+              context,
+              ref,
+              widget.lesson,
+              widget.pathTitle,
+              widget.isPracticeMode,
+            );
+          }
+        });
       },
     );
   }

@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import '../ambient/swaying_plant.dart';
-import '../rive/rive_fish.dart';
-import 'animated_swimming_fish.dart';
 import 'plant_painters.dart';
+import 'tank_fish_manager.dart';
 
 /// The 3-D aquarium illustration rendered inside the room scene.
 ///
@@ -13,14 +12,21 @@ import 'plant_painters.dart';
 /// - Plants are rendered once per position (4 total) with a Stack z-order
 ///   that achieves the same depth effect as the old duplicated 8-plant render.
 ///   Each plant is wrapped in [RepaintBoundary].
-/// - Each [RiveFish] and [AnimatedSwimmingFish] is wrapped in [RepaintBoundary]
-///   to prevent full-tree repaints on every animation tick.
+/// - Fish are managed by [TankFishManager] which uses [RepaintBoundary] per
+///   fish to prevent full-tree repaints on every animation tick.
 class ThemedAquarium extends StatelessWidget {
   final double width;
   final double height;
   final RoomTheme theme;
+
+  /// Unused — kept for API compatibility. Fish are always shown via
+  /// [TankFishManager]; Rive fish have been replaced by species sprites.
+  // ignore: unused_field
   final bool useRiveFish;
   final bool reduceMotion;
+
+  /// Optional tank ID passed to [TankFishManager] for livestock cross-reference.
+  final String? tankId;
 
   const ThemedAquarium({
     super.key,
@@ -29,6 +35,7 @@ class ThemedAquarium extends StatelessWidget {
     required this.theme,
     this.useRiveFish = true,
     this.reduceMotion = false,
+    this.tankId,
   });
 
   @override
@@ -139,119 +146,20 @@ class ThemedAquarium extends StatelessWidget {
               tall: false,
             ),
 
-            // ── BACK LAYER FISH (behind front plants, smaller / distant) ──
-            if (useRiveFish && !reduceMotion) ...[
-              Positioned(
-                top: height * 0.28,
-                left: width * 0.08,
+            // ── FISH — species sprites managed by TankFishManager ─────────
+            // TankFishManager reads unlocked species and renders them as
+            // animated sprite fish across depth layers.  Falls back to
+            // AnimatedSwimmingFish when the user has no unlocked species.
+            if (!reduceMotion)
+              Positioned.fill(
                 child: RepaintBoundary(
-                  child: RiveFish(
-                    fishType: RiveFishType.emotional,
-                    size: height * 0.18,
+                  child: TankFishManager(
+                    tankWidth: width,
+                    tankHeight: height,
+                    tankId: tankId,
                   ),
                 ),
               ),
-              Positioned(
-                top: height * 0.35,
-                right: width * 0.08,
-                child: RepaintBoundary(
-                  child: RiveFish(
-                    fishType: RiveFishType.joystick,
-                    size: height * 0.16,
-                    flipHorizontal: true,
-                  ),
-                ),
-              ),
-            ],
-
-            // ── FRONT LAYER FISH ──────────────────────────────────────────
-            if (useRiveFish && !reduceMotion) ...[
-              Positioned(
-                top: height * 0.12,
-                left: width * 0.25,
-                child: RepaintBoundary(
-                  child: RiveFish(
-                    fishType: RiveFishType.puffer,
-                    size: height * 0.28,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: height * 0.38,
-                right: width * 0.15,
-                child: RepaintBoundary(
-                  child: RiveFish(
-                    fishType: RiveFishType.joystick,
-                    size: height * 0.24,
-                    flipHorizontal: true,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: height * 0.55,
-                left: width * 0.38,
-                child: RepaintBoundary(
-                  child: RiveFish(
-                    fishType: RiveFishType.emotional,
-                    size: height * 0.22,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: height * 0.08,
-                right: width * 0.25,
-                child: RepaintBoundary(
-                  child: RiveFish(
-                    fishType: RiveFishType.puffer,
-                    size: height * 0.18,
-                    flipHorizontal: true,
-                  ),
-                ),
-              ),
-              Positioned(
-                top: height * 0.48,
-                left: width * 0.12,
-                child: RepaintBoundary(
-                  child: RiveFish(
-                    fishType: RiveFishType.joystick,
-                    size: height * 0.20,
-                  ),
-                ),
-              ),
-            ] else ...[
-              // Animated swimming fish — flat vector palette (design system §1.4)
-              // AnimatedSwimmingFish already includes RepaintBoundary internally.
-              AnimatedSwimmingFish(
-                size: 28,
-                color: const Color(0xFFE8503A), // fishCoralRed
-                tankWidth: width,
-                tankHeight: height,
-                baseTop: 0.22,
-                swimSpeed: 10.0,
-                verticalBob: 12.0,
-                startOffset: 0.0,
-              ),
-              AnimatedSwimmingFish(
-                size: AppIconSizes.md,
-                color: const Color(0xFF3A78C9), // fishCobaltBlue
-                tankWidth: width,
-                tankHeight: height,
-                baseTop: 0.40,
-                swimSpeed: 8.0,
-                verticalBob: 18.0,
-                startOffset: 0.6,
-              ),
-              AnimatedSwimmingFish(
-                size: AppIconSizes.sm,
-                color: const Color(0xFFE8A030), // fishAmberGold
-                tankWidth: width,
-                tankHeight: height,
-                baseTop: 0.55,
-                swimSpeed: 12.0,
-                verticalBob: 10.0,
-                startOffset: 0.3,
-              ),
-            ],
 
             // Top light bar
             Positioned(
