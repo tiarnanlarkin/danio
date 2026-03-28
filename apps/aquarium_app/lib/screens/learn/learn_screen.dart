@@ -223,7 +223,24 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     BuildContext context,
     List<PathMetadata> metadata,
   ) {
-    final profileAsync = ref.watch(userProfileProvider);
+    // --- Selective watch to avoid full rebuilds on every XP/streak tick ---
+    // UserProfile has no == override, so any mutation (XP gain, gem change,
+    // review card update, etc.) triggers a rebuild of this entire screen.
+    // We select only the fields this screen renders; changes to totalXp,
+    // gems, inventory, etc. are ignored. Dart records have value equality.
+    final profileState = ref.watch(
+      userProfileProvider.select((s) => (
+        isLoading: s.isLoading,
+        hasError: s.hasError,
+        error: s.hasError ? s.error : null,
+        isNull: !s.hasValue || s.value == null,
+        // Use length (int) not List identity — List has no deep equality.
+        completedLessonCount: s.value?.completedLessons.length ?? 0,
+        currentStreak: s.value?.currentStreak ?? 0,
+        hasSeenTutorial: s.value?.hasSeenTutorial ?? false,
+        hasLessonProgress: s.value?.lessonProgress.isNotEmpty ?? false,
+      )),
+    );
     final statsXp = ref.watch(
       learningStatsProvider.select((s) => s?.totalXp ?? 0),
     );
@@ -232,21 +249,25 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     );
 
     return Scaffold(
-      body: profileAsync.when(
-        loading: () =>
-            _buildSkeletonScreen(context, controller: _scrollController),
-        error: (e, _) => AppErrorState(
-          title: 'Oops! Something went wrong',
-          message:
-              'We could not load your learning paths. Check your connection and try again.',
-          onRetry: () => ref.invalidate(userProfileProvider),
-        ),
-        data: (profile) {
+      body: profileState.isLoading
+          ? _buildSkeletonScreen(context, controller: _scrollController)
+          : profileState.hasError
+              ? AppErrorState(
+                  title: 'Oops! Something went wrong',
+                  message:
+                      'We could not load your learning paths. Check your connection and try again.',
+                  onRetry: () => ref.invalidate(userProfileProvider),
+                )
+              : Builder(builder: (context) {
+          // Read the full profile only when needed by child widgets.
+          // This is ref.read (not watch) — rebuilds are driven solely by
+          // the selective profileState watch above.
+          final profile = ref.read(userProfileProvider).value;
           final totalLessons = metadata.fold<int>(
             0,
             (sum, meta) => sum + meta.lessonIds.length,
           );
-          final completedLessons = profile?.completedLessons.length ?? 0;
+          final completedLessons = profileState.completedLessonCount;
 
           _maybeScrollToFirstLesson(profile);
 
@@ -268,10 +289,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         StudyRoomScene(
                           totalXp: statsXp,
                           levelTitle: statsLevel,
-                          currentStreak: profile?.currentStreak ?? 0,
+                          currentStreak: profileState.currentStreak,
                           completedLessons: completedLessons,
                           totalLessons: totalLessons,
-                          isNewUser: !(profile?.hasSeenTutorial ?? false),
+                          isNewUser: !profileState.hasSeenTutorial,
                           onMicroscopeTap: () =>
                               _navigateToWaterChemistry(context),
                           onGlobeTap: () => _showRandomFishFact(context),
@@ -282,7 +303,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                 ),
 
                 // Content below the scene
-                if (profile == null)
+                if (profileState.isNull)
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: Padding(
@@ -341,7 +362,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                   const SliverToBoxAdapter(child: PlacementChallengeCard()),
 
                   // Learning streak badge
-                  if (profile.lessonProgress.isNotEmpty)
+                  if (profileState.hasLessonProgress)
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
@@ -351,7 +372,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           0,
                         ),
                         child: LearningStreakBadge(
-                          lessonProgress: profile.lessonProgress,
+                          lessonProgress: profile!.lessonProgress,
                         ),
                       ),
                     ),
@@ -360,14 +381,14 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                   const SliverToBoxAdapter(child: LearnReviewBanner()),
 
                   // Daily streak reminder
-                  if (profile.currentStreak > 0)
+                  if (profileState.currentStreak > 0)
                     SliverToBoxAdapter(
-                      child: LearnStreakCard(profile: profile),
+                      child: LearnStreakCard(profile: profile!),
                     ),
 
                   // Practice card
                   SliverToBoxAdapter(
-                    child: LearnPracticeCard(profile: profile),
+                    child: LearnPracticeCard(profile: profile!),
                   ),
 
                   // Learning paths header with overall progress
@@ -393,11 +414,12 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           const SizedBox(height: AppSpacing.sm),
                           Builder(
                             builder: (context) {
+                              final userCompleted = profile?.completedLessons ?? [];
                               final completedPaths = metadata.where((meta) {
                                 final done = meta.lessonIds
                                     .where(
                                       (id) =>
-                                          profile.completedLessons.contains(id),
+                                          userCompleted.contains(id),
                                     )
                                     .length;
                                 return done == meta.lessonIds.length &&
@@ -443,9 +465,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final meta = metadata[index];
+                        final userCompleted = profile?.completedLessons ?? [];
                         final completedInPath = meta.lessonIds
                             .where(
-                              (id) => profile.completedLessons.contains(id),
+                              (id) => userCompleted.contains(id),
                             )
                             .length;
                         final reduceMotion =
@@ -462,14 +485,14 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                   completedLessons: completedInPath,
                                   totalLessons: meta.lessonIds.length,
                                   userCompletedLessons:
-                                      profile.completedLessons,
+                                      userCompleted,
                                 )
                               : LazyLearningPathCard(
                                   metadata: meta,
                                   completedLessons: completedInPath,
                                   totalLessons: meta.lessonIds.length,
                                   userCompletedLessons:
-                                      profile.completedLessons,
+                                      userCompleted,
                                 )
                                 .animate()
                                 .fadeIn(
@@ -495,8 +518,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
               ],
             ),
           );
-        },
-      ),
+        }),
     );
   }
 
