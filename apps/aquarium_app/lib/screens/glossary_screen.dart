@@ -1,8 +1,13 @@
 import 'dart:async';
+import '../utils/app_constants.dart';
+
 
 import 'package:flutter/material.dart';
+
 import '../theme/app_theme.dart';
+
 import '../widgets/core/app_text_field.dart';
+
 
 class GlossaryScreen extends StatefulWidget {
   const GlossaryScreen({super.key});
@@ -58,7 +63,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
               hint: 'Search terms...',
               onChanged: (v) {
                 _debounce?.cancel();
-                _debounce = Timer(const Duration(milliseconds: 300), () {
+                _debounce = Timer(kDebounceDuration, () {
                   setState(() => _searchQuery = v);
                 });
               },

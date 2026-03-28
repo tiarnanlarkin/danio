@@ -1,12 +1,21 @@
 import 'dart:async';
+import '../utils/app_constants.dart';
+
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../data/species_database.dart';
+
 import '../widgets/core/app_text_field.dart';
+
 import '../providers/tank_provider.dart';
+
 import '../theme/app_theme.dart';
+
 import '../widgets/core/app_card.dart';
+
 
 class CompatibilityCheckerScreen extends ConsumerStatefulWidget {
   const CompatibilityCheckerScreen({super.key});
@@ -235,7 +244,7 @@ class _CompatibilityCheckerScreenState
               hint: 'Search fish to add...',
               onChanged: (v) {
                 _debounce?.cancel();
-                _debounce = Timer(const Duration(milliseconds: 300), () {
+                _debounce = Timer(kDebounceDuration, () {
                   setState(() => _searchQuery = v);
                 });
               },

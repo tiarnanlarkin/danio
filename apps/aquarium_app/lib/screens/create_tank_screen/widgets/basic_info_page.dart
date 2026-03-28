@@ -45,7 +45,7 @@ class BasicInfoPage extends StatelessWidget {
               textField: true,
               child: TextFormField(
                 initialValue: name,
-                maxLength: 50,
+                maxLength: kTankNameMaxLength,
                 maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: const InputDecoration(
                   labelText: 'Tank name',

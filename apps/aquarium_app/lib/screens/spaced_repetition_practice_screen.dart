@@ -1216,10 +1216,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             'Your progress will be saved, but you\'ll need to start a new session to continue practicing.',
           ),
           const SizedBox(height: AppSpacing.md),
-          Builder(builder: (context) => Container(
+          Container(
             padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
-              color: context.surfaceVariant,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Column(
@@ -1242,11 +1242,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 const SizedBox(height: AppSpacing.xs),
                 Row(
                   children: [
-                    Builder(builder: (context) => Icon(
+                    Icon(
                       Icons.pending,
                       size: AppIconSizes.xs,
-                      color: context.textSecondary,
-                    )),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                     const SizedBox(width: AppSpacing.xs2),
                     Text(
                       'Cards remaining: $cardsRemaining',
@@ -1256,7 +1256,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 ),
               ],
             ),
-          )),
+          ),
         ],
       ),
       actions: [

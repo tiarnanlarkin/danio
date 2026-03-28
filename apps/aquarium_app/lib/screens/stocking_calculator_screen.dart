@@ -1,10 +1,17 @@
 import 'dart:async';
+import '../utils/app_constants.dart';
+
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
+
 import '../data/species_database.dart';
+
 import '../theme/app_theme.dart';
+
 import '../widgets/core/app_text_field.dart';
+
 
 class StockingCalculatorScreen extends StatefulWidget {
   const StockingCalculatorScreen({super.key});
@@ -245,7 +252,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
               hint: 'Search fish to add...',
               onChanged: (v) {
                 _debounce?.cancel();
-                _debounce = Timer(const Duration(milliseconds: 300), () {
+                _debounce = Timer(kDebounceDuration, () {
                   setState(() => _searchQuery = v);
                 });
               },
