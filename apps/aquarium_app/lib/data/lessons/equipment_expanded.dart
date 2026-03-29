@@ -5,13 +5,622 @@ library;
 import '../../models/learning.dart';
 
 final equipmentExpandedLessons = [
-  // EQ-4: Air Pumps & Aeration
+  // EQ-4: Test Kits (moved earlier — essential gear before advanced topics)
+  Lesson(
+    id: 'eq_test_kits',
+    pathId: 'equipment',
+    title: 'Test Kits: Your Water Quality Dashboard',
+    description: 'Liquid kits, test strips, and when to use what',
+    orderIndex: 3,
+    xpReward: 50,
+    estimatedMinutes: 5,
+    prerequisites: ['nc_testing'],
+    sections: [
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Test Strips vs Liquid Test Kits',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Two options exist for testing aquarium water at home: test strips (dip a strip in, read colours off a chart) and liquid test kits (add drops of reagent to a water sample, compare to colour chart). They are not equal.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Test strips: fast (30 seconds), cheap, convenient, significantly less accurate\n• Liquid kits (API, Salifert, Sera): slightly slower (3–5 minutes), more expensive per test, reliably accurate\n• Digital meters (pH pens, TDS meters): accurate for specific parameters, require calibration',
+      ),
+      const LessonSection(
+        type: LessonSectionType.warning,
+        content:
+            'Test strips are not reliable enough for critical decisions. The same tank can show readings 0.5 pH units apart between a strip and a liquid kit. For cycling a new tank, diagnosing disease, or adjusting parameters for sensitive species — always use liquid kits.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.keyPoint,
+        content:
+            'The API Freshwater Master Test Kit covers ammonia (NH3/NH4), nitrite (NO2), nitrate (NO3), and pH — the four essential parameters. Every fishkeeper should own one. It\'s the single most important piece of equipment after the tank itself.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'When to Test',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• New tank (cycling): daily — you need to track ammonia and nitrite peaks\n• Established tank: weekly — catching problems before they become emergencies\n• After adding new fish: 48 hours later — bioload increase can spike ammonia\n• After illness/treatment: after the medication course ends — confirm water quality\n• After unusual behaviour: any time fish act oddly — always test water first',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Digital Meters — When Are They Worth It?',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'pH pens (like the Bluelab Pen or Milwaukee pH600) give precise, instant pH readings and are essential for precision planted tanks where pH is adjusted regularly. TDS (Total Dissolved Solids) meters are invaluable for shrimp keepers who need to hit a precise mineral target. Refractometers are standard in marine setups for salinity. For a standard freshwater community tank, liquid kits cover everything you need.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.tip,
+        content:
+            'Store liquid test kit reagents at room temperature, away from direct sunlight. Heat degrades the chemicals faster and causes inaccurate readings. Check the expiry date — old reagents are a false economy.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.funFact,
+        content:
+            'Professional aquaculture facilities test water automatically every 15 minutes using inline sensors and automated dosing systems. For hobbyists, once per week is sufficient to catch the vast majority of problems before they become fatal emergencies.',
+      ),
+    ],
+    quiz: Quiz(
+      id: 'eq_test_kits_quiz',
+      lessonId: 'eq_test_kits',
+      questions: [
+        const QuizQuestion(
+          id: 'eq_test_q1',
+          question:
+              'Why are test strips considered less reliable than liquid test kits?',
+          options: [
+            'Test strips cannot test for ammonia',
+            'Test strips give less accurate readings and can mislead dosing decisions',
+            'Test strips take much longer to give results',
+            'Test strips only work in saltwater, not freshwater',
+          ],
+          correctIndex: 1,
+          explanation:
+              'Test strips are notoriously imprecise — colour interpretation is subjective and the chemicals degrade quickly once the tube is opened. The same water can give readings 0.5 pH units apart between a strip and a liquid kit. For reliable results, use liquid test kits.',
+        ),
+        const QuizQuestion(
+          id: 'eq_test_q2',
+          question:
+              'How often should you test water in a cycling (brand new) tank?',
+          options: [
+            'Once a week is sufficient',
+            'Every day to track ammonia and nitrite peaks',
+            'Only when fish seem unwell',
+            'Monthly — cycling takes weeks',
+          ],
+          correctIndex: 1,
+          explanation:
+              'Cycling a new tank produces rapid ammonia and nitrite spikes that can happen within hours. Daily testing lets you track the cycle progress, know when it\'s safe to add fish, and catch dangerous spikes before they kill anything.',
+        ),
+        const QuizQuestion(
+          id: 'eq_test_q3',
+          question:
+              'Which four parameters does the API Freshwater Master Test Kit measure?',
+          options: [
+            'Temperature, pH, TDS, and nitrate',
+            'Ammonia, nitrite, nitrate, and pH',
+            'pH, KH, GH, and nitrite',
+            'Chlorine, ammonia, pH, and calcium',
+          ],
+          correctIndex: 1,
+          explanation:
+              'The API Freshwater Master Kit covers the four parameters that matter most: ammonia (NH3), nitrite (NO2), nitrate (NO3), and pH. Together these tell you if your nitrogen cycle is working, if there\'s an immediate danger, and whether your pH is appropriate for your fish.',
+        ),
+      ],
+    ),
+  ),
+
+  // EQ-5: Setting Up Your First Tank (Step by Step)
+  Lesson(
+    id: 'eq_setup_guide',
+    pathId: 'equipment',
+    title: 'Setting Up Your First Tank',
+    description: 'From empty box to cycled aquarium — step by step',
+    orderIndex: 4,
+    xpReward: 75,
+    estimatedMinutes: 8,
+    prerequisites: ['eq_filters', 'eq_heaters', 'eq_lighting', 'eq_test_kits'],
+    sections: [
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Before You Buy a Single Fish',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Setting up a tank correctly at the start saves you from headaches, lost fish, and expensive re-dos. This guide walks you through every step — in order. Skip a step and you\'ll likely pay for it later.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.keyPoint,
+        content:
+            'The biggest mistake beginners make: buying fish on day one. A new tank needs to cycle for 4–6 weeks before it\'s safe for fish. Plan for this.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 1: Choose Your Tank Size',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Bigger is almost always easier to manage. Small tanks (under 40L) fluctuate in temperature and water parameters faster, making mistakes harder to recover from. A 60–80L tank is the sweet spot for beginners — large enough to be stable, small enough to be affordable.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.tip,
+        content:
+            'Starter kits (tank + filter + light + heater bundled) are good value for beginners. Just upgrade the filter media — replace manufacturer cartridges with reusable sponge and ceramic bio-media.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 2: Rinse Everything (No Soap!)',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Rinse the tank with clean water — no soap, no detergent, ever\n• Rinse gravel or substrate thoroughly until water runs clear\n• Rinse decorations and rocks under tap water\n• Do NOT rinse filter media — bacteria haven\'t formed yet, but chemical residue can be absorbed',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 3: Add Substrate',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Add 3–5cm of substrate. Create a gentle slope from front (shallower) to back (deeper) — this looks natural and makes gravel vacuuming easier, as debris slides to the front.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 4: Add Hardscape (Rocks and Wood)',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Place rocks and driftwood before adding water — much easier to arrange. Check that rocks won\'t tip and trap fish. Heavy driftwood may need weighting or suction cups to stay down initially.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 5: Fill with Water',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Place a plate or plastic bag on substrate before pouring — prevents disturbing your layout\n• Add water slowly\n• Add dechlorinator immediately as you fill (dose for full tank volume)\n• Fill to within 3–5cm of the top',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 6: Install Equipment',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Filter: hang on back or place inside per manufacturer instructions\n• Heater: position near filter output at an angle, fully submerged\n• Thermometer: attach to inside glass, away from heater\n• Light: mount on lid or rim',
+      ),
+      const LessonSection(
+        type: LessonSectionType.warning,
+        content:
+            'Do NOT plug in the heater until it\'s been in the water for 15 minutes. Glass heaters can crack if hot glass meets cold water — let them temperature-match first.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 7: Plant (If Applicable)',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Add plants before cycling — live plants help establish the cycle faster by consuming ammonia directly. Use tweezers to push stems 2–3cm into substrate. Attach Java fern and Anubias to rocks or wood (they don\'t root in substrate).',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 8: Switch Everything On',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Turn on filter first\n• Turn on heater — set to 25°C\n• Turn on light — set a timer for 6–8 hours daily\n• Check for leaks — run for 15 minutes, inspect all connections',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Step 9: Begin the Nitrogen Cycle',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Now you wait. The nitrogen cycle takes 4–6 weeks. Add an ammonia source (pure ammonia drops, fish food, or a hardy "starter fish" if you must). Test daily. The cycle is complete when: ammonia reads 0, nitrite reads 0, and nitrate is detectable.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.tip,
+        content:
+            'Speed up cycling by adding a handful of gravel, a used filter sponge, or some water from an established tank. Beneficial bacteria hitch a ride and colonise your new filter faster.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: '✅ Your Setup Checklist',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '☐ Tank cleaned (no soap)\n☐ Substrate rinsed and added\n☐ Hardscape placed\n☐ Water added with dechlorinator\n☐ Filter installed and running\n☐ Heater installed (not plugged in for 15 min)\n☐ Thermometer attached\n☐ Light set on timer\n☐ No leaks — checked after 15 minutes\n☐ Ammonia source added to start cycle\n☐ Test kit ready for daily cycling checks',
+      ),
+      const LessonSection(
+        type: LessonSectionType.funFact,
+        content:
+            'The most common question in fishkeeping forums: "Why are my fish dying?" — and the most common answer is "New Tank Syndrome." That\'s uncycled water with ammonia spikes. Now you know how to avoid it.',
+      ),
+    ],
+    quiz: Quiz(
+      id: 'eq_setup_quiz',
+      lessonId: 'eq_setup_guide',
+      questions: [
+        const QuizQuestion(
+          id: 'eq_setup_q1',
+          question: 'Why should you NOT plug in a glass heater immediately?',
+          options: [
+            'It needs to sync with the filter first',
+            'Hot glass can crack if submerged cold — let it temperature-match for 15 minutes',
+            'The heater needs to calibrate its thermostat in air first',
+            'There\'s no reason — plug it in immediately',
+          ],
+          correctIndex: 1,
+          explanation:
+              'Glass heaters can crack from thermal shock if hot glass suddenly contacts cold water. Always let the heater sit submerged for 15 minutes before plugging in, so it matches the water temperature first.',
+        ),
+        const QuizQuestion(
+          id: 'eq_setup_q2',
+          question:
+              'How long does the nitrogen cycle typically take in a new tank?',
+          options: [
+            '1–2 days',
+            '1 week',
+            '4–6 weeks',
+            'It happens instantly if you add fish',
+          ],
+          correctIndex: 2,
+          explanation:
+              'The nitrogen cycle takes 4–6 weeks to establish. Beneficial bacteria need time to colonise filter media. Adding fish too early causes ammonia poisoning — the most common cause of "new tank syndrome" fish deaths.',
+        ),
+        const QuizQuestion(
+          id: 'eq_setup_q3',
+          question: 'What substrate slope is recommended and why?',
+          options: [
+            'Flat — easier to vacuum everywhere',
+            'Higher at front, lower at back — pushes fish to the front',
+            'Higher at back, lower at front — debris slides forward for easier vacuuming',
+            'Random — substrate slope doesn\'t matter',
+          ],
+          correctIndex: 2,
+          explanation:
+              'Sloping substrate higher at the back creates depth and a natural look, while debris naturally slides to the shallower front — making gravel vacuuming much more efficient.',
+        ),
+        const QuizQuestion(
+          id: 'eq_setup_q4',
+          question: 'How can you speed up the nitrogen cycle?',
+          options: [
+            'Add more fish immediately',
+            'Run a stronger filter',
+            'Add gravel or used filter sponge from an established tank',
+            'Raise the temperature to 30°C+',
+          ],
+          correctIndex: 2,
+          explanation:
+              'Beneficial bacteria from an established tank hitchhike on gravel, sponge, or even a cup of old water. Adding these to a new tank seeds it with bacteria and significantly speeds up the cycling process.',
+        ),
+      ],
+    ),
+  ),
+
+  // EQ-6: Filter Maintenance
+  Lesson(
+    id: 'eq_filter_maintenance',
+    pathId: 'equipment',
+    title: 'Filter Maintenance: Keeping the Biology Alive',
+    description: 'Clean your filter without crashing your cycle',
+    orderIndex: 5,
+    xpReward: 50,
+    estimatedMinutes: 6,
+    prerequisites: ['eq_filters', 'eq_setup_guide'],
+    sections: [
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Your Filter Holds Your Cycle',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Most of your beneficial bacteria — the ones that convert toxic ammonia to safe nitrate — live in your filter media. Specifically in the sponges, ceramic rings, and bio-balls. When you maintain your filter, you\'re maintaining a living ecosystem. Treat it accordingly.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.warning,
+        content:
+            'NEVER rinse filter media under tap water. Chlorine and chloramine in tap water kill beneficial bacteria on contact. One rinse can crash your cycle within 48 hours and kill fish.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'The Golden Rule: Only Clean What Needs It',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Clean filter media only when you notice reduced water flow — not on a calendar schedule. Dirty media is working media. A sponge caked with brown gunk is packed with bacteria. Rinsing it "for cleanliness" removes the colony you\'ve spent months building.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.keyPoint,
+        content:
+            'How to clean: during your weekly water change, remove the media and gently squeeze or swish it in a bucket of OLD tank water. You\'re removing blockage, not sterilising. The media should still look used when you\'re done.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'HOB Filter Maintenance',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Unplug before reaching in\n• Remove the media basket and rinse sponge/media in old tank water\n• Clean impeller (spinning part) with a soft brush — hair and debris jam it\n• Wipe inside of the housing with a damp cloth\n• Check the intake tube — debris clogs reduce flow significantly\n• Reassemble and plug back in — flow should restore immediately',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Canister Filter Maintenance',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Close the taps/valves before disconnecting\n• Carry the canister to a sink (it\'s heavy — prep yourself)\n• Open in layers: rinse mechanical media (coarse sponge) thoroughly, rinse biological media (ceramics) gently\n• Clean impeller housing\n• Check O-ring seals for cracks — replace if needed\n• Reassemble and prime before restarting',
+      ),
+      const LessonSection(
+        type: LessonSectionType.tip,
+        content:
+            'Canister filters should be opened every 6–8 weeks (or when flow drops). HOB filters every 4–6 weeks. Sponge filters every 4–6 weeks with a gentle rinse.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Never Replace All Media at Once',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Stagger media replacement. If you must swap out old sponge for new, do only one third at a time, leaving the rest to seed the new media. Wait 3–4 weeks between replacements. Full replacement = instant mini-cycle = stressed or dead fish.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Filter Upgrade: Ditch the Cartridges',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Most HOB filters ship with cartridges — proprietary pads designed to be replaced monthly. This is a revenue model, not good advice. Replace cartridges with: reusable coarse sponge (mechanical), ceramic rings or bio-balls (biological). These last years, cost less over time, and host far more bacteria.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Signs Your Filter Needs Attention',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Noticeably reduced water flow or spray bar output\n• Filter making new/unusual noises (impeller debris)\n• Ammonia or nitrite detected in an established tank\n• Visible algae growing inside the filter housing\n• It\'s been more than 8 weeks since last clean',
+      ),
+      const LessonSection(
+        type: LessonSectionType.funFact,
+        content:
+            'A mature, well-established sponge filter is actually worth money in the fishkeeping hobby. Experienced aquarists sell or give away "seeded" sponges to help others cycle new tanks instantly. A single used sponge can start a new cycle in days instead of weeks.',
+      ),
+    ],
+    quiz: Quiz(
+      id: 'eq_filter_maint_quiz',
+      lessonId: 'eq_filter_maintenance',
+      questions: [
+        const QuizQuestion(
+          id: 'eq_fm_q1',
+          question: 'What should you use to rinse filter media?',
+          options: [
+            'Hot tap water to kill harmful bacteria',
+            'Cold tap water',
+            'Old tank water saved during a water change',
+            'Distilled water — it\'s the purest option',
+          ],
+          correctIndex: 2,
+          explanation:
+              'Always use old tank water. Tap water contains chlorine/chloramine that kills beneficial bacteria on contact. Old tank water is the same chemistry your bacteria already live in — safe and effective.',
+        ),
+        const QuizQuestion(
+          id: 'eq_fm_q2',
+          question: 'When should you clean filter media?',
+          options: [
+            'Every week on a fixed schedule',
+            'When you notice reduced water flow',
+            'Never — cleaning removes beneficial bacteria',
+            'Monthly, regardless of flow',
+          ],
+          correctIndex: 1,
+          explanation:
+              'Clean only when flow is noticeably reduced. Over-cleaning disrupts bacteria. Under-cleaning causes a slow reduction in filter efficiency. Let the flow tell you when it\'s time.',
+        ),
+        const QuizQuestion(
+          id: 'eq_fm_q3',
+          question: 'Why is replacing all filter media at once dangerous?',
+          options: [
+            'New media is toxic to fish',
+            'It removes all beneficial bacteria, causing a cycle crash',
+            'It makes the filter too powerful',
+            'It\'s not dangerous — replace freely',
+          ],
+          correctIndex: 1,
+          explanation:
+              'All your beneficial bacteria live in the media. Replacing it all at once removes your entire colony. The tank instantly becomes uncycled — ammonia spikes, fish die. Always stagger replacements.',
+        ),
+      ],
+    ),
+  ),
+
+  // EQ-7: Water Change Equipment and Technique
+  Lesson(
+    id: 'eq_water_change_gear',
+    pathId: 'equipment',
+    title: 'Water Change Equipment and Technique',
+    description: 'The tools that make water changes fast and stress-free',
+    orderIndex: 6,
+    xpReward: 50,
+    estimatedMinutes: 6,
+    prerequisites: ['eq_setup_guide'],
+    sections: [
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'The Right Tools Make Water Changes Easy',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Weekly water changes are the cornerstone of fishkeeping. Done badly they\'re stressful and time-consuming. Done with the right gear they take 20–30 minutes and feel routine. Here\'s what you need.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Essential: The Gravel Vacuum (Siphon)',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'A gravel vacuum is a wide tube connected to a long flexible hose. You push it into the substrate — the flow lifts light debris but heavy gravel falls back down. You\'re removing waste while draining water. Two tasks in one.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Standard siphon: manual start (suck or shake), gravity-fed, cheap\n• Pump-start siphon: squeeze bulb to start flow without mouth-contact (highly recommended)\n• Electric gravel vacuum: battery-powered, great for small tanks and awkward angles\n• Python No Spill System: connects to tap, fills and drains without buckets — transforms the experience for larger tanks',
+      ),
+      const LessonSection(
+        type: LessonSectionType.tip,
+        content:
+            'The pump-start siphon is the upgrade that most beginners wish they\'d bought first. Cheap, no siphon-starting mess, and widely available. Worth the extra few pounds.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Starting a Manual Siphon',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Method 1 (cleanest): Submerge the entire tube, cover the hose end with thumb, lift tube out with thumb sealed, point hose into bucket, release — gravity starts the flow\n• Method 2: Pump-start bulb (if your siphon has one)\n• Method 3: Use a dedicated hand pump starter\n• Method 4: Suck (the classic method — just don\'t swallow tank water)',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Gravel Vacuuming Technique',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Push tube vertically into gravel — debris lifts into tube, gravel falls back\n• Work systematically: front to back, left to right\n• Hover above sand — sand is too light to vacuum through\n• Skip planted areas — don\'t disturb roots\n• Stop when you\'ve removed your target water volume (25–50%)',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'The Dedicated Aquarium Bucket',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Keep one (ideally two) buckets used ONLY for aquarium water. Label them. Buckets that previously held cleaning products, paint, or food can transfer residues that harm fish — even after thorough rinsing. Aquarium-only buckets are a permanent, cheap safeguard.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Dechlorinator: Non-Negotiable',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'Every water change requires dechlorinator (water conditioner). Tap water contains chlorine and/or chloramine, which kills beneficial bacteria and damages fish gills. Add the dechlorinator to new water before it enters the tank — or dose directly into the tank as you refill.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.bulletList,
+        content:
+            '• Seachem Prime — highly concentrated (5ml treats 200L), detoxifies ammonia/nitrite temporarily at higher doses, widely considered the best all-round conditioner\n• API Stress Coat — adds slime coat protection, good for stressed fish\n• Tetra AquaSafe — standard budget option, effective',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Temperature Matching',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'New water must be the same temperature as the tank (±1–2°C). Cold water shocks tropical fish — their immune system weakens immediately. Fill your bucket with warm tap water, check with a thermometer or your wrist, and adjust until it matches. This is the step most beginners skip and later regret.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.warning,
+        content:
+            'Temperature shock is cumulative. One cold water change won\'t always kill fish outright — but repeated temperature shocks stress the immune system, leaving fish vulnerable to ich, fin rot, and other opportunistic diseases.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.heading,
+        content: 'Upgrade: The Python No Spill System',
+      ),
+      const LessonSection(
+        type: LessonSectionType.text,
+        content:
+            'For tanks over 100L, the Python (or similar tap-connected water change system) is transformative. It connects to your tap via a venturi valve that creates suction — drain without buckets. Then reverse the valve to fill directly from the tap (use dechlorinator as you fill). No carrying, no spilling.',
+      ),
+      const LessonSection(
+        type: LessonSectionType.funFact,
+        content:
+            'Professional aquarium stores do massive water changes — often 80–100% — on their display tanks daily or every other day. The key is always matching temperature and dechlorinating. There\'s no magic "minimum safe change" rule — it\'s all about the conditions of the new water, not the volume.',
+      ),
+    ],
+    quiz: Quiz(
+      id: 'eq_wc_gear_quiz',
+      lessonId: 'eq_water_change_gear',
+      questions: [
+        const QuizQuestion(
+          id: 'eq_wcg_q1',
+          question: 'What are the two critical conditions for safe water changes?',
+          options: [
+            'pH match and mineral match',
+            'Temperature match and dechlorination',
+            'Low nitrate and high oxygen',
+            'Filtered water and room temperature',
+          ],
+          correctIndex: 1,
+          explanation:
+              'Temperature match prevents cold shock to fish. Dechlorination neutralises chlorine/chloramine that kills bacteria and damages gills. Both are non-negotiable. Get these right and even 75% water changes are safe.',
+        ),
+        const QuizQuestion(
+          id: 'eq_wcg_q2',
+          question: 'Why should aquarium buckets be dedicated and labelled?',
+          options: [
+            'It looks professional and organised',
+            'Residues from cleaning products, food, or paint can transfer to tank water and harm fish',
+            'It doesn\'t matter — any clean bucket is fine',
+            'Only required for saltwater tanks',
+          ],
+          correctIndex: 1,
+          explanation:
+              'Even trace amounts of cleaning products, soap, or food residues in a bucket can harm or kill fish. Dedicated, labelled aquarium buckets are a cheap, permanent safeguard.',
+        ),
+        const QuizQuestion(
+          id: 'eq_wcg_q3',
+          question: 'How do you gravel vacuum sand substrate?',
+          options: [
+            'Push the tube deep into the sand, same as gravel',
+            'Hover the tube just above the sand surface — sand is too fine to vacuum through',
+            'You cannot vacuum sand at all',
+            'Use a stronger electric vacuum to pull sand through',
+          ],
+          correctIndex: 1,
+          explanation:
+              'Sand is too fine and light to vacuum through like gravel. Instead, hover the tube just above the surface — debris lifts into the tube while sand is too heavy to follow. Pushing into sand just clogs the tube.',
+        ),
+      ],
+    ),
+  ),
+
+  // EQ-8: Air Pumps & Aeration
   Lesson(
     id: 'eq_air_pumps',
     pathId: 'equipment',
     title: 'Air Pumps & Aeration',
     description: 'Why oxygen matters more than you think',
-    orderIndex: 3,
+    orderIndex: 7,
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_filters'],
@@ -123,13 +732,13 @@ final equipmentExpandedLessons = [
     ),
   ),
 
-  // EQ-5: CO2 Systems
+  // EQ-9: CO2 Systems
   Lesson(
     id: 'eq_co2_systems',
     pathId: 'equipment',
     title: 'CO2 Systems: Pressurised vs DIY',
     description: 'Hardware setup for planted tank CO2 injection',
-    orderIndex: 4,
+    orderIndex: 8,
     xpReward: 50,
     estimatedMinutes: 7,
     prerequisites: ['eq_lighting', 'planted_co2'],
@@ -240,7 +849,7 @@ final equipmentExpandedLessons = [
     pathId: 'equipment',
     title: 'Aquascaping Tools & Hardscape',
     description: 'The tools and materials of aquatic design',
-    orderIndex: 5,
+    orderIndex: 9,
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_lighting'],
@@ -367,7 +976,7 @@ final equipmentExpandedLessons = [
     pathId: 'equipment',
     title: 'Choosing Your Substrate',
     description: 'Gravel, sand, aqua soil — which is right for you?',
-    orderIndex: 6,
+    orderIndex: 10,
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_filters'],
@@ -484,117 +1093,4 @@ final equipmentExpandedLessons = [
     ),
   ),
 
-  // EQ-8: Test Kits
-  Lesson(
-    id: 'eq_test_kits',
-    pathId: 'equipment',
-    title: 'Test Kits: Your Water Quality Dashboard',
-    description: 'Liquid kits, test strips, and when to use what',
-    orderIndex: 7,
-    xpReward: 50,
-    estimatedMinutes: 5,
-    prerequisites: ['nc_testing'],
-    sections: [
-      const LessonSection(
-        type: LessonSectionType.heading,
-        content: 'Test Strips vs Liquid Test Kits',
-      ),
-      const LessonSection(
-        type: LessonSectionType.text,
-        content:
-            'Two options exist for testing aquarium water at home: test strips (dip a strip in, read colours off a chart) and liquid test kits (add drops of reagent to a water sample, compare to colour chart). They are not equal.',
-      ),
-      const LessonSection(
-        type: LessonSectionType.bulletList,
-        content:
-            '• Test strips: fast (30 seconds), cheap, convenient, significantly less accurate\n• Liquid kits (API, Salifert, Sera): slightly slower (3–5 minutes), more expensive per test, reliably accurate\n• Digital meters (pH pens, TDS meters): accurate for specific parameters, require calibration',
-      ),
-      const LessonSection(
-        type: LessonSectionType.warning,
-        content:
-            'Test strips are not reliable enough for critical decisions. The same tank can show readings 0.5 pH units apart between a strip and a liquid kit. For cycling a new tank, diagnosing disease, or adjusting parameters for sensitive species — always use liquid kits.',
-      ),
-      const LessonSection(
-        type: LessonSectionType.keyPoint,
-        content:
-            'The API Freshwater Master Test Kit covers ammonia (NH3/NH4), nitrite (NO2), nitrate (NO3), and pH — the four essential parameters. Every fishkeeper should own one. It\'s the single most important piece of equipment after the tank itself.',
-      ),
-      const LessonSection(
-        type: LessonSectionType.heading,
-        content: 'When to Test',
-      ),
-      const LessonSection(
-        type: LessonSectionType.bulletList,
-        content:
-            '• New tank (cycling): daily — you need to track ammonia and nitrite peaks\n• Established tank: weekly — catching problems before they become emergencies\n• After adding new fish: 48 hours later — bioload increase can spike ammonia\n• After illness/treatment: after the medication course ends — confirm water quality\n• After unusual behaviour: any time fish act oddly — always test water first',
-      ),
-      const LessonSection(
-        type: LessonSectionType.heading,
-        content: 'Digital Meters — When Are They Worth It?',
-      ),
-      const LessonSection(
-        type: LessonSectionType.text,
-        content:
-            'pH pens (like the Bluelab Pen or Milwaukee pH600) give precise, instant pH readings and are essential for precision planted tanks where pH is adjusted regularly. TDS (Total Dissolved Solids) meters are invaluable for shrimp keepers who need to hit a precise mineral target. Refractometers are standard in marine setups for salinity. For a standard freshwater community tank, liquid kits cover everything you need.',
-      ),
-      const LessonSection(
-        type: LessonSectionType.tip,
-        content:
-            'Store liquid test kit reagents at room temperature, away from direct sunlight. Heat degrades the chemicals faster and causes inaccurate readings. Check the expiry date — old reagents are a false economy.',
-      ),
-      const LessonSection(
-        type: LessonSectionType.funFact,
-        content:
-            'Professional aquaculture facilities test water automatically every 15 minutes using inline sensors and automated dosing systems. For hobbyists, once per week is sufficient to catch the vast majority of problems before they become fatal emergencies.',
-      ),
-    ],
-    quiz: Quiz(
-      id: 'eq_test_kits_quiz',
-      lessonId: 'eq_test_kits',
-      questions: [
-        const QuizQuestion(
-          id: 'eq_test_q1',
-          question:
-              'Why are test strips considered less reliable than liquid test kits?',
-          options: [
-            'Test strips cannot test for ammonia',
-            'Test strips give less accurate readings and can mislead dosing decisions',
-            'Test strips take much longer to give results',
-            'Test strips only work in saltwater, not freshwater',
-          ],
-          correctIndex: 1,
-          explanation:
-              'Test strips are notoriously imprecise — colour interpretation is subjective and the chemicals degrade quickly once the tube is opened. The same water can give readings 0.5 pH units apart between a strip and a liquid kit. For reliable results, use liquid test kits.',
-        ),
-        const QuizQuestion(
-          id: 'eq_test_q2',
-          question:
-              'How often should you test water in a cycling (brand new) tank?',
-          options: [
-            'Once a week is sufficient',
-            'Every day to track ammonia and nitrite peaks',
-            'Only when fish seem unwell',
-            'Monthly — cycling takes weeks',
-          ],
-          correctIndex: 1,
-          explanation:
-              'Cycling a new tank produces rapid ammonia and nitrite spikes that can happen within hours. Daily testing lets you track the cycle progress, know when it\'s safe to add fish, and catch dangerous spikes before they kill anything.',
-        ),
-        const QuizQuestion(
-          id: 'eq_test_q3',
-          question:
-              'Which four parameters does the API Freshwater Master Test Kit measure?',
-          options: [
-            'Temperature, pH, TDS, and nitrate',
-            'Ammonia, nitrite, nitrate, and pH',
-            'pH, KH, GH, and nitrite',
-            'Chlorine, ammonia, pH, and calcium',
-          ],
-          correctIndex: 1,
-          explanation:
-              'The API Freshwater Master Kit covers the four parameters that matter most: ammonia (NH3), nitrite (NO2), nitrate (NO3), and pH. Together these tell you if your nitrogen cycle is working, if there\'s an immediate danger, and whether your pH is appropriate for your fish.',
-        ),
-      ],
-    ),
-  ),
 ];

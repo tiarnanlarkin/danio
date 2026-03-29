@@ -194,18 +194,24 @@ class LessonProvider extends StateNotifier<LessonState> {
     PathMetadata(
       id: 'equipment',
       title: 'Equipment Guide',
-      description: 'Filters, heaters, and essential gear',
+      description: 'Filters, heaters, lights, and essential gear — beginner to advanced',
       emoji: '⚙️',
       orderIndex: 5,
       lessonIds: [
+        // Beginner path — essential gear
         'eq_filters',
         'eq_heaters',
         'eq_lighting',
+        'eq_test_kits',
+        // Setting up & ongoing care
+        'eq_setup_guide',
+        'eq_filter_maintenance',
+        'eq_water_change_gear',
+        // Advanced / specialist topics
         'eq_air_pumps',
         'eq_co2_systems',
         'eq_aquascape_tools',
         'eq_substrate',
-        'eq_test_kits',
       ],
     ),
     PathMetadata(
@@ -286,6 +292,9 @@ class LessonProvider extends StateNotifier<LessonState> {
         'br_breeding_tank',
         'br_raising_fry',
         'br_egg_layers',
+        'br_livebearers',
+        'br_fry_care',
+        'br_rehoming',
       ],
     ),
     PathMetadata(
@@ -298,6 +307,9 @@ class LessonProvider extends StateNotifier<LessonState> {
         'tr_emergency',
         'tr_disease_diagnosis',
         'tr_cloudy_water',
+        'tr_power_outage',
+        'tr_temperature_crash',
+        'tr_ph_crash',
       ],
     ),
   ];

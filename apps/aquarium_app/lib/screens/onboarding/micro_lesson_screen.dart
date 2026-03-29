@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -148,9 +146,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                     ),
                     child: Text(
                       'Quick Lesson · 30 seconds',
-                      style: GoogleFonts.nunito(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: AppColors.primary,
                       ),
                     ),
@@ -165,9 +161,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                 header: true,
                 child: Text(
                   _content.headline,
-                  style: GoogleFonts.nunito(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: AppColors.textPrimary,
                     height: 1.2,
                   ),
@@ -181,9 +175,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                     padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
                     child: Text(
                       p,
-                      style: GoogleFonts.nunito(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: AppColors.textPrimary,
                         height: 1.6,
                       ),
@@ -195,8 +187,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
               // Question
               Text(
                 _content.question,
-                style: GoogleFonts.nunito(
-                  fontSize: 16,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                   height: 1.4,
@@ -220,9 +211,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                   _selectedAnswer == _correctIndex
                       ? _content.correctFeedback
                       : _content.wrongFeedback,
-                  style: GoogleFonts.nunito(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.textSecondary,
                     height: 1.5,
                   ),
@@ -317,8 +306,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
               Expanded(
                 child: Text(
                   answer.label,
-                  style: GoogleFonts.nunito(
-                    fontSize: 15,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: textColor,
                   ),

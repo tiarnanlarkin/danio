@@ -281,7 +281,7 @@ final breedingBasicsPath = LearningPath(
       orderIndex: 2,
       xpReward: 60,
       estimatedMinutes: 7,
-      prerequisites: ['br_breeding_tank', 'at_breeding_egg_layers'],
+      prerequisites: ['br_breeding_tank', 'br_raising_fry'],
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -401,6 +401,396 @@ final breedingBasicsPath = LearningPath(
             correctIndex: 1,
             explanation:
                 'Once spawning is complete, the male becomes aggressively protective of his bubble nest and eggs. He will attack the female relentlessly. She must be removed immediately after spawning ends. Leaving her in risks serious injury or death from the male\'s aggression.',
+          ),
+        ],
+      ),
+    ),
+
+    // BR-4: Livebearer Breeding (moved from advanced_topics)
+    Lesson(
+      id: 'br_livebearers',
+      pathId: 'breeding_basics',
+      title: 'Livebearer Breeding: Guppies, Platys & Mollies',
+      description:
+          'The easiest breeding project in the hobby — guppies, platys, and mollies for beginners',
+      orderIndex: 3,
+      xpReward: 60,
+      estimatedMinutes: 7,
+      prerequisites: ['br_breeding_tank'],
+      sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Livebearer Family',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Guppies, mollies, platys, and swordtails are livebearers — they give birth to fully-formed, free-swimming fry instead of laying eggs. They\'re the easiest fish to breed in the hobby. In fact, the hard part isn\'t getting them to breed — it\'s everything that comes after: managing population growth, fry survival, and responsible rehoming.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'Male:female ratio matters. Keep 1 male for every 2–3 females. Too many males constantly harassing females causes stress, disease, and death. A 1:1 ratio will wear females out within weeks.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Recognising a Gravid Female',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Gestation is approximately 28 days for guppies, 30–35 days for platys and mollies — varying with temperature (warmer = faster). A pregnant (gravid) female develops a dark "gravid spot" near the anal fin, caused by the eyes of developing fry showing through the thin skin. As birth approaches, the belly becomes noticeably boxy rather than rounded — this is called "squaring off" and indicates birth is imminent, usually within 24–48 hours.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Early pregnancy: slight rounding of belly, gravid spot begins to darken\n• Mid-pregnancy: obvious belly growth, gravid spot large and dark\n• Late pregnancy (days from birth): belly appears boxy/square, female may become less active\n• Imminent birth: female seeks corners or hiding spots, may stop eating briefly',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Protecting Fry from Being Eaten',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Livebearer parents — and all tank mates — will eat their own fry immediately after birth. In a community tank, fry survival without intervention approaches zero. Two main strategies exist:',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Option 1 — Breeding box: separate the female into a floating breeding box before birth. She gives birth, fry drop through a mesh away from the mother, then move the fry to a separate grow-out tank. Effective but stressful for the mother.\n• Option 2 — Dense planting: a heavily planted tank with floating plants (guppy grass, java moss, hornwort) provides enough cover that some fry survive naturally. More natural, lower stress, but lower survival rate.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Feeding Livebearer Fry',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Day 1: livebearer fry are already large enough for finely crushed flake food — no infusoria needed\n• Week 1–4: crushed flake 3–4 times daily + baby brine shrimp (BBS) when available\n• Baby brine shrimp dramatically improves growth rate — fry raised on BBS grow 30–50% faster\n• Week 4+: transition to standard small fish foods\n• Feed 3–4 times daily in small amounts — remove uneaten food after 10 minutes to prevent water quality issues',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Basic Colour Genetics (Guppies)',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'In guppies, many colour and tail patterns are carried on the Y chromosome — passed from father to son. This means the colour of your male guppy\'s father strongly predicts what his sons will look like. Selecting the most attractive males from each generation for breeding is the basis of all fancy guppy strains.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Population explosion: a single female guppy can produce 20–80 fry every 28 days. If you keep both sexes together, you will have hundreds of fish within a few months. Plan for this before you start. Have a grow-out tank ready, contact local fish shops about taking fry, or join a local aquarium club where members trade surplus fish.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Never release unwanted fry into local waterways — it is illegal in most countries and can devastate native ecosystems. Invasive guppies and mollies have already wiped out native fish populations in many regions. Rehome through fish clubs, sell to shops, or feed surplus fry to larger fish.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'Female guppies can store sperm from a single mating for up to 6 months. A female purchased at a fish shop — even in an all-female tank — may already be pregnant and give birth within days of bringing her home. Most "mystery fry" from new fish purchases are explained by this stored-sperm mechanism.',
+        ),
+      ],
+      quiz: Quiz(
+        id: 'br_livebearers_quiz',
+        lessonId: 'br_livebearers',
+        questions: [
+          const QuizQuestion(
+            id: 'br_live_q1',
+            question: 'What male-to-female ratio is recommended for livebearer tanks?',
+            options: [
+              '3 males per female for maximum breeding activity',
+              '1 male per female for balanced pairing',
+              '1 male per 2–3 females to prevent female harassment and stress',
+              'All-female tanks — males are not needed',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Keep 1 male per 2–3 females. Multiple males compete to mate, exhausting females with constant pursuit. Chronic stress leads to disease and early death. The 1:3 ratio distributes male attention across multiple females.',
+          ),
+          const QuizQuestion(
+            id: 'br_live_q2',
+            question: 'What does "squaring off" mean in a pregnant livebearer?',
+            options: [
+              'The female develops a checkerboard colour pattern before giving birth',
+              'The female becomes territorial and defends a square area of the tank',
+              'The pregnant belly becomes boxy and squared rather than round — indicating birth is imminent',
+              'The female swims in a square pattern when in labour',
+            ],
+            correctIndex: 2,
+            explanation:
+                '"Squaring off" describes the visual change in a gravid female\'s belly in the final 24–48 hours before birth. Instead of a rounded belly, the sides become flat and the belly looks square or boxy as fry move into birthing position. Time to set up the breeding box.',
+          ),
+          const QuizQuestion(
+            id: 'br_live_q3',
+            question:
+                'Why can a female guppy give birth even when she\'s been kept only with other females?',
+            options: [
+              'Female guppies reproduce asexually when no males are present',
+              'Female guppies can store sperm from an earlier mating for up to 6 months',
+              'All guppies are born female and some later change sex to male',
+              'Females spontaneously produce fry after 6 months of age regardless',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Female guppies can store viable sperm from a single mating for up to 6 months. A female bought from a shop — even an all-female display — may have mated before purchase and can produce multiple broods from that single stored sperm batch.',
+          ),
+        ],
+      ),
+    ),
+
+    // BR-5: Fry Care and Grow-Out
+    Lesson(
+      id: 'br_fry_care',
+      pathId: 'breeding_basics',
+      title: 'Fry Care: Grow-Out and Health',
+      description: 'Keeping fry healthy, growing fast, and ready for rehoming',
+      orderIndex: 4,
+      xpReward: 60,
+      estimatedMinutes: 6,
+      prerequisites: ['br_raising_fry', 'br_livebearers'],
+      sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Grow-Out Tank',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'A grow-out tank is a dedicated tank for raising fry to a size where they can be moved to the community tank or rehomed. It\'s separate from the spawning/breeding tank, which is now free for the next spawn. Grow-out tanks prioritise cleanliness, stable water, and maximum growth rate over aesthetics.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Size: as large as practical — more volume means more stable water chemistry\n• Filter: mature sponge filter (seeded from existing tank) — gentle flow, safe for fry\n• Substrate: bare bottom or fine sand — easier to clean, no debris traps\n• Temperature: 27–28°C for tropical fry — slightly warmer than the adult tank to accelerate growth\n• Lighting: moderate — enough to feed by, but not so intense it causes algae problems',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Feeding for Maximum Growth',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Growth rate in fry is driven almost entirely by two things: food quality and water quality. Feed frequently with nutritious food, and maintain excellent water quality with regular small water changes. Fry raised on a varied diet of live and frozen foods reach rehomeable size weeks faster than those raised on flake alone.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Feed 3–4 times daily — fry have small stomachs, need constant food availability\n• Remove all uneaten food after 10–15 minutes — fry tanks pollute quickly\n• Vary the diet: crushed flake, micro pellets, baby brine shrimp, micro worms, daphnia\n• Egg yolk paste (hard-boiled yolk pressed through a cloth into the water) is highly nutritious for tiny fry\n• Spirulina-based foods improve colour development in species with natural green/blue colours',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Water Quality in Fry Tanks',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Fry produce more waste relative to their body size than adults. Their metabolisms run hot, and they eat frequently. Ammonia accumulates faster in fry tanks than in adult tanks. Daily or every-other-day water changes of 10–20% are essential during the first 4 weeks.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Always match temperature and treat new water with dechlorinator before adding it to a fry tank. Even a small temperature mismatch (3–4°C) that an adult fish would tolerate can stress or kill fragile fry. Test the replacement water temperature against the tank before pouring.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Culling — A Difficult Reality',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Culling means humanely removing deformed or severely stunted fry from the grow-out tank. This is not cruelty — it\'s responsible husbandry. A deformed fry that cannot swim correctly, cannot eat, or has severe spinal curvature will not thrive and will suffer. Culling early prevents that suffering.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Identify cull candidates by day 3–5: bent spine (scoliosis), swim bladder issues (floating/sinking), missing eyes, severe deformities\n• Humane method: clove oil in water (5–10 drops per 500ml) — fish rapidly lose consciousness and do not recover\n• Mild deformities that don\'t impair function (slightly bent tail fin) are often acceptable — fish can live normal lives\n• Most reputable breeders cull roughly 5–15% of each spawn',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Size-grade your fry at 3–4 weeks. Sort the large, medium, and small individuals into separate containers. This prevents larger siblings from out-competing and stunting smaller ones. Size-graded groups grow more uniformly and reach rehomeable size faster overall.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'Wild guppy populations in Trinidad have been studied for decades as a natural experiment in evolution. In rivers with predators (pike cichlids), guppies evolved to mature faster, produce more and smaller fry, and have drab colouring. In predator-free headwaters, the same species evolved slower maturation, fewer and larger fry, and bright male colouring. The same species — wildly different life strategies based on predation pressure.',
+        ),
+      ],
+      quiz: Quiz(
+        id: 'br_frycare_quiz',
+        lessonId: 'br_fry_care',
+        questions: [
+          const QuizQuestion(
+            id: 'br_care_q1',
+            question:
+                'Why are daily water changes more important in a fry grow-out tank than in an adult tank?',
+            options: [
+              'Fry require pure water with no dissolved minerals at all',
+              'Fry produce more waste relative to body size and eat frequently, causing faster ammonia accumulation',
+              'Adult fish are immune to ammonia; only fry are affected',
+              'Fry produce growth hormones that pollute the water and need daily removal',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Fry eat frequently and have high metabolic rates, producing proportionally more waste than adults. Combined with a small tank volume, ammonia builds rapidly. Daily 10–20% water changes maintain the pristine water quality that fast, healthy fry growth requires.',
+          ),
+          const QuizQuestion(
+            id: 'br_care_q2',
+            question:
+                'What is the purpose of size-grading fry at 3–4 weeks?',
+            options: [
+              'Larger fry need warmer water, so they must be separated by temperature requirement',
+              'To identify which fry to sell and which to keep — size indicates quality',
+              'Larger fry bully and out-compete smaller siblings; separating them allows more even growth',
+              'Size-grading is only done for show-quality fish, not general breeding',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Size variation in a batch of fry creates a competitive hierarchy. Larger, more aggressive individuals monopolise food and space, stunting smaller siblings. Sorting into size groups levels the playing field — each fry competes with others its own size, and the overall batch grows faster and more evenly.',
+          ),
+          const QuizQuestion(
+            id: 'br_care_q3',
+            question: 'Why do many responsible breeders cull a percentage of each spawn?',
+            options: [
+              'To maintain the exclusive value of their fish by limiting supply',
+              'Culling deformed fry prevents their suffering and prevents passing deformities to future generations',
+              'Fish clubs require documented culling rates before allowing members to sell fish',
+              'Culling is illegal in most countries and should never be done',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Fry with severe deformities — bent spines, swim bladder disorders, missing organs — cannot live normal lives and will suffer. Humane culling early prevents extended suffering. It\'s considered responsible husbandry by the fishkeeping community, not cruelty.',
+          ),
+        ],
+      ),
+    ),
+
+    // BR-6: Separating Fry and Rehoming
+    Lesson(
+      id: 'br_rehoming',
+      pathId: 'breeding_basics',
+      title: 'Separating Fry and Responsible Rehoming',
+      description: 'When and how to move fry — and what to do with the ones you can\'t keep',
+      orderIndex: 5,
+      xpReward: 60,
+      estimatedMinutes: 5,
+      prerequisites: ['br_fry_care'],
+      sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Overpopulation Reality',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Breeding fish is exciting. The first batch of fry is magical. By the sixth batch — each of 40–80 fry — the reality of aquarium keeping sets in: you will have far more fish than you can house. Planning for this before your first spawn is not pessimism, it\'s responsible fishkeeping. Having a rehoming plan is as important as having a breeding setup.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'When to Separate Fry from Adults',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Livebearer fry (guppies, platys, mollies): can go into a planted community tank once they reach 1–1.5cm — floating plants provide cover. Move to grow-out tank if you want maximum survival.\n• Egg layer fry: must stay in the breeding/fry tank until they\'re too large to be eaten — typically 2–2.5cm for community fish, larger for tanks with large predatory species.\n• General rule: a fry is safe when it cannot fit in any tank mate\'s mouth.\n• Never rush the move — a few extra weeks in the fry tank is better than losing a fry to a hungry angelfish.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Rehoming Options',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Local fish shop (LFS): most shops accept healthy, well-grown fry in exchange for store credit or cash. Call ahead — many have slow periods and won\'t accept all species.\n• Aquarium clubs: local fishkeeping clubs are an excellent outlet. Members breed, swap, and sell fish. Joining a club is one of the best things a breeder can do.\n• Online classifieds: Facebook groups, dedicated aquarium forums, and classified sites allow direct sales or donations to fellow hobbyists.\n• Fellow hobbyists: ask in online communities — someone always needs guppies or corydoras.\n• Fish swaps and auctions: club events where bags of fish are auctioned. Surplus fry sell easily at these events.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Responsible Disposal of Surplus',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Sometimes fry cannot be rehomed — you have more than the market can absorb. Options for surplus that cannot find homes:',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Feed to larger carnivorous fish (puffer fish, large cichlids, eels) — natural food chain\n• Humane culling using clove oil solution\n• Contact a local pond keeper — surplus guppies and platys are often useful as live pond food for koi\n• Schools and offices sometimes accept small, easy-care fish as a first tank gift',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'NEVER release aquarium fish into wild waterways, ponds, rivers, or drainage systems. This is illegal in most countries and has caused serious ecological damage worldwide. Guppies, mollies, and platys have colonised natural waterways across five continents after release by aquarium keepers. The damage to native ecosystems is irreversible.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Transporting Fry Safely',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Use fish bags (available from fish shops) or ziplock bags — not rigid containers for short trips\n• Fill with 1/3 tank water and 2/3 air — the air volume matters for gas exchange\n• Seal tightly and transport in an insulated bag or box to maintain temperature\n• Keep bags upright and minimise jostling\n• Trips under 2 hours: no oxygen needed. Over 2 hours: add pure oxygen before sealing if possible (fish shops can do this)\n• At the destination: float the bag for 15–20 minutes to equalise temperature, then release',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'When contacting a fish shop about taking your fry, bring them already in bags at a size the shop can immediately display — usually 2–3cm. Small fry require specialist care the shop may not have time for. Coming with ready-to-sell juveniles gets a much better response than arriving with a bag of 1-week-old fry.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'The ornamental fish trade moves approximately 1.5 billion fish worth over \$15 billion annually. A significant portion of guppies, platys, and mollies sold in pet shops across Europe and North America are captive-bred in fish farms in Southeast Asia — but local breeders selling to local shops provide fresher, often healthier fish that have never been through international shipping stress.',
+        ),
+      ],
+      quiz: Quiz(
+        id: 'br_rehoming_quiz',
+        lessonId: 'br_rehoming',
+        questions: [
+          const QuizQuestion(
+            id: 'br_reh_q1',
+            question:
+                'At what approximate size are livebearer fry (guppies, platys) safe to introduce to a community tank with floating plant cover?',
+            options: [
+              'Immediately after birth — they\'re born fully formed',
+              'At 0.5cm — any larger and they\'re too territorial',
+              'At 1–1.5cm with dense floating plants providing refuge',
+              'Only at 4cm — smaller fish will always be eaten',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Livebearer fry at 1–1.5cm with dense floating plants (guppy grass, java moss, hornwort) have a reasonable survival rate in a community tank. The plants provide shelter and break line of sight. Smaller than 1cm has poor survival; larger is safer but takes more time in the grow-out tank.',
+          ),
+          const QuizQuestion(
+            id: 'br_reh_q2',
+            question:
+                'When bringing bagged fry to a new tank, why should the bag be floated for 15–20 minutes first?',
+            options: [
+              'To allow the fish time to adjust psychologically to the new environment',
+              'To equalise the temperature between the bag water and the tank water before release',
+              'Floating the bag adds oxygen to the water through the plastic',
+              'It\'s a fish shop myth — you can release immediately without floating',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Temperature equilibration prevents thermal shock. The bag water cools or warms to match the tank temperature over 15–20 minutes. Releasing fish directly from a bag that\'s 3–5°C different from the tank temperature stresses them and can trigger ich or other stress-related conditions.',
+          ),
+          const QuizQuestion(
+            id: 'br_reh_q3',
+            question:
+                'What is the main reason releasing aquarium fish into wild waterways is prohibited?',
+            options: [
+              'Wild fish are territorial and will immediately attack tank-bred fish',
+              'Aquarium chemicals in fish tissue poison local wildlife',
+              'Introduced species can outcompete native species and cause irreversible ecological damage',
+              'It is only prohibited in countries with endangered native fish',
+            ],
+            correctIndex: 2,
+            explanation:
+                'Introduced aquarium fish (and plants) are among the most damaging invasive species globally. Guppies, goldfish, suckermouth catfish, and aquatic plants have devastated native ecosystems on every inhabited continent after release by aquarium keepers. This is illegal in most countries — and for good reason.',
           ),
         ],
       ),

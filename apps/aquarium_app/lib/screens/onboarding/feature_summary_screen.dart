@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
@@ -89,9 +87,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                     // Title
                     Text(
                       'Everything you need, right here.',
-                      style: GoogleFonts.nunito(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w700,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: AppColors.textPrimary,
                       ),
                       textAlign: TextAlign.center,
@@ -99,10 +95,9 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Danio is free to use — no subscription needed.',
-                      style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -155,10 +150,9 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
             Flexible(
               child: Text(
                 'Your ${widget.selectedFish.commonName} care guide is ready.',
-                style: GoogleFonts.nunito(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -190,10 +184,9 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                   Expanded(
                     child: Text(
                       f,
-                      style: GoogleFonts.nunito(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w500,
                         height: 1.4,
                       ),
                     ),

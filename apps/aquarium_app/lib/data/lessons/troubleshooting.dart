@@ -261,6 +261,7 @@ final troubleshootingPath = LearningPath(
       title: 'Cloudy Water: What It Means',
       description: 'White, green, brown — each colour tells a different story',
       orderIndex: 2,
+
       xpReward: 60,
       estimatedMinutes: 5,
       prerequisites: ['nc_intro', 'maint_water_changes'],
@@ -361,6 +362,399 @@ final troubleshootingPath = LearningPath(
             correctIndex: 2,
             explanation:
                 'Bacterial blooms in new tanks resolve naturally. The bacteria that cause the bloom are not harmful — they\'re establishing the nitrogen cycle. Any intervention (large water change, antibiotics) disrupts the cycle and resets the process. Patient observation is the correct response.',
+          ),
+        ],
+      ),
+    ),
+
+    // TR-4: Power Outage Recovery
+    Lesson(
+      id: 'tr_power_outage',
+      pathId: 'troubleshooting',
+      title: 'Power Outage Recovery',
+      description: 'What to do when the power goes out — and how to keep fish alive',
+      orderIndex: 3,
+      xpReward: 60,
+      estimatedMinutes: 6,
+      prerequisites: ['tr_emergency'],
+      sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Silent Killer: Loss of Filtration',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Power cuts are one of the most dangerous aquarium emergencies — and one of the most overlooked. When the power goes out, your filter stops circulating water. Oxygen levels drop. Ammonia starts building from fish waste and uneaten food. In warm water (above 24°C), a heavily stocked tank can reach dangerous ammonia levels within 4–6 hours. Overnight cuts in summer are responsible for many total tank losses.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• First hour: low risk — oxygen and biological filtration continue from residual flow\n• 2–4 hours: oxygen begins depleting, especially in warm or heavily stocked tanks\n• 4–8 hours (overnight): critical — ammonia builds, oxygen critically low, fish show distress\n• 8+ hours: high mortality risk in warm, heavily stocked tanks without aeration',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Immediate Response Protocol',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '1. Deploy a battery-powered air pump immediately — oxygenation is the priority\n2. Do NOT open the lid unnecessarily — heat escapes and water temperature matters\n3. Do NOT feed — food produces ammonia, worsening an already-stressed system\n4. Keep the room warm if you have a portable heater — temperature stability reduces fish stress\n5. If outage extends beyond 4 hours: perform a small water change (15–20%) with treated water at correct temperature',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'A battery-powered air pump is the single most important emergency piece of equipment. Buy one, keep batteries fresh, and test it quarterly. It costs less than £15 and can prevent total tank loss during a power cut. Keep it within arm\'s reach of the tank.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'When Power Returns: Equipment Check',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Power restoration is not the end of the emergency. Equipment restarts, heaters can overshoot, and the sudden return to normal flow can cause turbulence that stresses already-weakened fish. Run through this checklist when power returns:',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Check filter is running — internal filters sometimes need a manual prime after power cuts\n• Check heater is functioning, not overheating (verify temperature after 30 minutes)\n• Test ammonia immediately — it will have been building during the outage\n• Dose Seachem Prime at double dose — detoxifies any ammonia that built up\n• Do NOT feed for 24 hours after a major outage — give the system time to stabilise\n• Monitor fish closely for 48–72 hours for signs of stress (clamped fins, lethargy, surface gasping)',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Fish Stress After Power Cuts',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Even if fish survive the outage, immune systems are suppressed by the stress. Opportunistic infections (ich, fin rot, bacterial) often appear 3–7 days after a major power event. Watch closely and be ready to quarantine any fish showing symptoms.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Some heaters malfunction after power restoration — they overshoot target temperature dramatically. After power returns, monitor tank temperature every 15 minutes for the first hour. A heater that\'s running constantly and the temperature keeps climbing indicates a stuck heater — unplug it immediately and replace.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'For long-term protection, consider an Uninterruptible Power Supply (UPS) designed for electronics. A small UPS unit can power a filter and heater for several hours during outages. More practical for serious fishkeepers with valuable or sensitive fish.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'Public aquariums run on generator backup power with automatic failover — a power cut triggers generator start within seconds. Some dedicated home fishkeepers with large or expensive setups (koi ponds, marine tanks) have invested in the same technology for their home systems.',
+        ),
+      ],
+      quiz: Quiz(
+        id: 'tr_power_quiz',
+        lessonId: 'tr_power_outage',
+        questions: [
+          const QuizQuestion(
+            id: 'tr_power_q1',
+            question:
+                'What is the most critical action to take immediately during a power outage affecting your aquarium?',
+            options: [
+              'Perform a 50% water change to dilute any ammonia that builds up',
+              'Deploy a battery-powered air pump to maintain oxygen levels',
+              'Move all fish to a bucket of fresh tap water',
+              'Feed extra food to ensure fish have enough energy',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Oxygen depletion is the fastest-acting danger during a power outage. A battery-powered air pump provides immediate oxygenation and surface agitation, buying significant time. Water changes can come later — oxygenation is the first priority.',
+          ),
+          const QuizQuestion(
+            id: 'tr_power_q2',
+            question:
+                'Why should you test ammonia immediately when power is restored after a long outage?',
+            options: [
+                'Power surges cause chemical reactions that create ammonia',
+                'Ammonia builds up whenever filtration stops — it will have accumulated during the outage',
+                'Ammonia only tests accurately when equipment is running normally',
+                'Power cuts affect test kit accuracy, so you need to recalibrate',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Biological filtration stops when the filter stops. Fish continue producing waste, and ammonia accumulates with no bacteria processing it. After any extended outage, ammonia will be elevated. Testing immediately and dosing Prime lets you understand the scale of the problem.',
+          ),
+          const QuizQuestion(
+            id: 'tr_power_q3',
+            question:
+                'Why might fish show disease symptoms 3–7 days after a power outage, even if they survived it?',
+            options: [
+              'Power cuts change the water chemistry permanently, weakening fish',
+              'The stress of the outage suppresses the immune system, making fish vulnerable to opportunistic infections',
+              'Filters introduce bacteria when they restart, causing disease',
+              'Temperature changes from outages permanently damage fish organs',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Stress — from oxygen depletion, temperature fluctuation, and ammonia exposure — suppresses fish immune systems. Even a fish that appears fine after a power cut may succumb to ich, fin rot, or bacterial infection in the days that follow. Monitoring closely for 72 hours after any major emergency is essential.',
+          ),
+        ],
+      ),
+    ),
+
+    // TR-5: Temperature Crash / Heater Failure
+    Lesson(
+      id: 'tr_temperature_crash',
+      pathId: 'troubleshooting',
+      title: 'Temperature Crash: Heater Failure',
+      description: 'Emergency response to sudden temperature drops and heater failures',
+      orderIndex: 4,
+      xpReward: 60,
+      estimatedMinutes: 6,
+      prerequisites: ['tr_emergency'],
+      sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Temperature: The Invisible Emergency',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Fish are ectotherms — their body temperature equals their environment. A heater failure in winter, especially overnight, can drop tank temperature from 26°C to 15°C in just a few hours. Most tropical fish experience severe immune suppression below 20°C. Below 15°C, metabolic function slows to dangerous levels. The fish may still be swimming — but organ damage is occurring.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Warning signs of heater failure: temperature below target, heater light not on, heater feels cool to touch\n• Signs of temperature crash in fish: lethargy and slow movement, sitting on the bottom, clamped fins, laboured breathing, reduced or no appetite\n• Species most vulnerable: discus, rams, altum angelfish (high-temperature specialists)\n• Species most tolerant: white clouds, goldfish, rosy barbs (cold-water tolerant)',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Emergency Response',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '1. Confirm heater failure — check the thermostat, test if it\'s outputting heat\n2. Raise room temperature if possible — close doors and windows, use a portable heater in the room\n3. Float sealed bags or bottles of warm (not hot) water in the tank — raises temperature gently\n4. Wrap insulation around the tank exterior — towels, polystyrene, blankets\n5. Do NOT add very hot water directly — rapid temperature increase is as harmful as gradual decrease\n6. Source a replacement heater as quickly as possible',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'The safe rate of temperature change is no more than 1–2°C per hour. Slower is better. A fish that has experienced a temperature drop over 8 hours should have its temperature restored over at least 4–6 hours — not in a single rapid correction. Rewarming too fast causes thermal shock.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Backup Heating Strategies',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Heater failure is not a matter of if, but when. A heater has a typical lifespan of 3–5 years, and most fail without warning. Having a backup strategy ready significantly reduces risk.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Always keep a spare heater — one size larger than your main heater, unopened and ready\n• Run two heaters in a large tank — each set 1°C below target; if one fails, the other maintains most of the target temp\n• Install a temperature alarm — simple digital thermometers with min/max alerts can wake you if the temperature drops at night\n• For valuable fish (discus, rare cichlids), consider a dedicated temperature controller with dual-probe redundancy',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Opposite Problem: Heater Stuck ON',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Heater failure also occurs in the opposite direction: the thermostat sticks in the ON position, and the heater runs continuously. In a small tank this can raise temperatures by 5–10°C in just a few hours — cooking the fish. This is the reason a thermometer should always be read at every tank check.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'If you find your heater running continuously and temperature is rising past target: unplug the heater immediately. Do not wait. Float sealed bottles of cold (not iced) water to slowly bring temperature down. Check fish for stress signs. A heater that sticks ON is destroyed — replace it.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Check your thermometer at every tank visit — before looking at the fish, before doing maintenance. Temperature problems are invisible until the fish show symptoms. A 2-second thermometer glance prevents a catastrophic emergency.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'Discus (Symphysodon sp.) are kept at 28–31°C — the highest temperature of any common aquarium fish. They evolved in seasonally warm Amazonian flooded forests where temperatures rarely drop. A temperature dip to 24°C — comfortable for most tropicals — will trigger illness and potential death in discus within days.',
+        ),
+      ],
+      quiz: Quiz(
+        id: 'tr_temp_quiz',
+        lessonId: 'tr_temperature_crash',
+        questions: [
+          const QuizQuestion(
+            id: 'tr_temp_q1',
+            question:
+                'What is the safest rate to restore temperature after a temperature crash?',
+            options: [
+              'As fast as possible — add boiling water to the tank to restore immediately',
+              'No more than 1–2°C per hour — rapid rewarming causes thermal shock',
+              'Exactly 5°C per hour is the recommended safe rate',
+              'Temperature should only ever be restored by replacing the heater — no manual intervention',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Whether cooling or warming, rapid temperature changes are highly stressful for fish. After a crash, restoration should be gradual — no faster than 1–2°C per hour. Using sealed bottles of warm water, raised room temperature, and insulation achieves this safely.',
+          ),
+          const QuizQuestion(
+            id: 'tr_temp_q2',
+            question:
+                'What is the best long-term strategy to protect against heater failure?',
+            options: [
+              'Use a heater that\'s double the tank\'s recommended wattage',
+              'Run two heaters set 1°C below target temperature, so if one fails the other maintains most of the warmth',
+              'Change heaters every 6 months regardless of whether they\'ve failed',
+              'Only heat the room, not the tank directly',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Running two smaller heaters is the standard approach for valuable fish. Each set 1°C below target means neither overheats the tank alone, but if one fails, the other keeps temperature close to target, preventing a catastrophic crash before you can respond.',
+          ),
+          const QuizQuestion(
+            id: 'tr_temp_q3',
+            question:
+                'A heater stuck in the ON position is dangerous because:',
+            options: [
+              'It causes electrical fires that can damage the entire aquarium cabinet',
+              'It continuously raises water temperature, potentially cooking fish before you notice',
+              'It overloads the filter motor, causing simultaneous filter failure',
+              'A heater stuck ON is actually beneficial — fish prefer warmer water',
+            ],
+            correctIndex: 1,
+            explanation:
+                'A heater with a stuck-ON thermostat will run continuously, raising temperature well past the target — sometimes by 10°C or more in small tanks. Fish can die from heat stress as surely as cold. This is why checking the thermometer at every tank visit is non-negotiable.',
+          ),
+        ],
+      ),
+    ),
+
+    // TR-6: pH Crash / Overnight Death
+    Lesson(
+      id: 'tr_ph_crash',
+      pathId: 'troubleshooting',
+      title: 'pH Crash and Overnight Deaths',
+      description: 'What causes the tank to crash overnight — and how to prevent it',
+      orderIndex: 5,
+      xpReward: 60,
+      estimatedMinutes: 7,
+      prerequisites: ['tr_emergency', 'wp_ph'],
+      sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Overnight Mystery',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'You check the tank before bed — everything looks fine. You wake up and find fish dead. No visible disease, no obvious contamination. The most common culprit is a pH crash: a rapid, dramatic drop in water pH during the night. Understanding why this happens, and how to prevent it, is one of the most important pieces of aquarium knowledge you can have.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Why pH Crashes Overnight',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'During the day, plants photosynthesize — they consume CO₂ and produce oxygen, which drives pH up. At night, photosynthesis stops. Plants and fish both respire — releasing CO₂, which dissolves in water to form carbonic acid, lowering pH. In a well-planted, soft water tank with low buffering capacity (KH below 3°dKH), pH can drop 1–2 full units between lights-off and morning.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Heavily planted tank + soft water (low KH) = maximum pH crash risk\n• CO₂ injection systems that run overnight amplify the problem dramatically\n• Overcrowded tanks (high respiration load) and low surface agitation worsen pH swings\n• A drop from pH 7.4 in the evening to pH 6.0 at dawn is not unusual in vulnerable setups',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'KH (carbonate hardness) is your pH buffer. KH above 4°dKH provides sufficient buffering to resist overnight pH crashes in most setups. If your KH is very low (soft water, RO water), pH instability is a constant risk. Always test KH alongside pH when investigating overnight deaths.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'What to Check First',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '1. Test pH in the morning (before lights on) AND in the evening (before lights off)\n2. Test KH — if below 3°dKH, pH crash is highly likely\n3. Check CO₂ injection schedule — ensure it turns off 1–2 hours before lights-off\n4. Check surface agitation at night — poor surface movement means CO₂ accumulates\n5. Review plant-to-fish ratio — heavily planted tanks with many fish have high overnight CO₂ production',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Prevention Strategies',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• Increase surface agitation at night — a surface-agitating filter outlet or air stone running overnight drives off CO₂\n• Raise KH to 4–6°dKH using crushed coral in the filter, or commercial KH buffer products\n• Set CO₂ on a timer — turn it off 1–2 hours before lights out, or use a pH controller\n• Consider an air pump on a timer — runs at night only to increase surface gas exchange\n• Regular water changes top up KH naturally if tap water has moderate hardness',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Other Causes of Overnight Deaths',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Not all overnight deaths are pH crashes. Run through this differential diagnosis when you find dead fish in the morning:',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• pH crash (see above) — test morning pH vs evening pH\n• Oxygen depletion — common in hot weather, overstocked tanks, heavy algae blooms that respire at night\n• Ammonia spike — cycle crash, dead fish you hadn\'t found, filter failure\n• CO₂ overdose — CO₂ injection set too high, fish suffocate\n• Poisoning — new decor or substrate leaching toxins, household chemicals near the tank\n• Predation — older fish (angels, larger cichlids) hunting at night when lights are off',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'If multiple fish die overnight with no obvious cause, test everything before adding new fish: ammonia, nitrite, pH (morning AND evening), KH, and oxygen if you have an oxygen probe. The cause must be identified and resolved before stocking again.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'A simple and inexpensive prevention method: run an air stone on a timer from lights-off to lights-on. It increases surface agitation, drives off CO₂, and raises dissolved oxygen overnight — addressing two common overnight death causes simultaneously.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.funFact,
+          content:
+              'Natural Amazonian blackwater streams have pH as low as 3.5 — similar to orange juice. Fish like cardinal tetras and wild discus evolved to tolerate these extreme conditions. However, they\'re adapted to stable low-pH, not rapid pH swings. Even acid-tolerant species suffer from rapid pH changes more than from sustained low pH.',
+        ),
+      ],
+      quiz: Quiz(
+        id: 'tr_ph_quiz',
+        lessonId: 'tr_ph_crash',
+        questions: [
+          const QuizQuestion(
+            id: 'tr_ph_q1',
+            question:
+                'Why does pH tend to drop overnight in planted aquariums?',
+            options: [
+              'Lights going off causes a chemical reaction that acidifies water',
+              'Fish produce more ammonia at night, which is acidic',
+              'Plants stop photosynthesizing and switch to respiration, releasing CO₂ that forms carbonic acid',
+              'Heaters turn off overnight, and cooler water is naturally more acidic',
+            ],
+            correctIndex: 2,
+            explanation:
+                'During photosynthesis, plants consume CO₂ and produce O₂, raising pH. At night, plants respire — consuming O₂ and releasing CO₂. CO₂ dissolves to form carbonic acid, lowering pH. In soft water with low KH (buffering capacity), this overnight CO₂ accumulation causes significant pH crashes.',
+          ),
+          const QuizQuestion(
+            id: 'tr_ph_q2',
+            question:
+                'What water parameter is most important for preventing pH crashes?',
+            options: [
+              'GH (general hardness) above 10°dGH',
+              'KH (carbonate hardness) — it buffers against pH swings',
+              'TDS (total dissolved solids) above 500ppm',
+              'Nitrate below 10ppm',
+            ],
+            correctIndex: 1,
+            explanation:
+                'KH (carbonate hardness) is the pH buffer. Carbonate ions neutralise acids before they can lower pH. KH above 4°dKH provides resistance to overnight pH crashes. In soft water or RO-heavy setups with very low KH, pH crashes are much more likely and can be severe.',
+          ),
+          const QuizQuestion(
+            id: 'tr_ph_q3',
+            question:
+                'What is the simplest prevention measure for overnight pH crashes in a planted tank?',
+            options: [
+              'Add a strong acid buffer to maintain a stable low pH',
+              'Run an air stone or surface agitation from lights-off to lights-on to drive off overnight CO₂',
+              'Remove all plants from the tank — only fish cause pH changes',
+              'Increase CO₂ injection to counteract nighttime oxygen changes',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Surface agitation during lights-off drives CO₂ out of the water before it can accumulate to acidic levels. An air pump on a timer — off during the day (so it doesn\'t strip CO₂ needed for plant growth), on at night — is one of the cheapest and most effective ways to prevent overnight pH crashes.',
           ),
         ],
       ),

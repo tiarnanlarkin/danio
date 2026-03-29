@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -106,11 +105,8 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                       // Headline
                       Text(
                         "We'll tap you when something matters.",
-                        style: GoogleFonts.nunito(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           color: AppColors.textPrimary,
-                          height: 1.3,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -120,9 +116,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                         "Danio can alert you when your fish's water conditions "
                         "need attention — before small problems become big ones. "
                         "We'll never spam you.",
-                        style: GoogleFonts.nunito(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.textSecondary,
                           height: 1.6,
                         ),

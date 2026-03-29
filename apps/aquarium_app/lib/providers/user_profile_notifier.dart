@@ -324,6 +324,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             } else {
               // Gap in activity - reset streak
               newStreak = 1;
+              // Notify UI if the user had a meaningful streak before
+              if (c.currentStreak > 1) {
+                ref.read(streakResetProvider.notifier).state = c.currentStreak;
+              }
             }
           } else {
             // First activity ever
@@ -1082,3 +1086,8 @@ class _ProfileLifecycleListener extends WidgetsBindingObserver {
 /// Set to true when a freeze is used; the UI should reset it after showing
 /// a notification.
 final streakFreezeUsedProvider = StateProvider<bool>((ref) => false);
+
+/// Notifies the UI when the user's streak was reset to 1 after a gap in
+/// activity. Value is the streak count that was lost (> 1), or 0 if no reset.
+/// The UI should reset it to 0 after showing the acknowledgement.
+final streakResetProvider = StateProvider<int>((ref) => 0);

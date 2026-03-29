@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
@@ -158,9 +156,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                     header: true,
                     child: Text(
                       _headerText,
-                      style: GoogleFonts.nunito(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.textPrimary,
                       ),
                     ),
@@ -172,8 +168,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                   ),
                   child: Text(
                     'Search or pick from popular choices below.',
-                    style: GoogleFonts.nunito(
-                      fontSize: 14,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -192,11 +187,10 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                     child: TextField(
                       controller: _searchController,
                       focusNode: _searchFocusNode,
-                      style: GoogleFonts.nunito(fontSize: 15),
+                      style: Theme.of(context).textTheme.bodyMedium,
                       decoration: InputDecoration(
                         hintText: 'Search 125+ species...',
-                        hintStyle: GoogleFonts.nunito(
-                          fontSize: 15,
+                        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.textHint,
                         ),
                         prefixIcon: const Icon(
@@ -282,9 +276,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
         children: [
           Text(
             'Popular starter fish',
-            style: GoogleFonts.nunito(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
@@ -323,8 +315,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
         key: const ValueKey('empty'),
         child: Text(
           'No species found. Try another name.',
-          style: GoogleFonts.nunito(
-            fontSize: 14,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: AppColors.textSecondary,
           ),
         ),
@@ -377,9 +368,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
           Expanded(
             child: Text(
               _selectedFish!.commonName,
-              style: GoogleFonts.nunito(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: AppColors.textPrimary,
               ),
             ),
@@ -496,9 +485,7 @@ class _PopularTile extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.nunito(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -508,9 +495,7 @@ class _PopularTile extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.nunito(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontStyle: FontStyle.italic,
                   color: AppColors.textSecondary,
                   height: 1.2,
@@ -590,8 +575,7 @@ class _SearchResultCard extends StatelessWidget {
                   children: [
                     Text(
                       fish.commonName,
-                      style: GoogleFonts.nunito(
-                        fontSize: 15,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                       ),
@@ -600,9 +584,7 @@ class _SearchResultCard extends StatelessWidget {
                       fish.scientificName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.nunito(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontStyle: FontStyle.italic,
                         color: AppColors.textSecondary,
                       ),

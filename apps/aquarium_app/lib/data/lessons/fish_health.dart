@@ -520,11 +520,172 @@ final fishHealthPath = LearningPath(
     ),
 
     Lesson(
+      id: 'fh_medication_dosing',
+      pathId: 'fish_health',
+      title: 'Safe Medication Dosing',
+      description: 'How to calculate and administer medications safely',
+      orderIndex: 5,
+      xpReward: 75,
+      estimatedMinutes: 8,
+      sections: [
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'The Dosing Calculator Is NOT for Medications',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              '⚠️ IMPORTANT: The Dosing Calculator in the Tools section is designed for fertiliser dosing ONLY. Do NOT use it to calculate medication doses. Fertiliser calculations work on accumulation; medications are dosed by tank volume against a therapeutic concentration. Always follow the manufacturer\'s instructions on the medication packaging.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'Getting medication doses right is critical — underdosing fails to treat the disease and can breed resistance, while overdosing can kill your fish, wipe out your beneficial bacteria, and harm invertebrates. This lesson covers the principles of safe medication dosing so you can treat confidently.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Calculating Your Tank\'s Actual Volume',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'Your tank\'s stated size is NOT its actual water volume. Subtract for substrate, decorations, and equipment. A 100-litre tank typically holds 70–80 litres of actual water.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              'How to estimate your actual water volume:\n\n**Method 1 (measuring jug):** Count how many litres it takes to fill the tank from empty. Simple and accurate, but only practical for new setups.\n\n**Method 2 (geometry):** Length × Width × Height (in cm) ÷ 1000 = litres. Multiply by 0.75–0.85 to account for substrate and decor. Example: 60cm × 30cm × 36cm = 64.8 litres stated; × 0.80 = ~52 litres actual.\n\n**Why it matters:** If you dose a 100-litre tank but it only holds 75 litres of water, you\'re overdosing by 33%. This is dangerous with potent medications like copper.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Common Medications: What They Do',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '**Ich Treatments (antiparasitic)**\n• **API Super Ick Cure / Sera Costapur** — Malachite green + formalin. Effective for ich, velvet, and some external parasites. Remove carbon before use.\n• **Copper sulfate** — Highly effective but toxic to invertebrates and harmful to scaleless fish. Requires a copper test kit to stay in the therapeutic window (0.15–0.20 ppm free copper). Do not use in reef or shrimp tanks.\n\n**Antibacterials** (for fin rot, bacterial infections)\n• **API Fin & Body Cure** — Minocycline-based. Effective broad-spectrum antibacterial. Remove carbon.\n• **Maracyn 2 (Minocycline)** — Treats gram-negative bacteria (Aeromonas, Pseudomonas). Follow the 5-day course fully.\n• **Kanaplex (Kanamycin)** — For more resistant bacterial infections or when fish are still eating (can be mixed into food).\n\n**Antifungals** (for Saprolegnia, Achlya)\n• **API Fungus Cure** — Malachite green-based. For body and fin fungus.\n• **Methylene blue** — Gentle antifungal/antiseptic. Safe for most species; useful for egg treatment. Will stain silicone sealant.\n\n**Antiparasitic (worms, flukes)**\n• **Praziquantel (PraziPro, Hikari Prazipro)** — Best all-rounder for flukes and tapeworms. Invertebrate-safe, plant-safe.\n• **Flubendazole** — Effective for gill and skin flukes. Toxic to snails and other molluscs.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Before You Dose: The Preparation Checklist',
+        ),
+        const LessonSection(
+          type: LessonSectionType.bulletList,
+          content:
+              '• ✅ **Remove activated carbon** from all filters — carbon absorbs medication and renders it ineffective. You can replace carbon 24–48 hours after the final treatment dose.\n• ✅ **Turn off UV sterilisers** — UV light breaks down many medications chemically, drastically reducing effectiveness. Turn off and unplug for the full treatment course.\n• ✅ **Calculate your actual water volume** (see above) — not the stated tank size.\n• ✅ **Read the label fully** — note the dose, interval, and total treatment duration.\n• ✅ **Check species compatibility** — some fish cannot tolerate standard doses (see below).\n• ✅ **Increase aeration** — many medications reduce dissolved oxygen. Add an airstone or increase surface agitation during treatment.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Species-Specific Warnings',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              '⚠️ SCALELESS AND SENSITIVE SPECIES require reduced medication doses:\n\n• **Corydoras catfish** — Scaleless; absorb medication through skin faster than scaled fish. Use HALF the standard dose for most medications. No aquarium salt. No copper.\n• **Loaches (all species)** — Scaleless or micro-scaled. Use QUARTER dose for ich treatments and copper. Avoid salt entirely.\n• **Otocinclus** — Scaleless catfish; highly sensitive to copper-based medications. Use half-dose copper-free alternatives only.\n• **Goldfish & coldwater fish** — Do NOT raise temperature during ich treatment (lethal above 24°C). Use medication-only protocol.\n• **Invertebrates (shrimp, snails, crabs)** — Copper-based medications are LETHAL to all invertebrates, even at therapeutic doses. Remove all invertebrates before using copper. Praziquantel and most antibacterials are safe for shrimp.\n\nThese warnings are also noted on individual species profiles in the app.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'During Treatment',
+        ),
+        const LessonSection(
+          type: LessonSectionType.text,
+          content:
+              '**Daily partial water changes (25–30%)** are important during treatment — they remove medication byproducts, excess ammonia, and toxins produced by dying pathogens. Always re-dose with the proportional amount of medication after each water change (e.g. if you remove 25% of the water, add 25% of the original dose).\n\n**Complete the full treatment course.** Stopping early because the fish "looks better" is the most common reason treatments fail. The pathogen may still be present but not yet visible. Follow the full duration on the packaging.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.heading,
+          content: 'Hospital Tank Treatment vs Main Tank Treatment',
+        ),
+        const LessonSection(
+          type: LessonSectionType.keyPoint,
+          content:
+              'Whenever possible, treat sick fish in a hospital tank (see the next lesson). This protects your display tank\'s nitrogen cycle, your plants, and any invertebrates. Main tank treatment is a last resort — use it only when the whole population is infected.',
+        ),
+        const LessonSection(
+          type: LessonSectionType.tip,
+          content:
+              'Keep a medication starter kit: one ich treatment, one antibacterial, one antifungal, Praziquantel, and methylene blue. Store in a cool, dark place. Check expiry dates annually. A stocked kit means faster treatment when minutes matter.',
+        ),
+      ],
+      quiz: Quiz(
+        id: 'fh_medication_quiz',
+        lessonId: 'fh_medication_dosing',
+        questions: [
+          const QuizQuestion(
+            id: 'fh_med_q1',
+            question: 'Can you use the Dosing Calculator in the Tools section for medication doses?',
+            options: [
+              'Yes, it works for all aquarium chemicals',
+              'Yes, but only for antibacterials',
+              'No — it is for fertilisers only',
+              'Yes, if you enter the correct concentration',
+            ],
+            correctIndex: 2,
+            explanation:
+                'The Dosing Calculator is designed for fertiliser dosing only. For medications, always follow the manufacturer\'s instructions on the packaging.',
+          ),
+          const QuizQuestion(
+            id: 'fh_med_q2',
+            question: 'Why must you remove activated carbon before medicating?',
+            options: [
+              'Carbon reacts dangerously with most medications',
+              'Carbon absorbs the medication and makes it ineffective',
+              'Carbon lowers the water pH, interfering with dosing',
+              'Carbon removes oxygen during treatment',
+            ],
+            correctIndex: 1,
+            explanation:
+                'Activated carbon absorbs medications from the water, neutralising them before they can work. Always remove carbon for the full treatment duration.',
+          ),
+          const QuizQuestion(
+            id: 'fh_med_q3',
+            question: 'Why must UV sterilisers be switched off during medication treatment?',
+            options: [
+              'UV light heats the water',
+              'UV light makes the medication toxic',
+              'UV light chemically breaks down many medications',
+              'UV sterilisers increase oxygen, diluting the medication',
+            ],
+            correctIndex: 2,
+            explanation:
+                'UV light chemically degrades many aquarium medications, significantly reducing their effectiveness. Switch off and unplug the UV steriliser for the whole treatment course.',
+          ),
+          const QuizQuestion(
+            id: 'fh_med_q4',
+            question: 'What dose of ich medication is recommended for loaches?',
+            options: [
+              'Full standard dose',
+              'Half the standard dose',
+              'Double the standard dose',
+              'Quarter of the standard dose',
+            ],
+            correctIndex: 3,
+            explanation:
+                'Loaches are scaleless or micro-scaled and absorb medications directly through their skin. Use a quarter dose for ich treatments and copper-based medications. Avoid aquarium salt entirely.',
+          ),
+          const QuizQuestion(
+            id: 'fh_med_q5',
+            question: 'After a partial water change during treatment, what should you do?',
+            options: [
+              'Nothing — the medication in the tank is still effective',
+              'Stop treatment as the water change restarts the clock',
+              'Re-dose with the proportional amount of medication removed',
+              'Double the next scheduled dose to compensate',
+            ],
+            correctIndex: 2,
+            explanation:
+                'When you remove 25% of the water during treatment, you also remove 25% of the medication. Re-dose with 25% of the original dose to maintain the therapeutic concentration.',
+          ),
+        ],
+      ),
+    ),
+
+    Lesson(
       id: 'fh_hospital_tank',
       pathId: 'fish_health',
       title: 'Hospital Tank Setup',
       description: 'Treat sick fish without harming your display tank',
-      orderIndex: 5,
+      orderIndex: 6,
       xpReward: 50,
       estimatedMinutes: 5,
       sections: [

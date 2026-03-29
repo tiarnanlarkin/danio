@@ -420,7 +420,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Spend 2 minutes daily just watching your tank. Count fish (make sure everyone\'s accounted for). Look for behavioral changes. This simple habit catches 90% of problems early.',
+              'Spend 2 minutes daily just watching your tank. Count fish (make sure everyone\'s accounted for). Look for behavioural changes. This simple habit catches 90% of problems early.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -593,7 +593,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'QT tanks don\'t need to run 24/7. Keep the equipment stored. When needed, fill the tank, add your cycled sponge filter, and you\'re ready in an hour. A 10-liter tank fits anywhere.',
+              'QT tanks don\'t need to run 24/7. Keep the equipment stored. When needed, fill the tank, add your cycled sponge filter, and you\'re ready in an hour. A 20-litre tank fits in most spaces and gives your fish enough stable water volume.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,

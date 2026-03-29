@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/task.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../providers/spaced_repetition_provider.dart';
+import '../../../providers/user_profile_provider.dart';
 import '../../../theme/app_theme.dart';
 import '../../../../screens/tab_navigator.dart';
 
@@ -72,10 +73,24 @@ class TodayBoardCard extends ConsumerWidget {
         ].take(maxItems).toList();
 
         if (combined.isEmpty) {
-          return _buildEmptyState(context, ref);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildEmptyState(context, ref),
+              const SizedBox(height: AppSpacing.xs),
+              const _DailyGoalBar(),
+            ],
+          );
         }
 
-        return _TodayBoardContent(tasks: combined);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _TodayBoardContent(tankId: tankId, tasks: combined),
+            const SizedBox(height: AppSpacing.xs),
+            const _DailyGoalBar(),
+          ],
+        );
       },
     );
   }
@@ -161,9 +176,10 @@ class TodayBoardCard extends ConsumerWidget {
 }
 
 class _TodayBoardContent extends StatelessWidget {
+  final String tankId;
   final List<Task> tasks;
 
-  const _TodayBoardContent({required this.tasks});
+  const _TodayBoardContent({required this.tankId, required this.tasks});
 
   @override
   Widget build(BuildContext context) {
@@ -220,20 +236,36 @@ class _TodayBoardContent extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
 
           // Task rows
-          ...tasks.map((task) => _TaskRow(task: task)),
+          ...tasks.map((task) => _TaskRow(task: task, tankId: tankId)),
         ],
       ),
     );
   }
 }
 
-class _TaskRow extends StatelessWidget {
+class _TaskRow extends ConsumerWidget {
   final Task task;
+  final String tankId;
 
-  const _TaskRow({required this.task});
+  const _TaskRow({required this.task, required this.tankId});
+
+  /// Map task title keywords → (tabIndex, navigate callback).
+  /// tabIndex: 0=Learn, 1=Practice, 2=Tank, 3=Smart, 4=More
+  /// Returns the tab index that best matches the task, or null for tank detail.
+  int? _resolveTab(String title) {
+    final lower = title.toLowerCase();
+    if (lower.contains('lesson') || lower.contains('learn') || lower.contains('quiz') || lower.contains('study')) {
+      return 0; // Learn tab
+    }
+    if (lower.contains('review') || lower.contains('practice') || lower.contains('flash')) {
+      return 1; // Practice tab
+    }
+    // Water-related, feeding, maintenance, filter, glass → Tank tab (home)
+    return 2; // Tank tab (default for tank tasks)
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isOverdue = task.isOverdue;
     final isToday = task.isDueToday;
 
@@ -256,45 +288,152 @@ class _TaskRow extends StatelessWidget {
       dueLabel = days != null ? 'in $days ${days == 1 ? 'day' : 'days'}' : '';
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.xs),
-      child: Row(
-        children: [
-          // Priority/status dot
-          Container(
-            width: 6,
-            height: 6,
-            margin: const EdgeInsets.only(right: AppSpacing.xs2),
-            decoration: BoxDecoration(
-              color: isOverdue
-                  ? AppColors.error
-                  : isToday
-                  ? AppColors.warning
-                  : context.textHint,
-              shape: BoxShape.circle,
-            ),
+    final targetTab = _resolveTab(task.title);
+
+    void handleTap() {
+      if (targetTab != null) {
+        ref.read(currentTabProvider.notifier).state = targetTab;
+      }
+    }
+
+    return Semantics(
+      label: '${task.title}, $dueLabel. Tap to navigate.',
+      button: true,
+      child: InkWell(
+        onTap: handleTap,
+        borderRadius: AppRadius.smallRadius,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.xs,
+            horizontal: AppSpacing.xs2,
           ),
-          // Task title
-          Expanded(
-            child: Text(
-              task.title,
-              style: AppTypography.bodySmall.copyWith(
-                color: isOverdue ? AppColors.error : context.textPrimary,
-                fontWeight: isOverdue || isToday
-                    ? FontWeight.w600
-                    : FontWeight.w400,
+          child: Row(
+            children: [
+              // Priority/status dot
+              Container(
+                width: 6,
+                height: 6,
+                margin: const EdgeInsets.only(right: AppSpacing.xs2),
+                decoration: BoxDecoration(
+                  color: isOverdue
+                      ? AppColors.error
+                      : isToday
+                      ? AppColors.warning
+                      : context.textHint,
+                  shape: BoxShape.circle,
+                ),
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              // Task title
+              Expanded(
+                child: Text(
+                  task.title,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: isOverdue ? AppColors.error : context.textPrimary,
+                    fontWeight: isOverdue || isToday
+                        ? FontWeight.w600
+                        : FontWeight.w400,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              // Due label
+              if (dueLabel.isNotEmpty)
+                Text(
+                  dueLabel,
+                  style: AppTypography.labelSmall.copyWith(color: rowColor),
+                ),
+              // Navigation chevron
+              Padding(
+                padding: const EdgeInsets.only(left: AppSpacing.xs2),
+                child: Icon(
+                  Icons.chevron_right,
+                  size: 14,
+                  color: context.textHint,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// FQ-E3: Subtle daily XP goal progress bar.
+/// Shows today's earned XP vs the daily goal as a slim progress bar.
+class _DailyGoalBar extends ConsumerWidget {
+  const _DailyGoalBar();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goalData = ref.watch(todaysDailyGoalProvider);
+    if (goalData == null) return const SizedBox.shrink();
+
+    final progress = goalData.progress;
+    final earned = goalData.earnedXp;
+    final target = goalData.targetXp;
+    final isComplete = goalData.isCompleted;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: AppOverlays.white88,
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(
+          color: isComplete
+              ? AppColors.success.withAlpha(60)
+              : AppOverlays.white50,
+        ),
+        boxShadow: AppShadows.soft,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Icon(
+                isComplete ? Icons.check_circle_rounded : Icons.bolt_rounded,
+                size: 13,
+                color: isComplete ? AppColors.success : AppColors.warning,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Expanded(
+                child: Text(
+                  isComplete
+                      ? 'Daily goal complete! 🎉'
+                      : 'Daily goal · $earned / $target XP',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: isComplete ? AppColors.success : context.textSecondary,
+                    fontWeight: isComplete ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                ),
+              ),
+              Text(
+                '${(progress * 100).round()}%',
+                style: AppTypography.labelSmall.copyWith(
+                  color: isComplete ? AppColors.success : context.textHint,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 5,
+              backgroundColor: context.surfaceVariant,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isComplete ? AppColors.success : AppColors.warning,
+              ),
             ),
           ),
-          const SizedBox(width: AppSpacing.xs),
-          // Due label
-          if (dueLabel.isNotEmpty)
-            Text(
-              dueLabel,
-              style: AppTypography.labelSmall.copyWith(color: rowColor),
-            ),
         ],
       ),
     );

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -167,11 +165,8 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
                 header: true,
                 child: Text(
                   'How long have you kept fish?',
-                  style: GoogleFonts.nunito(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: AppColors.textPrimary,
-                    height: 1.3,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -181,11 +176,8 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
 
               Text(
                 "We'll adjust what we show you based on your experience.",
-                style: GoogleFonts.nunito(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
-                  height: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -260,9 +252,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
                       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                       child: Text(
                         'Skip setup',
-                        style: GoogleFonts.nunito(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: AppColors.textSecondary,
                           decoration: TextDecoration.underline,
                           decorationColor: AppColors.textHint,
@@ -357,18 +347,14 @@ class _OptionCard extends StatelessWidget {
                   children: [
                     Text(
                       label,
-                      style: GoogleFonts.nunito(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
                       description,
-                      style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.textSecondary,
                         height: 1.4,
                       ),

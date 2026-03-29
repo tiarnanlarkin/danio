@@ -608,6 +608,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final showWelcome = _showWelcomeBanner;
     final showComeback = _showComebackBanner && !showWelcome;
 
+    // FQ-E2: Streak loss acknowledgement
+    ref.listen<int>(streakResetProvider, (prev, next) {
+      if (next > 0 && mounted) {
+        ref.read(streakResetProvider.notifier).state = 0;
+        DanioSnackBar.info(
+          context,
+          '👋 Welcome back! Your $next-day streak reset, but let\'s start a new one! 🔥',
+        );
+      }
+    });
+
     return Scaffold(
       body: Stack(
         children: [

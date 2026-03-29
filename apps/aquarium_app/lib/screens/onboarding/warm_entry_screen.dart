@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
@@ -226,11 +225,8 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                   header: true,
                   child: Text(
                     _nameSubmitted ? _greeting : 'Almost there! 🐟',
-                    style: GoogleFonts.nunito(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: AppColors.textPrimary,
-                      height: 1.3,
                     ),
                   ),
                 ),
@@ -239,8 +235,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 if (!_nameSubmitted) ...[
                   Text(
                     "What would you like to be called?",
-                    style: GoogleFonts.nunito(
-                      fontSize: 15,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: AppColors.textSecondary,
                     ),
@@ -259,8 +254,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                             onSubmitted: (_) => _submitName(),
                             decoration: InputDecoration(
                               hintText: 'Your name (optional)',
-                              hintStyle: GoogleFonts.nunito(
-                                fontSize: 14,
+                              hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: AppColors.textHint,
                               ),
                               filled: true,
@@ -350,16 +344,14 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                     children: [
                       Text(
                         fish.commonName,
-                        style: GoogleFonts.nunito(
-                          fontSize: 18,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w800,
                           color: AppColors.textPrimary,
                         ),
                       ),
                       Text(
                         'Your fish',
-                        style: GoogleFonts.nunito(
-                          fontSize: 13,
+                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
@@ -423,9 +415,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
           const SizedBox(width: AppSpacing.xs2),
           Text(
             label,
-            style: GoogleFonts.nunito(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: AppColors.textPrimary,
             ),
           ),
@@ -473,17 +463,14 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 children: [
                   Text(
                     'Your first lesson',
-                    style: GoogleFonts.nunito(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xxs),
                   Text(
                     _lessonTitle,
-                    style: GoogleFonts.nunito(
-                      fontSize: 14,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
                     ),
@@ -514,17 +501,14 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
             children: [
               Text(
                 'Level 1 · 10 XP',
-                style: GoogleFonts.nunito(
-                  fontSize: 14,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
               Text(
                 '10%',
-                style: GoogleFonts.nunito(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -577,8 +561,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
           const SizedBox(width: AppSpacing.sm3),
           Text(
             'Day 1 streak',
-            style: GoogleFonts.nunito(
-              fontSize: 15,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
             ),

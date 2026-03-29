@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -110,11 +109,8 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
             // Headline
             Text(
               'Day 2 🔥 Your streak is alive. Keep it going.',
-              style: GoogleFonts.nunito(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: AppColors.textPrimary,
-                height: 1.3,
               ),
               textAlign: TextAlign.center,
             ),
@@ -122,8 +118,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
               const SizedBox(height: AppSpacing.sm),
               Text(
                 "Today's lesson is about ${widget.fishName}.",
-                style: GoogleFonts.nunito(
-                  fontSize: 14,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.textSecondary,
                 ),
                 textAlign: TextAlign.center,
@@ -254,11 +249,8 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                 Expanded(
                   child: Text(
                     "7 days — You've earned Apprentice Fishkeeper",
-                    style: GoogleFonts.nunito(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: AppColors.onPrimary,
-                      height: 1.3,
                     ),
                   ),
                 ),
@@ -282,8 +274,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                 ),
                 child: Text(
                   '+50 XP bonus',
-                  style: GoogleFonts.nunito(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: AppColors.onPrimary,
                   ),
@@ -316,9 +307,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                         Expanded(
                           child: Text(
                             'Have you tried the tank compatibility checker?',
-                            style: GoogleFonts.nunito(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
                               color: AppColors.onPrimary,
                             ),
                           ),
@@ -382,51 +371,28 @@ class Day30CommittedCard extends StatelessWidget {
             // Headline
             Text(
               '30 days of Danio 🎣',
-              style: GoogleFonts.nunito(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
             // Usage summary
-            _buildStatRow(Icons.menu_book_rounded, '$lessonsCompleted lessons completed'),
+            _buildStatRow(context, Icons.menu_book_rounded, '$lessonsCompleted lessons completed'),
             const SizedBox(height: AppSpacing.sm3),
-            _buildStatRow(Icons.star_rounded, '$xpEarned XP earned'),
+            _buildStatRow(context, Icons.star_rounded, '$xpEarned XP earned'),
             // FB-B4: Only show the upgrade CTA when a real destination is wired up.
             // When onUpgrade is null the button is hidden — avoids it just closing the dialog.
             if (onUpgrade != null) ...[
               const SizedBox(height: AppSpacing.lg2),
-              Semantics(
-                label: "See what's waiting for you, upgrade",
-                button: true,
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      HapticFeedback.mediumImpact();
-                      onUpgrade!();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: AppColors.onboardingAmber,
-                        width: 1.5,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadius.sm4),
-                      ),
-                    ),
-                    child: Text(
-                      "See what's waiting for you →",
-                      style: GoogleFonts.nunito(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.onboardingAmber,
-                      ),
-                    ),
-                  ),
-                ),
+              AppButton(
+                label: "See what's waiting for you →",
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  onUpgrade!();
+                },
+                variant: AppButtonVariant.secondary,
+                isFullWidth: true,
+                semanticsLabel: "See what's waiting for you, upgrade",
               ),
             ],
           ],
@@ -435,15 +401,14 @@ class Day30CommittedCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatRow(IconData icon, String text) {
+  Widget _buildStatRow(BuildContext context, IconData icon, String text) {
     return Row(
       children: [
         Icon(icon, size: 18, color: AppColors.textSecondary),
         const SizedBox(width: AppSpacing.sm3),
         Text(
           text,
-          style: GoogleFonts.nunito(
-            fontSize: 14,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
@@ -164,6 +163,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
 
   @override
   void dispose() {
+    _confettiController.dispose();
     _badgeScaleCurve.dispose();
     _badgeController.dispose();
     _progressValueCurve.dispose();
@@ -226,9 +226,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                         alignment: Alignment.center,
                         child: Text(
                           '+10 XP',
-                          style: GoogleFonts.nunito(
-                            fontSize: 36,
-                            fontWeight: FontWeight.w700,
+                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                             color: AppColors.onboardingWarmCream,
                           ),
                         ),
@@ -244,8 +242,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                     child: ExcludeSemantics(
                       child: Text(
                         'Level 1 · 10 XP',
-                        style: GoogleFonts.nunito(
-                          fontSize: 14,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppColors.textSecondary,
                         ),
@@ -295,9 +292,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                       header: true,
                       child: Text(
                         'First lesson complete 🎣',
-                        style: GoogleFonts.nunito(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: AppColors.textPrimary,
                         ),
                         textAlign: TextAlign.center,
@@ -312,11 +307,8 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                     opacity: _textOpacity,
                     child: Text(
                       "You just earned your first 10 XP. Now let's make it personal — tell us what fish you're keeping.",
-                      style: GoogleFonts.nunito(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
-                        height: 1.5,
                       ),
                       textAlign: TextAlign.center,
                     ),

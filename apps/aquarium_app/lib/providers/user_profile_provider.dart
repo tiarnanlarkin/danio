@@ -3,7 +3,8 @@
 //
 // Split into:
 //   user_profile_notifier.dart        — UserProfileNotifier, userProfileProvider,
-//                                       sharedPreferencesProvider, streakFreezeUsedProvider
+//                                       sharedPreferencesProvider, streakFreezeUsedProvider,
+//                                       streakResetProvider
 //   user_profile_derived_providers.dart — needsOnboardingProvider, learningStatsProvider,
 //                                         todaysDailyGoalProvider, recentDailyGoalsProvider,
 //                                         LearningStats, LevelUpEvent, LevelUpEventNotifier,

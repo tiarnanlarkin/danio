@@ -3370,4 +3370,41 @@ const List<SpeciesInfo> _allSpecies = [
       'Other Oscars (unless paired or raised together)',
     ],
   ),
+
+  // Pufferfish
+  SpeciesInfo(
+    commonName: 'Pea Puffer (Dwarf Puffer)',
+    scientificName: 'Carinotetraodon travancoricus',
+    family: 'Tetraodontidae',
+    careLevel: 'Intermediate',
+    minTankLitres: 30,
+    minTempC: 22,
+    maxTempC: 28,
+    minPh: 6.5,
+    maxPh: 7.5,
+    minGh: 5,
+    maxGh: 15,
+    minSchoolSize: 1,
+    temperament: 'Aggressive',
+    diet:
+        'Carnivore — live/frozen foods only (snails, bloodworms, brine shrimp). Will NOT eat flake or pellet food.',
+    adultSizeCm: 2.5,
+    swimLevel: 'All',
+    description:
+        'The world\'s smallest pufferfish, native to rivers in Kerala and Karnataka, India. Deceptively aggressive for its size — best kept in a species-only setup. Each fish has a distinct personality and is highly intelligent and curious. Needs heavy planting and line-of-sight breaks to reduce aggression. Excellent snail control if snail populations become a problem in a separate tank. A 30L tank suits a small group of 3–4 fish (one male, two females). Males have a dark belly stripe and iridescent eye markings.',
+    compatibleWith: [],
+    avoidWith: [
+      'Any tank mates (species-only strongly recommended)',
+      'Shrimp',
+      'Small fish',
+      'Snails intended as tank mates',
+    ],
+    medicationWarnings: [
+      'Scaleless fish — highly sensitive to most medications.',
+      'Never use copper-based treatments (fatal to puffers).',
+      'Use half the standard dose for most treatments.',
+      'Avoid salt treatments — freshwater puffers are not salt-tolerant.',
+      'Always research medication compatibility before treating.',
+    ],
+  ),
 ];

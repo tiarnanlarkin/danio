@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
 
@@ -191,11 +189,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       header: true,
                       child: Text(
                         'Your fish deserve better than guesswork.',
-                        style: GoogleFonts.nunito(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                           color: AppColors.onboardingWarmCream,
-                          height: 1.2,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -210,11 +205,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   opacity: _bodyOpacity,
                   child: Text(
                     "Danio learns what's in your tank and tells you exactly what they need.",
-                    style: GoogleFonts.nunito(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppColors.onboardingWarmCream.withAlpha(204), // 80%
-                      height: 1.5,
                     ),
                     textAlign: TextAlign.left,
                   ),
@@ -246,25 +238,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 // Secondary link
                 FadeTransition(
                   opacity: _buttonOpacity,
-                  child: TextButton(
+                  child: AppButton(
+                    label: 'Skip setup, I\'ll explore first',
                     onPressed: () {
                       HapticFeedback.selectionClick();
                       widget.onLogin?.call();
                     },
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
-                    ),
-                    child: Text(
-                      'Skip setup, I\'ll explore first',
-                      style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.onboardingWarmCream.withAlpha(217), // 85%
-                        decoration: TextDecoration.underline,
-                        decorationColor: AppColors.onboardingWarmCream.withAlpha(128),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                    variant: AppButtonVariant.text,
+                    isFullWidth: true,
+                    semanticsLabel: 'Skip setup, explore first',
                   ),
                 ),
               ],
