@@ -65,7 +65,7 @@ void main() {
     FlutterError.onError = (FlutterErrorDetails details) {
       final msg = details.exceptionAsString();
       if (msg.contains('overflowed') ||
-          msg.contains('backgroundImage != null')) return;
+          msg.contains('backgroundImage != null')) { return; }
       original(details);
     };
   }
