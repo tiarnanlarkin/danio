@@ -2,7 +2,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/navigation_throttle.dart';
+import '../../screens/workshop_screen.dart';
+import '../../screens/water_change_calculator_screen.dart';
+import '../../screens/stocking_calculator_screen.dart';
+import '../../screens/compatibility_checker_screen.dart';
+import '../../screens/co2_calculator_screen.dart';
 import 'stage_handle.dart';
 
 /// A single DraggableScrollableSheet that replaces the three-stacked
@@ -43,15 +50,36 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
 
   int _currentTab = 0;
 
+  // First-use hint state
+  bool _showSheetHint = false;
+  double _hintOpacity = 1.0;
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
         setState(() => _currentTab = _tabController.index);
       }
     });
+    _checkSheetHint();
+  }
+
+  Future<void> _checkSheetHint() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeen = prefs.getBool('hasSeenSheetHint') ?? false;
+    if (!hasSeen && mounted) {
+      setState(() => _showSheetHint = true);
+      // After 3 seconds, fade out and mark as seen
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted) {
+        setState(() => _hintOpacity = 0.0);
+        await Future.delayed(const Duration(milliseconds: 600));
+        if (mounted) setState(() => _showSheetHint = false);
+      }
+      await prefs.setBool('hasSeenSheetHint', true);
+    }
   }
 
   @override
@@ -112,6 +140,14 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                   // Sheet content
                   Column(
                     children: [
+                      // First-use hint: bouncing chevron above the drag handle
+                      if (_showSheetHint)
+                        AnimatedOpacity(
+                          opacity: _hintOpacity,
+                          duration: const Duration(milliseconds: 600),
+                          child: _BouncingChevronHint(),
+                        ),
+
                       // Drag handle + tabs header
                       _SheetHeader(
                         tabController: _tabController,
@@ -140,6 +176,10 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                                     scrollController: scrollController,
                                     child: widget.todayContent,
                                   ),
+                                  _TabContent(
+                                    scrollController: scrollController,
+                                    child: const _WorkshopToolsContent(),
+                                  ),
                                 ],
                               )
                             : _AnimatedTabContent(
@@ -150,6 +190,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                                   widget.progressContent,
                                   widget.tanksContent,
                                   widget.todayContent,
+                                  const _WorkshopToolsContent(),
                                 ],
                               ),
                       ),
@@ -215,6 +256,7 @@ class _SheetHeader extends StatelessWidget {
             Tab(text: '🔥  Progress'),
             Tab(text: '🐠  Tanks'),
             Tab(text: '📋  Today'),
+            Tab(text: '🔧  Tools'),
           ],
         ),
       ],
@@ -342,6 +384,236 @@ class _AnimatedTabContentState extends State<_AnimatedTabContent> {
         child: _TabContent(
           scrollController: widget.scrollController,
           child: widget.contents[widget.currentTab],
+        ),
+      ),
+    );
+  }
+}
+
+// ── First-Use Sheet Hint ──────────────────────────────────────────────────────
+
+/// A bouncing upward chevron that appears above the sheet handle on first
+/// launch to hint users they can swipe the sheet up.
+class _BouncingChevronHint extends StatefulWidget {
+  const _BouncingChevronHint();
+
+  @override
+  State<_BouncingChevronHint> createState() => _BouncingChevronHintState();
+}
+
+class _BouncingChevronHintState extends State<_BouncingChevronHint>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _bounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    )..repeat(reverse: true);
+    _bounce = Tween<double>(begin: 0.0, end: -8.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _bounce,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, _bounce.value),
+          child: child,
+        );
+      },
+      child: Center(
+        child: Icon(
+          Icons.keyboard_arrow_up_rounded,
+          color: Colors.white.withValues(alpha: 0.7),
+          size: 28,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Workshop Tools Quick-Access ───────────────────────────────────────────────
+
+/// Inline workshop tools for the bottom sheet's Tools tab.
+/// Shows the 4 most discoverable calculators + a "See All" button.
+class _WorkshopToolsContent extends StatelessWidget {
+  const _WorkshopToolsContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.lg,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section header
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
+            child: Text(
+              'Quick Tools',
+              style: AppTypography.labelMedium.copyWith(
+                color: Colors.white.withValues(alpha: 0.7),
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+
+          // 2×2 grid of top tools
+          Row(
+            children: [
+              Expanded(
+                child: _SheetToolCard(
+                  icon: Icons.water_drop,
+                  label: 'Water Change',
+                  color: DanioColors.tealWater,
+                  onTap: () => NavigationThrottle.push(
+                    context,
+                    const WaterChangeCalculatorScreen(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _SheetToolCard(
+                  icon: Icons.pool,
+                  label: 'Stocking',
+                  color: DanioColors.wishlistAmber,
+                  onTap: () => NavigationThrottle.push(
+                    context,
+                    const StockingCalculatorScreen(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              Expanded(
+                child: _SheetToolCard(
+                  icon: Icons.compare_arrows,
+                  label: 'Compatibility',
+                  color: DanioColors.wishlistAmber,
+                  onTap: () => NavigationThrottle.push(
+                    context,
+                    const CompatibilityCheckerScreen(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _SheetToolCard(
+                  icon: Icons.science,
+                  label: 'CO₂',
+                  color: DanioColors.tealWater,
+                  onTap: () => NavigationThrottle.push(
+                    context,
+                    const Co2CalculatorScreen(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: AppSpacing.md),
+
+          // "See All Tools" button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => NavigationThrottle.push(
+                context,
+                const WorkshopScreen(),
+              ),
+              icon: const Icon(Icons.build_outlined, size: 16),
+              label: const Text('See All Tools'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white.withValues(alpha: 0.85),
+                side: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.3),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm2),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A compact tool card for the bottom sheet Tools tab.
+class _SheetToolCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _SheetToolCard({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.sm2),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.12),
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.18),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                decoration: BoxDecoration(
+                  color: color.withAlpha(51),
+                  borderRadius: AppRadius.smallRadius,
+                ),
+                child: Icon(icon, color: color, size: AppIconSizes.sm),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTypography.labelSmall.copyWith(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
