@@ -90,7 +90,7 @@ class AboutScreen extends StatelessWidget {
             const _FeatureItem(
               icon: Icons.science,
               title: 'Water Testing',
-              description: 'Log parameters and visualize trends over time',
+              description: 'Log parameters and visualise trends over time',
             ),
             const _FeatureItem(
               icon: Icons.task_alt,

@@ -145,7 +145,7 @@ final equipmentPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Canisters hold massive amounts of media (mechanical, biological, chemical) and let you customize exactly what goes where.',
+                'Canisters hold massive amounts of media (mechanical, biological, chemical) and let you customise exactly what goes where.',
           ),
           const QuizQuestion(
             id: 'eq_filt_q3',

@@ -778,7 +778,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Set phone reminders. Keep supplies organized in one place. Pre-measure dechlorinator. Use a Python water changer to eliminate buckets. Small optimizations make maintenance feel effortless.',
+              'Set phone reminders. Keep supplies organised in one place. Pre-measure dechlorinator. Use a Python water changer to eliminate buckets. Small optimisations make maintenance feel effortless.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,

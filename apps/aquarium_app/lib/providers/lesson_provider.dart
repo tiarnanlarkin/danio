@@ -249,7 +249,7 @@ class LessonProvider extends StateNotifier<LessonState> {
     PathMetadata(
       id: 'advanced_topics',
       title: 'Advanced Topics',
-      description: 'Breeding, aquascaping, and specialized setups',
+      description: 'Breeding, aquascaping, and specialised setups',
       emoji: '🎓',
       orderIndex: 8,
       lessonIds: [
