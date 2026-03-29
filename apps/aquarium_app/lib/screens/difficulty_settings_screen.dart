@@ -34,7 +34,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     'water_parameters': 'Water Parameters',
     'first_fish': 'First Fish',
     'maintenance': 'Maintenance',
-    'planted_tank': 'Planted Tanks',
+    'planted': 'Planted Tanks',
     'equipment': 'Equipment',
   };
 

@@ -140,11 +140,11 @@ class AchievementService {
         break;
 
       case 'intermediate_master':
-        // Intermediate paths: maintenance, planted_tank, equipment
+        // Intermediate paths: maintenance, planted, equipment
         final intermediateIds = LessonProvider.allPathMetadata
             .where(
               (p) =>
-                  ['maintenance', 'planted_tank', 'equipment'].contains(p.id),
+                  ['maintenance', 'planted', 'equipment'].contains(p.id),
             )
             .expand((p) => p.lessonIds)
             .toSet();
@@ -184,9 +184,9 @@ class AchievementService {
         break;
 
       case 'plants_master':
-        // Plants path: planted_tank
+        // Plants path: planted
         final plantIds = LessonProvider.allPathMetadata
-            .where((p) => p.id == 'planted_tank')
+            .where((p) => p.id == 'planted')
             .expand((p) => p.lessonIds)
             .toSet();
         shouldUnlock =

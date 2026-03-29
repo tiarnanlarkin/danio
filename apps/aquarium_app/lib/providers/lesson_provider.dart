@@ -380,7 +380,7 @@ class LessonProvider extends StateNotifier<LessonState> {
       case 'maintenance':
         final module = await _loadMaintenance();
         return module;
-      case 'planted_tank':
+      case 'planted':
         final module = await _loadPlantedTank();
         return module;
       case 'equipment':
