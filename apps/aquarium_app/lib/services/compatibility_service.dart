@@ -181,7 +181,7 @@ class CompatibilityService {
           description:
               '${species.commonName} should be kept in groups of ${species.minSchoolSize}+. You have ${livestock.count}.',
           suggestion:
-              'Consider adding more to reduce stress and encourage natural behavior.',
+              'Consider adding more to reduce stress and encourage natural behaviour.',
         ),
       );
     }

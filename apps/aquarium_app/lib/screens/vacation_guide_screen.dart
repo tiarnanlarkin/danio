@@ -205,7 +205,7 @@ class VacationGuideScreen extends StatelessWidget {
                   text: '"If in doubt, skip feeding" as golden rule',
                 ),
                 _BulletPoint(
-                  text: 'Tell them what normal fish behavior looks like',
+                  text: 'Tell them what normal fish behaviour looks like',
                 ),
                 _BulletPoint(text: 'DO NOT ask them to do water changes'),
               ],

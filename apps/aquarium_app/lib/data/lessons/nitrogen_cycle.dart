@@ -372,7 +372,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Relying on fish behavior alone is dangerous. By the time fish show stress symptoms, the water quality is already bad. Test regularly to catch problems early.',
+              'Relying on fish behaviour alone is dangerous. By the time fish show stress symptoms, the water quality is already bad. Test regularly to catch problems early.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

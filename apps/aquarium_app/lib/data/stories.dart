@@ -1186,7 +1186,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'Your pair of German Blue Rams have been displaying courtship behavior for weeks. You decide to set up a proper breeding tank.\n\n"Time to try breeding!" you tell your aquarist friend Jamie.\n\n"Cichlid breeding is challenging but rewarding," Jamie says. "Let\'s do this right."\n\nWhat\'s your first step?',
+            'Your pair of German Blue Rams have been displaying courtship behaviour for weeks. You decide to set up a proper breeding tank.\n\n"Time to try breeding!" you tell your aquarist friend Jamie.\n\n"Cichlid breeding is challenging but rewarding," Jamie says. "Let\'s do this right."\n\nWhat\'s your first step?',
         choices: [
           StoryChoice(
             id: 'research',

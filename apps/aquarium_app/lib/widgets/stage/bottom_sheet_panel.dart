@@ -13,8 +13,8 @@ import '../../screens/co2_calculator_screen.dart';
 import 'stage_handle.dart';
 
 /// A single DraggableScrollableSheet that replaces the three-stacked
-/// BottomPlate system. Contains a horizontal TabBar with three tabs:
-/// Progress | Tanks | Today.
+/// BottomPlate system. Contains a horizontal TabBar with four tabs:
+/// Progress | Tanks | Today | Tools.
 ///
 /// Snap points: 0.12 (peek), 0.45 (half), 0.92 (full).
 class BottomSheetPanel extends ConsumerStatefulWidget {

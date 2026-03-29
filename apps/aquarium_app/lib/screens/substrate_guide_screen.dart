@@ -27,7 +27,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm2),
                 Text(
-                  'Substrate affects water chemistry, plant growth, fish behavior, and aesthetics. '
+                  'Substrate affects water chemistry, plant growth, fish behaviour, and aesthetics. '
                   'Choose based on your tank inhabitants and goals.',
                   style: AppTypography.bodyMedium,
                 ),

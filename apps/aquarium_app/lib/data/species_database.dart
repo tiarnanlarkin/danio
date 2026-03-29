@@ -197,7 +197,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
-        'Known for tight schooling behavior and distinctive red nose. The red nose fades when stressed — a good indicator of water quality.',
+        'Known for tight schooling behaviour and distinctive red nose. The red nose fades when stressed — a good indicator of water quality.',
     compatibleWith: ['Other Tetras', 'Corydoras', 'Rasboras', 'Dwarf Cichlids'],
     avoidWith: ['Aggressive fish', 'Large predators'],
   ),
@@ -2429,7 +2429,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
-        'Spotted variant of Zebra Danio. Same hardy care and active behavior. May interbreed with standard zebras.',
+        'Spotted variant of Zebra Danio. Same hardy care and active behaviour. May interbreed with standard zebras.',
     compatibleWith: ['Other Danios', 'Barbs', 'Tetras', 'Most community fish'],
     avoidWith: ['Slow-moving fish', 'Long-finned fish'],
   ),
