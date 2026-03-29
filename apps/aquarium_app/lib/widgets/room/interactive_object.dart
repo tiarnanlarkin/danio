@@ -137,14 +137,18 @@ class _InteractiveObjectState extends State<InteractiveObject>
     Future.delayed(
       Duration(milliseconds: 500 + math.Random().nextInt(2000)),
       () {
-        if (mounted) {
-          _pulseController.forward().then((_) {
-            if (mounted) {
-              _pulseController.reverse().then((_) {
-                if (mounted) _startSubtlePulse();
-              });
-            }
-          });
+        if (mounted && !_pulseController.isAnimating) {
+          try {
+            _pulseController.forward().then((_) {
+              if (mounted) {
+                _pulseController.reverse().then((_) {
+                  if (mounted) _startSubtlePulse();
+                });
+              }
+            });
+          } catch (_) {
+            // Controller was disposed between mounted check and forward call
+          }
         }
       },
     );

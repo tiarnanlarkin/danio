@@ -22,6 +22,7 @@ import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
 import '../utils/logger.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../providers/species_unlock_provider.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 
@@ -137,6 +138,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           firstFishSpeciesId: _selectedFish?.commonName,
           name: _userName,
         );
+      }
+
+      // 1b. Unlock the selected fish species
+      if (mounted && _selectedFish != null) {
+        try {
+          final speciesId = _selectedFish!.commonName
+              .toLowerCase()
+              .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+              .replaceAll(RegExp(r'^_|_\$'), '');
+          await ref.read(speciesUnlockProvider.notifier).unlockSpecies(speciesId);
+        } catch (e) {
+          logError('Onboarding: failed to unlock selected fish species: \$e', tag: 'OnboardingScreen');
+        }
       }
 
       // 2. Add 10 XP from micro-lesson

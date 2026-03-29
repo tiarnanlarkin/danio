@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
-import '../utils/app_feedback.dart';
 import '../providers/user_profile_provider.dart';
-import '../widgets/room/interactive_object.dart';
 import 'co2_calculator_screen.dart';
 import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
@@ -167,13 +165,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                         const LightingScheduleScreen(),
                       ),
                     ),
-                    _ToolCard(
-                      icon: Icons.bar_chart,
-                      title: 'Charts',
-                      subtitle: 'Analytics & trends',
-                      color: AppColors.secondaryDark,
-                      onTap: () => _showChartsInfo(context),
-                    ),
+
                     _ToolCard(
                       icon: Icons.set_meal,
                       title: 'Compatibility',
@@ -184,13 +176,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                         const CompatibilityCheckerScreen(),
                       ),
                     ),
-                    _ToolCard(
-                      icon: Icons.build_circle,
-                      title: 'Equipment',
-                      subtitle: 'Manage gear',
-                      color: DanioColors.workshopMetal,
-                      onTap: () => _showEquipmentInfo(context),
-                    ),
+
                   ]),
                 ),
               ),
@@ -234,21 +220,12 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     );
   }
 
-  void _showEquipmentInfo(BuildContext context) {
-    AppFeedback.showInfo(context, 'Select a tank first to manage equipment.');
-  }
 
-  void _showChartsInfo(BuildContext context) {
-    AppFeedback.showInfo(context, 'Select a tank first to view charts.');
-  }
 }
 
-class _WorkshopHeader extends ConsumerWidget {
+class _WorkshopHeader extends StatelessWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider.select((p) => p.value?.hasSeenTutorial));
-    final isNewUser = !(profile ?? false);
-
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Column(
@@ -292,10 +269,7 @@ class _WorkshopHeader extends ConsumerWidget {
                   ],
                 ),
               ),
-              WorkshopObjects.workbench(
-                onTap: null, // DIY Projects not yet implemented
-                isNewUser: isNewUser,
-              ),
+
             ],
           ),
         ],

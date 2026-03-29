@@ -103,32 +103,6 @@ class StudyRoomScene extends StatelessWidget {
               // === Decorative elements ===
               CustomPaint(painter: _StudyBackgroundPainter(), size: Size(w, h)),
 
-              // === Floating books/stars ===
-              Positioned(
-                top: h * 0.1,
-                right: w * 0.1,
-                child: _FloatingElement(
-                  icon: Icons.auto_stories,
-                  size: AppIconSizes.md,
-                ),
-              ),
-              Positioned(
-                top: h * 0.25,
-                left: w * 0.08,
-                child: _FloatingElement(
-                  icon: Icons.star,
-                  size: AppIconSizes.xs,
-                ),
-              ),
-              Positioned(
-                bottom: h * 0.3,
-                right: w * 0.15,
-                child: _FloatingElement(
-                  icon: Icons.lightbulb_outline,
-                  size: AppIconSizes.sm,
-                ),
-              ),
-
               // === Bookshelf illustration ===
               Positioned(
                 top: h * 0.15,
@@ -193,7 +167,8 @@ class StudyRoomScene extends StatelessWidget {
 
               // === Interactive Objects ===
               // Microscope - Water Chemistry Guide
-              if (onMicroscopeTap != null && isNewUser && completedLessons == 0)
+              // Microscope - always visible
+              if (onMicroscopeTap != null)
                 Positioned(
                   top: h * 0.62,
                   right: w * 0.12,
@@ -204,7 +179,8 @@ class StudyRoomScene extends StatelessWidget {
                 ),
 
               // Globe - Random Fish Facts
-              if (onGlobeTap != null && isNewUser && completedLessons == 0)
+              // Globe - always visible
+              if (onGlobeTap != null)
                 Positioned(
                   top: h * 0.5,
                   left: w * 0.48,
@@ -266,19 +242,6 @@ class _StudyBackgroundPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// === Floating decorative elements ===
-class _FloatingElement extends StatelessWidget {
-  final IconData icon;
-  final double size;
-
-  const _FloatingElement({required this.icon, required this.size});
-
-  @override
-  Widget build(BuildContext context) {
-    return Icon(icon, size: size, color: StudyColors.goldAlpha40);
-  }
 }
 
 // === Bookshelf illustration ===

@@ -151,16 +151,17 @@ class ThemedAquarium extends StatelessWidget {
             // TankFishManager reads unlocked species and renders them as
             // animated sprite fish across depth layers.  Falls back to
             // AnimatedSwimmingFish when the user has no unlocked species.
-            if (!reduceMotion)
-              Positioned.fill(
-                child: RepaintBoundary(
-                  child: TankFishManager(
-                    tankWidth: width,
-                    tankHeight: height,
-                    tankId: tankId,
-                  ),
+            // Always rendered — TankFishManager handles reduceMotion internally
+            // via MediaQuery.of(context).disableAnimations.
+            Positioned.fill(
+              child: RepaintBoundary(
+                child: TankFishManager(
+                  tankWidth: width,
+                  tankHeight: height,
+                  tankId: tankId,
                 ),
               ),
+            ),
 
             // ── FISH TAP INTERACTION ──────────────────────────────────────
             // Transparent layer that detects taps, triggers fish wiggle,
