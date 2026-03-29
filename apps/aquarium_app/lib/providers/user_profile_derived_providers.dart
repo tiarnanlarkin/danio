@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';
 import '../models/daily_goal.dart';
 import 'user_profile_notifier.dart';
+import 'inventory_provider.dart';
 
 /// Provider to check if onboarding is needed
 final needsOnboardingProvider = Provider<bool>((ref) {
@@ -47,7 +48,11 @@ final learningStatsProvider = Provider<LearningStats?>((ref) {
   );
 });
 
-/// Provider for today's daily goal
+/// Provider for today's daily goal.
+///
+/// FB-H3: When the Weekend Amulet is active and today is Saturday or Sunday,
+/// the daily XP target is halved (minimum 5 XP) to give users a meaningful
+/// break while still encouraging light engagement.
 final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
   // Use .select() to only rebuild when goal-relevant fields change
   final dailyXpGoal = ref.watch(userProfileProvider.select((a) => a.value?.dailyXpGoal));
@@ -55,8 +60,25 @@ final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
   final dailyXpHistory = ref.watch(userProfileProvider.select((a) => a.value?.dailyXpHistory));
   if (dailyXpHistory == null) return null;
 
+  // Weekend Amulet: halve the daily goal on Sat/Sun when the item is active.
+  final inventory = ref.watch(inventoryProvider);
+  final isWeekendAmuletActive = inventory.when(
+    loading: () => false,
+    error: (_, __) => false,
+    data: (items) {
+      final item = items.where((i) => i.itemId == 'weekend_amulet').firstOrNull;
+      return item != null && item.isActive && !item.isExpired;
+    },
+  );
+
+  final today = DateTime.now();
+  final isWeekend = today.weekday == DateTime.saturday || today.weekday == DateTime.sunday;
+  final effectiveGoal = (isWeekendAmuletActive && isWeekend)
+      ? (dailyXpGoal ~/ 2).clamp(5, dailyXpGoal)
+      : dailyXpGoal;
+
   return DailyGoal.today(
-    dailyXpGoal: dailyXpGoal,
+    dailyXpGoal: effectiveGoal,
     dailyXpHistory: dailyXpHistory,
   );
 });

@@ -78,6 +78,15 @@ Each entry:
 **Impact:** All RF items resolved. RF-3, RF-4, RF-5, RF-6 implementations go into Wave 3. RF-9 affects FB-H2 in Wave 1B.
 **Decided by:** Tiarnan (approved plan containing all recommendations without override)
 
+### 2026-03-29 — Wave 1A CLOSED
+**Items resolved:** FB-S1, FB-S2, FB-S3, FB-S4, FB-H1, FB-H6, FB-H7 (7/7)
+**Verification:** Argus confirmed 7/7 against original findings
+**Same-class sweep:** Pythia extended medication warnings to 25 species (was 5). Clean — no new blocker-class items.
+**Analyze:** 4 issues (all pre-existing in test file)
+**Commit:** `e2e6ac4`
+**Argus follow-up observations (non-blocking):** P3 dosing preset labelling inconsistency, P2 no edit-reminder UI
+**Decision:** Wave 1A CLOSED. Proceeding to Wave 1B.
+
 ### 2026-03-29 — Agent task sizing rule: max 2–3 items per spawn
 **Decision:** No agent gets more than 2–3 focused items per spawn. Split across more agents instead.
 **Reason:** Hephaestus timed out with 5 items in Wave 1A. Pythia finished 2 items in 9 minutes. Pattern recurring — Tiarnan flagged it.

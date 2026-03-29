@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 import '../data/species_database.dart';
 import '../theme/app_theme.dart';
 import '../models/user_profile.dart';
 import '../models/tank.dart';
+import '../models/livestock.dart';
 import '../providers/onboarding_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
@@ -174,23 +176,78 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         }
       }
 
-      // 2b. Create a default tank based on user's tank status
+      // 2b. Create a personalised tank based on the user's selections.
+      //     — Name:   derived from selected fish (e.g. "Betta Paradise")
+      //     — Volume: minTankLitres from species data, clamped to 20–500 L
+      //     — Fish:   pre-populated as the first livestock entry
       if (mounted) {
         try {
           final tankNotifier = ref.read(tankActionsProvider);
-          final tank = await tankNotifier.createTank(
-            name: _tankStatus == 'cycling'
+
+          // Derive a friendly tank name from the fish selection.
+          String tankName;
+          if (_selectedFish != null) {
+            const nameSuffixes = {
+              'Betta': 'Paradise',
+              'Goldfish': 'Bowl',
+              'Guppy': 'Garden',
+              'Neon Tetra': 'Shoal',
+              'Angelfish': 'Reef',
+              'Discus': 'Display',
+              'Axolotl': 'Lagoon',
+            };
+            final suffix =
+                nameSuffixes[_selectedFish!.commonName] ?? 'Tank';
+            tankName = '${_selectedFish!.commonName} $suffix';
+          } else {
+            tankName = _tankStatus == 'cycling'
                 ? 'Cycling Tank'
                 : _tankStatus == 'active'
                     ? 'My Tank'
-                    : 'New Tank',
+                    : 'New Tank';
+          }
+
+          // Derive volume from species minimum tank size, with sensible clamp.
+          final volumeLitres = _selectedFish != null
+              ? _selectedFish!.minTankLitres.clamp(20.0, 500.0)
+              : 60.0;
+
+          final tank = await tankNotifier.createTank(
+            name: tankName,
             type: TankType.freshwater,
-            volumeLitres: 60,
+            volumeLitres: volumeLitres,
             notes: _selectedFish != null
                 ? 'Started with ${_selectedFish!.commonName}'
                 : null,
           );
-          appLog('[Onboarding] Created default tank: ${tank.name} (${tank.id})', tag: 'OnboardingScreen');
+          appLog('[Onboarding] Created tank: ${tank.name} (${volumeLitres}L, id=${tank.id})', tag: 'OnboardingScreen');
+
+          // Pre-populate tank with the fish the user selected.
+          if (_selectedFish != null) {
+            try {
+              const uuid = Uuid();
+              final now = DateTime.now();
+              final livestock = Livestock(
+                id: uuid.v4(),
+                tankId: tank.id,
+                commonName: _selectedFish!.commonName,
+                scientificName: _selectedFish!.scientificName,
+                count: _selectedFish!.minSchoolSize > 1
+                    ? _selectedFish!.minSchoolSize
+                    : 1,
+                maxSizeCm: _selectedFish!.adultSizeCm,
+                dateAdded: now,
+                createdAt: now,
+                updatedAt: now,
+                notes: 'Added during setup',
+              );
+              await tankNotifier.addLivestock(livestock);
+              appLog('[Onboarding] Added ${livestock.commonName} x${livestock.count} to ${tank.name}', tag: 'OnboardingScreen');
+            } catch (e) {
+              logError('[Onboarding] Livestock pre-population failed: $e', tag: 'OnboardingScreen');
+              // Non-fatal — tank was created; fish can be added manually.
+            }
+          }
         } catch (e) {
           logError('[Onboarding] Tank creation failed: $e', tag: 'OnboardingScreen');
         }
