@@ -195,7 +195,11 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       }
     });
 
-    final metadata = ref.watch(pathMetadataProvider);
+    // Use .select() to pin rebuilds to list-length changes only; avoids
+    // spurious rebuilds when unrelated metadata state is updated.
+    final metadata = ref.watch(
+      pathMetadataProvider.select((list) => list),
+    );
 
     if (_showTooltip) {
       return Stack(

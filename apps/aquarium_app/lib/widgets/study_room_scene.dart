@@ -7,10 +7,10 @@ import 'room/interactive_object.dart';
 /// Study room colors - cozy knowledge theme
 class StudyColors {
   // Background gradient - warm study atmosphere
-  static const Color background1 = Color(0xFF2D3A5C); // Warmer blue-slate
-  static const background2 = Color(0xFF1F2937); // Darker blue
-  static const background2Alpha30 = Color(0x4D1F2937); // 30%
-  static const background3 = Color(0xFF1A202C); // Deep navy
+  static const Color background1 = Color(0xFF5B7F96); // Warm blue-gray
+  static const background2 = Color(0xFF3D6070); // Muted teal
+  static const background2Alpha30 = Color(0x4D3D6070); // 30%
+  static const background3 = Color(0xFF2A4A58); // Deep teal
 
   // Accent colors
   static const gold = Color(0xFFD4A574); // Warm gold
@@ -23,7 +23,7 @@ class StudyColors {
   static const creamAlpha90 = Color(0xE6FFF8E7); // 90%
 
   // Glass card
-  static const glassCard = Color(0x20FFFFFF);
+  static const glassCard = Color(0x30E8C878); // Warm golden frosted glass
   static const glassBorder = Color(0x30FFFFFF);
 
   // Text
@@ -205,7 +205,7 @@ class _StudyBackgroundPainter extends CustomPainter {
     final lampGlow = Paint()
       ..shader = RadialGradient(
         center: const Alignment(0.5, 0.2),
-        radius: 0.8,
+        radius: 1.1,
         colors: [
           StudyColors.goldAlpha40,
           StudyColors.goldAlpha15,
