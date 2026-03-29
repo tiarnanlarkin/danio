@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/tab_navigator.dart';
@@ -12,11 +14,55 @@ import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
 
 // ---------------------------------------------------------------------------
-// Stub
+// No-op platform implementation for FlutterLocalNotifications
 // ---------------------------------------------------------------------------
 
-/// Returns a [SpacedRepetitionState] with zero cards — safe for tests.
-SpacedRepetitionState _emptyState() => SpacedRepetitionState(
+class _MockNotificationsPlatform extends FlutterLocalNotificationsPlatform
+    with MockPlatformInterfaceMixin {
+  @override
+  Future<bool?> initialize(dynamic settings,
+          {dynamic onDidReceiveNotificationResponse,
+          dynamic onDidReceiveBackgroundNotificationResponse}) async =>
+      true;
+
+  @override
+  Future<void> show(int id, String? title, String? body,
+          {String? payload}) async {}
+
+  @override
+  Future<void> cancel(int id) async {}
+
+  @override
+  Future<void> cancelAll() async {}
+
+  @override
+  Future<NotificationAppLaunchDetails?> getNotificationAppLaunchDetails() async => null;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/// Register the no-op notifications platform so initialize() never throws.
+void _registerMockNotifications() {
+  FlutterLocalNotificationsPlatform.instance = _MockNotificationsPlatform();
+}
+
+Widget _wrap() {
+  return ProviderScope(
+    overrides: [
+      spacedRepetitionProvider.overrideWith(
+        (ref) => _FrozenSpacedRepetitionNotifier(ref),
+      ),
+    ],
+    child: const MaterialApp(home: TabNavigator()),
+  );
+}
+
+/// Subclass that uses the real Ref but resets to empty state after init.
+class _FrozenSpacedRepetitionNotifier extends SpacedRepetitionNotifier {
+  _FrozenSpacedRepetitionNotifier(Ref ref) : super(ref) {
+    state = SpacedRepetitionState(
       cards: const [],
       stats: ReviewStats(
         totalCards: 0,
@@ -29,40 +75,16 @@ SpacedRepetitionState _emptyState() => SpacedRepetitionState(
         currentStreak: 0,
       ),
     );
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-Widget _wrap() {
-  return ProviderScope(
-    overrides: [
-      // Replace the real notifier (which schedules notifications using the
-      // unregistered FlutterLocalNotificationsPlugin) with a frozen stub.
-      spacedRepetitionProvider
-          .overrideWith((ref) => _FrozenSpacedRepetitionNotifier(ref)),
-    ],
-    child: const MaterialApp(home: TabNavigator()),
-  );
-}
-
-/// A [SpacedRepetitionNotifier] sub-class that skips data loading and
-/// notification scheduling.  We pass the real [Ref] so that the base class
-/// `_ref` field is valid, but we override the constructor to immediately
-/// set an empty state instead of calling `_loadData()` or
-/// `_scheduleNotifications()`.
-class _FrozenSpacedRepetitionNotifier extends SpacedRepetitionNotifier {
-  _FrozenSpacedRepetitionNotifier(Ref ref) : super(ref) {
-    // Immediately reset to the stub state so any in-flight async
-    // work from the super constructor becomes a no-op (state is already set).
-    state = _emptyState();
   }
 }
 
 Future<void> _advance(WidgetTester tester) async {
-  await tester.pump();
-  await tester.pump(const Duration(milliseconds: 300));
-  await tester.pump(const Duration(seconds: 1));
+  // Pump through all async operations, provider loads, and animations.
+  // We run multiple small increments to drain flutter_animate timers (which
+  // restart on every pump) and also cover longer delays (HomeScreen 4s tooltip).
+  for (var i = 0; i < 60; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -72,6 +94,7 @@ Future<void> _advance(WidgetTester tester) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    _registerMockNotifications();
   });
 
   group('TabNavigator — smoke tests', () {
