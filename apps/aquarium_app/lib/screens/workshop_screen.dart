@@ -310,10 +310,11 @@ class _ToolCard extends StatelessWidget {
       label: title,
       child: GestureDetector(
       onTap: onTap,
-      child: ClipRRect(
+      child: RepaintBoundary(
+        child: ClipRRect(
         borderRadius: AppRadius.largeRadius,
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
@@ -353,6 +354,7 @@ class _ToolCard extends StatelessWidget {
         ),
       ),
       ),
+      ),
     );
   }
 }
@@ -362,33 +364,35 @@ class _QuickConversions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: ClipRRect(
-        borderRadius: AppRadius.largeRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
-            decoration: BoxDecoration(
-              color: AppColors.whiteAlpha12,
-              borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: AppColors.whiteAlpha20),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Quick Reference',
-                  style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
-                    color: AppColors.textPrimaryDark,
-                    fontWeight: FontWeight.w600,
+      child: RepaintBoundary(
+        child: ClipRRect(
+          borderRadius: AppRadius.largeRadius,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              padding: const EdgeInsets.all(AppSpacing.lg2),
+              decoration: BoxDecoration(
+                color: AppColors.whiteAlpha12,
+                borderRadius: AppRadius.largeRadius,
+                border: Border.all(color: AppColors.whiteAlpha20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Quick Reference',
+                    style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
+                      color: AppColors.textPrimaryDark,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _ConversionRow('1 gallon', '3.785 liters'),
-                _ConversionRow('1 inch', '2.54 cm'),
-                _ConversionRow('°F to °C', '(°F - 32) × 5/9'),
-                _ConversionRow('ppm', 'mg/L (same)'),
-              ],
+                  const SizedBox(height: AppSpacing.md),
+                  _ConversionRow('1 gallon', '3.785 liters'),
+                  _ConversionRow('1 inch', '2.54 cm'),
+                  _ConversionRow('°F to °C', '(°F - 32) × 5/9'),
+                  _ConversionRow('ppm', 'mg/L (same)'),
+                ],
+              ),
             ),
           ),
         ),

@@ -130,7 +130,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
             children: [
               ...heartsDisplay.map(
                 (filled) => Padding(
-                  padding: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.only(right: AppSpacing.sm),
                   child: Icon(
                     filled ? Icons.flash_on : Icons.flash_off,
                     color: filled ? const Color(0xFFFFA000) : const Color(0x4DFFA000),

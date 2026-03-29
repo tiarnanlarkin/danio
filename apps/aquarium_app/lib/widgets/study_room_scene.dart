@@ -505,7 +505,7 @@ class _GlassBadge extends StatelessWidget {
     return ClipRRect(
       borderRadius: AppRadius.largeRadius,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,

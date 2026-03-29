@@ -14,7 +14,7 @@ class AnalyticsPredictionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: AppCard(
         padding: AppCardPadding.standard,
         backgroundColor: AppColors.infoAlpha10,
@@ -44,8 +44,8 @@ class AnalyticsPredictionCard extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.info,

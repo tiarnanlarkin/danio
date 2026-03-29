@@ -200,7 +200,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             title: Text(widget.existingLog != null ? 'Edit Log' : _getTitle()),
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
                 child: AppButton(
                   label: 'Save',
                   onPressed: _isSaving ? null : _save,
@@ -389,7 +389,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             const SizedBox(width: AppSpacing.sm),
             // Bulk entry toggle
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
               decoration: BoxDecoration(
                 color: _bulkEntryMode
                     ? AppOverlays.primary10

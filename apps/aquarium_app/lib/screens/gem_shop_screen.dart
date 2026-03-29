@@ -376,11 +376,12 @@ class _ShopItemCard extends ConsumerWidget {
           borderRadius: AppRadius.largeRadius,
           splashColor: categoryColor.withAlpha(30),
           highlightColor: categoryColor.withAlpha(15),
-          child: ClipRRect(
-            borderRadius: AppRadius.largeRadius,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
+          child: RepaintBoundary(
+            child: ClipRRect(
+              borderRadius: AppRadius.largeRadius,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.whiteAlpha08,
                   borderRadius: AppRadius.largeRadius,
@@ -539,6 +540,7 @@ class _ShopItemCard extends ConsumerWidget {
               ),
             ),
           ),
+        ),
         ),
       ),
     );

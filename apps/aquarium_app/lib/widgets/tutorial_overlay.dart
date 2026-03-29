@@ -277,7 +277,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

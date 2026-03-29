@@ -479,7 +479,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           if (index >= 0 && index < data.length) {
                             final date = data[index].date;
                             return Padding(
-                              padding: const EdgeInsets.only(top: 8),
+                              padding: const EdgeInsets.only(top: AppSpacing.sm),
                               child: Text(
                                 DateFormat('M/d').format(date),
                                 style: AppTypography.labelSmall,
@@ -593,7 +593,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           if (index >= 0 && index < last7Days.length) {
                             final date = last7Days[index].date;
                             return Padding(
-                              padding: const EdgeInsets.only(top: 8),
+                              padding: const EdgeInsets.only(top: AppSpacing.sm),
                               child: Text(
                                 DateFormat('E').format(date)[0],
                                 style: AppTypography.labelSmall,

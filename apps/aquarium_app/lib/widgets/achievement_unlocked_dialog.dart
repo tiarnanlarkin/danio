@@ -215,7 +215,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // Achievement name
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                           child: Text(
                             widget.achievement.name,
                             style: Theme.of(context).textTheme.headlineMedium!
@@ -232,7 +232,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // Achievement description
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                           child: Text(
                             widget.achievement.description,
                             style: Theme.of(context).textTheme.titleMedium!
@@ -248,7 +248,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // Rewards section
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 24),
+                          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                           padding: const EdgeInsets.all(AppSpacing.lg2),
                           decoration: BoxDecoration(
                             color: AppOverlays.white20,
@@ -296,7 +296,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // "Awesome!" button
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                           child: AppButton(
                             label: 'Awesome!',
                             onPressed: () => Navigator.of(context).pop(),

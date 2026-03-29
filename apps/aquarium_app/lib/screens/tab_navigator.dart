@@ -249,6 +249,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                   icon: Icon(Icons.auto_stories_outlined),
                   selectedIcon: Icon(Icons.auto_stories),
                   label: 'Learn',
+                  tooltip: 'Learn tab',
                 ),
                 // Quiz tab with badge for due cards
                 NavigationDestination(
@@ -263,24 +264,28 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                     child: const Icon(Icons.quiz),
                   ),
                   label: 'Practice',
+                  tooltip: 'Practice tab',
                 ),
                 // Tank tab
                 const NavigationDestination(
                   icon: Icon(Icons.water_outlined),
                   selectedIcon: Icon(Icons.water),
                   label: 'Tank',
+                  tooltip: 'Tank tab',
                 ),
                 // Smart tab
                 const NavigationDestination(
                   icon: Icon(Icons.psychology_outlined),
                   selectedIcon: Icon(Icons.psychology),
                   label: 'Smart',
+                  tooltip: 'Smart tab',
                 ),
                 // More tab (profile, shop, tools, settings, about)
                 const NavigationDestination(
                   icon: Icon(Icons.grid_view_outlined),
                   selectedIcon: Icon(Icons.grid_view),
                   label: 'More',
+                  tooltip: 'More tab',
                 ),
               ],
             ),

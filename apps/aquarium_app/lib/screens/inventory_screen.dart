@@ -287,86 +287,88 @@ class _InventoryItemCard extends StatelessWidget {
       accentColor = DanioColors.inventoryPermanent;
     }
 
-    return ClipRRect(
-      borderRadius: AppRadius.largeRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.whiteAlpha08,
-            borderRadius: AppRadius.largeRadius,
-            border: Border.all(color: accentColor.withAlpha(128), width: 2),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header row with emoji and quantity
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      shopItem.emoji,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineMedium!.copyWith(),
-                    ),
-                    if (item.quantity > 1 || shopItem.isConsumable)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: accentColor,
-                          borderRadius: AppRadius.smallRadius,
-                        ),
-                        child: Text(
-                          'x${item.quantity}',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                color: AppColors.onPrimary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: AppRadius.largeRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.whiteAlpha08,
+              borderRadius: AppRadius.largeRadius,
+              border: Border.all(color: accentColor.withAlpha(128), width: 2),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.sm2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header row with emoji and quantity
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        shopItem.emoji,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineMedium!.copyWith(),
                       ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                // Name
-                Text(
-                  shopItem.name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimaryDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                // Description or timer
-                Expanded(
-                  child: showTimer && item.expiresAt != null
-                      ? _ExpiryTimer(expiresAt: item.expiresAt!)
-                      : Text(
-                          shopItem.description,
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(color: AppColors.textSecondaryDark),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                      if (item.quantity > 1 || shopItem.isConsumable)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: accentColor,
+                            borderRadius: AppRadius.smallRadius,
+                          ),
+                          child: Text(
+                            'x${item.quantity}',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: AppColors.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
                         ),
-                ),
-                // Use button
-                if (showUseButton && item.quantity > 0)
-                  AppButton(
-                    label: 'USE',
-                    onPressed: () => onUse?.call(item),
-                    variant: AppButtonVariant.primary,
-                    isFullWidth: true,
-                    size: AppButtonSize.small,
+                    ],
                   ),
-              ],
+                  const SizedBox(height: AppSpacing.sm),
+                  // Name
+                  Text(
+                    shopItem.name,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textPrimaryDark,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  // Description or timer
+                  Expanded(
+                    child: showTimer && item.expiresAt != null
+                        ? _ExpiryTimer(expiresAt: item.expiresAt!)
+                        : Text(
+                            shopItem.description,
+                            style: Theme.of(context).textTheme.labelSmall
+                                ?.copyWith(color: AppColors.textSecondaryDark),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                  ),
+                  // Use button
+                  if (showUseButton && item.quantity > 0)
+                    AppButton(
+                      label: 'USE',
+                      onPressed: () => onUse?.call(item),
+                      variant: AppButtonVariant.primary,
+                      isFullWidth: true,
+                      size: AppButtonSize.small,
+                    ),
+                ],
+              ),
             ),
           ),
         ),

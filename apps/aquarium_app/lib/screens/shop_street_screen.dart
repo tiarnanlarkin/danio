@@ -400,78 +400,80 @@ class _ShopSection extends StatelessWidget {
         borderRadius: AppRadius.largeRadius,
         splashColor: color.withAlpha(30),
         highlightColor: color.withAlpha(15),
-        child: ClipRRect(
-          borderRadius: AppRadius.largeRadius,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.lg2),
-              decoration: BoxDecoration(
-                color: AppColors.whiteAlpha12,
-                borderRadius: AppRadius.largeRadius,
-                border: Border.all(color: AppColors.whiteAlpha20),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.sm2),
-                    decoration: BoxDecoration(
-                      color: Color(
-                        (color.toARGB32() & 0x00FFFFFF) | 0x33000000,
-                      ), // 20% opacity
-                      borderRadius: AppRadius.mediumRadius,
+        child: RepaintBoundary(
+          child: ClipRRect(
+            borderRadius: AppRadius.largeRadius,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                padding: const EdgeInsets.all(AppSpacing.lg2),
+                decoration: BoxDecoration(
+                  color: AppColors.whiteAlpha12,
+                  borderRadius: AppRadius.largeRadius,
+                  border: Border.all(color: AppColors.whiteAlpha20),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.sm2),
+                      decoration: BoxDecoration(
+                        color: Color(
+                          (color.toARGB32() & 0x00FFFFFF) | 0x33000000,
+                        ), // 20% opacity
+                        borderRadius: AppRadius.mediumRadius,
+                      ),
+                      child: Icon(icon, color: color, size: 28),
                     ),
-                    child: Icon(icon, color: color, size: 28),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                color: AppColors.textPrimaryDark,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          subtitle,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColors.textSecondaryDark),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm2,
-                      vertical: AppSpacing.xs2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: itemCount > 0
-                          ? AppColors.primaryLightAlpha20
-                          : AppColors.whiteAlpha12,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: Text(
-                      '$itemCount',
-                      style: TextStyle(
-                        color: itemCount > 0
-                            ? AppColors.primaryLight
-                            : AppColors.textSecondaryDark,
-                        fontWeight: FontWeight.bold,
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: AppColors.textPrimaryDark,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            subtitle,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.textSecondaryDark),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  const Icon(
-                    Icons.chevron_right,
-                    color: AppColors.textSecondaryDark,
-                  ),
-                ],
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm2,
+                        vertical: AppSpacing.xs2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: itemCount > 0
+                            ? AppColors.primaryLightAlpha20
+                            : AppColors.whiteAlpha12,
+                        borderRadius: AppRadius.mediumRadius,
+                      ),
+                      child: Text(
+                        '$itemCount',
+                        style: TextStyle(
+                          color: itemCount > 0
+                              ? AppColors.primaryLight
+                              : AppColors.textSecondaryDark,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.textSecondaryDark,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -497,24 +499,25 @@ class _BudgetCard extends StatelessWidget {
         borderRadius: AppRadius.largeRadius,
         splashColor: AppColors.primaryLight.withAlpha(30),
         highlightColor: AppColors.primaryLight.withAlpha(15),
-        child: ClipRRect(
-          borderRadius: AppRadius.largeRadius,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.lg2),
-              decoration: BoxDecoration(
-                color: AppColors.whiteAlpha12,
-                borderRadius: AppRadius.largeRadius,
-                border: Border.all(color: AppColors.whiteAlpha20),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.account_balance_wallet,
+        child: RepaintBoundary(
+          child: ClipRRect(
+            borderRadius: AppRadius.largeRadius,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                padding: const EdgeInsets.all(AppSpacing.lg2),
+                decoration: BoxDecoration(
+                  color: AppColors.whiteAlpha12,
+                  borderRadius: AppRadius.largeRadius,
+                  border: Border.all(color: AppColors.whiteAlpha20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.account_balance_wallet,
                         color: AppColors.primaryLight,
                       ),
                       const SizedBox(width: AppSpacing.sm2),
@@ -604,6 +607,7 @@ class _BudgetCard extends StatelessWidget {
             ),
           ),
         ),
+        ),
       ),
     );
   }
@@ -624,23 +628,24 @@ class _LocalShopsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: AppRadius.largeRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
-          decoration: BoxDecoration(
-            color: AppColors.whiteAlpha12,
-            borderRadius: AppRadius.largeRadius,
-            border: Border.all(color: AppColors.whiteAlpha20),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Icon(Icons.location_on, color: DanioColors.coralAccent),
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: AppRadius.largeRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.lg2),
+            decoration: BoxDecoration(
+              color: AppColors.whiteAlpha12,
+              borderRadius: AppRadius.largeRadius,
+              border: Border.all(color: AppColors.whiteAlpha20),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.location_on, color: DanioColors.coralAccent),
                   const SizedBox(width: AppSpacing.sm2),
                   Builder(
                     builder: (context) => Text(
@@ -682,6 +687,7 @@ class _LocalShopsCard extends StatelessWidget {
               ],
             ],
           ),
+        ),
         ),
       ),
     );

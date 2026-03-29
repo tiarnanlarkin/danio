@@ -72,7 +72,7 @@ class _AddLogTypeChip extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.largeRadius,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : context.surfaceVariant,
           borderRadius: AppRadius.largeRadius,

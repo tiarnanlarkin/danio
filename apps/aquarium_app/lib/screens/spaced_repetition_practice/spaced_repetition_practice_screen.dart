@@ -419,7 +419,7 @@ class _SpacedRepetitionPracticeScreenState
               : 0.0;
 
           return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
             child: Row(
               children: [
                 Text(
@@ -559,7 +559,7 @@ class _SpacedRepetitionPracticeScreenState
 
   Widget _buildStatRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

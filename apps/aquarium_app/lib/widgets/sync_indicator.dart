@@ -41,7 +41,7 @@ class SyncIndicator extends ConsumerWidget {
       child: AnimatedContainer(
         duration: AppDurations.medium4,
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm2),
         decoration: BoxDecoration(
           color: isError
               ? AppColors.errorAlpha10
@@ -146,7 +146,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: syncState.isSyncing
             ? const Color(0xFFFFECB3)

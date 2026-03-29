@@ -32,7 +32,7 @@ class AnalyticsInsightCard extends StatelessWidget {
     final color = _colorForType(insight.type);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: AppCard(
         padding: AppCardPadding.standard,
         child: Column(

@@ -288,7 +288,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
       child: ClipRRect(
         borderRadius: AppRadius.smallRadius,
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
