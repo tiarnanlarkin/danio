@@ -133,11 +133,6 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
             children: [
               const SizedBox(height: AppSpacing.xl),
 
-              // Progress dots — dot 3 filled
-              _ProgressDots(currentIndex: 2),
-
-              const SizedBox(height: AppSpacing.lg),
-
               // Lesson badge
               Align(
                 alignment: Alignment.centerLeft,
@@ -415,35 +410,4 @@ const _advancedContent = _LessonContent(
       'Tank size matters, but species mismatch — including same-species aggression and incompatible temperaments — is the most common root cause.',
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Progress dots (consistent with other screens)
-// ─────────────────────────────────────────────────────────────────────────────
 
-class _ProgressDots extends StatelessWidget {
-  final int currentIndex;
-
-  const _ProgressDots({required this.currentIndex});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: 'Step ${currentIndex + 1} of 10',
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(10, (i) {
-          final isFilled = i <= currentIndex;
-          return Container(
-            width: 8,
-            height: 8,
-            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isFilled ? AppColors.onboardingAmber : AppColors.border,
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}

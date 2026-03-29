@@ -157,11 +157,6 @@ class _TankStatusScreenState extends State<TankStatusScreen>
             children: [
               const SizedBox(height: AppSpacing.xl),
 
-              // Progress dots — dot 2 filled
-              _ProgressDots(currentIndex: 1),
-
-              const SizedBox(height: AppSpacing.xl),
-
               // Headline
               Semantics(
                 header: true,
@@ -355,31 +350,3 @@ class _OptionCard extends StatelessWidget {
   }
 }
 
-class _ProgressDots extends StatelessWidget {
-  final int currentIndex;
-
-  const _ProgressDots({required this.currentIndex});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: 'Step ${currentIndex + 1} of 10',
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(10, (i) {
-          final isFilled = i <= currentIndex;
-          return Container(
-            width: 8,
-            height: 8,
-            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isFilled ? AppColors.onboardingAmber : AppColors.border,
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}

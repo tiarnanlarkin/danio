@@ -310,7 +310,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
   }
 
   Future<void> _checkGdprConsent() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final consent = prefs.getBool(kGdprAnalyticsConsentKey);
     final under13 = prefs.getBool('under_13_blocked') ?? false;
     if (mounted) {

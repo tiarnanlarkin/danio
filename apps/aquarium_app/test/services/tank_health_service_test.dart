@@ -94,10 +94,6 @@ void main() {
 
   group('TankHealthService.calculateScore — ammonia spike', () {
     test('high ammonia → score reduced and warning in factors', () {
-      final normalLogs = [_waterChange(daysAgo: 3)];
-      final normalResult =
-          TankHealthService.calculateScore(tank: tank, logs: normalLogs);
-
       final ammoniaLogs = [
         _waterChange(daysAgo: 3),
         _waterTest(daysAgo: 1, ammonia: 1.0, nitrite: 0.0, nitrate: 10.0),
@@ -105,7 +101,8 @@ void main() {
       final spikeResult =
           TankHealthService.calculateScore(tank: tank, logs: ammoniaLogs);
 
-      // Ammonia spike should reduce score compared to no spike
+      // Score should be penalised (not perfect) when ammonia is at danger level
+      expect(spikeResult.score, lessThan(100));
       // And the factors should mention ammonia
       final hasAmmoniaWarning = spikeResult.factors.any(
         (f) => f.toLowerCase().contains('ammonia'),

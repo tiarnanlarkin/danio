@@ -35,6 +35,7 @@ class SharedPreferencesBackup {
     'lesson_progress',
     'completed_lessons',
     'cost_tracker',
+    'aquarium_reminders',
   ];
 
   static const _metadataKey = '__backup_version';
