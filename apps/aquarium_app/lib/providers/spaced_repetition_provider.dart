@@ -130,8 +130,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
               streak = storedStreak; // Trust the authoritative streak value
             }
           }
-        } catch (_) {
+        } catch (e) {
           // Ignore parse errors — keep value loaded from statsKey
+          logError('SpacedRepetitionProvider: failed to parse streak JSON: $e', tag: 'SpacedRepetitionProvider');
         }
       }
 

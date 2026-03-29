@@ -93,6 +93,14 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   /// inventory save fails, the gems are automatically refunded so the user
   /// never loses currency without receiving the item.
   Future<bool> purchaseItem(ShopItem item) async {
+    // Guard: if inventory hasn't loaded, purchasing would wipe existing items.
+    if (!state.hasValue) {
+      logError(
+        'InventoryProvider: purchaseItem called while state is not loaded (${state.runtimeType}) — aborting to prevent data loss',
+        tag: 'InventoryProvider',
+      );
+      return false;
+    }
     final currentInventory = state.valueOrNull ?? [];
     final gemsNotifier = ref.read(gemsProvider.notifier);
 
@@ -180,6 +188,13 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   /// Use/consume an item AND apply its effect
   Future<bool> useItem(String itemId) async {
+    if (!state.hasValue) {
+      logError(
+        'InventoryProvider: useItem called while state is not loaded — aborting',
+        tag: 'InventoryProvider',
+      );
+      return false;
+    }
     final currentInventory = state.valueOrNull ?? [];
     final itemIndex = currentInventory.indexWhere((i) => i.itemId == itemId);
 
