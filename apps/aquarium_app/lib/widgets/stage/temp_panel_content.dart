@@ -126,7 +126,16 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
         : null;
 
     return Container(
-      color: kTempCream,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            widget.theme.glassCard.withValues(alpha: 0.95),
+            widget.theme.glassCard.withValues(alpha: 0.85),
+          ],
+        ),
+      ),
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(

@@ -17,7 +17,7 @@ import 'water_quality/water_param_card.dart';
 import 'water_quality/water_sparkline.dart';
 
 // ── Colour constants ──────────────────────────────────────────────────────────
-const _kCream = Color(0xFFFFF5E8);
+// _kCream removed — panels now use theme-derived gradient backgrounds
 
 // ── Panel Content ─────────────────────────────────────────────────────────────
 
@@ -153,7 +153,16 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
     final sparkNO3 = _buildSparkData(recentLogs, 'nitrate');
 
     return Container(
-      color: _kCream,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            widget.theme.glassCard.withValues(alpha: 0.95),
+            widget.theme.glassCard.withValues(alpha: 0.85),
+          ],
+        ),
+      ),
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(

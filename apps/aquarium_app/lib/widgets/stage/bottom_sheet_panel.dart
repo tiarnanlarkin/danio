@@ -194,18 +194,24 @@ class _SheetHeader extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Drag handle pill
-        const SizedBox(height: 10),
         Center(
           child: Container(
-            width: 36,
-            height: 4,
+            width: 56,
+            height: 6,
+            margin: const EdgeInsets.only(top: 10, bottom: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(2),
+              color: Colors.white.withValues(alpha: 0.50),
+              borderRadius: BorderRadius.circular(3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
             ),
           ),
         ),
-        const SizedBox(height: 8),
 
         // Horizontal tab bar
         TabBar(
