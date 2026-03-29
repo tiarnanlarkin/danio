@@ -292,13 +292,15 @@ Widget buildRoomBackground(RoomThemeType type) {
   if (assetPath == null) {
     return gradientFallbackForTheme(type);
   }
-  return Image.asset(
-    assetPath,
-    fit: BoxFit.cover,
-    cacheWidth: 1024,
-    cacheHeight: 1024,
-    errorBuilder: (context, error, stackTrace) =>
-        gradientFallbackForTheme(type),
+  return ExcludeSemantics(
+    child: Image.asset(
+      assetPath,
+      fit: BoxFit.cover,
+      cacheWidth: 1024,
+      cacheHeight: 1024,
+      errorBuilder: (context, error, stackTrace) =>
+          gradientFallbackForTheme(type),
+    ),
   );
 }
 

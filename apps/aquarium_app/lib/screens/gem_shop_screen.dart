@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
-import 'dart:ui';
+// dart:ui import removed — BackdropFilter replaced with solid overlay (perf: T-D-270)
 import '../models/shop_item.dart';
 import '../providers/gems_provider.dart';
 import '../services/shop_service.dart';
@@ -377,13 +377,9 @@ class _ShopItemCard extends ConsumerWidget {
           splashColor: categoryColor.withAlpha(30),
           highlightColor: categoryColor.withAlpha(15),
           child: RepaintBoundary(
-            child: ClipRRect(
-              borderRadius: AppRadius.largeRadius,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
+            child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.whiteAlpha08,
+                  color: AppColors.whiteAlpha15,
                   borderRadius: AppRadius.largeRadius,
                   border: Border.all(
                     color: owned
@@ -538,9 +534,7 @@ class _ShopItemCard extends ConsumerWidget {
                   ],
                 ),
               ),
-            ),
           ),
-        ),
         ),
       ),
     );

@@ -394,13 +394,15 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       return SizedBox(
         width: 48,
         height: 48,
-        child: Image.asset(
-          thumbPath,
-          fit: BoxFit.contain,
-          cacheWidth: 96,
-          cacheHeight: 96,
-          errorBuilder: (_, __, ___) =>
-              const Text('🐟', style: TextStyle(fontSize: 32)),
+        child: ExcludeSemantics(
+          child: Image.asset(
+            thumbPath,
+            fit: BoxFit.contain,
+            cacheWidth: 96,
+            cacheHeight: 96,
+            errorBuilder: (_, __, ___) =>
+                const Text('🐟', style: TextStyle(fontSize: 32)),
+          ),
         ),
       );
     }

@@ -256,6 +256,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                             fit: BoxFit.contain,
                             cacheWidth: 160,
                             cacheHeight: 160,
+                            semanticLabel: fishName,
                           ),
                         )
                       : const Text('🐠', style: TextStyle(fontSize: 48)),
@@ -448,6 +449,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     fit: BoxFit.contain,
                     cacheWidth: 68,
                     cacheHeight: 68,
+                    semanticLabel: fishName,
                   ),
                 )
               : const Text('🐠', style: TextStyle(fontSize: 22)),

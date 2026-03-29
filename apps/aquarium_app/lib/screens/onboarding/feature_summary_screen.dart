@@ -140,13 +140,15 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             spritePath != null
-                ? Image.asset(
-                    spritePath,
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.contain,
-                    cacheWidth: 96,
-                    cacheHeight: 96,
+                ? ExcludeSemantics(
+                    child: Image.asset(
+                      spritePath,
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.contain,
+                      cacheWidth: 96,
+                      cacheHeight: 96,
+                    ),
                   )
                 : const Text('🐟', style: TextStyle(fontSize: 48)),
             const SizedBox(width: AppSpacing.sm2),

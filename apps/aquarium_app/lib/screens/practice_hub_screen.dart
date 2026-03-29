@@ -57,13 +57,15 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
               child: Stack(children: [
                 // Centered illustration
                 Center(
-                  child: Image.asset(
-                    'assets/images/illustrations/practice_header.png',
-                    height: 160,
-                    fit: BoxFit.fitHeight,
-                    cacheWidth: 480,
-                    cacheHeight: 320,
-                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  child: ExcludeSemantics(
+                    child: Image.asset(
+                      'assets/images/illustrations/practice_header.png',
+                      height: 160,
+                      fit: BoxFit.fitHeight,
+                      cacheWidth: 480,
+                      cacheHeight: 320,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    ),
                   ),
                 ),
                 // Top-left title (inside SafeArea)

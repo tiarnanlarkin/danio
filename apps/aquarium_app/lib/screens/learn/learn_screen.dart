@@ -307,12 +307,14 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         children: [
                           // Illustration
                           Positioned.fill(
-                            child: Image.asset(
-                              'assets/images/illustrations/learn_header.png',
-                              fit: BoxFit.cover,
-                              alignment: Alignment.center,
-                              errorBuilder: (_, __, ___) =>
-                                  const SizedBox.shrink(),
+                            child: ExcludeSemantics(
+                              child: Image.asset(
+                                'assets/images/illustrations/learn_header.png',
+                                fit: BoxFit.cover,
+                                alignment: Alignment.center,
+                                errorBuilder: (_, __, ___) =>
+                                    const SizedBox.shrink(),
+                              ),
                             ),
                           ),
                           // XP / level badge (top-left)

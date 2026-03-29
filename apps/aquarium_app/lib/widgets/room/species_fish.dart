@@ -165,12 +165,14 @@ class _SpeciesFishState extends State<SpeciesFish>
     // once and reused across builder invocations (only position changes).
     return AnimatedBuilder(
       animation: _ticker,
-      child: Image.asset(
-        'assets/images/fish/${widget.speciesId}.png',
-        fit: BoxFit.contain,
-        cacheWidth: 128,
-        cacheHeight: 128,
-        errorBuilder: (_, __, ___) => _FallbackFish(size: _spriteSize),
+      child: ExcludeSemantics(
+        child: Image.asset(
+          'assets/images/fish/${widget.speciesId}.png',
+          fit: BoxFit.contain,
+          cacheWidth: 128,
+          cacheHeight: 128,
+          errorBuilder: (_, __, ___) => _FallbackFish(size: _spriteSize),
+        ),
       ),
       builder: (context, child) {
         // Vertical bob — amplitude increases during an excited wiggle

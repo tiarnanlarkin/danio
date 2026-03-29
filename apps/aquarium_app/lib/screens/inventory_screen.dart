@@ -3,7 +3,7 @@ import 'dart:async';
 import '../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:ui';
+// dart:ui import removed — BackdropFilter replaced with solid overlay (perf: T-D-270)
 import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import '../providers/inventory_provider.dart';
@@ -288,16 +288,12 @@ class _InventoryItemCard extends StatelessWidget {
     }
 
     return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: AppRadius.largeRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.whiteAlpha08,
-              borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: accentColor.withAlpha(128), width: 2),
-            ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.whiteAlpha15,
+          borderRadius: AppRadius.largeRadius,
+          border: Border.all(color: accentColor.withAlpha(128), width: 2),
+        ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.sm2),
               child: Column(
@@ -370,8 +366,6 @@ class _InventoryItemCard extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        ),
       ),
     );
   }

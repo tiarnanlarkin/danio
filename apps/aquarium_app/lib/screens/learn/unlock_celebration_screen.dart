@@ -130,6 +130,7 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                     fit: BoxFit.contain,
                     cacheWidth: (spriteSize * 2).toInt(),
                     cacheHeight: (spriteSize * 2).toInt(),
+                    semanticLabel: _displayName,
                     errorBuilder: (_, __, ___) => _FallbackSprite(
                       size: spriteSize,
                       name: _displayName,
