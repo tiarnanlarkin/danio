@@ -17,6 +17,7 @@ import 'tank_volume_calculator_screen.dart';
 import 'lighting_schedule_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../providers/user_profile_notifier.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
 
