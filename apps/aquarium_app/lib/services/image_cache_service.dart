@@ -49,7 +49,7 @@ class ImageCacheService {
 
     if (!file.existsSync()) {
       // Return a placeholder if file doesn't exist
-      return const AssetImage('assets/images/placeholder.png');
+      return const AssetImage('assets/images/placeholder.webp');
     }
 
     // For thumbnails, use ResizeImage to reduce memory usage

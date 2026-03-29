@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/app_theme.dart';
+import 'stage_handle.dart';
 
 /// A single DraggableScrollableSheet that replaces the three-stacked
 /// BottomPlate system. Contains a horizontal TabBar with three tabs:
@@ -193,25 +194,8 @@ class _SheetHeader extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Drag handle pill
-        Center(
-          child: Container(
-            width: 56,
-            height: 6,
-            margin: const EdgeInsets.only(top: 10, bottom: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.50),
-              borderRadius: BorderRadius.circular(3),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-          ),
-        ),
+        // Drag handle — StageHandle replaces old pill Container
+        const StageHandle(),
 
         // Horizontal tab bar
         TabBar(

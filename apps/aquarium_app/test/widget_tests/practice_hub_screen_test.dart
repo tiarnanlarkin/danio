@@ -104,7 +104,8 @@ void main() {
     testWidgets('shows Practice app bar title', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('🧪 Practice'), findsOneWidget);
+      // Title is now in the illustrated header (no AppBar), text reads 'Practice'
+      expect(find.text('Practice'), findsOneWidget);
     });
 
     testWidgets('shows scaffold', (tester) async {

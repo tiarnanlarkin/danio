@@ -41,27 +41,74 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     final totalCards = srState.stats.totalCards;
 
     final body = Scaffold(
-      appBar: AppBar(
-        title: const Text('🧪 Practice'),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: AppSpacing.sm),
-            child: Center(child: HeartIndicator(compact: true)),
+      body: CustomScrollView(
+        slivers: [
+          // Header banner (scrolls with content, not sticky)
+          SliverToBoxAdapter(
+            child: Container(
+              height: 180,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFFFF5E8), Color(0xFFFFF0DE)],
+                ),
+              ),
+              child: Stack(children: [
+                // Centered illustration
+                Center(
+                  child: Image.asset(
+                    'assets/images/illustrations/practice_header.png',
+                    height: 160,
+                    fit: BoxFit.fitHeight,
+                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  ),
+                ),
+                // Top-left title (inside SafeArea)
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Text(
+                      'Practice',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
+                ),
+                // Top-right hearts indicator
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: SafeArea(
+                    bottom: false,
+                    child: HeartIndicator(compact: true),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          // 8dp gap
+          const SliverPadding(padding: EdgeInsets.only(top: 8)),
+          // Content list
+          SliverPadding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => _buildPracticeHubItem(
+                  context,
+                  ref,
+                  index,
+                  dueCards,
+                  totalCards,
+                  srState,
+                  profile,
+                ),
+                childCount: _getPracticeHubItemCount(dueCards, totalCards),
+              ),
+            ),
           ),
         ],
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _getPracticeHubItemCount(dueCards, totalCards),
-        itemBuilder: (context, index) => _buildPracticeHubItem(
-          context,
-          ref,
-          index,
-          dueCards,
-          totalCards,
-          srState,
-          profile,
-        ),
       ),
     );
 

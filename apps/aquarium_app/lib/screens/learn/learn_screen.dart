@@ -1,21 +1,17 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../data/species_database.dart';
 import '../../models/user_profile.dart';
 import '../../providers/lesson_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
-import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/core/glass_card.dart';
-import '../../widgets/study_room_scene.dart';
+// StudyRoomScene import removed — replaced with illustrated header
 import '../onboarding_screen.dart';
-import '../parameter_guide_screen.dart';
 import '../../utils/app_constants.dart';
 import '../../widgets/learning_streak_badge.dart';
 import '../../widgets/placement_challenge_card.dart';
@@ -269,10 +265,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           // This is ref.read (not watch) — rebuilds are driven solely by
           // the selective profileState watch above.
           final profile = ref.read(userProfileProvider).value;
-          final totalLessons = metadata.fold<int>(
-            0,
-            (sum, meta) => sum + meta.lessonIds.length,
-          );
           final completedLessons = profileState.completedLessonCount;
 
           _maybeScrollToFirstLesson(profile);
@@ -286,24 +278,98 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             child: CustomScrollView(
               controller: _scrollController,
               slivers: [
-                // Study Room Scene Header
+                // Illustrated Learn Header
                 SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.38,
-                    child: Stack(
-                      children: [
-                        StudyRoomScene(
-                          totalXp: statsXp,
-                          levelTitle: statsLevel,
-                          currentStreak: profileState.currentStreak,
-                          completedLessons: completedLessons,
-                          totalLessons: totalLessons,
-                          isNewUser: !profileState.hasSeenTutorial,
-                          onMicroscopeTap: () =>
-                              _navigateToWaterChemistry(context),
-                          onGlobeTap: () => _showRandomFishFact(context),
+                  child: ShaderMask(
+                    shaderCallback: (bounds) => const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0.75, 1.0],
+                      colors: [Colors.white, Colors.transparent],
+                    ).createShader(bounds),
+                    blendMode: BlendMode.dstIn,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.32,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFF5B8FA8), // Soft ocean blue
+                            Color(0xFF3D6B7A), // Deeper teal
+                            Color(0xFF2D5566), // Submarine depth
+                          ],
                         ),
-                      ],
+                      ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          // Illustration
+                          Positioned.fill(
+                            child: Image.asset(
+                              'assets/images/illustrations/learn_header.png',
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              errorBuilder: (_, __, ___) =>
+                                  const SizedBox.shrink(),
+                            ),
+                          ),
+                          // XP / level badge (top-left)
+                          Positioned(
+                            top: 48,
+                            left: 16,
+                            child: SafeArea(
+                              bottom: false,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.35),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  '⭐ $statsXp XP · $statsLevel',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Streak badge (top-right)
+                          if (profileState.currentStreak > 0)
+                            Positioned(
+                              top: 48,
+                              right: 16,
+                              child: SafeArea(
+                                bottom: false,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.35),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    '🔥 ${profileState.currentStreak}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -580,60 +646,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     );
   }
 
-  void _navigateToWaterChemistry(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
-    );
-  }
-
-  void _showRandomFishFact(BuildContext context) {
-    final species = SpeciesDatabase.species;
-    if (species.isEmpty) {
-      DanioSnackBar.info(
-        context,
-        'Fish facts are still loading — check back shortly!',
-      );
-      return;
-    }
-
-    final random = math.Random();
-    final randomSpecies = species[random.nextInt(species.length)];
-
-    final facts = [
-      '${randomSpecies.commonName} (${randomSpecies.scientificName}) can grow up to ${randomSpecies.adultSizeCm}cm!',
-      'Did you know? ${randomSpecies.commonName} prefers a temperature of ${randomSpecies.minTempC}°C - ${randomSpecies.maxTempC}°C.',
-      '${randomSpecies.commonName} is ${randomSpecies.temperament.toLowerCase()} and swims at the ${randomSpecies.swimLevel.toLowerCase()} level.',
-      'The ${randomSpecies.commonName} is from the ${randomSpecies.family} family.',
-      '${randomSpecies.commonName} needs at least ${randomSpecies.minTankLitres}L of tank space.',
-      'A ${randomSpecies.commonName} is best kept in groups of ${randomSpecies.minSchoolSize} or more.',
-    ];
-
-    final fact = facts[random.nextInt(facts.length)];
-
-    showAppDialog(
-      context: context,
-      title: '🐠 Fish Fact!',
-      child: Text(fact, style: AppTypography.bodyLarge),
-      actions: [
-        AppButton(
-          label: 'Cool!',
-          onPressed: () => Navigator.of(context).pop(),
-          variant: AppButtonVariant.text,
-          isFullWidth: true,
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        AppButton(
-          label: 'Another!',
-          onPressed: () {
-            Navigator.of(context).pop();
-            _showRandomFishFact(context);
-          },
-          variant: AppButtonVariant.primary,
-          isFullWidth: true,
-        ),
-      ],
-    );
-  }
 }
 
 /// Section in the Learn tab that links to interactive stories.
