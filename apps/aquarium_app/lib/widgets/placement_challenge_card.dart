@@ -1,146 +1,18 @@
 /// Optional placement test challenge card for the Learn tab.
-/// Shown to intermediate/expert users who haven't taken or skipped the test.
+/// FB-H5: Hidden — no real placement test exists yet (DE-19).
+/// Previously showed a CTA that routed to the standard SRS screen by mistake.
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/user_profile.dart';
-import '../providers/user_profile_provider.dart';
-import '../screens/spaced_repetition_practice_screen.dart';
-import '../theme/app_theme.dart';
-import '../utils/navigation_throttle.dart';
-import 'core/app_button.dart';
 
 class PlacementChallengeCard extends ConsumerWidget {
   const PlacementChallengeCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Select only the three fields this widget checks — avoids rebuilds
-    // when unrelated profile data (XP, streak, gems, etc.) changes.
-    final placementData = ref.watch(
-      userProfileProvider.select(
-        (a) => a.whenData(
-          (p) => p == null
-              ? null
-              : (
-                  experienceLevel: p.experienceLevel,
-                  hasCompletedPlacementTest: p.hasCompletedPlacementTest,
-                  hasSkippedPlacementTest: p.hasSkippedPlacementTest,
-                ),
-        ),
-      ),
-    );
-
-    return placementData.when(
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (data) {
-        if (data == null) return const SizedBox.shrink();
-        if (data.experienceLevel == ExperienceLevel.beginner) {
-          return const SizedBox.shrink();
-        }
-        if (data.hasCompletedPlacementTest || data.hasSkippedPlacementTest) {
-          return const SizedBox.shrink();
-        }
-
-        return Container(
-          margin: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.md,
-            0,
-          ),
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppOverlays.accent10, AppOverlays.amber20],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppOverlays.accent30),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Semantics(
-                    label: 'Placement test',
-                    excludeSemantics: true,
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: const BoxDecoration(
-                        color: AppOverlays.accent20,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.set_meal_rounded,
-                        color: AppColors.accent,
-                        size: AppIconSizes.md,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Test your knowledge',
-                          style: AppTypography.labelLarge.copyWith(
-                            color: AppColors.accent,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xxs),
-                        Text(
-                          'Take a quick placement test to unlock your level',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: context.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      label: 'Take the test',
-                      onPressed: () {
-                        NavigationThrottle.push(
-                          context,
-                          const SpacedRepetitionPracticeScreen(),
-                        );
-                      },
-                      variant: AppButtonVariant.primary,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  AppButton(
-                    label: 'Skip for now',
-                    onPressed: () {
-                      ref
-                          .read(userProfileProvider.notifier)
-                          .skipPlacementTest();
-                    },
-                    variant: AppButtonVariant.text,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          ),
-        );
-      },
-    );
+    // FB-H5: Placement test is not yet implemented (DE-19).
+    // Hide this CTA until a real placement flow exists.
+    return const SizedBox.shrink();
   }
 }

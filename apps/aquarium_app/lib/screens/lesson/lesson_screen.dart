@@ -23,6 +23,7 @@ import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../providers/species_unlock_provider.dart';
 import '../learn/unlock_celebration_screen.dart';
+import '../../providers/inventory_provider.dart';
 
 export 'lesson_card_widget.dart';
 export 'lesson_quiz_widget.dart';
@@ -359,7 +360,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     setState(() => _isCompletingLesson = true);
 
     try {
-      final totalXp = widget.lesson.xpReward + bonusXp;
+      // FB-H4: Apply XP boost if active
+      final isBoostActive = ref.read(xpBoostActiveProvider);
+      final baseXp = widget.lesson.xpReward + bonusXp;
+      final totalXp = isBoostActive ? baseXp * 2 : baseXp;
 
       // Handle practice mode rewards
       if (widget.isPracticeMode) {
