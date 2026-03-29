@@ -20,9 +20,7 @@ String? backgroundAssetForTheme(RoomThemeType type) {
       return 'assets/backgrounds/room-bg-ocean.webp';
     case RoomThemeType.forest:
       return 'assets/backgrounds/room-bg-forest.webp';
-    // ── Placeholder entries: files don't exist yet (Iris will provide them).
-    // Once assets/images/room/<file>.webp is added and pubspec.yaml updated,
-    // these will automatically load without any further code changes.
+    // ── All room background WebPs provided (generated 2026-03-29).
     case RoomThemeType.pastel:
       return 'assets/backgrounds/room-bg-pastel.webp';
     case RoomThemeType.sunset:
