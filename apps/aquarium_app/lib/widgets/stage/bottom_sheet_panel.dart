@@ -36,7 +36,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
-  static const double _snapPeek = 0.12;
+  static const double _snapPeek = 0.16; // was 0.12 — increased for better tab visibility
   static const double _snapHalf = 0.45;
   static const double _snapFull = 0.92;
 

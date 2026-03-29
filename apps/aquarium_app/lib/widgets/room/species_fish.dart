@@ -148,9 +148,7 @@ class _SpeciesFishState extends State<SpeciesFish>
     } else {
       _x = newX;
     }
-
-    // Trigger repaint
-    setState(() {});
+    // No setState here — AnimatedBuilder in build() reacts to _ticker directly.
   }
 
   @override
@@ -161,40 +159,53 @@ class _SpeciesFishState extends State<SpeciesFish>
 
     final disableMotion = MediaQuery.of(context).disableAnimations;
 
-    // Vertical bob — amplitude increases during an excited wiggle
-    final wiggleMult = FishWiggleHelper.amplitudeMultiplier();
-    final phase =
-        2 * math.pi * ((_lastElapsed / widget.bobPeriod) + widget.phaseOffset);
-    final bobY = disableMotion
-        ? 0.0
-        : math.sin(phase) * widget.bobAmplitude * wiggleMult;
+    // AnimatedBuilder subscribes to _ticker so the builder runs every frame
+    // without calling setState on _SpeciesFishState — eliminating full widget
+    // tree rebuilds. The fish Image is passed as `child` so it is created
+    // once and reused across builder invocations (only position changes).
+    return AnimatedBuilder(
+      animation: _ticker,
+      child: Image.asset(
+        'assets/images/fish/${widget.speciesId}.png',
+        fit: BoxFit.contain,
+        cacheWidth: 128,
+        cacheHeight: 128,
+        errorBuilder: (_, __, ___) => _FallbackFish(size: _spriteSize),
+      ),
+      builder: (context, child) {
+        // Vertical bob — amplitude increases during an excited wiggle
+        final wiggleMult = FishWiggleHelper.amplitudeMultiplier();
+        final phase = 2 *
+            math.pi *
+            ((_lastElapsed / widget.bobPeriod) + widget.phaseOffset);
+        final bobY = disableMotion
+            ? 0.0
+            : math.sin(phase) * widget.bobAmplitude * wiggleMult;
 
-    final rawTop = widget.baseTop * widget.tankHeight + bobY;
-    final clampedTop = rawTop.clamp(
-      4.0,
-      widget.tankHeight * 0.78 - _spriteSize,
-    );
+        final rawTop = widget.baseTop * widget.tankHeight + bobY;
+        final clampedTop = rawTop.clamp(
+          4.0,
+          widget.tankHeight * 0.78 - _spriteSize,
+        );
 
-    return Positioned(
-      left: _x,
-      top: clampedTop,
-      child: RepaintBoundary(
-        child: Opacity(
-          opacity: _opacity,
-          child: Transform.scale(
-            scaleX: _facingRight ? 1.0 : -1.0,
-            child: SizedBox(
-              width: _spriteSize,
-              height: _spriteSize,
-              child: Image.asset(
-                'assets/images/fish/${widget.speciesId}.png',
-                fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => _FallbackFish(size: _spriteSize),
+        return Positioned(
+          left: _x,
+          top: clampedTop,
+          child: RepaintBoundary(
+            child: Opacity(
+              opacity: _opacity,
+              child: Transform.scale(
+                scaleX: _facingRight ? 1.0 : -1.0,
+                child: SizedBox(
+                  width: _spriteSize,
+                  height: _spriteSize,
+                  child: child,
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
