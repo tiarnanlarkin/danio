@@ -37,15 +37,21 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: disableMotion ? Duration.zero : AppDurations.long3,
+      duration: AppDurations.long3,
       vsync: this,
     );
 
     _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: AppCurves.emphasized),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _controller.duration = disableMotion ? Duration.zero : AppDurations.long3;
   }
 
   @override
@@ -242,14 +248,20 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _shimmerController = AnimationController(
-      duration: disableMotion ? Duration.zero : AppDurations.celebration,
+      duration: AppDurations.celebration,
       vsync: this,
     );
     if (widget.isAnimating) {
       _shimmerController.repeat();
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _shimmerController.duration = disableMotion ? Duration.zero : AppDurations.celebration;
   }
 
   @override

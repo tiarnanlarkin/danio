@@ -399,9 +399,8 @@ class _MascotAvatarState extends State<MascotAvatar>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
 
@@ -413,6 +412,13 @@ class _MascotAvatarState extends State<MascotAvatar>
     if (widget.animate) {
       _controller.repeat(reverse: true);
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _controller.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 2000);
   }
 
   @override

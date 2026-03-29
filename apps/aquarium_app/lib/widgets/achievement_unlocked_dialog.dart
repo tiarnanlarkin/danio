@@ -63,12 +63,11 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
       duration: const Duration(seconds: 5),
     );
 
-    final disableMotion = MediaQuery.of(context).disableAnimations;
 
     // Animation controller for entrance
     _animationController = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : AppDurations.long3,
+      duration: AppDurations.long3,
     );
 
     _scaleAnimation = CurvedAnimation(
@@ -84,6 +83,13 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
     // Start animations
     _confettiController.play();
     _animationController.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _animationController.duration = disableMotion ? Duration.zero : AppDurations.long3;
   }
 
   @override

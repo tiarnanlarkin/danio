@@ -185,16 +185,22 @@ class _ShimmerAnimationState extends State<_ShimmerAnimation>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : AppDurations.celebration,
+      duration: AppDurations.celebration,
     )..repeat();
 
     _animation = Tween<double>(
       begin: -1.0,
       end: 2.0,
     ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _controller.duration = disableMotion ? Duration.zero : AppDurations.celebration;
   }
 
   @override

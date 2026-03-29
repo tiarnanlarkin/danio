@@ -25,11 +25,17 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
-      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _controller.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 300);
   }
 
   @override

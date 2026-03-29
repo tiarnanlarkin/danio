@@ -59,11 +59,10 @@ class _LevelUpDialogState extends State<LevelUpDialog>
   void initState() {
     super.initState();
 
-    final disableMotion = MediaQuery.of(context).disableAnimations;
 
     // Scale animation for dialog
     _scaleController = AnimationController(
-      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 600),
       vsync: this,
     );
 
@@ -74,12 +73,20 @@ class _LevelUpDialogState extends State<LevelUpDialog>
 
     // Confetti animation (continuous loop)
     _confettiController = AnimationController(
-      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 3000),
+      duration: const Duration(milliseconds: 3000),
       vsync: this,
     )..repeat();
 
     // Start animations
     _scaleController.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _scaleController.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 600);
+    _confettiController.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 3000);
   }
 
   @override

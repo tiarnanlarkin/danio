@@ -28,10 +28,9 @@ class _TankGlassBadgeState extends State<TankGlassBadge>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _controller = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : AppDurations.long1,
+      duration: AppDurations.long1,
     );
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
@@ -41,6 +40,13 @@ class _TankGlassBadgeState extends State<TankGlassBadge>
     Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) _controller.forward();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _controller.duration = disableMotion ? Duration.zero : AppDurations.long1;
   }
 
   @override

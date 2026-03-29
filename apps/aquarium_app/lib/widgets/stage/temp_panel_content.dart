@@ -45,16 +45,20 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _fillAnim = AnimationController(
       vsync: this,
-      duration: disableMotion
-          ? Duration.zero
-          : const Duration(milliseconds: 1100),
+      duration: const Duration(milliseconds: 1100),
     );
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) _fillAnim.forward(from: 0);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _fillAnim.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 1100);
   }
 
   @override

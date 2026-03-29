@@ -50,16 +50,22 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
   @override
   void initState() {
     super.initState();
-    final disableMotion = MediaQuery.of(context).disableAnimations;
     _animationController = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : AppDurations.medium4,
+      duration: AppDurations.medium4,
     );
     _fadeAnimation = CurvedAnimation(
       parent: _animationController,
       curve: AppCurves.standard,
     );
     _animationController.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final disableMotion = MediaQuery.of(context).disableAnimations;
+    _animationController.duration = disableMotion ? Duration.zero : AppDurations.medium4;
   }
 
   @override
