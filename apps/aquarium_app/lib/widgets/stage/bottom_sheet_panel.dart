@@ -152,9 +152,12 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                                 ],
                               ),
                       ),
-
-                      // Bottom safe area padding
-                      SizedBox(height: MediaQuery.of(context).padding.bottom),
+                      // NOTE: Bottom safe area SizedBox was here but caused a
+                      // Column overflow when padding.bottom (e.g. nav bar 67dp)
+                      // was added AFTER the Expanded child — Expanded absorbs all
+                      // remaining space first, leaving no room for the SizedBox.
+                      // Removed: content is inside a scrollable so the bottom
+                      // inset does not clip visible content.
                     ],
                   ),
                 ],
