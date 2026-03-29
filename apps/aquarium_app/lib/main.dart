@@ -11,6 +11,9 @@ import 'data/plant_database.dart';
 import 'providers/onboarding_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/user_profile_provider.dart';
+import 'providers/room_theme_provider.dart';
+import 'providers/species_unlock_provider.dart';
+import 'widgets/room/room_background.dart';
 import 'screens/tab_navigator.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/onboarding/consent_screen.dart';
@@ -401,6 +404,22 @@ class _AppRouterState extends ConsumerState<_AppRouter>
             const AssetImage('assets/images/illustrations/practice_header.webp'),
             context,
           );
+          // Precache room background for the user's selected theme
+          final themeType = ref.read(roomThemeProvider);
+          final bgAsset = backgroundAssetForTheme(themeType);
+          if (bgAsset != null) {
+            unawaited(precacheImage(AssetImage(bgAsset), context));
+          }
+          // Precache fish sprites for the user's unlocked species
+          final unlockedSpecies = ref.read(unlockedSpeciesListProvider);
+          for (final speciesId in unlockedSpecies) {
+            unawaited(
+              precacheImage(
+                AssetImage('assets/images/fish/$speciesId.webp'),
+                context,
+              ),
+            );
+          }
         }
       });
     }
