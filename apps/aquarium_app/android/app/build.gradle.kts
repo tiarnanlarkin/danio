@@ -72,7 +72,10 @@ android {
 
     splits {
         abi {
-            isEnable = true
+            // Disable ABI splits when building App Bundle (AAB) — Play Store handles
+            // ABI splitting natively for AABs. Only enable for direct APK distribution.
+            // Set to false by default; override locally if needed for APK-only builds.
+            isEnable = false
             reset()
             include("arm64-v8a", "armeabi-v7a", "x86_64")
             isUniversalApk = true
