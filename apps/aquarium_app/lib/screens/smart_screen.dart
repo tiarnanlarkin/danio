@@ -621,7 +621,7 @@ class _FeatureCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        isDisabled ? 'Coming soon' : subtitle,
+                        subtitle,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: context.textSecondary,
                         ),
