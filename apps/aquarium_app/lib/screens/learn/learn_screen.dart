@@ -398,6 +398,45 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     child: _StoriesSection(),
                   ),
 
+                  // Cold-start nudge: shown only when user has no completed lessons
+                  if (completedLessons == 0)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppSpacing.md,
+                          AppSpacing.md,
+                          AppSpacing.md,
+                          0,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryAlpha08,
+                            borderRadius: AppRadius.mediumRadius,
+                            border: Border.all(color: AppColors.primaryAlpha15),
+                          ),
+                          child: Row(
+                            children: [
+                              const Text('👋', style: TextStyle(fontSize: 20)),
+                              const SizedBox(width: AppSpacing.sm2),
+                              Expanded(
+                                child: Text(
+                                  'New to fishkeeping? Start with the basics below.',
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
                   // Learning paths header with overall progress
                   SliverToBoxAdapter(
                     key: _firstPathKey,
@@ -480,6 +519,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                             .length;
                         final reduceMotion =
                             MediaQuery.of(context).disableAnimations;
+                        // Show "Start Here 👋" badge on the first path for
+                        // new users who haven't completed any lessons yet.
+                        final showStartHere =
+                            index == 0 && completedLessons == 0;
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(
@@ -493,6 +536,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                   totalLessons: meta.lessonIds.length,
                                   userCompletedLessons: userCompleted,
                                   allPathMetadata: metadata,
+                                  showStartHereBadge: showStartHere,
                                 )
                               : LazyLearningPathCard(
                                   metadata: meta,
@@ -500,6 +544,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                   totalLessons: meta.lessonIds.length,
                                   userCompletedLessons: userCompleted,
                                   allPathMetadata: metadata,
+                                  showStartHereBadge: showStartHere,
                                 )
                                 .animate()
                                 .fadeIn(

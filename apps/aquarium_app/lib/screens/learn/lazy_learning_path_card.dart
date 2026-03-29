@@ -27,6 +27,9 @@ class LazyLearningPathCard extends ConsumerStatefulWidget {
   /// All path metadata — needed to evaluate cross-path prerequisites.
   final List<PathMetadata> allPathMetadata;
 
+  /// When true, renders a "Start Here 👋" badge to nudge new users.
+  final bool showStartHereBadge;
+
   const LazyLearningPathCard({
     super.key,
     required this.metadata,
@@ -34,6 +37,7 @@ class LazyLearningPathCard extends ConsumerStatefulWidget {
     required this.totalLessons,
     required this.userCompletedLessons,
     this.allPathMetadata = const [],
+    this.showStartHereBadge = false,
   });
 
   @override
@@ -136,11 +140,37 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                       ),
                     ),
                   ),
-                  title: Text(
-                    meta.title,
-                    style: AppTypography.labelLarge.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          meta.title,
+                          style: AppTypography.labelLarge.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      if (widget.showStartHereBadge && !isComplete)
+                        Container(
+                          margin: const EdgeInsets.only(left: AppSpacing.xs),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xxs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryAlpha15,
+                            borderRadius: AppRadius.md2Radius,
+                            border: Border.all(color: AppColors.primaryAlpha30),
+                          ),
+                          child: Text(
+                            'Start Here 👋',
+                            style: AppTypography.labelSmall.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
