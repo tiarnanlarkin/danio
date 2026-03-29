@@ -518,12 +518,23 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     required IconData icon,
     required Color color,
   }) {
+    // Long CTA strings overflow the ~72dp trailing slot — show them as a
+    // subtitle instead and use an em-dash placeholder in trailing.
+    const longCta = 'Complete a review session';
+    final isLongCta = value == longCta;
+
     return Card(
       child: ListTile(
         leading: Icon(icon, color: color, size: AppIconSizes.lg),
         title: Text(title),
+        subtitle: isLongCta
+            ? Text(
+                longCta,
+                style: AppTypography.bodySmall.copyWith(color: color),
+              )
+            : null,
         trailing: Text(
-          value,
+          isLongCta ? '—' : value,
           style: AppTypography.titleLarge.copyWith(
             color: color,
             fontWeight: FontWeight.bold,
