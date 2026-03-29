@@ -1,5 +1,5 @@
 # Store Listing FINAL — Danio: Learn Fishkeeping
-> Version: v1.0.0 — Updated March 2026
+> Version: v1.0.0 — Updated March 2026 (Wave E.1: lesson count corrected to 72)
 > Status: READY FOR SUBMISSION
 
 ---
@@ -17,7 +17,7 @@ Danio: Learn Fishkeeping
 
 **Variant A** *(lead with learning + content scale)*
 ```
-Learn fishkeeping with 84 lessons, AI Fish ID & 125+ species guides.
+Learn fishkeeping with 72 lessons, AI Fish ID & 125+ species guides.
 ```
 68 chars ✅
 
@@ -33,7 +33,7 @@ Master fishkeeping step by step. AI Fish ID, lessons & tank tools.
 ```
 67 chars ✅
 
-**Recommendation:** Start with **Variant A** — the numbers ("84 lessons", "125+") create instant credibility. If CTR is below 20%, switch to Variant B which leads with the category-defining "learning app" framing.
+**Recommendation:** Start with **Variant A** — the numbers ("72 lessons", "125+") create instant credibility. If CTR is below 20%, switch to Variant B which leads with the category-defining "learning app" framing.
 
 ---
 
@@ -43,7 +43,7 @@ Master fishkeeping step by step. AI Fish ID, lessons & tank tools.
 Danio is the Duolingo-style app for learning fishkeeping and managing your aquarium — whether you're cycling your first tank or juggling a multi-tank fish room.
 
 🐠 LEARN FISHKEEPING THE RIGHT WAY
-84 structured lessons across 12 learning paths, designed for beginners and intermediate fishkeepers. Built on spaced repetition — so knowledge sticks.
+72 structured lessons across 12 learning paths, designed for beginners and intermediate fishkeepers. Built on spaced repetition — so knowledge sticks.
 
 Learning paths include:
 • The nitrogen cycle, explained properly
@@ -121,7 +121,7 @@ Download Danio. Learn the right way.
 
 **Option 1 — Bold + Numbers**
 > **Learn Fishkeeping.**
-> 84 Lessons · 125+ Species · AI Fish ID
+> 72 Lessons · 125+ Species · AI Fish ID
 
 **Option 2 — Aspirational**
 > **The aquarium app that actually teaches you.**
@@ -141,7 +141,7 @@ Suggested shots and captions. Apollo to produce final artwork.
 
 | # | What to Show | Suggested Caption |
 |---|---|---|
-| 1 | **Hero / Learning path overview** — the 12 learning paths grid | *"84 lessons across 12 learning paths"* |
+| 1 | **Hero / Learning path overview** — the 12 learning paths grid | *"72 lessons across 12 learning paths"* |
 | 2 | **Lesson screen in progress** — spaced repetition quiz mid-lesson | *"Learn that actually sticks — built on spaced repetition"* |
 | 3 | **AI Fish ID** — camera snap with identification overlay | *"Snap a photo. Know your fish instantly."* |
 | 4 | **Species database card** — a beautiful fish species page (e.g. betta or discus) | *"125+ species care guides, in your pocket"* |
@@ -167,7 +167,7 @@ Welcome to Danio — the fishkeeping app that actually teaches you. 🐠
 
 v1.0.0 — Here's what you're getting:
 
-🎓 84 lessons across 12 learning paths, built on spaced repetition
+🎓 72 lessons across 12 learning paths, built on spaced repetition
 🐟 125+ freshwater fish and plant species care guides
 🤖 AI Fish & Plant ID — snap a photo to identify any species
 📖 Interactive fishkeeping stories
@@ -266,7 +266,7 @@ Do **not** select "Designed for children under 13" — this triggers COPPA-only 
 | Feature | Old Listing | New Listing |
 |---|---|---|
 | Species count | 45+ | **125+** |
-| Lesson count | 50 | **84 across 12 learning paths** |
+| Lesson count | 50 | **72 across 12 learning paths** |
 | Themes | Not mentioned | **12 room themes** |
 | AI features | Fish ID only | **Fish & Plant ID** |
 | Practice system | Mentioned briefly | **Spaced repetition** — named explicitly |
