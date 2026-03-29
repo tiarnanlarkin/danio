@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
@@ -268,9 +267,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
               // Fish name
               Text(
                 fishName,
-                style: GoogleFonts.nunito(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
+                style: AppTypography.titleLarge.copyWith(
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -280,8 +277,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
               // Animated dots
               Text(
                 'Building your $fishName care guide${'.' * _dotCount}',
-                style: GoogleFonts.nunito(
-                  fontSize: 14,
+                style: AppTypography.bodySmall.copyWith(
                   color: AppColors.onboardingAmberText,
                 ),
               ),
@@ -326,8 +322,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                 ),
                 child: Text(
                   'Your $fishName Profile',
-                  style: GoogleFonts.nunito(
-                    fontSize: 13,
+                  style: AppTypography.bodySmall.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AppColors.onboardingAmberText,
                   ),
@@ -339,8 +334,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
               // Headline
               Text(
                 '$fishName needs a little love.',
-                style: GoogleFonts.nunito(
-                  fontSize: 24,
+                style: AppTypography.headlineMedium.copyWith(
                   fontWeight: FontWeight.w400,
                   color: AppColors.textPrimary,
                 ),
@@ -383,10 +377,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     Text(
                       _inviteText,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.nunito(
-                        fontSize: 15,
+                      style: AppTypography.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
-                        height: 1.5,
                       ),
                     ),
 
@@ -395,8 +387,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     Text(
                       _motivationText,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.nunito(
-                        fontSize: 15,
+                      style: AppTypography.bodyMedium.copyWith(
                         fontStyle: FontStyle.italic,
                         color: AppColors.textPrimary,
                       ),
@@ -457,9 +448,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
         const SizedBox(width: AppSpacing.sm2),
         Text(
           fishName,
-          style: GoogleFonts.nunito(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
+          style: AppTypography.titleSmall.copyWith(
             color: AppColors.textPrimary,
           ),
         ),
@@ -507,17 +496,14 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                   children: [
                     Text(
                       label,
-                      style: GoogleFonts.nunito(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                      style: AppTypography.labelMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
                       value,
-                      style: GoogleFonts.nunito(
-                        fontSize: 17,
+                      style: AppTypography.bodyLarge.copyWith(
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                       ),
@@ -525,10 +511,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       subLabel,
-                      style: GoogleFonts.nunito(
-                        fontSize: 13,
+                      style: AppTypography.bodySmall.copyWith(
                         color: AppColors.textSecondary,
-                        height: 1.4,
                       ),
                     ),
                   ],

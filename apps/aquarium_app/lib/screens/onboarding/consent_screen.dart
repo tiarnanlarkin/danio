@@ -104,9 +104,9 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
-                'We use Firebase Analytics to understand how people use '
-                'Danio, and Crashlytics to fix bugs. Data is sent to '
-                'Google. You can change this anytime in Settings.',
+                'We only use anonymous analytics to understand how people '
+                'use Danio, and crash reports to fix bugs — we never sell '
+                'your data. You can change your mind anytime in Settings.',
                 style: theme.textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
