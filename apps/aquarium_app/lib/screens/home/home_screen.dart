@@ -42,6 +42,7 @@ import 'widgets/tank_list_tile.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../utils/logger.dart';
+import '../compatibility_checker_screen.dart';
 
 /// HomeScreen - The Living Room in the House Navigator.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -186,7 +187,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         prefsKey = 'seen_day2_prompt';
       } else if (daysSinceSignup >= 7 && daysSinceSignup <= 8 && currentStreak >= 5 &&
           (prefs.getBool('seen_day7_milestone') ?? false) == false) {
-        milestoneCard = Day7MilestoneCard(onFeatureTap: () => Navigator.of(context).pop());
+        // FB-B3 fix: pop the dialog first, then navigate to Compatibility Checker
+        milestoneCard = Day7MilestoneCard(onFeatureTap: () {
+          Navigator.of(context).pop();
+          NavigationThrottle.push(context, const CompatibilityCheckerScreen());
+        });
         prefsKey = 'seen_day7_milestone';
       } else if (daysSinceSignup >= 30 && daysSinceSignup <= 31 && currentStreak >= 1 &&
           (prefs.getBool('seen_day30_committed') ?? false) == false) {
@@ -195,7 +200,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         milestoneCard = Day30CommittedCard(
           lessonsCompleted: lessonsCompleted,
           xpEarned: totalXp,
-          onUpgrade: () => Navigator.of(context).pop(),
+          // FB-B4: No upgrade destination yet — pass null to hide the CTA.
+          // Wire onUpgrade to a real paywall/upgrade screen when available.
+          onUpgrade: null,
         );
         prefsKey = 'seen_day30_committed';
       }

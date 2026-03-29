@@ -73,6 +73,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   Timer? _saveDebounce;
   Timer? _cumulativeSaveDebounce;
 
+  /// The last state queued for debounced persistence.
+  /// Set by [_save] and consumed by [flushPendingWrite].
+  GemsState? _pendingGemsState;
+
   @override
   void dispose() {
     _saveDebounce?.cancel();
@@ -137,22 +141,42 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   }
 
   Future<void> _save(GemsState gemsState) async {
+    _pendingGemsState = gemsState;
     _saveDebounce?.cancel();
     _saveDebounce = Timer(const Duration(milliseconds: 500), () async {
-      try {
-        final prefs = await ref.read(sharedPreferencesProvider.future);
-        List<GemTransaction> transactions = gemsState.transactions;
-        if (transactions.length > _maxTransactions) {
-          transactions = transactions.take(_maxTransactions).toList();
-          gemsState = gemsState.copyWith(transactions: transactions);
-        }
-        await prefs.setString(_key, jsonEncode(gemsState.toJson()));
-        await _saveCumulative(prefs);
-      } catch (e, st) {
-        logError('GemsProvider: save failed: $e', stackTrace: st, tag: 'GemsProvider');
-        throw Exception('Failed to save gems data: $e');
-      }
+      await _writeToDisk(gemsState);
     });
+  }
+
+  /// Write gems state immediately to disk, bypassing the debounce timer.
+  ///
+  /// Call this from lifecycle handlers (paused/inactive) to guarantee the
+  /// latest balance is persisted before the OS may kill the process.
+  Future<void> flushPendingWrite() async {
+    final pending = _pendingGemsState;
+    if (pending == null) return; // Nothing queued — already clean.
+    _saveDebounce?.cancel();
+    _saveDebounce = null;
+    _pendingGemsState = null;
+    await _writeToDisk(pending);
+    appLog('GemsProvider: lifecycle flush — balance=${pending.balance}', tag: 'GemsProvider');
+  }
+
+  Future<void> _writeToDisk(GemsState gemsState) async {
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      List<GemTransaction> transactions = gemsState.transactions;
+      if (transactions.length > _maxTransactions) {
+        transactions = transactions.take(_maxTransactions).toList();
+        gemsState = gemsState.copyWith(transactions: transactions);
+      }
+      await prefs.setString(_key, jsonEncode(gemsState.toJson()));
+      await _saveCumulative(prefs);
+      _pendingGemsState = null; // Mark as clean after successful write.
+    } catch (e, st) {
+      logError('GemsProvider: save failed: $e', stackTrace: st, tag: 'GemsProvider');
+      throw Exception('Failed to save gems data: $e');
+    }
   }
 
   /// Get current gem balance

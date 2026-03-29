@@ -350,13 +350,16 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
 class Day30CommittedCard extends StatelessWidget {
   final int lessonsCompleted;
   final int xpEarned;
-  final VoidCallback onUpgrade;
+  // FB-B4: onUpgrade is nullable — pass null to hide the CTA when no
+  // upgrade destination exists yet. This prevents the button from just
+  // closing the dialog with no visible effect.
+  final VoidCallback? onUpgrade;
 
   const Day30CommittedCard({
     super.key,
     required this.lessonsCompleted,
     required this.xpEarned,
-    required this.onUpgrade,
+    this.onUpgrade,
   });
 
   @override
@@ -390,39 +393,42 @@ class Day30CommittedCard extends StatelessWidget {
             _buildStatRow(Icons.menu_book_rounded, '$lessonsCompleted lessons completed'),
             const SizedBox(height: AppSpacing.sm3),
             _buildStatRow(Icons.star_rounded, '$xpEarned XP earned'),
-            const SizedBox(height: AppSpacing.lg2),
-            // Soft CTA
-            Semantics(
-              label: "See what's waiting for you, upgrade",
-              button: true,
-              child: SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    onUpgrade();
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                      color: AppColors.onboardingAmber,
-                      width: 1.5,
+            // FB-B4: Only show the upgrade CTA when a real destination is wired up.
+            // When onUpgrade is null the button is hidden — avoids it just closing the dialog.
+            if (onUpgrade != null) ...[
+              const SizedBox(height: AppSpacing.lg2),
+              Semantics(
+                label: "See what's waiting for you, upgrade",
+                button: true,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      onUpgrade!();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: AppColors.onboardingAmber,
+                        width: 1.5,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.sm4),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.sm4),
-                    ),
-                  ),
-                  child: Text(
-                    "See what's waiting for you →",
-                    style: GoogleFonts.nunito(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.onboardingAmber,
+                    child: Text(
+                      "See what's waiting for you →",
+                      style: GoogleFonts.nunito(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.onboardingAmber,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),

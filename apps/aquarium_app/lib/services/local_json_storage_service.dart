@@ -65,7 +65,9 @@ class LocalJsonStorageService implements StorageService {
   factory LocalJsonStorageService() => _instance;
   LocalJsonStorageService._();
 
-  static const int _schemaVersion = 1;
+  /// Bump this constant whenever the stored JSON shape changes.
+  /// [_migrateJson] must handle all transitions from lower versions.
+  static const int _schemaVersion = 2;
   static const String _fileName = 'aquarium_data.json';
 
   // P0-1 FIX: Lock to prevent race conditions during concurrent saves
@@ -152,6 +154,9 @@ class LocalJsonStorageService implements StorageService {
           );
         }
         json = decoded;
+
+        // FB-T3: Run forward-only schema migrations before loading entities.
+        json = _migrateJson(json);
       } catch (parseError) {
         // P0-2: Save corrupted file as backup before handling error
         final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -253,6 +258,64 @@ class LocalJsonStorageService implements StorageService {
       _state = StorageState.loaded;
       appLog('⚠️  Continuing with empty data due to I/O error', tag: 'LocalJsonStorageService');
     }
+  }
+
+  // ── FB-T3: Schema migration ──────────────────────────────────────────────
+
+  /// Applies forward-only, safe-default migrations to the raw JSON payload.
+  ///
+  /// Rules:
+  ///  * Never delete existing keys — only add new ones with safe defaults.
+  ///  * Each version block is guarded by `storedVersion < N`.
+  ///  * On completion the `version` key is stamped with [_schemaVersion].
+  ///  * A migration event is logged so it is visible in crash reports.
+  Map<String, dynamic> _migrateJson(Map<String, dynamic> json) {
+    final int storedVersion = (json['version'] as int?) ?? 0;
+
+    if (storedVersion >= _schemaVersion) {
+      return json; // Fast path — nothing to do.
+    }
+
+    appLog(
+      '📦 Storage migration: v$storedVersion → v$_schemaVersion',
+      tag: 'LocalJsonStorageService',
+    );
+
+    // Work on a mutable copy so callers can decide what to do with the result.
+    final migrated = Map<String, dynamic>.from(json);
+
+    // ── v0 → v1 ───────────────────────────────────────────────────────────
+    // Original schema: tanks/livestock/equipment/logs/tasks maps.
+    // No structural changes required; stamp the version key.
+    if (storedVersion < 1) {
+      migrated['version'] = 1;
+      appLog('Migration v0 → v1 complete (version stamp)', tag: 'LocalJsonStorageService');
+    }
+
+    // ── v1 → v2 ───────────────────────────────────────────────────────────
+    // Added `sortOrder` to Tank and `isDemoTank` to Tank.
+    // Both fields are nullable/have defaults in [_tankFromJson], so no
+    // structural transform is needed — we just ensure the version is stamped
+    // so the file is not re-migrated on every launch.
+    if (storedVersion < 2) {
+      migrated['version'] = 2;
+      appLog('Migration v1 → v2 complete (tank sortOrder/isDemoTank defaults applied on read)', tag: 'LocalJsonStorageService');
+    }
+
+    // ── Future migrations ─────────────────────────────────────────────────
+    // if (storedVersion < 3) {
+    //   // Add new field with safe default, e.g.:
+    //   // final tanks = (migrated['tanks'] as Map?)?.cast<String, dynamic>() ?? {};
+    //   // for (final entry in tanks.entries) {
+    //   //   final t = Map<String, dynamic>.from(entry.value as Map);
+    //   //   t['newField'] ??= 'defaultValue';
+    //   //   tanks[entry.key] = t;
+    //   // }
+    //   // migrated['tanks'] = tanks;
+    //   migrated['version'] = 3;
+    // }
+
+    return migrated;
   }
 
   /// Parse and load all entities from JSON, with error recovery

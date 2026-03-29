@@ -293,11 +293,13 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                   Text('CO2 Timing', style: AppTypography.labelLarge),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    '• CO2 ON: ${_formatTime(TimeOfDay(hour: _lightsOn.hour - 1, minute: _lightsOn.minute))} (1hr before lights)',
+                    // FB-B1 fix: clamp/modulo hour to valid 0-23 range to prevent TimeOfDay(hour: -1) crash when lights-on is 00:xx
+                    '• CO2 ON: ${_formatTime(TimeOfDay(hour: (_lightsOn.hour - 1 + 24) % 24, minute: _lightsOn.minute))} (1hr before lights)',
                     style: AppTypography.bodyMedium,
                   ),
                   Text(
-                    '• CO2 OFF: ${_formatTime(TimeOfDay(hour: _lightsOff.hour - 1, minute: _lightsOff.minute))} (1hr before lights off)',
+                    // FB-B1 fix: same guard for lights-off hour
+                    '• CO2 OFF: ${_formatTime(TimeOfDay(hour: (_lightsOff.hour - 1 + 24) % 24, minute: _lightsOff.minute))} (1hr before lights off)',
                     style: AppTypography.bodyMedium,
                   ),
                   const SizedBox(height: AppSpacing.sm),

@@ -35,6 +35,7 @@ import 'widgets/core/bubble_loader.dart';
 import 'utils/logger.dart';
 import 'services/debug_deep_link_service.dart';
 import 'utils/schema_migration.dart';
+import 'providers/gems_provider.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -286,6 +287,9 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       );
     } else if (payload == 'home') {
       targetTab = 2;
+    } else if (payload == 'care' || payload == 'water_change') {
+      // Care reminders and water change notifications → Tank tab
+      targetTab = 2;
     } else if (payload == 'achievements') {
       targetTab = 4;
       route = MaterialPageRoute(
@@ -324,6 +328,15 @@ class _AppRouterState extends ConsumerState<_AppRouter>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // FB-T4: Flush any pending debounced gem writes synchronously so the
+      // OS cannot kill the process before the 500 ms timer fires.
+      // unawaited is intentional — we want the flush to run but we cannot
+      // await inside didChangeAppLifecycleState (it is void).
+      unawaited(ref.read(gemsProvider.notifier).flushPendingWrite());
+    }
+
     if (state == AppLifecycleState.resumed) {
       // Check and apply heart auto-refill when app resumes
       final heartsService = ref.read(heartsServiceProvider);

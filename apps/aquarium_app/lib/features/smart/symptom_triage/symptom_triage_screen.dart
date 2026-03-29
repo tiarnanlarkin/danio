@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../models/log_entry.dart';
+import '../../../providers/storage_provider.dart';
+import '../../../providers/tank_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
@@ -225,6 +228,42 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     }
   }
 
+  Future<void> _saveToJournal() async {
+    final diagnosisText = _stripMarkdown(_diagnosis);
+    if (diagnosisText.isEmpty) return;
+
+    // Get first available tank to attach the journal entry.
+    final tanksAsync = await ref.read(tanksProvider.future);
+    if (tanksAsync.isEmpty) {
+      if (!mounted) return;
+      DanioSnackBar.warning(context, 'No tanks found — add a tank first.');
+      return;
+    }
+    final tankId = tanksAsync.first.id;
+
+    final now = DateTime.now();
+    final entry = LogEntry(
+      id: now.millisecondsSinceEpoch.toString(),
+      tankId: tankId,
+      type: LogType.observation,
+      timestamp: now,
+      createdAt: now,
+      notes: '🩺 Symptom Triage Result\n\n$diagnosisText',
+    );
+
+    try {
+      final storage = ref.read(storageServiceProvider);
+      await storage.saveLog(entry);
+      if (!mounted) return;
+      DanioSnackBar.show(context, 'Diagnosis saved to journal ✅');
+      Navigator.of(context).pop();
+    } catch (e, st) {
+      logError('SymptomTriageScreen: saveToJournal failed: $e', stackTrace: st, tag: 'SymptomTriageScreen');
+      if (!mounted) return;
+      DanioSnackBar.warning(context, 'Could not save to journal. Please try again.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -402,6 +441,24 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     );
   }
 
+  /// Strip common markdown syntax so AI responses render as plain text.
+  String _stripMarkdown(String text) {
+    return text
+        // Remove ATX headings (# Heading)
+        .replaceAll(RegExp(r'^#{1,6}\s+', multiLine: true), '')
+        // Remove bold/italic markers (**, *, __, _)
+        .replaceAll(RegExp(r'\*{1,3}|_{1,3}'), '')
+        // Remove inline code backticks
+        .replaceAll(RegExp(r'`+'), '')
+        // Remove horizontal rules
+        .replaceAll(RegExp(r'^[-*_]{3,}\s*$', multiLine: true), '')
+        // Remove blockquote markers
+        .replaceAll(RegExp(r'^>\s+', multiLine: true), '')
+        // Convert unordered list markers to bullet
+        .replaceAll(RegExp(r'^[-*+]\s+', multiLine: true), '• ')
+        .trim();
+  }
+
   Widget _buildDiagnosisStep(ThemeData theme) {
     if (_error != null) {
       return Card(
@@ -463,7 +520,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         if (_diagnosis.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
           SelectableText(
-            _diagnosis,
+            _stripMarkdown(_diagnosis),
             style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
           ),
         ],
@@ -492,10 +549,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
               Expanded(
                 child: AppButton(
                   label: 'Save to Journal',
-                  onPressed: () {
-                    // Save to journal - pop with the diagnosis text.
-                    Navigator.of(context).pop(_diagnosis);
-                  },
+                  onPressed: () => _saveToJournal(),
                   leadingIcon: Icons.book,
                   variant: AppButtonVariant.secondary,
                   isFullWidth: true,

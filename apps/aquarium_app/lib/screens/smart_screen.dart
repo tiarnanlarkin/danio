@@ -424,7 +424,11 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   label: 'Run Symptom Triage',
                   onPressed: () {
                     Navigator.maybePop(ctx);
-                    // Navigate to symptom triage
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SymptomTriageScreen(),
+                      ),
+                    );
                   },
                   leadingIcon: Icons.medical_services_outlined,
                   variant: AppButtonVariant.primary,

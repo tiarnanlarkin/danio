@@ -437,7 +437,13 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
   Widget _buildLessonCard() {
     return Semantics(
       label: _lessonTitle,
-      child: Container(
+      button: true,
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          _callReady();
+        },
+        child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
@@ -492,6 +498,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
             ),
           ],
         ),
+      ),
       ),
     );
   }
