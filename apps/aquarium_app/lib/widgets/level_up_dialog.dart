@@ -100,8 +100,12 @@ class _LevelUpDialogState extends State<LevelUpDialog>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Confetti particles
-        ...List.generate(30, (index) => _buildConfettiParticle(index)),
+        // Confetti particles — IgnorePointer so taps pass through to the dialog
+        IgnorePointer(
+          child: Stack(
+            children: List.generate(30, (index) => _buildConfettiParticle(index)),
+          ),
+        ),
 
         // Dialog content
         Center(

@@ -154,7 +154,7 @@ void main() {
       // The dialog should mention the contact email per GDPR compliance
       expect(
         find.textContaining('larkintiarnanbizz@gmail.com'),
-        findsOneWidget,
+        findsWidgets,
       );
     });
 

@@ -675,9 +675,22 @@ class LocalJsonStorageService implements StorageService {
 
   Tank _tankFromJson(dynamic raw) {
     final m = (raw as Map).cast<String, dynamic>();
+    // BUG-001: Defensively decode any accidentally URL-encoded tank names
+    // (e.g. "My%20Tank" → "My Tank"). Uri.decodeComponent throws on malformed
+    // input, so we fall back to the raw value if decoding fails.
+    final rawName = m['name'] as String;
+    final decodedName = rawName.contains('%')
+        ? (() {
+            try {
+              return Uri.decodeComponent(rawName);
+            } catch (_) {
+              return rawName;
+            }
+          })()
+        : rawName;
     return Tank(
       id: m['id'] as String,
-      name: m['name'] as String,
+      name: decodedName,
       type: TankType.values.firstWhere(
         (e) => e.name == (m['type'] ?? 'freshwater'),
         orElse: () => TankType.freshwater,

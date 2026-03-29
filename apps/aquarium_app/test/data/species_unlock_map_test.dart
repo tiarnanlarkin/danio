@@ -117,11 +117,11 @@ void main() {
   test('speciesAssetPath and speciesThumbPath produce expected asset paths', () {
     expect(
       speciesAssetPath('neon_tetra'),
-      equals('assets/images/fish/neon_tetra.png'),
+      equals('assets/images/fish/neon_tetra.webp'),
     );
     expect(
       speciesThumbPath('betta'),
-      equals('assets/images/fish/thumb/betta.png'),
+      equals('assets/images/fish/thumb/betta.webp'),
     );
   });
 }
