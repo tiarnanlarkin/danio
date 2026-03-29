@@ -29,7 +29,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Your filter removes particles and processes ammonia, but nitrate still builds up. Water changes are the only way to remove it and replenish trace minerals fish need.',
+              'Your filter removes particles and processes ammonia, but nitrate still builds up. Water changes are the only way to remove it and replenish trace minerals your fish need.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,

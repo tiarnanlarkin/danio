@@ -37,6 +37,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   DateTime? _customStart;
   DateTime? _customEnd;
   late Future<AnalyticsSummary> _analyticsFuture;
+  bool _dataLoaded = false;
 
   /// Monotonically increasing version counter. Incremented each time a new
   /// analytics load is requested so that stale `compute()` results from
@@ -70,11 +71,12 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       appBar: AppBar(
         title: const Text('Analytics'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: () => _exportData(context),
-            tooltip: 'Export Data',
-          ),
+          if (_dataLoaded)
+            IconButton(
+              icon: const Icon(Icons.share),
+              onPressed: () => _exportData(context),
+              tooltip: 'Export Data',
+            ),
         ],
       ),
       body: FutureBuilder<AnalyticsSummary>(
@@ -123,6 +125,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ),
               );
             } else {
+              if (!_dataLoaded) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) setState(() => _dataLoaded = true);
+                });
+              }
               body = SingleChildScrollView(
                 key: const ValueKey('analytics-content'),
                 child: Column(
@@ -295,48 +302,52 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.sm2),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: AnalyticsTimeRange.values
-                .where((r) => r != AnalyticsTimeRange.custom)
-                .map((range) {
-                  final isSelected = _selectedRange == range;
-                  return ChoiceChip(
-                    label: Text(
-                      range.displayName,
-                      style: TextStyle(
-                        color: isSelected
-                            ? AppColors.onPrimary
-                            : Theme.of(context).colorScheme.onSurface,
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: AnalyticsTimeRange.values
+                  .where((r) => r != AnalyticsTimeRange.custom)
+                  .map((range) {
+                    final isSelected = _selectedRange == range;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(
+                          range.displayName,
+                          style: TextStyle(
+                            color: isSelected
+                                ? AppColors.onPrimary
+                                : Theme.of(context).colorScheme.onSurface,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                          ),
+                        ),
+                        selected: isSelected,
+                        selectedColor: Theme.of(context).colorScheme.primary,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.surfaceContainerHighest,
+                        side: BorderSide(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.outline,
+                          width: isSelected ? 2 : 1,
+                        ),
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() {
+                              _selectedRange = range;
+                              _customStart = null;
+                              _customEnd = null;
+                            });
+                            _refreshAnalytics();
+                          }
+                        },
                       ),
-                    ),
-                    selected: isSelected,
-                    selectedColor: Theme.of(context).colorScheme.primary,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                    side: BorderSide(
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.outline,
-                      width: isSelected ? 2 : 1,
-                    ),
-                    onSelected: (selected) {
-                      if (selected) {
-                        setState(() {
-                          _selectedRange = range;
-                          _customStart = null;
-                          _customEnd = null;
-                        });
-                        _refreshAnalytics();
-                      }
-                    },
-                  );
-                })
-                .toList(),
+                    );
+                  })
+                  .toList(),
+            ),
           ),
         ],
       ),
@@ -386,29 +397,33 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             ],
           ),
           const SizedBox(height: AppSpacing.sm2),
-          Row(
-            children: [
-              Expanded(
-                child: AnalyticsStatCard(
-                  icon: Icons.book,
-                  label: 'Lessons',
-                  value:
-                      '${summary.lessonsCompleted}/${summary.totalLessons}',
-                  color: AppColors.info,
-                  subtitle:
-                      '${(summary.completionPercentage * 100).toStringAsFixed(0)}% complete',
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: AnalyticsStatCard(
+                    icon: Icons.book,
+                    label: 'Lessons',
+                    value:
+                        '${summary.lessonsCompleted}/${summary.totalLessons}',
+                    color: AppColors.info,
+                    subtitle:
+                        '${(summary.completionPercentage * 100).toStringAsFixed(0)}% complete',
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.sm2),
-              Expanded(
-                child: AnalyticsStatCard(
-                  icon: Icons.schedule,
-                  label: 'Time Spent',
-                  value: summary.timeSpentFormatted,
-                  color: DanioColors.emeraldGreen,
+                const SizedBox(width: AppSpacing.sm2),
+                Expanded(
+                  child: AnalyticsStatCard(
+                    icon: Icons.schedule,
+                    label: 'Time Spent',
+                    value: summary.timeSpentFormatted,
+                    color: DanioColors.emeraldGreen,
+                    subtitle: ' ',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           if (summary.longestStreak > summary.currentStreak) ...[
             const SizedBox(height: AppSpacing.sm2),
@@ -481,7 +496,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                             return Padding(
                               padding: const EdgeInsets.only(top: AppSpacing.sm),
                               child: Text(
-                                DateFormat('M/d').format(date),
+                                DateFormat('d/M').format(date),
                                 style: AppTypography.labelSmall,
                               ),
                             );

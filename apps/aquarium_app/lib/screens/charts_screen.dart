@@ -430,7 +430,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 final index = value.toInt();
                 if (index >= 0 && index < logs.length) {
                   return Text(
-                    DateFormat('M/d').format(logs[index].timestamp),
+                    DateFormat('d/M').format(logs[index].timestamp),
                     style: AppTypography.bodySmall,
                   );
                 }
@@ -634,7 +634,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: Text(
-                      DateFormat('M/d').format(logs[index].timestamp),
+                      DateFormat('d/M').format(logs[index].timestamp),
                       style: AppTypography.bodySmall,
                     ),
                   );
