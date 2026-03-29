@@ -4,6 +4,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../providers/user_profile_provider.dart';
 import 'co2_calculator_screen.dart';
+import 'cycling_assistant_screen.dart';
 import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
 import 'cost_tracker_screen.dart';
@@ -12,6 +13,7 @@ import 'stocking_calculator_screen.dart';
 import 'unit_converter_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'lighting_schedule_screen.dart';
+import '../providers/tank_provider.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../providers/user_profile_notifier.dart';
@@ -44,6 +46,42 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
         DanioSnackBar.info(context, '🔧 The Workshop — calculators, guides, and tools');
       });
     }
+  }
+
+  /// Pick a tank, then navigate to the Cycling Assistant for that tank.
+  Future<void> _openCyclingAssistant() async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      DanioSnackBar.info(context, 'Add a tank first to use the Cycling Assistant.');
+      return;
+    }
+
+    String? tankId;
+    if (tanks.length == 1) {
+      tankId = tanks.first.id;
+    } else {
+      // Simple tank picker dialog.
+      if (!mounted) return;
+      tankId = await showDialog<String>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: const Text('Choose a Tank'),
+          children: tanks
+              .map(
+                (tank) => SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, tank.id),
+                  child: Text(tank.name),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (tankId == null || !mounted) return;
+    NavigationThrottle.push(context, CyclingAssistantScreen(tankId: tankId));
   }
 
   @override
@@ -174,6 +212,14 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                         context,
                         const CompatibilityCheckerScreen(),
                       ),
+                    ),
+
+                    _ToolCard(
+                      icon: Icons.science,
+                      title: 'Cycling Assistant',
+                      subtitle: 'Track tank cycle',
+                      color: DanioColors.tealWater,
+                      onTap: _openCyclingAssistant,
                     ),
 
                   ]),

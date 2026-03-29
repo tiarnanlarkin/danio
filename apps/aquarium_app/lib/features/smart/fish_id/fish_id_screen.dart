@@ -7,6 +7,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../providers/user_profile_provider.dart';
+import '../../../providers/tank_provider.dart';
+import '../../../models/models.dart';
+import '../../../screens/livestock/livestock_add_dialog.dart';
+import '../../../widgets/app_bottom_sheet.dart';
 
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
@@ -228,6 +232,60 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         _loading = false;
       });
     }
+  }
+
+  /// Show a tank picker, then open [LivestockAddDialog] pre-filled with the
+  /// identified species details.
+  Future<void> _addToTank(IdentificationResult result) async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Add a tank first before adding livestock.')),
+      );
+      return;
+    }
+
+    Tank? selectedTank;
+    if (tanks.length == 1) {
+      selectedTank = tanks.first;
+    } else {
+      // Show a simple tank picker dialog.
+      if (!mounted) return;
+      selectedTank = await showAppDialog<Tank>(
+        context: context,
+        title: 'Choose a Tank',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: tanks
+              .map(
+                (tank) => ListTile(
+                  leading: const Icon(Icons.water),
+                  title: Text(tank.name),
+                  subtitle: Text('${tank.volumeLitres.toStringAsFixed(0)} L'),
+                  onTap: () {
+                    if (Navigator.canPop(context)) Navigator.pop(context, tank);
+                  },
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (selectedTank == null || !mounted) return;
+
+    // Open the livestock add bottom sheet pre-filled with species from Fish ID.
+    await showAppDragSheet(
+      context: context,
+      builder: (_) => LivestockAddDialog(
+        tankId: selectedTank!.id,
+        prefillCommonName: result.commonName,
+        prefillScientificName: result.scientificName,
+      ),
+    );
   }
 
   @override
@@ -544,14 +602,11 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // Add to tank button
+            // Add to tank button — shows tank picker, then opens pre-filled
+            // LivestockAddDialog so the user never has to retype species data.
             AppButton(
               label: 'Add to My Tank',
-              onPressed: () {
-                // Pop back with result data that can be used to pre-fill
-                // the add livestock flow.
-                Navigator.of(context).pop(r);
-              },
+              onPressed: () => _addToTank(r),
               leadingIcon: Icons.add,
               variant: AppButtonVariant.primary,
               isFullWidth: true,

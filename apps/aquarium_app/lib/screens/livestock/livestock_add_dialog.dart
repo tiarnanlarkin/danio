@@ -24,7 +24,17 @@ class LivestockAddDialog extends ConsumerStatefulWidget {
   final String tankId;
   final Livestock? existing;
 
-  const LivestockAddDialog({super.key, required this.tankId, this.existing});
+  /// Optional pre-fill values populated from Fish ID results.
+  final String? prefillCommonName;
+  final String? prefillScientificName;
+
+  const LivestockAddDialog({
+    super.key,
+    required this.tankId,
+    this.existing,
+    this.prefillCommonName,
+    this.prefillScientificName,
+  });
 
   @override
   ConsumerState<LivestockAddDialog> createState() => _LivestockAddDialogState();
@@ -42,10 +52,10 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(
-      text: widget.existing?.commonName ?? '',
+      text: widget.existing?.commonName ?? widget.prefillCommonName ?? '',
     );
     _scientificController = TextEditingController(
-      text: widget.existing?.scientificName ?? '',
+      text: widget.existing?.scientificName ?? widget.prefillScientificName ?? '',
     );
     _countController = TextEditingController(
       text: widget.existing?.count.toString() ?? '1',
@@ -55,6 +65,9 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
 
     if (widget.existing != null) {
       _selectedSpecies = SpeciesDatabase.lookup(widget.existing!.commonName);
+    } else if (widget.prefillCommonName != null) {
+      // Try to match the pre-filled name against our local species DB.
+      _selectedSpecies = SpeciesDatabase.lookup(widget.prefillCommonName!);
     }
   }
 

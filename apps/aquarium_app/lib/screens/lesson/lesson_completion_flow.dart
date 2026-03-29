@@ -222,12 +222,18 @@ void showLessonXpAnimation(
     onComplete: () async {
       if (!context.mounted) return;
 
-      // Check for level up after XP animation
+      // Check for level up after XP animation.
+      // Guard: clear the global levelUpEventProvider event BEFORE showing
+      // the lesson-scoped LevelUpDialog so LevelUpListener (tab navigator)
+      // doesn't fire a second celebration for the same level-up event.
       final profile = ref.read(userProfileProvider).value;
       if (profile != null && levelBeforeLesson != null) {
         final currentLevel = profile.currentLevel;
 
         if (currentLevel > levelBeforeLesson) {
+          // Consume the provider event so LevelUpListener stays silent.
+          ref.read(levelUpEventProvider.notifier).clearEvent();
+
           await showLevelUpCelebration(
             context,
             currentLevel,
