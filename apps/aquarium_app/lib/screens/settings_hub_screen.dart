@@ -7,6 +7,7 @@ import '../utils/app_constants.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/common/common_widgets.dart';
 import '../widgets/first_visit_tooltip.dart';
+import '../widgets/xp_progress_bar.dart';
 import 'about_screen.dart';
 import 'achievements_screen.dart';
 import 'analytics_screen.dart';
@@ -298,6 +299,12 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                     style: AppTypography.bodyMedium.copyWith(
                       color: context.textSecondary,
                     ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  const XpProgressBar(
+                    height: 8,
+                    showLabels: false,
+                    showLevel: false,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(

@@ -13,6 +13,7 @@ import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/danio_snack_bar.dart';
+import '../../widgets/hearts_widgets.dart';
 
 /// The active review session screen — shown while a session is in progress.
 class ReviewSessionScreen extends ConsumerStatefulWidget {
@@ -63,6 +64,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         appBar: AppBar(
           title: const Text('Practice Session'),
           actions: [
+            const Padding(
+              padding: EdgeInsets.only(right: AppSpacing.sm),
+              child: Center(child: HeartIndicator(compact: true)),
+            ),
             IconButton(
               icon: const Icon(Icons.close),
               tooltip: 'Exit Session',
