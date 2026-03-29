@@ -130,7 +130,7 @@ class _TankTapInteractionLayerState
       child: Text(fact),
       actions: [
         _DismissButton(onPressed: () {
-          if (Navigator.canPop(context)) Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).pop();
         }),
       ],
     ).then((_) {
