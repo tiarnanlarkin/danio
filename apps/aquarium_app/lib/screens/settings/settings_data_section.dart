@@ -287,10 +287,10 @@ Future<void> confirmDeleteMyData(
           '(tanks, progress, achievements). This cannot be undone.',
         ),
         const SizedBox(height: AppSpacing.md),
-        const Text(
+        Text(
           'For server-side data deletion requests, email '
           'larkintiarnanbizz@gmail.com',
-          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+          style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
         ),
       ],
     ),

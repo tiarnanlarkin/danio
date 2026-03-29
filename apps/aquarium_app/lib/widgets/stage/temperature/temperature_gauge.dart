@@ -298,7 +298,7 @@ class TempFishChip extends StatelessWidget {
           border: Border.all(color: kTempTeal.withAlpha(60)),
         ),
         alignment: Alignment.center,
-        child: Text(label, style: const TextStyle(fontSize: 16)),
+        child: Text(label, style: AppTypography.titleSmall),
       ),
     );
   }

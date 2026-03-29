@@ -560,9 +560,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       title: Text(
                         'Add New Tank',
-                        style: TextStyle(
+                        style: AppTypography.bodyMedium.copyWith(
                           color: context.textSecondary.withAlpha(160),
-                          fontSize: 14,
                         ),
                       ),
                       trailing: Icon(Icons.add, color: context.textHint, size: 18),

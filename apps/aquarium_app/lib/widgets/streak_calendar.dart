@@ -245,7 +245,7 @@ class _CalendarGridState extends State<_CalendarGrid> {
           child: monthLabel != null
               ? Text(
                   monthLabel,
-                  style: TextStyle(fontSize: 10, color: context.textHint),
+                  style: AppTypography.labelSmall.copyWith(color: context.textHint),
                 )
               : null,
         ),

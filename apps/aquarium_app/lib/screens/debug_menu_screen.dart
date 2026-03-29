@@ -996,8 +996,7 @@ class _AppStateSnapshot extends ConsumerWidget {
         activeOverrides.isEmpty
             ? 'No active overrides'
             : '⚠️ Overrides: ${activeOverrides.join(', ')}',
-        style: TextStyle(
-          fontSize: 12,
+        style: AppTypography.bodySmall.copyWith(
           color: activeOverrides.isEmpty
               ? Colors.grey.shade600
               : Colors.orange.shade800,
@@ -1040,14 +1039,13 @@ class _AppStateSnapshot extends ConsumerWidget {
             width: 160,
             child: Text(
               '$label:',
-              style: const TextStyle(fontSize: 13, color: Colors.grey),
+              style: AppTypography.bodySmall.copyWith(color: Colors.grey), // TODO: add AppColors.textHint equivalent for debug
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w500),
+              style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
             ),
           ),
         ],

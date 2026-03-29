@@ -58,10 +58,8 @@ class TankListTile extends StatelessWidget {
               ),
               child: Text(
                 'Demo',
-                style: TextStyle(
+                style: AppTypography.labelSmall.copyWith(
                   color: AppColors.primary,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
                   height: 1.4,
                 ),
               ),
@@ -71,9 +69,8 @@ class TankListTile extends StatelessWidget {
       ),
       subtitle: Text(
         '${volumeLitres.toStringAsFixed(0)}L',
-        style: TextStyle(
+        style: AppTypography.bodySmall.copyWith(
           color: context.textSecondary.withAlpha(128),
-          fontSize: 12,
         ),
       ),
       trailing: showChevron

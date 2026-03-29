@@ -583,9 +583,8 @@ class AchievementChecker {
                   Expanded(
                     child: Text(
                       r.achievement.name,
-                      style: const TextStyle(
+                      style: AppTypography.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
                       ),
                     ),
                   ),

@@ -666,10 +666,9 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 final color = _getParamColor(param);
                 return LineTooltipItem(
                   '${_getParamTitle(param)}\n${spot.y.toStringAsFixed(2)}',
-                  TextStyle(
+                  AppTypography.bodySmall.copyWith(
                     color: color,
                     fontWeight: FontWeight.bold,
-                    fontSize: 12,
                   ),
                 );
               }).toList();
