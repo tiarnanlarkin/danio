@@ -254,7 +254,8 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           ),
         ),
       ),
-      const SizedBox(height: AppSpacing.sm),
+      // Extra padding so version footer clears the bottom nav bar
+      const SizedBox(height: 80),
     ];
   }
 
