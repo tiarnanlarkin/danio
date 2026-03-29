@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'privacy_policy_screen.dart';
+import 'settings_hub_screen.dart' show appVersion;
 import 'terms_of_service_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_button.dart';
@@ -65,7 +66,7 @@ class AboutScreen extends StatelessWidget {
 
             Text('Danio', style: AppTypography.headlineMedium),
             const SizedBox(height: AppSpacing.xs),
-            Text('Version 1.0.0', style: AppTypography.bodyMedium),
+            Text('Version $appVersion', style: AppTypography.bodyMedium),
 
             const SizedBox(height: AppSpacing.xl),
 
