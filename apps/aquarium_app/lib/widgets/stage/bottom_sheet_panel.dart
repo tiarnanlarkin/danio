@@ -244,9 +244,14 @@ class _TabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Add bottom padding equal to the system/nav bar inset so the last items
+    // in the scrollable are not clipped behind the NavigationBar when
+    // extendBody: true is used in TabNavigator.
+    final bottomInset = MediaQuery.of(context).padding.bottom;
     return SingleChildScrollView(
       controller: scrollController,
       physics: const ClampingScrollPhysics(),
+      padding: EdgeInsets.only(bottom: bottomInset),
       child: child,
     );
   }
