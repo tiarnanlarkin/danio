@@ -41,6 +41,9 @@ class NavigationThrottle {
     Route<T>? route,
   }) async {
     if (_busyCount > 0) return null;
+    // R-090: Guard against stale context — widget may have been unmounted
+    // between the tap event and this call (e.g. during a loading state).
+    if (!context.mounted) return null;
     _busyCount++;
     _startSafetyTimer();
     try {
@@ -49,6 +52,11 @@ class NavigationThrottle {
         route ?? MaterialPageRoute<T>(builder: (_) => page),
       );
       return result;
+    } catch (e) {
+      // Absorb Navigator-not-ready errors (null check / lookup failure)
+      // that can occur if the widget tree is torn down mid-navigation.
+      debugPrint('[NavigationThrottle] push failed: $e');
+      return null;
     } finally {
       _cancelSafetyTimer();
       _busyCount = 0;
@@ -62,6 +70,8 @@ class NavigationThrottle {
     Object? arguments,
   }) async {
     if (_busyCount > 0) return null;
+    // R-090: Guard against stale context.
+    if (!context.mounted) return null;
     _busyCount++;
     _startSafetyTimer();
     try {
@@ -71,6 +81,9 @@ class NavigationThrottle {
         arguments: arguments,
       );
       return result;
+    } catch (e) {
+      debugPrint('[NavigationThrottle] pushNamed failed: $e');
+      return null;
     } finally {
       _cancelSafetyTimer();
       _busyCount = 0;

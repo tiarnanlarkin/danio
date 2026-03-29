@@ -40,6 +40,17 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
     // Capture errors in this widget's subtree — chain with previous handler
     final previousHandler = FlutterError.onError;
     FlutterError.onError = (details) {
+      // R-091: In debug mode, RenderFlex overflow ("overflowed by") is a
+      // non-fatal layout diagnostic — Flutter draws the overflow indicator
+      // and continues. Showing the error screen for this makes the app
+      // unusable. Just log it and return. In release mode we keep the
+      // "catch everything" behaviour (better safe than crashed).
+      if (kDebugMode &&
+          details.exception.toString().contains('overflowed by')) {
+        FlutterError.presentError(details);
+        return;
+      }
+
       widget.onError?.call(details);
 
       // Always log — critical for diagnosing production errors

@@ -106,8 +106,14 @@ class _AnimatedSwimmingFishState extends State<AnimatedSwimmingFish>
         }
         _previousValue = value;
 
-        final swimX = _swimAnimation.value * widget.tankWidth;
-        final bobY = _bobAnimation.value * widget.verticalBob;
+        // R-088: Guard against non-finite values — can occur when tankWidth/
+        // tankHeight are zero (widget not yet laid out) or when the animation
+        // controller produces NaN/Infinity in reduced-motion edge cases.
+        final rawSwimX = _swimAnimation.value * widget.tankWidth;
+        final rawBobY = _bobAnimation.value * widget.verticalBob;
+        if (!rawSwimX.isFinite || !rawBobY.isFinite) return const SizedBox.shrink();
+        final swimX = rawSwimX;
+        final bobY = rawBobY;
         final rawBaseY = widget.baseTop * widget.tankHeight;
 
         // BUG-08: clamp fish position to stay within tank glass bounds
