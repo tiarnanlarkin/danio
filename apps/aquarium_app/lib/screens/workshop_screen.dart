@@ -85,7 +85,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
               // Header
               SliverToBoxAdapter(child: _WorkshopHeader()),
 
-              // Tool cards
+              // Tool cards — 10 cards in 2-col grid
               SliverPadding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 sliver: SliverGrid(
@@ -190,17 +190,32 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       color: DanioColors.workshopMetal,
                       onTap: () => _showEquipmentInfo(context),
                     ),
-                    _ToolCard(
+                  ]),
+                ),
+              ),
+
+              // Cost Tracker — full-width card at the bottom
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  0,
+                  AppSpacing.md,
+                  AppSpacing.sm2,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 80,
+                    child: _ToolCard(
                       icon: Icons.attach_money,
                       title: 'Cost Tracker',
-                      subtitle: 'Track expenses',
+                      subtitle: 'Track your aquarium expenses',
                       color: DanioColors.tealWater,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const CostTrackerScreen(),
                       ),
                     ),
-                  ]),
+                  ),
                 ),
               ),
 
