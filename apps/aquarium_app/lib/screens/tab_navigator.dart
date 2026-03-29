@@ -153,54 +153,69 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                     index: currentTab,
                     children: [
                       // Tab 0: Learn
-                      Navigator(
-                        key: _navigatorKeys[0],
-                        onGenerateRoute: (settings) {
-                          return MaterialPageRoute(
-                            builder: (context) => const LearnScreen(),
-                            settings: settings,
-                          );
-                        },
+                      TickerMode(
+                        enabled: currentTab == 0,
+                        child: Navigator(
+                          key: _navigatorKeys[0],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const LearnScreen(),
+                              settings: settings,
+                            );
+                          },
+                        ),
                       ),
                       // Tab 1: Quiz/Practice
-                      Navigator(
-                        key: _navigatorKeys[1],
-                        onGenerateRoute: (settings) {
-                          return MaterialPageRoute(
-                            builder: (context) => const PracticeHubScreen(),
-                            settings: settings,
-                          );
-                        },
+                      TickerMode(
+                        enabled: currentTab == 1,
+                        child: Navigator(
+                          key: _navigatorKeys[1],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const PracticeHubScreen(),
+                              settings: settings,
+                            );
+                          },
+                        ),
                       ),
                       // Tab 2: Tank
-                      Navigator(
-                        key: _navigatorKeys[2],
-                        onGenerateRoute: (settings) {
-                          return MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
-                            settings: settings,
-                          );
-                        },
+                      TickerMode(
+                        enabled: currentTab == 2,
+                        child: Navigator(
+                          key: _navigatorKeys[2],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                              settings: settings,
+                            );
+                          },
+                        ),
                       ),
                       // Tab 3: Smart
-                      Navigator(
-                        key: _navigatorKeys[3],
-                        onGenerateRoute: (settings) {
-                          return MaterialPageRoute(
-                            builder: (context) => const SmartScreen(),
-                            settings: settings,
-                          );
-                        },
+                      TickerMode(
+                        enabled: currentTab == 3,
+                        child: Navigator(
+                          key: _navigatorKeys[3],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const SmartScreen(),
+                              settings: settings,
+                            );
+                          },
+                        ),
                       ),
                       // Tab 4: Settings
-                      Navigator(
-                        key: _navigatorKeys[4],
-                        onGenerateRoute: (settings) {
-                          return MaterialPageRoute(
-                            builder: (context) => const SettingsHubScreen(),
-                            settings: settings,
-                          );
-                        },
+                      TickerMode(
+                        enabled: currentTab == 4,
+                        child: Navigator(
+                          key: _navigatorKeys[4],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const SettingsHubScreen(),
+                              settings: settings,
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),

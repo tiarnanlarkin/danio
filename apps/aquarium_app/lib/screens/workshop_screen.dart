@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:ui';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../providers/user_profile_provider.dart';
@@ -99,17 +98,17 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.water_drop,
                       title: 'Water Change',
                       subtitle: 'Calculate changes',
-                      color: DanioColors.wishlistAmber,
+                      color: DanioColors.tealWater,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const WaterChangeCalculatorScreen(),
                       ),
                     ),
                     _ToolCard(
-                      icon: Icons.set_meal,
+                      icon: Icons.pool,
                       title: 'Stocking',
                       subtitle: 'Fish capacity',
-                      color: DanioColors.tealWater,
+                      color: DanioColors.wishlistAmber,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const StockingCalculatorScreen(),
@@ -119,7 +118,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.science,
                       title: 'CO₂ Calculator',
                       subtitle: 'From pH & KH',
-                      color: DanioColors.wishlistAmber,
+                      color: DanioColors.tealWater,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const Co2CalculatorScreen(),
@@ -129,7 +128,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.medication_liquid,
                       title: 'Dosing',
                       subtitle: 'Fertilizer calculator',
-                      color: AppColors.accentAlt,
+                      color: AppColors.success,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const DosingCalculatorScreen(),
@@ -139,7 +138,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.swap_horiz,
                       title: 'Unit Converter',
                       subtitle: 'Convert units',
-                      color: AppColors.xp,
+                      color: DanioColors.workshopAccentSteel,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const UnitConverterScreen(),
@@ -149,7 +148,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.calculate,
                       title: 'Tank Volume',
                       subtitle: 'Calculate capacity',
-                      color: DanioColors.workshopAccentSteel,
+                      color: DanioColors.tealWater,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const TankVolumeCalculatorScreen(),
@@ -159,7 +158,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.lightbulb,
                       title: 'Lighting',
                       subtitle: 'Schedule lights',
-                      color: AppColors.warning,
+                      color: DanioColors.wishlistAmber,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const LightingScheduleScreen(),
@@ -167,10 +166,10 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                     ),
 
                     _ToolCard(
-                      icon: Icons.set_meal,
+                      icon: Icons.compare_arrows,
                       title: 'Compatibility',
                       subtitle: 'Check fish matches',
-                      color: AppColors.primaryLight,
+                      color: DanioColors.wishlistAmber,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const CompatibilityCheckerScreen(),
@@ -196,7 +195,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       icon: Icons.attach_money,
                       title: 'Cost Tracker',
                       subtitle: 'Track your aquarium expenses',
-                      color: DanioColors.tealWater,
+                      color: AppColors.success,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const CostTrackerScreen(),
@@ -301,48 +300,42 @@ class _ToolCard extends StatelessWidget {
       child: GestureDetector(
       onTap: onTap,
       child: RepaintBoundary(
-        child: ClipRRect(
-        borderRadius: AppRadius.largeRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.whiteAlpha12,
-              borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: AppColors.whiteAlpha20),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm3),
-                  decoration: BoxDecoration(
-                    color: color.withAlpha(51),
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                  child: Icon(icon, color: color, size: AppIconSizes.md),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.whiteAlpha15,
+            borderRadius: AppRadius.largeRadius,
+            border: Border.all(color: AppColors.whiteAlpha20),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm3),
+                decoration: BoxDecoration(
+                  color: color.withAlpha(51),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
-                const Spacer(),
-                Text(
-                  title,
-                  style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-                    color: AppColors.textPrimaryDark,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Icon(icon, color: color, size: AppIconSizes.md),
+              ),
+              const Spacer(),
+              Text(
+                title,
+                style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
+                  color: AppColors.textPrimaryDark,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: AppSpacing.xxs),
-                Text(
-                  subtitle,
-                  style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
-                    color: DanioColors.workshopTextSecondary,
-                  ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                subtitle,
+                style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
+                  color: DanioColors.workshopTextSecondary,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      ),
       ),
       ),
     );
@@ -355,35 +348,29 @@ class _QuickConversions extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: RepaintBoundary(
-        child: ClipRRect(
-          borderRadius: AppRadius.largeRadius,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.lg2),
-              decoration: BoxDecoration(
-                color: AppColors.whiteAlpha12,
-                borderRadius: AppRadius.largeRadius,
-                border: Border.all(color: AppColors.whiteAlpha20),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.lg2),
+          decoration: BoxDecoration(
+            color: AppColors.whiteAlpha15,
+            borderRadius: AppRadius.largeRadius,
+            border: Border.all(color: AppColors.whiteAlpha20),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Quick Reference',
+                style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
+                  color: AppColors.textPrimaryDark,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Quick Reference',
-                    style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
-                      color: AppColors.textPrimaryDark,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _ConversionRow('1 gallon', '3.785 liters'),
-                  _ConversionRow('1 inch', '2.54 cm'),
-                  _ConversionRow('°F to °C', '(°F - 32) × 5/9'),
-                  _ConversionRow('ppm', 'mg/L (same)'),
-                ],
-              ),
-            ),
+              const SizedBox(height: AppSpacing.md),
+              _ConversionRow('1 gallon', '3.785 liters'),
+              _ConversionRow('1 inch', '2.54 cm'),
+              _ConversionRow('°F to °C', '(°F - 32) × 5/9'),
+              _ConversionRow('ppm', 'mg/L (same)'),
+            ],
           ),
         ),
       ),
