@@ -372,10 +372,10 @@ class _ConfettiParticle {
 
   static const _confettiColors = [
     AppColors.onboardingAmber, // amber
-    Color(0xFFE8934A), // warm orange
+    DanioColors.topaz, // warm orange
     AppColors.onboardingWarmCream, // cream
-    Color(0xFFD4A574), // soft gold
-    Color(0xFFFFD54F), // golden yellow
+    DanioColors.studyGold, // soft gold
+    Color(0xFFFFD54F), // golden yellow — no exact token
   ];
 }
 

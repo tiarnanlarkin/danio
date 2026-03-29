@@ -62,21 +62,21 @@ class ConfettiColors {
 
   /// Gold/achievement colors
   static const List<Color> gold = [
-    Color(0xFFE8A84A),
-    Color(0xFFD97706),
-    Color(0xFFFFE082),
+    DanioColors.topaz,        // E8A84A — warm gold
+    AppColors.xp,             // D97706 — amber xp
+    Color(0xFFFFE082),        // light gold — no exact token
     Colors.white,
-    Color(0xFFB45309),
+    AppColors.primary,        // B45309 — deep amber
   ];
 
   /// Level up special colors
   static const List<Color> levelUp = [
-    Color(0xFF2A3548), // Indigo
-    Color(0xFF8B6BAE), // Purple
-    Color(0xFFA855F7), // Violet
-    Color(0xFFD946EF), // Fuchsia
+    AppColors.secondaryDark,  // 2A3548 — deep violet
+    AppColors.accentAlt,      // 8B6BAE — amethyst
+    Color(0xFFA855F7),        // violet — no exact token
+    DanioColors.levelUpFuchsia, // D946EF — fuchsia
     Colors.white,
-    Color(0xFF22D3EE), // Cyan
+    Color(0xFF22D3EE),        // cyan — no exact token
   ];
 }
 

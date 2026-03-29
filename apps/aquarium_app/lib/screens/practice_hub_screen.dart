@@ -51,7 +51,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Color(0xFFFFF5E8), Color(0xFFFFF0DE)],
+                  colors: [AppColors.background, AppColors.surfaceVariant],
                 ),
               ),
               child: Stack(children: [
@@ -61,6 +61,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                     'assets/images/illustrations/practice_header.png',
                     height: 160,
                     fit: BoxFit.fitHeight,
+                    cacheWidth: 480,
+                    cacheHeight: 320,
                     errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                   ),
                 ),

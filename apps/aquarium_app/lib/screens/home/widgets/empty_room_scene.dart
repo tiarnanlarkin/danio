@@ -58,7 +58,7 @@ class EmptyRoomScene extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFD4A574), Color(0xFFC49664)],
+                colors: [DanioColors.studyGold, Color(0xFFC49664)],
               ),
             ),
           ),
@@ -73,7 +73,7 @@ class EmptyRoomScene extends StatelessWidget {
             height: 50,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF5D4037), Color(0xFF4E342E)],
+                colors: [DanioColors.workshopBackground1, DanioColors.substrateSoil],
               ),
               borderRadius: AppRadius.xsRadius,
               boxShadow: [

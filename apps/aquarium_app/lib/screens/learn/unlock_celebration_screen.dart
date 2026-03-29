@@ -120,7 +120,7 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                 child: SparkleEffect(
                   isActive: true,
                   particleCount: 12,
-                  sparkleColor: const Color(0xFFFFD700),
+                  sparkleColor: AppAchievementColors.gold,
                   minSize: 5,
                   maxSize: 10,
                   child: Image.asset(
@@ -128,6 +128,8 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                     width: spriteSize,
                     height: spriteSize,
                     fit: BoxFit.contain,
+                    cacheWidth: (spriteSize * 2).toInt(),
+                    cacheHeight: (spriteSize * 2).toInt(),
                     errorBuilder: (_, __, ___) => _FallbackSprite(
                       size: spriteSize,
                       name: _displayName,
