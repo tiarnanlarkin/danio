@@ -70,7 +70,7 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
 
             Text(
-              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby - one lesson at a time. 🐟',
+              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby — one lesson at a time. 🐟',
               style: AppTypography.bodyLarge,
               textAlign: TextAlign.center,
             ),
@@ -99,7 +99,7 @@ class AboutScreen extends StatelessWidget {
             const _FeatureItem(
               icon: Icons.set_meal,
               title: 'Species Database',
-              description: '120+ freshwater species with care requirements',
+              description: '125+ freshwater species with care requirements',
             ),
             const _FeatureItem(
               icon: Icons.shield,
