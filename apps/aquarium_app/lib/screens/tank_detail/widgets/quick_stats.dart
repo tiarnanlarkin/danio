@@ -168,7 +168,7 @@ class QuickStats extends StatelessWidget {
     if (days == 0) return 'Today';
     if (days == 1) return '1d ago';
     if (days < 7) return '${days}d ago';
-    return DateFormat('MMM d').format(date);
+    return DateFormat('d MMM').format(date);
   }
 }
 

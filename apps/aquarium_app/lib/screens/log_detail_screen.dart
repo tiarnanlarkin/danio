@@ -84,7 +84,7 @@ class LogDetailScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs2),
                 Text(
-                  DateFormat('MMM d, yyyy  •  h:mm a').format(log.timestamp),
+                  DateFormat('d MMM yyyy  •  h:mm a').format(log.timestamp),
                   style: AppTypography.bodySmall,
                 ),
 

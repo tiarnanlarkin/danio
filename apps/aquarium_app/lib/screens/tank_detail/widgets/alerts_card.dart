@@ -197,7 +197,7 @@ class AlertsCard extends StatelessWidget {
             severity: AlertSeverity.warning,
             title: 'Nitrate jumped +${delta.toStringAsFixed(0)} ppm',
             detail:
-                'Since the previous test (${DateFormat('MMM d').format(b.timestamp)}).',
+                'Since the previous test (${DateFormat('d MMM').format(b.timestamp)}).',
           ),
         );
       }

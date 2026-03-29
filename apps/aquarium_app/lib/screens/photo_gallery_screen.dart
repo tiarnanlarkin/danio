@@ -296,7 +296,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundDark,
         foregroundColor: AppColors.onPrimary,
-        title: Text(DateFormat('MMMM d, y').format(photo.date)),
+        title: Text(DateFormat('d MMMM y').format(photo.date)),
         actions: [
           Center(
             child: Padding(

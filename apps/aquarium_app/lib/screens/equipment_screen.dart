@@ -438,7 +438,7 @@ class _EquipmentHistoryContent extends ConsumerWidget {
                       size: 18,
                     ),
                     title: Text(
-                      DateFormat('MMM d, yyyy').format(log.timestamp),
+                      DateFormat('d MMM yyyy').format(log.timestamp),
                     ),
                     subtitle: Text(DateFormat('h:mm a').format(log.timestamp)),
                   );
@@ -541,7 +541,7 @@ class _EquipmentCard extends StatelessWidget {
                   Icon(Icons.history, size: 14, color: context.textHint),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
-                    'Last serviced ${DateFormat('MMM d').format(equipment.lastServiced!)}',
+                    'Last serviced ${DateFormat('d MMM').format(equipment.lastServiced!)}',
                     style: AppTypography.bodySmall,
                   ),
                 ],

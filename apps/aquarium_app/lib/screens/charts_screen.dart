@@ -453,7 +453,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               return touchedSpots.map((spot) {
                 final index = spot.x.toInt();
                 final date = index >= 0 && index < logs.length
-                    ? DateFormat('MMM d').format(logs[index].timestamp)
+                    ? DateFormat('d MMM').format(logs[index].timestamp)
                     : '';
                 return LineTooltipItem(
                   '${spot.y.toStringAsFixed(2)}\n$date',
@@ -1066,7 +1066,7 @@ class _ValuesTable extends StatelessWidget {
             final test = log.waterTest!;
             return DataRow(
               cells: [
-                DataCell(Text(DateFormat('MMM d').format(log.timestamp))),
+                DataCell(Text(DateFormat('d MMM').format(log.timestamp))),
                 DataCell(Text(test.temperature?.toStringAsFixed(1) ?? '-')),
                 DataCell(Text(test.ph?.toStringAsFixed(1) ?? '-')),
                 DataCell(Text(test.ammonia?.toStringAsFixed(2) ?? '-')),

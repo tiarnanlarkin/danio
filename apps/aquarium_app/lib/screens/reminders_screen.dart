@@ -447,7 +447,7 @@ class _ReminderTile extends StatelessWidget {
     } else if (diff.inDays < 7) {
       return DateFormat('EEEE').format(reminder.nextDue);
     } else {
-      return DateFormat('MMM d').format(reminder.nextDue);
+      return DateFormat('d MMM').format(reminder.nextDue);
     }
   }
 
@@ -675,7 +675,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                   child: ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: const Text('Due Date'),
-                    subtitle: Text(DateFormat('MMM d, y').format(_dueDate)),
+                    subtitle: Text(DateFormat('d MMM y').format(_dueDate)),
                     onTap: () async {
                       final picked = await showDatePicker(
                         context: context,

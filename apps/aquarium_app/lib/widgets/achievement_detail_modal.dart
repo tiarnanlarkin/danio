@@ -273,7 +273,7 @@ class AchievementDetailModal extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          DateFormat('MMM d').format(progress.unlockedAt!),
+                          DateFormat('d MMM').format(progress.unlockedAt!),
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),

@@ -407,7 +407,7 @@ class _TaskHistoryContent extends ConsumerWidget {
                           size: 18,
                         ),
                         title: Text(
-                          DateFormat('MMM d, yyyy').format(log.timestamp),
+                          DateFormat('d MMM yyyy').format(log.timestamp),
                         ),
                         subtitle: Text(
                           DateFormat('h:mm a').format(log.timestamp),
@@ -563,7 +563,7 @@ class _TaskCard extends StatelessWidget {
     if (days == 0) return 'Today';
     if (days == 1) return 'Tomorrow';
     if (days < 7) return 'In $days days';
-    return DateFormat('MMM d').format(date);
+    return DateFormat('d MMM').format(date);
   }
 }
 
@@ -706,7 +706,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                     const SizedBox(width: AppSpacing.sm2),
                     Text(
                       _dueDate != null
-                          ? DateFormat('MMM d, yyyy').format(_dueDate!)
+                          ? DateFormat('d MMM yyyy').format(_dueDate!)
                           : 'Set due date',
                       style: AppTypography.bodyLarge,
                     ),

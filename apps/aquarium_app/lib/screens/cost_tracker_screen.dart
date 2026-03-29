@@ -542,7 +542,7 @@ class _ExpenseTile extends StatelessWidget {
           ),
           title: Text(expense.description, style: AppTypography.labelLarge),
           subtitle: Text(
-            '${expense.category} • ${DateFormat('MMM d, y').format(expense.date)}',
+            '${expense.category} • ${DateFormat('d MMM y').format(expense.date)}',
             style: AppTypography.bodySmall,
           ),
           trailing: Text(
@@ -666,7 +666,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Date'),
-            subtitle: Text(DateFormat('MMMM d, y').format(_date)),
+            subtitle: Text(DateFormat('d MMMM y').format(_date)),
             trailing: const Icon(Icons.calendar_today),
             onTap: () async {
               final picked = await showDatePicker(

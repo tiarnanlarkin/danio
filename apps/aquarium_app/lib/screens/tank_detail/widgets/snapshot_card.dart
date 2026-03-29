@@ -58,7 +58,7 @@ class LatestSnapshotCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  DateFormat('MMM d').format(latest.timestamp),
+                  DateFormat('d MMM').format(latest.timestamp),
                   style: AppTypography.bodySmall,
                 ),
               ],

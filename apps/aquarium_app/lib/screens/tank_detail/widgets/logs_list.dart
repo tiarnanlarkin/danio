@@ -71,7 +71,7 @@ class LogTile extends StatelessWidget {
         ),
       ),
       title: Text(_getLogTitle(log)),
-      subtitle: Text(DateFormat('MMM d, h:mm a').format(log.timestamp)),
+      subtitle: Text(DateFormat('d MMM, h:mm a').format(log.timestamp)),
       onTap: () => onTap?.call(log),
     );
   }

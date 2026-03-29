@@ -100,6 +100,6 @@ class TaskTile extends StatelessWidget {
     if (days == 0) return 'Due today';
     if (days == 1) return 'Due tomorrow';
     if (days < 7) return 'Due in $days days';
-    return 'Due ${DateFormat('MMM d').format(date)}';
+    return 'Due ${DateFormat('d MMM').format(date)}';
   }
 }

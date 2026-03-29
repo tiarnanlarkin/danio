@@ -126,7 +126,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                                 title: Text(_titleFor(log)),
                                 subtitle: Text(
                                   DateFormat(
-                                    'MMM d, yyyy  •  h:mm a',
+                                    'd MMM yyyy  •  h:mm a',
                                   ).format(log.timestamp),
                                 ),
                                 trailing: const Icon(Icons.chevron_right),
@@ -234,7 +234,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                     title: Text(_titleFor(log)),
                     subtitle: Text(
                       DateFormat(
-                        'MMM d, yyyy  •  h:mm a',
+                        'd MMM yyyy  •  h:mm a',
                       ).format(log.timestamp),
                     ),
                     trailing: const Icon(Icons.chevron_right),
@@ -338,7 +338,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                       label: Text(
                         workingRange == null
                             ? 'Any date'
-                            : '${DateFormat('MMM d').format(workingRange!.start)} - ${DateFormat('MMM d').format(workingRange!.end)}',
+                            : '${DateFormat('d MMM').format(workingRange!.start)} - ${DateFormat('d MMM').format(workingRange!.end)}',
                       ),
                     ),
 
@@ -543,7 +543,7 @@ class _FiltersSummaryBar extends StatelessWidget {
       chips.add(
         _Chip(
           label:
-              '${DateFormat('MMM d').format(dateRange!.start)}-${DateFormat('MMM d').format(dateRange!.end)}',
+              '${DateFormat('d MMM').format(dateRange!.start)}-${DateFormat('d MMM').format(dateRange!.end)}',
         ),
       );
     }

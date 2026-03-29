@@ -336,7 +336,7 @@ class _DayCell extends StatelessWidget {
   }
 
   String _getTooltipText() {
-    final dateStr = DateFormat('MMM d, yyyy').format(goal.date);
+    final dateStr = DateFormat('d MMM yyyy').format(goal.date);
 
     if (goal.earnedXp == 0) {
       return '$dateStr\nNo activity';

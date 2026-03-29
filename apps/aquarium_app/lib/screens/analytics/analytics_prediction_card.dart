@@ -61,7 +61,7 @@ class AnalyticsPredictionCard extends StatelessWidget {
                 if (prediction.estimatedDate != null) ...[
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    'ETA: ${DateFormat('MMM d').format(prediction.estimatedDate!)}',
+                    'ETA: ${DateFormat('d MMM').format(prediction.estimatedDate!)}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(
                         context,

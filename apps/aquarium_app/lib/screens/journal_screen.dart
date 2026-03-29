@@ -132,7 +132,7 @@ class _JournalEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateStr = DateFormat('EEEE, MMMM d').format(entry.timestamp);
+    final dateStr = DateFormat('EEEE, d MMMM').format(entry.timestamp);
     final timeStr = DateFormat('h:mm a').format(entry.timestamp);
 
     return Card(
@@ -248,7 +248,7 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            DateFormat('EEEE, MMMM d, y').format(DateTime.now()),
+            DateFormat('EEEE, d MMMM y').format(DateTime.now()),
             style: AppTypography.bodySmall,
           ),
           const SizedBox(height: AppSpacing.md),

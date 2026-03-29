@@ -790,7 +790,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
                 return Tooltip(
                   message:
-                      '${DateFormat('MMM d').format(date)}: ${dayData.xp} XP',
+                      '${DateFormat('d MMM').format(date)}: ${dayData.xp} XP',
                   child: Container(
                     decoration: BoxDecoration(
                       color: color,
@@ -1041,7 +1041,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
 ${summary.insights.isNotEmpty ? '💡 Top Insights:\n${summary.insights.take(3).map((i) => '• ${i.message}').join('\n')}' : ''}
 
-Generated: ${DateFormat('MMM d, yyyy').format(DateTime.now())}
+Generated: ${DateFormat('d MMM yyyy').format(DateTime.now())}
 ''';
 
     await Share.share(report, subject: 'My Danio Learning Progress');

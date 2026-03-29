@@ -128,7 +128,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
                 title: Text(log.title ?? 'Loading activity...'),
                 subtitle: Text(
-                  DateFormat('MMM d, h:mm a').format(log.timestamp),
+                  DateFormat('d MMM, h:mm a').format(log.timestamp),
                 ),
               );
             }).toList(),

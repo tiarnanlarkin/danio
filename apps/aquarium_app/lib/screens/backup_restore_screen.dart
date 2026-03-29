@@ -376,7 +376,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       if (!mounted) return;
 
       setState(() {
-        _lastBackup = DateFormat('MMM d, y h:mm a').format(DateTime.now());
+        _lastBackup = DateFormat('d MMM y h:mm a').format(DateTime.now());
       });
 
       // Share the ZIP file
