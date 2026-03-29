@@ -70,12 +70,14 @@ void main() {
       expect(find.text('No data yet'), findsOneWidget);
     });
 
-    testWidgets('has share/export button in app bar', (tester) async {
+    testWidgets('hides share/export button when no data loaded', (tester) async {
       suppressOverflow();
       await tester.pumpWidget(_wrap());
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
-      expect(find.byIcon(Icons.share), findsOneWidget);
+      // Share button is hidden when there is no data (empty state shown).
+      // It only appears once meaningful analytics data has loaded.
+      expect(find.byIcon(Icons.share), findsNothing);
     });
   });
 }
