@@ -31,6 +31,7 @@ import 'widgets/error_boundary.dart';
 import 'widgets/core/bubble_loader.dart';
 import 'utils/logger.dart';
 import 'services/debug_deep_link_service.dart';
+import 'utils/schema_migration.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -186,6 +187,10 @@ void main() async {
       },
     );
   });
+
+  // ── Schema migration — run BEFORE the app router reads from storage ──────
+  final prefs = await SharedPreferences.getInstance();
+  await SchemaMigration.runIfNeeded(prefs);
 
   runApp(ErrorBoundary(child: const ProviderScope(child: DanioApp())));
 }

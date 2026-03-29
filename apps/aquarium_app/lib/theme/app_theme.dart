@@ -152,6 +152,8 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.border,
+          disabledForegroundColor: AppColors.textHint,
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: 24,
@@ -166,6 +168,8 @@ class AppTheme {
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.border,
+          disabledForegroundColor: AppColors.textHint,
           padding: const EdgeInsets.symmetric(
             horizontal: 24,
             vertical: AppSpacing.sm4,
@@ -382,7 +386,9 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryLight,
-          foregroundColor: AppColors.backgroundDark,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.borderDark,
+          disabledForegroundColor: AppColors.textHintDark,
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: 24,
@@ -396,7 +402,9 @@ class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primaryLight,
-          foregroundColor: AppColors.backgroundDark,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.borderDark,
+          disabledForegroundColor: AppColors.textHintDark,
           padding: const EdgeInsets.symmetric(
             horizontal: 24,
             vertical: AppSpacing.sm4,

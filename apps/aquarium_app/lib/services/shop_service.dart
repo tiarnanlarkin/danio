@@ -7,7 +7,11 @@ import '../providers/inventory_provider.dart';
 
 /// Provider for the shop service
 final shopServiceProvider = Provider<ShopService>((ref) {
-  return ShopService(ref);
+  return ShopService(
+    getInventory: () => ref.read(inventoryProvider).valueOrNull ?? [],
+    getGemBalance: () => ref.read(gemBalanceProvider),
+    getInventoryNotifier: () => ref.read(inventoryProvider.notifier),
+  );
 });
 
 /// Service for handling shop purchases and inventory management.
@@ -15,15 +19,20 @@ final shopServiceProvider = Provider<ShopService>((ref) {
 /// All inventory operations delegate to [InventoryNotifier], which owns the
 /// single source of truth stored in SharedPreferences under key `shop_inventory`.
 /// This class is now a thin facade over the provider layer.
+///
+/// Dependencies are injected via constructor callbacks rather than storing a
+/// [Ref] field — this keeps the service decoupled from the provider system
+/// and easier to test.
 class ShopService {
-  final Ref ref;
+  final List<InventoryItem> Function() getInventory;
+  final int Function() getGemBalance;
+  final InventoryNotifier Function() getInventoryNotifier;
 
-  ShopService(this.ref);
-
-  /// Get user's current inventory from the single source of truth.
-  List<InventoryItem> getInventory() {
-    return ref.read(inventoryProvider).valueOrNull ?? [];
-  }
+  const ShopService({
+    required this.getInventory,
+    required this.getGemBalance,
+    required this.getInventoryNotifier,
+  });
 
   /// Check if user owns a specific item.
   bool ownsItem(String itemId) {
@@ -50,12 +59,12 @@ class ShopService {
 
   /// Get quantity of a consumable item.
   int getItemQuantity(String itemId) {
-    return ref.read(inventoryProvider.notifier).getQuantity(itemId);
+    return getInventoryNotifier().getQuantity(itemId);
   }
 
   /// Check if user can purchase an item.
   PurchaseResult canPurchase(ShopItem item) {
-    final gemBalance = ref.read(gemBalanceProvider);
+    final gemBalance = getGemBalance();
 
     if (gemBalance < item.gemCost) {
       return PurchaseResult.insufficientGems(
@@ -82,7 +91,7 @@ class ShopService {
       return canPurchaseResult;
     }
 
-    final success = await ref.read(inventoryProvider.notifier).purchaseItem(item);
+    final success = await getInventoryNotifier().purchaseItem(item);
 
     if (!success) {
       return PurchaseResult.error('Failed to purchase item');
@@ -96,19 +105,19 @@ class ShopService {
   /// Delegates to [InventoryNotifier.useItem] which handles effect application
   /// and quantity tracking in a single consistent flow.
   Future<bool> useItem(String itemId) async {
-    return ref.read(inventoryProvider.notifier).useItem(itemId);
+    return getInventoryNotifier().useItem(itemId);
   }
 
   /// Check if a specific item is currently active.
   bool isItemActive(String itemId) {
-    return ref.read(inventoryProvider.notifier).isItemActive(itemId);
+    return getInventoryNotifier().isItemActive(itemId);
   }
 
   /// Clean up expired items from inventory.
   ///
   /// Delegates to [InventoryNotifier.cleanupExpiredItems].
   Future<void> cleanupExpiredItems() async {
-    await ref.read(inventoryProvider.notifier).cleanupExpiredItems();
+    await getInventoryNotifier().cleanupExpiredItems();
   }
 
   /// Get all items from catalog filtered by category.

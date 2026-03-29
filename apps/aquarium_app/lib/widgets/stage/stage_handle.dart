@@ -17,8 +17,8 @@ class StageHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tint = accentColor?.withValues(alpha: 0.10) ??
-        Colors.white.withValues(alpha: 0.12);
+    final tint = accentColor?.withValues(alpha: 0.15) ??
+        Colors.white.withValues(alpha: 0.18);
 
     return Semantics(
       label: 'Drag to resize panel',
@@ -28,22 +28,33 @@ class StageHandle extends StatelessWidget {
         decoration: BoxDecoration(
           color: tint,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          border: Border(
+            top: BorderSide(
+              color: Colors.white.withValues(alpha: 0.20),
+              width: 0.5,
+            ),
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // ── Main drag pill ──────────────────────────────────────────
             Container(
-              width: 48,
-              height: 5,
+              width: 56,
+              height: 6,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.45),
-                borderRadius: BorderRadius.circular(2.5),
+                color: Colors.white.withValues(alpha: 0.70),
+                borderRadius: BorderRadius.circular(3),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.10),
+                    color: Colors.black.withValues(alpha: 0.25),
                     blurRadius: 4,
                     offset: const Offset(0, 1),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.10),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -59,10 +70,10 @@ class StageHandle extends StatelessWidget {
                 return Padding(
                   padding: EdgeInsets.only(top: i == 0 ? 0 : 2),
                   child: Container(
-                    width: 16,
+                    width: 18,
                     height: 1.5,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.28),
+                      color: Colors.white.withValues(alpha: 0.45),
                       borderRadius: BorderRadius.circular(1),
                     ),
                   ),

@@ -59,15 +59,15 @@ class SettingsScreen extends ConsumerWidget {
 
   List<WidgetBuilder> _buildSections(BuildContext context, WidgetRef ref) {
     return [
-      // Account & Cloud Sync
+      // ── GROUP 1: Account ─────────────────────────────────────────────
       (_) => const _SectionHeader(title: 'Account'),
       (_) => const SettingsAccountSection(),
 
-      // Learning System (Duolingo-style)
-      (_) => const _SectionHeader(title: 'Learn'),
-      (_) => const _LearnCard(),
+      (_) => const Divider(),
 
-      // Daily Goal Settings
+      // ── GROUP 2: Your Progress (XP, learning, goals) ─────────────────
+      (_) => const _SectionHeader(title: 'Your Progress'),
+      (_) => const _LearnCard(),
       (_) => NavListTile(
         icon: Icons.flag,
         title: 'Daily Goal',
@@ -75,12 +75,16 @@ class SettingsScreen extends ConsumerWidget {
         onTap: () => _showDailyGoalPicker(context, ref),
       ),
 
-      // House Navigation (Rooms)
+      (_) => const Divider(),
+
+      // ── GROUP 3: Explore (House Navigation / Rooms) ───────────────────
       (_) => const _SectionHeader(title: 'Explore'),
       (_) => const RoomNavigation(),
 
-      // Appearance
-      (_) => const _SectionHeader(title: 'Appearance'),
+      (_) => const Divider(),
+
+      // ── GROUP 4: App Settings (appearance, accessibility, notifications) ──
+      (_) => const _SectionHeader(title: 'App Settings'),
       (_) => const _ThemeModeTile(),
       (_) => NavListTile(
         icon: Icons.color_lens_outlined,
@@ -99,11 +103,6 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
       (_) => const _AmbientLightingToggle(),
-
-      (_) => const Divider(),
-
-      // Accessibility
-      (_) => const _SectionHeader(title: 'Accessibility'),
       (_) => const _ReducedMotionToggle(),
       (_) => const _HapticFeedbackToggle(),
 
@@ -122,11 +121,8 @@ class SettingsScreen extends ConsumerWidget {
       (_) => const Divider(),
 
       // Tools section
-      (_) => const _SectionHeader(title: 'Tools'),
+      (_) => const _SectionHeader(title: 'Tools & Shop'),
       (_) => const ToolsSection(),
-
-      // Shop Street
-      (_) => const _SectionHeader(title: 'Shop'),
       (_) => NavListTile(
         icon: Icons.storefront,
         title: 'Shop Street',
@@ -137,8 +133,14 @@ class SettingsScreen extends ConsumerWidget {
 
       (_) => const Divider(),
 
-      // App Info
-      (_) => const _SectionHeader(title: 'App Info'),
+      // ── GROUP 5: Guides & Education ───────────────────────────────────
+      (_) => const _SectionHeader(title: 'Guides & Education'),
+      (_) => const GuidesSection(),
+
+      (_) => const Divider(),
+
+      // ── GROUP 6: About & Privacy ──────────────────────────────────────
+      (_) => const _SectionHeader(title: 'About & Privacy'),
       (_) => AppListTile(
         leading: const Icon(Icons.water_drop),
         title: 'Danio',
@@ -150,24 +152,10 @@ class SettingsScreen extends ConsumerWidget {
         title: 'About',
         onTap: () => _showAboutDialog(context),
       ),
-
-      (_) => const Divider(),
-
-      // Privacy
-      (_) => const _SectionHeader(title: 'Privacy'),
       (_) => const _AnalyticsConsentToggle(),
-
-      (_) => const Divider(),
-
-      // Data section
-      (_) => const _SectionHeader(title: 'Data'),
       (_) => SettingsDataSection(ref: ref),
 
       (_) => const Divider(),
-
-      // Guides & Education
-      (_) => const _SectionHeader(title: 'Guides & Education'),
-      (_) => const GuidesSection(),
 
       // Help & Support
       (_) => const _SectionHeader(title: 'Help & Support'),

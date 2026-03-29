@@ -296,7 +296,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                 crossAxisCount: 3,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
-                childAspectRatio: 0.85,
+                childAspectRatio: 0.78,
               ),
               itemCount: _popularFish.length,
               itemBuilder: (context, index) {
@@ -502,16 +502,18 @@ class _PopularTile extends StatelessWidget {
                   color: AppColors.textPrimary,
                 ),
               ),
-              // Scientific name
+              // Scientific name (italic, smaller — secondary info)
               Text(
                 fish.scientificName,
                 textAlign: TextAlign.center,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.nunito(
-                  fontSize: 11,
+                  fontSize: 10,
                   fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.italic,
                   color: AppColors.textSecondary,
+                  height: 1.2,
                 ),
               ),
               if (isSelected)
@@ -596,9 +598,12 @@ class _SearchResultCard extends StatelessWidget {
                     ),
                     Text(
                       fish.scientificName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.nunito(
-                        fontSize: 13,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.italic,
                         color: AppColors.textSecondary,
                       ),
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/decorative_elements.dart';
 import '../../../widgets/core/app_button.dart';
+import '../../../widgets/mascot/mascot_widgets.dart';
 
 class EmptyRoomScene extends StatelessWidget {
   final VoidCallback onCreateTank;
@@ -159,47 +160,83 @@ class EmptyRoomScene extends StatelessWidget {
 
         // Call to action with warm first-session messaging
         Center(
-          child: NotebookCard(
-            rotation: 1.5,
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Fish icon - warm welcome
-                Icon(
-                  Icons.set_meal_rounded,
-                  size: AppIconSizes.xxl,
-                  color: DanioColors.tealWater,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Your tank awaits 🐠',
-                  style: AppTypography.headlineSmall.copyWith(
-                    color: context.textPrimary,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: NotebookCard(
+              rotation: 1.5,
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Mascot Finn - welcoming the new user
+                  const MascotAvatar(
+                    mood: MascotMood.waving,
+                    size: MascotSize.large,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Add your first tank to get personalised care tips and alerts',
-                  textAlign: TextAlign.center,
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: context.textSecondary,
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    'Welcome to Danio! 🐠',
+                    style: AppTypography.headlineMedium.copyWith(
+                      color: context.textPrimary,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.lg2),
-                AppButton(
-                  label: 'Add my tank',
-                  onPressed: onCreateTank,
-                  leadingIcon: Icons.add,
-                  variant: AppButtonVariant.primary,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                AppButton(
-                  label: 'Explore a demo tank first',
-                  onPressed: onLoadDemo,
-                  variant: AppButtonVariant.text,
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Start by creating your first aquarium to get personalised care tips and daily alerts',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  // Tip callout
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryAlpha10,
+                      borderRadius: AppRadius.smallRadius,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.lightbulb_outline,
+                          size: 16,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: AppSpacing.xs2),
+                        Flexible(
+                          child: Text(
+                            'Tip: Add your tank size and fish to get the best advice',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg2),
+                  AppButton(
+                    label: 'Create Your First Tank',
+                    onPressed: onCreateTank,
+                    leadingIcon: Icons.add_circle_outline,
+                    variant: AppButtonVariant.primary,
+                    isFullWidth: true,
+                    size: AppButtonSize.large,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  AppButton(
+                    label: 'Explore a demo tank first',
+                    onPressed: onLoadDemo,
+                    variant: AppButtonVariant.text,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
