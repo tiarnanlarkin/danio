@@ -118,57 +118,6 @@ class WeeklyStats {
   }
 }
 
-/// Monthly aggregated statistics
-@immutable
-class MonthlyStats {
-  final DateTime month; // First day of the month
-  final int totalXP;
-  final int lessonsCompleted;
-  final double avgDailyXP;
-  final int daysActive;
-  final int longestStreak;
-  final Map<String, int> topicXp;
-
-  const MonthlyStats({
-    required this.month,
-    required this.totalXP,
-    required this.lessonsCompleted,
-    required this.avgDailyXP,
-    required this.daysActive,
-    required this.longestStreak,
-    this.topicXp = const {},
-  });
-
-  String get monthKey =>
-      '${month.year}-${month.month.toString().padLeft(2, '0')}';
-
-  Map<String, dynamic> toJson() => {
-    'month': month.toIso8601String(),
-    'totalXP': totalXP,
-    'lessonsCompleted': lessonsCompleted,
-    'avgDailyXP': avgDailyXP,
-    'daysActive': daysActive,
-    'longestStreak': longestStreak,
-    'topicXp': topicXp,
-  };
-
-  factory MonthlyStats.fromJson(Map<String, dynamic> json) {
-    return MonthlyStats(
-      month: DateTime.parse(json['month'] as String),
-      totalXP: json['totalXP'] as int? ?? 0,
-      lessonsCompleted: json['lessonsCompleted'] as int? ?? 0,
-      avgDailyXP: (json['avgDailyXP'] as num?)?.toDouble() ?? 0.0,
-      daysActive: json['daysActive'] as int? ?? 0,
-      longestStreak: json['longestStreak'] as int? ?? 0,
-      topicXp:
-          (json['topicXp'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(key, value as int),
-          ) ??
-          {},
-    );
-  }
-}
-
 /// Trend direction for analytics insights
 enum ProgressTrend { increasing, stable, decreasing }
 

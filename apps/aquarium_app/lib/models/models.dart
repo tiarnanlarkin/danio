@@ -13,7 +13,6 @@ export 'story.dart';
 export 'achievements.dart';
 export 'adaptive_difficulty.dart';
 export 'analytics.dart';
-export 'exercises.dart';
 export 'gem_economy.dart';
 export 'gem_transaction.dart';
 export 'leaderboard.dart';
