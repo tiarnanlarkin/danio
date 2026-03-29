@@ -64,6 +64,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   String? _userName;
 
   static const _totalPages = 10;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(() {
+      final page = _pageController.page?.round() ?? 0;
+      if (page != _currentPage) {
+        setState(() => _currentPage = page);
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -279,7 +291,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           }
         },
         child: Scaffold(
-          body: PageView(
+          body: Stack(
+            children: [
+              PageView(
           controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
@@ -380,6 +394,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             }),
           ],
         ),
+              // Step progress dots
+              Positioned(
+                bottom: MediaQuery.of(context).padding.bottom + 12,
+                left: 0,
+                right: 0,
+                child: _OnboardingDots(
+                  totalPages: _totalPages,
+                  currentPage: _currentPage,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -419,6 +445,40 @@ class _OnboardingFallback extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Subtle row of dots showing onboarding progress.
+class _OnboardingDots extends StatelessWidget {
+  final int totalPages;
+  final int currentPage;
+
+  const _OnboardingDots({
+    required this.totalPages,
+    required this.currentPage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(totalPages, (index) {
+        final isActive = index == currentPage;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: isActive ? 16 : 6,
+          height: 6,
+          decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.primary
+                : AppColors.textHint.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(3),
+          ),
+        );
+      }),
     );
   }
 }

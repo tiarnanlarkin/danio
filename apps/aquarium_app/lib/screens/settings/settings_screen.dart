@@ -1131,6 +1131,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
                 labelText: 'OpenAI API key',
                 hintText: 'sk-...',
                 suffixIcon: IconButton(
+                  tooltip: _obscureText ? 'Show password' : 'Hide password',
                   icon: Icon(
                     _obscureText ? Icons.visibility_off : Icons.visibility,
                   ),

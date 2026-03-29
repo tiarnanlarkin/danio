@@ -56,22 +56,27 @@ class TankSwitcher extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4),
               child: Row(
                 children: [
-                  // Fish icon
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [AppOverlays.primary15, AppOverlays.primary8],
+                  // Fish icon — ConstrainedBox ensures 48dp minimum tap target
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                    child: Center(
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [AppOverlays.primary15, AppOverlays.primary8],
+                          ),
+                          borderRadius: AppRadius.smallRadius,
+                        ),
+                        child: const Icon(
+                          Icons.set_meal_rounded, // Fish icon
+                          color: AppColors.primary,
+                          size: AppIconSizes.sm,
+                        ),
                       ),
-                      borderRadius: AppRadius.smallRadius,
-                    ),
-                    child: const Icon(
-                      Icons.set_meal_rounded, // Fish icon
-                      color: AppColors.primary,
-                      size: AppIconSizes.sm,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm2),

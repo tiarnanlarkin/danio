@@ -37,7 +37,7 @@ class TodayBoardCard extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+              Icon(Icons.info_outline, size: 18, color: AppColors.warning),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 'Unable to load',

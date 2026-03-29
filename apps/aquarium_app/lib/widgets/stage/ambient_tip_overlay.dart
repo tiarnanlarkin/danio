@@ -155,8 +155,11 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
                       offset: const Offset(0, 4),
                     ),
                   ],
-                  image: const DecorationImage(
-                    image: AssetImage('assets/textures/felt-teal.webp'),
+                  image: DecorationImage(
+                    image: ResizeImage(
+                      const AssetImage('assets/textures/felt-teal.webp'),
+                      width: 512,
+                    ),
                     fit: BoxFit.cover,
                     opacity: 0.15,
                   ),

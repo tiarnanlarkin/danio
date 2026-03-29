@@ -119,7 +119,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: AppColors.whiteAlpha20,
                     width: 1,
                   ),
                 ),
@@ -132,7 +132,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                       child: Container(
-                        color: Colors.white.withValues(alpha: 0.28),
+                        color: AppColors.whiteAlpha25,
                       ),
                     ),
                   ),
@@ -244,7 +244,7 @@ class _SheetHeader extends StatelessWidget {
           indicatorColor: Colors.transparent,
           dividerColor: Colors.transparent,
           labelColor: Colors.white,
-          unselectedLabelColor: Colors.white.withValues(alpha: 0.5),
+          unselectedLabelColor: AppColors.whiteAlpha50,
           labelStyle: AppTypography.labelMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -309,7 +309,7 @@ class _PillPainter extends BoxPainter {
     final top = offset.dy + size.height - pillHeight - 4;
 
     final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.9)
+      ..color = AppColors.whiteAlpha95
       ..style = PaintingStyle.fill;
 
     canvas.drawRRect(
@@ -437,7 +437,7 @@ class _BouncingChevronHintState extends State<_BouncingChevronHint>
       child: Center(
         child: Icon(
           Icons.keyboard_arrow_up_rounded,
-          color: Colors.white.withValues(alpha: 0.7),
+          color: AppColors.whiteAlpha70,
           size: 28,
         ),
       ),
@@ -470,7 +470,7 @@ class _WorkshopToolsContent extends StatelessWidget {
             child: Text(
               'Quick Tools',
               style: AppTypography.labelMedium.copyWith(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: AppColors.whiteAlpha70,
                 letterSpacing: 0.5,
               ),
             ),
@@ -546,9 +546,9 @@ class _WorkshopToolsContent extends StatelessWidget {
               icon: const Icon(Icons.build_outlined, size: 16),
               label: const Text('See All Tools'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white.withValues(alpha: 0.85),
+                foregroundColor: AppColors.whiteAlpha85,
                 side: BorderSide(
-                  color: Colors.white.withValues(alpha: 0.3),
+                  color: AppColors.whiteAlpha30,
                 ),
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm2),
               ),
@@ -584,10 +584,10 @@ class _SheetToolCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.sm2),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.12),
+            color: AppColors.whiteAlpha12,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.18),
+              color: AppColors.whiteAlpha20,
             ),
           ),
           child: Row(
@@ -605,7 +605,7 @@ class _SheetToolCard extends StatelessWidget {
                 child: Text(
                   label,
                   style: AppTypography.labelSmall.copyWith(
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: AppColors.whiteAlpha95,
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 1,

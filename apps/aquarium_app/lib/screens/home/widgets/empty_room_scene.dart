@@ -15,6 +15,7 @@ class EmptyRoomScene extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
     return Stack(
       children: [
         // Empty room background
@@ -28,9 +29,9 @@ class EmptyRoomScene extends StatelessWidget {
           ),
         ),
 
-        // Window
+        // Window — offset by status bar height to avoid overlap
         Positioned(
-          top: 80,
+          top: topPadding + 16,
           right: 30,
           child: Container(
             width: 80,
