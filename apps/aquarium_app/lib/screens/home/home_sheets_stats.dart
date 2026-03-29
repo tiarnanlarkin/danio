@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
-import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/gamification_dashboard.dart';
 import '../../widgets/streak_calendar.dart';
@@ -12,12 +11,11 @@ import 'widgets/xp_source_row.dart';
 import 'home_sheets_helpers.dart' show timeAgo, showItemSheet;
 import '../../widgets/hobby_desk.dart' show ItemDetailRow;
 import '../../widgets/app_bottom_sheet.dart';
-/// Tank stats overview bottom sheet.
-void showStatsInfo(BuildContext context, WidgetRef ref, String? tankId) {
-  if (tankId == null) return;
 
-  final logsAsync = ref.read(logsProvider(tankId));
-  final logs = logsAsync.valueOrNull ?? [];
+/// Tank stats overview bottom sheet.
+/// [logs] should be the already-watched value from logsProvider(tankId).
+void showStatsInfo(BuildContext context, List<LogEntry> logs, String? tankId) {
+  if (tankId == null) return;
 
   final waterTests = logs
       .where((l) => l.type == LogType.waterTest && l.waterTest != null)

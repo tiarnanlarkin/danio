@@ -145,7 +145,7 @@ class AppEmptyState extends StatelessWidget {
       icon: Icons.error_outline,
       title: 'Oops! Something went wrong',
       message:
-          message ?? 'That was not supposed to happen. Give it another try!',
+          message ?? 'Couldn\'t load your data. Pull down to refresh.',
       actionLabel: 'Try Again',
       onAction: onRetry,
       iconColor: AppColors.error,

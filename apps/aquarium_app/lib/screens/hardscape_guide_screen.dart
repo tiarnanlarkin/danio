@@ -86,7 +86,7 @@ class HardscapeGuideScreen extends StatelessWidget {
       ),
       _RockCard(
         name: 'River Rocks',
-        description: 'Smooth, rounded stones in various colors.',
+        description: 'Smooth, rounded stones in various colours.',
         affectsWater: 'Usually inert (test with vinegar first)',
         bestFor: 'Natural biotopes, riverbeds',
         tips: [
@@ -222,7 +222,7 @@ class HardscapeGuideScreen extends StatelessWidget {
 
       _TipCard(
         title: 'Rule of Thirds',
-        description: 'Place focal points at 1/3 intersections, not center.',
+        description: 'Place focal points at 1/3 intersections, not centre.',
         icon: Icons.grid_on,
       ),
       _TipCard(

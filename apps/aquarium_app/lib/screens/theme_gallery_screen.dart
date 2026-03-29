@@ -298,7 +298,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
       ),
       const RoomTheme(
         name: 'Autumn',
-        description: 'Warm fall colors',
+        description: 'Warm fall colours',
         primaryWave: Color(0xFFCD853F),
         secondaryWave: Color(0xFFB8732E),
         accentBlob: Color(0xFFDC143C),

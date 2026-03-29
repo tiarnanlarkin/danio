@@ -43,7 +43,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Match temperature - new water should feel the same as tank water\n2. Add dechlorinator - tap water chlorine kills beneficial bacteria\n3. Use a gravel vacuum - removes debris while draining\n4. Don\'t overfill - leave room for the surface to breathe',
+              '1. Match temperature — new water should feel the same as tank water\n2. Add dechlorinator — tap water chlorine kills beneficial bacteria\n3. Use a gravel vacuum — removes debris while draining\n4. Don\'t overfill — leave room for the surface to breathe',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -84,7 +84,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Remember the nitrogen cycle? Most of your beneficial bacteria live in the filter media - the sponges, ceramic rings, and bio-balls inside your filter. These bacteria are keeping your fish alive!',
+              'Remember the nitrogen cycle? Most of your beneficial bacteria live in the filter media — the sponges, ceramic rings, and bio-balls inside your filter. These bacteria are keeping your fish alive!',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -98,7 +98,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. During a water change, save some old tank water in a bucket\n2. Remove filter media and gently squeeze/swish in the OLD tank water\n3. You\'re removing gunk, not sterilizing - it should still look used\n4. Put media back and discard the dirty water\n5. Never replace all media at once - stagger replacements',
+              '1. During a water change, save some old tank water in a bucket\n2. Remove filter media and gently squeeze/swish in the OLD tank water\n3. You\'re removing gunk, not sterilizing — it should still look used\n4. Put media back and discard the dirty water\n5. Never replace all media at once — stagger replacements',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -112,7 +112,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Never replace all filter media at once — this destroys your beneficial bacteria colony. When cleaning mechanical media (sponge/filter pad), rinse in OLD tank water (not tap water — chlorine kills bacteria). Replace no more than 1/3 of biological media per month. Sponges and bio-media rarely need replacing - just rinse them. Carbon should be replaced monthly if used. If you must replace sponges, only do one at a time with weeks between.',
+              'Never replace all filter media at once — this destroys your beneficial bacteria colony. When cleaning mechanical media (sponge/filter pad), rinse in OLD tank water (not tap water — chlorine kills bacteria). Replace no more than 1/3 of biological media per month. Sponges and bio-media rarely need replacing — just rinse them. Carbon should be replaced monthly if used. If you must replace sponges, only do one at a time with weeks between.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -148,7 +148,7 @@ final maintenancePath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Only clean when necessary - when you notice reduced flow. Over-cleaning harms bacteria.',
+                'Only clean when necessary — when you notice reduced flow. Over-cleaning harms bacteria.',
           ),
         ],
       ),
@@ -177,7 +177,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Gravel vacuuming removes trapped debris while doing your water change. Two tasks in one - brilliant!',
+              'Gravel vacuuming removes trapped debris while doing your water change. Two tasks in one — brilliant!',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -195,7 +195,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Plunge the vacuum tube into gravel vertically\n2. Debris and some gravel get pulled up into the tube\n3. Gravel falls back down, debris stays suspended and exits\n4. Move to next section and repeat\n5. Work systematically - front to back, left to right',
+              '1. Plunge the vacuum tube into gravel vertically\n2. Debris and some gravel get pulled up into the tube\n3. Gravel falls back down, debris stays suspended and exits\n4. Move to next section and repeat\n5. Work systematically — front to back, left to right',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -209,7 +209,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Method 1: Submerge entire vacuum in tank, put thumb over end, lift out with thumb sealed, position bucket below tank, release thumb - water flows!\n\nMethod 2: Use a pump bulb or manual pump to start flow.\n\nMethod 3: Suck on the tube (gross but works - just don\'t swallow!)',
+              'Method 1: Submerge entire vacuum in tank, put thumb over end, lift out with thumb sealed, position bucket below tank, release thumb — water flows!\n\nMethod 2: Use a pump bulb or manual pump to start flow.\n\nMethod 3: Suck on the tube (gross but works — just don\'t swallow!)',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -237,7 +237,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Some fishkeepers NEVER vacuum planted tanks - the plants\' roots consume the waste as fertilizer! If you have a jungle of plants, you might only need to vacuum open areas.',
+              'Some fishkeepers NEVER vacuum planted tanks — the plants\' roots consume the waste as fertiliser! If you have a jungle of plants, you might only need to vacuum open areas.',
         ),
       ],
       quiz: Quiz(
@@ -263,7 +263,7 @@ final maintenancePath = LearningPath(
             options: [
               'Yes, thoroughly',
               'Yes, but gently',
-              'No - you\'ll damage roots and suck up plants',
+              'No — you\'ll damage roots and suck up plants',
               'Only on weekends',
             ],
             correctIndex: 2,
@@ -275,7 +275,7 @@ final maintenancePath = LearningPath(
             question: 'How do you vacuum sand substrate?',
             options: [
               'Same as gravel',
-              'Hover vacuum above surface - sand is too light',
+              'Hover vacuum above surface — sand is too light',
               'Use a stronger vacuum',
               'Can\'t vacuum sand',
             ],
@@ -301,7 +301,7 @@ final maintenancePath = LearningPath(
             question: 'Can you vacuum while doing water changes?',
             options: [
               'No, separate tasks',
-              'Yes - it\'s the best time!',
+              'Yes — it\'s the best time!',
               'Only in emergencies',
               'Only in saltwater tanks',
             ],
@@ -331,7 +331,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Every aquarist battles algae. It\'s not a sign of failure - it\'s a natural part of aquarium life. The key is controlling it, not eliminating it completely (which is impossible anyway).',
+              'Every aquarist battles algae. It\'s not a sign of failure — it\'s a natural part of aquarium life. The key is controlling it, not eliminating it completely (which is impossible anyway).',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -359,7 +359,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Brown dusty coating on everything. Common in new tanks (2-4 weeks old). Diatoms feed on silicates - often in new substrate or tap water.',
+              'Brown dusty coating on everything. Common in new tanks (2-4 weeks old). Diatoms feed on silicates — often in new substrate or tap water.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -439,8 +439,8 @@ final maintenancePath = LearningPath(
             id: 'maint_alg_q2',
             question: 'Brown diatoms in a new tank usually mean what?',
             options: [
-              'Emergency - tank is dying',
-              'Normal for new tanks - will pass in 4-8 weeks',
+              'Emergency — tank is dying',
+              'Normal for new tanks — will pass in 4-8 weeks',
               'Need to restart tank',
               'Water is too hard',
             ],
@@ -473,9 +473,9 @@ final maintenancePath = LearningPath(
             id: 'maint_alg_q5',
             question: 'Should you aim to eliminate ALL algae?',
             options: [
-              'Yes - spotless tanks only',
-              'No - some algae is natural and even beneficial',
-              'Yes - algae is always bad',
+              'Yes — spotless tanks only',
+              'No — some algae is natural and even beneficial',
+              'Yes — algae is always bad',
               'Only in planted tanks',
             ],
             correctIndex: 1,
@@ -564,7 +564,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Don\'t scrub live plants! Gently remove dead leaves by hand. Algae on plant leaves means nutrient imbalance - fix the root cause, don\'t scrub the symptom.',
+              'Don\'t scrub live plants! Gently remove dead leaves by hand. Algae on plant leaves means nutrient imbalance — fix the root cause, don\'t scrub the symptom.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -578,7 +578,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Some aquarists never clean their back glass - they let algae grow as a natural backdrop and food source. It actually looks good and keeps snails busy!',
+              'Some aquarists never clean their back glass — they let algae grow as a natural backdrop and food source. It actually looks good and keeps snails busy!',
         ),
       ],
       quiz: Quiz(
@@ -591,7 +591,7 @@ final maintenancePath = LearningPath(
             options: [
               'Yes, any soap works',
               'Only dish soap',
-              'NEVER - even traces can kill fish',
+              'NEVER — even traces can kill fish',
               'Only if rinsed well',
             ],
             correctIndex: 2,
@@ -630,7 +630,7 @@ final maintenancePath = LearningPath(
             question: 'Can you use a razor blade on acrylic tanks?',
             options: [
               'Yes, works great',
-              'No - it will scratch acrylic',
+              'No — it will scratch acrylic',
               'Only for outside',
               'Only on weekends',
             ],
@@ -644,12 +644,12 @@ final maintenancePath = LearningPath(
             options: [
               'Yes, gently',
               'Yes, vigorously',
-              'No - fix nutrient imbalance instead',
+              'No — fix nutrient imbalance instead',
               'Only plastic plants need scrubbing',
             ],
             correctIndex: 2,
             explanation:
-                'Don\'t scrub live plants - you\'ll damage them. Algae on plants indicates nutrient/light imbalance. Fix the root cause!',
+                'Don\'t scrub live plants — you\'ll damage them. Algae on plants indicates nutrient/light imbalance. Fix the root cause!',
           ),
         ],
       ),
@@ -673,7 +673,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Successful fishkeeping isn\'t about working harder - it\'s about working smarter. A consistent routine prevents problems before they start and keeps maintenance from becoming overwhelming.',
+              'Successful fishkeeping isn\'t about working harder — it\'s about working smarter. A consistent routine prevents problems before they start and keeps maintenance from becoming overwhelming.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -822,7 +822,7 @@ final maintenancePath = LearningPath(
                 'Should you clean filter and do large water change same week?',
             options: [
               'Yes, get it all done',
-              'No - too much bacterial disruption at once',
+              'No — too much bacterial disruption at once',
               'Only in emergencies',
               'Doesn\'t matter',
             ],
@@ -848,7 +848,7 @@ final maintenancePath = LearningPath(
             question: 'What makes maintenance routines successful?',
             options: [
               'Doing everything at once',
-              'Consistency - same schedule weekly',
+              'Consistency — same schedule weekly',
               'Random timing',
               'Only cleaning when problems arise',
             ],

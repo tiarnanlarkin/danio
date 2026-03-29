@@ -328,7 +328,7 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Egg Layer',
-    definition: 'Fish that lays eggs for external fertilization.',
+    definition: 'Fish that lays eggs for external fertilisation.',
     category: 'Fish',
   ),
   const _GlossaryTerm(

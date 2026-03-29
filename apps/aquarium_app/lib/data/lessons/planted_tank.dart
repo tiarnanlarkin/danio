@@ -36,7 +36,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Natural filtration - absorb ammonia and nitrate\n• Oxygen production - especially during daylight\n• Stress reduction - fish feel safer with cover\n• Algae control - out-compete algae for nutrients\n• Natural beauty - nothing beats a planted tank',
+              '• Natural filtration — absorb ammonia and nitrate\n• Oxygen production — especially during daylight\n• Stress reduction — fish feel safer with cover\n• Algae control — out-compete algae for nutrients\n• Natural beauty — nothing beats a planted tank',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -45,7 +45,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Java fern - attach to wood, low light\n• Anubias - slow growing, nearly indestructible\n• Java moss - great for shrimp, easy\n• Amazon sword — impressive centrepiece\n• Cryptocoryne - variety of sizes and colours',
+              '• Java fern — attach to wood, low light\n• Anubias — slow growing, nearly indestructible\n• Java moss — great for shrimp, easy\n• Amazon sword — impressive centrepiece\n• Cryptocoryne — variety of sizes and colours',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -68,7 +68,7 @@ final plantedTankPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Plants absorb nitrate and ammonia as fertilizer, providing natural filtration.',
+                'Plants absorb nitrate and ammonia as fertiliser, providing natural filtration.',
           ),
         ],
       ),
@@ -91,7 +91,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Plants need three things to grow: light, CO2, and nutrients. These must be balanced - too much of one without the others causes algae problems.',
+              'Plants need three things to grow: light, CO2, and nutrients. These must be balanced — too much of one without the others causes algae problems.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -114,22 +114,22 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Fish waste provides some nutrients, but planted tanks often need supplements. Root feeders (swords, crypts) benefit from root tabs. Stem plants prefer liquid fertilizers.',
+              'Fish waste provides some nutrients, but planted tanks often need supplements. Root feeders (swords, crypts) benefit from root tabs. Stem plants prefer liquid fertilisers.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Macro nutrients: Nitrogen, Phosphorus, Potassium (NPK)\n• Micro nutrients: Iron, manganese, etc.\n• Root tabs: Slow-release fertilizer for substrate\n• Liquid ferts: Dose into water column weekly',
+              '• Macro nutrients: Nitrogen, Phosphorus, Potassium (NPK)\n• Micro nutrients: Iron, manganese, etc.\n• Root tabs: Slow-release fertiliser for substrate\n• Liquid ferts: Dose into water column weekly',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Start with less fertilizer than recommended. It\'s easier to add more than to fix algae from over-fertilizing.',
+              'Start with less fertiliser than recommended. It\'s easier to add more than to fix algae from over-fertilising.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'For beginners: Get a basic all-in-one liquid fertilizer and dose once a week. Keep it simple until you understand your tank\'s needs.',
+              'For beginners: Get a basic all-in-one liquid fertiliser and dose once a week. Keep it simple until you understand your tank\'s needs.',
         ),
       ],
       quiz: Quiz(
@@ -171,7 +171,7 @@ final plantedTankPath = LearningPath(
       id: 'planted_substrate',
       pathId: 'planted',
       title: 'Substrate: The Foundation',
-      description: 'Gravel vs sand vs aquasoil - choosing wisely',
+      description: 'Gravel vs sand vs aquasoil — choosing wisely',
       orderIndex: 2,
       xpReward: 50,
       estimatedMinutes: 5,
@@ -184,7 +184,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Substrate isn\'t just decoration - it\'s where root-feeding plants get nutrients, where beneficial bacteria colonize, and what sets the foundation for your entire aquascape.',
+              'Substrate isn\'t just decoration — it\'s where root-feeding plants get nutrients, where beneficial bacteria colonize, and what sets the foundation for your entire aquascape.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -193,7 +193,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Standard aquarium gravel is inert - it doesn\'t add or remove anything from your water. It provides anchoring for plants but no nutrients.',
+              'Standard aquarium gravel is inert — it doesn\'t add or remove anything from your water. It provides anchoring for plants but no nutrients.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
@@ -316,7 +316,7 @@ final plantedTankPath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Regular gravel plus root tabs for root-feeders works great! Add liquid fertilizer for stem plants. Affordable and effective.',
+                'Regular gravel plus root tabs for root-feeders works great! Add liquid fertiliser for stem plants. Affordable and effective.',
           ),
           const QuizQuestion(
             id: 'plant_sub_q5',
@@ -353,7 +353,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Walk into any planted tank forum and mention CO2 - half the people swear it\'s essential, the other half say it\'s overkill. Who\'s right? Both, depending on your goals.',
+              'Walk into any planted tank forum and mention CO2 — half the people swear it\'s essential, the other half say it\'s overkill. Who\'s right? Both, depending on your goals.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -362,7 +362,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Plants use CO2, light, and nutrients for photosynthesis. Atmospheric CO2 dissolves into water naturally, but only at 3-5 ppm - not much. Most demanding plants want 20-30 ppm for optimal growth.',
+              'Plants use CO2, light, and nutrients for photosynthesis. Atmospheric CO2 dissolves into water naturally, but only at 3-5 ppm — not much. Most demanding plants want 20-30 ppm for optimal growth.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -381,7 +381,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Low-tech tanks work beautifully! Just use moderate light (6-7 hours), easy plants, and liquid fertilizer. Many stunning tanks are low-tech.',
+              'Low-tech tanks work beautifully! Just use moderate light (6-7 hours), easy plants, and liquid fertiliser. Many stunning tanks are low-tech.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -390,7 +390,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Excel isn\'t actually CO2 - it\'s glutaraldehyde, which plants can use as a carbon source. It helps, but it\'s not as effective as pressurized CO2. Also kills some algae!',
+              'Excel isn\'t actually CO2 — it\'s glutaraldehyde, which plants can use as a carbon source. It helps, but it\'s not as effective as pressurized CO2. Also kills some algae!',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -413,7 +413,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'A CO2 cylinder, regulator, needle valve, and diffuser provide precise control. Expensive upfront (\$150-300) but the results are stunning - vivid colours, fast growth, carpet plants.',
+              'A CO2 cylinder, regulator, needle valve, and diffuser provide precise control. Expensive upfront (\$150-300) but the results are stunning — vivid colours, fast growth, carpet plants.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
@@ -423,7 +423,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Use a drop checker! This glass indicator shows your CO2 level - blue (too low), green (perfect), yellow (dangerous). Essential for safety.',
+              'Use a drop checker! This glass indicator shows your CO2 level — blue (too low), green (perfect), yellow (dangerous). Essential for safety.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -432,7 +432,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Start low-tech. Master easy plants, learn aquascaping, get comfortable with fertilizers. THEN consider CO2 if you want to grow demanding species or create competition-level aquascapes.',
+              'Start low-tech. Master easy plants, learn aquascaping, get comfortable with fertilisers. THEN consider CO2 if you want to grow demanding species or create competition-level aquascapes.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
@@ -455,7 +455,7 @@ final plantedTankPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Light, CO2, and nutrients must balance! High light with low CO2 means excess light energy with nowhere to go - algae loves this.',
+                'Light, CO2, and nutrients must balance! High light with low CO2 means excess light energy with nowhere to go — algae loves this.',
           ),
           const QuizQuestion(
             id: 'plant_co2_q2',
@@ -463,12 +463,12 @@ final plantedTankPath = LearningPath(
             options: [
               'Pure CO2 in liquid form',
               'Glutaraldehyde (carbon source + mild algaecide)',
-              'Plant fertilizer',
+              'Plant fertiliser',
               'pH buffer',
             ],
             correctIndex: 1,
             explanation:
-                'Excel is glutaraldehyde - not true CO2, but plants can use it as a carbon source. It also kills some algae types.',
+                'Excel is glutaraldehyde — not true CO2, but plants can use it as a carbon source. It also kills some algae types.',
           ),
           const QuizQuestion(
             id: 'plant_co2_q3',
@@ -481,7 +481,7 @@ final plantedTankPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'DIY CO2 is unpredictable - production varies daily and can spike or crash overnight, potentially killing fish.',
+                'DIY CO2 is unpredictable — production varies daily and can spike or crash overnight, potentially killing fish.',
           ),
           const QuizQuestion(
             id: 'plant_co2_q4',
@@ -501,13 +501,13 @@ final plantedTankPath = LearningPath(
             question: 'Should beginners start with pressurized CO2?',
             options: [
               'Yes, immediately',
-              'No - master low-tech first',
+              'No — master low-tech first',
               'Only if they have lots of money',
               'Doesn\'t matter',
             ],
             correctIndex: 1,
             explanation:
-                'Master low-tech planted tanks first! Learn plant care, fertilization, and aquascaping basics before investing in complex CO2 systems.',
+                'Master low-tech planted tanks first! Learn plant care, fertilisation, and aquascaping basics before investing in complex CO2 systems.',
           ),
         ],
       ),
@@ -545,7 +545,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Cut stem with sharp scissors (clean cut prevents rot)\n2. Remove bottom 1-2 leaves from cutting\n3. Plant cutting 2-3cm into substrate\n4. Original stem will sprout 2+ new shoots\n5. Wait 2-3 weeks, repeat - exponential growth!',
+              '1. Cut stem with sharp scissors (clean cut prevents rot)\n2. Remove bottom 1-2 leaves from cutting\n3. Plant cutting 2-3cm into substrate\n4. Original stem will sprout 2+ new shoots\n5. Wait 2-3 weeks, repeat — exponential growth!',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -573,7 +573,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Some plants (Vallisneria, Amazon swords, some crypts) send out runners with baby plantlets. Let them grow 4-5 leaves, then cut the runner - free plant!',
+              'Some plants (Vallisneria, Amazon swords, some crypts) send out runners with baby plantlets. Let them grow 4-5 leaves, then cut the runner — free plant!',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -600,7 +600,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Dedicated plant growing tanks with high light, CO2, and fertilizers produce trimmings weekly! Some aquarists sell excess plants online - their hobby pays for itself.',
+              'Dedicated plant growing tanks with high light, CO2, and fertilisers produce trimmings weekly! Some aquarists sell excess plants online — their hobby pays for itself.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
@@ -623,7 +623,7 @@ final plantedTankPath = LearningPath(
             ],
             correctIndex: 0,
             explanation:
-                'Cut the stem, replant the top cutting - both pieces continue growing! The original sprouts new shoots, the cutting develops roots.',
+                'Cut the stem, replant the top cutting — both pieces continue growing! The original sprouts new shoots, the cutting develops roots.',
           ),
           const QuizQuestion(
             id: 'plant_prop_q2',
@@ -631,7 +631,7 @@ final plantedTankPath = LearningPath(
             options: [
               'Yes, deeply',
               'Yes, just a bit',
-              'No - they\'ll rot if buried',
+              'No — they\'ll rot if buried',
               'Doesn\'t matter',
             ],
             correctIndex: 2,
@@ -662,7 +662,7 @@ final plantedTankPath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Wait until the baby has 4-5 leaves and visible roots. Then cut the runner - the plantlet can survive independently!',
+                'Wait until the baby has 4-5 leaves and visible roots. Then cut the runner — the plantlet can survive independently!',
           ),
           const QuizQuestion(
             id: 'plant_prop_q5',

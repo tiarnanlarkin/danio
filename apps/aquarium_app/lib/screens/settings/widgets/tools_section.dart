@@ -56,7 +56,7 @@ class ToolsSection extends StatelessWidget {
         NavListTile(
           icon: Icons.science_outlined,
           title: 'Dosing Calculator',
-          subtitle: 'Calculate fertilizer & medication doses',
+          subtitle: 'Calculate fertiliser & medication doses',
           onTap: () =>
               NavigationThrottle.push(context, const DosingCalculatorScreen()),
         ),

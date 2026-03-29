@@ -60,7 +60,7 @@ class QuarantineGuideScreen extends StatelessWidget {
           _SetupCard(
             title: 'Decor',
             description:
-                'Minimal - PVC pipes or cheap plants for hiding. Easy to sterilize between uses.',
+                'Minimal - PVC pipes or cheap plants for hiding. Easy to sterilise between uses.',
             icon: Icons.weekend,
           ),
           _SetupCard(

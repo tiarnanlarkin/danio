@@ -88,7 +88,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           } else if (snapshot.hasError) {
             body = AppErrorState(
               title: 'Couldn\'t load analytics',
-              message: 'Something went wrong. Tap to try again.',
+              message: 'Couldn\'t load analytics. Tap to try again.',
               onRetry: _refreshAnalytics,
             );
           } else {

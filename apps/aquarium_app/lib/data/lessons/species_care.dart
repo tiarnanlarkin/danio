@@ -18,7 +18,7 @@ final speciesCarePath = LearningPath(
       pathId: 'species_care',
       title: 'Betta Fish Care',
       description:
-          'The beautiful Siamese fighting fish - more than just a cup fish!',
+          'The beautiful Siamese fighting fish — more than just a cup fish!',
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 6,
@@ -107,7 +107,7 @@ final speciesCarePath = LearningPath(
       id: 'sc_goldfish',
       pathId: 'species_care',
       title: 'Goldfish: The Misunderstood Fish',
-      description: 'Goldfish are NOT beginner fish - they\'re messy giants!',
+      description: 'Goldfish are NOT beginner fish — they\'re messy giants!',
       orderIndex: 1,
       xpReward: 50,
       estimatedMinutes: 6,

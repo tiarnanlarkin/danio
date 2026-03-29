@@ -38,7 +38,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Guppies - colourful, active, breed easily\n• Platies - peaceful, many colours\n• Corydoras catfish - cute bottom-dwellers, social\n• Zebra danios - active schoolers, very hardy\n• Cherry barbs - peaceful, beautiful red colour\n• Bristlenose plecos - algae eaters, interesting',
+              '• Guppies — colourful, active, breed easily\n• Platies — peaceful, many colours\n• Corydoras catfish — cute bottom-dwellers, social\n• Zebra danios — active schoolers, very hardy\n• Cherry barbs — peaceful, beautiful red colour\n• Bristlenose plecos — algae eaters, interesting',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -47,7 +47,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Discus - require pristine water quality\n• Oscars - grow huge, need massive tanks\n• Common plecos - grow to 60cm+\n• Goldfish in tropical tanks - different needs\n• Betta with fin-nippers - stress easily',
+              '• Discus — require pristine water quality\n• Oscars — grow huge, need massive tanks\n• Common plecos — grow to 60cm+\n• Goldfish in tropical tanks — different needs\n• Betta with fin-nippers — stress easily',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -65,7 +65,7 @@ final firstFishPath = LearningPath(
             options: ['Discus', 'Zebra danios', 'Oscars', 'Common plecos'],
             correctIndex: 1,
             explanation:
-                'Zebra danios are extremely hardy, active schoolers that tolerate a wide range of water conditions - perfect for beginners learning the ropes.',
+                'Zebra danios are extremely hardy, active schoolers that tolerate a wide range of water conditions — perfect for beginners learning the ropes.',
           ),
           const QuizQuestion(
             id: 'ff_choose_q2',
@@ -127,7 +127,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'You\'ve picked your fish - exciting! But the trip from store to tank is stressful for fish. Sudden changes in temperature or water chemistry can shock or kill them.',
+              'You\'ve picked your fish — exciting! But the trip from store to tank is stressful for fish. Sudden changes in temperature or water chemistry can shock or kill them.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -141,7 +141,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Float the sealed bag in your tank for 15-20 minutes (equalizes temperature)\n2. Open the bag and add a small cup of tank water\n3. Wait 5 minutes, then add another cup\n4. Repeat 3-4 times over 30-45 minutes\n5. Net the fish into the tank - discard the bag water',
+              '1. Float the sealed bag in your tank for 15-20 minutes (equalizes temperature)\n2. Open the bag and add a small cup of tank water\n3. Wait 5 minutes, then add another cup\n4. Repeat 3-4 times over 30-45 minutes\n5. Net the fish into the tank — discard the bag water',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -215,12 +215,12 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'More fish die from overfeeding than underfeeding. Excess food decays into ammonia, clouds water, and feeds algae. Your fish\'s stomach is about the size of their eye - they don\'t need much!',
+              'More fish die from overfeeding than underfeeding. Excess food decays into ammonia, clouds water, and feeds algae. Your fish\'s stomach is about the size of their eye — they don\'t need much!',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Fish will ALWAYS act hungry. They\'re opportunistic feeders in nature - they eat whenever food is available because they don\'t know when the next meal comes. Don\'t be fooled!',
+              'Fish will ALWAYS act hungry. They\'re opportunistic feeders in nature — they eat whenever food is available because they don\'t know when the next meal comes. Don\'t be fooled!',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -234,7 +234,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Feed once or twice daily. Skip one day per week. Fish can easily go a week without food - you going on vacation is not an emergency!',
+              'Feed once or twice daily. Skip one day per week. Fish can easily go a week without food — you going on vacation is not an emergency!',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -243,7 +243,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Flakes: Good all-rounder, most fish accept them\n• Pellets: Less messy, better for larger fish\n• Frozen: Bloodworms, brine shrimp - high protein treat\n• Live: Stimulates hunting behaviour but risk of parasites\n• Algae wafers: For bottom-feeders and plecos\n• Vegetables: Zucchini, cucumber for herbivores',
+              '• Flakes: Good all-rounder, most fish accept them\n• Pellets: Less messy, better for larger fish\n• Frozen: Bloodworms, brine shrimp — high protein treat\n• Live: Stimulates hunting behaviour but risk of parasites\n• Algae wafers: For bottom-feeders and plecos\n• Vegetables: Zucchini, cucumber for herbivores',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -275,12 +275,12 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Going away for a week? Don\'t use "vacation blocks" - they often pollute water. Instead: Have someone feed 2-3 times that week (pre-portion the food!), or just skip feeding entirely. Fish will be fine.',
+              'Going away for a week? Don\'t use "vacation blocks" — they often pollute water. Instead: Have someone feed 2-3 times that week (pre-portion the food!), or just skip feeding entirely. Fish will be fine.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'In nature, fish don\'t eat every day. They experience feast and famine. Your well-fed aquarium fish can easily handle a week without food - they\'ll just be extra excited when you return!',
+              'In nature, fish don\'t eat every day. They experience feast and famine. Your well-fed aquarium fish can easily handle a week without food — they\'ll just be extra excited when you return!',
         ),
       ],
       quiz: Quiz(
@@ -305,13 +305,13 @@ final firstFishPath = LearningPath(
             question: 'Why do fish always act hungry?',
             options: [
               'They\'re actually starving',
-              'They\'re opportunistic feeders - eat whenever food is available',
+              'They\'re opportunistic feeders — eat whenever food is available',
               'The water makes them hungry',
               'They need constant food',
             ],
             correctIndex: 1,
             explanation:
-                'Fish are opportunistic - in nature they don\'t know when the next meal comes, so they eat whenever possible. This doesn\'t mean they need food!',
+                'Fish are opportunistic — in nature they don\'t know when the next meal comes, so they eat whenever possible. This doesn\'t mean they need food!',
           ),
           const QuizQuestion(
             id: 'ff_feed_q3',
@@ -361,7 +361,7 @@ final firstFishPath = LearningPath(
       id: 'ff_behavior',
       pathId: 'first_fish',
       title: 'Reading Fish Behaviour',
-      description: 'Healthy vs stressed - spotting problems early',
+      description: 'Healthy vs stressed — spotting problems early',
       orderIndex: 3,
       xpReward: 50,
       estimatedMinutes: 6,
@@ -374,7 +374,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Your fish won\'t say "I don\'t feel well" - they communicate through behaviour. Learning to read these signals lets you catch problems before they become life-threatening.',
+              'Your fish won\'t say "I don\'t feel well" — they communicate through behaviour. Learning to read these signals lets you catch problems before they become life-threatening.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -439,7 +439,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Some fish "play dead" when startled! Hatchetfish are famous for this - they\'ll float motionless on their side for minutes, then swim away like nothing happened. Don\'t panic immediately!',
+              'Some fish "play dead" when startled! Hatchetfish are famous for this — they\'ll float motionless on their side for minutes, then swim away like nothing happened. Don\'t panic immediately!',
         ),
       ],
       quiz: Quiz(
@@ -470,7 +470,7 @@ final firstFishPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Gasping at the surface is an emergency sign - either low dissolved oxygen or ammonia/nitrite poisoning. Test water immediately!',
+                'Gasping at the surface is an emergency sign — either low dissolved oxygen or ammonia/nitrite poisoning. Test water immediately!',
           ),
           const QuizQuestion(
             id: 'ff_behav_q3',
@@ -570,7 +570,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Seed your QT filter with media from your main tank! This instantly cycles the QT. Keep the sponge in your main filter when not in use - it stays cycled and ready.',
+              'Seed your QT filter with media from your main tank! This instantly cycles the QT. Keep the sponge in your main filter when not in use — it stays cycled and ready.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -643,7 +643,7 @@ final firstFishPath = LearningPath(
             id: 'ff_quar_q4',
             question: 'How can you keep a QT tank cycled when not in use?',
             options: [
-              'You can\'t - must cycle each time',
+              'You can\'t — must cycle each time',
               'Keep the sponge filter running in your main tank',
               'Add ammonia daily',
               'Freeze the filter',
@@ -659,7 +659,7 @@ final firstFishPath = LearningPath(
             options: [
               'Only that fish gets sick',
               'It might infect your entire tank',
-              'Nothing - fish are immune',
+              'Nothing — fish are immune',
               'The disease dies in new water',
             ],
             correctIndex: 1,
@@ -688,7 +688,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Every expert was once a beginner who made mistakes. The key is learning from them - and better yet, learning from OTHER people\'s mistakes before you make them yourself!',
+              'Every expert was once a beginner who made mistakes. The key is learning from them — and better yet, learning from OTHER people\'s mistakes before you make them yourself!',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -697,12 +697,12 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'You set up your tank, fill it with water, add decorations... it looks perfect! Time to add fish, right? WRONG. This is the #1 killer - not cycling your tank first.',
+              'You set up your tank, fill it with water, add decorations... it looks perfect! Time to add fish, right? WRONG. This is the #1 killer — not cycling your tank first.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Solution: Fishless cycle for 2-6 weeks before adding any fish. Test ammonia and nitrite - both must read 0 before fish are safe.',
+              'Solution: Fishless cycle for 2-6 weeks before adding any fish. Test ammonia and nitrite — both must read 0 before fish are safe.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -711,7 +711,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '"Put 20 goldfish in your 20-liter bowl!" "Clean the tank completely every week!" Pet store employees often give terrible advice - usually to make sales, not help fish.',
+              '"Put 20 goldfish in your 20-liter bowl!" "Clean the tank completely every week!" Pet store employees often give terrible advice — usually to make sales, not help fish.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -808,7 +808,7 @@ final firstFishPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Not cycling causes New Tank Syndrome - the #1 killer of fish. Always cycle first!',
+                'Not cycling causes New Tank Syndrome — the #1 killer of fish. Always cycle first!',
           ),
           const QuizQuestion(
             id: 'ff_mist_q2',
@@ -857,7 +857,7 @@ final firstFishPath = LearningPath(
             options: [
               'Yes, weekly',
               'Yes, daily',
-              'No - this crashes your cycle',
+              'No — this crashes your cycle',
               'Only in emergencies',
             ],
             correctIndex: 2,

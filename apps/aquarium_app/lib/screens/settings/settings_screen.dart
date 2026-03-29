@@ -534,7 +534,19 @@ class _LearnCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stats = ref.watch(learningStatsProvider);
+    // Select only the three fields this card renders — avoids rebuilds when
+    // unrelated stats fields (longestStreak, lessonsCompleted, etc.) change.
+    final stats = ref.watch(
+      learningStatsProvider.select(
+        (s) => s == null
+            ? null
+            : (
+                levelTitle: s.levelTitle,
+                totalXp: s.totalXp,
+                currentStreak: s.currentStreak,
+              ),
+      ),
+    );
     final profile = ref.watch(
       userProfileProvider.select(
         (p) => (

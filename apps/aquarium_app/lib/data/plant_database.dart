@@ -80,7 +80,7 @@ class PlantDatabase {
         'Perfect for nano tanks',
         'Attach to hardscape',
         'Prone to algae in high light',
-        'Patient - very slow grower',
+        'Patient — very slow grower',
       ],
     ),
     PlantInfo(
@@ -167,7 +167,7 @@ class PlantDatabase {
       maxHeightCm: 35,
       propagation: 'Rhizome division, plantlets',
       description:
-          'Hardy, low-light plant perfect for beginners. Attach to wood or rocks - do not bury the rhizome.',
+          'Hardy, low-light plant perfect for beginners. Attach to wood or rocks — do not bury the rhizome.',
       tips: [
         'Attach with thread or glue',
         'Don\'t bury rhizome',
@@ -334,7 +334,7 @@ class PlantDatabase {
         'Expect initial melt',
         'Leave roots undisturbed',
         'Bright green colour',
-        'Patient - slow starter',
+        'Patient — slow starter',
       ],
     ),
     PlantInfo(
@@ -937,7 +937,7 @@ class PlantDatabase {
       tips: [
         'Sheds needles if stressed',
         'Floats or weights down',
-        'Allelopathic - may inhibit algae',
+        'Allelopathic — may inhibit algae',
         'Cold tolerant',
       ],
     ),

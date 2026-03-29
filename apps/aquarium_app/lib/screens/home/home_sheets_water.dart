@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../widgets/app_bottom_sheet.dart';
 import '../../widgets/core/app_button.dart';
-import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
@@ -11,11 +9,9 @@ import '../add_log_screen.dart';
 import 'home_sheets_helpers.dart' show timeAgo, buildParamRow;
 
 /// Water parameters bottom sheet with ideal ranges and latest test results.
-void showWaterParams(BuildContext context, WidgetRef ref, String? tankId) {
+/// [logs] should be the already-watched value from logsProvider(tankId).
+void showWaterParams(BuildContext context, List<LogEntry> logs, String? tankId) {
   if (tankId == null) return;
-
-  final logsAsync = ref.read(logsProvider(tankId));
-  final logs = logsAsync.valueOrNull ?? [];
 
   final waterTests = logs
       .where((l) => l.type == LogType.waterTest && l.waterTest != null)

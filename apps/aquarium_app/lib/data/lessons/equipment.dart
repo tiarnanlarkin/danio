@@ -30,7 +30,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'The filter isn\'t just about clean water - it\'s where your beneficial bacteria live! Choosing the wrong filter can make your life harder and stress your fish.',
+              'The filter isn\'t just about clean water — it\'s where your beneficial bacteria live! Choosing the wrong filter can make your life harder and stress your fish.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -72,7 +72,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Simple foam cylinder powered by an air pump. Gentle flow makes them perfect for fry, shrimp, or hospital tanks. Also the most reliable - no mechanical parts to break!',
+              'Simple foam cylinder powered by an air pump. Gentle flow makes them perfect for fry, shrimp, or hospital tanks. Also the most reliable — no mechanical parts to break!',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
@@ -100,7 +100,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Old-school! A plate under gravel pulls water down through substrate. Mostly outdated - hard to clean, limits substrate choices, and modern options are better.',
+              'Old-school! A plate under gravel pulls water down through substrate. Mostly outdated — hard to clean, limits substrate choices, and modern options are better.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -114,7 +114,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Many advanced aquarists run MULTIPLE filters! A sponge + HOB combo gives redundancy - if one fails, the other keeps your cycle alive.',
+              'Many advanced aquarists run MULTIPLE filters! A sponge + HOB combo gives redundancy — if one fails, the other keeps your cycle alive.',
         ),
       ],
       quiz: Quiz(
@@ -125,10 +125,10 @@ final equipmentPath = LearningPath(
             id: 'eq_filt_q1',
             question: 'Which filter type is best for shrimp and fry?',
             options: [
-              'Canister - most powerful',
-              'HOB - easy to use',
-              'Sponge - gentle flow',
-              'Internal - compact',
+              'Canister — most powerful',
+              'HOB — easy to use',
+              'Sponge — gentle flow',
+              'Internal — compact',
             ],
             correctIndex: 2,
             explanation:
@@ -178,7 +178,7 @@ final equipmentPath = LearningPath(
             question: 'Why might you run multiple filters on one tank?',
             options: [
               'It looks cool',
-              'Redundancy - if one fails, the other maintains the cycle',
+              'Redundancy — if one fails, the other maintains the cycle',
               'Fish like more bubbles',
               'Required by law',
             ],
@@ -208,7 +208,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Tropical fish evolved in warm waters (24-28°C). Room temperature in most homes is 18-22°C - too cold! Without a heater, your fish become lethargic, stressed, and disease-prone.',
+              'Tropical fish evolved in warm waters (24-28°C). Room temperature in most homes is 18-22°C — too cold! Without a heater, your fish become lethargic, stressed, and disease-prone.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -328,7 +328,7 @@ final equipmentPath = LearningPath(
             question: 'Should you trust the heater\'s temperature dial?',
             options: [
               'Yes, always accurate',
-              'No - verify with separate thermometer',
+              'No — verify with separate thermometer',
               'Only on expensive brands',
               'Doesn\'t matter',
             ],
@@ -347,7 +347,7 @@ final equipmentPath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Heaters can fail in two ways: stuck ON (overheating/cooking fish) or stuck OFF (freezing fish). Both are deadly - always monitor with a thermometer!',
+                'Heaters can fail in two ways: stuck ON (overheating/cooking fish) or stuck OFF (freezing fish). Both are deadly — always monitor with a thermometer!',
           ),
         ],
       ),
@@ -380,7 +380,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Most fish don\'t need bright light - they actually prefer subdued lighting! In nature, many tropical fish live under dense canopy with dappled light. Bright lights stress them.',
+              'Most fish don\'t need bright light — they actually prefer subdued lighting! In nature, many tropical fish live under dense canopy with dappled light. Bright lights stress them.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -394,7 +394,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• LED: Modern, efficient, long-lasting, low heat, dimmable\n• Fluorescent (T5/T8): Older standard, decent for plants, shorter lifespan\n• Incandescent: Outdated, hot, inefficient - avoid',
+              '• LED: Modern, efficient, long-lasting, low heat, dimmable\n• Fluorescent (T5/T8): Older standard, decent for plants, shorter lifespan\n• Incandescent: Outdated, hot, inefficient — avoid',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -408,7 +408,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '6500K (daylight white) is the sweet spot for planted tanks - mimics natural sunlight. 8000K+ (blueish) makes fish colours pop but encourages algae. 3000K (warm/yellow) looks dingy.',
+              '6500K (daylight white) is the sweet spot for planted tanks — mimics natural sunlight. 8000K+ (blueish) makes fish colours pop but encourages algae. 3000K (warm/yellow) looks dingy.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -417,7 +417,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Beginners buy super bright lights then run them 12 hours - algae city! Instead: moderate brightness, 6-8 hours daily on a timer. Consistency matters more than intensity.',
+              'Beginners buy super bright lights then run them 12 hours — algae city! Instead: moderate brightness, 6-8 hours daily on a timer. Consistency matters more than intensity.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -445,7 +445,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Some fish actually spawn better with specific lighting! Killifish need gradual sunrise/sunset simulation. Advanced LED lights can program this - nature in a box!',
+              'Some fish actually spawn better with specific lighting! Killifish need gradual sunrise/sunset simulation. Advanced LED lights can program this — nature in a box!',
         ),
       ],
       quiz: Quiz(
@@ -470,7 +470,7 @@ final equipmentPath = LearningPath(
             question: 'Do fish need bright light?',
             options: [
               'Yes, as bright as possible',
-              'No - most prefer subdued lighting',
+              'No — most prefer subdued lighting',
               'Only at feeding time',
               'Only at night',
             ],
@@ -489,13 +489,13 @@ final equipmentPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                '6500K is ideal - it mimics natural sunlight and grows plants well while making colours look natural.',
+                '6500K is ideal — it mimics natural sunlight and grows plants well while making colours look natural.',
           ),
           const QuizQuestion(
             id: 'eq_light_q4',
             question: 'Why are LED lights better than fluorescent?',
             options: [
-              'They\'re not - fluorescent is better',
+              'They\'re not — fluorescent is better',
               'Longer lifespan, more efficient, low heat, dimmable',
               'Only because they look cool',
               'Required by law',
@@ -509,7 +509,7 @@ final equipmentPath = LearningPath(
             question: 'Can you leave lights on 24/7?',
             options: [
               'Yes, fish love constant light',
-              'No - fish need day/night cycle',
+              'No — fish need day/night cycle',
               'Only in planted tanks',
               'Only with LED lights',
             ],

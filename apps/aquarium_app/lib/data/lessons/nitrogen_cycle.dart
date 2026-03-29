@@ -45,7 +45,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Fish produce waste. That waste breaks down into ammonia - a toxic chemical that burns fish gills and can kill within hours at high levels. In nature, bacteria consume this ammonia. In a new tank, those bacteria don\'t exist yet.',
+              'Fish produce waste. That waste breaks down into ammonia — a toxic chemical that burns fish gills and can kill within hours at high levels. In nature, bacteria consume this ammonia. In a new tank, those bacteria don\'t exist yet.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -166,7 +166,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Nitrate doesn\'t just disappear - it builds up over time. This is why we do water changes: to remove accumulated nitrate.',
+              'Nitrate doesn\'t just disappear — it builds up over time. This is why we do water changes: to remove accumulated nitrate.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -180,7 +180,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'In heavily planted tanks, live plants also absorb nitrate as fertilizer. Some aquarists with lots of plants rarely need water changes!',
+              'In heavily planted tanks, live plants also absorb nitrate as fertiliser. Some aquarists with lots of plants rarely need water changes!',
         ),
       ],
       quiz: Quiz(
@@ -275,7 +275,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Add pure ammonia (with no additives) until your test reads 2-4 ppm. Or drop in fish food and let it decay - less precise but works.',
+              'Add pure ammonia (with no additives) until your test reads 2-4 ppm. Or drop in fish food and let it decay — less precise but works.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -395,7 +395,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'The API Master Test Kit is the industry standard. It tests pH, ammonia, nitrite, and nitrate. While it takes 5 minutes instead of 30 seconds, the accuracy is worth it - especially during cycling.',
+              'The API Master Test Kit is the industry standard. It tests pH, ammonia, nitrite, and nitrate. While it takes 5 minutes instead of 30 seconds, the accuracy is worth it — especially during cycling.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -409,7 +409,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Use clean, dry test tubes (rinse with tank water if needed)\n2. Follow instructions exactly - drop counts matter!\n3. Shake reagent bottles before use\n4. Wait the full time before reading (5 minutes for nitrate)\n5. Read in natural light — artificial light distorts colours\n6. Don\'t trust the test if bottles are expired',
+              '1. Use clean, dry test tubes (rinse with tank water if needed)\n2. Follow instructions exactly — drop counts matter!\n3. Shake reagent bottles before use\n4. Wait the full time before reading (5 minutes for nitrate)\n5. Read in natural light — artificial light distorts colours\n6. Don\'t trust the test if bottles are expired',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -515,7 +515,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'You test your water and see bright green (high ammonia) or purple (high nitrite). Your fish are gasping at the surface. Panic sets in. But don\'t worry - you can fix this!',
+              'You test your water and see bright green (high ammonia) or purple (high nitrite). Your fish are gasping at the surface. Panic sets in. But don\'t worry — you can fix this!',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -529,7 +529,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. STOP FEEDING - No food for 24-48 hours. Food = more waste = more ammonia\n2. Massive water change - 50% immediately with temperature-matched, dechlorinated water\n3. Test again in 1 hour - If still high, do another 25-50% change\n4. Add Seachem Prime - Temporarily detoxifies ammonia/nitrite for 24-48 hours\n5. Increase aeration - Add an air stone or point filter output upward',
+              '1. STOP FEEDING — No food for 24-48 hours. Food = more waste = more ammonia\n2. Massive water change — 50% immediately with temperature-matched, dechlorinated water\n3. Test again in 1 hour — If still high, do another 25-50% change\n4. Add Seachem Prime — Temporarily detoxifies ammonia/nitrite for 24-48 hours\n5. Increase aeration — Add an air stone or point filter output upward',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -557,7 +557,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Keep Seachem Prime on hand ALWAYS. It\'s cheap insurance that can save your fish\'s life. Don\'t wait until emergency - buy it now.',
+              'Keep Seachem Prime on hand ALWAYS. It\'s cheap insurance that can save your fish\'s life. Don\'t wait until emergency — buy it now.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -566,7 +566,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'After stabilizing, test daily for a week. Resume light feeding after 48 hours - just 50% of normal amount. Your bacterial colony will rebuild, but it takes time. Patience is key.',
+              'After stabilizing, test daily for a week. Resume light feeding after 48 hours — just 50% of normal amount. Your bacterial colony will rebuild, but it takes time. Patience is key.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
@@ -602,7 +602,7 @@ final nitrogenCyclePath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Prime doesn\'t remove ammonia - it binds it into a non-toxic form temporarily. This gives your bacteria time to process it.',
+                'Prime doesn\'t remove ammonia — it binds it into a non-toxic form temporarily. This gives your bacteria time to process it.',
           ),
           const QuizQuestion(
             id: 'nc_spike_q3',
@@ -667,7 +667,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Your tank was perfectly cycled for months. Then suddenly - ammonia or nitrite shows up again! This is called a "mini-cycle" - when your bacterial colony crashes and needs to rebuild.',
+              'Your tank was perfectly cycled for months. Then suddenly — ammonia or nitrite shows up again! This is called a "mini-cycle" — when your bacterial colony crashes and needs to rebuild.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -690,7 +690,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Treating sick fish with antibiotics? They might kill your beneficial bacteria too. This is why hospital tanks exist - treat sick fish separately so your main tank\'s cycle stays intact.',
+              'Treating sick fish with antibiotics? They might kill your beneficial bacteria too. This is why hospital tanks exist — treat sick fish separately so your main tank\'s cycle stays intact.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -750,7 +750,7 @@ final nitrogenCyclePath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Mini-cycles occur when something disrupts or kills your beneficial bacteria colony - medications, tap water rinses, power outages, etc.',
+                'Mini-cycles occur when something disrupts or kills your beneficial bacteria colony — medications, tap water rinses, power outages, etc.',
           ),
           const QuizQuestion(
             id: 'nc_mini_q2',
@@ -776,7 +776,7 @@ final nitrogenCyclePath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Antibiotics don\'t discriminate - they can kill beneficial bacteria along with disease bacteria. Always monitor parameters during medication.',
+                'Antibiotics don\'t discriminate — they can kill beneficial bacteria along with disease bacteria. Always monitor parameters during medication.',
           ),
           const QuizQuestion(
             id: 'nc_mini_q4',

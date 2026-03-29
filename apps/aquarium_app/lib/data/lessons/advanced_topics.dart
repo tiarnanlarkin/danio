@@ -19,7 +19,7 @@ final advancedTopicsPath = LearningPath(
       pathId: 'advanced_topics',
       title: 'Breeding Basics: Livebearers',
       description:
-          'Guppies, mollies, and platies - easy first breeding projects',
+          'Guppies, mollies, and platies — easy first breeding projects',
       orderIndex: 0,
       xpReward: 75,
       estimatedMinutes: 7,
@@ -123,7 +123,7 @@ final advancedTopicsPath = LearningPath(
       id: 'at_breeding_egg_layers',
       pathId: 'advanced_topics',
       title: 'Breeding: Egg Layers',
-      description: 'From tetras to cichlids - raising egg-laying species',
+      description: 'From tetras to cichlids — raising egg-laying species',
       orderIndex: 1,
       xpReward: 75,
       estimatedMinutes: 8,

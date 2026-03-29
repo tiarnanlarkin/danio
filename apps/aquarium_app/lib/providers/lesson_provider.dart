@@ -341,7 +341,7 @@ class LessonProvider extends StateNotifier<LessonState> {
           ...state.pathLoadStates,
           pathId: LessonLoadState.error,
         },
-        errorMessage: 'Failed to load path: $e',
+        errorMessage: 'Couldn\'t load lessons. Pull down to refresh.',
       );
     }
   }

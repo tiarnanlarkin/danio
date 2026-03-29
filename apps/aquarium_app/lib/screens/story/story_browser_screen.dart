@@ -15,10 +15,20 @@ class StoryBrowserScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileAsync = ref.watch(userProfileProvider);
-    final profile = profileAsync.value;
+    // Select only the fields used in this screen to avoid spurious rebuilds
+    // when unrelated profile fields (XP, gems, streak, etc.) change.
+    final profileSlice = ref.watch(
+      userProfileProvider.select(
+        (s) => s.value == null
+            ? null
+            : (
+                completedStories: s.value!.completedStories,
+                currentLevel: s.value!.currentLevel,
+              ),
+      ),
+    );
 
-    final completedStories = profile?.completedStories ?? [];
+    final completedStories = profileSlice?.completedStories ?? [];
 
     final allStories = Stories.allStories;
 
@@ -68,8 +78,12 @@ class StoryBrowserScreen extends ConsumerWidget {
                 (context, index) {
                   final story = allStories[index];
                   final isCompleted = completedStories.contains(story.id);
-                  final isUnlocked = profile != null
-                      ? story.isUnlocked(profile, completedStories)
+                  final isUnlocked = profileSlice != null
+                      ? (profileSlice.currentLevel >= story.minLevel &&
+                          (story.prerequisites.isEmpty ||
+                              story.prerequisites.every(
+                                (id) => completedStories.contains(id),
+                              )))
                       : story.minLevel == 0 && story.prerequisites.isEmpty;
 
                   return Padding(

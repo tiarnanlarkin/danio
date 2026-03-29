@@ -147,7 +147,7 @@ class AlgaeGuideScreen extends StatelessWidget {
         'Amano shrimp, snails, otos help',
         'Manual removal',
       ],
-      prevention: 'Balanced fertilization, consistent CO2',
+      prevention: 'Balanced fertilisation, consistent CO2',
     ),
     _AlgaeData(
       name: 'Rhizoclonium',

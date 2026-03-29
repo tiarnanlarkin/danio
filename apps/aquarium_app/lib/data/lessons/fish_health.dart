@@ -33,7 +33,7 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Most fish diseases are preventable! Sick fish are usually the result of poor water quality, stress, or poor nutrition - not bad luck.',
+              'Most fish diseases are preventable! Sick fish are usually the result of poor water quality, stress, or poor nutrition — not bad luck.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,

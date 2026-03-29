@@ -349,6 +349,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
 
       final currentTank = tanks[_currentTankIndex % tanks.length];
+      final currentLogs =
+          ref.watch(logsProvider(currentTank.id)).valueOrNull ?? [];
       return Stack(
         children: [
           Positioned.fill(
@@ -361,10 +363,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   theme: theme,
                   isNewUser: _isNewUser(ref),
                   onTankTap: () => _navigateToTankDetail(context, currentTank),
-                  onTestKitTap: () => showWaterParams(context, ref, currentTank.id),
-                  onFoodTap: () => showFeedingInfo(context, ref, currentTank.id),
+                  onTestKitTap: () => showWaterParams(context, currentLogs, currentTank.id),
+                  onFoodTap: () => showFeedingInfo(context, currentLogs, currentTank.id),
                   onPlantTap: () => showPlantInfo(context),
-                  onStatsTap: () => showStatsInfo(context, ref, currentTank.id),
+                  onStatsTap: () => showStatsInfo(context, currentLogs, currentTank.id),
                   onThemeTap: () => showThemePicker(context, ref),
                   onJournalTap: () => NavigationThrottle.push(context, JournalScreen(tankId: currentTank.id), route: RoomSlideRoute(page: JournalScreen(tankId: currentTank.id))),
                   onCalendarTap: () => showStreakCalendar(context),
@@ -513,7 +515,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-          // Bottom sheet panel (single DraggableScrollableSheet with 3 tabs)
+          // Bottom sheet panel (single DraggableScrollableSheet with 4 tabs)
           Positioned.fill(
             child: Semantics(
               label: 'Activity panel — Progress, Tanks, Today',
@@ -580,9 +582,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           RoomControlFAB(
             isHidden: _isNavigatingToCreate,
-            onStats: () => showStatsInfo(context, ref, currentTank.id),
+            onStats: () => showStatsInfo(context, currentLogs, currentTank.id),
             onWaterChange: () => _navigateToWaterChange(context, currentTank),
-            onFeed: () => showFeedingInfo(context, ref, currentTank.id),
+            onFeed: () => showFeedingInfo(context, currentLogs, currentTank.id),
             onQuickTest: () => showQuickLogSheet(context, ref, currentTank),
             onAddTank: () => _navigateToCreateTank(context),
           ),
@@ -666,7 +668,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: FirstVisitTooltip(
                   prefsKey: 'tooltip_seen_room_metaphor',
                   emoji: '🏡',
-                  message: 'This is your virtual fish room. Your tank lives in the center — tap the panels on each side to check water parameters, lighting, and more!',
+                  message: 'This is your virtual fish room. Your tank lives in the centre — tap the panels on each side to check water parameters, lighting, and more!',
                   autoDismissDuration: const Duration(seconds: 6),
                   onDismissed: () => setState(() => _showRoomMetaphorTooltip = false),
                 ),

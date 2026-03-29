@@ -29,7 +29,7 @@ class CyclingAssistantScreen extends ConsumerWidget {
         loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => AppErrorState(
           title: 'Couldn\'t load tank',
-          message: 'Something went wrong loading your tank data.',
+          message: 'Couldn\'t load your tank data. Pull down to refresh.',
           onRetry: () {
             ref.invalidate(tankProvider(tankId));
             ref.invalidate(allLogsProvider(tankId));

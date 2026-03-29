@@ -561,7 +561,8 @@ class _WorkshopToolsContent extends StatelessWidget {
 }
 
 /// A compact tool card for the bottom sheet Tools tab.
-class _SheetToolCard extends StatelessWidget {
+/// Includes a subtle press-scale animation (0.95 → 1.0, 100ms easeOut).
+class _SheetToolCard extends StatefulWidget {
   final IconData icon;
   final String label;
   final Color color;
@@ -575,44 +576,63 @@ class _SheetToolCard extends StatelessWidget {
   });
 
   @override
+  State<_SheetToolCard> createState() => _SheetToolCardState();
+}
+
+class _SheetToolCardState extends State<_SheetToolCard> {
+  bool _pressed = false;
+
+  void _onTapDown(TapDownDetails _) => setState(() => _pressed = true);
+  void _onTapUp(TapUpDetails _) => setState(() => _pressed = false);
+  void _onTapCancel() => setState(() => _pressed = false);
+
+  @override
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: label,
+      label: widget.label,
       child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm2),
-          decoration: BoxDecoration(
-            color: AppColors.whiteAlpha12,
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: AppColors.whiteAlpha20,
+        onTap: widget.onTap,
+        onTapDown: _onTapDown,
+        onTapUp: _onTapUp,
+        onTapCancel: _onTapCancel,
+        child: AnimatedScale(
+          scale: _pressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.sm2),
+            decoration: BoxDecoration(
+              color: AppColors.whiteAlpha12,
+              borderRadius: AppRadius.mediumRadius,
+              border: Border.all(
+                color: AppColors.whiteAlpha20,
+              ),
             ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.xs),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(51),
-                  borderRadius: AppRadius.smallRadius,
-                ),
-                child: Icon(icon, color: color, size: AppIconSizes.sm),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.whiteAlpha95,
-                    fontWeight: FontWeight.w600,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  decoration: BoxDecoration(
+                    color: widget.color.withAlpha(51),
+                    borderRadius: AppRadius.smallRadius,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  child: Icon(widget.icon, color: widget.color, size: AppIconSizes.sm),
                 ),
-              ),
-            ],
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    widget.label,
+                    style: AppTypography.labelSmall.copyWith(
+                      color: AppColors.whiteAlpha95,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

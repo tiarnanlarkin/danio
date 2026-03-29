@@ -24,7 +24,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'You have just bought your first aquarium! A beautiful 75-litre tank sits empty on its stand. Your friend Alex, an experienced aquarist, stops by to help you set it up.\n\n"Excited to get fish?" Alex asks with a knowing smile. "First things first - we need to cycle this tank. What is your first step?"',
+            'You have just bought your first aquarium! A beautiful 75-litre tank sits empty on its stand. Your friend Alex, an experienced aquarist, stops by to help you set it up.\n\n"Excited to get fish?" Alex asks with a knowing smile. "First things first — we need to cycle this tank. What is your first step?"',
         choices: [
           StoryChoice(
             id: 'fill_add_fish',
@@ -54,7 +54,7 @@ class Stories {
       StoryScene(
         id: 'bad_start',
         text:
-            'Alex shakes their head. "That would be New Tank Syndrome - the ammonia from fish waste would spike before beneficial bacteria establish. Your fish could die within days."\n\n"Let\'s do this right," Alex suggests. What should you do?',
+            'Alex shakes their head. "That would be New Tank Syndrome — the ammonia from fish waste would spike before beneficial bacteria establish. Your fish could die within days."\n\n"Let\'s do this right," Alex suggests. What should you do?',
         choices: [
           StoryChoice(
             id: 'learn_cycle',
@@ -144,7 +144,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'add_fish_now',
-            text: 'The water looks clear - add fish now',
+            text: 'The water looks clear — add fish now',
             nextSceneId: 'nitrite_spike',
             isCorrect: false,
             feedback: 'Clear water doesn\'t mean it\'s safe!',
@@ -154,7 +154,7 @@ class Stories {
       StoryScene(
         id: 'nitrite_spike',
         text:
-            'The fish you added become lethargic within hours. Alex tests the water: "Nitrite is at 2ppm - that\'s toxic!"\n\nYou do an emergency 50% water change. "This is why we test," Alex says gently. The cycle needs more time.',
+            'The fish you added become lethargic within hours. Alex tests the water: "Nitrite is at 2ppm — that\'s toxic!"\n\nYou do an emergency 50% water change. "This is why we test," Alex says gently. The cycle needs more time.',
         choices: [
           StoryChoice(
             id: 'learn_lesson',
@@ -179,7 +179,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'full_stock',
-            text: 'Fill the tank - it\'s ready!',
+            text: 'Fill the tank — it\'s ready!',
             nextSceneId: 'careful_ending',
             isCorrect: false,
             feedback: 'This might overwhelm the bacteria colony.',
@@ -193,12 +193,12 @@ class Stories {
         choices: [],
         isFinalScene: true,
         successMessage:
-            'You\'ve mastered the nitrogen cycle - the foundation of fishkeeping!',
+            'You\'ve mastered the nitrogen cycle — the foundation of fishkeeping!',
       ),
       StoryScene(
         id: 'careful_ending',
         text:
-            'You stock the tank fully. Initially it seems fine, but after a few days you notice cloudy water and stressed fish. Tests show a mini-cycle starting.\n\nYou do water changes and reduce feeding. Alex helps you through it, and eventually the bacteria catch up.\n\n"You made it work," Alex says, "but slow stocking is easier on everyone."\n\n✓ Tank cycled - lessons learned!',
+            'You stock the tank fully. Initially it seems fine, but after a few days you notice cloudy water and stressed fish. Tests show a mini-cycle starting.\n\nYou do water changes and reduce feeding. Alex helps you through it, and eventually the bacteria catch up.\n\n"You made it work," Alex says, "but slow stocking is easier on everyone."\n\n✓ Tank cycled — lessons learned!',
         choices: [],
         isFinalScene: true,
         successMessage: 'Success! Though patience would have made it smoother.',
@@ -219,7 +219,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'Your tank has been cycled for a week - it\'s time to get fish! You walk into Aquatic Dreams, a local fish store. The rows of colorful tanks are mesmerizing.\n\nThe shop owner, Maria, greets you. "First tank?" she asks with a warm smile. "What size is it?"',
+            'Your tank has been cycled for a week — it\'s time to get fish! You walk into Aquatic Dreams, a local fish store. The rows of colorful tanks are mesmerizing.\n\nThe shop owner, Maria, greets you. "First tank?" she asks with a warm smile. "What size is it?"',
         choices: [
           StoryChoice(
             id: 'answer_size',
@@ -293,7 +293,7 @@ class Stories {
       StoryScene(
         id: 'betta_choice',
         text:
-            'You pick a gorgeous blue betta with flowing fins. "Great choice!" Maria says. "Bettas are perfect for beginners. But remember - only ONE male betta per tank."\n\n"What would you like to add with your betta?"',
+            'You pick a gorgeous blue betta with flowing fins. "Great choice!" Maria says. "Bettas are perfect for beginners. But remember — only ONE male betta per tank."\n\n"What would you like to add with your betta?"',
         choices: [
           StoryChoice(
             id: 'betta_alone',
@@ -316,14 +316,14 @@ class Stories {
             text: 'Add colorful guppies',
             nextSceneId: 'risky_combo',
             isCorrect: false,
-            feedback: 'Risky - bettas often nip guppy fins.',
+            feedback: 'Risky — bettas often nip guppy fins.',
           ),
         ],
       ),
       StoryScene(
         id: 'tetra_choice',
         text:
-            '"Neon tetras!" Maria smiles. "They\'re peaceful, beautiful, and easy to care for. But tetras are schooling fish - you need at least 6."\n\nShe nets six neon tetras. "What else interests you?"',
+            '"Neon tetras!" Maria smiles. "They\'re peaceful, beautiful, and easy to care for. But tetras are schooling fish — you need at least 6."\n\nShe nets six neon tetras. "What else interests you?"',
         choices: [
           StoryChoice(
             id: 'add_cories',
@@ -438,7 +438,7 @@ class Stories {
       StoryScene(
         id: 'peaceful_ending',
         text:
-            'Your tank settles into a peaceful routine. The fish are active and healthy, displaying vibrant colors. You\'ve learned to feed properly and maintain water quality.\n\n"You\'ve got this," Maria says on your next visit. "Ready for your next tank?"\n\n✓ First fish - success!',
+            'Your tank settles into a peaceful routine. The fish are active and healthy, displaying vibrant colours. You\'ve learned to feed properly and maintain water quality.\n\n"You\'ve got this," Maria says on your next visit. "Ready for your next tank?"\n\n✓ First fish — success!',
         choices: [],
         isFinalScene: true,
         successMessage: 'Your first fish are happy and healthy!',
@@ -459,7 +459,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'It\'s Sunday morning - your weekly water change day! Your 75-litre tank has been running smoothly for a month. You check your notes: last water change was 7 days ago.\n\nWhat\'s your first step?',
+            'It\'s Sunday morning — your weekly water change day! Your 75-litre tank has been running smoothly for a month. You check your notes: last water change was 7 days ago.\n\nWhat\'s your first step?',
         choices: [
           StoryChoice(
             id: 'test_first',
@@ -494,7 +494,7 @@ class Stories {
       StoryScene(
         id: 'premature_change',
         text:
-            'You start removing water, but then wonder - how much should you remove? And what are the current parameters?\n\nYou stop and test the water first. Knowledge is power!',
+            'You start removing water, but then wonder — how much should you remove? And what are the current parameters?\n\nYou stop and test the water first. Knowledge is power!',
         choices: [
           StoryChoice(
             id: 'test_now',
@@ -530,14 +530,14 @@ class Stories {
             text: '10% (7.5 litres)',
             nextSceneId: 'too_small',
             isCorrect: false,
-            feedback: 'Too small - nitrates won\'t drop much.',
+            feedback: 'Too small — nitrates won\'t drop much.',
           ),
         ],
       ),
       StoryScene(
         id: 'good_amount',
         text:
-            'You use the gravel vacuum to remove 19 litres, vacuuming the substrate as you go. Debris and mulm get sucked up - gross but satisfying!\n\nThe fish seem curious about the vacuum. What\'s next?',
+            'You use the gravel vacuum to remove 19 litres, vacuuming the substrate as you go. Debris and mulm get sucked up — gross but satisfying!\n\nThe fish seem curious about the vacuum. What\'s next?',
         choices: [
           StoryChoice(
             id: 'prepare_new',
@@ -550,7 +550,7 @@ class Stories {
       StoryScene(
         id: 'big_change',
         text:
-            'You remove 38 litres - a big change! This will really crash those nitrates. You vacuum heavily, getting deep into the gravel.\n\n"Easy on the beneficial bacteria," you remind yourself as you work.',
+            'You remove 38 litres — a big change! This will really crash those nitrates. You vacuum heavily, getting deep into the gravel.\n\n"Easy on the beneficial bacteria," you remind yourself as you work.',
         choices: [
           StoryChoice(
             id: 'prepare_new',
@@ -563,7 +563,7 @@ class Stories {
       StoryScene(
         id: 'too_small',
         text:
-            'You remove just 7.5 litres. But thinking about it - that\'s only 10%. Your nitrates won\'t drop much.\n\nYou decide to remove more water. Better to do it right!',
+            'You remove just 7.5 litres. But thinking about it — that\'s only 10%. Your nitrates won\'t drop much.\n\nYou decide to remove more water. Better to do it right!',
         choices: [
           StoryChoice(
             id: 'remove_more',
@@ -588,7 +588,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'nothing',
-            text: 'Nothing - tap water is fine',
+            text: 'Nothing — tap water is fine',
             nextSceneId: 'chlorine_danger',
             isCorrect: false,
             feedback: 'Chlorine in tap water is toxic!',
@@ -606,7 +606,7 @@ class Stories {
       StoryScene(
         id: 'chlorine_danger',
         text:
-            'Wait! Tap water contains chlorine and possibly chloramine - both toxic to fish and beneficial bacteria.\n\nYou quickly add water conditioner before adding the water to your tank. Crisis averted!',
+            'Wait! Tap water contains chlorine and possibly chloramine — both toxic to fish and beneficial bacteria.\n\nYou quickly add water conditioner before adding the water to your tank. Crisis averted!',
         choices: [
           StoryChoice(
             id: 'now_temp',
@@ -644,7 +644,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'add_slow',
-            text: 'Add it slowly - fish will adjust',
+            text: 'Add it slowly — fish will adjust',
             nextSceneId: 'slow_add',
             isCorrect: false,
             feedback: 'Even slow addition can shock fish.',
@@ -667,7 +667,7 @@ class Stories {
       StoryScene(
         id: 'slow_add',
         text:
-            'You start adding the cold water slowly. Your fish immediately hide and seem stressed - even gradual temperature changes can shock them.\n\nYou stop and warm the remaining water to tank temperature.',
+            'You start adding the cold water slowly. Your fish immediately hide and seem stressed — even gradual temperature changes can shock them.\n\nYou stop and warm the remaining water to tank temperature.',
         choices: [
           StoryChoice(
             id: 'fix_temp',
@@ -684,7 +684,7 @@ class Stories {
         choices: [],
         isFinalScene: true,
         successMessage:
-            'You\'ve mastered the weekly water change - the key to fishkeeping success!',
+            'You\'ve mastered the weekly water change — the key to fishkeeping success!',
       ),
     ],
   );
@@ -791,7 +791,7 @@ class Stories {
             text: 'Reduce lighting first',
             nextSceneId: 'lighting_fix',
             isCorrect: true,
-            feedback: 'Good thinking - cut the fuel supply.',
+            feedback: 'Good thinking — cut the fuel supply.',
             xpModifier: 5,
           ),
         ],
@@ -856,7 +856,7 @@ class Stories {
       StoryScene(
         id: 'removal',
         text:
-            'You spend an hour manually removing hair algae with a toothbrush and scraping glass. It\'s tedious but effective - you remove TONS of algae.\n\n"This gives me a head start," you think. "But I need to prevent regrowth."',
+            'You spend an hour manually removing hair algae with a toothbrush and scraping glass. It\'s tedious but effective — you remove TONS of algae.\n\n"This gives me a head start," you think. "But I need to prevent regrowth."',
         choices: [
           StoryChoice(
             id: 'biological_help',
@@ -884,7 +884,7 @@ class Stories {
       StoryScene(
         id: 'prevention',
         text:
-            'You establish new habits:\n• 25% water changes twice weekly (temporarily)\n• Feed less - fish get small meals\n• 6-hour light period\n• Dose fertilizers precisely\n• Trim and remove dead plant matter weekly\n\nAfter 3 weeks, your tank is transformed!',
+            'You establish new habits:\n• 25% water changes twice weekly (temporarily)\n• Feed less — fish get small meals\n• 6-hour light period\n• Dose fertilisers precisely\n• Trim and remove dead plant matter weekly\n\nAfter 3 weeks, your tank is transformed!',
         choices: [
           StoryChoice(
             id: 'success',
@@ -973,7 +973,7 @@ class Stories {
       StoryScene(
         id: 'cart_before_horse',
         text:
-            'You buy gorgeous plants, but realize - you still have gravel substrate and basic lighting!\n\nThe plants won\'t thrive without proper substrate, light, and nutrients. You quickly return them and research equipment.',
+            'You buy gorgeous plants, but realize — you still have gravel substrate and basic lighting!\n\nThe plants won\'t thrive without proper substrate, light, and nutrients. You quickly return them and research equipment.',
         choices: [
           StoryChoice(
             id: 'plan_now',
@@ -1100,7 +1100,7 @@ class Stories {
       StoryScene(
         id: 'planting_high_tech',
         text:
-            'You spend hours planting:\n• Carpet plants with tweezers (tedious!)\n• Stems in groups of 3-5\n• Hardscape plants attached with thread\n\nWeek 1: Some melting (expected transition). You dose fertilizers daily and fine-tune CO2.',
+            'You spend hours planting:\n• Carpet plants with tweezers (tedious!)\n• Stems in groups of 3-5\n• Hardscape plants attached with thread\n\nWeek 1: Some melting (expected transition). You dose fertilisers daily and fine-tune CO2.',
         choices: [
           StoryChoice(
             id: 'maintenance',
@@ -1126,7 +1126,7 @@ class Stories {
       StoryScene(
         id: 'high_tech_maintenance',
         text:
-            'High-tech demands precision:\n• Daily fertilizer dosing (NPK + micros)\n• Weekly 50% water changes\n• CO2 monitoring (drop checker stays green)\n• Trimming every week (plants grow FAST!)\n\nAfter 6 weeks, your carpet is filling in beautifully!',
+            'High-tech demands precision:\n• Daily fertiliser dosing (NPK + micros)\n• Weekly 50% water changes\n• CO2 monitoring (drop checker stays green)\n• Trimming every week (plants grow FAST!)\n\nAfter 6 weeks, your carpet is filling in beautifully!',
         choices: [
           StoryChoice(
             id: 'see_results',
@@ -1139,7 +1139,7 @@ class Stories {
       StoryScene(
         id: 'low_tech_maintenance',
         text:
-            'Low-tech is forgiving:\n• Weekly liquid fertilizer\n• 25% water changes weekly\n• Occasional trimming (slow growth)\n• Clean glass as needed\n\n"This is relaxing, not stressful!" you realize.',
+            'Low-tech is forgiving:\n• Weekly liquid fertiliser\n• 25% water changes weekly\n• Occasional trimming (slow growth)\n• Clean glass as needed\n\n"This is relaxing, not stressful!" you realize.',
         choices: [
           StoryChoice(
             id: 'see_results',
@@ -1176,7 +1176,7 @@ class Stories {
   static const Story breedingProject = Story(
     id: 'breeding_project',
     title: 'Breeding Project',
-    description: 'Set up a breeding program for your favorite species',
+    description: 'Set up a breeding program for your favourite species',
     difficulty: StoryDifficulty.advanced,
     estimatedMinutes: 10,
     xpReward: 100,
@@ -1201,7 +1201,7 @@ class Stories {
             text: 'Set up a breeding tank immediately',
             nextSceneId: 'hasty_setup',
             isCorrect: false,
-            feedback: 'Research first - breeding has specific needs!',
+            feedback: 'Research first — breeding has specific needs!',
           ),
         ],
       ),
@@ -1326,7 +1326,7 @@ class Stories {
       StoryScene(
         id: 'courtship',
         text:
-            'Day 1-3: The Rams display stunning courtship!\n• Color intensifies (male shows iridescent blue)\n• They clean a flat stone together\n• Practice spawning motions\n\nDay 4: Morning check - EGGS! About 150 tiny eggs on the stone. What do you do?',
+            'Day 1-3: The Rams display stunning courtship!\n• Color intensifies (male shows iridescent blue)\n• They clean a flat stone together\n• Practice spawning motions\n\nDay 4: Morning check — EGGS! About 150 tiny eggs on the stone. What do you do?',
         choices: [
           StoryChoice(
             id: 'leave_parents',
@@ -1349,7 +1349,7 @@ class Stories {
       StoryScene(
         id: 'parent_raising',
         text:
-            'You let the parents care for the eggs. They\'re devoted - fanning constantly, removing dead eggs.\n\nDay 3: Eggs hatch into wrigglers! Parents move them to pits they dug in the sand.\n\nDay 7: Free-swimming fry! But the parents seem stressed by your presence. What\'s your approach?',
+            'You let the parents care for the eggs. They\'re devoted — fanning constantly, removing dead eggs.\n\nDay 3: Eggs hatch into wrigglers! Parents move them to pits they dug in the sand.\n\nDay 7: Free-swimming fry! But the parents seem stressed by your presence. What\'s your approach?',
         choices: [
           StoryChoice(
             id: 'minimal_disturbance',
@@ -1384,7 +1384,7 @@ class Stories {
       StoryScene(
         id: 'parent_stress',
         text:
-            'Your frequent tank openings and feeding stress the parents. One morning, you find them eating the fry!\n\n"This happens," Jamie consoles. "New parents often fail first spawn. Let them try again - experience helps."',
+            'Your frequent tank openings and feeding stress the parents. One morning, you find them eating the fry!\n\n"This happens," Jamie consoles. "New parents often fail first spawn. Let them try again — experience helps."',
         choices: [
           StoryChoice(
             id: 'second_attempt',

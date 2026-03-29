@@ -20,7 +20,7 @@ class DailyTips {
       id: 'tip_test_regularly',
       title: 'Test Your Water',
       content:
-          'Can\'t see ammonia or nitrite - they\'re invisible killers. Test weekly, or more often in new tanks.',
+          'Can\'t see ammonia or nitrite — they\'re invisible killers. Test weekly, or more often in new tanks.',
       targetExperience: [ExperienceLevel.beginner],
       relatedLessonId: 'nc_stages',
     ),
@@ -28,7 +28,7 @@ class DailyTips {
       id: 'tip_less_food',
       title: 'Less is More',
       content:
-          'Fish stomachs are tiny - about the size of their eye. Feed small amounts they can finish in 2 minutes. Overfeeding pollutes water.',
+          'Fish stomachs are tiny — about the size of their eye. Feed small amounts they can finish in 2 minutes. Overfeeding pollutes water.',
       targetExperience: [ExperienceLevel.beginner],
     ),
     DailyTip(
@@ -87,7 +87,7 @@ class DailyTips {
       id: 'tip_plant_ferts',
       title: 'Start Low, Go Slow',
       content:
-          'With fertilizers, less is more at first. It\'s easier to add more than to fight algae from overdosing.',
+          'With fertilisers, less is more at first. It\'s easier to add more than to fight algae from overdosing.',
       targetTankTypes: [TankType.freshwater],
     ),
     DailyTip(

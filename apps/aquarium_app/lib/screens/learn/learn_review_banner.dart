@@ -11,8 +11,10 @@ class LearnReviewBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final srState = ref.watch(spacedRepetitionProvider);
-    final dueCount = srState.stats.dueCards;
+    // Select only dueCards to avoid rebuilds on card-list or session changes.
+    final dueCount = ref.watch(
+      spacedRepetitionProvider.select((s) => s.stats.dueCards),
+    );
 
     if (dueCount == 0) return const SizedBox.shrink();
 

@@ -48,7 +48,7 @@ class SubstrateGuideScreen extends StatelessWidget {
             pros: [
               'Cheap',
               'Easy to clean',
-              'Many colors',
+              'Many colours',
               'Won\'t cloud water',
             ],
             cons: [
@@ -293,7 +293,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                 _TipItem(
                   text: 'Never vacuum planted areas deeply - disturbs roots',
                 ),
-                _TipItem(text: 'Dark substrate makes fish colors pop'),
+                _TipItem(text: 'Dark substrate makes fish colours pop'),
                 _TipItem(
                   text:
                       'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',

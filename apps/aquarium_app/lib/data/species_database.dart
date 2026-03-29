@@ -143,7 +143,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 10,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, micro pellets, frozen/live foods',
+    diet: 'Omnivore — flakes, micro pellets, frozen/live foods',
     adultSizeCm: 3.5,
     swimLevel: 'Middle',
     description:
@@ -171,7 +171,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 8,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, micro pellets, frozen/live foods',
+    diet: 'Omnivore — flakes, micro pellets, frozen/live foods',
     adultSizeCm: 4,
     swimLevel: 'Middle',
     description:
@@ -193,11 +193,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, frozen foods',
+    diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
-        'Known for tight schooling behavior and distinctive red nose. The red nose fades when stressed - a good indicator of water quality.',
+        'Known for tight schooling behavior and distinctive red nose. The red nose fades when stressed — a good indicator of water quality.',
     compatibleWith: ['Other Tetras', 'Corydoras', 'Rasboras', 'Dwarf Cichlids'],
     avoidWith: ['Aggressive fish', 'Large predators'],
   ),
@@ -217,7 +217,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, vegetable matter',
+    diet: 'Omnivore — flakes, small pellets, vegetable matter',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -244,7 +244,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetable matter, algae',
+    diet: 'Omnivore — flakes, pellets, vegetable matter, algae',
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
@@ -266,7 +266,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 30,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore with herbivore tendencies - flakes, algae, vegetables',
+    diet: 'Omnivore with herbivore tendencies — flakes, algae, vegetables',
     adultSizeCm: 10,
     swimLevel: 'All',
     description:
@@ -295,7 +295,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, wafers, frozen foods',
+    diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 7,
     swimLevel: 'Bottom',
     description:
@@ -322,7 +322,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, wafers, frozen foods',
+    diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Bottom',
     description:
@@ -351,7 +351,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, micro pellets, frozen foods',
+    diet: 'Omnivore — flakes, micro pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
@@ -373,7 +373,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 10,
     minSchoolSize: 8,
     temperament: 'Peaceful',
-    diet: 'Omnivore - micro foods, crushed flakes, baby brine shrimp',
+    diet: 'Omnivore — micro foods, crushed flakes, baby brine shrimp',
     adultSizeCm: 2,
     swimLevel: 'Middle',
     description:
@@ -397,7 +397,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Carnivore - betta pellets, frozen bloodworms, brine shrimp',
+    diet: 'Carnivore — betta pellets, frozen bloodworms, brine shrimp',
     adultSizeCm: 7,
     swimLevel: 'Top',
     description:
@@ -431,7 +431,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods, some vegetable matter',
+    diet: 'Omnivore — flakes, pellets, frozen foods, some vegetable matter',
     adultSizeCm: 9,
     swimLevel: 'Top',
     description:
@@ -458,7 +458,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, frozen foods',
+    diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -482,7 +482,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 10,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - high-quality pellets, frozen foods, live foods',
+    diet: 'Omnivore — high-quality pellets, frozen foods, live foods',
     adultSizeCm: 7,
     swimLevel: 'Bottom',
     description:
@@ -504,7 +504,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Carnivore - frozen foods, live foods, high-protein pellets',
+    diet: 'Carnivore — frozen foods, live foods, high-protein pellets',
     adultSizeCm: 8,
     swimLevel: 'Bottom',
     description:
@@ -529,11 +529,11 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 1,
     temperament: 'Peaceful (becomes territorial as adult)',
     diet:
-        'Herbivore - algae wafers, vegetables, driftwood (essential for digestion)',
+        'Herbivore — algae wafers, vegetables, driftwood (essential for digestion)',
     adultSizeCm: 60,
     swimLevel: 'Bottom',
     description:
-        '⚠️ Grows to 45-60cm. Produces massive waste. Not suitable for most home aquaria. Often sold as small algae cleaners (5-10cm), these fish quickly outgrow most setups. Choose a Bristlenose Pleco instead - same job, stays small. Needs driftwood for digestion. Nocturnal.',
+        '⚠️ Grows to 45-60cm. Produces massive waste. Not suitable for most home aquaria. Often sold as small algae cleaners (5-10cm), these fish quickly outgrow most setups. Choose a Bristlenose Pleco instead — same job, stays small. Needs driftwood for digestion. Nocturnal.',
     compatibleWith: [
       'Very large community fish only',
     ],
@@ -558,7 +558,7 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 1,
     temperament: 'Peaceful',
     diet:
-        'Herbivore - algae wafers, vegetables (zucchini, cucumber), driftwood',
+        'Herbivore — algae wafers, vegetables (zucchini, cucumber), driftwood',
     adultSizeCm: 12,
     swimLevel: 'Bottom',
     description:
@@ -585,7 +585,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Herbivore - algae, algae wafers, blanched vegetables',
+    diet: 'Herbivore — algae, algae wafers, blanched vegetables',
     adultSizeCm: 4,
     swimLevel: 'Bottom',
     description:
@@ -609,7 +609,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore/detritivore - biofilm, algae, shrimp pellets, vegetables',
+    diet: 'Omnivore/detritivore — biofilm, algae, shrimp pellets, vegetables',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
@@ -632,7 +632,7 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 3,
     temperament: 'Peaceful',
     diet:
-        'Omnivore/detritivore - algae (especially hair algae), biofilm, pellets',
+        'Omnivore/detritivore — algae (especially hair algae), biofilm, pellets',
     adultSizeCm: 5,
     swimLevel: 'Bottom',
     description:
@@ -656,7 +656,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Herbivore - algae, biofilm, algae wafers',
+    diet: 'Herbivore — algae, biofilm, algae wafers',
     adultSizeCm: 2.5,
     swimLevel: 'Bottom',
     description:
@@ -678,7 +678,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 18,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - algae, vegetables, fish food, calcium supplements',
+    diet: 'Omnivore — algae, vegetables, fish food, calcium supplements',
     adultSizeCm: 5,
     swimLevel: 'All',
     description:
@@ -702,7 +702,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 10,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, frozen foods, live worms',
+    diet: 'Omnivore — sinking pellets, frozen foods, live worms',
     adultSizeCm: 10,
     swimLevel: 'Bottom',
     description:
@@ -731,11 +731,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
-        'Extremely hardy and active schooling fish. Great for cycling new tanks. Very fast swimmers - need horizontal swimming space.',
+        'Extremely hardy and active schooling fish. Great for cycling new tanks. Very fast swimmers — need horizontal swimming space.',
     compatibleWith: ['Other Danios', 'Barbs', 'Tetras', 'Most community fish'],
     avoidWith: ['Slow-moving fish', 'Very small fish', 'Long-finned fish'],
   ),
@@ -755,7 +755,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
@@ -779,7 +779,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, frozen foods, live foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
@@ -812,7 +812,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 10,
     minSchoolSize: 8,
     temperament: 'Peaceful',
-    diet: 'Omnivore - micro pellets, crushed flakes, baby brine shrimp',
+    diet: 'Omnivore — micro pellets, crushed flakes, baby brine shrimp',
     adultSizeCm: 2,
     swimLevel: 'Middle',
     description:
@@ -834,7 +834,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 18,
     minSchoolSize: 6,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
@@ -861,11 +861,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 4,
     swimLevel: 'Middle',
     description:
-        'Beautiful deep red tetra. Known for fin nipping - keep in groups of 8+ to reduce aggression. Avoid with slow or long-finned tankmates.',
+        'Beautiful deep red tetra. Known for fin nipping — keep in groups of 8+ to reduce aggression. Avoid with slow or long-finned tankmates.',
     compatibleWith: [
       'Other Serpae Tetras',
       'Robust tetras',
@@ -890,11 +890,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, frozen foods',
+    diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 4,
     swimLevel: 'Top',
     description:
-        'Hardy coldwater fish - perfect for unheated tanks. Beautiful iridescent stripe. Very peaceful and easy to breed. Excellent beginner fish.',
+        'Hardy coldwater fish — perfect for unheated tanks. Beautiful iridescent stripe. Very peaceful and easy to breed. Excellent beginner fish.',
     compatibleWith: [
       'Other coldwater fish',
       'Hillstream loaches',
@@ -920,7 +920,7 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 1,
     temperament: 'Peaceful',
     diet:
-        'Omnivore - quality pellets, flakes, blanched vegetables (peas, spinach), bloodworms, brine shrimp',
+        'Omnivore — quality pellets, flakes, blanched vegetables (peas, spinach), bloodworms, brine shrimp',
     adultSizeCm: 25,
     swimLevel: 'Middle',
     description:
@@ -954,7 +954,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, algae, vegetable matter',
+    diet: 'Omnivore — flakes, small pellets, algae, vegetable matter',
     adultSizeCm: 3,
     swimLevel: 'Top',
     description:
@@ -978,7 +978,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 8,
     temperament: 'Peaceful',
-    diet: 'Omnivore - micro sinking foods, baby brine shrimp',
+    diet: 'Omnivore — micro sinking foods, baby brine shrimp',
     adultSizeCm: 2.5,
     swimLevel: 'Bottom',
     description:
@@ -1005,11 +1005,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, wafers, frozen foods',
+    diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 7,
     swimLevel: 'Bottom',
     description:
-        'Beautiful spotted pattern with orange pectoral fins. Tolerates warmer water than most Corydoras - perfect with discus or German Blue Rams.',
+        'Beautiful spotted pattern with orange pectoral fins. Tolerates warmer water than most Corydoras — perfect with discus or German Blue Rams.',
     compatibleWith: ['Most community fish', 'Discus', 'Rams', 'Tetras'],
     avoidWith: ['Aggressive bottom dwellers'],
   ),
@@ -1027,7 +1027,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 18,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, wafers, frozen foods',
+    diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Bottom',
     description:
@@ -1056,7 +1056,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods, some vegetable matter',
+    diet: 'Omnivore — flakes, pellets, frozen foods, some vegetable matter',
     adultSizeCm: 12,
     swimLevel: 'Top',
     description:
@@ -1083,7 +1083,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - small foods, frozen daphnia, micro pellets',
+    diet: 'Omnivore — small foods, frozen daphnia, micro pellets',
     adultSizeCm: 4,
     swimLevel: 'Top',
     description:
@@ -1112,11 +1112,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Herbivore/Omnivore - algae, algae wafers, vegetables, some protein',
+    diet: 'Herbivore/Omnivore — algae, algae wafers, vegetables, some protein',
     adultSizeCm: 15,
     swimLevel: 'Bottom',
     description:
-        'The true SAE - excellent at eating black beard algae. Active fish that needs swimming room. May become less algae-focused as it ages.',
+        'The true SAE — excellent at eating black beard algae. Active fish that needs swimming room. May become less algae-focused as it ages.',
     compatibleWith: ['Most community fish', 'Tetras', 'Barbs', 'Corydoras'],
     avoidWith: ['Territorial bottom dwellers', 'Very small tanks'],
   ),
@@ -1136,11 +1136,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore/scavenger - detritus, algae, leftover fish food',
+    diet: 'Omnivore/scavenger — detritus, algae, leftover fish food',
     adultSizeCm: 4,
     swimLevel: 'Bottom',
     description:
-        'Transparent shrimp - you can see their internal organs! Hardy and inexpensive. Great for beginners and as tank cleaners.',
+        'Transparent shrimp — you can see their internal organs! Hardy and inexpensive. Great for beginners and as tank cleaners.',
     compatibleWith: ['Small peaceful fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Medium to large fish that may eat them'],
   ),
@@ -1158,7 +1158,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore/detritivore - biofilm, algae, shrimp pellets, vegetables',
+    diet: 'Omnivore/detritivore — biofilm, algae, shrimp pellets, vegetables',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
@@ -1182,11 +1182,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 18,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - algae, decaying plant matter, fish food, vegetables',
+    diet: 'Omnivore — algae, decaying plant matter, fish food, vegetables',
     adultSizeCm: 2.5,
     swimLevel: 'All',
     description:
-        'Flat-coiled shell in red, blue, or brown. Excellent cleaners. Will reproduce readily - control population by limiting food.',
+        'Flat-coiled shell in red, blue, or brown. Excellent cleaners. Will reproduce readily — control population by limiting food.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish (loaches, puffers)', 'Assassin snails'],
   ),
@@ -1204,11 +1204,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Detritivore - decaying matter, leftover food, some algae',
+    diet: 'Detritivore — decaying matter, leftover food, some algae',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
-        'Burrowing snails that aerate substrate and prevent gas pockets. Nocturnal - mostly hidden during day. Reproduce prolifically.',
+        'Burrowing snails that aerate substrate and prevent gas pockets. Nocturnal — mostly hidden during day. Reproduce prolifically.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish', 'Those who dislike snail populations'],
   ),
@@ -1228,11 +1228,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - pellets, flakes, frozen foods',
+    diet: 'Omnivore — pellets, flakes, frozen foods',
     adultSizeCm: 10,
     swimLevel: 'Bottom',
     description:
-        'Colourful West African dwarf cichlid. Easy to breed - great first cichlid. Territorial when breeding but generally community-safe.',
+        'Colourful West African dwarf cichlid. Easy to breed — great first cichlid. Territorial when breeding but generally community-safe.',
     compatibleWith: ['Tetras', 'Barbs', 'Corydoras', 'Robust community fish'],
     avoidWith: [
       'Other bottom-dwelling cichlids',
@@ -1253,7 +1253,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - high-quality pellets, frozen foods',
+    diet: 'Omnivore — high-quality pellets, frozen foods',
     adultSizeCm: 8,
     swimLevel: 'Bottom',
     description:
@@ -1282,7 +1282,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetables, algae',
+    diet: 'Omnivore — flakes, pellets, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
@@ -1304,7 +1304,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 5,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, frozen foods, snails, vegetables',
+    diet: 'Omnivore — sinking pellets, frozen foods, snails, vegetables',
     adultSizeCm: 30,
     swimLevel: 'Bottom',
     description:
@@ -1331,7 +1331,7 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 5,
     temperament: 'Peaceful',
     diet:
-        'Omnivore - high-quality pellets, frozen bloodworms, beef heart, vegetables',
+        'Omnivore — high-quality pellets, frozen bloodworms, beef heart, vegetables',
     adultSizeCm: 20,
     swimLevel: 'Middle',
     description:
@@ -1363,7 +1363,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 30,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore with herbivore tendencies - flakes, algae, vegetables',
+    diet: 'Omnivore with herbivore tendencies — flakes, algae, vegetables',
     adultSizeCm: 8,
     swimLevel: 'All',
     description:
@@ -1385,7 +1385,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 30,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore with herbivore tendencies - flakes, algae, vegetables',
+    diet: 'Omnivore with herbivore tendencies — flakes, algae, vegetables',
     adultSizeCm: 15,
     swimLevel: 'All',
     description:
@@ -1412,7 +1412,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 30,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore with herbivore tendencies - flakes, algae, vegetables',
+    diet: 'Omnivore with herbivore tendencies — flakes, algae, vegetables',
     adultSizeCm: 10,
     swimLevel: 'All',
     description:
@@ -1434,7 +1434,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 30,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, vegetables',
+    diet: 'Omnivore — flakes, small pellets, vegetables',
     adultSizeCm: 7,
     swimLevel: 'Middle',
     description:
@@ -1458,7 +1458,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetable matter, algae',
+    diet: 'Omnivore — flakes, pellets, vegetable matter, algae',
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
@@ -1480,7 +1480,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetable matter, algae',
+    diet: 'Omnivore — flakes, pellets, vegetable matter, algae',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
@@ -1502,7 +1502,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetable matter, algae',
+    diet: 'Omnivore — flakes, pellets, vegetable matter, algae',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
@@ -1524,7 +1524,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetable matter, algae',
+    diet: 'Omnivore — flakes, pellets, vegetable matter, algae',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
@@ -1548,7 +1548,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetables, algae',
+    diet: 'Omnivore — flakes, pellets, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
@@ -1570,7 +1570,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetables, algae',
+    diet: 'Omnivore — flakes, pellets, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
@@ -1592,7 +1592,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetables, algae',
+    diet: 'Omnivore — flakes, pellets, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
@@ -1614,7 +1614,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetables, algae',
+    diet: 'Omnivore — flakes, pellets, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
@@ -1638,7 +1638,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods, live foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 10,
     swimLevel: 'Middle',
     description:
@@ -1665,7 +1665,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, frozen foods',
+    diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
@@ -1692,7 +1692,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - small foods, micro pellets, baby brine shrimp',
+    diet: 'Omnivore — small foods, micro pellets, baby brine shrimp',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
@@ -1719,7 +1719,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, frozen foods',
+    diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 7,
     swimLevel: 'Top',
     description:
@@ -1749,7 +1749,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Carnivore - frozen foods, live foods, high-protein pellets',
+    diet: 'Carnivore — frozen foods, live foods, high-protein pellets',
     adultSizeCm: 8,
     swimLevel: 'Bottom',
     description:
@@ -1771,7 +1771,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 18,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - pellets, flakes, frozen foods',
+    diet: 'Omnivore — pellets, flakes, frozen foods',
     adultSizeCm: 10,
     swimLevel: 'Middle',
     description:
@@ -1798,7 +1798,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - pellets, flakes, frozen foods, live foods',
+    diet: 'Omnivore — pellets, flakes, frozen foods, live foods',
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
@@ -1820,7 +1820,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Aggressive',
-    diet: 'Omnivore - pellets, flakes, frozen foods, vegetables',
+    diet: 'Omnivore — pellets, flakes, frozen foods, vegetables',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
@@ -1843,7 +1843,7 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
     diet:
-        'Omnivore with herbivore tendencies - pellets, flakes, vegetables, algae',
+        'Omnivore with herbivore tendencies — pellets, flakes, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
@@ -1869,7 +1869,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - pellets, frozen foods, vegetables, live foods',
+    diet: 'Omnivore — pellets, frozen foods, vegetables, live foods',
     adultSizeCm: 20,
     swimLevel: 'Middle',
     description:
@@ -1896,7 +1896,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, frozen foods, live foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
@@ -1922,7 +1922,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, frozen foods, live foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
@@ -1948,7 +1948,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, frozen foods, live foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
@@ -1974,7 +1974,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 8,
     minSchoolSize: 5,
     temperament: 'Peaceful',
-    diet: 'Omnivore - high-quality pellets, frozen bloodworms, beef heart',
+    diet: 'Omnivore — high-quality pellets, frozen bloodworms, beef heart',
     adultSizeCm: 20,
     swimLevel: 'Middle',
     description:
@@ -2000,7 +2000,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 8,
     minSchoolSize: 5,
     temperament: 'Peaceful',
-    diet: 'Omnivore - high-quality pellets, frozen bloodworms, beef heart',
+    diet: 'Omnivore — high-quality pellets, frozen bloodworms, beef heart',
     adultSizeCm: 20,
     swimLevel: 'Middle',
     description:
@@ -2030,7 +2030,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Herbivore - algae wafers, vegetables, driftwood',
+    diet: 'Herbivore — algae wafers, vegetables, driftwood',
     adultSizeCm: 12,
     swimLevel: 'Bottom',
     description:
@@ -2057,7 +2057,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Herbivore - algae wafers, vegetables, driftwood',
+    diet: 'Herbivore — algae wafers, vegetables, driftwood',
     adultSizeCm: 12,
     swimLevel: 'Bottom',
     description:
@@ -2084,7 +2084,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, wafers, frozen foods',
+    diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 6,
     swimLevel: 'Bottom',
     description:
@@ -2111,7 +2111,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 5,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - sinking pellets, frozen foods, snails, vegetables',
+    diet: 'Omnivore — sinking pellets, frozen foods, snails, vegetables',
     adultSizeCm: 13,
     swimLevel: 'Bottom',
     description:
@@ -2137,7 +2137,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, algae',
+    diet: 'Omnivore — flakes, small pellets, algae',
     adultSizeCm: 3,
     swimLevel: 'Top',
     description:
@@ -2159,7 +2159,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, algae',
+    diet: 'Omnivore — flakes, small pellets, algae',
     adultSizeCm: 3,
     swimLevel: 'Top',
     description:
@@ -2181,7 +2181,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, algae',
+    diet: 'Omnivore — flakes, small pellets, algae',
     adultSizeCm: 3,
     swimLevel: 'Top',
     description:
@@ -2203,7 +2203,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, vegetable matter',
+    diet: 'Omnivore — flakes, small pellets, vegetable matter',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -2230,7 +2230,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, vegetable matter',
+    diet: 'Omnivore — flakes, small pellets, vegetable matter',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -2257,7 +2257,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, vegetable matter',
+    diet: 'Omnivore — flakes, small pellets, vegetable matter',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -2284,7 +2284,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, vegetable matter',
+    diet: 'Omnivore — flakes, small pellets, vegetable matter',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -2306,7 +2306,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, vegetable matter',
+    diet: 'Omnivore — flakes, small pellets, vegetable matter',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -2333,7 +2333,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 30,
     minSchoolSize: 3,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, mosquito larvae, small insects',
+    diet: 'Omnivore — flakes, mosquito larvae, small insects',
     adultSizeCm: 6,
     swimLevel: 'Top',
     description:
@@ -2355,7 +2355,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - micro foods, crushed flakes, baby brine shrimp',
+    diet: 'Omnivore — micro foods, crushed flakes, baby brine shrimp',
     adultSizeCm: 2,
     swimLevel: 'Top',
     description:
@@ -2381,7 +2381,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 8,
     temperament: 'Peaceful',
-    diet: 'Omnivore - micro foods, crushed flakes, baby brine shrimp',
+    diet: 'Omnivore — micro foods, crushed flakes, baby brine shrimp',
     adultSizeCm: 2.5,
     swimLevel: 'Middle',
     description:
@@ -2403,7 +2403,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 12,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, micro pellets, frozen foods',
+    diet: 'Omnivore — flakes, micro pellets, frozen foods',
     adultSizeCm: 3,
     swimLevel: 'Middle',
     description:
@@ -2425,7 +2425,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
@@ -2447,7 +2447,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 6,
     swimLevel: 'Top',
     description:
@@ -2469,11 +2469,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 12,
     swimLevel: 'Top',
     description:
-        'Larger danio with blue and gold horizontal stripes. Very active - needs lots of swimming space. Jumper - secure lid needed.',
+        'Larger danio with blue and gold horizontal stripes. Very active — needs lots of swimming space. Jumper — secure lid needed.',
     compatibleWith: ['Medium-sized community fish', 'Barbs', 'Rainbowfish'],
     avoidWith: ['Very small fish', 'Slow-moving fish', 'Small tanks'],
   ),
@@ -2491,7 +2491,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, small pellets, frozen foods',
+    diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 4,
     swimLevel: 'Top',
     description:
@@ -2522,7 +2522,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 6,
     minSchoolSize: 10,
     temperament: 'Peaceful',
-    diet: 'Omnivore - micro pellets, crushed flakes, frozen foods',
+    diet: 'Omnivore — micro pellets, crushed flakes, frozen foods',
     adultSizeCm: 3,
     swimLevel: 'Middle',
     description:
@@ -2549,7 +2549,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, micro pellets, frozen foods',
+    diet: 'Omnivore — flakes, micro pellets, frozen foods',
     adultSizeCm: 4,
     swimLevel: 'Middle',
     description:
@@ -2571,7 +2571,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 18,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods, live foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 8,
     swimLevel: 'Middle',
     description:
@@ -2598,7 +2598,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, micro pellets, frozen foods',
+    diet: 'Omnivore — flakes, micro pellets, frozen foods',
     adultSizeCm: 4,
     swimLevel: 'Middle',
     description:
@@ -2620,7 +2620,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
@@ -2647,7 +2647,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
@@ -2669,7 +2669,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 8,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 7,
     swimLevel: 'Middle',
     description:
@@ -2691,7 +2691,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetables',
+    diet: 'Omnivore — flakes, pellets, vegetables',
     adultSizeCm: 10,
     swimLevel: 'Middle',
     description:
@@ -2718,7 +2718,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, vegetables',
+    diet: 'Omnivore — flakes, pellets, vegetables',
     adultSizeCm: 7,
     swimLevel: 'Middle',
     description:
@@ -2745,7 +2745,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods, vegetables',
+    diet: 'Omnivore — flakes, pellets, frozen foods, vegetables',
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
@@ -2772,7 +2772,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
@@ -2794,7 +2794,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Herbivore - algae, biofilm, algae wafers',
+    diet: 'Herbivore — algae, biofilm, algae wafers',
     adultSizeCm: 7,
     swimLevel: 'Bottom',
     description:
@@ -2816,7 +2816,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore - sinking pellets, frozen foods, worms',
+    diet: 'Omnivore — sinking pellets, frozen foods, worms',
     adultSizeCm: 25,
     swimLevel: 'Bottom',
     description:
@@ -2838,7 +2838,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Carnivore - other snails, protein-rich sinking foods',
+    diet: 'Carnivore — other snails, protein-rich sinking foods',
     adultSizeCm: 2.5,
     swimLevel: 'Bottom',
     description:
@@ -2860,7 +2860,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - algae, detritus, vegetables, fish food',
+    diet: 'Omnivore — algae, detritus, vegetables, fish food',
     adultSizeCm: 5,
     swimLevel: 'Bottom',
     description:
@@ -2882,7 +2882,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 6,
     minSchoolSize: 10,
     temperament: 'Peaceful',
-    diet: 'Omnivore/detritivore - biofilm, shrimp pellets, vegetables',
+    diet: 'Omnivore/detritivore — biofilm, shrimp pellets, vegetables',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
@@ -2904,7 +2904,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore/detritivore - biofilm, algae, shrimp pellets',
+    diet: 'Omnivore/detritivore — biofilm, algae, shrimp pellets',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
@@ -2926,7 +2926,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore/detritivore - biofilm, algae, shrimp pellets',
+    diet: 'Omnivore/detritivore — biofilm, algae, shrimp pellets',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
@@ -2948,7 +2948,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Filter feeder - fine particles, powdered foods',
+    diet: 'Filter feeder — fine particles, powdered foods',
     adultSizeCm: 10,
     swimLevel: 'All',
     description:
@@ -2970,7 +2970,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Filter feeder - fine particles, powdered foods',
+    diet: 'Filter feeder — fine particles, powdered foods',
     adultSizeCm: 15,
     swimLevel: 'All',
     description:
@@ -2996,7 +2996,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods, live foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 10,
     swimLevel: 'Middle',
     description:
@@ -3024,7 +3024,7 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
     diet:
-        'Omnivore - algae, algae wafers, vegetables, will eat slime coat of fish',
+        'Omnivore — algae, algae wafers, vegetables, will eat slime coat of fish',
     adultSizeCm: 25,
     swimLevel: 'Bottom',
     description:
@@ -3051,7 +3051,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 6,
     temperament: 'Peaceful',
-    diet: 'Omnivore - flakes, pellets, frozen foods',
+    diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 5.5,
     swimLevel: 'Top',
     description:
@@ -3073,11 +3073,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 6,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - flakes, pellets, vegetables, WILL EAT PLANTS',
+    diet: 'Omnivore — flakes, pellets, vegetables, WILL EAT PLANTS',
     adultSizeCm: 7,
     swimLevel: 'Middle',
     description:
-        'Hardy, larger tetra with red fins. Notorious plant eater - not suitable for planted tanks. Very tolerant of water conditions.',
+        'Hardy, larger tetra with red fins. Notorious plant eater — not suitable for planted tanks. Very tolerant of water conditions.',
     compatibleWith: ['Other robust Tetras', 'Barbs', 'Cichlids'],
     avoidWith: [
       'Live plants',
@@ -3100,7 +3100,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Carnivore - live foods, frozen foods (often refuses dry food)',
+    diet: 'Carnivore — live foods, frozen foods (often refuses dry food)',
     adultSizeCm: 2,
     swimLevel: 'Middle',
     description:
@@ -3122,11 +3122,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 2,
     temperament: 'Peaceful',
-    diet: 'Carnivore - frozen bloodworms, brine shrimp, sinking pellets',
+    diet: 'Carnivore — frozen bloodworms, brine shrimp, sinking pellets',
     adultSizeCm: 4,
     swimLevel: 'Bottom',
     description:
-        'Fully aquatic frog that must surface to breathe. Peaceful and fun to watch. Poor eyesight - may need target feeding. Keep in pairs or groups.',
+        'Fully aquatic frog that must surface to breathe. Peaceful and fun to watch. Poor eyesight — may need target feeding. Keep in pairs or groups.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Shrimp'],
     avoidWith: ['Large fish', 'Aggressive fish', 'African Clawed Frogs'],
   ),
@@ -3144,7 +3144,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 25,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - algae, vegetables, calcium-rich foods, fish food',
+    diet: 'Omnivore — algae, vegetables, calcium-rich foods, fish food',
     adultSizeCm: 10,
     swimLevel: 'Bottom',
     description:
@@ -3166,7 +3166,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore/filter feeder - biofilm, fine particles, crushed foods',
+    diet: 'Omnivore/filter feeder — biofilm, fine particles, crushed foods',
     adultSizeCm: 1,
     swimLevel: 'Bottom',
     description:
@@ -3188,11 +3188,11 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 18,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Carnivore - earthworms, bloodworms, pellets, small fish',
+    diet: 'Carnivore — earthworms, bloodworms, pellets, small fish',
     adultSizeCm: 25,
     swimLevel: 'Bottom',
     description:
-        'Neotenic salamander that remains aquatic. Requires cold water - CANNOT tolerate tropical temperatures. No tankmates recommended as they eat anything that fits in mouth. Requires long, shallow tanks — width matters more than height. ⚠️ Legal restrictions apply in some regions. Check local laws before purchasing.',
+        'Neotenic salamander that remains aquatic. Requires cold water — CANNOT tolerate tropical temperatures. No tankmates recommended as they eat anything that fits in mouth. Requires long, shallow tanks — width matters more than height. ⚠️ Legal restrictions apply in some regions. Check local laws before purchasing.',
     compatibleWith: ['Other similar-sized Axolotls (with caution)'],
     avoidWith: [
       'All fish species',
@@ -3218,7 +3218,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Omnivore - quality pellets, flakes, blanched vegetables, frozen foods',
+    diet: 'Omnivore — quality pellets, flakes, blanched vegetables, frozen foods',
     adultSizeCm: 20,
     swimLevel: 'Middle',
     description:
@@ -3251,7 +3251,7 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Carnivore - quality pellets, earthworms, insects, frozen fish',
+    diet: 'Carnivore — quality pellets, earthworms, insects, frozen fish',
     adultSizeCm: 35,
     swimLevel: 'Middle',
     description:

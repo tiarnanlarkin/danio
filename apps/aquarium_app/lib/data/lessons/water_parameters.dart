@@ -65,7 +65,7 @@ final waterParametersPath = LearningPath(
             question: 'What pH is considered neutral?',
             options: ['0', '5', '7', '14'],
             correctIndex: 2,
-            explanation: 'pH 7 is neutral - neither acidic nor alkaline.',
+            explanation: 'pH 7 is neutral — neither acidic nor alkaline.',
           ),
           const QuizQuestion(
             id: 'wp_ph_q2',
@@ -160,11 +160,11 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Hardness refers to the mineral content in your water - mainly calcium and magnesium. There are two types: GH (General Hardness) and KH (Carbonate Hardness).',
+              'Hardness refers to the mineral content in your water — mainly calcium and magnesium. There are two types: GH (General Hardness) and KH (Carbonate Hardness).',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
-          content: 'GH - General Hardness',
+          content: 'GH — General Hardness',
         ),
         const LessonSection(
           type: LessonSectionType.text,
@@ -178,12 +178,12 @@ final waterParametersPath = LearningPath(
         ),
         const LessonSection(
           type: LessonSectionType.heading,
-          content: 'KH - Carbonate Hardness',
+          content: 'KH — Carbonate Hardness',
         ),
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'KH measures carbonates and bicarbonates - these act as a pH buffer. Higher KH means your pH is more stable and resistant to swings.',
+              'KH measures carbonates and bicarbonates — these act as a pH buffer. Higher KH means your pH is more stable and resistant to swings.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -248,12 +248,12 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Tap water is treated to be safe for humans - but that treatment makes it toxic to fish! Chlorine and chloramine are added to kill bacteria in pipes. Unfortunately, they also kill beneficial bacteria in your tank and harm fish gills.',
+              'Tap water is treated to be safe for humans — but that treatment makes it toxic to fish! Chlorine and chloramine are added to kill bacteria in pipes. Unfortunately, they also kill beneficial bacteria in your tank and harm fish gills.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Adding untreated tap water can kill fish within hours and crash your nitrogen cycle. ALWAYS dechlorinate - no exceptions!',
+              'Adding untreated tap water can kill fish within hours and crash your nitrogen cycle. ALWAYS dechlorinate — no exceptions!',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -262,12 +262,12 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Chlorine is a gas dissolved in water. It\'s been used for decades to disinfect water. The good news? Chlorine naturally evaporates - leave tap water sitting for 24 hours and most chlorine will be gone.',
+              'Chlorine is a gas dissolved in water. It\'s been used for decades to disinfect water. The good news? Chlorine naturally evaporates — leave tap water sitting for 24 hours and most chlorine will be gone.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'BUT don\'t rely on evaporation! It takes 24+ hours and doesn\'t work for chloramine. Always use a dechlorinator - it works in seconds.',
+              'BUT don\'t rely on evaporation! It takes 24+ hours and doesn\'t work for chloramine. Always use a dechlorinator — it works in seconds.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -276,7 +276,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Many cities now use chloramine - a combination of chlorine and ammonia. It\'s more stable (doesn\'t evaporate easily) and stays effective longer in pipes. Bad news for fishkeepers: it doesn\'t just disappear.',
+              'Many cities now use chloramine — a combination of chlorine and ammonia. It\'s more stable (doesn\'t evaporate easily) and stays effective longer in pipes. Bad news for fishkeepers: it doesn\'t just disappear.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
@@ -295,7 +295,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Seachem Prime is the gold standard. It dechlorinates, detoxifies ammonia/nitrite, and detoxifies heavy metals. One bottle lasts forever - worth the investment. Water conditioners are generally safe in overdose — Seachem Prime, for example, can detoxify ammonia and nitrite at up to 5× the recommended dose. However, extremely high doses may temporarily reduce oxygen levels. As a rule, dose for the full tank volume, not the water change volume.',
+              'Seachem Prime is the gold standard. It dechlorinates, detoxifies ammonia/nitrite, and detoxifies heavy metals. One bottle lasts forever — worth the investment. Water conditioners are generally safe in overdose — Seachem Prime, for example, can detoxify ammonia and nitrite at up to 5× the recommended dose. However, extremely high doses may temporarily reduce oxygen levels. As a rule, dose for the full tank volume, not the water change volume.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -304,7 +304,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Add correct dose to NEW water (follow bottle instructions)\n2. Wait just 1-2 minutes for it to work\n3. Match temperature to tank before adding\n4. Can dose directly to tank during water changes if needed\n5. Can\'t overdose moderately - 1.5x is safe',
+              '1. Add correct dose to NEW water (follow bottle instructions)\n2. Wait just 1-2 minutes for it to work\n3. Match temperature to tank before adding\n4. Can dose directly to tank during water changes if needed\n5. Can\'t overdose moderately — 1.5x is safe',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -376,7 +376,7 @@ final waterParametersPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Seachem Prime is comprehensive - handles chlorine, chloramine, temporarily detoxifies ammonia/nitrite, and binds heavy metals.',
+                'Seachem Prime is comprehensive — handles chlorine, chloramine, temporarily detoxifies ammonia/nitrite, and binds heavy metals.',
           ),
           const QuizQuestion(
             id: 'wp_chlor_q5',
@@ -414,7 +414,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'TDS stands for Total Dissolved Solids - basically everything dissolved in your water that isn\'t H₂O. This includes minerals (calcium, magnesium), salts, organic matter, and even a tiny bit of fish waste.',
+              'TDS stands for Total Dissolved Solids — basically everything dissolved in your water that isn\'t H₂O. This includes minerals (calcium, magnesium), salts, organic matter, and even a tiny bit of fish waste.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -428,7 +428,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Not all solids are created equal! Minerals like calcium and magnesium are beneficial - fish need them. But organic waste, excess nitrates, and heavy metals are harmful. TDS doesn\'t distinguish between them.',
+              'Not all solids are created equal! Minerals like calcium and magnesium are beneficial — fish need them. But organic waste, excess nitrates, and heavy metals are harmful. TDS doesn\'t distinguish between them.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -446,7 +446,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'TDS creeps up over time as minerals and waste accumulate. Sudden jumps signal problems - overfeeding, dead fish, or decaying plants. Tracking TDS helps you know when water changes are needed.',
+              'TDS creeps up over time as minerals and waste accumulate. Sudden jumps signal problems — overfeeding, dead fish, or decaying plants. Tracking TDS helps you know when water changes are needed.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -488,7 +488,7 @@ final waterParametersPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'TDS measures ALL dissolved solids - minerals, salts, organic matter, waste products, etc. It doesn\'t distinguish between good and bad.',
+                'TDS measures ALL dissolved solids — minerals, salts, organic matter, waste products, etc. It doesn\'t distinguish between good and bad.',
           ),
           const QuizQuestion(
             id: 'wp_tds_q2',
@@ -505,13 +505,13 @@ final waterParametersPath = LearningPath(
                 'If TDS suddenly jumps 100+ ppm in a week, what does this indicate?',
             options: [
               'Everything is perfect',
-              'Something is wrong - overfeeding, decay, or waste buildup',
+              'Something is wrong — overfeeding, decay, or waste buildup',
               'You need to add more fish',
               'The water is too cold',
             ],
             correctIndex: 1,
             explanation:
-                'Rapid TDS increases signal problems - excess waste, overfeeding, dead fish, or decaying matter. Time to investigate!',
+                'Rapid TDS increases signal problems — excess waste, overfeeding, dead fish, or decaying matter. Time to investigate!',
           ),
           const QuizQuestion(
             id: 'wp_tds_q4',
@@ -530,7 +530,7 @@ final waterParametersPath = LearningPath(
             id: 'wp_tds_q5',
             question: 'Why do shrimp keepers care so much about TDS?',
             options: [
-              'They don\'t - it\'s not important',
+              'They don\'t — it\'s not important',
               'Shrimp need very specific TDS ranges to molt properly',
               'It affects shrimp colour only',
               'Higher TDS makes shrimp grow faster',
@@ -584,7 +584,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Float ice bottles (frozen water bottles) - cheap and effective\n• Increase surface agitation (more oxygen + cooling)\n• Point a fan at the water surface (evaporative cooling)\n• Close curtains to block direct sunlight\n• In emergencies: Small water changes with cooler water',
+              '• Float ice bottles (frozen water bottles) — cheap and effective\n• Increase surface agitation (more oxygen + cooling)\n• Point a fan at the water surface (evaporative cooling)\n• Close curtains to block direct sunlight\n• In emergencies: Small water changes with cooler water',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -630,7 +630,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Some cities increase chlorination in summer or adjust pH seasonally. If you notice unusual fish behaviour after water changes, test your tap water - it might have changed!',
+              'Some cities increase chlorination in summer or adjust pH seasonally. If you notice unusual fish behaviour after water changes, test your tap water — it might have changed!',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
@@ -688,11 +688,11 @@ final waterParametersPath = LearningPath(
               'It\'s a physical property of water',
               'Hot water evaporates oxygen',
               'Fish breathe more in warm water',
-              'It doesn\'t - that\'s a myth',
+              'It doesn\'t — that\'s a myth',
             ],
             correctIndex: 0,
             explanation:
-                'It\'s physics - warm water has lower oxygen solubility. This is why heatwaves can cause fish to gasp at the surface.',
+                'It\'s physics — warm water has lower oxygen solubility. This is why heatwaves can cause fish to gasp at the surface.',
           ),
           const QuizQuestion(
             id: 'wp_seas_q5',

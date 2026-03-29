@@ -431,7 +431,7 @@ class _OnboardingFallback extends StatelessWidget {
               const Icon(Icons.error_outline, size: 64, color: AppColors.textHint),
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Something went wrong — let\'s go back',
+                'We hit a snag — let\'s go back',
                 textAlign: TextAlign.center,
                 style: AppTypography.bodyMedium,
               ),

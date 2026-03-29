@@ -219,7 +219,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     } catch (e, st) {
       logError('SymptomTriageScreen: triage failed: $e', stackTrace: st, tag: 'SymptomTriageScreen');
       if (!mounted) return;
-      setState(() => _error = 'Something went wrong. Give it another go!');
+      setState(() => _error = 'We hit a snag. Try again in a moment.');
     } finally {
       if (mounted) setState(() => _streaming = false);
     }

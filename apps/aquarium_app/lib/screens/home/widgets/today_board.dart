@@ -81,8 +81,13 @@ class TodayBoardCard extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, WidgetRef ref) {
-    final srState = ref.watch(spacedRepetitionProvider);
-    final dueCards = srState.stats.dueCards;
+    // Select only the two counters this widget renders, avoiding rebuilds
+    // when currentSession, card-list contents, or other stats fields change.
+    final (:dueCards, :totalCards) = ref.watch(
+      spacedRepetitionProvider.select(
+        (s) => (dueCards: s.stats.dueCards, totalCards: s.stats.totalCards),
+      ),
+    );
     final hasCardsToReview = dueCards > 0;
 
     // Pick the best next action
@@ -96,7 +101,7 @@ class TodayBoardCard extends ConsumerWidget {
       emoji = '🧠';
       label = 'Practice due reviews';
       icon = Icons.quiz;
-    } else if (srState.stats.totalCards > 0) {
+    } else if (totalCards > 0) {
       targetTab = 0; // Learn
       emoji = '📖';
       label = 'Browse new lessons';

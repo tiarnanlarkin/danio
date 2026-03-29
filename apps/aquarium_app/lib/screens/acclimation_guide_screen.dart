@@ -157,7 +157,7 @@ class AcclimationGuideScreen extends StatelessWidget {
       _TipCard(
         icon: Icons.visibility,
         tip:
-            'Watch for signs of stress: rapid breathing, hiding, color loss, erratic swimming.',
+            'Watch for signs of stress: rapid breathing, hiding, colour loss, erratic swimming.',
       ),
       _TipCard(
         icon: Icons.water_drop,
