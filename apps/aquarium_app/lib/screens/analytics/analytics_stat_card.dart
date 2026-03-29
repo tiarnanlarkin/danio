@@ -58,7 +58,7 @@ class AnalyticsStatCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSurface.withAlpha(153),
+                    ).colorScheme.onSurface.withAlpha(178),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -81,7 +81,7 @@ class AnalyticsStatCard extends StatelessWidget {
             Text(
               subtitle!,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(178),
               ),
             ),
           ],

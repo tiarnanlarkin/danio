@@ -85,7 +85,7 @@ class BreedingGuideScreen extends StatelessWidget {
         tips: [
           'Provide flat surfaces for egg laying',
           'Some species guard eggs, others don\'t',
-          'Corydoras: T-position spawning behavior',
+          'Corydoras: T-position spawning behaviour',
           'Angelfish: Both parents often guard',
           'Plecos: Male guards eggs in caves',
         ],

@@ -84,10 +84,12 @@ flutter:
   assets:
     - assets/rive/
     - assets/images/onboarding/
+    - assets/images/illustrations/
     - assets/images/fish/
     - assets/images/fish/thumb/
     - assets/images/placeholder.webp
     - assets/icons/app_icon.png
+    - assets/icons/badges/
     - assets/textures/
     - assets/backgrounds/
 

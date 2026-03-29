@@ -35,7 +35,7 @@ class DailyTips {
       id: 'tip_observe',
       title: 'Watch Your Fish',
       content:
-          'Spend a few minutes daily just watching. You\'ll notice behavior changes early - often the first sign of problems.',
+          'Spend a few minutes daily just watching. You\'ll notice behaviour changes early — often the first sign of problems.',
       targetExperience: [ExperienceLevel.beginner],
     ),
     DailyTip(

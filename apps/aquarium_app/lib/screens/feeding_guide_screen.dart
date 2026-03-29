@@ -114,7 +114,7 @@ class FeedingGuideScreen extends StatelessWidget {
         icon: Icons.bug_report,
         suitableFor: 'Carnivores, breeding conditioning',
         pros: [
-          'Natural hunting behavior',
+          'Natural hunting behaviour',
           'Highly nutritious',
           'Great for fry',
         ],
@@ -206,7 +206,7 @@ class FeedingGuideScreen extends StatelessWidget {
               style: AppTypography.bodySmall,
             ),
             Text(
-              '• Encourages scavenging behavior',
+              '• Encourages scavenging behaviour',
               style: AppTypography.bodySmall,
             ),
             Text(

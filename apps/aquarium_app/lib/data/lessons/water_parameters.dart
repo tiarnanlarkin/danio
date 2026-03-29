@@ -532,7 +532,7 @@ final waterParametersPath = LearningPath(
             options: [
               'They don\'t - it\'s not important',
               'Shrimp need very specific TDS ranges to molt properly',
-              'It affects shrimp color only',
+              'It affects shrimp colour only',
               'Higher TDS makes shrimp grow faster',
             ],
             correctIndex: 1,
@@ -630,12 +630,12 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Some cities increase chlorination in summer or adjust pH seasonally. If you notice unusual fish behavior after water changes, test your tap water - it might have changed!',
+              'Some cities increase chlorination in summer or adjust pH seasonally. If you notice unusual fish behaviour after water changes, test your tap water - it might have changed!',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
           content:
-              'Some fish actually spawn based on seasonal cues! Gradually dropping temperature by 2-3°C over weeks can trigger breeding behavior in many species.',
+              'Some fish actually spawn based on seasonal cues! Gradually dropping temperature by 2-3°C over weeks can trigger breeding behaviour in many species.',
         ),
       ],
       quiz: Quiz(

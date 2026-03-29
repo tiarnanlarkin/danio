@@ -88,7 +88,7 @@ class ToolsSection extends StatelessWidget {
         NavListTile(
           icon: Icons.lightbulb,
           title: 'Lighting Schedule',
-          subtitle: 'Optimize light duration for your setup',
+          subtitle: 'Optimise light duration for your setup',
           onTap: () =>
               NavigationThrottle.push(context, const LightingScheduleScreen()),
         ),

@@ -22,7 +22,7 @@ class AppColors {
 
   // Semantic colors - WCAG AA compliant (4.5:1 minimum contrast with white text)
   static const Color success = Color(0xFF1E8449); // WCAG AA green (7.3:1 ratio)
-  static const Color warning = Color(0xFFC99524); // Darker amber (4.52:1 ratio)
+  static const Color warning = Color(0xFF8B6914); // Darker amber (~4.5:1 ratio on white — WCAG AA)
   static const Color error = Color(0xFFC0392B); // WCAG AA red (5.9:1 ratio)
   static const Color info = Color(0xFF2E86AB); // WCAG AA blue (5.2:1 ratio)
   static const Color xp = Color(0xFFD97706); // Amber - matches brand
@@ -38,7 +38,7 @@ class AppColors {
 
   // Parameter status colors (legacy compatibility) - WCAG AA compliant
   static const Color paramSafe = Color(0xFF1E8449);
-  static const Color paramWarning = Color(0xFFC99524);
+  static const Color paramWarning = Color(0xFF8B6914);
   static const Color paramDanger = Color(0xFFC0392B);
 
   // Onboarding palette (consolidated from 7+ onboarding screens)
@@ -205,19 +205,19 @@ class AppColors {
   static const Color successAlpha95 = Color(0xF21E8449);
   static const Color successAlpha100 = Color(0xFF1E8449);
 
-  // Warning color with alpha
-  static const Color warningAlpha05 = Color(0x0DC99524); // 3%
-  static const Color warningAlpha08 = Color(0x14C99524); // ~8%
-  static const Color warningAlpha10 = Color(0x1AC99524);
-  static const Color warningAlpha12 = Color(0x1FC99524); // 7%
-  static const Color warningAlpha15 = Color(0x26C99524);
-  static const Color warningAlpha20 = Color(0x33C99524);
-  static const Color warningAlpha30 = Color(0x4DC99524);
-  static const Color warningAlpha40 = Color(0x66C99524);
-  static const Color warningAlpha50 = Color(0x80C99524);
-  static const Color warningAlpha60 = Color(0x99C99524);
-  static const Color warningAlpha70 = Color(0xB3C99524);
-  static const Color warningAlpha80 = Color(0xCCC99524);
+  // Warning color with alpha (base: 0xFF8B6914 — WCAG AA ~4.5:1 on white)
+  static const Color warningAlpha05 = Color(0x0D8B6914); // 3%
+  static const Color warningAlpha08 = Color(0x148B6914); // ~8%
+  static const Color warningAlpha10 = Color(0x1A8B6914);
+  static const Color warningAlpha12 = Color(0x1F8B6914); // 7%
+  static const Color warningAlpha15 = Color(0x268B6914);
+  static const Color warningAlpha20 = Color(0x338B6914);
+  static const Color warningAlpha30 = Color(0x4D8B6914);
+  static const Color warningAlpha40 = Color(0x668B6914);
+  static const Color warningAlpha50 = Color(0x808B6914);
+  static const Color warningAlpha60 = Color(0x998B6914);
+  static const Color warningAlpha70 = Color(0xB38B6914);
+  static const Color warningAlpha80 = Color(0xCC8B6914);
 
   // Error color with alpha
   static const Color errorAlpha05 = Color(0x0DC0392B);
@@ -339,6 +339,11 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [Color(0xFF292524), Color(0xFF1C1917)],
   );
+
+  // Learn screen header gradient tokens
+  static const Color learnHeaderTop = Color(0xFF5B8FA8); // Soft ocean blue
+  static const Color learnHeaderMid = Color(0xFF3D6B7A); // Deeper teal
+  static const Color learnHeaderBottom = Color(0xFF2D5566); // Submarine depth
 }
 
 /// Material constants for the stage system textures and surfaces.
@@ -687,9 +692,9 @@ class AppOverlays {
   // Primary color additional overlays (AppColors.primary = 0xFFB45309)
   static const Color primary5 = Color(0x0DB45309); // 5%
 
-  // Warning color overlays (AppColors.warning = 0xFFC99524)
-  static const Color warning10 = Color(0x1AC99524); // 10%
-  static const Color warning30 = Color(0x4DC99524); // 30%
+  // Warning color overlays (AppColors.warning = 0xFF8B6914)
+  static const Color warning10 = Color(0x1A8B6914); // 10%
+  static const Color warning30 = Color(0x4D8B6914); // 30%
 
   // Success additional overlays
   static const Color success30 = Color(0x4D1E8449); // 30%

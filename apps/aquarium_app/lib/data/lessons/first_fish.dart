@@ -38,7 +38,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Guppies - colorful, active, breed easily\n• Platies - peaceful, many colors\n• Corydoras catfish - cute bottom-dwellers, social\n• Zebra danios - active schoolers, very hardy\n• Cherry barbs - peaceful, beautiful red color\n• Bristlenose plecos - algae eaters, interesting',
+              '• Guppies - colourful, active, breed easily\n• Platies - peaceful, many colours\n• Corydoras catfish - cute bottom-dwellers, social\n• Zebra danios - active schoolers, very hardy\n• Cherry barbs - peaceful, beautiful red colour\n• Bristlenose plecos - algae eaters, interesting',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -174,7 +174,7 @@ final firstFishPath = LearningPath(
               'It\'s too cold',
               'It may contain diseases or parasites',
               'It has too much oxygen',
-              'It\'s the wrong color',
+              'It\'s the wrong colour',
             ],
             correctIndex: 1,
             explanation:
@@ -243,7 +243,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Flakes: Good all-rounder, most fish accept them\n• Pellets: Less messy, better for larger fish\n• Frozen: Bloodworms, brine shrimp - high protein treat\n• Live: Stimulates hunting behavior but risk of parasites\n• Algae wafers: For bottom-feeders and plecos\n• Vegetables: Zucchini, cucumber for herbivores',
+              '• Flakes: Good all-rounder, most fish accept them\n• Pellets: Less messy, better for larger fish\n• Frozen: Bloodworms, brine shrimp - high protein treat\n• Live: Stimulates hunting behaviour but risk of parasites\n• Algae wafers: For bottom-feeders and plecos\n• Vegetables: Zucchini, cucumber for herbivores',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -356,11 +356,11 @@ final firstFishPath = LearningPath(
       ),
     ),
 
-    // Lesson 4: Reading Fish Behavior
+    // Lesson 4: Reading Fish Behaviour
     Lesson(
       id: 'ff_behavior',
       pathId: 'first_fish',
-      title: 'Reading Fish Behavior',
+      title: 'Reading Fish Behaviour',
       description: 'Healthy vs stressed - spotting problems early',
       orderIndex: 3,
       xpReward: 50,
@@ -374,7 +374,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Your fish won\'t say "I don\'t feel well" - they communicate through behavior. Learning to read these signals lets you catch problems before they become life-threatening.',
+              'Your fish won\'t say "I don\'t feel well" - they communicate through behaviour. Learning to read these signals lets you catch problems before they become life-threatening.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -383,12 +383,12 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '✅ Active swimming (species-appropriate)\n✅ Bright, vibrant colors\n✅ Clear eyes\n✅ Fins fully extended, not clamped\n✅ Regular eating behavior\n✅ Interacts with tankmates normally\n✅ Smooth, intact scales',
+              '✅ Active swimming (species-appropriate)\n✅ Bright, vibrant colours\n✅ Clear eyes\n✅ Fins fully extended, not clamped\n✅ Regular eating behaviour\n✅ Interacts with tankmates normally\n✅ Smooth, intact scales',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Know your fish\'s normal behavior! Some species (like bettas) are naturally slow. Others (like danios) are hyperactive. Compare to their usual behavior, not other species.',
+              'Know your fish\'s normal behaviour! Some species (like bettas) are naturally slow. Others (like danios) are hyperactive. Compare to their usual behaviour, not other species.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -397,7 +397,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '⚠️ Clamped fins (held tight to body)\n⚠️ Hiding constantly (when usually social)\n⚠️ Loss of appetite\n⚠️ Faded colors\n⚠️ Rapid gill movement\n⚠️ Gasping at surface\n⚠️ Rubbing against objects (flashing)',
+              '⚠️ Clamped fins (held tight to body)\n⚠️ Hiding constantly (when usually social)\n⚠️ Loss of appetite\n⚠️ Faded colours\n⚠️ Rapid gill movement\n⚠️ Gasping at surface\n⚠️ Rubbing against objects (flashing)',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -406,7 +406,7 @@ final firstFishPath = LearningPath(
         ),
         const LessonSection(
           type: LessonSectionType.heading,
-          content: 'Behavior-Based Diagnostics',
+          content: 'Behaviour-Based Diagnostics',
         ),
         const LessonSection(
           type: LessonSectionType.text,
@@ -434,7 +434,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Unusual behavior = test water parameters. 80% of fish health problems trace back to water quality. Before treating for disease, rule out ammonia, nitrite, or pH swings.',
+              'Unusual behaviour = test water parameters. 80% of fish health problems trace back to water quality. Before treating for disease, rule out ammonia, nitrite, or pH swings.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
@@ -466,7 +466,7 @@ final firstFishPath = LearningPath(
               'They\'re happy',
               'Low oxygen or high ammonia/nitrite',
               'They\'re hungry',
-              'Normal behavior',
+              'Normal behaviour',
             ],
             correctIndex: 1,
             explanation:
@@ -490,7 +490,7 @@ final firstFishPath = LearningPath(
             question: 'What is "flashing"?',
             options: [
               'Fish glowing in the dark',
-              'Bright color changes',
+              'Bright colour changes',
               'Rubbing against objects',
               'Swimming very fast',
             ],
@@ -565,7 +565,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Set up QT tank 24 hours before fish arrival\n2. Add new fish directly to QT (never main tank)\n3. Observe for 2-4 weeks\n4. Watch for disease, parasites, odd behavior\n5. If healthy after quarantine → add to main tank\n6. If sick → treat in QT, reset quarantine period',
+              '1. Set up QT tank 24 hours before fish arrival\n2. Add new fish directly to QT (never main tank)\n3. Observe for 2-4 weeks\n4. Watch for disease, parasites, odd behaviour\n5. If healthy after quarantine → add to main tank\n6. If sick → treat in QT, reset quarantine period',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -725,7 +725,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'That fish is SO pretty! You buy it, bring it home, then Google it. Oops - it grows to 40cm, eats small fish, and needs 200 liters. Now what?',
+              'That fish is SO pretty! You buy it, bring it home, then Google it. Oops — it grows to 40cm, eats small fish, and needs 200 liters. Now what?',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -848,7 +848,7 @@ final firstFishPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'This rule is terrible! A 12-inch oscar needs WAY more than 12 gallons. Consider adult size, bioload, and swimming behavior instead.',
+                'This rule is terrible! A 12-inch oscar needs WAY more than 12 gallons. Consider adult size, bioload, and swimming behaviour instead.',
           ),
           const QuizQuestion(
             id: 'ff_mist_q5',

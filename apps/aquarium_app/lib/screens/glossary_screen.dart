@@ -334,7 +334,7 @@ final _allTerms = [
   const _GlossaryTerm(
     term: 'Schooling Fish',
     definition:
-        'Fish that naturally swim in coordinated groups. Need 6+ for proper behavior.',
+        'Fish that naturally swim in coordinated groups. Need 6+ for proper behaviour.',
     category: 'Fish',
     example: 'Tetras, rasboras, corydoras.',
   ),

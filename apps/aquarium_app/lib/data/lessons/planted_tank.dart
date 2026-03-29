@@ -45,7 +45,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Java fern - attach to wood, low light\n• Anubias - slow growing, nearly indestructible\n• Java moss - great for shrimp, easy\n• Amazon sword - impressive centerpiece\n• Cryptocoryne - variety of sizes and colors',
+              '• Java fern - attach to wood, low light\n• Anubias - slow growing, nearly indestructible\n• Java moss - great for shrimp, easy\n• Amazon sword — impressive centrepiece\n• Cryptocoryne - variety of sizes and colours',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -198,7 +198,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '✅ Pros: Cheap, easy to clean, wide color choices\n❌ Cons: No nutrients for plants, root-feeders need root tabs',
+              '✅ Pros: Cheap, easy to clean, wide colour choices\n❌ Cons: No nutrients for plants, root-feeders need root tabs',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -298,7 +298,7 @@ final plantedTankPath = LearningPath(
             options: [
               'It\'s too soft',
               'It releases ammonia initially',
-              'It changes color',
+              'It changes colour',
               'Fish don\'t like the texture',
             ],
             correctIndex: 1,
@@ -413,7 +413,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'A CO2 cylinder, regulator, needle valve, and diffuser provide precise control. Expensive upfront (\$150-300) but the results are stunning - vivid colors, fast growth, carpet plants.',
+              'A CO2 cylinder, regulator, needle valve, and diffuser provide precise control. Expensive upfront (\$150-300) but the results are stunning - vivid colours, fast growth, carpet plants.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,

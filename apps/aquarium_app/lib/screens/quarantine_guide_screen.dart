@@ -90,7 +90,7 @@ class QuarantineGuideScreen extends StatelessWidget {
               'Observe closely for symptoms',
               'Feed sparingly - watch for appetite',
               'Test water every 2-3 days',
-              'Note any unusual behavior',
+              'Note any unusual behaviour',
             ],
           ),
           _ProtocolStep(

@@ -329,11 +329,11 @@ class PlantDatabase {
       maxHeightCm: 20,
       propagation: 'Runners',
       description:
-          'Bright green variety of the popular Crypt wendtii. Adds fresh color to low-tech tanks.',
+          'Bright green variety of the popular Crypt wendtii. Adds fresh colour to low-tech tanks.',
       tips: [
         'Expect initial melt',
         'Leave roots undisturbed',
-        'Bright green color',
+        'Bright green colour',
         'Patient - slow starter',
       ],
     ),
@@ -353,7 +353,7 @@ class PlantDatabase {
       description:
           'Bronze-brown variety with ruffled leaves. Adds warm earth tones to aquascapes.',
       tips: [
-        'Bronze-brown coloration',
+        'Bronze-brown colouration',
         'Ruffled leaf edges',
         'Very hardy once established',
         'May melt when first planted',
@@ -373,9 +373,9 @@ class PlantDatabase {
       maxHeightCm: 20,
       propagation: 'Runners',
       description:
-          'Reddish-brown variety that adds color without high-tech requirements. Great for low-tech red.',
+          'Reddish-brown variety that adds colour without high-tech requirements. Great for low-tech red.',
       tips: [
-        'Red/brown coloration',
+        'Red/brown colouration',
         'Low-tech red plant option',
         'Hardy once established',
         'Classic aquarium choice',
@@ -451,7 +451,7 @@ class PlantDatabase {
       tips: [
         'More light = more red',
         'Trim and replant tops',
-        'CO2 enhances color',
+        'CO2 enhances colour',
         'Dense growth with pruning',
       ],
     ),
@@ -491,9 +491,9 @@ class PlantDatabase {
       maxHeightCm: 30,
       propagation: 'Cuttings',
       description:
-          'Stunning red/orange variety that develops intense coloration under high light with CO2.',
+          'Stunning red/orange variety that develops intense colouration under high light with CO2.',
       tips: [
-        'Needs high light for color',
+        'Needs high light for colour',
         'CO2 recommended',
         'One of the reddest Rotalas',
         'Iron supplementation helps',
@@ -517,9 +517,9 @@ class PlantDatabase {
       maxHeightCm: 50,
       propagation: 'Cuttings',
       description:
-          'Red/orange stem plant that adds color. Relatively easy red plant for non-CO2 tanks.',
+          'Red/orange stem plant that adds colour. Relatively easy red plant for non-CO2 tanks.',
       tips: [
-        'High light for best color',
+        'High light for best colour',
         'Iron supplementation helps',
         'Trim regularly',
         'Lower leaves may drop',
@@ -565,7 +565,7 @@ class PlantDatabase {
       tips: [
         'Needle-like leaves',
         'Fine delicate texture',
-        'High light for best color',
+        'High light for best colour',
         'Nice accent plant',
       ],
     ),
@@ -843,7 +843,7 @@ class PlantDatabase {
       description:
           'Beautiful floater with red roots and leaves that turn red under high light.',
       tips: [
-        'Red coloration under high light',
+        'Red colouration under high light',
         'Attractive red roots',
         'Keep water surface calm',
         'Multiplies quickly',
@@ -986,7 +986,7 @@ class PlantDatabase {
         'Needs CO2 and high light',
         'Heavy nutrient feeder',
         'Trim frequently',
-        'Iron brings out color',
+        'Iron brings out colour',
       ],
     ),
     PlantInfo(
@@ -1006,7 +1006,7 @@ class PlantDatabase {
           'Collector\'s plant with beautiful leaves in many varieties. Attach to hardscape.',
       tips: [
         'Don\'t bury rhizome',
-        'Many color varieties',
+        'Many colour varieties',
         'Produces small flowers',
         'Very slow growing',
       ],
@@ -1213,7 +1213,7 @@ class PlantDatabase {
       maxHeightCm: 15,
       propagation: 'Runners',
       description:
-          'Narrow-leaved Crypt with bright green color. Hardy and attractive.',
+          'Narrow-leaved Crypt with bright green colour. Hardy and attractive.',
       tips: [
         'Narrow bright green leaves',
         'Very hardy',
@@ -1244,7 +1244,7 @@ class PlantDatabase {
         'Needs CO2 and iron',
         'High light essential',
         'Lower leaves may drop',
-        'Stunning color payoff',
+        'Stunning colour payoff',
       ],
     ),
   ];

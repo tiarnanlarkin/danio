@@ -164,7 +164,7 @@ class EmergencyGuideScreen extends StatelessWidget {
         title: '🌊 Chlorine Accident',
         urgency: 'CRITICAL',
         symptoms:
-            'Fish gasping, erratic behavior immediately after water change',
+            'Fish gasping, erratic behaviour immediately after water change',
         immediateActions: [
           'Add dechlorinator immediately (double dose)',
           'Add another dose of Prime or similar',

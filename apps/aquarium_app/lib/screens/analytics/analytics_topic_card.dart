@@ -48,7 +48,7 @@ class AnalyticsTopicCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withAlpha(153),
+                          ).colorScheme.onSurface.withAlpha(178),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
@@ -93,7 +93,7 @@ class AnalyticsTopicCard extends StatelessWidget {
                         ).textTheme.labelSmall?.copyWith(
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withAlpha(153),
+                          ).colorScheme.onSurface.withAlpha(178),
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),

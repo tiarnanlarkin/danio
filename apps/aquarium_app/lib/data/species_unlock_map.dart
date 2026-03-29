@@ -65,11 +65,11 @@ const Map<String, String> speciesDisplayNames = {
 
 /// Asset path for a species sprite (full-size).
 String speciesAssetPath(String speciesId) =>
-    'assets/images/fish/$speciesId.png';
+    'assets/images/fish/$speciesId.webp';
 
 /// Asset path for a species sprite (128px thumbnail).
 String speciesThumbPath(String speciesId) =>
-    'assets/images/fish/thumb/$speciesId.png';
+    'assets/images/fish/thumb/$speciesId.webp';
 
 /// Returns the species ID unlocked by [lessonId], or null if none.
 String? speciesForLesson(String lessonId) {

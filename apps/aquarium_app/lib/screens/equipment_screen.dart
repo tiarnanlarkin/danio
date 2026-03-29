@@ -792,7 +792,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Oops, something went wrong. Try again!',
+          'Couldn\'t do that. Give it another go!',
         );
       }
     } finally {

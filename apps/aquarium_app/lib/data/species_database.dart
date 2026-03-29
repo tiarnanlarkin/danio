@@ -147,7 +147,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 3.5,
     swimLevel: 'Middle',
     description:
-        'One of the most popular aquarium fish. Bright blue and red coloring. Thrives in schools of 6+. Prefers soft, slightly acidic water with plants.',
+        'One of the most popular aquarium fish. Bright blue and red colouring. Thrives in schools of 6+. Prefers soft, slightly acidic water with plants.',
     compatibleWith: [
       'Cardinal Tetra',
       'Corydoras',
@@ -221,7 +221,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
-        'Hardy, colorful, and prolific breeders. Males are more colorful; females are larger. Prefer harder, alkaline water. Will breed readily.',
+        'Hardy, colourful, and prolific breeders. Males are more colourful; females are larger. Prefer harder, alkaline water. Will breed readily.',
     compatibleWith: [
       'Platies',
       'Mollies',
@@ -248,7 +248,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
-        'Hardy, peaceful livebearers available in many colors. Easy to breed. Great for beginners. Prefer harder, alkaline water.',
+        'Hardy, peaceful livebearers available in many colours. Easy to breed. Great for beginners. Prefer harder, alkaline water.',
     compatibleWith: ['Guppies', 'Mollies', 'Swordtails', 'Corydoras'],
     avoidWith: ['Aggressive fish'],
   ),
@@ -401,7 +401,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 7,
     swimLevel: 'Top',
     description:
-        'Beautiful labyrinth fish with flowing fins. Males must be kept alone or with peaceful tankmates. Needs access to surface air. Many color varieties.',
+        'Beautiful labyrinth fish with flowing fins. Males must be kept alone or with peaceful tankmates. Needs access to surface air. Many colour varieties.',
     compatibleWith: [
       'Corydoras',
       'Snails',
@@ -411,7 +411,7 @@ const List<SpeciesInfo> _allSpecies = [
     avoidWith: [
       'Other Bettas',
       'Fin nippers',
-      'Colorful/long-finned fish',
+      'Colourful/long-finned fish',
       'Guppies',
     ],
   ),
@@ -435,7 +435,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 9,
     swimLevel: 'Top',
     description:
-        'Colorful labyrinth fish. Males are more vibrant (red/blue stripes). Can be kept singly or in pairs. Needs calm water and hiding spots.',
+        'Colourful labyrinth fish. Males are more vibrant (red/blue stripes). Can be kept singly or in pairs. Needs calm water and hiding spots.',
     compatibleWith: [
       'Tetras',
       'Rasboras',
@@ -462,7 +462,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
-        'Smaller and more peaceful than Dwarf Gourami. Golden-honey coloration. Less prone to disease than other Gouramis. Great community fish.',
+        'Smaller and more peaceful than Dwarf Gourami. Golden-honey colouration. Less prone to disease than other Gouramis. Great community fish.',
     compatibleWith: ['Tetras', 'Rasboras', 'Corydoras', 'Small peaceful fish'],
     avoidWith: ['Large aggressive fish', 'Very active fish'],
   ),
@@ -508,7 +508,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 8,
     swimLevel: 'Bottom',
     description:
-        'Colorful dwarf cichlid with dramatic dorsal fin. Males are territorial but generally community-safe. Needs caves and hiding spots.',
+        'Colourful dwarf cichlid with dramatic dorsal fin. Males are territorial but generally community-safe. Needs caves and hiding spots.',
     compatibleWith: ['Tetras', 'Corydoras', 'Rasboras'],
     avoidWith: ['Other bottom-dwelling cichlids', 'Very small fish'],
   ),
@@ -613,7 +613,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
-        'Hardy and colorful freshwater shrimp. Excellent algae and detritus cleaners. Breed readily in planted tanks. Many color varieties available.',
+        'Hardy and colourful freshwater shrimp. Excellent algae and detritus cleaners. Breed readily in planted tanks. Many colour varieties available.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Other dwarf shrimp'],
     avoidWith: ['Any fish large enough to eat them', 'Aggressive fish'],
   ),
@@ -682,7 +682,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'All',
     description:
-        'Large, attractive snails available in many colors (gold, blue, purple, ivory). Peaceful scavengers. Lay eggs above waterline. Need calcium.',
+        'Large, attractive snails available in many colours (gold, blue, purple, ivory). Peaceful scavengers. Lay eggs above waterline. Need calcium.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish', 'Aggressive fish'],
   ),
@@ -924,7 +924,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 25,
     swimLevel: 'Middle',
     description:
-        'The most misunderstood aquarium fish. Despite the "goldfish bowl" myth, common goldfish need a minimum 120L tank with strong filtration. They produce more waste than tropical fish of the same size and can live 10-15 years (up to 40 in ideal conditions). Hardy, coldwater, and surprisingly intelligent - they can learn to recognise their owner.',
+        'The most misunderstood aquarium fish. Despite the "goldfish bowl" myth, common goldfish need a minimum 120L tank with strong filtration. They produce more waste than tropical fish of the same size and can live 10-15 years (up to 40 in ideal conditions). Hardy, coldwater, and surprisingly intelligent — they can learn to recognise their owner.',
     compatibleWith: [
       'Other goldfish',
       'Weather Loach',
@@ -958,7 +958,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 3,
     swimLevel: 'Top',
     description:
-        'Smaller, more colorful relative of the guppy. Males are incredibly vibrant. Hardy and prolific breeders. Perfect for nano tanks.',
+        'Smaller, more colourful relative of the guppy. Males are incredibly vibrant. Hardy and prolific breeders. Perfect for nano tanks.',
     compatibleWith: ['Guppies', 'Small peaceful fish', 'Shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Fish that will eat fry'],
   ),
@@ -1232,7 +1232,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 10,
     swimLevel: 'Bottom',
     description:
-        'Colorful West African dwarf cichlid. Easy to breed - great first cichlid. Territorial when breeding but generally community-safe.',
+        'Colourful West African dwarf cichlid. Easy to breed - great first cichlid. Territorial when breeding but generally community-safe.',
     compatibleWith: ['Tetras', 'Barbs', 'Corydoras', 'Robust community fish'],
     avoidWith: [
       'Other bottom-dwelling cichlids',
@@ -1286,7 +1286,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
-        'Males have distinctive sword-shaped tail extension. Hardy livebearers that prefer harder, alkaline water. Many color varieties.',
+        'Males have distinctive sword-shaped tail extension. Hardy livebearers that prefer harder, alkaline water. Many colour varieties.',
     compatibleWith: ['Platies', 'Mollies', 'Larger tetras', 'Corydoras'],
     avoidWith: ['Aggressive fish', 'Very small fish'],
   ),
@@ -1462,7 +1462,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 6,
     swimLevel: 'Middle',
     description:
-        'Bright red-orange body with contrasting black fins. One of the most popular platy varieties. Hardy and colorful.',
+        'Bright red-orange body with contrasting black fins. One of the most popular platy varieties. Hardy and colourful.',
     compatibleWith: ['Guppies', 'Mollies', 'Other Platies', 'Corydoras'],
     avoidWith: ['Aggressive fish'],
   ),
@@ -1484,7 +1484,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
-        'Named for the Mickey Mouse silhouette pattern on the tail. Fun variety loved by children. Available in many body colors.',
+        'Named for the Mickey Mouse silhouette pattern on the tail. Fun variety loved by children. Available in many body colours.',
     compatibleWith: ['Guppies', 'Mollies', 'Other Platies', 'Corydoras'],
     avoidWith: ['Aggressive fish'],
   ),
@@ -1506,7 +1506,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
-        'Brilliant yellow-orange gradient coloring like a sunset. Eye-catching variety that brightens any community tank.',
+        'Brilliant yellow-orange gradient colouring like a sunset. Eye-catching variety that brightens any community tank.',
     compatibleWith: ['Guppies', 'Mollies', 'Swordtails', 'Corydoras'],
     avoidWith: ['Aggressive fish'],
   ),
@@ -1528,7 +1528,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
-        'Silvery-blue coloration, less common than red varieties. Subtle metallic sheen. Hardy like all platies.',
+        'Silvery-blue colouration, less common than red varieties. Subtle metallic sheen. Hardy like all platies.',
     compatibleWith: ['Guppies', 'Mollies', 'Swordtails', 'Corydoras'],
     avoidWith: ['Aggressive fish'],
   ),
@@ -1574,7 +1574,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
-        'Yellow-gold body with red highlights. Named for pineapple-like coloring. Striking display fish in planted tanks.',
+        'Yellow-gold body with red highlights. Named for pineapple-like colouring. Striking display fish in planted tanks.',
     compatibleWith: ['Platies', 'Mollies', 'Larger tetras', 'Corydoras'],
     avoidWith: ['Aggressive fish', 'Very small fish'],
   ),
@@ -1618,7 +1618,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
-        'Closest to wild-type coloring with green-bronze metallic sheen. Hardy and active. Natural-looking for biotope setups.',
+        'Closest to wild-type colouring with green-bronze metallic sheen. Hardy and active. Natural-looking for biotope setups.',
     compatibleWith: ['Platies', 'Mollies', 'Larger tetras', 'Corydoras'],
     avoidWith: ['Aggressive fish', 'Very small fish'],
   ),
@@ -1642,7 +1642,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 10,
     swimLevel: 'Middle',
     description:
-        'Stunning two-tone coloration: blue front half, orange-red rear half. Males more colorful. Active schoolers needing swimming space.',
+        'Stunning two-tone colouration: blue front half, orange-red rear half. Males more colourful. Active schoolers needing swimming space.',
     compatibleWith: [
       'Other Rainbowfish',
       'Larger Tetras',
@@ -1753,7 +1753,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 8,
     swimLevel: 'Bottom',
     description:
-        'Popular dwarf cichlid with pointed tail fin. Many color forms available. Males territorial but community-safe with space.',
+        'Popular dwarf cichlid with pointed tail fin. Many colour forms available. Males territorial but community-safe with space.',
     compatibleWith: ['Tetras', 'Corydoras', 'Rasboras'],
     avoidWith: ['Other bottom-dwelling cichlids', 'Aggressive fish'],
   ),
@@ -1802,7 +1802,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
-        'Red throat coloration flared during displays. Territorial but not overly aggressive. Classic Central American cichlid.',
+        'Red throat colouration flared during displays. Territorial but not overly aggressive. Classic Central American cichlid.',
     compatibleWith: ['Robust tetras', 'Other medium cichlids', 'Catfish'],
     avoidWith: ['Small fish', 'Very aggressive cichlids', 'Timid fish'],
   ),
@@ -1926,7 +1926,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 15,
     swimLevel: 'Middle',
     description:
-        'Orange, black and white coloring reminiscent of koi fish. Popular and striking variety. Color develops with age.',
+        'Orange, black and white colouring reminiscent of koi fish. Popular and striking variety. Colour develops with age.',
     compatibleWith: [
       'Larger Tetras',
       'Corydoras',
@@ -1978,7 +1978,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 20,
     swimLevel: 'Middle',
     description:
-        'Solid bright blue coloration. Stunning variety requiring pristine water conditions. One of the most sought-after discus.',
+        'Solid bright blue colouration. Stunning variety requiring pristine water conditions. One of the most sought-after discus.',
     compatibleWith: [
       'Cardinal Tetras',
       'Sterbai Corydoras',
@@ -2034,7 +2034,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 12,
     swimLevel: 'Bottom',
     description:
-        'Yellow-white color morph lacking melanin. Same great algae-eating as standard bristlenose. Striking appearance against dark substrate.',
+        'Yellow-white colour morph lacking melanin. Same great algae-eating as standard bristlenose. Striking appearance against dark substrate.',
     compatibleWith: [
       'Most community fish',
       'Tetras',
@@ -2061,7 +2061,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 12,
     swimLevel: 'Bottom',
     description:
-        'Vibrant orange-red coloration through selective breeding. Highly sought-after variety. Same easy care as standard bristlenose.',
+        'Vibrant orange-red colouration through selective breeding. Highly sought-after variety. Same easy care as standard bristlenose.',
     compatibleWith: [
       'Most community fish',
       'Tetras',
@@ -2141,7 +2141,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 3,
     swimLevel: 'Top',
     description:
-        'Snake-like pattern on body. One of the most striking Endler varieties. Males incredibly colorful, females plain.',
+        'Snake-like pattern on body. One of the most striking Endler varieties. Males incredibly colourful, females plain.',
     compatibleWith: ['Guppies', 'Small peaceful fish', 'Shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Fish that will eat fry'],
   ),
@@ -2234,7 +2234,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
-        'Selectively bred for large flowing tails and vibrant colors. Many tail shapes available. Iconic aquarium fish.',
+        'Selectively bred for large flowing tails and vibrant colours. Many tail shapes available. Iconic aquarium fish.',
     compatibleWith: [
       'Platies',
       'Mollies',
@@ -2261,7 +2261,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
-        'Dark rear half contrasting with lighter front. Like wearing a tuxedo. Available in many color combinations.',
+        'Dark rear half contrasting with lighter front. Like wearing a tuxedo. Available in many colour combinations.',
     compatibleWith: [
       'Platies',
       'Mollies',
@@ -2310,7 +2310,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Top',
     description:
-        'Deep solid blue coloration covering entire body and fins. Highly prized show variety. Stunning metallic sheen.',
+        'Deep solid blue colouration covering entire body and fins. Highly prized show variety. Stunning metallic sheen.',
     compatibleWith: [
       'Platies',
       'Mollies',
@@ -2407,7 +2407,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 3,
     swimLevel: 'Middle',
     description:
-        'Similar to Harlequin but smaller with thinner, lambchop-shaped marking. Brilliant orange color. Hardy and easy to keep.',
+        'Similar to Harlequin but smaller with thinner, lambchop-shaped marking. Brilliant orange colour. Hardy and easy to keep.',
     compatibleWith: ['Tetras', 'Corydoras', 'Gouramis', 'Other Rasboras'],
     avoidWith: ['Large aggressive fish'],
   ),
@@ -2495,7 +2495,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 4,
     swimLevel: 'Top',
     description:
-        'Gold color morph of White Cloud. Same hardy coldwater care. Beautiful in groups with standard White Clouds.',
+        'Gold colour morph of White Cloud. Same hardy coldwater care. Beautiful in groups with standard White Clouds.',
     compatibleWith: [
       'White Clouds',
       'Other coldwater fish',
@@ -2575,7 +2575,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 8,
     swimLevel: 'Middle',
     description:
-        'Large, iridescent tetra with flowing fins. Males have extended fin rays. Needs space and soft, slightly acidic water for best color.',
+        'Large, iridescent tetra with flowing fins. Males have extended fin rays. Needs space and soft, slightly acidic water for best colour.',
     compatibleWith: [
       'Medium community fish',
       'Rainbowfish',
@@ -2722,7 +2722,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 7,
     swimLevel: 'Middle',
     description:
-        'Bright gold coloration. Hardy, peaceful barb suitable for subtropical/cooler tanks. Less nippy than Tiger Barb.',
+        'Bright gold colouration. Hardy, peaceful barb suitable for subtropical/cooler tanks. Less nippy than Tiger Barb.',
     compatibleWith: [
       'Other peaceful Barbs',
       'Danios',
@@ -2776,7 +2776,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 5,
     swimLevel: 'Middle',
     description:
-        'Males have brilliant red stripe along body. One of the most colorful barbs. Peaceful and active schooler.',
+        'Males have brilliant red stripe along body. One of the most colourful barbs. Peaceful and active schooler.',
     compatibleWith: ['Other peaceful Barbs', 'Danios', 'Corydoras', 'Tetras'],
     avoidWith: ['Slow long-finned fish'],
   ),
@@ -2886,7 +2886,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 3,
     swimLevel: 'Bottom',
     description:
-        'Stunning red and white banded pattern. Requires soft, acidic water and stable parameters. Graded by color intensity.',
+        'Stunning red and white banded pattern. Requires soft, acidic water and stable parameters. Graded by colour intensity.',
     compatibleWith: ['Other Caridina shrimp', 'Small peaceful fish', 'Snails'],
     avoidWith: ['Hard water', 'Fish that eat shrimp', 'Unstable parameters'],
   ),
@@ -2952,7 +2952,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 10,
     swimLevel: 'All',
     description:
-        'Large filter-feeding shrimp with fan-like appendages. Needs current to filter feed. Fascinating to watch. Changes color with mood.',
+        'Large filter-feeding shrimp with fan-like appendages. Needs current to filter feed. Fascinating to watch. Changes colour with mood.',
     compatibleWith: ['Peaceful fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Very still water'],
   ),
@@ -2974,7 +2974,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 15,
     swimLevel: 'All',
     description:
-        'Largest freshwater aquarium shrimp. Filter feeds in current with feathery fans. Blue, gray, or pink coloration. Impressive and peaceful.',
+        'Largest freshwater aquarium shrimp. Filter feeds in current with feathery fans. Blue, gray, or pink colouration. Impressive and peaceful.',
     compatibleWith: ['Peaceful fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Very still water'],
   ),
@@ -3000,7 +3000,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 10,
     swimLevel: 'Middle',
     description:
-        'Stunning turquoise-blue coloration. Endemic to Lake Kutubu. Males more colorful with deeper body. Needs swimming space.',
+        'Stunning turquoise-blue colouration. Endemic to Lake Kutubu. Males more colourful with deeper body. Needs swimming space.',
     compatibleWith: [
       'Other Rainbowfish',
       'Barbs',
@@ -3104,7 +3104,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 2,
     swimLevel: 'Middle',
     description:
-        'Tiny, brilliantly colored micro predator. Males are vibrant red with blue stripes. Can be picky eaters. Best in species tank or with small peaceful fish.',
+        'Tiny, brilliantly coloured micro predator. Males are vibrant red with blue stripes. Can be picky eaters. Best in species tank or with small peaceful fish.',
     compatibleWith: ['Small shrimp', 'Snails', 'Small peaceful fish'],
     avoidWith: ['Large fish', 'Aggressive fish', 'Fast feeders'],
   ),
@@ -3148,7 +3148,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 10,
     swimLevel: 'Bottom',
     description:
-        'Large, elegant snails from Sulawesi with rabbit-like face. Many color varieties. Prefers warm, hard, alkaline water. Slow breeders.',
+        'Large, elegant snails from Sulawesi with rabbit-like face. Many colour varieties. Prefers warm, hard, alkaline water. Slow breeders.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish', 'Soft acidic water'],
   ),

@@ -373,6 +373,15 @@ class _AppRouterState extends ConsumerState<_AppRouter>
         if (mounted) {
           NotificationScheduler.instance.scheduleReviewNotifications(ref);
           NotificationScheduler.instance.scheduleStreakNotifications(ref);
+          // Precache illustrated headers for instant load
+          precacheImage(
+            const AssetImage('assets/images/illustrations/learn_header.webp'),
+            context,
+          );
+          precacheImage(
+            const AssetImage('assets/images/illustrations/practice_header.webp'),
+            context,
+          );
         }
       });
     }

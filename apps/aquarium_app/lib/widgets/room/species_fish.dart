@@ -167,7 +167,7 @@ class _SpeciesFishState extends State<SpeciesFish>
       animation: _ticker,
       child: ExcludeSemantics(
         child: Image.asset(
-          'assets/images/fish/${widget.speciesId}.png',
+          'assets/images/fish/${widget.speciesId}.webp',
           fit: BoxFit.contain,
           cacheWidth: 128,
           cacheHeight: 128,

@@ -146,6 +146,59 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
 
               const SizedBox(height: AppSpacing.xs),
 
+              // ── "I'm under 13" link (COPPA blocking path) ───────────────
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(0, 36),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () {
+                    showDialog<void>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (ctx) => AlertDialog(
+                        title: const Text('Age Requirement'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Danio requires users to be 13 or older. '
+                              'Ask a parent or guardian to set up your account.',
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            TextButton(
+                              onPressed: () => _launchUrl(
+                                'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
+                              ),
+                              child: const Text('View Privacy Policy'),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "I'm under 13",
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.textHint,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.xs),
+
               // ── ToS & Privacy Policy acceptance checkbox (REQUIRED R6) ──
               Semantics(
                 label: 'Terms of Service and Privacy Policy acceptance checkbox',

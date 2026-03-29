@@ -96,7 +96,7 @@ final nitrogenCyclePath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Ammonia is colorless at typical aquarium levels — you can\'t see it. While it does have a faint smell, you can\'t reliably detect dangerous levels by nose alone. Only a test kit gives accurate readings.',
+                'Ammonia is colourless at typical aquarium levels — you can\'t see it. While it does have a faint smell, you can\'t reliably detect dangerous levels by nose alone. Only a test kit gives accurate readings.',
           ),
           const QuizQuestion(
             id: 'nc_intro_q3',
@@ -381,7 +381,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Test strips are convenient - just dip and compare colors. But they\'re less accurate than liquid tests, especially for ammonia. They also expire quickly and can give false readings if you wait too long to read them.',
+              'Test strips are convenient — just dip and compare colours. But they\'re less accurate than liquid tests, especially for ammonia. They also expire quickly and can give false readings if you wait too long to read them.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
@@ -409,7 +409,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Use clean, dry test tubes (rinse with tank water if needed)\n2. Follow instructions exactly - drop counts matter!\n3. Shake reagent bottles before use\n4. Wait the full time before reading (5 minutes for nitrate)\n5. Read in natural light - artificial light distorts colors\n6. Don\'t trust the test if bottles are expired',
+              '1. Use clean, dry test tubes (rinse with tank water if needed)\n2. Follow instructions exactly - drop counts matter!\n3. Shake reagent bottles before use\n4. Wait the full time before reading (5 minutes for nitrate)\n5. Read in natural light — artificial light distorts colours\n6. Don\'t trust the test if bottles are expired',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -482,7 +482,7 @@ final nitrogenCyclePath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Natural daylight provides the most accurate color reading. Artificial lights can distort the colors and lead to misreading results.',
+                'Natural daylight provides the most accurate colour reading. Artificial lights can distort the colours and lead to misreading results.',
           ),
           const QuizQuestion(
             id: 'nc_test_q5',
@@ -769,7 +769,7 @@ final nitrogenCyclePath = LearningPath(
             id: 'nc_mini_q3',
             question: 'Why do medications sometimes cause mini-cycles?',
             options: [
-              'They change the water color',
+              'They change the water colour',
               'Antibiotics can kill beneficial bacteria too',
               'Fish eat less when medicated',
               'They raise the pH',

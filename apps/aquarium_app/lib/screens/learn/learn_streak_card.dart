@@ -60,7 +60,7 @@ class LearnStreakCard extends StatelessWidget {
                 Text(
                   'Keep learning to maintain your streak',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.primaryLight,
+                    color: AppColors.primary,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

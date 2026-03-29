@@ -6,7 +6,7 @@
 ///
 /// Usage:
 /// ```dart
-/// final path = SpeciesSprites.pathFor('Neon Tetra'); // → 'assets/images/fish/neon_tetra.png'
+/// final path = SpeciesSprites.pathFor('Neon Tetra'); // → 'assets/images/fish/neon_tetra.webp'
 /// ```
 library;
 
@@ -16,40 +16,40 @@ class SpeciesSprites {
   /// Common name → asset file name mapping.
   /// Keys are lower-cased common names from [SpeciesInfo].
   static const _map = <String, String>{
-    'amano shrimp': 'assets/images/fish/amano_shrimp.png',
-    'angelfish': 'assets/images/fish/angelfish.png',
-    'betta': 'assets/images/fish/betta.png',
-    'bristlenose pleco': 'assets/images/fish/bristlenose_pleco.png',
-    'bronze corydoras': 'assets/images/fish/bronze_corydoras.png',
-    'cherry barb': 'assets/images/fish/cherry_barb.png',
-    'cherry shrimp': 'assets/images/fish/cherry_shrimp.png',
-    'guppy': 'assets/images/fish/guppy.png',
-    'harlequin rasbora': 'assets/images/fish/harlequin_rasbora.png',
-    'molly': 'assets/images/fish/molly.png',
-    'neon tetra': 'assets/images/fish/neon_tetra.png',
-    'nerite snail': 'assets/images/fish/nerite_snail.png',
-    'otocinclus': 'assets/images/fish/otocinclus.png',
-    'platy': 'assets/images/fish/platy.png',
-    'zebra danio': 'assets/images/fish/zebra_danio.png',
+    'amano shrimp': 'assets/images/fish/amano_shrimp.webp',
+    'angelfish': 'assets/images/fish/angelfish.webp',
+    'betta': 'assets/images/fish/betta.webp',
+    'bristlenose pleco': 'assets/images/fish/bristlenose_pleco.webp',
+    'bronze corydoras': 'assets/images/fish/bronze_corydoras.webp',
+    'cherry barb': 'assets/images/fish/cherry_barb.webp',
+    'cherry shrimp': 'assets/images/fish/cherry_shrimp.webp',
+    'guppy': 'assets/images/fish/guppy.webp',
+    'harlequin rasbora': 'assets/images/fish/harlequin_rasbora.webp',
+    'molly': 'assets/images/fish/molly.webp',
+    'neon tetra': 'assets/images/fish/neon_tetra.webp',
+    'nerite snail': 'assets/images/fish/nerite_snail.webp',
+    'otocinclus': 'assets/images/fish/otocinclus.webp',
+    'platy': 'assets/images/fish/platy.webp',
+    'zebra danio': 'assets/images/fish/zebra_danio.webp',
   };
 
   /// Thumbnail path mapping (128×128 versions).
   static const _thumbMap = <String, String>{
-    'amano shrimp': 'assets/images/fish/thumb/amano_shrimp.png',
-    'angelfish': 'assets/images/fish/thumb/angelfish.png',
-    'betta': 'assets/images/fish/thumb/betta.png',
-    'bristlenose pleco': 'assets/images/fish/thumb/bristlenose_pleco.png',
-    'bronze corydoras': 'assets/images/fish/thumb/bronze_corydoras.png',
-    'cherry barb': 'assets/images/fish/thumb/cherry_barb.png',
-    'cherry shrimp': 'assets/images/fish/thumb/cherry_shrimp.png',
-    'guppy': 'assets/images/fish/thumb/guppy.png',
-    'harlequin rasbora': 'assets/images/fish/thumb/harlequin_rasbora.png',
-    'molly': 'assets/images/fish/thumb/molly.png',
-    'neon tetra': 'assets/images/fish/thumb/neon_tetra.png',
-    'nerite snail': 'assets/images/fish/thumb/nerite_snail.png',
-    'otocinclus': 'assets/images/fish/thumb/otocinclus.png',
-    'platy': 'assets/images/fish/thumb/platy.png',
-    'zebra danio': 'assets/images/fish/thumb/zebra_danio.png',
+    'amano shrimp': 'assets/images/fish/thumb/amano_shrimp.webp',
+    'angelfish': 'assets/images/fish/thumb/angelfish.webp',
+    'betta': 'assets/images/fish/thumb/betta.webp',
+    'bristlenose pleco': 'assets/images/fish/thumb/bristlenose_pleco.webp',
+    'bronze corydoras': 'assets/images/fish/thumb/bronze_corydoras.webp',
+    'cherry barb': 'assets/images/fish/thumb/cherry_barb.webp',
+    'cherry shrimp': 'assets/images/fish/thumb/cherry_shrimp.webp',
+    'guppy': 'assets/images/fish/thumb/guppy.webp',
+    'harlequin rasbora': 'assets/images/fish/thumb/harlequin_rasbora.webp',
+    'molly': 'assets/images/fish/thumb/molly.webp',
+    'neon tetra': 'assets/images/fish/thumb/neon_tetra.webp',
+    'nerite snail': 'assets/images/fish/thumb/nerite_snail.webp',
+    'otocinclus': 'assets/images/fish/thumb/otocinclus.webp',
+    'platy': 'assets/images/fish/thumb/platy.webp',
+    'zebra danio': 'assets/images/fish/thumb/zebra_danio.webp',
   };
 
   /// Returns the full-resolution sprite path for the given common name,

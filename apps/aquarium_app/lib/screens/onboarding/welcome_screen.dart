@@ -246,25 +246,24 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 // Secondary link
                 FadeTransition(
                   opacity: _buttonOpacity,
-                  child: Semantics(
-                    button: true,
-                    label: 'Quick start with defaults',
-                    child: GestureDetector(
-                      onTap: () {
-                        HapticFeedback.selectionClick();
-                        widget.onLogin?.call();
-                      },
-                      child: Text(
-                        'Quick start with defaults',
-                        style: GoogleFonts.nunito(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.onboardingWarmCream.withAlpha(217), // 85%
-                          decoration: TextDecoration.underline,
-                          decorationColor: AppColors.onboardingWarmCream.withAlpha(128),
-                        ),
-                        textAlign: TextAlign.center,
+                  child: TextButton(
+                    onPressed: () {
+                      HapticFeedback.selectionClick();
+                      widget.onLogin?.call();
+                    },
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    child: Text(
+                      'Skip setup, I\'ll explore first',
+                      style: GoogleFonts.nunito(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.onboardingWarmCream.withAlpha(217), // 85%
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.onboardingWarmCream.withAlpha(128),
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),

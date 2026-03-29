@@ -208,7 +208,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     } catch (e, st) {
       logError('OnboardingScreen: onboarding completion failed: $e', stackTrace: st, tag: 'OnboardingScreen');
       if (mounted) {
-        DanioSnackBar.error(context, 'Something went wrong. Give it another go!');
+        DanioSnackBar.error(context, 'Couldn\'t save your setup. Give it another go!');
       }
     }
   }

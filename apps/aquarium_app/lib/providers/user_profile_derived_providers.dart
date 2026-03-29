@@ -9,40 +9,55 @@ import 'user_profile_notifier.dart';
 
 /// Provider to check if onboarding is needed
 final needsOnboardingProvider = Provider<bool>((ref) {
-  final profile = ref.watch(userProfileProvider);
-  return profile.when(
-    loading: () => false, // Don't redirect while loading
-    error: (_, __) => true, // Show onboarding on error
-    data: (p) => p == null, // Need onboarding if no profile
+  // Use .select() to avoid rebuilding on unrelated profile changes
+  final isLoading = ref.watch(userProfileProvider.select((a) => a.isLoading));
+  if (isLoading) return false;
+  final hasError = ref.watch(userProfileProvider.select((a) => a.hasError));
+  if (hasError) return true;
+  final profileIsNull = ref.watch(
+    userProfileProvider.select((a) => a.value == null),
   );
+  return profileIsNull;
 });
 
 /// Provider for learning progress stats
 final learningStatsProvider = Provider<LearningStats?>((ref) {
-  final profile = ref.watch(userProfileProvider).value;
-  if (profile == null) return null;
+  // Use .select() to only rebuild when learning-relevant fields change
+  final totalXp = ref.watch(userProfileProvider.select((a) => a.value?.totalXp));
+  if (totalXp == null) return null;
+  final currentLevel = ref.watch(userProfileProvider.select((a) => a.value?.currentLevel ?? 1));
+  final levelTitle = ref.watch(userProfileProvider.select((a) => a.value?.levelTitle ?? ''));
+  final levelProgress = ref.watch(userProfileProvider.select((a) => a.value?.levelProgress ?? 0.0));
+  final xpToNextLevel = ref.watch(userProfileProvider.select((a) => a.value?.xpToNextLevel ?? 0));
+  final currentStreak = ref.watch(userProfileProvider.select((a) => a.value?.currentStreak ?? 0));
+  final longestStreak = ref.watch(userProfileProvider.select((a) => a.value?.longestStreak ?? 0));
+  final lessonsCompleted = ref.watch(userProfileProvider.select((a) => a.value?.completedLessons.length ?? 0));
+  final achievementsUnlocked = ref.watch(userProfileProvider.select((a) => a.value?.achievements.length ?? 0));
 
   return LearningStats(
-    totalXp: profile.totalXp,
-    currentLevel: profile.currentLevel,
-    levelTitle: profile.levelTitle,
-    levelProgress: profile.levelProgress,
-    xpToNextLevel: profile.xpToNextLevel,
-    currentStreak: profile.currentStreak,
-    longestStreak: profile.longestStreak,
-    lessonsCompleted: profile.completedLessons.length,
-    achievementsUnlocked: profile.achievements.length,
+    totalXp: totalXp,
+    currentLevel: currentLevel,
+    levelTitle: levelTitle,
+    levelProgress: levelProgress,
+    xpToNextLevel: xpToNextLevel,
+    currentStreak: currentStreak,
+    longestStreak: longestStreak,
+    lessonsCompleted: lessonsCompleted,
+    achievementsUnlocked: achievementsUnlocked,
   );
 });
 
 /// Provider for today's daily goal
 final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
-  final profile = ref.watch(userProfileProvider).value;
-  if (profile == null) return null;
+  // Use .select() to only rebuild when goal-relevant fields change
+  final dailyXpGoal = ref.watch(userProfileProvider.select((a) => a.value?.dailyXpGoal));
+  if (dailyXpGoal == null) return null;
+  final dailyXpHistory = ref.watch(userProfileProvider.select((a) => a.value?.dailyXpHistory));
+  if (dailyXpHistory == null) return null;
 
   return DailyGoal.today(
-    dailyXpGoal: profile.dailyXpGoal,
-    dailyXpHistory: profile.dailyXpHistory,
+    dailyXpGoal: dailyXpGoal,
+    dailyXpHistory: dailyXpHistory,
   );
 });
 

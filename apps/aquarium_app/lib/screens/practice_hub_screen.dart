@@ -59,7 +59,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                 Center(
                   child: ExcludeSemantics(
                     child: Image.asset(
-                      'assets/images/illustrations/practice_header.png',
+                      'assets/images/illustrations/practice_header.webp',
                       height: 160,
                       fit: BoxFit.fitHeight,
                       cacheWidth: 480,

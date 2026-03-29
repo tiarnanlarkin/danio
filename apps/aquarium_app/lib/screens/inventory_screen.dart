@@ -172,7 +172,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     if (success) {
       DanioSnackBar.success(context, _getUseSuccessMessage(shopItem));
     } else {
-      DanioSnackBar.error(context, 'Couldn\'t use that item, try again');
+      DanioSnackBar.error(context, 'Couldn\'t use that item — try again.');
     }
   }
 

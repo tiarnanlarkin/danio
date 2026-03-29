@@ -292,6 +292,12 @@ Future<void> confirmDeleteMyData(
           'larkintiarnanbizz@gmail.com',
           style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
         ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          'Analytics data held by Google will expire after 26 months. '
+          'To request earlier deletion, contact larkintiarnanbizz@gmail.com.',
+          style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
+        ),
       ],
     ),
     actions: [

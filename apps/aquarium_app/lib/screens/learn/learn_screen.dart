@@ -255,7 +255,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           ? _buildSkeletonScreen(context, controller: _scrollController)
           : profileState.hasError
               ? AppErrorState(
-                  title: 'Oops! Something went wrong',
+                  title: 'Couldn\'t load lessons',
                   message:
                       'We could not load your learning paths. Check your connection and try again.',
                   onRetry: () => ref.invalidate(userProfileProvider),
@@ -296,9 +296,9 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFF5B8FA8), // Soft ocean blue
-                            Color(0xFF3D6B7A), // Deeper teal
-                            Color(0xFF2D5566), // Submarine depth
+                            AppColors.learnHeaderTop,
+                            AppColors.learnHeaderMid,
+                            AppColors.learnHeaderBottom,
                           ],
                         ),
                       ),
@@ -309,9 +309,11 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           Positioned.fill(
                             child: ExcludeSemantics(
                               child: Image.asset(
-                                'assets/images/illustrations/learn_header.png',
+                                'assets/images/illustrations/learn_header.webp',
                                 fit: BoxFit.cover,
                                 alignment: Alignment.center,
+                                cacheWidth: 800,
+                                cacheHeight: 480,
                                 errorBuilder: (_, __, ___) =>
                                     const SizedBox.shrink(),
                               ),
@@ -336,7 +338,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                   '⭐ $statsXp XP · $statsLevel',
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -363,7 +365,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                     '🔥 ${profileState.currentStreak}',
                                     style: const TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

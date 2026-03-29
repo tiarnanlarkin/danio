@@ -57,7 +57,7 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
 }
 
 final aiHistoryProvider =
-    StateNotifierProvider<AIHistoryNotifier, List<AIInteraction>>(
+    StateNotifierProvider.autoDispose<AIHistoryNotifier, List<AIInteraction>>(
       (ref) => AIHistoryNotifier(ref),
     );
 
@@ -115,7 +115,7 @@ class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
 }
 
 final anomalyHistoryProvider =
-    StateNotifierProvider<AnomalyHistoryNotifier, List<Anomaly>>(
+    StateNotifierProvider.autoDispose<AnomalyHistoryNotifier, List<Anomaly>>(
       (ref) => AnomalyHistoryNotifier(ref),
     );
 
@@ -155,6 +155,6 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
 }
 
 final weeklyPlanProvider =
-    StateNotifierProvider<WeeklyPlanNotifier, WeeklyPlan?>(
+    StateNotifierProvider.autoDispose<WeeklyPlanNotifier, WeeklyPlan?>(
       (ref) => WeeklyPlanNotifier(ref),
     );

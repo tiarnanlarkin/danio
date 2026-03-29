@@ -85,7 +85,7 @@ class SettingsScreen extends ConsumerWidget {
       (_) => NavListTile(
         icon: Icons.color_lens_outlined,
         title: 'Room Themes',
-        subtitle: 'Customize your living room style',
+        subtitle: 'Customise your living room style',
         onTap: () =>
             NavigationThrottle.push(context, const ThemeGalleryScreen()),
       ),

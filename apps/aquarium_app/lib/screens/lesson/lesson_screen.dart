@@ -19,6 +19,7 @@ import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
 import 'lesson_hearts_modal.dart';
+import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../providers/species_unlock_provider.dart';
 import '../learn/unlock_celebration_screen.dart';
@@ -285,13 +286,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           if (!heartsService.hasHeartsAvailable && mounted) {
             await Future.delayed(kQuizRevealDelay);
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    '⚡ Energy depleted — keep going! No bonus XP until it refills.',
-                  ),
-                  duration: Duration(seconds: 3),
-                ),
+              DanioSnackBar.info(
+                context,
+                '⚡ Energy depleted — keep going! No bonus XP until it refills.',
               );
             }
           }

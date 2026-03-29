@@ -774,7 +774,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
     } catch (e, st) {
       logError('TasksScreen: task save failed: $e', stackTrace: st, tag: 'TasksScreen');
       if (mounted) {
-        AppFeedback.showError(context, 'Oops, something went wrong!');
+        AppFeedback.showError(context, 'Couldn\'t complete that action. Try again!');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

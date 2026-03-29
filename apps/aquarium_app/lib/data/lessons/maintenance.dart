@@ -682,7 +682,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '✓ Count fish (make sure everyone\'s present)\n✓ Observe behavior (anyone acting odd?)\n✓ Check temperature\n✓ Feed fish\n✓ Quick visual scan (equipment running? leaks?)',
+              '✓ Count fish (make sure everyone\'s present)\n✓ Observe behaviour (anyone acting odd?)\n✓ Check temperature\n✓ Feed fish\n✓ Quick visual scan (equipment running? leaks?)',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -808,13 +808,13 @@ final maintenancePath = LearningPath(
             question: 'What\'s the most important daily task?',
             options: [
               'Testing water',
-              'Observing fish behavior',
+              'Observing fish behaviour',
               'Cleaning glass',
               'Adjusting pH',
             ],
             correctIndex: 1,
             explanation:
-                'Daily observation catches problems early! Count fish, watch behavior, check equipment. This 5-minute habit prevents disasters.',
+                'Daily observation catches problems early! Count fish, watch behaviour, check equipment. This 5-minute habit prevents disasters.',
           ),
           const QuizQuestion(
             id: 'maint_sch_q3',

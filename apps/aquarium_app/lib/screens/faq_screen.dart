@@ -162,7 +162,7 @@ class FaqScreen extends StatelessWidget {
           _FaqItem(
             question: 'My fish is sick. What do I do?',
             answer:
-                '1. Observe symptoms carefully (spots, fins, behavior)\n'
+                '1. Observe symptoms carefully (spots, fins, behaviour)\n'
                 '2. Test water parameters - poor water is often the cause\n'
                 '3. Do a water change (good first step for most issues)\n'
                 '4. Isolate sick fish if possible (quarantine tank)\n'

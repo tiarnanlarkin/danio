@@ -371,7 +371,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Beginners think lighting is about seeing their fish. Wrong! Lighting affects fish behavior, plant growth, and algae levels. The wrong light creates problems.',
+              'Beginners think lighting is about seeing their fish. Wrong! Lighting affects fish behaviour, plant growth, and algae levels. The wrong light creates problems.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -403,12 +403,12 @@ final equipmentPath = LearningPath(
         ),
         const LessonSection(
           type: LessonSectionType.heading,
-          content: 'Color Temperature (Kelvin)',
+          content: 'Colour Temperature (Kelvin)',
         ),
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '6500K (daylight white) is the sweet spot for planted tanks - mimics natural sunlight. 8000K+ (blueish) makes fish colors pop but encourages algae. 3000K (warm/yellow) looks dingy.',
+              '6500K (daylight white) is the sweet spot for planted tanks - mimics natural sunlight. 8000K+ (blueish) makes fish colours pop but encourages algae. 3000K (warm/yellow) looks dingy.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -489,7 +489,7 @@ final equipmentPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                '6500K is ideal - it mimics natural sunlight and grows plants well while making colors look natural.',
+                '6500K is ideal - it mimics natural sunlight and grows plants well while making colours look natural.',
           ),
           const QuizQuestion(
             id: 'eq_light_q4',

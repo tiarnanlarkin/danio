@@ -34,6 +34,7 @@ class SharedPreferencesBackup {
     'daily_xp',
     'lesson_progress',
     'completed_lessons',
+    'cost_tracker',
   ];
 
   static const _metadataKey = '__backup_version';

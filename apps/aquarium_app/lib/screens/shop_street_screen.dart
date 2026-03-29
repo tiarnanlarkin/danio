@@ -736,7 +736,7 @@ class _ShopTile extends StatelessWidget {
                 '⭐ ${shop.rating!.toStringAsFixed(1)}',
                 style: Theme.of(
                   context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.primaryLight),
+                ).textTheme.bodySmall?.copyWith(color: AppColors.primary),
               ),
             IconButton(
               tooltip: 'Close',

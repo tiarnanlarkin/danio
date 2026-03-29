@@ -211,7 +211,7 @@ class TroubleshootingScreen extends StatelessWidget {
               'Poor water quality',
               'Aggression',
               'Spooked',
-              'Natural behavior (some species)',
+              'Natural behaviour (some species)',
             ],
             solutions: [
               'Get a lid or lower water level',
@@ -260,7 +260,7 @@ class TroubleshootingScreen extends StatelessWidget {
                   '• When in doubt, do a water change\n'
                   '• Test water before making changes\n'
                   '• Make changes gradually, not all at once\n'
-                  '• Observe fish behavior - they tell you when something\'s wrong\n'
+                  '• Observe fish behaviour - they tell you when something\'s wrong\n'
                   '• Keep a log to track patterns\n'
                   '• Quarantine new additions',
                   style: AppTypography.bodyMedium,
