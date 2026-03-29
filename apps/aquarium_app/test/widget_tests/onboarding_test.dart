@@ -61,11 +61,11 @@ void main() {
       await tester.pumpWidget(_wrap(onConsentGiven: () {}));
       await tester.pump();
       expect(
-        find.textContaining('Firebase Analytics'),
+        find.textContaining('anonymous analytics'),
         findsOneWidget,
       );
       expect(
-        find.textContaining('Crashlytics'),
+        find.textContaining('crash reports'),
         findsOneWidget,
       );
     });

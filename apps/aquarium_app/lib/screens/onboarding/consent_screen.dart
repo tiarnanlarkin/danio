@@ -1,5 +1,5 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/user_profile_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/logger.dart';
 import '../../widgets/core/app_button.dart';
+import 'age_blocked_screen.dart';
 
 /// Key used in SharedPreferences to persist the user's GDPR analytics consent.
 const String kGdprAnalyticsConsentKey = 'gdpr_analytics_consent';
@@ -18,12 +19,8 @@ const String kGdprAnalyticsConsentKey = 'gdpr_analytics_consent';
 /// Call this after reading the persisted consent value or after the user
 /// makes a choice on the consent screen.
 Future<void> applyAnalyticsConsent(bool accepted) async {
-  try {
-    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(accepted);
-  } catch (e) {
-    // Firebase may not be initialised — safe to ignore.
-    appLog('ConsentScreen: Firebase Analytics not available: $e', tag: 'ConsentScreen');
-  }
+  // firebase_analytics removed — no-op; crash reporting toggled below.
+  appLog('ConsentScreen: analytics consent=$accepted', tag: 'ConsentScreen');
   try {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
       accepted,
@@ -155,37 +152,17 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
                     minimumSize: const Size(0, 36),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  onPressed: () {
-                    showDialog<void>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Age Requirement'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Danio requires users to be 13 or older. '
-                              'Ask a parent or guardian to set up your account.',
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            TextButton(
-                              onPressed: () => _launchUrl(
-                                'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
-                              ),
-                              child: const Text('View Privacy Policy'),
-                            ),
-                          ],
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('under_13_blocked', true);
+                    if (context.mounted) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const AgeBlockedScreen(),
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(ctx).pop(),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      ),
-                    );
+                        (_) => false,
+                      );
+                    }
                   },
                   child: Text(
                     "I'm under 13",

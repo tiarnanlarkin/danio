@@ -147,7 +147,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       child: const Icon(
                         Icons.workspace_premium,
                         size: 64,
-                        color: Colors.white,
+                        color: Color(0xFF4A2800),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -158,7 +158,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       style: Theme.of(context).textTheme.headlineMedium!
                           .copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: const Color(0xFF4A2800),
                             letterSpacing: 1,
                           ),
                     ),
@@ -181,7 +181,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                             style: Theme.of(context).textTheme.headlineMedium!
                                 .copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: const Color(0xFF4A2800),
                                 ),
                           ),
                           const SizedBox(height: AppSpacing.xs),
@@ -189,20 +189,21 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                             widget.levelTitle,
                             style: Theme.of(context).textTheme.titleLarge!
                                 .copyWith(
-                                  color: Colors.white,
+                                  color: const Color(0xFF4A2800),
                                   fontWeight: FontWeight.w500,
                                 ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    // Spacing between level badge and stats (prevents overlap)
+                    const SizedBox(height: 16),
 
                     // Total XP
                     Text(
                       '${widget.totalXp} Total XP',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: AppOverlays.white90,
+                        color: const Color(0xFF4A2800),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -220,7 +221,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                           children: [
                             const Icon(
                               Icons.lock_open,
-                              color: Colors.white,
+                              color: Color(0xFF4A2800),
                               size: AppIconSizes.sm,
                             ),
                             const SizedBox(width: AppSpacing.sm2),
@@ -228,7 +229,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                               child: Text(
                                 widget.unlockMessage!,
                                 style: Theme.of(context).textTheme.bodyLarge!
-                                    .copyWith(color: Colors.white),
+                                    .copyWith(color: const Color(0xFF4A2800)),
                               ),
                             ),
                           ],

@@ -14,6 +14,7 @@ import 'providers/user_profile_provider.dart';
 import 'screens/tab_navigator.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/onboarding/consent_screen.dart';
+import 'screens/onboarding/age_blocked_screen.dart';
 import 'screens/spaced_repetition_practice_screen.dart';
 import 'screens/achievements_screen.dart';
 import 'services/notification_scheduler.dart';
@@ -240,6 +241,9 @@ class _AppRouterState extends ConsumerState<_AppRouter>
   /// `null` means "still loading", `true`/`false` means decided.
   bool? _gdprConsentDecided;
 
+  /// True if this install was flagged as under-13 (COPPA hard block).
+  bool? _under13Blocked;
+
   @override
   void initState() {
     super.initState();
@@ -300,8 +304,10 @@ class _AppRouterState extends ConsumerState<_AppRouter>
   Future<void> _checkGdprConsent() async {
     final prefs = await SharedPreferences.getInstance();
     final consent = prefs.getBool(kGdprAnalyticsConsentKey);
+    final under13 = prefs.getBool('under_13_blocked') ?? false;
     if (mounted) {
       setState(() {
+        _under13Blocked = under13;
         // consent is null when user hasn't decided → show consent screen
         _gdprConsentDecided = consent != null;
       });
@@ -324,7 +330,15 @@ class _AppRouterState extends ConsumerState<_AppRouter>
 
   @override
   Widget build(BuildContext context) {
-    // ── 0. GDPR consent gate ────────────────────────────────────────────
+    // ── 0a. COPPA hard block — under-13 install ──────────────────────────
+    if (_under13Blocked == null) {
+      return _buildSplash(context);
+    }
+    if (_under13Blocked == true) {
+      return const AgeBlockedScreen();
+    }
+
+    // ── 0b. GDPR consent gate ────────────────────────────────────────────
     if (_gdprConsentDecided == null) {
       return _buildSplash(context);
     }
