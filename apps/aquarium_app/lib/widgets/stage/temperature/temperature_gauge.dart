@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'dart:ui';
+// dart:ui import removed — BackdropFilter replaced (perf: T-D-270)
 
 import 'package:flutter/material.dart';
 
@@ -747,23 +747,17 @@ class TempGlassPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha(31), // 12% fill
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              border: Border.all(
-                color: Colors.white.withAlpha(51), // 20% border
-                width: 1.0,
-              ),
-            ),
-            child: child,
+      child: Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          color: Colors.white.withAlpha(51), // 20% fill — slightly brighter without blur
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          border: Border.all(
+            color: Colors.white.withAlpha(51), // 20% border
+            width: 1.0,
           ),
         ),
+        child: child,
       ),
     );
   }

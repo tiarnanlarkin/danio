@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:ui';
+// dart:ui import removed — BackdropFilter replaced with solid overlay (perf: T-D-270)
 import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
@@ -401,14 +401,10 @@ class _ShopSection extends StatelessWidget {
         splashColor: color.withAlpha(30),
         highlightColor: color.withAlpha(15),
         child: RepaintBoundary(
-          child: ClipRRect(
-            borderRadius: AppRadius.largeRadius,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: Container(
+          child: Container(
                 padding: const EdgeInsets.all(AppSpacing.lg2),
                 decoration: BoxDecoration(
-                  color: AppColors.whiteAlpha12,
+                  color: AppColors.whiteAlpha20,
                   borderRadius: AppRadius.largeRadius,
                   border: Border.all(color: AppColors.whiteAlpha20),
                 ),
@@ -474,8 +470,6 @@ class _ShopSection extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ),
           ),
         ),
       ),
@@ -500,14 +494,10 @@ class _BudgetCard extends StatelessWidget {
         splashColor: AppColors.primaryLight.withAlpha(30),
         highlightColor: AppColors.primaryLight.withAlpha(15),
         child: RepaintBoundary(
-          child: ClipRRect(
-            borderRadius: AppRadius.largeRadius,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: Container(
+          child: Container(
                 padding: const EdgeInsets.all(AppSpacing.lg2),
                 decoration: BoxDecoration(
-                  color: AppColors.whiteAlpha12,
+                  color: AppColors.whiteAlpha20,
                   borderRadius: AppRadius.largeRadius,
                   border: Border.all(color: AppColors.whiteAlpha20),
                 ),
@@ -604,9 +594,7 @@ class _BudgetCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
           ),
-        ),
         ),
       ),
     );
@@ -629,18 +617,14 @@ class _LocalShopsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: AppRadius.largeRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
-            decoration: BoxDecoration(
-              color: AppColors.whiteAlpha12,
-              borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: AppColors.whiteAlpha20),
-            ),
-            child: Column(
+      child: Container(
+          padding: const EdgeInsets.all(AppSpacing.lg2),
+          decoration: BoxDecoration(
+            color: AppColors.whiteAlpha20,
+            borderRadius: AppRadius.largeRadius,
+            border: Border.all(color: AppColors.whiteAlpha20),
+          ),
+          child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -687,8 +671,6 @@ class _LocalShopsCard extends StatelessWidget {
               ],
             ],
           ),
-        ),
-        ),
       ),
     );
   }

@@ -19,6 +19,7 @@
 
 // TODO: Deploy Supabase Edge Function before production release.
 // See: docs/ai-proxy-setup.md for deployment instructions.
+// Pre-production: deploy edge function. See docs/current-state.md
 
 import 'dart:convert';
 import 'dart:typed_data';

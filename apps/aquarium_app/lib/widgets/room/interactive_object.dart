@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:ui';
+// dart:ui import removed — BackdropFilter replaced with solid overlay (perf: T-D-270)
 import 'dart:math' as math;
 import '../../theme/app_theme.dart';
 
@@ -289,11 +289,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
     return AnimatedOpacity(
       duration: AppDurations.medium2,
       opacity: _showTooltip || widget.showLabel ? 1.0 : 0.0,
-      child: ClipRRect(
-        borderRadius: AppRadius.smallRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
+      child: Container(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
             decoration: BoxDecoration(
               color: AppOverlays.black50,
@@ -308,8 +304,6 @@ class _InteractiveObjectState extends State<InteractiveObject>
                 fontWeight: FontWeight.w500,
               ),
             ),
-          ),
-        ),
       ),
     );
   }

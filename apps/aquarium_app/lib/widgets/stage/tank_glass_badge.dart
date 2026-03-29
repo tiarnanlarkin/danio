@@ -1,4 +1,4 @@
-import 'dart:ui';
+// dart:ui import removed — BackdropFilter replaced with solid overlay (perf: T-D-270)
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
@@ -59,11 +59,7 @@ class _TankGlassBadgeState extends State<TankGlassBadge>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: ClipRRect(
-        borderRadius: AppRadius.pillRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: Container(
+      child: Container(
             height: 24,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3),
             decoration: BoxDecoration(
@@ -82,8 +78,6 @@ class _TankGlassBadgeState extends State<TankGlassBadge>
                 ),
               ],
             ),
-          ),
-        ),
       ),
     );
   }

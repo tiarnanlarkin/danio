@@ -1039,7 +1039,7 @@ class _AppStateSnapshot extends ConsumerWidget {
             width: 160,
             child: Text(
               '$label:',
-              style: AppTypography.bodySmall.copyWith(color: Colors.grey), // TODO: add AppColors.textHint equivalent for debug
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
             ),
           ),
           Expanded(
