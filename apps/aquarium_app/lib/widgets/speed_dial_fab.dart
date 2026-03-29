@@ -78,6 +78,13 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
         return Stack(
           fit: StackFit.passthrough,
           children: [
+            // ── Anchor: zero-size non-positioned child prevents the
+            //    size.isFinite assertion when the dial is closed (t==0)
+            //    and all other children are Positioned (no non-positioned
+            //    child to drive Stack sizing).  SizedBox.shrink() is 0×0
+            //    so it has no visual impact.
+            const SizedBox.shrink(),
+
             // ── Blur scrim ──────────────────────────────────────────
             if (t > 0)
               Positioned.fill(
