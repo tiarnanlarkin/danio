@@ -479,7 +479,9 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '$completedPaths of $totalPaths paths complete',
+                                    completedPaths == 0
+                                        ? '$totalPaths paths to explore'
+                                        : '$completedPaths of $totalPaths paths complete',
                                     style: AppTypography.bodySmall.copyWith(
                                       color: context.textSecondary,
                                     ),

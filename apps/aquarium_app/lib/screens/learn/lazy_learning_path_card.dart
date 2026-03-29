@@ -193,7 +193,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                               decoration: BoxDecoration(
                                 color: isDark
                                     ? AppColors.whiteAlpha10
-                                    : AppColors.primaryAlpha15,
+                                    : AppColors.primaryAlpha20,
                                 borderRadius: AppRadius.xsRadius,
                               ),
                               child: FractionallySizedBox(
