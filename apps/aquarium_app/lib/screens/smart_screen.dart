@@ -329,11 +329,12 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             const SizedBox(height: AppSpacing.sm),
 
             _FeatureCard(
-              icon: Icons.warning_amber,
+              icon: activeAnomalies.isEmpty ? Icons.check_circle_outline : Icons.warning_amber,
               title: 'Anomaly History',
-              subtitle:
-                  '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
-              color: AppColors.warning,
+              subtitle: activeAnomalies.isEmpty
+                  ? 'All clear — no issues detected'
+                  : '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
+              color: activeAnomalies.isEmpty ? AppColors.success : AppColors.warning,
               onTap: () => _showAnomalyHistory(context, ref),
             ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
 

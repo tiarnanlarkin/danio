@@ -426,7 +426,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                 child: Text(
                                   'New to fishkeeping? Start with the basics below.',
                                   style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryDark,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
