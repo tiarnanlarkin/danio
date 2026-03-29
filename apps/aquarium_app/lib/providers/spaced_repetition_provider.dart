@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'user_profile_provider.dart';
 import 'dart:convert';
 import '../models/spaced_repetition.dart';
-import '../models/achievements.dart';
 import '../services/review_queue_service.dart';
 import '../services/notification_service.dart';
 import 'achievement_provider.dart';
@@ -565,8 +564,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       // Save session count
       await prefs.setString(_sessionsKey, jsonEncode({'count': sessionCount}));
 
-      // Check session count achievements
-      await _checkSessionCountAchievements(sessionCount);
+      // Route through the full achievement system so XP, gems, and dialogs fire
+      await _ref.read(achievementCheckerProvider).checkAfterReview(
+        reviewsCompleted: sessionCount,
+        reviewStreak: state.stats.currentStreak,
+      );
 
       // Session is complete, clear it
       state = state.copyWith(clearSession: true, clearError: true);
@@ -677,8 +679,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
       state = state.copyWith(stats: updatedStats);
 
-      // Check for streak achievements
-      await _checkStreakAchievements(newStreak);
+      // Streak achievements checked via checkAfterReview() in completeSession()
     } catch (e, stackTrace) {
       // Don't break flow on streak update failure
       state = state.copyWith(
@@ -688,87 +689,6 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     }
   }
 
-  /// Check for streak achievements
-  Future<void> _checkStreakAchievements(int streak) async {
-    try {
-      final progressNotifier = _ref.read(achievementProgressProvider.notifier);
-      final progressMap = _ref.read(achievementProgressProvider);
-
-      // Check each streak milestone
-      final milestones = [
-        {'id': 'review_streak_3', 'target': 3},
-        {'id': 'review_streak_7', 'target': 7},
-        {'id': 'review_streak_14', 'target': 14},
-        {'id': 'review_streak_30', 'target': 30},
-      ];
-
-      for (final milestone in milestones) {
-        final id = milestone['id'] as String;
-        final target = milestone['target'] as int;
-
-        if (streak >= target) {
-          final currentProgress = progressMap[id];
-          if (currentProgress == null || !currentProgress.isUnlocked) {
-            // Create or update progress
-            final newProgress = AchievementProgress(
-              achievementId: id,
-              currentCount: target,
-              isUnlocked: true,
-              unlockedAt: DateTime.now(),
-            );
-            await progressNotifier.updateProgress(id, newProgress);
-          }
-        }
-      }
-    } catch (e, stackTrace) {
-      // Don't break flow on achievement check failure
-      state = state.copyWith(
-        errorMessage: "Couldn't check for new achievements right now.",
-      );
-      logError('Failed to check streak achievements: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
-    }
-  }
-
-  /// Check for review session count achievements
-  Future<void> _checkSessionCountAchievements(int sessionCount) async {
-    try {
-      final progressNotifier = _ref.read(achievementProgressProvider.notifier);
-      final progressMap = _ref.read(achievementProgressProvider);
-
-      // Check each session milestone
-      final milestones = [
-        {'id': 'first_review', 'target': 1},
-        {'id': 'reviews_10', 'target': 10},
-        {'id': 'reviews_50', 'target': 50},
-        {'id': 'reviews_100', 'target': 100},
-      ];
-
-      for (final milestone in milestones) {
-        final id = milestone['id'] as String;
-        final target = milestone['target'] as int;
-
-        if (sessionCount >= target) {
-          final currentProgress = progressMap[id];
-          if (currentProgress == null || !currentProgress.isUnlocked) {
-            // Create or update progress
-            final newProgress = AchievementProgress(
-              achievementId: id,
-              currentCount: target,
-              isUnlocked: true,
-              unlockedAt: DateTime.now(),
-            );
-            await progressNotifier.updateProgress(id, newProgress);
-          }
-        }
-      }
-    } catch (e, stackTrace) {
-      // Don't break flow on achievement check failure
-      state = state.copyWith(
-        errorMessage: "Couldn't check for new achievements right now.",
-      );
-      logError('Failed to check session count achievements: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
-    }
-  }
 
   /// Schedule notifications for due reviews
   Future<void> _scheduleNotifications() async {

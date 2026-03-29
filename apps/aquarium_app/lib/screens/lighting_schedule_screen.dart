@@ -13,8 +13,6 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
   bool _hasPlants = true;
   bool _hasCO2 = false;
   bool _hasAlgaeIssues = false;
-  String _lightIntensity = 'Medium';
-
   TimeOfDay _lightsOn = const TimeOfDay(hour: 10, minute: 0);
   TimeOfDay _lightsOff = const TimeOfDay(hour: 20, minute: 0);
   bool _useSiesta = false;
@@ -125,19 +123,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                   value: _hasAlgaeIssues,
                   onChanged: (v) => setState(() => _hasAlgaeIssues = v),
                 ),
-                ListTile(
-                  title: const Text('Light Intensity'),
-                  trailing: SegmentedButton<String>(
-                    segments: const [
-                      ButtonSegment(value: 'Low', label: Text('Low')),
-                      ButtonSegment(value: 'Medium', label: Text('Med')),
-                      ButtonSegment(value: 'High', label: Text('High')),
-                    ],
-                    selected: {_lightIntensity},
-                    onSelectionChanged: (v) =>
-                        setState(() => _lightIntensity = v.first),
-                  ),
-                ),
+
               ],
             ),
           ),

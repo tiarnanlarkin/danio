@@ -58,7 +58,6 @@ import '../widgets/core/app_dialog.dart';
 import 'workshop_screen.dart';
 import 'faq_screen.dart';
 import 'glossary_screen.dart';
-import 'theme_gallery_screen.dart';
 import 'quick_start_guide_screen.dart';
 import 'terms_of_service_screen.dart';
 import 'about_screen.dart';
@@ -427,10 +426,6 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       _DebugTile(
         title: 'Story Browser',
         onTap: () => _push(context, const StoryBrowserScreen()),
-      ),
-      _DebugTile(
-        title: 'Theme Gallery',
-        onTap: () => _push(context, const ThemeGalleryScreen()),
       ),
       _DebugTile(
         title: 'Quick Start Guide',

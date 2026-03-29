@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 /// Debug-only QA fast-entry service via ADB intents.
 ///
 /// ALL logic is gated behind [kDebugMode] and has zero effect in release builds.
@@ -19,7 +18,6 @@ import '../screens/plant_browser_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/glossary_screen.dart';
 import '../screens/faq_screen.dart';
-import '../screens/theme_gallery_screen.dart';
 import '../screens/lesson/lesson_screen.dart';
 
 /// Method channel used by [MainActivity] (debug build only) to pass the
@@ -48,7 +46,7 @@ class DebugDeepLinkService {
         _handleUri(uri, context, ref);
       }
     }).catchError((Object e) {
-      print('[QA] getInitialUri error: $e');
+      debugPrint('[QA] getInitialUri error: $e');
     });
 
     // 2. Listen for subsequent intents while the app is running.
@@ -68,7 +66,7 @@ class DebugDeepLinkService {
     if (uri == null) return;
     if (uri.scheme != 'danio' || uri.host != 'qa') return;
 
-    print('[QA] Deep link: $rawUri');
+    debugPrint('[QA] Deep link: $rawUri');
 
     final segments = uri.pathSegments; // e.g. ['learn'] or ['lesson', 'first_fish']
     if (segments.isEmpty) return;
@@ -114,9 +112,6 @@ class DebugDeepLinkService {
       case 'faq':
         nav.push(MaterialPageRoute(builder: (_) => const FaqScreen()));
 
-      case 'theme-gallery':
-        nav.push(MaterialPageRoute(builder: (_) => const ThemeGalleryScreen()));
-
       case 'lesson':
         final pathId = segments.length > 1 ? segments[1] : null;
         if (pathId != null) {
@@ -124,7 +119,7 @@ class DebugDeepLinkService {
         }
 
       default:
-        print('[QA] Unknown route: $route');
+        debugPrint('[QA] Unknown route: $route');
     }
   }
 
@@ -140,7 +135,7 @@ class DebugDeepLinkService {
       final lessonState = ref.read(lessonProvider);
       final path = lessonState.getPath(pathId);
       if (path == null || path.lessons.isEmpty) {
-        print('[QA] Path "$pathId" not found or has no lessons');
+        debugPrint('[QA] Path "$pathId" not found or has no lessons');
         return;
       }
       final lesson = path.lessons.first;
@@ -151,7 +146,7 @@ class DebugDeepLinkService {
         ),
       );
     } catch (e) {
-      print('[QA] Failed to navigate to lesson for path "$pathId": $e');
+      debugPrint('[QA] Failed to navigate to lesson for path "$pathId": $e');
     }
   }
 }

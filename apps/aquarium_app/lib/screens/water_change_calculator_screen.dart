@@ -195,8 +195,8 @@ class _WaterChangeCalculatorScreenState
           AppTextField(
             controller: _tankVolumeController,
             label: 'Tank Volume (litres)',
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
             onChanged: (_) => _calculate(),
           ),
 
@@ -209,8 +209,8 @@ class _WaterChangeCalculatorScreenState
             controller: _currentNitrateController,
             label: 'Current Nitrate (ppm)',
             helperText: 'What your test kit shows now',
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
             onChanged: (_) => _calculate(),
           ),
 
@@ -220,8 +220,8 @@ class _WaterChangeCalculatorScreenState
             controller: _targetNitrateController,
             label: 'Target Nitrate (ppm)',
             helperText: 'Usually 10-20 ppm for most tanks',
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
             onChanged: (_) => _calculate(),
           ),
 
@@ -231,8 +231,8 @@ class _WaterChangeCalculatorScreenState
             controller: _tapNitrateController,
             label: 'Tap Water Nitrate (ppm)',
             helperText: 'Test your tap water! Often 0-10 ppm',
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
             onChanged: (_) => _calculate(),
           ),
 

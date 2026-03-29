@@ -12,7 +12,6 @@ import '../learn_screen.dart';
 import '../onboarding/consent_screen.dart';
 import '../shop_street_screen.dart';
 import '../tank_detail/tank_detail_screen.dart';
-import '../theme_gallery_screen.dart';
 import '../../models/adaptive_difficulty.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/reduced_motion_provider.dart';
@@ -89,13 +88,6 @@ class SettingsScreen extends ConsumerWidget {
       (_) => const _SectionHeader(title: 'App Settings'),
       (_) => const _ThemeModeTile(),
       (_) => NavListTile(
-        icon: Icons.color_lens_outlined,
-        title: 'Room Themes',
-        subtitle: 'Customise your living room style',
-        onTap: () =>
-            NavigationThrottle.push(context, const ThemeGalleryScreen()),
-      ),
-      (_) => NavListTile(
         icon: Icons.tune,
         title: 'Difficulty Settings',
         subtitle: 'Adjust app complexity level',
@@ -146,13 +138,8 @@ class SettingsScreen extends ConsumerWidget {
       (_) => AppListTile(
         leading: const Icon(Icons.water_drop),
         title: 'Danio',
-        subtitle: 'Version 0.1.0',
+        subtitle: 'Version $kAppVersion',
         onTap: kDebugMode ? () => handleVersionTap(context) : null,
-      ),
-      (_) => AppListTile(
-        leading: const Icon(Icons.info_outline),
-        title: 'About',
-        onTap: () => _showAboutDialog(context),
       ),
       (_) => const _AnalyticsConsentToggle(),
       (_) => SettingsDataSection(ref: ref),
@@ -301,33 +288,6 @@ class SettingsScreen extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  void _showAboutDialog(BuildContext context) {
-    showAboutDialog(
-      context: context,
-      applicationName: 'Danio',
-      applicationVersion: '0.1.0 (MVP)',
-      applicationIcon: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: AppOverlays.primary10,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(Icons.water_drop, color: AppColors.primary),
-      ),
-      children: [
-        const Text(
-          'Personal aquarium management - track tanks, livestock, equipment & maintenance.',
-        ),
-        const SizedBox(height: AppSpacing.md),
-        const Text(
-          'Your data is stored locally on this device.',
-          style: TextStyle(fontStyle: FontStyle.italic),
-        ),
-      ],
     );
   }
 

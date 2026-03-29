@@ -16,6 +16,7 @@ import '../providers/tank_provider.dart';
 import '../services/backup_service.dart';
 import '../services/shared_preferences_backup.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart' show kAppVersion;
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
 import '../utils/logger.dart';
@@ -351,7 +352,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       final exportData = {
         'version': 3, // v3 includes SharedPreferences (profile, gems, settings)
         'exportDate': DateTime.now().toIso8601String(),
-        'appVersion': '1.0.0',
+        'appVersion': kAppVersion,
         'tanks': tanks.map((t) => (t as Tank).toJson()).toList(),
         'livestock': allLivestock,
         'equipment': allEquipment,

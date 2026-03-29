@@ -19,10 +19,8 @@ import 'settings_screen.dart';
 import 'shop_street_screen.dart';
 import 'workshop_screen.dart';
 
-const String appVersion = String.fromEnvironment(
-  'APP_VERSION',
-  defaultValue: '1.0.0',
-);
+// appVersion alias — kept for backward compatibility with about_screen.dart import
+const String appVersion = kAppVersion;
 
 /// Settings Hub - Consolidates all secondary features
 /// This is Tab 3 in the new navigation structure

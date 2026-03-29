@@ -3,6 +3,17 @@
 library;
 
 // ---------------------------------------------------------------------------
+// App version — single source of truth
+// ---------------------------------------------------------------------------
+
+/// The current app version string, injected at build time via --dart-define.
+/// Falls back to the pubspec version when not supplied.
+const kAppVersion = String.fromEnvironment(
+  'APP_VERSION',
+  defaultValue: '1.0.0',
+);
+
+// ---------------------------------------------------------------------------
 // Duration constants
 // ---------------------------------------------------------------------------
 

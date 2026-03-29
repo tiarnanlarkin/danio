@@ -380,100 +380,116 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
   }
 
   void _showAnomalyHistory(BuildContext context, WidgetRef ref) {
-    final anomalies = ref.read(anomalyHistoryProvider);
     showAppScrollableSheet(
       context: context,
       initialSize: 0.6,
       maxSize: 0.9,
       minSize: 0.3,
       builder: (ctx, scrollController) {
-          if (anomalies.isEmpty) {
-            return Column(
-              children: [
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Anomaly History',
-                  style: AppTypography.titleLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                Icon(
-                  Icons.monitor_heart_outlined,
-                  size: 56,
-                  color: context.textHint,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'No anomalies detected — looking good! 🐟',
-                  style: AppTypography.bodyLarge.copyWith(
-                    color: context.textSecondary,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Anomaly detection runs automatically\nwhen you log water parameters.',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: context.textHint,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                AppButton(
-                  label: 'Run Symptom Triage',
-                  onPressed: () {
-                    Navigator.maybePop(ctx);
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const SymptomTriageScreen(),
+          // Use Consumer so the sheet rebuilds reactively when anomalies change.
+          return Consumer(
+            builder: (ctx, innerRef, _) {
+              final anomalies = innerRef.watch(anomalyHistoryProvider);
+              if (anomalies.isEmpty) {
+                return Column(
+                  children: [
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Anomaly History',
+                      style: AppTypography.titleLarge.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
-                  },
-                  leadingIcon: Icons.medical_services_outlined,
-                  variant: AppButtonVariant.primary,
-                ),
-                const Spacer(),
-              ],
-            );
-          }
-          return ListView.builder(
-            controller: scrollController,
-            padding: const EdgeInsets.only(
-              left: AppSpacing.md,
-              right: AppSpacing.md,
-              bottom: AppSpacing.md,
-              top: 0,
-            ),
-            itemCount: anomalies.length + 2,
-            itemBuilder: (ctx, i) {
-              if (i == 0) {
-                return const SizedBox(height: AppSpacing.sm);
-              }
-              if (i == 1) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: Text(
-                    'Anomaly History',
-                    style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
+                    const Spacer(),
+                    Icon(
+                      Icons.monitor_heart_outlined,
+                      size: 56,
+                      color: ctx.textHint,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      'No anomalies detected — looking good! 🐟',
+                      style: AppTypography.bodyLarge.copyWith(
+                        color: ctx.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Anomaly detection runs automatically\nwhen you log water parameters.',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: ctx.textHint,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    AppButton(
+                      label: 'Run Symptom Triage',
+                      onPressed: () {
+                        Navigator.maybePop(ctx);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const SymptomTriageScreen(),
+                          ),
+                        );
+                      },
+                      leadingIcon: Icons.medical_services_outlined,
+                      variant: AppButtonVariant.primary,
+                    ),
+                    const Spacer(),
+                  ],
                 );
               }
-              final a = anomalies[i - 2];
-              return ListTile(
-                leading: _severityIcon(a.severity),
-                title: Text(
-                  a.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+              return ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.md,
+                  right: AppSpacing.md,
+                  bottom: AppSpacing.md,
+                  top: 0,
                 ),
-                subtitle: Text(
-                  '${a.parameter} · ${_formatTime(a.detectedAt)}'
-                  '${a.dismissed ? " · dismissed" : ""}',
-                ),
-                dense: true,
+                itemCount: anomalies.length + 2,
+                itemBuilder: (ctx, i) {
+                  if (i == 0) {
+                    return const SizedBox(height: AppSpacing.sm);
+                  }
+                  if (i == 1) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: Text(
+                        'Anomaly History',
+                        style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }
+                  final a = anomalies[i - 2];
+                  return ListTile(
+                    leading: _severityIcon(a.severity),
+                    title: Text(
+                      a.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      a.dismissed
+                          ? '${a.parameter} · ${_formatTime(a.detectedAt)} · Dismissed — will flag again if detected.'
+                          : '${a.parameter} · ${_formatTime(a.detectedAt)}',
+                    ),
+                    dense: true,
+                    trailing: a.dismissed
+                        ? null
+                        : TextButton(
+                            onPressed: () {
+                              innerRef
+                                  .read(anomalyHistoryProvider.notifier)
+                                  .dismiss(a.id);
+                            },
+                            child: const Text('Dismiss'),
+                          ),
+                  );
+                },
               );
             },
           );

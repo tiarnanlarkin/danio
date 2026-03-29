@@ -152,8 +152,8 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                   child: AppTextField(
                     controller: _tankVolumeController,
                     label: 'Tank (L)',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
                     onChanged: (_) => setState(() {}),
                   ),
                 ),

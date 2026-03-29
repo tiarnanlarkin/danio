@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart' show kAppVersion;
 import 'privacy_policy_screen.dart';
-import 'settings_hub_screen.dart' show appVersion;
 import 'terms_of_service_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_button.dart';
@@ -66,7 +66,7 @@ class AboutScreen extends StatelessWidget {
 
             Text('Danio', style: AppTypography.headlineMedium),
             const SizedBox(height: AppSpacing.xs),
-            Text('Version $appVersion', style: AppTypography.bodyMedium),
+            Text('Version $kAppVersion', style: AppTypography.bodyMedium),
 
             const SizedBox(height: AppSpacing.xl),
 
@@ -147,7 +147,7 @@ class AboutScreen extends StatelessWidget {
                   onPressed: () => showLicensePage(
                     context: context,
                     applicationName: 'Danio',
-                    applicationVersion: '1.0.0',
+                    applicationVersion: kAppVersion,
                   ),
                   variant: AppButtonVariant.text,
                 ),
