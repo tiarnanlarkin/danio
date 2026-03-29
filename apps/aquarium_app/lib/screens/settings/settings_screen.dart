@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -751,36 +753,64 @@ class _GoalOptionState extends State<_GoalOption> {
 // Difficulty settings wrapper
 // ---------------------------------------------------------------------------
 
-class _DifficultySettingsWrapper extends StatefulWidget {
+// FB-H6: Converted to ConsumerStatefulWidget to load/save skill profile
+// from SharedPreferences so settings persist across navigation.
+class _DifficultySettingsWrapper extends ConsumerStatefulWidget {
   const _DifficultySettingsWrapper();
 
   @override
-  State<_DifficultySettingsWrapper> createState() =>
+  ConsumerState<_DifficultySettingsWrapper> createState() =>
       _DifficultySettingsWrapperState();
 }
 
 class _DifficultySettingsWrapperState
-    extends State<_DifficultySettingsWrapper> {
-  late UserSkillProfile _profile;
+    extends ConsumerState<_DifficultySettingsWrapper> {
+  UserSkillProfile _profile = UserSkillProfile.empty();
+  bool _loaded = false;
+
+  static const String _profileKey = 'user_skill_profile';
 
   @override
   void initState() {
     super.initState();
-    _profile = const UserSkillProfile(
-      skillLevels: {},
-      performanceHistory: {},
-      manualOverrides: {},
-    );
+    _loadProfile();
   }
 
-  void _onProfileUpdated(UserSkillProfile updatedProfile) {
+  Future<void> _loadProfile() async {
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final json = prefs.getString(_profileKey);
+      if (json != null && mounted) {
+        final decoded = jsonDecode(json) as Map<String, dynamic>;
+        setState(() {
+          _profile = UserSkillProfile.fromJson(decoded);
+          _loaded = true;
+        });
+        return;
+      }
+    } catch (_) {
+      // Fall through to empty profile
+    }
+    if (mounted) setState(() => _loaded = true);
+  }
+
+  Future<void> _onProfileUpdated(UserSkillProfile updatedProfile) async {
     setState(() {
       _profile = updatedProfile;
     });
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      await prefs.setString(_profileKey, jsonEncode(updatedProfile.toJson()));
+    } catch (_) {
+      // Persist failure is non-fatal
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_loaded) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return DifficultySettingsScreen(
       skillProfile: _profile,
       onProfileUpdated: _onProfileUpdated,

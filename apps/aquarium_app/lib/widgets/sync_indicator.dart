@@ -13,6 +13,12 @@ class SyncIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // FB-H1: SyncService is scaffolding only — no real HTTP syncing occurs.
+    // Displaying "Synced X actions" after a fake delay would be dishonest.
+    // Return empty widget until real sync is implemented.
+    return const SizedBox.shrink();
+
+    // ignore: dead_code
     final syncState = ref.watch(syncServiceProvider);
     final statusMessage = ref.watch(syncStatusMessageProvider);
 

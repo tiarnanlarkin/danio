@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../providers/user_profile_provider.dart';
+import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_button.dart';
 import '../utils/app_feedback.dart';
@@ -65,6 +66,13 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
             _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
           });
           _saveReminders();
+          // FB-H7: Schedule OS notification for the new reminder
+          NotificationService().scheduleReminderNotification(
+            reminderId: reminder.id,
+            title: reminder.title,
+            notes: reminder.notes,
+            scheduledAt: reminder.nextDue,
+          );
         },
       ),
     );
@@ -72,6 +80,8 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
 
   void _toggleReminder(int index) {
     final reminder = _reminders[index];
+    // FB-H7: Cancel current notification before updating
+    NotificationService().cancelReminderNotification(reminder.id);
     setState(() {
       if (reminder.isRecurring) {
         // Mark as done and schedule next occurrence
@@ -80,8 +90,15 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
           nextDue: _calculateNextDue(reminder),
         );
         _reminders[index] = newReminder;
+        // FB-H7: Schedule notification for the next occurrence
+        NotificationService().scheduleReminderNotification(
+          reminderId: newReminder.id,
+          title: newReminder.title,
+          notes: newReminder.notes,
+          scheduledAt: newReminder.nextDue,
+        );
       } else {
-        // One-time reminder - remove it
+        // One-time reminder - remove it (notification already cancelled above)
         _reminders.removeAt(index);
       }
       _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
@@ -131,6 +148,8 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
 
   void _deleteReminder(int index) {
     final reminder = _reminders[index];
+    // FB-H7: Cancel OS notification for the deleted reminder
+    NotificationService().cancelReminderNotification(reminder.id);
     setState(() {
       _reminders.removeAt(index);
     });
@@ -146,6 +165,13 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
           _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
         });
         _saveReminders();
+        // FB-H7: Reschedule the notification when undoing a delete
+        NotificationService().scheduleReminderNotification(
+          reminderId: reminder.id,
+          title: reminder.title,
+          notes: reminder.notes,
+          scheduledAt: reminder.nextDue,
+        );
       },
     );
   }

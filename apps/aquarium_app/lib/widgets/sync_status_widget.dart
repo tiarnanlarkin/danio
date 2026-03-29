@@ -17,6 +17,11 @@ class SyncStatusWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // FB-H1: SyncService is scaffolding only — no real HTTP syncing occurs.
+    // Hide all sync status indicators until real sync is implemented.
+    return const SizedBox.shrink();
+
+    // ignore: dead_code
     final status = ref.watch(cloudSyncStatusProvider);
 
     // Don't show anything when cloud is disabled

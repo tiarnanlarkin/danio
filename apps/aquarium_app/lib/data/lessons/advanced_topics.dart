@@ -454,7 +454,7 @@ final advancedTopicsPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• **Ammonia spike:** Do a 50% water change IMMEDIATELY. Dose a dechlorinator like Seachem Prime (detoxifies ammonia for 24–48 hours). Stop feeding. Find the cause: dead fish hidden somewhere? Overfeeding? Filter crashed?\n• **Fish gasping at surface:** Increase surface agitation — lower the water level so the filter outflow splashes, or add an airstone. Do a water change. Check temperature (warm water holds less oxygen).\n• **Ich (white spots):** Raise temperature to 86°F (30°C) gradually over 24 hours + add aquarium salt (1 tbsp per 5 gallons). Treat for 2 full weeks — the temperature breaks the ich life cycle. Note: salt treatment is not suitable for planted tanks or tanks containing scaleless fish (loaches, corydoras). See the Fish Health learning path for detailed guidance.\n• **Power outage:** Wrap the tank in blankets for insulation. A battery-powered air pump is the most important emergency item you can own. Don\'t feed during the outage.',
+              '• **Ammonia spike:** Do a 50% water change IMMEDIATELY. Dose a dechlorinator like Seachem Prime (detoxifies ammonia for 24–48 hours). Stop feeding. Find the cause: dead fish hidden somewhere? Overfeeding? Filter crashed?\n• **Fish gasping at surface:** Increase surface agitation — lower the water level so the filter outflow splashes, or add an airstone. Do a water change. Check temperature (warm water holds less oxygen).\n• **Ich (white spots) — TROPICAL FISH ONLY:** Raise temperature to 86°F (30°C) gradually over 24 hours + add aquarium salt (1 tbsp per 5 gallons). Treat for 2 full weeks — the temperature breaks the ich life cycle. ⚠️ COLDWATER WARNING: Do NOT raise temperature above 24°C/75°F for coldwater fish (goldfish, white cloud minnows, hillstream loaches). High heat WILL kill them. For coldwater species, use medication-only treatment (e.g. API Super Ick Cure or similar) without heat treatment. Salt is also harmful to scaleless fish (loaches, corydoras) and planted tanks — use medication instead. See the Fish Health learning path for full guidance.\n• **Power outage:** Wrap the tank in blankets for insulation. A battery-powered air pump is the most important emergency item you can own. Don\'t feed during the outage.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -500,7 +500,7 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_trouble_q2',
-            question: 'How do you treat ich (white spot disease)?',
+            question: 'How do you treat ich (white spot disease) in a TROPICAL fish tank?',
             options: [
               'Do nothing — it resolves on its own',
               'Lower temperature to 65°F and add medication',
@@ -509,7 +509,7 @@ final advancedTopicsPath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Heat (86°F) breaks the ich life cycle, and aquarium salt helps. Treat for 2 full weeks — ich has life stages where it\'s invisible but still present.',
+                'For tropical fish, heat (86°F/30°C) breaks the ich life cycle, and aquarium salt helps. Treat for 2 full weeks — ich has life stages where it\'s invisible but still present. ⚠️ Important: this heat method is for TROPICAL fish only. Coldwater fish (goldfish, white clouds, hillstream loaches) must not be heated above 24°C/75°F — use medication-only treatment for them instead.',
           ),
           const QuizQuestion(
             id: 'at_trouble_q3',

@@ -22,6 +22,9 @@ class SpeciesInfo {
   final String description;
   final List<String> compatibleWith;
   final List<String> avoidWith;
+  /// Safety warnings shown prominently on the species card during treatment.
+  /// Use for medication sensitivities, salt intolerance, etc.
+  final List<String> medicationWarnings;
 
   const SpeciesInfo({
     required this.commonName,
@@ -43,6 +46,7 @@ class SpeciesInfo {
     required this.description,
     this.compatibleWith = const [],
     this.avoidWith = const [],
+    this.medicationWarnings = const [],
   });
 }
 
@@ -307,6 +311,10 @@ const List<SpeciesInfo> _allSpecies = [
       'Peaceful fish',
     ],
     avoidWith: ['Aggressive bottom dwellers', 'Large cichlids'],
+    medicationWarnings: [
+      '⚠️ Copper sensitivity: Corydoras are highly sensitive to copper-based medications. Use half-dose or copper-free alternatives.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Corydoras — they are scaleless and salt-intolerant.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Panda Corydoras',
@@ -334,6 +342,10 @@ const List<SpeciesInfo> _allSpecies = [
       'Peaceful fish',
     ],
     avoidWith: ['Aggressive fish', 'Hot water species'],
+    medicationWarnings: [
+      '⚠️ Copper sensitivity: Corydoras are highly sensitive to copper-based medications. Use half-dose or copper-free alternatives.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Corydoras — they are scaleless and salt-intolerant.',
+    ],
   ),
 
   // Rasboras
@@ -592,6 +604,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Tiny algae-eating catfish. Must be kept in groups. Sensitive to water quality and needs established tank with natural algae. Do not add to new tanks.',
     compatibleWith: ['Small peaceful fish', 'Shrimp', 'Tetras', 'Rasboras'],
     avoidWith: ['Large fish', 'Aggressive fish', 'New/unstable tanks'],
+    medicationWarnings: [
+      '⚠️ Copper sensitivity: Otocinclus are scaleless catfish highly sensitive to copper-based medications. Use half-dose or copper-free alternatives.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Otocinclus — they are scaleless and salt-intolerant.',
+    ],
   ),
 
   // Shrimp
@@ -616,6 +632,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Hardy and colourful freshwater shrimp. Excellent algae and detritus cleaners. Breed readily in planted tanks. Many colour varieties available.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Other dwarf shrimp'],
     avoidWith: ['Any fish large enough to eat them', 'Aggressive fish'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications (many ich treatments contain copper) in a shrimp tank. Check every product label. Even trace copper kills shrimp.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt with shrimp — it disrupts their osmoregulation and can be fatal.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Amano Shrimp',
@@ -639,6 +659,10 @@ const List<SpeciesInfo> _allSpecies = [
         'The best algae-eating shrimp. Larger than Cherry Shrimp. Cannot breed in freshwater (larvae need brackish). Voracious appetite for hair algae.',
     compatibleWith: ['Most community fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Large predatory fish'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications in a shrimp tank. Even trace copper kills shrimp. Check all product labels before treating.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt with shrimp — it disrupts osmoregulation and can be fatal.',
+    ],
   ),
 
   // Snails
@@ -714,6 +738,10 @@ const List<SpeciesInfo> _allSpecies = [
       'Peaceful community fish',
     ],
     avoidWith: ['Large aggressive fish', 'Gravel substrate'],
+    medicationWarnings: [
+      '⚠️ Medication sensitivity: Loaches have very small scales and are exceptionally sensitive to ich treatments and copper-based medications. Use quarter-strength dose and monitor closely.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Kuhli Loaches — they are effectively scaleless and salt-intolerant.',
+    ],
   ),
 
   // Danios
@@ -902,6 +930,9 @@ const List<SpeciesInfo> _allSpecies = [
       'Corydoras',
     ],
     avoidWith: ['Tropical fish requiring warm water', 'Large aggressive fish'],
+    medicationWarnings: [
+      '⚠️ Coldwater ich treatment: Do NOT raise temperature above 22°C/72°F for ich treatment — this fish is coldwater. Use medication-only treatment (no heat method).',
+    ],
   ),
 
   // Common Goldfish
@@ -936,6 +967,9 @@ const List<SpeciesInfo> _allSpecies = [
       'Bettas',
       'Small shrimp',
       'Fancy goldfish (may get outcompeted for food)',
+    ],
+    medicationWarnings: [
+      '⚠️ Coldwater ich treatment: Do NOT use the heat method (86°F/30°C) for ich — goldfish max safe temperature is 24°C/75°F. Raising above this WILL kill them. Use medication-only treatment instead.',
     ],
   ),
 
@@ -990,6 +1024,10 @@ const List<SpeciesInfo> _allSpecies = [
       'Other peaceful fish',
     ],
     avoidWith: ['Large fish', 'Aggressive bottom dwellers'],
+    medicationWarnings: [
+      '⚠️ Copper sensitivity: Corydoras are highly sensitive to copper-based medications. Use half-dose or copper-free alternatives.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Corydoras — they are scaleless and salt-intolerant.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Sterbai Corydoras',
@@ -1012,6 +1050,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Beautiful spotted pattern with orange pectoral fins. Tolerates warmer water than most Corydoras — perfect with discus or German Blue Rams.',
     compatibleWith: ['Most community fish', 'Discus', 'Rams', 'Tetras'],
     avoidWith: ['Aggressive bottom dwellers'],
+    medicationWarnings: [
+      '⚠️ Copper sensitivity: Corydoras are highly sensitive to copper-based medications. Use half-dose or copper-free alternatives.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Corydoras — they are scaleless and salt-intolerant.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Julii Corydoras',
@@ -1039,6 +1081,10 @@ const List<SpeciesInfo> _allSpecies = [
       'Peaceful fish',
     ],
     avoidWith: ['Aggressive fish', 'Sharp gravel substrate'],
+    medicationWarnings: [
+      '⚠️ Copper sensitivity: Corydoras are highly sensitive to copper-based medications. Use half-dose or copper-free alternatives.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Corydoras — they are scaleless and salt-intolerant.',
+    ],
   ),
 
   // More Gouramis
@@ -2096,6 +2142,10 @@ const List<SpeciesInfo> _allSpecies = [
       'Peaceful fish',
     ],
     avoidWith: ['Aggressive bottom dwellers', 'Very warm water species'],
+    medicationWarnings: [
+      '⚠️ Copper sensitivity: Corydoras are highly sensitive to copper-based medications. Use half-dose or copper-free alternatives.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with Corydoras — they are scaleless and salt-intolerant.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Yoyo Loach',
@@ -2118,6 +2168,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Named for Y-O-Y-O pattern on body. Active and playful loach that hunts snails. Can be nippy with slow tankmates.',
     compatibleWith: ['Medium-sized community fish', 'Barbs', 'Robust tetras'],
     avoidWith: ['Slow-moving fish', 'Long-finned fish', 'Very small fish'],
+    medicationWarnings: [
+      '⚠️ Medication sensitivity: Loaches are exceptionally sensitive to ich treatments and copper-based medications. Use quarter-strength dose and monitor closely.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with loaches — they are effectively scaleless and salt-intolerant.',
+    ],
   ),
 
   // ============================================
@@ -2503,6 +2557,9 @@ const List<SpeciesInfo> _allSpecies = [
       'Corydoras',
     ],
     avoidWith: ['Tropical fish requiring warm water', 'Large aggressive fish'],
+    medicationWarnings: [
+      '⚠️ Coldwater ich treatment: Do NOT raise temperature above 22°C/72°F for ich treatment — this is a coldwater fish. Use medication-only treatment (no heat method).',
+    ],
   ),
 
   // ============================================
@@ -2801,6 +2858,11 @@ const List<SpeciesInfo> _allSpecies = [
         'Flattened body adapted for fast-flowing streams. Needs high oxygen, strong flow, and cool water. Excellent algae grazer.',
     compatibleWith: ['White Clouds', 'Danios', 'Other hillstream species'],
     avoidWith: ['Warm water species', 'Low-oxygen setups', 'Aggressive fish'],
+    medicationWarnings: [
+      '⚠️ Coldwater ich treatment: Do NOT raise temperature above 24°C/75°F for ich treatment — this is a coldwater fish. Use medication-only treatment (no heat method).',
+      '⚠️ Medication sensitivity: Loaches are very sensitive to ich treatments and copper. Use quarter-strength dose and monitor closely.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with hillstream loaches.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Weather Loach',
@@ -2823,6 +2885,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Eel-like loach that becomes active before storms (hence name). Very hardy coldwater fish. Peaceful and personable.',
     compatibleWith: ['Goldfish', 'White Clouds', 'Other coldwater fish'],
     avoidWith: ['Tropical fish', 'Very small fish'],
+    medicationWarnings: [
+      '⚠️ Medication sensitivity: Loaches are exceptionally sensitive to ich treatments and copper-based medications. Use quarter-strength dose and monitor closely.',
+      '⚠️ Salt intolerance: Do not use aquarium salt with loaches.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Assassin Snail',
@@ -2889,6 +2955,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Stunning red and white banded pattern. Requires soft, acidic water and stable parameters. Graded by colour intensity.',
     compatibleWith: ['Other Caridina shrimp', 'Small peaceful fish', 'Snails'],
     avoidWith: ['Hard water', 'Fish that eat shrimp', 'Unstable parameters'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications in a shrimp tank. Even trace copper kills shrimp. Check all product labels.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt with shrimp — fatal even at low concentrations.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Yellow Shrimp',
@@ -2911,6 +2981,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Bright yellow variety of Neocaridina. Hardy like Cherry Shrimp. Stands out beautifully against dark substrate and green plants.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Other dwarf shrimp'],
     avoidWith: ['Fish that eat shrimp'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications in a shrimp tank. Even trace copper kills shrimp.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt with shrimp.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Orange Sakura Shrimp',
@@ -2933,6 +3007,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Vibrant orange variety of Neocaridina. Same easy care as other Neocaridina. Breed readily in stable conditions.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Other dwarf shrimp'],
     avoidWith: ['Fish that eat shrimp'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications in a shrimp tank. Even trace copper kills shrimp.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt with shrimp.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Bamboo Shrimp',
@@ -2955,6 +3033,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Large filter-feeding shrimp with fan-like appendages. Needs current to filter feed. Fascinating to watch. Changes colour with mood.',
     compatibleWith: ['Peaceful fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Very still water'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications in a shrimp tank. Even trace copper kills shrimp.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt with shrimp.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Vampire Shrimp',
@@ -2977,6 +3059,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Largest freshwater aquarium shrimp. Filter feeds in current with feathery fans. Blue, gray, or pink colouration. Impressive and peaceful.',
     compatibleWith: ['Peaceful fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Very still water'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications in a shrimp tank. Even trace copper kills shrimp.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt with shrimp.',
+    ],
   ),
 
   // ============================================
@@ -3129,6 +3215,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Fully aquatic frog that must surface to breathe. Peaceful and fun to watch. Poor eyesight — may need target feeding. Keep in pairs or groups.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Shrimp'],
     avoidWith: ['Large fish', 'Aggressive fish', 'African Clawed Frogs'],
+    medicationWarnings: [
+      '⚠️ Amphibian sensitivity: African Dwarf Frogs are highly sensitive to copper-based medications and aquarium salt. Use amphibian-safe medications only.',
+      '⚠️ Salt intolerance: Do not use aquarium salt — frogs absorb water through their skin and salt is toxic to them.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Rabbit Snail',
@@ -3173,6 +3263,10 @@ const List<SpeciesInfo> _allSpecies = [
         'Tiny, fully aquatic freshwater crab. Often hides in moss and plants. Filter feeds with hairy legs. Fascinating but rarely seen.',
     compatibleWith: ['Small shrimp', 'Small peaceful fish', 'Snails'],
     avoidWith: ['Large fish', 'Any fish that could eat them'],
+    medicationWarnings: [
+      '⚠️ COPPER IS LETHAL: Never use copper-based medications with crabs or inverts. Copper kills crustaceans at any dose.',
+      '⚠️ Salt sensitivity: Do not use aquarium salt — crabs are sensitive to salinity changes in freshwater setups.',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Axolotl',
@@ -3200,6 +3294,11 @@ const List<SpeciesInfo> _allSpecies = [
       'Small fish',
       'Fish with spines',
       'Warm water',
+    ],
+    medicationWarnings: [
+      '⚠️ Amphibian sensitivity: Axolotls are highly sensitive to copper-based medications, aquarium salt, and most fish medications. Use amphibian-safe treatments only.',
+      '⚠️ Salt intolerance: Do not use aquarium salt — axolotls absorb water through their skin and cannot tolerate added salt.',
+      '⚠️ Coldwater: Max temperature is 20°C/68°F. Do NOT use heat to treat ich or any disease.',
     ],
   ),
 
@@ -3233,6 +3332,9 @@ const List<SpeciesInfo> _allSpecies = [
       'Aggressive fish',
       'Fin nippers',
       'Long-finned tankmates may compete for food',
+    ],
+    medicationWarnings: [
+      '⚠️ Coldwater ich treatment: Do NOT use the heat method (86°F/30°C) for ich — goldfish max safe temperature is 24°C/75°F. Raising above this WILL kill them. Use medication-only treatment instead.',
     ],
   ),
 

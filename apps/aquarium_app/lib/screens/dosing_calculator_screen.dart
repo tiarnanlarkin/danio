@@ -54,6 +54,35 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // FB-S4: Medication safety warning banner
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF3CD),
+                  borderRadius: AppRadius.mediumRadius,
+                  border: Border.all(color: const Color(0xFFFFCA28), width: 1.5),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('⚠️', style: TextStyle(fontSize: 20)),
+                    const SizedBox(width: AppSpacing.sm),
+                    const Expanded(
+                      child: Text(
+                        'This calculator is for fertiliser dosing only. Do not use for medications — always follow manufacturer instructions for medication dosing.',
+                        style: TextStyle(
+                          color: Color(0xFF7B5800),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
               // Tank volume
               Text('Tank Volume', style: AppTypography.headlineSmall),
               const SizedBox(height: AppSpacing.sm),

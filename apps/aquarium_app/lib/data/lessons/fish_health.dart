@@ -13,8 +13,9 @@ final fishHealthPath = LearningPath(
   emoji: '🏥',
   recommendedFor: [ExperienceLevel.intermediate],
   orderIndex: 6,
-  // Requires a solid grasp of the nitrogen cycle before tackling disease
-  prerequisitePathIds: ['nitrogen_cycle'],
+  // FB-S3: Removed prerequisitePathIds — health info must always be accessible.
+  // A user whose fish is sick NOW cannot wait to finish 6 unrelated lessons first.
+  prerequisitePathIds: [],
   lessons: [
     // Lesson 33: Disease Prevention 101
     Lesson(
@@ -125,7 +126,7 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '**Step 1: Raise the temperature** — Gradually increase to 30°C (86°F) over 24–48 hours. Raising temperature speeds up the ich parasite\'s lifecycle, causing it to drop off the fish faster so medication can kill the free-swimming stage. Maintain this temperature for the full treatment duration (usually 10–14 days). Don\'t jump the temperature suddenly.\n\n**Step 2: Add salt** — ⚠️ Salt is irreversible — you cannot remove it by water changes alone. Only use salt treatments in dedicated hospital/quarantine tanks, never in display tanks with live plants or sensitive species. Use aquarium salt at 1–3 teaspoons per gallon (dissolve first!). Salt is effective against the free-swimming stage and is safe for most community fish. Avoid with scaleless species like loaches and catfish.\n\n**Step 3: Commercial medication** — If salt alone isn\'t working, use a copper-based or malachite green treatment. Follow the instructions carefully — copper is toxic in overdoses.\n\n**Step 4: Continue treatment for 7–10 days AFTER the last white spot disappears.** This is the most common mistake. Stopping early leaves surviving tomonts to re-infect your fish.',
+              '⚠️ COLDWATER FISH WARNING: Do NOT use heat treatment for coldwater fish (goldfish, white cloud minnows, hillstream loaches). Their maximum safe temperature is 24°C/75°F. Raising to 30°C WILL kill them. For coldwater species, use medication-only treatment (e.g. API Super Ick Cure, Sera Costapur) without heat. Skip straight to Step 3.\n\n**Step 1: Raise the temperature (TROPICAL FISH ONLY)** — Gradually increase to 30°C (86°F) over 24–48 hours. Raising temperature speeds up the ich parasite\'s lifecycle, causing it to drop off the fish faster so medication can kill the free-swimming stage. Maintain this temperature for the full treatment duration (usually 10–14 days). Don\'t jump the temperature suddenly.\n\n**Step 2: Add salt (TROPICAL FISH ONLY — NOT for coldwater, loaches, corydoras, or planted tanks)** — ⚠️ Salt is irreversible — you cannot remove it by water changes alone. Only use salt treatments in dedicated hospital/quarantine tanks, never in display tanks with live plants or sensitive species. Use aquarium salt at 1–3 teaspoons per gallon (dissolve first!). Salt is effective against the free-swimming stage and is safe for most community tropical fish. Never use with scaleless species (loaches, corydoras) or coldwater fish.\n\n**Step 3: Commercial medication** — For coldwater fish or tanks with sensitive species, use a copper-free ich medication (e.g. API Super Ick Cure, formalin-based treatments). For tropical fish where salt/heat alone isn\'t working, use a copper-based or malachite green treatment. Follow instructions carefully — copper is toxic in overdoses and lethal to invertebrates and corydoras at full dose.\n\n**Step 4: Continue treatment for 7–10 days AFTER the last white spot disappears.** This is the most common mistake. Stopping early leaves surviving tomonts to re-infect your fish.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -152,7 +153,7 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_ich_q2',
-            question: 'What temperature should you raise your tank to when treating Ich?',
+            question: 'What temperature should you raise a TROPICAL fish tank to when treating Ich?',
             options: [
               '24°C (75°F)',
               '27°C (80°F)',
@@ -161,7 +162,7 @@ final fishHealthPath = LearningPath(
             ],
             correctIndex: 2,
             explanation:
-                'Gradually raise to 30°C (86°F) to speed up the life cycle, making the parasite vulnerable faster. Never raise temperature suddenly.',
+                'For TROPICAL fish, gradually raise to 30°C (86°F) to speed up the life cycle, making the parasite vulnerable faster. Never raise temperature suddenly. ⚠️ Do NOT use heat treatment for coldwater fish (goldfish, white clouds, hillstream loaches) — their max safe temperature is 24°C. Use medication-only for coldwater species.',
           ),
           const QuizQuestion(
             id: 'fh_ich_q3',

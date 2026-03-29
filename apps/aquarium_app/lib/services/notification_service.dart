@@ -279,6 +279,55 @@ class NotificationService {
     await _plugin.cancel(taskId.hashCode);
   }
 
+  // FB-H7: Schedule an OS notification for a user-created reminder.
+  // Uses the reminder's id as a stable notification ID.
+  Future<void> scheduleReminderNotification({
+    required String reminderId,
+    required String title,
+    required String? notes,
+    required DateTime scheduledAt,
+  }) async {
+    await initialize();
+
+    // Don't schedule if in the past
+    if (scheduledAt.isBefore(DateTime.now())) return;
+
+    final tzScheduledDate = tz.TZDateTime.from(scheduledAt, tz.local);
+
+    await _plugin.zonedSchedule(
+      reminderId.hashCode,
+      '🔔 $title',
+      notes != null && notes.isNotEmpty
+          ? notes
+          : "It's time for your aquarium task!",
+      tzScheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'aquarium_reminders',
+          'Aquarium Reminders',
+          channelDescription: 'Your scheduled aquarium maintenance reminders',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: await _resolveScheduleMode(),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+
+  // FB-H7: Cancel an OS notification for a user reminder.
+  Future<void> cancelReminderNotification(String reminderId) async {
+    await initialize();
+    await _plugin.cancel(reminderId.hashCode);
+  }
+
   /// Cancel all notifications.
   Future<void> cancelAll() async {
     await initialize();

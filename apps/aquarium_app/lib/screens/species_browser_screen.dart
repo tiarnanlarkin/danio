@@ -503,6 +503,30 @@ class _SpeciesDetailSheet extends StatelessWidget {
               ),
             ],
 
+            if (species.medicationWarnings.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.lg2),
+              Text('Treatment Warnings', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm),
+              ...species.medicationWarnings.map(
+                (warning) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppOverlays.error10,
+                      borderRadius: AppRadius.mediumRadius,
+                      border: Border.all(color: AppOverlays.error10),
+                    ),
+                    child: Text(
+                      warning,
+                      style: AppTypography.bodyMedium,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+
             const SizedBox(height: AppSpacing.xl),
           ],
         ),

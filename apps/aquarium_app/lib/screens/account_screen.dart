@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/auth/auth_provider.dart';
 import '../services/supabase_service.dart';
 import '../services/cloud_backup_service.dart';
-import '../services/cloud_sync_service.dart';
+// import '../services/cloud_sync_service.dart'; // FB-H1: hidden with sync UI
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../widgets/danio_snack_bar.dart';
@@ -296,9 +296,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         ),
         const SizedBox(height: AppSpacing.lg),
 
-        // Sync status
-        _SyncStatusCard(),
-        const SizedBox(height: AppSpacing.md),
+        // FB-H1: Sync status hidden — SyncService is scaffolding only.
+        // No HTTP requests are made; showing sync status would mislead users.
+        // const SizedBox(height: AppSpacing.md),
 
         // Backup & Restore
         Card(
@@ -425,10 +425,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 }
 
 // ---------------------------------------------------------------------------
-// Sync status card (shows cloud sync state)
+// FB-H1: _SyncStatusCard removed — SyncService is scaffolding only.
+// Kept as dead code reference for future cloud sync implementation.
 // ---------------------------------------------------------------------------
 
-class _SyncStatusCard extends ConsumerWidget {
+/* class _SyncStatusCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncStatus = ref.watch(cloudSyncStatusProvider);
@@ -475,5 +476,5 @@ class _SyncStatusCard extends ConsumerWidget {
       ),
     );
   }
-}
+} */
 
