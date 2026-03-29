@@ -268,6 +268,10 @@ void showNextLessonOrPop(
   String pathTitle,
   bool isPracticeMode,
 ) {
+  // R-090: Guard against calling Navigator.of(context) when the widget has
+  // been disposed between the post-frame callback registration and execution.
+  if (!context.mounted) return;
+
   final nextLesson = _findNextLesson(ref, currentLesson);
   if (nextLesson == null || isPracticeMode) {
     if (Navigator.of(context).canPop()) {

@@ -203,7 +203,10 @@ class _AnimatedFlameState extends State<AnimatedFlame>
         _celebrationController,
       ]),
       builder: (context, child) {
-        final scale = widget.showCelebration ? _celebrationScale.value : 1.0;
+        final rawScale = widget.showCelebration ? _celebrationScale.value : 1.0;
+        // R-088: Guard against NaN/Infinity that can occur if the celebration
+        // controller is cancelled or disposed while a frame is still pending.
+        final scale = rawScale.isFinite ? rawScale : 1.0;
 
         return Transform.scale(
           scale: scale,

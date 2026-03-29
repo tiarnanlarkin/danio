@@ -32,6 +32,10 @@ class ErrorBoundary extends StatefulWidget {
 
 class _ErrorBoundaryState extends State<ErrorBoundary> {
   FlutterErrorDetails? _error;
+  // R-091: Incrementing key forces the child widget subtree to be completely
+  // torn down and rebuilt on retry — prevents the same widget instance from
+  // immediately re-throwing the same error.
+  int _retryKey = 0;
 
   @override
   void initState() {
@@ -84,12 +88,19 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
             onRetry: () {
               setState(() {
                 _error = null;
+                // R-091: Increment the key so KeyedSubtree below forces a
+                // full teardown + rebuild of the child widget tree.  Without
+                // this the framework reuses the same element, which may
+                // immediately re-throw the same error.
+                _retryKey++;
               });
             },
           );
     }
 
-    return widget.child;
+    // R-091: Wrap the child in a KeyedSubtree so that incrementing _retryKey
+    // causes Flutter to unmount the old subtree and mount a fresh one.
+    return KeyedSubtree(key: ValueKey(_retryKey), child: widget.child);
   }
 }
 

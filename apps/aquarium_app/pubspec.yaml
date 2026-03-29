@@ -95,6 +95,13 @@ flutter:
     - family: Nunito
       fonts:
         - asset: assets/fonts/Nunito-Regular.ttf
+        # R-089: Map w300 (Light) to Regular — no separate Light file is
+        # bundled. Without this entry, Flutter falls back to the system font
+        # for FontWeight.w300 when GoogleFonts.config.allowRuntimeFetching
+        # is false (our GDPR config). Mapping it to Regular is the correct
+        # fallback: visually imperceptible, zero crash risk.
+        - asset: assets/fonts/Nunito-Regular.ttf
+          weight: 300
         - asset: assets/fonts/Nunito-Italic.ttf
           style: italic
         - asset: assets/fonts/Nunito-Medium.ttf

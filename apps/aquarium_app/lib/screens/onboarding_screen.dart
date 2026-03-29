@@ -264,6 +264,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
+          // R-090: Capture navigator before the async gap.  After the await
+          // the widget may have been disposed (e.g. the router replaced it
+          // during the dialog animation), so guard with context.mounted.
           final nav = Navigator.of(context);
           final shouldExit = await showAppDestructiveDialog(
             context: context,
@@ -271,7 +274,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             message: "Your progress won't be saved.",
             destructiveLabel: 'Exit',
           );
-          if (shouldExit == true) {
+          if (shouldExit == true && context.mounted) {
             nav.pop();
           }
         },
