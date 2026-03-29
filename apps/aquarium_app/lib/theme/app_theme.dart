@@ -75,9 +75,9 @@ class AppTheme {
   ///   Fredoka  → display / headline / titleLarge: playful brand moments, screen titles
   ///   Nunito   → titleMedium down through labelSmall: UI chrome, body text, navigation
   ///
-  /// Lora (lesson content) is NOT in the Material TextTheme because 300+ call sites use
-  /// textTheme for UI chrome. Lora is exposed via AppTypography.lesson* semantic aliases.
-  /// See plans/typography-spec.md for full rationale.
+  /// Nunito (lesson aliases) is NOT in the Material TextTheme because 300+ call sites use
+  /// textTheme for UI chrome. Lesson styles are exposed via AppTypography.lesson* aliases.
+  /// See plans/typography-spec.md for full rationale. (Lora removed R-089)
   static TextTheme get _textTheme => TextTheme(
     // ── Display (Fredoka — hero/splash, largest impact text) ──────
     displayLarge: GoogleFonts.fredoka(fontSize: 40, fontWeight: FontWeight.w700, letterSpacing: -0.5, height: 1.2),
@@ -335,7 +335,7 @@ class AppTheme {
       // Page transitions (consistent slide+fade for all routes)
       pageTransitionsTheme: _kDanioPageTransitionsTheme,
 
-      // Text theme — Nunito + Lora pairing
+      // Text theme — Nunito + Fredoka pairing
       textTheme: _textTheme,
     );
   }
@@ -504,7 +504,7 @@ class AppTheme {
         selectionHandleColor: AppColors.primaryLight,
       ),
 
-      // Text theme — Nunito + Lora pairing (dark mode colours applied)
+      // Text theme — Nunito + Fredoka pairing (dark mode colours applied)
       textTheme: _textTheme.apply(
         bodyColor: AppColors.textPrimaryDark,
         displayColor: AppColors.textPrimaryDark,

@@ -526,7 +526,7 @@ class DanioColors {
 /// |------|-----|
 /// | **Fredoka** | Display / headline — brand "wow" moments (≥ 20 px) |
 /// | **Nunito** | UI chrome — titles, labels, body, navigation |
-/// | **Lora** | Lesson content only — educational reading prose |
+/// | **Nunito** (lesson) | Lesson content only — educational reading prose |
 ///
 /// ## Usage
 /// ```dart

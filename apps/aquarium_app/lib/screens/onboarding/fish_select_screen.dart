@@ -510,7 +510,7 @@ class _PopularTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.nunito(
                   fontSize: 11,
-                  fontWeight: FontWeight.w300,
+                  fontWeight: FontWeight.w400,
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -598,7 +598,7 @@ class _SearchResultCard extends StatelessWidget {
                       fish.scientificName,
                       style: GoogleFonts.nunito(
                         fontSize: 13,
-                        fontWeight: FontWeight.w300,
+                        fontWeight: FontWeight.w400,
                         color: AppColors.textSecondary,
                       ),
                     ),

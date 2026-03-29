@@ -102,23 +102,23 @@ class AppTypography {
   );
 
   // ──────────────────────────────────────────────────────────────────
-  // Lesson / educational content aliases — Lora serif
+  // Lesson / educational content aliases — Nunito (was Lora, R-089)
   // Use these for lesson cards, fact panels, and reading-weight prose.
   // Hephaestus will apply these at the correct call sites in Wave 4.
   // ──────────────────────────────────────────────────────────────────
-  static TextStyle get lessonBody => GoogleFonts.lora(
+  static TextStyle get lessonBody => GoogleFonts.nunito(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     height: 1.6,
   );
 
-  static TextStyle get lessonBodyLarge => GoogleFonts.lora(
+  static TextStyle get lessonBodyLarge => GoogleFonts.nunito(
     fontSize: 17,
     fontWeight: FontWeight.w400,
     height: 1.6,
   );
 
-  static TextStyle get lessonQuote => GoogleFonts.lora(
+  static TextStyle get lessonQuote => GoogleFonts.nunito(
     fontSize: 15,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.italic,

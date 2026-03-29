@@ -170,7 +170,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                 header: true,
                 child: Text(
                   _content.headline,
-                  style: GoogleFonts.lora(
+                  style: GoogleFonts.nunito(
                     fontSize: 26,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,

@@ -106,7 +106,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                       // Headline
                       Text(
                         "We'll tap you when something matters.",
-                        style: GoogleFonts.lora(
+                        style: GoogleFonts.nunito(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                           color: AppColors.textPrimary,

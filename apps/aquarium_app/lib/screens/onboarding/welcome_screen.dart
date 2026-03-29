@@ -191,7 +191,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       header: true,
                       child: Text(
                         'Your fish deserve better than guesswork.',
-                        style: GoogleFonts.lora(
+                        style: GoogleFonts.nunito(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
                           color: AppColors.onboardingWarmCream,

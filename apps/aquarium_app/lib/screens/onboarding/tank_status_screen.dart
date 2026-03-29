@@ -167,7 +167,7 @@ class _TankStatusScreenState extends State<TankStatusScreen>
                 header: true,
                 child: Text(
                   "What's your tank situation?",
-                  style: GoogleFonts.lora(
+                  style: GoogleFonts.nunito(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,

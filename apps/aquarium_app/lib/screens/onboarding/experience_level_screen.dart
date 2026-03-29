@@ -172,7 +172,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
                 header: true,
                 child: Text(
                   'How long have you kept fish?',
-                  style: GoogleFonts.lora(
+                  style: GoogleFonts.nunito(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,

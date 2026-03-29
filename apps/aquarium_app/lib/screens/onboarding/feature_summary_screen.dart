@@ -89,7 +89,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                     // Title
                     Text(
                       'Everything you need, right here.',
-                      style: GoogleFonts.lora(
+                      style: GoogleFonts.nunito(
                         fontSize: 26,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,

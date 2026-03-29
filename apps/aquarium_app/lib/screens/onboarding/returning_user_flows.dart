@@ -110,7 +110,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
             // Headline
             Text(
               'Day 2 🔥 Your streak is alive. Keep it going.',
-              style: GoogleFonts.lora(
+              style: GoogleFonts.nunito(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -254,7 +254,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                 Expanded(
                   child: Text(
                     "7 days — You've earned Apprentice Fishkeeper",
-                    style: GoogleFonts.lora(
+                    style: GoogleFonts.nunito(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: AppColors.onPrimary,
@@ -379,7 +379,7 @@ class Day30CommittedCard extends StatelessWidget {
             // Headline
             Text(
               '30 days of Danio 🎣',
-              style: GoogleFonts.lora(
+              style: GoogleFonts.nunito(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,

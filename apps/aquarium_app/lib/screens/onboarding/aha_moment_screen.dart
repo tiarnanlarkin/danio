@@ -267,7 +267,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
               // Fish name
               Text(
                 fishName,
-                style: GoogleFonts.lora(
+                style: GoogleFonts.nunito(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
@@ -338,7 +338,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
               // Headline
               Text(
                 '$fishName needs a little love.',
-                style: GoogleFonts.lora(
+                style: GoogleFonts.nunito(
                   fontSize: 24,
                   fontWeight: FontWeight.w400,
                   color: AppColors.textPrimary,
@@ -394,7 +394,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     Text(
                       _motivationText,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.lora(
+                      style: GoogleFonts.nunito(
                         fontSize: 15,
                         fontStyle: FontStyle.italic,
                         color: AppColors.textPrimary,

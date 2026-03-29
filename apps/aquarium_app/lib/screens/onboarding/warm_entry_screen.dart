@@ -226,7 +226,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                   header: true,
                   child: Text(
                     _nameSubmitted ? _greeting : 'Almost there! 🐟',
-                    style: GoogleFonts.lora(
+                    style: GoogleFonts.nunito(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,

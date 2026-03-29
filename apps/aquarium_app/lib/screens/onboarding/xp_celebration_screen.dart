@@ -226,7 +226,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                         alignment: Alignment.center,
                         child: Text(
                           '+10 XP',
-                          style: GoogleFonts.lora(
+                          style: GoogleFonts.nunito(
                             fontSize: 36,
                             fontWeight: FontWeight.w700,
                             color: AppColors.onboardingWarmCream,
@@ -295,7 +295,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                       header: true,
                       child: Text(
                         'First lesson complete 🎣',
-                        style: GoogleFonts.lora(
+                        style: GoogleFonts.nunito(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: AppColors.textPrimary,
