@@ -481,7 +481,7 @@ final fishHealthPath = LearningPath(
             question: 'Which medication is the best all-rounder for treating flukes?',
             options: [
               'Methylene blue',
-              'Copper sulfate',
+              'Copper sulphate',
               'Praziquantel',
               'Amoxicillin',
             ],
@@ -563,7 +563,7 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '**Ich Treatments (antiparasitic)**\n• **API Super Ick Cure / Sera Costapur** — Malachite green + formalin. Effective for ich, velvet, and some external parasites. Remove carbon before use.\n• **Copper sulfate** — Highly effective but toxic to invertebrates and harmful to scaleless fish. Requires a copper test kit to stay in the therapeutic window (0.15–0.20 ppm free copper). Do not use in reef or shrimp tanks.\n\n**Antibacterials** (for fin rot, bacterial infections)\n• **API Fin & Body Cure** — Minocycline-based. Effective broad-spectrum antibacterial. Remove carbon.\n• **Maracyn 2 (Minocycline)** — Treats gram-negative bacteria (Aeromonas, Pseudomonas). Follow the 5-day course fully.\n• **Kanaplex (Kanamycin)** — For more resistant bacterial infections or when fish are still eating (can be mixed into food).\n\n**Antifungals** (for Saprolegnia, Achlya)\n• **API Fungus Cure** — Malachite green-based. For body and fin fungus.\n• **Methylene blue** — Gentle antifungal/antiseptic. Safe for most species; useful for egg treatment. Will stain silicone sealant.\n\n**Antiparasitic (worms, flukes)**\n• **Praziquantel (PraziPro, Hikari Prazipro)** — Best all-rounder for flukes and tapeworms. Invertebrate-safe, plant-safe.\n• **Flubendazole** — Effective for gill and skin flukes. Toxic to snails and other molluscs.',
+              '**Ich Treatments (antiparasitic)**\n• **API Super Ick Cure / Sera Costapur** — Malachite green + formalin. Effective for ich, velvet, and some external parasites. Remove carbon before use.\n• **Copper sulphate** — Highly effective but toxic to invertebrates and harmful to scaleless fish. Requires a copper test kit to stay in the therapeutic window (0.15–0.20 ppm free copper). Do not use in reef or shrimp tanks.\n\n**Antibacterials** (for fin rot, bacterial infections)\n• **API Fin & Body Cure** — Minocycline-based. Effective broad-spectrum antibacterial. Remove carbon.\n• **Maracyn 2 (Minocycline)** — Treats gram-negative bacteria (Aeromonas, Pseudomonas). Follow the 5-day course fully.\n• **Kanaplex (Kanamycin)** — For more resistant bacterial infections or when fish are still eating (can be mixed into food).\n\n**Antifungals** (for Saprolegnia, Achlya)\n• **API Fungus Cure** — Malachite green-based. For body and fin fungus.\n• **Methylene blue** — Gentle antifungal/antiseptic. Safe for most species; useful for egg treatment. Will stain silicone sealant.\n\n**Antiparasitic (worms, flukes)**\n• **Praziquantel (PraziPro, Hikari Prazipro)** — Best all-rounder for flukes and tapeworms. Invertebrate-safe, plant-safe.\n• **Flubendazole** — Effective for gill and skin flukes. Toxic to snails and other molluscs.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

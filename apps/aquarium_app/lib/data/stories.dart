@@ -81,7 +81,7 @@ class Stories {
       StoryScene(
         id: 'cycling_begins',
         text:
-            'Week 1: Your tank is running! Alex helps you test the water. "We need to add an ammonia source to feed the bacteria that will colonize your filter," Alex explains.\n\nWhat\'s the best approach?',
+            'Week 1: Your tank is running! Alex helps you test the water. "We need to add an ammonia source to feed the bacteria that will colonise your filter," Alex explains.\n\nWhat\'s the best approach?',
         choices: [
           StoryChoice(
             id: 'ghost_feeding',
@@ -219,7 +219,7 @@ class Stories {
       StoryScene(
         id: 'intro',
         text:
-            'Your tank has been cycled for a week — it\'s time to get fish! You walk into Aquatic Dreams, a local fish store. The rows of colorful tanks are mesmerizing.\n\nThe shop owner, Maria, greets you. "First tank?" she asks with a warm smile. "What size is it?"',
+            'Your tank has been cycled for a week — it\'s time to get fish! You walk into Aquatic Dreams, a local fish store. The rows of colourful tanks are mesmerising.\n\nThe shop owner, Maria, greets you. "First tank?" she asks with a warm smile. "What size is it?"',
         choices: [
           StoryChoice(
             id: 'answer_size',
@@ -257,7 +257,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'choose_cichlids',
-            text: 'The colorful cichlids',
+            text: 'The colourful cichlids',
             nextSceneId: 'cichlid_warning',
             isCorrect: false,
             feedback: 'Most cichlids are too aggressive for beginners.',
@@ -313,7 +313,7 @@ class Stories {
           ),
           StoryChoice(
             id: 'add_guppies',
-            text: 'Add colorful guppies',
+            text: 'Add colourful guppies',
             nextSceneId: 'risky_combo',
             isCorrect: false,
             feedback: 'Risky — bettas often nip guppy fins.',
@@ -1176,7 +1176,7 @@ class Stories {
   static const Story breedingProject = Story(
     id: 'breeding_project',
     title: 'Breeding Project',
-    description: 'Set up a breeding program for your favourite species',
+    description: 'Set up a breeding programme for your favourite species',
     difficulty: StoryDifficulty.advanced,
     estimatedMinutes: 10,
     xpReward: 100,
@@ -1397,7 +1397,7 @@ class Stories {
       StoryScene(
         id: 'second_spawn',
         text:
-            'You recondition the pair and they spawn again 3 weeks later. This time you know to minimize disturbance.\n\nThe parents successfully raise 30 fry to free-swimming stage! "Experience matters," you note.',
+            'You recondition the pair and they spawn again 3 weeks later. This time you know to minimise disturbance.\n\nThe parents successfully raise 30 fry to free-swimming stage! "Experience matters," you note.',
         choices: [
           StoryChoice(
             id: 'raise_fry',
@@ -1410,7 +1410,7 @@ class Stories {
       StoryScene(
         id: 'successful_raising',
         text:
-            'The parents raise 40 healthy fry! You minimize disturbance and they prove to be excellent parents.\n\nAt 3 weeks, you move fry to a grow-out tank so parents can spawn again.',
+            'The parents raise 40 healthy fry! You minimise disturbance and they prove to be excellent parents.\n\nAt 3 weeks, you move fry to a grow-out tank so parents can spawn again.',
         choices: [
           StoryChoice(
             id: 'grow_out',
@@ -1442,7 +1442,7 @@ class Stories {
       StoryScene(
         id: 'breeding_success',
         text:
-            '3 months after first spawn:\n• Raised 40+ healthy juvenile Rams\n• Recouped equipment costs\n• Gained invaluable experience\n• Your parent pair spawns every 3-4 weeks now\n\n"You\'re a breeder now," Jamie says proudly. "Ready for more challenging species?"\n\n🎉 Successful breeding program established!',
+            '3 months after first spawn:\n• Raised 40+ healthy juvenile Rams\n• Recouped equipment costs\n• Gained invaluable experience\n• Your parent pair spawns every 3-4 weeks now\n\n"You\'re a breeder now," Jamie says proudly. "Ready for more challenging species?"\n\n🎉 Successful breeding programme established!',
         choices: [],
         isFinalScene: true,
         successMessage:

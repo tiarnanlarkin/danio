@@ -184,7 +184,7 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Substrate isn\'t just decoration — it\'s where root-feeding plants get nutrients, where beneficial bacteria colonize, and what sets the foundation for your entire aquascape.',
+              'Substrate isn\'t just decoration — it\'s where root-feeding plants get nutrients, where beneficial bacteria colonise, and what sets the foundation for your entire aquascape.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -390,12 +390,12 @@ final plantedTankPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Excel isn\'t actually CO2 — it\'s glutaraldehyde, which plants can use as a carbon source. It helps, but it\'s not as effective as pressurized CO2. Also kills some algae!',
+              'Excel isn\'t actually CO2 — it\'s glutaraldehyde, which plants can use as a carbon source. It helps, but it\'s not as effective as pressurised CO2. Also kills some algae!',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Excel (glutaraldehyde) is NOT SAFE for shrimp tanks at any dose. Even trace amounts can kill shrimp. If you have shrimp, use alternative CO2 methods like pressurized CO2 or stick with low-tech plants. Excel can also melt certain plants (Vallisneria, some mosses).',
+              'Excel (glutaraldehyde) is NOT SAFE for shrimp tanks at any dose. Even trace amounts can kill shrimp. If you have shrimp, use alternative CO2 methods like pressurised CO2 or stick with low-tech plants. Excel can also melt certain plants (Vallisneria, some mosses).',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -498,7 +498,7 @@ final plantedTankPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'plant_co2_q5',
-            question: 'Should beginners start with pressurized CO2?',
+            question: 'Should beginners start with pressurised CO2?',
             options: [
               'Yes, immediately',
               'No — master low-tech first',

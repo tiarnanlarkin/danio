@@ -98,7 +98,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. During a water change, save some old tank water in a bucket\n2. Remove filter media and gently squeeze/swish in the OLD tank water\n3. You\'re removing gunk, not sterilizing — it should still look used\n4. Put media back and discard the dirty water\n5. Never replace all media at once — stagger replacements',
+              '1. During a water change, save some old tank water in a bucket\n2. Remove filter media and gently squeeze/swish in the OLD tank water\n3. You\'re removing gunk, not sterilising — it should still look used\n4. Put media back and discard the dirty water\n5. Never replace all media at once — stagger replacements',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -504,7 +504,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Cleaning an aquarium is different from cleaning your bathroom. You\'re maintaining a living ecosystem, not sterilizing a surface. Wrong cleaning methods kill fish!',
+              'Cleaning an aquarium is different from cleaning your bathroom. You\'re maintaining a living ecosystem, not sterilising a surface. Wrong cleaning methods kill fish!',
         ),
         const LessonSection(
           type: LessonSectionType.warning,

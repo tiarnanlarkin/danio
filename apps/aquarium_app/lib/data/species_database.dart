@@ -3056,7 +3056,7 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 15,
     swimLevel: 'All',
     description:
-        'Largest freshwater aquarium shrimp. Filter feeds in current with feathery fans. Blue, gray, or pink colouration. Impressive and peaceful.',
+        'Largest freshwater aquarium shrimp. Filter feeds in current with feathery fans. Blue, grey, or pink colouration. Impressive and peaceful.',
     compatibleWith: ['Peaceful fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Very still water'],
     medicationWarnings: [

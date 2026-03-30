@@ -141,7 +141,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Float the sealed bag in your tank for 15-20 minutes (equalizes temperature)\n2. Open the bag and add a small cup of tank water\n3. Wait 5 minutes, then add another cup\n4. Repeat 3-4 times over 30-45 minutes\n5. Net the fish into the tank — discard the bag water',
+              '1. Float the sealed bag in your tank for 15-20 minutes (equalises temperature)\n2. Open the bag and add a small cup of tank water\n3. Wait 5 minutes, then add another cup\n4. Repeat 3-4 times over 30-45 minutes\n5. Net the fish into the tank — discard the bag water',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -186,7 +186,7 @@ final firstFishPath = LearningPath(
             options: [
               'Removes chlorine',
               'Feeds the fish',
-              'Equalizes temperature',
+              'Equalises temperature',
               'Adds oxygen',
             ],
             correctIndex: 2,

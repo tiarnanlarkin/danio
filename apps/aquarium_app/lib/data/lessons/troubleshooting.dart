@@ -41,7 +41,7 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Gasping at surface → low oxygen OR ammonia poisoning — test water immediately\n• Erratic swimming (spinning, darting, spiralling) → parasites, neurological, or pH shock\n• Red streaks on body → ammonia burns OR bacterial hemorrhagic septicemia\n• Clamped fins + lethargy → water quality crash, temperature shock, early disease\n• Multiple fish dying rapidly → toxic contamination, cycle crash, or oxygen depletion\n• Fish lying on bottom, not eating → often disease or water quality — check both',
+              '• Gasping at surface → low oxygen OR ammonia poisoning — test water immediately\n• Erratic swimming (spinning, darting, spiralling) → parasites, neurological, or pH shock\n• Red streaks on body → ammonia burns OR bacterial haemorrhagic septicaemia\n• Clamped fins + lethargy → water quality crash, temperature shock, early disease\n• Multiple fish dying rapidly → toxic contamination, cycle crash, or oxygen depletion\n• Fish lying on bottom, not eating → often disease or water quality — check both',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -173,7 +173,7 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• White spots (salt-grain sized) on fins and body → Ich (Ichthyophthirius multifiliis) — most common disease\n• White cottony tufts or patches → Fungal infection (Saprolegnia)\n• Red streaks or bloody patches on body → Bacterial hemorrhagic septicemia\n• Frayed, deteriorating fin edges → Fin rot (bacterial)\n• Severe bloating, scales sticking out like a pine cone → Dropsy — usually organ failure, often fatal\n• White stringy faeces trailing from vent → Internal parasites\n• Rapid gill movement, weight loss despite eating → Flukes or gill parasites\n• Wasting, white/grey lesions despite good water → Mycobacteriosis (Fish TB) — highly contagious, no cure',
+              '• White spots (salt-grain sized) on fins and body → Ich (Ichthyophthirius multifiliis) — most common disease\n• White cottony tufts or patches → Fungal infection (Saprolegnia)\n• Red streaks or bloody patches on body → Bacterial haemorrhagic septicaemia\n• Frayed, deteriorating fin edges → Fin rot (bacterial)\n• Severe bloating, scales sticking out like a pine cone → Dropsy — usually organ failure, often fatal\n• White stringy faeces trailing from vent → Internal parasites\n• Rapid gill movement, weight loss despite eating → Flukes or gill parasites\n• Wasting, white/grey lesions despite good water → Mycobacteriosis (Fish TB) — highly contagious, no cure',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
@@ -228,7 +228,7 @@ final troubleshootingPath = LearningPath(
                 'What do white, grain-of-salt-sized spots on a fish\'s body indicate?',
             options: [
               'Fungal infection (Saprolegnia)',
-              'Bacterial hemorrhagic septicemia',
+              'Bacterial haemorrhagic septicaemia',
               'Ich (Ichthyophthirius multifiliis) — a protozoan parasite',
               'Vitamin deficiency causing white calcium deposits',
             ],
@@ -278,7 +278,7 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• White/grey milky cloudiness → Bacterial bloom — nitrogen cycle bacteria multiplying rapidly. Normal in new or disrupted tanks.\n• Green water → Algae bloom — free-floating suspended algae cells. Too much light or nutrients.\n• Brown/amber tint → Tannins from driftwood or Indian almond leaves. Aesthetic only, harmless to fish.\n• Yellow tint → Dissolved organics from waste, uneaten food, aging organic material. Water change needed.\n• White cloudiness in established tank → Bacterial bloom from overfeeding, a dead fish, or substrate disturbance.',
+              '• White/grey milky cloudiness → Bacterial bloom — nitrogen cycle bacteria multiplying rapidly. Normal in new or disrupted tanks.\n• Green water → Algae bloom — free-floating suspended algae cells. Too much light or nutrients.\n• Brown/amber tint → Tannins from driftwood or Indian almond leaves. Aesthetic only, harmless to fish.\n• Yellow tint → Dissolved organics from waste, uneaten food, ageing organic material. Water change needed.\n• White cloudiness in established tank → Bacterial bloom from overfeeding, a dead fish, or substrate disturbance.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

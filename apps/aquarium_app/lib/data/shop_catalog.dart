@@ -187,7 +187,7 @@ class ShopCatalog {
     ShopItem(
       id: 'theme_rainbow',
       name: 'Rainbow Paradise Theme',
-      description: 'Colorful rainbow theme for your profile',
+      description: 'Colourful rainbow theme for your profile',
       emoji: '🌈',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.tankTheme,

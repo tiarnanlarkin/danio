@@ -207,7 +207,7 @@ final waterParametersPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'wp_hardness_q1',
-            question: 'What does KH help stabilize?',
+            question: 'What does KH help stabilise?',
             options: ['Temperature', 'pH', 'Ammonia', 'Nitrate'],
             correctIndex: 1,
             explanation:

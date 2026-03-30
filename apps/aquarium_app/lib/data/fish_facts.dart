@@ -28,7 +28,7 @@ const Map<String, List<String>> kFishFacts = {
   'guppy': [
     'Guppies give birth to live young — up to 200 fry at a time!',
     'Female guppies can store sperm for months and produce multiple batches of fry from a single mating.',
-    'They were used in mosquito control programs worldwide — they eat larvae voraciously.',
+    'They were used in mosquito control programmes worldwide — they eat larvae voraciously.',
     'Guppies have been observed mourning dead companions in laboratory studies.',
     'Trinidad guppies in different rivers evolved different colours depending on predator pressure.',
   ],

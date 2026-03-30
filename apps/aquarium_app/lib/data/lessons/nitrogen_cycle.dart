@@ -266,7 +266,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Install your filter, heater, and decorations. Fill with dechlorinated water. Let everything run for 24 hours to stabilize temperature.',
+              'Install your filter, heater, and decorations. Fill with dechlorinated water. Let everything run for 24 hours to stabilise temperature.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -566,7 +566,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'After stabilizing, test daily for a week. Resume light feeding after 48 hours — just 50% of normal amount. Your bacterial colony will rebuild, but it takes time. Patience is key.',
+              'After stabilising, test daily for a week. Resume light feeding after 48 hours — just 50% of normal amount. Your bacterial colony will rebuild, but it takes time. Patience is key.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
@@ -634,7 +634,7 @@ final nitrogenCyclePath = LearningPath(
           const QuizQuestion(
             id: 'nc_spike_q5',
             question:
-                'After stabilizing ammonia, when should you resume feeding?',
+                'After stabilising ammonia, when should you resume feeding?',
             options: [
               'Immediately',
               'After 24 hours',
@@ -718,7 +718,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Good news: mini-cycles typically resolve in 3-7 days, not 4-6 weeks. Some bacteria survived, and they multiply faster when re-colonizing familiar territory.',
+              'Good news: mini-cycles typically resolve in 3-7 days, not 4-6 weeks. Some bacteria survived, and they multiply faster when re-colonising familiar territory.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
