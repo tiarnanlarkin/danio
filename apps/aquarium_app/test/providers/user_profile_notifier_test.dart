@@ -10,7 +10,6 @@
 // Run: flutter test test/providers/user_profile_notifier_test.dart
 
 import 'dart:convert';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/user_profile.dart';
 import 'package:danio/models/tank.dart';
-import 'package:danio/models/leaderboard.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers

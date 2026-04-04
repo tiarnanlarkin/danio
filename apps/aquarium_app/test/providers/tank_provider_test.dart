@@ -15,7 +15,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
-import 'package:danio/models/tank.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/services/storage_service.dart';
 

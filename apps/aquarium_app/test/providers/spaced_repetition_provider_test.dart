@@ -19,13 +19,10 @@
 // Run: flutter test test/providers/spaced_repetition_provider_test.dart
 
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/providers/spaced_repetition_provider.dart';
-import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
 
 // ---------------------------------------------------------------------------
@@ -224,7 +221,7 @@ void main() {
       // _loadData checks `if (decoded is List)` — a map should not crash.
       final decoded = jsonDecode('{"key": "value"}');
       final cards = decoded is List
-          ? (decoded as List).map((c) => ReviewCard.fromJson(c)).toList()
+          ? decoded.map((c) => ReviewCard.fromJson(c)).toList()
           : <ReviewCard>[];
       expect(cards, isEmpty);
     });

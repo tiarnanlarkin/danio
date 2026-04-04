@@ -18,11 +18,13 @@ import '../../utils/logger.dart';
 import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
+import '../../widgets/lesson_celebration_overlay.dart';
 import 'lesson_hearts_modal.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../providers/species_unlock_provider.dart';
 import '../learn/unlock_celebration_screen.dart';
+import '../../providers/gems_provider.dart';
 import '../../providers/inventory_provider.dart';
 
 export 'lesson_card_widget.dart';
@@ -310,6 +312,37 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
   }
 
+  /// Show the celebration overlay, then hand off to the XP animation.
+  void _showCelebrationThenXp(int xpAmount) {
+    if (!mounted) return;
+
+    // Determine which celebration variant to show.
+    final profile = ref.read(userProfileProvider).value;
+    final isFirst = profile != null && profile.completedLessons.length <= 1;
+    final streak = profile?.currentStreak ?? 0;
+    final gems = ref.read(gemBalanceProvider);
+
+    final LessonCelebrationVariant variant;
+    if (isFirst) {
+      variant = LessonCelebrationVariant.firstLesson;
+    } else if (streak > 0 && streak % 5 == 0) {
+      variant = LessonCelebrationVariant.streakMilestone;
+    } else if (gems > 0) {
+      variant = LessonCelebrationVariant.gemEarned;
+    } else {
+      variant = LessonCelebrationVariant.regular;
+    }
+
+    LessonCelebrationOverlay.show(
+      context,
+      xpAmount: xpAmount,
+      variant: variant,
+      streakDays: streak,
+      gemsEarned: gems,
+      onDismiss: () => _showXpAnimation(xpAmount),
+    );
+  }
+
   /// Show XP animation, then check for species unlock, then level-up/next.
   void _showXpAnimation(int xpAmount) {
     if (!mounted) return;
@@ -553,7 +586,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       if (mounted) {
         AppHaptics.success();
-        _showXpAnimation(totalXp);
+        _showCelebrationThenXp(totalXp);
       }
     } catch (e, st) {
       logError('Lesson completion error: $e',
