@@ -28,6 +28,7 @@ class AppRadius {
   static BorderRadius get md2Radius => BorderRadius.circular(md2);
   static BorderRadius get sm4Radius => BorderRadius.circular(sm4);
   static BorderRadius get mediumRadius => BorderRadius.circular(md);
+  static BorderRadius get lg2Radius => BorderRadius.circular(lg2);
   static BorderRadius get largeRadius => BorderRadius.circular(lg);
   static BorderRadius get xlRadius => BorderRadius.circular(xl);
   static BorderRadius get pillRadius => BorderRadius.circular(pill);

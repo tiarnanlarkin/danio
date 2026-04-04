@@ -20,6 +20,15 @@ const kAppVersion = String.fromEnvironment(
 /// Standard debounce delay for search fields.
 const kDebounceDuration = Duration(milliseconds: 300);
 
+/// Debounce for user-profile persistence (short — profile changes are frequent).
+const kProfileSaveDebounce = Duration(milliseconds: 200);
+
+/// Debounce for provider persistence (gems, inventory, achievements).
+const kProviderSaveDebounce = Duration(milliseconds: 500);
+
+/// Debounce for search-as-you-type fields (species / plant browsers).
+const kSearchDebounce = Duration(milliseconds: 250);
+
 /// Delay before revealing the correct quiz answer.
 const kQuizRevealDelay = Duration(milliseconds: 1200);
 

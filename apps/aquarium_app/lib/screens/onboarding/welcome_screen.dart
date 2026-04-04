@@ -46,7 +46,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     // Headline: fade + slide up (300ms)
     _headlineController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _headlineOpacityCurve = CurvedAnimation(
       parent: _headlineController,
@@ -65,7 +65,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     // Body: fade in (300ms), starts 150ms after headline
     _bodyController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _bodyOpacityCurve = CurvedAnimation(
       parent: _bodyController,
@@ -76,7 +76,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     // Button: slide up + fade (200ms spring), starts after body
     _buttonController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long1,
     );
     _buttonOpacityCurve = CurvedAnimation(
       parent: _buttonController,

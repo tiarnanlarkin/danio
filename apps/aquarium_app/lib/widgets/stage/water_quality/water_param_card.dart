@@ -372,7 +372,7 @@ class _WqPanelEntryAnimationState extends State<WqPanelEntryAnimation>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _slide = Tween<Offset>(
       begin: const Offset(-0.12, 0.0),

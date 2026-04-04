@@ -1000,7 +1000,7 @@ class _AppStateSnapshot extends ConsumerWidget {
       initiallyExpanded: false,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

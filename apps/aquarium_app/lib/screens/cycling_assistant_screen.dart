@@ -492,7 +492,7 @@ class _LegendItem extends StatelessWidget {
           height: 3,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(AppRadius.xxs),
+            borderRadius: AppRadius.xxsRadius,
           ),
         ),
         const SizedBox(width: AppSpacing.xs),

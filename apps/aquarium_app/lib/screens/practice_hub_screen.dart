@@ -93,7 +93,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             ),
           ),
           // 8dp gap
-          const SliverPadding(padding: EdgeInsets.only(top: 8)),
+          const SliverPadding(padding: EdgeInsets.only(top: AppSpacing.sm)),
           // Content list
           SliverPadding(
             padding: const EdgeInsets.all(AppSpacing.md),

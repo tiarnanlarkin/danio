@@ -60,7 +60,7 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
     final disableMotion = ref.read(reducedMotionProvider).disableDecorativeAnimations;
     _controller = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : const Duration(milliseconds: 400),
+      duration: disableMotion ? Duration.zero : AppDurations.long1,
     );
     _fadeAnimation = CurvedAnimation(
       parent: _controller,

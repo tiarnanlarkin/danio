@@ -25,8 +25,8 @@ class DailyNudgeBanner extends ConsumerWidget {
     // to prevent banner stacking at identical top positions.
     return Positioned(
       top: MediaQuery.of(context).padding.top + 100,
-      left: 16,
-      right: 16,
+      left: AppSpacing.md,
+      right: AppSpacing.md,
       child: Semantics(
         label: 'Dismiss daily nudge',
         button: true,

@@ -69,7 +69,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
     _cardControllers = List.generate(3, (i) {
       return AnimationController(
         vsync: this,
-        duration: const Duration(milliseconds: 300),
+        duration: AppDurations.medium4,
       );
     });
 
@@ -94,7 +94,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
 
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
     );
     _pulseCurve = CurvedAnimation(
       parent: _pulseController!,
@@ -326,7 +326,7 @@ class _OptionCard extends StatelessWidget {
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26) // ~10%
                 : AppColors.card,
-            borderRadius: BorderRadius.circular(AppRadius.md),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: isSelected ? AppColors.onboardingAmber : AppColors.border,
               width: isSelected ? 2 : 1,

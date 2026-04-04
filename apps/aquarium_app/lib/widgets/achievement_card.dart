@@ -25,7 +25,7 @@ class _AnimatedProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0.0, end: value),
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
       curve: Curves.easeOutCubic,
       builder: (context, animatedValue, _) {
         return ClipRRect(

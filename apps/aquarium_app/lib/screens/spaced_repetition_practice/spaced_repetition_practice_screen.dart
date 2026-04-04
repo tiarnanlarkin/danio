@@ -47,18 +47,18 @@ class _SpacedRepetitionPracticeScreenState
         appBar: AppBar(title: const Text('Practice')),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   srState.errorMessage!,
                   style: Theme.of(context).textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 ElevatedButton.icon(
                   onPressed: () =>
                       ref.invalidate(spacedRepetitionProvider),

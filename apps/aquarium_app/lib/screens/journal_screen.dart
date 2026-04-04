@@ -34,7 +34,7 @@ class JournalScreen extends ConsumerWidget {
         ],
       ),
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: AppDurations.medium4,
         switchInCurve: Curves.easeOutCubic,
         child: logsAsync.when(
           loading: () => const Center(child: BubbleLoader()),

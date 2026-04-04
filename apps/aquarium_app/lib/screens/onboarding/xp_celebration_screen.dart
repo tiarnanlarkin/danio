@@ -58,13 +58,13 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
     // Confetti burst (800ms)
     _confettiController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
     );
 
     // Badge pop (400ms, spring)
     _badgeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long1,
     );
     _badgeScaleCurve = CurvedAnimation(
       parent: _badgeController,
@@ -86,7 +86,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
     // Text fade
     _textController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
     );
     _textOpacityCurve = CurvedAnimation(
       parent: _textController,
@@ -97,7 +97,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
     // Button slide + fade
     _buttonController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _buttonOpacityCurve = CurvedAnimation(
       parent: _buttonController,
@@ -260,12 +260,12 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                         label:
                             'Experience progress: ${(_progressValue.value * 100).round()} percent',
                         child: Container(
-                          height: 8,
+                          height: AppSpacing.sm,
                           width: 200,
                           decoration: BoxDecoration(
                             color: AppColors.border,
                             borderRadius:
-                                BorderRadius.circular(AppRadius.pill),
+                                AppRadius.pillRadius,
                           ),
                           alignment: Alignment.centerLeft,
                           child: FractionallySizedBox(
@@ -274,7 +274,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                               decoration: BoxDecoration(
                                 color: AppColors.onboardingAmber,
                                 borderRadius:
-                                    BorderRadius.circular(AppRadius.pill),
+                                    AppRadius.pillRadius,
                               ),
                             ),
                           ),

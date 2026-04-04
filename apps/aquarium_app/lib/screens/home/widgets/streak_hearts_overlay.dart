@@ -157,16 +157,16 @@ class StreakHeartsOverlayState extends ConsumerState<StreakHeartsOverlay> {
     if (activeBanner == null) {
       // If no streak/hearts banner, show the WC streak banner alone
       return Positioned(
-        top: topPad + 8,
-        left: 16,
+        top: topPad + AppSpacing.sm,
+        left: AppSpacing.md,
         right: 80,
         child: Semantics(liveRegion: true, child: const WcStreakBanner()),
       );
     }
 
     return Positioned(
-      top: topPad + 8,
-      left: 16,
+      top: topPad + AppSpacing.sm,
+      left: AppSpacing.md,
       right: 80,
       child: activeBanner,
     );

@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';
 import '../data/achievements.dart';
@@ -43,7 +44,7 @@ class AchievementProgressNotifier
 
   /// Debouncer collapses rapid successive saves (e.g. multiple achievement checks
   /// in quick succession) into a single disk write after 500ms of inactivity.
-  final _saveDebouncer = Debouncer(delay: const Duration(milliseconds: 500));
+  final _saveDebouncer = Debouncer(delay: kProviderSaveDebounce);
 
   @override
   void dispose() {

@@ -278,7 +278,7 @@ class AmbientTimeIndicator extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: AppOverlays.black30,
-        borderRadius: BorderRadius.circular(AppRadius.md2),
+        borderRadius: AppRadius.md2Radius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

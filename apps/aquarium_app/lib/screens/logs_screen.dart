@@ -48,7 +48,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         ],
       ),
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: AppDurations.medium4,
         switchInCurve: Curves.easeOutCubic,
         child: logsAsync.when(
           loading: () => _buildSkeletonList(),

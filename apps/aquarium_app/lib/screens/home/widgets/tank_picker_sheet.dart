@@ -50,7 +50,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
           Container(
             margin: const EdgeInsets.only(top: AppSpacing.sm2),
             width: 40,
-            height: 4,
+            height: AppSpacing.xs,
             decoration: BoxDecoration(
               color: AppOverlays.textHint30,
               borderRadius: AppRadius.xxsRadius,

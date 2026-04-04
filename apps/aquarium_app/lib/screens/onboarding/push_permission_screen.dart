@@ -44,7 +44,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
     // Screen entry fade (200ms)
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
     );
     _fadeCurve = CurvedAnimation(
       parent: _fadeController,
@@ -55,7 +55,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
     // Bell float animation: translateY -6 to 0, 1.5s ease-in-out loop
     _bellFloatController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: AppDurations.celebration,
     );
     _bellFloatCurve = CurvedAnimation(
       parent: _bellFloatController,

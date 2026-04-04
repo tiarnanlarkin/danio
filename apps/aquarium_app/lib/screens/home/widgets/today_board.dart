@@ -424,7 +424,7 @@ class _DailyGoalBar extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppRadius.xsRadius,
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 5,

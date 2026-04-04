@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../theme/app_theme.dart';
+
 import '../../data/species_unlock_map.dart';
 import '../../providers/species_unlock_provider.dart';
 import '../../providers/tank_provider.dart';
@@ -64,7 +66,7 @@ class _TankFishManagerState extends ConsumerState<TankFishManager>
     super.initState();
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
       value: 1.0,
     );
     _opacity = _fadeController;

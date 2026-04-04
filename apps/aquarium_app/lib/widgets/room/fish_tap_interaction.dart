@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/fish_facts.dart';
 import '../../providers/species_unlock_provider.dart';
+import '../../theme/app_theme.dart';
 import '../core/app_dialog.dart';
 
 // ── Fish tap interaction layer ────────────────────────────────────────────────
@@ -300,7 +301,7 @@ class _TapEffectWidgetState extends State<_TapEffectWidget>
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
                 color: const Color(0xDD2D3436),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.md2Radius,
               ),
               child: Text(
                 _formatSpeciesName(widget.effect.speciesName),

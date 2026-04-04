@@ -49,7 +49,7 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: AppDurations.long2,
     );
     _slideAnim = Tween<Offset>(begin: const Offset(0.5, 0.5), end: Offset.zero)
         .animate(
@@ -65,7 +65,7 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
     super.didChangeDependencies();
     final disableMotion = MediaQuery.of(context).disableAnimations;
     _animController.duration =
-        disableMotion ? Duration.zero : const Duration(milliseconds: 500);
+        disableMotion ? Duration.zero : AppDurations.long2;
   }
 
   void _scheduleNext() {

@@ -238,7 +238,7 @@ class _StoryCard extends StatelessWidget {
                   size: 14,
                   color: context.textSecondary,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '${story.estimatedMinutes} min',
                   style: AppTypography.bodySmall.copyWith(
@@ -251,7 +251,7 @@ class _StoryCard extends StatelessWidget {
                   size: 14,
                   color: AppColors.warning,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '${story.xpReward} XP',
                   style: AppTypography.bodySmall.copyWith(

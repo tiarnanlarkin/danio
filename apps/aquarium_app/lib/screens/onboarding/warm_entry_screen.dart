@@ -73,7 +73,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
     // Fish card: slides up 20px + fades in over 400ms
     _fishCardController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long1,
     );
     _fishCardOpacityCurve = CurvedAnimation(
       parent: _fishCardController,
@@ -92,7 +92,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
     // Lesson card: appears 200ms after fish card
     _lessonCardController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long1,
     );
     _lessonCardOpacityCurve = CurvedAnimation(
       parent: _lessonCardController,
@@ -103,7 +103,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
     // XP bar fills 0→10% over 500ms
     _xpBarController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: AppDurations.long2,
     );
     _xpFillCurve = CurvedAnimation(parent: _xpBarController, curve: Curves.easeOut);
     _xpFill = Tween<double>(begin: 0.0, end: 0.1).animate(_xpFillCurve);
@@ -111,7 +111,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
     // Streak flame flicker (scale pulse)
     _streakFlickerController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 150),
+      duration: AppDurations.medium1,
     );
     _streakScale = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 50),
@@ -264,7 +264,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                                 vertical: AppSpacing.sm4,
                               ),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(AppRadius.md2),
+                                borderRadius: AppRadius.md2Radius,
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -328,7 +328,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
-          borderRadius: BorderRadius.circular(AppRadius.lg2),
+          borderRadius: AppRadius.lg2Radius,
           boxShadow: AppShadows.soft,
         ),
         child: Column(
@@ -406,7 +406,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
         color: AppColors.onboardingWarmCream,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
+        borderRadius: AppRadius.pillRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -438,7 +438,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
-          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(color: AppColors.border, width: 1),
         ),
         child: Row(
@@ -448,7 +448,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
               height: 40,
               decoration: BoxDecoration(
                 color: AppColors.onboardingAmber.withAlpha(30),
-                borderRadius: BorderRadius.circular(AppRadius.sm3),
+                borderRadius: AppRadius.sm3Radius,
               ),
               child: const Icon(
                 Icons.menu_book_rounded,
@@ -523,7 +523,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(AppRadius.xs),
+                  borderRadius: AppRadius.xsRadius,
                 ),
                 child: FractionallySizedBox(
                   alignment: Alignment.centerLeft,
@@ -531,7 +531,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                   child: Container(
                     decoration: BoxDecoration(
                       color: AppColors.onboardingAmber,
-                      borderRadius: BorderRadius.circular(AppRadius.xs),
+                      borderRadius: AppRadius.xsRadius,
                     ),
                   ),
                 ),

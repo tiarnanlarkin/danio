@@ -93,7 +93,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
     if (!_sheetController.isAttached) return;
     _sheetController.animateTo(
       size,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
       curve: Curves.easeOutCubic,
     );
     HapticFeedback.selectionClick();
@@ -361,7 +361,7 @@ class _AnimatedTabContentState extends State<_AnimatedTabContent> {
     final goingRight = widget.currentTab > _previousTab;
 
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
       switchInCurve: Curves.easeOutCubic,
       switchOutCurve: Curves.easeInCubic,
       transitionBuilder: (child, animation) {
@@ -411,7 +411,7 @@ class _BouncingChevronHintState extends State<_BouncingChevronHint>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: AppDurations.extraLong,
     )..repeat(reverse: true);
     _bounce = Tween<double>(begin: 0.0, end: -8.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
@@ -598,7 +598,7 @@ class _SheetToolCardState extends State<_SheetToolCard> {
         onTapCancel: _onTapCancel,
         child: AnimatedScale(
           scale: _pressed ? 0.95 : 1.0,
-          duration: const Duration(milliseconds: 100),
+          duration: AppDurations.short,
           curve: Curves.easeOut,
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.sm2),

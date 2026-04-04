@@ -322,17 +322,17 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           // XP / level badge (top-left)
                           Positioned(
                             top: 48,
-                            left: 16,
+                            left: AppSpacing.md,
                             child: SafeArea(
                               bottom: false,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
-                                  vertical: 4,
+                                  vertical: AppSpacing.xs,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Colors.black.withValues(alpha: 0.35),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: AppRadius.md2Radius,
                                 ),
                                 child: Text(
                                   '⭐ $statsXp XP · $statsLevel',
@@ -349,17 +349,17 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           if (profileState.currentStreak > 0)
                             Positioned(
                               top: 48,
-                              right: 16,
+                              right: AppSpacing.md,
                               child: SafeArea(
                                 bottom: false,
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
-                                    vertical: 4,
+                                    vertical: AppSpacing.xs,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.black.withValues(alpha: 0.35),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: AppRadius.md2Radius,
                                   ),
                                   child: Text(
                                     '🔥 ${profileState.currentStreak}',
@@ -602,8 +602,8 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
                           ),
                           child: reduceMotion
                               ? LazyLearningPathCard(
@@ -679,7 +679,7 @@ class _StoriesSection extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color: AppColors.primaryLight.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: const Center(
                   child: Text('📖', style: TextStyle(fontSize: 24)),

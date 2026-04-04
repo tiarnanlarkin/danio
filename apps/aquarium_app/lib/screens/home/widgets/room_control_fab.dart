@@ -26,7 +26,7 @@ class RoomControlFAB extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       bottom: 130 + MediaQuery.of(context).padding.bottom,
-      right: 16,
+      right: AppSpacing.md,
       child: IgnorePointer(
         ignoring: isHidden,
         child: Opacity(

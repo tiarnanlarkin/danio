@@ -73,7 +73,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
       child: Container(
         decoration: BoxDecoration(
           color: context.cardColor,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderRadius: AppRadius.largeRadius,
           boxShadow: [
             BoxShadow(
               color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha05,
@@ -98,10 +98,10 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
               ? _buildComingSoonTile(context, meta, isDark)
               : ExpansionTile(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                    borderRadius: AppRadius.largeRadius,
                   ),
                   collapsedShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                    borderRadius: AppRadius.largeRadius,
                   ),
                   onExpansionChanged: (expanded) {
                     if (expanded && loadedPath == null && !isLoading) {
@@ -189,7 +189,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                         children: [
                           Expanded(
                             child: Container(
-                              height: 8,
+                              height: AppSpacing.sm,
                               decoration: BoxDecoration(
                                 color: isDark
                                     ? AppColors.whiteAlpha10
@@ -278,7 +278,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
 
     return ListTile(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: AppRadius.largeRadius,
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -349,7 +349,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
   ) {
     return ListTile(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: AppRadius.largeRadius,
       ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -472,8 +472,8 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
               child: Material(
                 type: MaterialType.transparency,
                 child: Container(
-                  width: 32,
-                  height: 32,
+                  width: AppSpacing.xl,
+                  height: AppSpacing.xl,
                   decoration: BoxDecoration(
                     color: isCompleted
                         ? AppOverlays.success20

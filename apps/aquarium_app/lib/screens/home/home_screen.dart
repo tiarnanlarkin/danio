@@ -1,3 +1,4 @@
+import 'dart:async' show Completer;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
@@ -97,29 +98,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   /// Waits for the user profile to load from the provider.
   ///
-  /// Waits for [userProfileProvider] to finish loading by polling the
-  /// StateNotifierProvider until it emits a non-loading value.
-  /// Falls back gracefully if loading fails or times out.
+  /// Listens for [userProfileProvider] to transition from loading to
+  /// data/error. Falls back gracefully if loading times out after 5 seconds.
   Future<UserProfile?> _waitForProfile() async {
     // Fast path: already loaded synchronously.
-    final current = ref.read(userProfileProvider).valueOrNull;
-    if (current != null) return current;
+    final current = ref.read(userProfileProvider);
+    if (!current.isLoading) return current.valueOrNull;
 
-    // Poll until the async value resolves (loading → data or error).
-    // Timeout after 5 seconds to prevent infinite waits on slow devices.
-    const pollInterval = Duration(milliseconds: 100);
-    const timeout = Duration(seconds: 5);
-    final deadline = DateTime.now().add(timeout);
+    // Listen for the provider to finish loading instead of polling.
+    final completer = Completer<UserProfile?>();
+    final sub = ref.listenManual(userProfileProvider, (_, next) {
+      if (!next.isLoading && !completer.isCompleted) {
+        completer.complete(next.valueOrNull);
+      }
+    });
 
-    while (DateTime.now().isBefore(deadline)) {
-      await Future.delayed(pollInterval);
-      final state = ref.read(userProfileProvider);
-      if (state is AsyncData<UserProfile?>) return state.value;
-      if (state is AsyncError<UserProfile?>) return null;
+    try {
+      return await completer.future.timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => ref.read(userProfileProvider).valueOrNull,
+      );
+    } finally {
+      sub.close();
     }
-
-    // Timed out — return whatever is in state (may be null).
-    return ref.read(userProfileProvider).valueOrNull;
   }
 
   Future<void> _checkWelcomeBanner() async {

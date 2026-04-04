@@ -23,6 +23,7 @@ import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
 import '../services/offline_aware_service.dart';
 import '../utils/debouncer.dart';
+import '../utils/app_constants.dart';
 import '../utils/logger.dart';
 
 /// Shared provider for SharedPreferences. All providers and services should
@@ -54,7 +55,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
   /// Debouncer collapses rapid successive saves (e.g. lesson complete → XP → gems)
   /// into a single disk write after 200ms of inactivity.
-  final _saveDebouncer = Debouncer(delay: const Duration(milliseconds: 200));
+  final _saveDebouncer = Debouncer(delay: kProfileSaveDebounce);
 
   /// The latest profile pending a debounced write.
   UserProfile? _pendingSave;
@@ -68,14 +69,17 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     if (toSave == null) return;
     _pendingSave = null;
     _trimXpHistory(toSave);
-    // Fire-and-forget but at least SharedPreferences queues the write
-    ref.read(sharedPreferencesProvider.future).then((prefs) async {
-      try {
-        await prefs.setString(_key, jsonEncode(toSave.toJson()));
-      } catch (e, st) {
-        logError('UserProfileProvider: profile save failed on lifecycle pause: $e', stackTrace: st, tag: 'UserProfileProvider');
-      }
-    });
+    // Access already-resolved SharedPreferences synchronously to minimise
+    // the window between lifecycle pause and the native write queue.
+    // SharedPreferences.setString uses apply() on Android, which queues
+    // the write at the native level immediately.
+    final prefs = ref.read(sharedPreferencesProvider).valueOrNull;
+    if (prefs == null) return;
+    try {
+      prefs.setString(_key, jsonEncode(toSave.toJson()));
+    } catch (e, st) {
+      logError('UserProfileProvider: profile save failed on lifecycle pause: $e', stackTrace: st, tag: 'UserProfileProvider');
+    }
   }
 
   Future<void> _load() async {

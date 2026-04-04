@@ -8,6 +8,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/level_up_dialog.dart';
 import '../../widgets/xp_award_animation.dart';
+
 import 'lesson_screen.dart';
 import '../../widgets/app_bottom_sheet.dart';
 
@@ -22,6 +23,15 @@ class LessonCompletionFlow extends StatelessWidget {
   final bool isCompletingLesson;
   final VoidCallback onCompleteLesson;
 
+  /// Whether this is the very first lesson the user has ever completed.
+  final bool isFirstLesson;
+
+  /// Current day streak count (0 = no streak).
+  final int streakDays;
+
+  /// Gems earned during this lesson (0 = none).
+  final int gemsEarned;
+
   const LessonCompletionFlow({
     super.key,
     required this.lesson,
@@ -30,6 +40,9 @@ class LessonCompletionFlow extends StatelessWidget {
     required this.correctAnswers,
     required this.isCompletingLesson,
     required this.onCompleteLesson,
+    this.isFirstLesson = false,
+    this.streakDays = 0,
+    this.gemsEarned = 0,
   });
 
   @override
@@ -136,7 +149,9 @@ class LessonCompletionFlow extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.lg2),
           child: SafeArea(
             child: AppButton(
-              onPressed: isCompletingLesson ? null : onCompleteLesson,
+              onPressed: isCompletingLesson
+                  ? null
+                  : () => onCompleteLesson(),
               label: 'Complete Lesson',
               isLoading: isCompletingLesson,
               isFullWidth: true,

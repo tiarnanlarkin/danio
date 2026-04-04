@@ -6,6 +6,7 @@ import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
 import 'hearts_provider.dart';
 import 'user_profile_provider.dart';
+import '../utils/app_constants.dart';
 import '../utils/logger.dart';
 
 /// Provider for user's shop inventory
@@ -80,7 +81,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   Future<void> _save(List<InventoryItem> inventory) async {
     _saveDebounce?.cancel();
-    _saveDebounce = Timer(const Duration(milliseconds: 500), () async {
+    _saveDebounce = Timer(kProviderSaveDebounce, () async {
       final prefs = await ref.read(sharedPreferencesProvider.future);
       final json = jsonEncode(inventory.map((i) => i.toJson()).toList());
       await prefs.setString(_key, json);

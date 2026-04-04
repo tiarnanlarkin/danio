@@ -41,7 +41,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
 
     _fishBounceController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _fishBounceCurve = CurvedAnimation(parent: _fishBounceController, curve: Curves.easeInOut);
     _fishBounceAnim = Tween<double>(begin: 1.0, end: 1.05).animate(_fishBounceCurve);

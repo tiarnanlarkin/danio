@@ -319,7 +319,7 @@ class _SearchResults extends StatelessWidget {
                   height: 4,
                   decoration: BoxDecoration(
                     color: context.textHint,
-                    borderRadius: BorderRadius.circular(AppRadius.xxs),
+                    borderRadius: AppRadius.xxsRadius,
                   ),
                 ),
               ),

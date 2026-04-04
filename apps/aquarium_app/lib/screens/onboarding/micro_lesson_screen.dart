@@ -53,7 +53,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
 
     _gotItController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _gotItOpacityCurve = CurvedAnimation(
       parent: _gotItController,
@@ -71,7 +71,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
 
     _correctBounceController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _correctBounceCurve = CurvedAnimation(
       parent: _correctBounceController!,
@@ -142,7 +142,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.onboardingAmber.withAlpha(38), // ~15%
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                      borderRadius: AppRadius.pillRadius,
                     ),
                     child: Text(
                       'Quick Lesson · 30 seconds',
@@ -291,7 +291,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
           ),
           decoration: BoxDecoration(
             color: bgColor,
-            borderRadius: BorderRadius.circular(AppRadius.md2),
+            borderRadius: AppRadius.md2Radius,
             border: Border.all(color: borderColor, width: 1.5),
           ),
           child: Row(

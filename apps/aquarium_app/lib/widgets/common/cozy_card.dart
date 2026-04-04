@@ -44,7 +44,7 @@ class CozyCard extends StatelessWidget {
       variant: AppCardVariant.elevated,
       padding: AppCardPadding.spacious,
       customPadding: padding,
-      borderRadius: BorderRadius.circular(AppRadius.xl),
+      borderRadius: AppRadius.xlRadius,
       backgroundColor: Theme.of(context).cardColor,
       boxShadow: AppShadows.cozyWarm,
       onTap: onTap,

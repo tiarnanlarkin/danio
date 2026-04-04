@@ -35,7 +35,7 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
     super.initState();
     _entranceController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: AppDurations.extraLong,
     );
 
     _scaleAnim = CurvedAnimation(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../utils/app_constants.dart';
 import '../utils/debouncer.dart';
 import '../data/plant_database.dart';
 import '../widgets/core/app_text_field.dart';
@@ -25,7 +26,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
       {}; // Track researched plants this session
 
   /// Debounce search input to avoid filtering on every keystroke
-  final _searchDebouncer = Debouncer(delay: const Duration(milliseconds: 250));
+  final _searchDebouncer = Debouncer(delay: kSearchDebounce);
 
   /// Cached filtered results — invalidated when filters change
   List<PlantInfo>? _cachedFilteredPlants;
@@ -342,7 +343,7 @@ class _PlantDetailSheet extends StatelessWidget {
                 height: 4,
                 decoration: BoxDecoration(
                   color: context.textHint,
-                  borderRadius: BorderRadius.circular(AppRadius.xxs),
+                  borderRadius: AppRadius.xxsRadius,
                 ),
               ),
             ),

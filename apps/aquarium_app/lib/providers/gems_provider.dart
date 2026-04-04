@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../models/gem_transaction.dart';
 import 'user_profile_provider.dart';
+import '../utils/app_constants.dart';
 import '../utils/logger.dart';
 
 const _uuid = Uuid();
@@ -143,7 +144,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   Future<void> _save(GemsState gemsState) async {
     _pendingGemsState = gemsState;
     _saveDebounce?.cancel();
-    _saveDebounce = Timer(const Duration(milliseconds: 500), () async {
+    _saveDebounce = Timer(kProviderSaveDebounce, () async {
       await _writeToDisk(gemsState);
     });
   }

@@ -210,11 +210,11 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                         filled: true,
                         fillColor: AppColors.card,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.md2),
+                          borderRadius: AppRadius.md2Radius,
                           borderSide: BorderSide.none,
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.md2),
+                          borderRadius: AppRadius.md2Radius,
                           borderSide: const BorderSide(
                             color: AppColors.onboardingAmber,
                             width: 2,
@@ -236,7 +236,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                   child: AnimatedSwitcher(
                     duration: reduceMotion
                         ? Duration.zero
-                        : const Duration(milliseconds: 200),
+                        : AppDurations.medium2,
                     child: _isSearching
                         ? _buildSearchResults()
                         : _buildPopularGrid(),
@@ -456,12 +456,12 @@ class _PopularTile extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppDurations.medium1,
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26) // 10%
                 : AppColors.onPrimary,
-            borderRadius: BorderRadius.circular(AppRadius.md2),
+            borderRadius: AppRadius.md2Radius,
             border: Border.all(
               color: isSelected
                   ? AppColors.onboardingAmber
@@ -546,13 +546,13 @@ class _SearchResultCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppDurations.medium1,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.sm2),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26)
                 : AppColors.onPrimary,
-            borderRadius: BorderRadius.circular(AppRadius.md2),
+            borderRadius: AppRadius.md2Radius,
             border: Border.all(
               color: isSelected
                   ? AppColors.onboardingAmber
@@ -635,7 +635,7 @@ class _PulsingButtonState extends State<_PulsingButton>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
     );
 
     _scaleCurve = CurvedAnimation(

@@ -38,7 +38,7 @@ class _FunLoadingMessageState extends State<FunLoadingMessage>
     _currentIndex = Random().nextInt(_messages.length);
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
       value: 1.0,
     );
     _fadeAnimation = CurvedAnimation(
@@ -74,7 +74,7 @@ class _FunLoadingMessageState extends State<FunLoadingMessage>
     final newValue = MediaQuery.of(context).disableAnimations;
     if (newValue != _disableMotion) {
       _disableMotion = newValue;
-      _fadeController.duration = _disableMotion ? Duration.zero : const Duration(milliseconds: 200);
+      _fadeController.duration = _disableMotion ? Duration.zero : AppDurations.medium2;
     }
   }
 

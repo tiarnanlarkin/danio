@@ -77,7 +77,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
     // Phase 1 — fish emoji scale-up (spring, 400 ms)
     _fishScaleCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long1,
     );
     _fishScaleCurve = CurvedAnimation(
       parent: _fishScaleCtrl,
@@ -99,7 +99,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
     // Phase 1→2 transition (400 ms)
     _transitionCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long1,
     );
     _transitionCurve = CurvedAnimation(parent: _transitionCtrl, curve: Curves.easeOut);
     _overlayOpacity = Tween<double>(begin: 0.8, end: 0.0).animate(_transitionCurve);
@@ -142,7 +142,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
     // Phase 3 — invite fade
     _inviteCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _inviteFadeCurve = CurvedAnimation(parent: _inviteCtrl, curve: Curves.easeIn);
     _inviteFade = _inviteFadeCurve;
@@ -318,7 +318,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.onboardingAmber.withAlpha(26),
-                  borderRadius: BorderRadius.circular(AppRadius.lg2),
+                  borderRadius: AppRadius.lg2Radius,
                 ),
                 child: Text(
                   'Your $fishName Profile',
@@ -480,7 +480,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.onPrimary,
-            borderRadius: BorderRadius.circular(AppRadius.sm4),
+            borderRadius: AppRadius.sm4Radius,
             border: Border.all(color: AppColors.border),
           ),
           child: Row(

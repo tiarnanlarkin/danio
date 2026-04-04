@@ -41,7 +41,7 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
     super.initState();
     _bounceController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
 
     _scale = TweenSequence<double>([

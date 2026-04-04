@@ -87,10 +87,10 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
             // Drag handle
             Container(
               width: 40,
-              height: 4,
+              height: AppSpacing.xs,
               decoration: BoxDecoration(
                 color: AppColors.textHint.withAlpha(60),
-                borderRadius: BorderRadius.circular(AppRadius.xxs),
+                borderRadius: AppRadius.xxsRadius,
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -191,7 +191,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
 
     _xpController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: AppDurations.long2,
     );
     _xpCurve = CurvedAnimation(
       parent: _xpController,
@@ -235,7 +235,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
               AppColors.onboardingAmber.withAlpha(210),
             ],
           ),
-          borderRadius: BorderRadius.circular(AppRadius.lg2),
+          borderRadius: AppRadius.lg2Radius,
           boxShadow: AppShadows.soft,
         ),
         child: Column(
@@ -270,7 +270,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.xs2),
                 decoration: BoxDecoration(
                   color: AppColors.whiteAlpha20,
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                  borderRadius: AppRadius.pillRadius,
                 ),
                 child: Text(
                   '+50 XP bonus',
@@ -300,7 +300,7 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.whiteAlpha15,
-                      borderRadius: BorderRadius.circular(AppRadius.md2),
+                      borderRadius: AppRadius.md2Radius,
                     ),
                     child: Row(
                       children: [
@@ -361,7 +361,7 @@ class Day30CommittedCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: AppColors.onPrimary,
-          borderRadius: BorderRadius.circular(AppRadius.lg2),
+          borderRadius: AppRadius.lg2Radius,
           border: Border.all(color: AppColors.border, width: 1),
           boxShadow: AppShadows.soft,
         ),

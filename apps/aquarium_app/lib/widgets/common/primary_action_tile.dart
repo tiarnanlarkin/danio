@@ -68,7 +68,7 @@ class PrimaryActionTile extends StatelessWidget {
               color:
                   iconBackgroundColor ??
                   effectiveIconColor.withAlpha(26), // ~10%
-              borderRadius: BorderRadius.circular(AppRadius.md2),
+              borderRadius: AppRadius.md2Radius,
             ),
             child: Icon(icon, color: effectiveIconColor, size: AppIconSizes.md),
           ),

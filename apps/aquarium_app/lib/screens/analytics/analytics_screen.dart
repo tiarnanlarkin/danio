@@ -158,7 +158,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             }
           }
           return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: AppDurations.medium4,
             switchInCurve: Curves.easeOutCubic,
             child: body,
           );
@@ -310,7 +310,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   .map((range) {
                     final isSelected = _selectedRange == range;
                     return Padding(
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.only(right: AppSpacing.sm),
                       child: ChoiceChip(
                         label: Text(
                           range.displayName,
@@ -794,7 +794,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: color,
-                      borderRadius: BorderRadius.circular(AppRadius.xxs),
+                      borderRadius: AppRadius.xxsRadius,
                     ),
                   ),
                 );
@@ -832,7 +832,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       height: 12,
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(AppRadius.xxs),
+        borderRadius: AppRadius.xxsRadius,
       ),
     );
   }

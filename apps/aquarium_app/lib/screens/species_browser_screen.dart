@@ -5,6 +5,7 @@ import '../widgets/core/app_text_field.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../utils/debouncer.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
@@ -26,7 +27,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
       {}; // Track researched species this session
 
   /// Debounce search input to avoid filtering on every keystroke
-  final _searchDebouncer = Debouncer(delay: const Duration(milliseconds: 250));
+  final _searchDebouncer = Debouncer(delay: kSearchDebounce);
 
   /// Cached filtered results — invalidated when filters change
   List<SpeciesInfo>? _cachedFilteredSpecies;

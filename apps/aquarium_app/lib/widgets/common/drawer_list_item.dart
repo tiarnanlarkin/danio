@@ -66,7 +66,7 @@ class DrawerListItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs2, vertical: AppSpacing.xxs),
         decoration: BoxDecoration(
           color: AppColors.error,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
+          borderRadius: AppRadius.pillRadius,
         ),
         child: Text(
           badgeCount! > 99 ? '99+' : '$badgeCount',

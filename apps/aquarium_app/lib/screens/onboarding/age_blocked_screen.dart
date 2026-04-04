@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../theme/app_theme.dart';
 
 /// Hard-block screen for users under 13 (COPPA compliance).
 ///
@@ -15,22 +16,22 @@ class AgeBlockedScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(Icons.lock_outline, size: 64, color: Colors.grey),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   'Age Requirement',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 const Text(
                   'Danio requires users to be 13 or older. Please ask a parent or guardian to help you set up an account.',
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 TextButton(
                   onPressed: () => launchUrl(
                     Uri.parse(

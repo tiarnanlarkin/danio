@@ -468,7 +468,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
             children: [
               ExcludeSemantics(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.lg2),
+                  borderRadius: AppRadius.lg2Radius,
                   child: Image.asset(
                     'assets/icons/app_icon.png',
                     width: 80,

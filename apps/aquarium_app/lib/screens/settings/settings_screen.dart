@@ -526,14 +526,14 @@ class _LearnCard extends ConsumerWidget {
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: AppRadius.largeRadius,
         child: Semantics(
           button: true,
           label: 'Learn Fishkeeping. Tap to open lessons',
           child: InkWell(
             onTap: () =>
                 NavigationThrottle.push(context, const LearnScreen()),
-            borderRadius: BorderRadius.circular(AppRadius.lg),
+            borderRadius: AppRadius.largeRadius,
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
@@ -546,7 +546,7 @@ class _LearnCard extends ConsumerWidget {
                     AppColors.secondaryAlpha90,
                   ],
                 ),
-                borderRadius: BorderRadius.circular(AppRadius.lg),
+                borderRadius: AppRadius.largeRadius,
                 boxShadow: [
                   BoxShadow(
                     color: isDark

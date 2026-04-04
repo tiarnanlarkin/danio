@@ -151,7 +151,7 @@ class ParameterField extends StatelessWidget {
         ),
         if (idealRange != null)
           Padding(
-            padding: const EdgeInsets.only(top: 4, left: 12),
+            padding: const EdgeInsets.only(top: AppSpacing.xs, left: AppSpacing.sm2),
             child: Text(
               idealRange!,
               style: AppTypography.bodySmall.copyWith(color: context.textHint),

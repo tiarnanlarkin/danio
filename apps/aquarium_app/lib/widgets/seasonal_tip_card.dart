@@ -25,7 +25,7 @@ class _SeasonalTipCardState extends ConsumerState<SeasonalTipCard>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
@@ -42,7 +42,7 @@ class _SeasonalTipCardState extends ConsumerState<SeasonalTipCard>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final disableMotion = MediaQuery.of(context).disableAnimations;
-    _controller.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 300);
+    _controller.duration = disableMotion ? Duration.zero : AppDurations.medium4;
   }
 
   @override
