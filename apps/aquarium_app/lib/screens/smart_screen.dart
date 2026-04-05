@@ -19,6 +19,7 @@ import 'compatibility_checker_screen.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../widgets/themed_tab_header.dart';
 import '../utils/logger.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
@@ -351,17 +352,51 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('🧠 Smart'), centerTitle: true),
-        body: ListView.builder(
-          // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
-          padding: const EdgeInsets.only(
-            left: AppSpacing.md,
-            right: AppSpacing.md,
-            top: AppSpacing.md,
-            bottom: AppSpacing.md,
-          ),
-          itemBuilder: (context, index) => items[index],
-          itemCount: items.length,
+        body: CustomScrollView(
+          slivers: [
+            // Themed Smart Header
+            ThemedTabHeader(
+              tab: TabHeaderContext.smart,
+              height: 160,
+              overlays: [
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.35),
+                        borderRadius: AppRadius.md2Radius,
+                      ),
+                      child: Text(
+                        '\ud83e\udde0 Smart',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // Content
+            SliverPadding(
+              // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
+              padding: const EdgeInsets.all(AppSpacing.md),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => items[index],
+                  childCount: items.length,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

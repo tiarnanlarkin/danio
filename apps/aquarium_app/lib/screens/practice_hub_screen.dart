@@ -6,6 +6,7 @@ import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/hearts_widgets.dart';
 import '../widgets/first_visit_tooltip.dart';
+import '../widgets/themed_tab_header.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'tab_navigator.dart';
 import '../utils/navigation_throttle.dart';
@@ -43,54 +44,46 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     final body = Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Header banner (scrolls with content, not sticky)
-          SliverToBoxAdapter(
-            child: Container(
-              height: 180,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [AppColors.background, AppColors.surfaceVariant],
-                ),
-              ),
-              child: Stack(children: [
-                // Centered illustration
-                Center(
-                  child: ExcludeSemantics(
-                    child: Image.asset(
-                      'assets/images/illustrations/practice_header.webp',
-                      height: 160,
-                      fit: BoxFit.fitHeight,
-                      cacheWidth: 480,
-                      cacheHeight: 320,
-                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+          // Themed Practice Header
+          ThemedTabHeader(
+            tab: TabHeaderContext.practice,
+            height: 180,
+            overlays: [
+              // Top-left title
+              Positioned(
+                top: 16,
+                left: 16,
+                child: SafeArea(
+                  bottom: false,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: AppSpacing.xs,
                     ),
-                  ),
-                ),
-                // Top-left title (inside SafeArea)
-                Positioned(
-                  top: 16,
-                  left: 16,
-                  child: SafeArea(
-                    bottom: false,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      borderRadius: AppRadius.md2Radius,
+                    ),
                     child: Text(
                       'Practice',
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-                // Top-right hearts indicator
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: SafeArea(
-                    bottom: false,
-                    child: HeartIndicator(compact: true),
-                  ),
+              ),
+              // Top-right hearts indicator
+              Positioned(
+                top: 16,
+                right: 16,
+                child: SafeArea(
+                  bottom: false,
+                  child: HeartIndicator(compact: true),
                 ),
-              ]),
-            ),
+              ),
+            ],
           ),
           // 8dp gap
           const SliverPadding(padding: EdgeInsets.only(top: AppSpacing.sm)),

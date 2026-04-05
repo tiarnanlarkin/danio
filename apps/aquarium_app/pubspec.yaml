@@ -91,6 +91,7 @@ flutter:
     - assets/icons/badges/
     - assets/textures/
     - assets/backgrounds/
+    - assets/images/headers/
 
   fonts:
     - family: Nunito

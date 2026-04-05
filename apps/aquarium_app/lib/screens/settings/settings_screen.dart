@@ -23,8 +23,10 @@ import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/navigation_throttle.dart';
+import '../../providers/room_theme_provider.dart';
 import '../../widgets/core/app_list_tile.dart';
 import '../../widgets/room_navigation.dart';
+import '../home/home_sheets_theme.dart';
 import 'settings_account_section.dart';
 import 'settings_data_section.dart';
 import 'settings_debug_section.dart';
@@ -87,6 +89,7 @@ class SettingsScreen extends ConsumerWidget {
       // ── GROUP 4: App Settings (appearance, accessibility, notifications) ──
       (_) => const _SectionHeader(title: 'App Settings'),
       (_) => const _ThemeModeTile(),
+      (_) => const _RoomThemeTile(),
       (_) => NavListTile(
         icon: Icons.tune,
         title: 'Difficulty Settings',
@@ -440,6 +443,21 @@ class _ThemeModeTile extends ConsumerWidget {
       title: 'Light/Dark Mode',
       subtitle: _themeModeLabel(themeMode),
       onTap: () => _showThemePicker(context, ref, themeMode),
+    );
+  }
+}
+
+class _RoomThemeTile extends ConsumerWidget {
+  const _RoomThemeTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(currentRoomThemeProvider);
+    return NavListTile(
+      icon: Icons.color_lens_outlined,
+      title: 'Room Theme',
+      subtitle: theme.name,
+      onTap: () => showThemePicker(context, ref),
     );
   }
 }

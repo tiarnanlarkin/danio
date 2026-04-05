@@ -340,10 +340,13 @@ class AppColors {
     colors: [Color(0xFF292524), Color(0xFF1C1917)],
   );
 
-  // Learn screen header gradient tokens
-  static const Color learnHeaderTop = Color(0xFF5B8FA8); // Soft ocean blue
-  static const Color learnHeaderMid = Color(0xFF3D6B7A); // Deeper teal
-  static const Color learnHeaderBottom = Color(0xFF2D5566); // Submarine depth
+  // Learn screen header gradient tokens — replaced by ThemedTabHeader
+  @Deprecated('Use ThemedTabHeader with headerGradientForTheme() instead')
+  static const Color learnHeaderTop = Color(0xFF5B8FA8);
+  @Deprecated('Use ThemedTabHeader with headerGradientForTheme() instead')
+  static const Color learnHeaderMid = Color(0xFF3D6B7A);
+  @Deprecated('Use ThemedTabHeader with headerGradientForTheme() instead')
+  static const Color learnHeaderBottom = Color(0xFF2D5566);
 }
 
 /// Material constants for the stage system textures and surfaces.

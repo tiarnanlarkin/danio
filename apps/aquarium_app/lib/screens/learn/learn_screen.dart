@@ -10,8 +10,8 @@ import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/core/glass_card.dart';
-// StudyRoomScene import removed — replaced with illustrated header
 import '../onboarding_screen.dart';
+import '../../widgets/themed_tab_header.dart';
 import '../../utils/app_constants.dart';
 import '../../widgets/learning_streak_badge.dart';
 import '../../widgets/placement_challenge_card.dart';
@@ -278,104 +278,65 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             child: CustomScrollView(
               controller: _scrollController,
               slivers: [
-                // Illustrated Learn Header
-                SliverToBoxAdapter(
-                  child: ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: [0.75, 1.0],
-                      colors: [Colors.white, Colors.transparent],
-                    ).createShader(bounds),
-                    blendMode: BlendMode.dstIn,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.32,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppColors.learnHeaderTop,
-                            AppColors.learnHeaderMid,
-                            AppColors.learnHeaderBottom,
-                          ],
+                // Themed Learn Header
+                ThemedTabHeader(
+                  tab: TabHeaderContext.learn,
+                  height: MediaQuery.of(context).size.height * 0.32,
+                  overlays: [
+                    // XP / level badge (top-left)
+                    Positioned(
+                      top: 48,
+                      left: AppSpacing.md,
+                      child: SafeArea(
+                        bottom: false,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: AppSpacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.35),
+                            borderRadius: AppRadius.md2Radius,
+                          ),
+                          child: Text(
+                            '\u2b50 $statsXp XP \u00b7 $statsLevel',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          // Illustration
-                          Positioned.fill(
-                            child: ExcludeSemantics(
-                              child: Image.asset(
-                                'assets/images/illustrations/learn_header.webp',
-                                fit: BoxFit.cover,
-                                alignment: Alignment.center,
-                                cacheWidth: 800,
-                                cacheHeight: 480,
-                                errorBuilder: (_, __, ___) =>
-                                    const SizedBox.shrink(),
-                              ),
-                            ),
-                          ),
-                          // XP / level badge (top-left)
-                          Positioned(
-                            top: 48,
-                            left: AppSpacing.md,
-                            child: SafeArea(
-                              bottom: false,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: AppSpacing.xs,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.35),
-                                  borderRadius: AppRadius.md2Radius,
-                                ),
-                                child: Text(
-                                  '⭐ $statsXp XP · $statsLevel',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Streak badge (top-right)
-                          if (profileState.currentStreak > 0)
-                            Positioned(
-                              top: 48,
-                              right: AppSpacing.md,
-                              child: SafeArea(
-                                bottom: false,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: AppSpacing.xs,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.35),
-                                    borderRadius: AppRadius.md2Radius,
-                                  ),
-                                  child: Text(
-                                    '🔥 ${profileState.currentStreak}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
                     ),
-                  ),
+                    // Streak badge (top-right)
+                    if (profileState.currentStreak > 0)
+                      Positioned(
+                        top: 48,
+                        right: AppSpacing.md,
+                        child: SafeArea(
+                          bottom: false,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: AppSpacing.xs,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.35),
+                              borderRadius: AppRadius.md2Radius,
+                            ),
+                            child: Text(
+                              '\ud83d\udd25 ${profileState.currentStreak}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
 
                 // Content below the scene
