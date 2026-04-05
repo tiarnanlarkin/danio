@@ -10,7 +10,10 @@ import '../services/review_queue_service.dart';
 import '../services/notification_service.dart';
 import 'achievement_provider.dart';
 import 'package:flutter/material.dart';
+import '../models/resolved_question.dart';
+import '../services/question_resolver.dart';
 import '../utils/logger.dart';
+import 'lesson_provider.dart';
 
 // Provider for spaced repetition state
 final spacedRepetitionProvider =
@@ -22,6 +25,7 @@ final spacedRepetitionProvider =
 class SpacedRepetitionState {
   final List<ReviewCard> cards;
   final ReviewSession? currentSession;
+  final List<ResolvedQuestion> resolvedQuestions;
   final ReviewStats stats;
   final bool isLoading;
   final String? errorMessage; // Track errors without breaking flow
@@ -29,6 +33,7 @@ class SpacedRepetitionState {
   const SpacedRepetitionState({
     this.cards = const [],
     this.currentSession,
+    this.resolvedQuestions = const [],
     required this.stats,
     this.isLoading = false,
     this.errorMessage,
@@ -37,9 +42,11 @@ class SpacedRepetitionState {
   SpacedRepetitionState copyWith({
     List<ReviewCard>? cards,
     ReviewSession? currentSession,
+    List<ResolvedQuestion>? resolvedQuestions,
     ReviewStats? stats,
     bool? isLoading,
     bool clearSession = false,
+    bool clearResolvedQuestions = false,
     String? errorMessage,
     bool clearError = false,
   }) {
@@ -48,6 +55,9 @@ class SpacedRepetitionState {
       currentSession: clearSession
           ? null
           : (currentSession ?? this.currentSession),
+      resolvedQuestions: clearResolvedQuestions
+          ? const []
+          : (resolvedQuestions ?? this.resolvedQuestions),
       stats: stats ?? this.stats,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
@@ -470,7 +480,17 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         mode: mode,
       );
 
-      state = state.copyWith(currentSession: session, clearError: true);
+      final lessonState = _ref.read(lessonProvider);
+      final resolved = QuestionResolver.resolveQuestions(
+        cards: session.cards,
+        lessonState: lessonState,
+      );
+
+      state = state.copyWith(
+        currentSession: session,
+        resolvedQuestions: resolved,
+        clearError: true,
+      );
     } catch (e, stackTrace) {
       state = state.copyWith(
         errorMessage: "Couldn't start your review session. Please try again.",
@@ -571,7 +591,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       // Session is complete, clear it
-      state = state.copyWith(clearSession: true, clearError: true);
+      state = state.copyWith(clearSession: true, clearResolvedQuestions: true, clearError: true);
       await _saveData();
 
       // Refresh notifications for next review
