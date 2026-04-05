@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../models/resolved_question.dart';
 import '../../models/spaced_repetition.dart';
 import '../../providers/achievement_provider.dart' show achievementCheckerProvider;
 import '../../providers/inventory_provider.dart';
@@ -14,6 +15,8 @@ import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/hearts_widgets.dart';
+import 'widgets/matching_card_widget.dart';
+import 'widgets/mc_card_widget.dart';
 
 /// The active review session screen — shown while a session is in progress.
 class ReviewSessionScreen extends ConsumerStatefulWidget {
@@ -28,7 +31,6 @@ class ReviewSessionScreen extends ConsumerStatefulWidget {
 
 class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   int _currentCardIndex = 0;
-  bool _showingAnswer = false;
   DateTime? _questionStartTime;
   String? _errorMessage;
   bool _isSubmitting = false;
@@ -43,6 +45,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final resolvedQuestions = ref.read(spacedRepetitionProvider).resolvedQuestions;
+    final currentQuestion = _currentCardIndex < resolvedQuestions.length
+        ? resolvedQuestions[_currentCardIndex]
+        : null;
+
     final progress = (_currentCardIndex + 1) / widget.session.cards.length;
     final cardsReviewed = widget.session.results.length;
     final correctSoFar = widget.session.results.where((r) => r.correct).length;
@@ -170,11 +177,33 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               ),
             ),
 
-            // Card content
-            Expanded(child: _buildCardContent()),
-
-            // Answer buttons
-            if (!_showingAnswer) _buildAnswerButtons(),
+            // Question content
+            if (currentQuestion is MultipleChoiceQuestion)
+              Expanded(
+                child: McCardWidget(
+                  question: currentQuestion,
+                  onAnswered: (correct) => _recordAnswer(correct),
+                  onNext: _nextCard,
+                  isLastCard:
+                      _currentCardIndex >= widget.session.cards.length - 1,
+                ),
+              )
+            else if (currentQuestion is MatchingPairsQuestion)
+              Expanded(
+                child: MatchingCardWidget(
+                  question: currentQuestion,
+                  onCompleted: (score) => _recordAnswer(score >= 0.5),
+                  onNext: _nextCard,
+                  isLastCard:
+                      _currentCardIndex >= widget.session.cards.length - 1,
+                ),
+              )
+            else
+              // Fallback: old self-assess UI for cards without resolved questions
+              ...[
+                Expanded(child: _buildCardContent()),
+                _buildAnswerButtons(),
+              ],
           ],
         ),
       ),
@@ -282,11 +311,6 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               ),
             ),
           ],
-
-          if (_showingAnswer) ...[
-            const SizedBox(height: AppSpacing.lg2),
-            _buildFeedback(),
-          ],
         ],
       ),
     );
@@ -356,70 +380,6 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     );
   }
 
-  Widget _buildFeedback() {
-    final lastResult = widget.session.results.last;
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg2),
-      decoration: BoxDecoration(
-        color:
-            lastResult.correct ? AppOverlays.success10 : AppOverlays.error10,
-        borderRadius: AppRadius.mediumRadius,
-        border: Border.all(
-          color: lastResult.correct
-              ? AppOverlays.success30
-              : AppColors.errorAlpha30,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                lastResult.correct ? Icons.check_circle : Icons.cancel,
-                color:
-                    lastResult.correct ? AppColors.success : AppColors.error,
-                size: 32,
-              ),
-              const SizedBox(width: AppSpacing.sm2),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      lastResult.correct ? 'Great job!' : 'Keep practicing!',
-                      style: AppTypography.headlineSmall.copyWith(
-                        color: lastResult.correct
-                            ? AppColors.success
-                            : AppColors.error,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      '+${lastResult.xpEarned} XP',
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: context.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            onPressed: _nextCard,
-            label: _currentCardIndex < widget.session.cards.length - 1
-                ? 'Next Card'
-                : 'Complete Session',
-            isFullWidth: true,
-          ),
-        ],
-      ),
-    );
-  }
-
   String _getQuestionText() => conceptDisplayName(_currentCard.conceptId);
 
   Future<void> _recordAnswer(bool correct) async {
@@ -446,7 +406,6 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
       if (mounted) {
         setState(() {
-          _showingAnswer = true;
           _errorMessage = null;
         });
       }
@@ -479,7 +438,6 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     if (_currentCardIndex < widget.session.cards.length - 1) {
       setState(() {
         _currentCardIndex++;
-        _showingAnswer = false;
         _questionStartTime = DateTime.now();
         _errorMessage = null;
       });
