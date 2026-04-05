@@ -92,6 +92,7 @@ flutter:
     - assets/textures/
     - assets/backgrounds/
     - assets/images/headers/
+    - assets/images/watercolor-edge-mask.png
 
   fonts:
     - family: Nunito

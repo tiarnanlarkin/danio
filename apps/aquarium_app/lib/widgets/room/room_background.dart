@@ -297,7 +297,6 @@ Widget buildRoomBackground(RoomThemeType type) {
       assetPath,
       fit: BoxFit.cover,
       cacheWidth: 1024,
-      cacheHeight: 1024,
       errorBuilder: (context, error, stackTrace) =>
           gradientFallbackForTheme(type),
     ),

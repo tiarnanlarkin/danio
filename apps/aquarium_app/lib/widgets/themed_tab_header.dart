@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/room_theme_provider.dart';
 import '../theme/room_themes.dart';
+import 'watercolor_edge_overlay.dart';
 
 /// Which tab the header is for — determines which asset to load.
 enum TabHeaderContext { learn, practice, smart }
@@ -91,38 +92,33 @@ class ThemedTabHeader extends ConsumerWidget {
     final gradient = headerGradientForTheme(themeType);
 
     return SliverToBoxAdapter(
-      child: ShaderMask(
-        shaderCallback: (bounds) => const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0.75, 1.0],
-          colors: [Colors.white, Colors.transparent],
-        ).createShader(bounds),
-        blendMode: BlendMode.dstIn,
-        child: Container(
-          height: height,
-          width: double.infinity,
-          decoration: BoxDecoration(gradient: gradient),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // Themed header image
-              Positioned.fill(
-                child: ExcludeSemantics(
-                  child: Image.asset(
-                    assetPath,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                    cacheWidth: 800,
-                    cacheHeight: 480,
-                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                  ),
+      child: Container(
+        height: height,
+        width: double.infinity,
+        decoration: BoxDecoration(gradient: gradient),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Themed header image
+            Positioned.fill(
+              child: ExcludeSemantics(
+                child: Image.asset(
+                  assetPath,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  cacheWidth: 800,
+                  cacheHeight: 480,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
               ),
-              // Caller-provided overlays
-              ...overlays,
-            ],
-          ),
+            ),
+            // Watercolour edge overlay — blends image edges into scaffold bg
+            const Positioned.fill(
+              child: WatercolorEdgeOverlay(),
+            ),
+            // Caller-provided overlays
+            ...overlays,
+          ],
         ),
       ),
     );
