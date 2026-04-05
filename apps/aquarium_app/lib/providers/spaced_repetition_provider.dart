@@ -480,6 +480,15 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         mode: mode,
       );
 
+      // Pre-load lesson paths needed for question resolution
+      final pathIds = session.cards
+          .map((c) => c.conceptId.split('_').first)
+          .toSet();
+      final lessonNotifier = _ref.read(lessonProvider.notifier);
+      for (final pathId in pathIds) {
+        await lessonNotifier.loadPath(pathId);
+      }
+
       final lessonState = _ref.read(lessonProvider);
       final resolved = QuestionResolver.resolveQuestions(
         cards: session.cards,
