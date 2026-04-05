@@ -15,6 +15,10 @@ import '../utils/logger.dart';
 // ---------------------------------------------------------------------------
 // Sync status
 // ---------------------------------------------------------------------------
+// Architecture note: CloudSyncService directly mutates cloudSyncStatusProvider
+// and _syncConflictProvider (lines 303, 552, 563, 568). This is acceptable
+// while sync is scaffolding (FB-H1). When sync is fully implemented, refactor
+// to expose a stream/callback from the service and listen in the provider.
 
 /// High-level sync status for the UI.
 enum CloudSyncStatus { synced, syncing, offline, error, disabled }

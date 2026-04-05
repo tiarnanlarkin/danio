@@ -2,6 +2,10 @@
 ///
 /// ALL logic is gated behind [kDebugMode] and has zero effect in release builds.
 /// Wire this into [_AppRouterState.initState] using [addPostFrameCallback].
+///
+/// Architecture note: directly mutates [currentTabProvider] (line 86) for
+/// tab switching. Acceptable for a debug-only service — no need to add
+/// callback/stream indirection for QA tooling.
 library;
 
 import 'package:flutter/foundation.dart' show kDebugMode;
