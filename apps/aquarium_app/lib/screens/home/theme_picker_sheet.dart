@@ -62,6 +62,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
 
   @override
   void dispose() {
+    _removeActiveListener();
     _swipeController.dispose();
     _entranceController.dispose();
     super.dispose();
@@ -98,17 +99,17 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
     final threshold = MediaQuery.of(context).size.width * 0.25;
 
     if (_dragX.abs() > threshold || velocityX.abs() > 600) {
-      // Swipe off
-      final direction = _dragX > 0 ? 1 : -1;
+      // Swipe off — left swipe advances forward, right swipe goes back
+      final swipeDirection = _dragX > 0 ? -1 : 1;
       if (_reduceMotion) {
         // Instant transition
         setState(() {
           _dragX = 0;
           _dragY = 0;
         });
-        _advanceCard(1);
+        _advanceCard(swipeDirection);
       } else {
-        _animateSwipeOff(direction);
+        _animateSwipeOff(swipeDirection);
       }
     } else {
       // Snap back
@@ -123,62 +124,70 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
     }
   }
 
+  // Active listener tracked to prevent leaks on rapid swipes (Critical #2).
+  VoidCallback? _activeSwipeListener;
+
+  void _removeActiveListener() {
+    if (_activeSwipeListener != null) {
+      _swipeController.removeListener(_activeSwipeListener!);
+      _activeSwipeListener = null;
+    }
+  }
+
   void _animateSwipeOff(int direction) {
     final startX = _dragX;
     final startY = _dragY;
-    final endX = direction * MediaQuery.of(context).size.width * 1.2;
+    // Fly off in the direction the card was dragged
+    final flyDirection = startX >= 0 ? 1 : -1;
+    final endX = flyDirection * MediaQuery.of(context).size.width * 1.2;
 
+    _removeActiveListener();
     _swipeController.reset();
     _swipeController.forward().then((_) {
+      if (!mounted) return;
+      _removeActiveListener();
       setState(() {
         _dragX = 0;
         _dragY = 0;
       });
-      _advanceCard(1);
+      _advanceCard(direction);
     });
 
-    _swipeController.addListener(_swipeOffListener(startX, startY, endX));
-  }
-
-  VoidCallback _swipeOffListener(double startX, double startY, double endX) {
-    late VoidCallback listener;
-    listener = () {
+    _activeSwipeListener = () {
+      if (!mounted) return;
       final t = Curves.easeOut.transform(_swipeController.value);
       setState(() {
         _dragX = lerpDouble(startX, endX, t)!;
         _dragY = lerpDouble(startY, 0, t)!;
       });
-      if (_swipeController.isCompleted) {
-        _swipeController.removeListener(listener);
-      }
     };
-    return listener;
+    _swipeController.addListener(_activeSwipeListener!);
   }
 
   void _animateSnapBack() {
     final startX = _dragX;
     final startY = _dragY;
 
+    _removeActiveListener();
     _swipeController.reset();
     _swipeController.forward().then((_) {
+      if (!mounted) return;
+      _removeActiveListener();
       setState(() {
         _dragX = 0;
         _dragY = 0;
       });
     });
 
-    late VoidCallback listener;
-    listener = () {
+    _activeSwipeListener = () {
+      if (!mounted) return;
       final t = Curves.easeOut.transform(_swipeController.value);
       setState(() {
         _dragX = lerpDouble(startX, 0, t)!;
         _dragY = lerpDouble(startY, 0, t)!;
       });
-      if (_swipeController.isCompleted) {
-        _swipeController.removeListener(listener);
-      }
     };
-    _swipeController.addListener(listener);
+    _swipeController.addListener(_activeSwipeListener!);
   }
 
   void _selectTheme() {
@@ -330,6 +339,9 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
           child: card,
         ),
       );
+    } else {
+      // Background cards are decorative — hide from assistive tech
+      card = ExcludeSemantics(child: card);
     }
 
     return card;

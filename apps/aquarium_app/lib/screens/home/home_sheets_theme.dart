@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/app_bottom_sheet.dart';
 import 'theme_picker_sheet.dart';
 
@@ -12,7 +13,9 @@ void showThemePicker(BuildContext context, WidgetRef ref) {
   showAppBottomSheet(
     context: context,
     maxHeightFraction: 0.75,
-    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+    padding: const EdgeInsets.fromLTRB(
+      AppSpacing.md, AppSpacing.sm2, AppSpacing.md, AppSpacing.sm,
+    ),
     child: const ThemePickerSheet(),
   );
 }
