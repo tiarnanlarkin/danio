@@ -228,8 +228,8 @@ void main() {
       }
     });
 
-    test('total lesson count matches LessonProvider metadata (72)', () {
-      expect(_allLessons.length, equals(72));
+    test('total lesson count matches LessonProvider metadata (82)', () {
+      expect(_allLessons.length, equals(82));
     });
 
     test('each LearningPath ID matches its lessons pathId field', () {

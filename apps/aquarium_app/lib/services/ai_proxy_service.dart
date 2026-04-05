@@ -17,9 +17,6 @@
 // direct OpenAI calls using a user-supplied or build-time API key.
 // ---------------------------------------------------------------------------
 
-// TODO: Deploy Supabase Edge Function before production release.
-// See: docs/ai-proxy-setup.md for deployment instructions.
-// Pre-production: deploy edge function. See docs/current-state.md
 
 import 'dart:convert';
 import 'dart:typed_data';

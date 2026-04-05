@@ -19,7 +19,6 @@ import 'package:danio/models/spaced_repetition.dart';
 
 class _MockNotificationsPlatform extends FlutterLocalNotificationsPlatform
     with MockPlatformInterfaceMixin {
-  @override
   Future<bool?> initialize(dynamic settings,
           {dynamic onDidReceiveNotificationResponse,
           dynamic onDidReceiveBackgroundNotificationResponse}) async =>
@@ -61,7 +60,7 @@ Widget _wrap() {
 
 /// Subclass that uses the real Ref but resets to empty state after init.
 class _FrozenSpacedRepetitionNotifier extends SpacedRepetitionNotifier {
-  _FrozenSpacedRepetitionNotifier(Ref ref) : super(ref) {
+  _FrozenSpacedRepetitionNotifier(super.ref) {
     state = SpacedRepetitionState(
       cards: const [],
       stats: ReviewStats(

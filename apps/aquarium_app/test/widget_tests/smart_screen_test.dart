@@ -60,18 +60,19 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
-      // When not configured, "coming soon" cards are shown with these titles
-      expect(find.text('Fish & Plant ID'), findsOneWidget);
-      expect(find.text('Symptom Checker'), findsOneWidget);
-      expect(find.text('Weekly Care Plan'), findsOneWidget);
+      // When not configured, feature cards are rendered but may be offstage
+      // (below the viewport fold in the SliverList). Use skipOffstage: false.
+      expect(find.text('Fish & Plant ID', skipOffstage: false), findsOneWidget);
+      expect(find.text('Symptom Checker', skipOffstage: false), findsOneWidget);
+      expect(find.text('Weekly Care Plan', skipOffstage: false), findsOneWidget);
     });
 
     testWidgets('shows AI feature section cards', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
-      // Weekly Care Plan card should be present
-      expect(find.text('Weekly Care Plan'), findsOneWidget);
+      // Weekly Care Plan card should be present (may be offstage in SliverList)
+      expect(find.text('Weekly Care Plan', skipOffstage: false), findsOneWidget);
     });
   });
 }

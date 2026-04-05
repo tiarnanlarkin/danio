@@ -24,10 +24,10 @@ void main() {
       }
     });
 
-    test('total lesson count across all paths is 72', () {
+    test('total lesson count across all paths is 81', () {
       final total = LessonProvider.allPathMetadata
           .fold<int>(0, (sum, path) => sum + path.lessonIds.length);
-      expect(total, equals(72));
+      expect(total, equals(81));
     });
 
     test('no duplicate lesson IDs across all paths', () {

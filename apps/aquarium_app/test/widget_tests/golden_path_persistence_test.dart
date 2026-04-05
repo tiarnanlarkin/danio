@@ -18,6 +18,7 @@ import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/gem_transaction.dart';
 import 'package:danio/models/shop_item.dart';
 import 'package:danio/models/tank.dart';
+import 'package:danio/models/user_profile.dart';
 import 'package:danio/services/storage_service.dart';
 
 // ---------------------------------------------------------------------------
@@ -37,11 +38,14 @@ ProviderContainer _makeContainer({InMemoryStorageService? storage}) {
 }
 
 /// Waits for a FutureProvider / AsyncNotifier to settle (loading → data).
+///
+/// Async providers often chain multiple futures (e.g. SharedPreferences.future
+/// → GemsNotifier._load → setState). We pump the microtask queue enough times
+/// to let deeply-nested async chains complete.
 Future<void> _settle(ProviderContainer c) async {
-  // Pump the microtask queue a few times to let async providers resolve.
-  await Future<void>.delayed(Duration.zero);
-  await Future<void>.delayed(Duration.zero);
-  await Future<void>.delayed(Duration.zero);
+  for (int i = 0; i < 10; i++) {
+    await Future<void>.delayed(Duration.zero);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -49,6 +53,10 @@ Future<void> _settle(ProviderContainer c) async {
 // ---------------------------------------------------------------------------
 
 void main() {
+  // Ensure Flutter binding exists so providers that call
+  // WidgetsBinding.instance (e.g. UserProfileNotifier) work in plain tests.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   // Fresh SharedPreferences for every test.
   setUp(() {
     SharedPreferences.setMockInitialValues({});
@@ -63,8 +71,12 @@ void main() {
       final container = _makeContainer();
       addTearDown(container.dispose);
 
-      // Seed the user with 100 gems so the purchase can succeed.
+      // Trigger provider instantiation and wait for async _load() to complete
+      // before mutating state. Without this, _load() races with addGems().
+      container.read(gemsProvider.notifier);
       await _settle(container);
+
+      // Seed the user with 100 gems so the purchase can succeed.
       await container.read(gemsProvider.notifier).addGems(
         amount: 100,
         reason: GemEarnReason.lessonComplete,
@@ -88,11 +100,14 @@ void main() {
         orderIndex: 0,
       );
 
-      // Wait for inventory to load (autoDispose provider — read to instantiate).
-      final inventoryNotifier = container.read(inventoryProvider.notifier);
+      // Keep the autoDispose inventory provider alive for the duration of
+      // the async purchaseItem call by listening to it.
+      final sub = container.listen(inventoryProvider, (_, __) {});
+      addTearDown(sub.close);
       await _settle(container);
 
       // Perform the purchase.
+      final inventoryNotifier = container.read(inventoryProvider.notifier);
       final success = await inventoryNotifier.purchaseItem(testItem);
       await _settle(container);
 
@@ -123,19 +138,27 @@ void main() {
       final container = _makeContainer();
       addTearDown(container.dispose);
 
-      // Wait for UserProfileNotifier to load from SharedPreferences.
+      // Trigger the notifier so _load() starts, then settle so the async
+      // chain (SharedPreferences.future → _load → setState) completes.
+      final profileNotifier = container.read(userProfileProvider.notifier);
       await _settle(container);
-      // Trigger a read so the provider initialises.
-      container.read(userProfileProvider);
+
+      // Create a profile (empty SharedPreferences has no profile, so
+      // completeLesson would be a no-op without this).
+      await profileNotifier.createProfile(
+        experienceLevel: ExperienceLevel.beginner,
+        goals: [UserGoal.keepFishAlive],
+      );
       await _settle(container);
 
       const lessonId = 'nitrogen_cycle_1';
       const xpReward = 20;
 
       final profileBefore = container.read(userProfileProvider).valueOrNull;
-      final xpBefore = profileBefore?.totalXp ?? 0;
+      expect(profileBefore, isNotNull, reason: 'Profile should be loaded');
+      final xpBefore = profileBefore!.totalXp;
       expect(
-        profileBefore?.completedLessons.contains(lessonId),
+        profileBefore.completedLessons.contains(lessonId),
         isFalse,
         reason: 'Lesson should not be complete yet',
       );
