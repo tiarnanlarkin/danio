@@ -137,7 +137,8 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                     ),
                   ),
 
-                  // Sheet content
+                  // Sheet content — entire surface is scrollable so dragging
+                  // the handle, tabs, or content all expand/collapse the sheet.
                   Column(
                     children: [
                       // First-use hint: bouncing chevron above the drag handle
@@ -148,58 +149,45 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                           child: _BouncingChevronHint(),
                         ),
 
-                      // Drag handle + tabs header
-                      _SheetHeader(
-                        tabController: _tabController,
-                        scrollController: scrollController,
-                        reducedMotion: reducedMotion,
-                        onSnapPeek: () => _snapTo(_snapPeek),
-                        onSnapHalf: () => _snapTo(_snapHalf),
-                        onSnapFull: () => _snapTo(_snapFull),
-                      ),
-
-                      // Tab content with fade-slide transition
                       Expanded(
-                        child: reducedMotion
-                            ? TabBarView(
-                                controller: _tabController,
-                                children: [
-                                  _TabContent(
-                                    scrollController: scrollController,
-                                    child: widget.progressContent,
-                                  ),
-                                  _TabContent(
-                                    scrollController: scrollController,
-                                    child: widget.tanksContent,
-                                  ),
-                                  _TabContent(
-                                    scrollController: scrollController,
-                                    child: widget.todayContent,
-                                  ),
-                                  _TabContent(
-                                    scrollController: scrollController,
-                                    child: const _WorkshopToolsContent(),
-                                  ),
-                                ],
-                              )
-                            : _AnimatedTabContent(
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          physics: const ClampingScrollPhysics(),
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).padding.bottom,
+                          ),
+                          child: Column(
+                            children: [
+                              // Drag handle + tabs header
+                              _SheetHeader(
                                 tabController: _tabController,
-                                scrollController: scrollController,
-                                currentTab: _currentTab,
-                                contents: [
+                                onSnapPeek: () => _snapTo(_snapPeek),
+                                onSnapHalf: () => _snapTo(_snapHalf),
+                                onSnapFull: () => _snapTo(_snapFull),
+                              ),
+
+                              // Tab content
+                              () {
+                                final contents = [
                                   widget.progressContent,
                                   widget.tanksContent,
                                   widget.todayContent,
                                   const _WorkshopToolsContent(),
-                                ],
-                              ),
+                                ];
+                                return reducedMotion
+                                    ? KeyedSubtree(
+                                        key: ValueKey(_currentTab),
+                                        child: contents[_currentTab],
+                                      )
+                                    : _AnimatedTabContent(
+                                        currentTab: _currentTab,
+                                        contents: contents,
+                                      );
+                              }(),
+                            ],
+                          ),
+                        ),
                       ),
-                      // NOTE: Bottom safe area SizedBox was here but caused a
-                      // Column overflow when padding.bottom (e.g. nav bar 67dp)
-                      // was added AFTER the Expanded child — Expanded absorbs all
-                      // remaining space first, leaving no room for the SizedBox.
-                      // Removed: content is inside a scrollable so the bottom
-                      // inset does not clip visible content.
                     ],
                   ),
                 ],
@@ -215,16 +203,12 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
 /// The drag handle pill + TabBar header area.
 class _SheetHeader extends StatelessWidget {
   final TabController tabController;
-  final ScrollController scrollController;
-  final bool reducedMotion;
   final VoidCallback onSnapPeek;
   final VoidCallback onSnapHalf;
   final VoidCallback onSnapFull;
 
   const _SheetHeader({
     required this.tabController,
-    required this.scrollController,
-    required this.reducedMotion,
     required this.onSnapPeek,
     required this.onSnapHalf,
     required this.onSnapFull,
@@ -260,31 +244,6 @@ class _SheetHeader extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-/// Wraps tab content in a scroll view that plays nicely with the sheet.
-class _TabContent extends StatelessWidget {
-  final ScrollController scrollController;
-  final Widget child;
-
-  const _TabContent({
-    required this.scrollController,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Add bottom padding equal to the system/nav bar inset so the last items
-    // in the scrollable are not clipped behind the NavigationBar when
-    // extendBody: true is used in TabNavigator.
-    final bottomInset = MediaQuery.of(context).padding.bottom;
-    return SingleChildScrollView(
-      controller: scrollController,
-      physics: const ClampingScrollPhysics(),
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: child,
     );
   }
 }
@@ -329,14 +288,10 @@ class _PillPainter extends BoxPainter {
 ///
 /// The slide direction matches the tab direction (left = slide left, etc.).
 class _AnimatedTabContent extends StatefulWidget {
-  final TabController tabController;
-  final ScrollController scrollController;
   final int currentTab;
   final List<Widget> contents;
 
   const _AnimatedTabContent({
-    required this.tabController,
-    required this.scrollController,
     required this.currentTab,
     required this.contents,
   });
@@ -381,10 +336,7 @@ class _AnimatedTabContentState extends State<_AnimatedTabContent> {
       },
       child: KeyedSubtree(
         key: ValueKey(widget.currentTab),
-        child: _TabContent(
-          scrollController: widget.scrollController,
-          child: widget.contents[widget.currentTab],
-        ),
+        child: widget.contents[widget.currentTab],
       ),
     );
   }
