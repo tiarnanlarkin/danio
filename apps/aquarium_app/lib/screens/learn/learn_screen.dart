@@ -15,6 +15,7 @@ import '../onboarding_screen.dart';
 import '../../utils/app_constants.dart';
 import '../../widgets/learning_streak_badge.dart';
 import '../../widgets/placement_challenge_card.dart';
+import '../../navigation/app_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../widgets/first_visit_tooltip.dart';
 import '../../widgets/danio_snack_bar.dart';
@@ -22,7 +23,6 @@ import 'learn_review_banner.dart';
 import 'learn_practice_card.dart';
 import 'learn_streak_card.dart';
 import 'lazy_learning_path_card.dart';
-import '../story/story_browser_screen.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -665,11 +665,7 @@ class _StoriesSection extends StatelessWidget {
       ),
       child: GlassCard(
         semanticLabel: 'Interactive Stories',
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const StoryBrowserScreen(),
-          ),
-        ),
+        onTap: () => AppRoutes.toStoryBrowser(context),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(

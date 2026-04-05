@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/stories.dart';
 import '../../models/story.dart';
+import '../../navigation/app_routes.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/glass_card.dart';
-import 'story_play_screen.dart';
 
 /// Browsable list of all available interactive stories.
 /// Accessible from the Learn tab — lets users pick a story to play.
@@ -93,12 +93,7 @@ class StoryBrowserScreen extends ConsumerWidget {
                       isCompleted: isCompleted,
                       isUnlocked: isUnlocked,
                       onTap: isUnlocked
-                          ? () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      StoryPlayScreen(story: story),
-                                ),
-                              )
+                          ? () => AppRoutes.toStoryPlay(context, story)
                           : null,
                     ),
                   );

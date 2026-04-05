@@ -13,6 +13,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/haptic_feedback.dart';
+import '../../navigation/app_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../utils/skeleton_placeholders.dart';
 import '../../widgets/core/app_button.dart';
@@ -22,10 +23,8 @@ import '../../widgets/core/app_states.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/cycling_status_card.dart';
 import '../../widgets/danio_daily_card.dart';
-import '../add_log_screen.dart';
 import '../charts_screen.dart';
 import '../cost_tracker_screen.dart';
-import '../create_tank_screen.dart';
 import '../cycling_assistant_screen.dart';
 import '../equipment_screen.dart';
 import '../journal_screen.dart';
@@ -564,10 +563,7 @@ class TankDetailScreen extends ConsumerWidget {
                       label: 'Demo tank banner. Tap to create your own tank',
                       button: true,
                       child: GestureDetector(
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const CreateTankScreen(),
-                      ),
+                      onTap: () => AppRoutes.toCreateTank(context),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
@@ -1165,9 +1161,6 @@ class TankDetailScreen extends ConsumerWidget {
   }
 
   void _navigateToAddLog(BuildContext context, LogType type) {
-    NavigationThrottle.push(
-      context,
-      AddLogScreen(tankId: tankId, initialType: type),
-    );
+    AppRoutes.toAddLog(context, tankId, initialType: type);
   }
 }

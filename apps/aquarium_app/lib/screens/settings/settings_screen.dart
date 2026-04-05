@@ -11,7 +11,7 @@ import '../difficulty_settings_screen.dart';
 import '../learn_screen.dart';
 import '../onboarding/consent_screen.dart';
 import '../shop_street_screen.dart';
-import '../tank_detail/tank_detail_screen.dart';
+import '../../navigation/app_routes.dart';
 import '../../models/adaptive_difficulty.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/reduced_motion_provider.dart';
@@ -164,10 +164,7 @@ class SettingsScreen extends ConsumerWidget {
             final demoTank = await actions.addDemoTank();
             if (context.mounted) {
               AppFeedback.showSuccess(context, 'Sample tank added!');
-              NavigationThrottle.push(
-                context,
-                TankDetailScreen(tankId: demoTank.id),
-              );
+              AppRoutes.toTankDetail(context, demoTank.id);
             }
           } catch (e, st) {
             logError('SettingsScreen: add sample tank failed: $e', stackTrace: st, tag: 'SettingsScreen');

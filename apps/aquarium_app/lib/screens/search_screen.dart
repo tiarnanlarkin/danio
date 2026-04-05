@@ -8,8 +8,8 @@ import '../data/species_database.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../navigation/app_routes.dart';
 import 'livestock_detail_screen.dart';
-import 'tank_detail/tank_detail_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/app_bottom_sheet.dart';
 
@@ -134,10 +134,7 @@ class _SearchResults extends StatelessWidget {
             subtitle:
                 '${tank.volumeLitres.toStringAsFixed(0)}L ${tank.type.name}',
             icon: Icons.water,
-            onTap: () => NavigationThrottle.push(
-              context,
-              TankDetailScreen(tankId: tank.id),
-            ),
+            onTap: () => AppRoutes.toTankDetail(context, tank.id),
           ),
         );
       }
@@ -179,10 +176,7 @@ class _SearchResults extends StatelessWidget {
                 title: e.name,
                 subtitle: '${e.typeName} in ${tank.name}',
                 icon: Icons.build,
-                onTap: () => NavigationThrottle.push(
-                  context,
-                  TankDetailScreen(tankId: tank.id),
-                ),
+                onTap: () => AppRoutes.toTankDetail(context, tank.id),
               ),
             );
           }

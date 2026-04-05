@@ -13,7 +13,7 @@ import '../utils/skeleton_placeholders.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
-import 'add_log_screen.dart';
+import '../navigation/app_routes.dart';
 import 'log_detail_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/app_bottom_sheet.dart';
@@ -70,10 +70,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                       'Start logging water tests, maintenance, and events to track your tank\'s history',
                   mascotContext: MascotContext.noLogs,
                   actionLabel: 'Add Log Entry',
-                  onAction: () => NavigationThrottle.push(
-                    context,
-                    AddLogScreen(tankId: widget.tankId),
-                  ),
+                  onAction: () => AppRoutes.toAddLog(context, widget.tankId),
                 );
               } else {
                 // Has logs but filtered out
@@ -411,10 +408,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
   }
 
   void _openAdd(BuildContext context, LogType type) {
-    NavigationThrottle.push(
-      context,
-      AddLogScreen(tankId: widget.tankId, initialType: type),
-    );
+    AppRoutes.toAddLog(context, widget.tankId, initialType: type);
   }
 
   static String _typeName(LogType type) {

@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../features/smart/fish_id/fish_id_screen.dart';
 import '../features/smart/models/smart_models.dart';
 import '../features/smart/smart_providers.dart';
-import '../features/smart/symptom_triage/symptom_triage_screen.dart';
-import '../features/smart/weekly_plan/weekly_plan_screen.dart';
+import '../navigation/app_routes.dart';
 import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
@@ -173,9 +171,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         _showOfflineSnackBar(context);
                         return;
                       }
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const FishIdScreen()),
-                      );
+                      AppRoutes.toFishId(context);
                     }
                   : null,
             ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
@@ -193,11 +189,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         _showOfflineSnackBar(context);
                         return;
                       }
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const SymptomTriageScreen(),
-                        ),
-                      );
+                      AppRoutes.toSymptomTriage(context);
                     }
                   : null,
             ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
@@ -216,11 +208,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         _showOfflineSnackBar(context);
                         return;
                       }
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const WeeklyPlanScreen(),
-                        ),
-                      );
+                      AppRoutes.toWeeklyPlan(context);
                     }
                   : null,
             ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
@@ -427,11 +415,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                       label: 'Run Symptom Triage',
                       onPressed: () {
                         Navigator.maybePop(ctx);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const SymptomTriageScreen(),
-                          ),
-                        );
+                        AppRoutes.toSymptomTriage(context);
                       },
                       leadingIcon: Icons.medical_services_outlined,
                       variant: AppButtonVariant.primary,

@@ -17,6 +17,7 @@ import '../../widgets/stage/temp_panel_content.dart';
 import '../../widgets/stage/water_panel_content.dart';
 import '../../widgets/stage/ambient_tip_overlay.dart';
 import '../../widgets/stage/lighting_pulse.dart';
+import '../../navigation/app_routes.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../widgets/room_scene.dart';
@@ -27,7 +28,6 @@ import '../add_log_screen.dart';
 import '../journal_screen.dart';
 import '../tank_settings_screen.dart';
 import '../backup_restore_screen.dart';
-import '../tank_detail/tank_detail_screen.dart';
 import 'home_sheets.dart';
 import 'widgets/tank_switcher.dart';
 import 'widgets/selection_mode_panel.dart';
@@ -269,7 +269,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
-    Navigator.of(context).push(TankDetailRoute(page: TankDetailScreen(tankId: tank.id)));
+    AppRoutes.toTankDetail(context, tank.id);
   }
 
   void _navigateToWaterChange(BuildContext context, Tank tank) {

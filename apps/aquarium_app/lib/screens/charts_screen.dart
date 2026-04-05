@@ -14,8 +14,8 @@ import '../theme/app_theme.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/core/app_states.dart';
+import '../navigation/app_routes.dart';
 import '../utils/app_feedback.dart';
-import 'add_log_screen.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
@@ -88,13 +88,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               message: 'Log a water test and watch your trends come alive',
               mascotContext: MascotContext.encouragement,
               actionLabel: 'Log Your First Water Test',
-              onAction: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AddLogScreen(
-                    tankId: widget.tankId,
-                    initialType: LogType.waterTest,
-                  ),
-                ),
+              onAction: () => AppRoutes.toAddLog(
+                context,
+                widget.tankId,
+                initialType: LogType.waterTest,
               ),
             );
           }

@@ -9,7 +9,7 @@ import '../../widgets/core/app_button.dart';
 import '../../widgets/level_up_dialog.dart';
 import '../../widgets/xp_award_animation.dart';
 
-import 'lesson_screen.dart';
+import '../../navigation/app_routes.dart';
 import '../../widgets/app_bottom_sheet.dart';
 
 /// Renders the quiz results screen (score, XP earned, pass/fail state) and the
@@ -395,12 +395,7 @@ void showNextLessonOrPop(
     if (!context.mounted) return;
     if (startNext == true) {
       // Replace current lesson screen with next lesson
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) =>
-              LessonScreen(lesson: nextLesson, pathTitle: pathTitle),
-        ),
-      );
+      AppRoutes.toLessonReplacement(context, nextLesson, pathTitle);
     } else {
       // Go back to path
       if (Navigator.of(context).canPop()) {

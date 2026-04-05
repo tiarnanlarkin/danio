@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/log_entry.dart';
 import '../../providers/tank_provider.dart';
-import '../../screens/add_log_screen.dart';
+import '../../navigation/app_routes.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import 'stage_provider.dart';
@@ -321,14 +321,7 @@ class _WqLogButton extends ConsumerWidget {
       child: ElevatedButton.icon(
         onPressed: () {
           ref.read(stageProvider.notifier).close(StagePanel.waterQuality);
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => AddLogScreen(
-                tankId: tankId,
-                initialType: LogType.waterTest,
-              ),
-            ),
-          );
+          AppRoutes.toAddLog(context, tankId, initialType: LogType.waterTest);
         },
         icon: const Icon(Icons.science_rounded, size: 20),
         label: Text('Log Water Test', style: AppTypography.labelLarge),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../screens/add_log_screen.dart';
+import '../../../navigation/app_routes.dart';
 import '../../../models/log_entry.dart';
 import '../../../theme/app_theme.dart';
 import 'temperature_gauge.dart';
@@ -96,14 +96,7 @@ class TempLogButton extends ConsumerWidget {
       height: 48,
       child: ElevatedButton.icon(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => AddLogScreen(
-                tankId: tankId,
-                initialType: LogType.waterTest,
-              ),
-            ),
-          );
+          AppRoutes.toAddLog(context, tankId, initialType: LogType.waterTest);
         },
         icon: const Icon(Icons.add_rounded, size: 20),
         label: const Text(
