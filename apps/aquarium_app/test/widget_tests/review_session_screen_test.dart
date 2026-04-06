@@ -10,10 +10,36 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/spaced_repetition_practice/review_session_screen.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/providers/user_profile_provider.dart';
+import 'package:danio/providers/spaced_repetition_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+/// Fake SpacedRepetitionNotifier that does NOT call _scheduleNotifications.
+/// Mirrors the _FakeSrNotifier pattern from
+/// spaced_repetition_practice_screen_test.dart to avoid
+/// LateInitializationError from NotificationService in tests.
+class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
+    implements SpacedRepetitionNotifier {
+  _FakeSrNotifier()
+      : super(SpacedRepetitionState(
+          cards: const [],
+          stats: ReviewStats(
+            totalCards: 0,
+            dueCards: 0,
+            weakCards: 0,
+            masteredCards: 0,
+            averageStrength: 0.0,
+            cardsByMastery: const {},
+            reviewsToday: 0,
+            currentStreak: 0,
+          ),
+        ));
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 final _now = DateTime.now();
 
@@ -49,7 +75,12 @@ final _prefsOverride = sharedPreferencesProvider.overrideWith((ref) async {
 
 Widget _wrap(ReviewSession session) {
   return ProviderScope(
-    overrides: [_prefsOverride],
+    overrides: [
+      _prefsOverride,
+      spacedRepetitionProvider.overrideWith(
+        (ref) => _FakeSrNotifier(),
+      ),
+    ],
     child: MaterialApp(
       home: ReviewSessionScreen(session: session),
     ),
