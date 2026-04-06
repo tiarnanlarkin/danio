@@ -6,6 +6,12 @@ Before making ANY code changes, you MUST understand the area you're modifying. R
 
 If the user asks to modify a feature, explore the relevant files BEFORE proposing changes. Use the Explore agent or read files directly.
 
+## IMPORTANT: Update This File After Feature Work
+
+After completing any feature that adds new screens, providers, models, or services, UPDATE this CLAUDE.md file before the final commit. Add new entries to the relevant maps (Screen Map, Provider Map, Model Map) and update counts. This ensures the next session starts with accurate context.
+
+A Stop hook will remind you if new .dart files were added to key directories.
+
 ## Build & Test
 
 ```bash

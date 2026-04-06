@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$PWD\" && NEW_FILES=$(git log --diff-filter=A --name-only --since='12 hours ago' -- 'apps/aquarium_app/lib/screens/' 'apps/aquarium_app/lib/providers/' 'apps/aquarium_app/lib/models/' 'apps/aquarium_app/lib/services/' 2>/dev/null | grep -E '\\.dart$' | sort -u | head -10); if [ -n \"$NEW_FILES\" ]; then printf '{\"systemMessage\":\"New files added this session in key directories. Consider updating CLAUDE.md:\\n%s\"}' \"$NEW_FILES\"; fi",
+            "timeout": 5,
+            "statusMessage": "Checking for CLAUDE.md updates..."
+          }
+        ]
+      }
+    ]
+  }
+}
