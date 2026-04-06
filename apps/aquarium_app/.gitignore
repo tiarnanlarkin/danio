@@ -66,3 +66,8 @@ BundleConfig.pb
 META-INF/
 *.aab
 *.apk
+
+# Golden test reference images — platform-dependent (font rendering differs
+# across Windows, macOS, Linux, and CI). Each developer regenerates locally:
+#   flutter test --update-goldens test/golden_tests/
+test/golden_tests/goldens/
