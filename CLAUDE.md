@@ -12,6 +12,18 @@ After completing any feature that adds new screens, providers, models, or servic
 
 A Stop hook will remind you if new .dart files were added to key directories.
 
+## IMPORTANT: Workflow Guardrails
+
+**Feature branches:** Before starting any new feature, create a branch: `git checkout -b feature/description`. Do NOT commit directly to `main` or `openclaw/stage-system` for new feature work. Only merge back via PR or explicit user request.
+
+**One feature per session:** If the user asks about a completely different feature than what you've been working on, suggest starting a new session or using `/clear` first. Mixing unrelated features in one session leads to context pollution and mistakes.
+
+**Session scope check:** If the session has been going for a long time with many changes, proactively suggest committing current work before starting new tasks. Say: "We've built a lot — want me to commit and push what we have before we continue?"
+
+**Test before final commit:** Always run `flutter test` before the final commit of a feature. The git pre-commit hook runs `flutter analyze` automatically, but tests must be run explicitly.
+
+**No broken windows:** If you encounter failing tests that are pre-existing, note them but do not ignore them. Flag them to the user and offer to fix.
+
 ## Build & Test
 
 ```bash

@@ -1,13 +1,25 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$PWD\" && BRANCH=$(git branch --show-current 2>/dev/null) && RECENT=$(git log --oneline -3 2>/dev/null | head -3) && UNCOMMITTED=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ') && printf '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"SESSION CONTEXT:\\nBranch: %s\\nUncommitted files: %s\\nRecent commits:\\n%s\\n\\nREMINDERS:\\n- If starting a new feature, create a feature branch first (git checkout -b feature/name)\\n- If continuing previous work, check git status for uncommitted changes\\n- Read CLAUDE.md for full app architecture before making changes\"}}' \"$BRANCH\" \"$UNCOMMITTED\" \"$RECENT\"",
+            "timeout": 5,
+            "statusMessage": "Loading project context..."
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$PWD\" && NEW_FILES=$(git log --diff-filter=A --name-only --since='12 hours ago' -- 'apps/aquarium_app/lib/screens/' 'apps/aquarium_app/lib/providers/' 'apps/aquarium_app/lib/models/' 'apps/aquarium_app/lib/services/' 2>/dev/null | grep -E '\\.dart$' | sort -u | head -10); if [ -n \"$NEW_FILES\" ]; then printf '{\"systemMessage\":\"New files added this session in key directories. Consider updating CLAUDE.md:\\n%s\"}' \"$NEW_FILES\"; fi",
+            "command": "cd \"$PWD\" && NEW_FILES=$(git log --diff-filter=A --name-only --since='12 hours ago' -- 'apps/aquarium_app/lib/screens/' 'apps/aquarium_app/lib/providers/' 'apps/aquarium_app/lib/models/' 'apps/aquarium_app/lib/services/' 2>/dev/null | grep -E '\\.dart$' | sort -u | head -10) && UNCOMMITTED=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ') && MSG=\"\" && if [ \"$UNCOMMITTED\" -gt 0 ]; then MSG=\"WARNING: $UNCOMMITTED uncommitted files. Commit and push before ending.\\n\"; fi && if [ -n \"$NEW_FILES\" ]; then MSG=\"${MSG}New files added in key directories — update CLAUDE.md:\\n$NEW_FILES\\n\"; fi && if [ -n \"$MSG\" ]; then printf '{\"systemMessage\":\"%s\"}' \"$MSG\"; fi",
             "timeout": 5,
-            "statusMessage": "Checking for CLAUDE.md updates..."
+            "statusMessage": "Session wrap-up check..."
           }
         ]
       }
