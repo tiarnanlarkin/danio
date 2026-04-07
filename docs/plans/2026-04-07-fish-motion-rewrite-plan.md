@@ -620,24 +620,35 @@ git commit -m "feat(fish-motion): Task 5 — move toward target at constant spee
 
 ```dart
 test('isHovering becomes true after fish reaches a target', () {
-  bool everHovered = false;
-  for (int i = 0; i < 600; i++) {  // 10 seconds
+  // First, tick past the initial seeded pause (0.25s) AND let the fish
+  // pick + start moving toward a real target.
+  for (int i = 0; i < 30; i++) {
+    motion.tick(0.016);
+  }
+  // At this point fish should be moving toward target (not hovering from seed).
+  // Now watch for hover triggered by ARRIVAL at the target.
+  bool arrivedAtTarget = false;
+  for (int i = 0; i < 600; i++) {
     motion.tick(0.016);
     if (motion.isHovering) {
-      everHovered = true;
+      arrivedAtTarget = true;
       break;
     }
   }
-  expect(everHovered, isTrue);
+  expect(arrivedAtTarget, isTrue);
 });
 
 test('after hover, a new target is picked', () {
-  // Run until first hover
+  // Tick past initial pause so the fish is moving
+  for (int i = 0; i < 30; i++) {
+    motion.tick(0.016);
+  }
+  // Run until first arrival-triggered hover
   for (int i = 0; i < 600; i++) {
     motion.tick(0.016);
     if (motion.isHovering) break;
   }
-  expect(motion.isHovering, isTrue);
+  expect(motion.isHovering, isTrue, reason: 'fish should hover after arrival');
   final firstHoverTarget = motion.debugTarget;
 
   // Run until hover ends + new target picked
