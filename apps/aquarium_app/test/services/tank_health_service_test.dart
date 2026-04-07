@@ -196,7 +196,11 @@ void main() {
     });
 
     test('water change this week → streak is at least 1', () {
-      final logs = [_waterChange(daysAgo: 2)];
+      // Use daysAgo: 0 (today) so the log always lands in the current calendar
+      // week. Previously used daysAgo: 2 which fails on Mon/Tue because 2 days
+      // ago lands in the previous week (the implementation defines weeks as
+      // Monday→Sunday).
+      final logs = [_waterChange(daysAgo: 0)];
       expect(
         TankHealthService.calculateWaterChangeStreak(logs),
         greaterThanOrEqualTo(1),
