@@ -10,8 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('TempHeroSection (concept lock 2026-04-07)', () {
-    testWidgets('renders a BrassGauge, not a ThermometerPainter',
-        (tester) async {
+    testWidgets('renders a BrassGauge', (tester) async {
       final anim = AnimationController(
         vsync: const TestVSync(),
         duration: Duration.zero,
@@ -43,13 +42,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(BrassGauge), findsOneWidget);
-      // Old thermometer painter should no longer be in the tree
-      final thermometers = tester
-          .widgetList<CustomPaint>(find.byType(CustomPaint))
-          .where((cp) => cp.painter is ThermometerPainter)
-          .toList();
-      expect(thermometers, isEmpty,
-          reason: 'ThermometerPainter replaced by BrassGaugePainter');
+      // Legacy ThermometerPainter was removed in Task 14.
 
       anim.dispose();
     });

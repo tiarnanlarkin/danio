@@ -164,9 +164,7 @@ void main() {
       expect(find.text('NO₃'), findsOneWidget);
       expect(find.text('GH'), findsOneWidget);
       expect(find.text('KH'), findsOneWidget);
-
-      // No legacy WqParamCard remaining
-      expect(find.byType(WqParamCard), findsNothing);
+      // Legacy WqParamCard was removed in Task 14.
     });
 
     testWidgets('WqSparklineSection has no card wrapper', (tester) async {

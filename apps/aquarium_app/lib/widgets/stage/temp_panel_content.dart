@@ -150,16 +150,22 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
             lastEntry: lastEntry,
             formatTimestamp: _formatTimestamp,
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Center(
-            child: HeaterStatusPill(
-              heaterOn: (heater?.settings?['on'] as bool?) ?? false,
-              lastTestLabel: lastEntry != null
-                  ? _formatTimestamp(lastEntry.timestamp)
-                  : null,
+          // Only show the heater status pill when we actually have heater
+          // data or a recent test reading — otherwise a permanent "OFF"
+          // would mislead.
+          if ((heater?.settings?['on'] as bool?) != null ||
+              lastEntry != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Center(
+              child: HeaterStatusPill(
+                heaterOn: (heater?.settings?['on'] as bool?) ?? false,
+                lastTestLabel: lastEntry != null
+                    ? _formatTimestamp(lastEntry.timestamp)
+                    : null,
+              ),
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
+          ],
 
           TempTrendSection(
             sparkData: sparkData,
