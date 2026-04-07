@@ -104,4 +104,36 @@ void main() {
       expect(motion.position.dx, equals(before.dx));
     });
   });
+
+  group('FishMotion target selection', () {
+    late FishMotion motion;
+
+    setUp(() {
+      motion = FishMotion(
+        tankWidth: 300,
+        tankHeight: 200,
+        fishSize: 20,
+        baseTopFraction: 0.4,
+        layerHalfHeightFraction: 0.15,
+        rng: Random(42),
+      );
+      motion.seedInitialPosition(phaseOffset: 0.5);
+    });
+
+    test('first target is picked after initial pause expires', () {
+      // Tick past the initial 0.25s pause so _pickNewTarget runs
+      for (int i = 0; i < 30; i++) {
+        motion.tick(0.016);
+      }
+      // After picking, target should differ from initial position
+      // (the initial position was the seed at center of tank: x=150, y=80)
+      expect(motion.debugTarget, isNot(equals(const Offset(150, 80))));
+      // And target must be within layer band
+      final layerCenter = 0.4 * 200;  // 80
+      final layerHalf = 0.15 * 200;   // 30
+      expect(motion.debugTarget.dy, inInclusiveRange(layerCenter - layerHalf, layerCenter + layerHalf));
+      // And within glass bounds
+      expect(motion.debugTarget.dx, inInclusiveRange(motion.glassMargin + motion.fishSize, 300 - motion.glassMargin - motion.fishSize));
+    });
+  });
 }

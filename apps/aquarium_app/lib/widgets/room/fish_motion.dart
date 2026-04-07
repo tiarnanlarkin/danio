@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
+
 /// Pure-Dart goal-seeking motion engine for fish widgets.
 ///
 /// See `docs/plans/2026-04-07-fish-motion-rewrite-design.md` for the full
@@ -47,6 +49,9 @@ class FishMotion {
   bool get facingRight => _lastFacingRight;
   bool get isHovering => _pauseRemaining > 0;
 
+  @visibleForTesting
+  Offset get debugTarget => _target;
+
   void seedInitialPosition({double phaseOffset = 0}) {
     final clampedPhase = phaseOffset.clamp(0.0, 1.0);
     final minX = glassMargin + fishSize / 2;
@@ -63,6 +68,30 @@ class FishMotion {
     if (dt <= 0) return;
     final clampedDt = dt > 0.1 ? 0.1 : dt;
     _bobPhase += clampedDt * 2 * pi / bobPeriodSeconds;
-    // Movement logic comes in later tasks.
+
+    if (_pauseRemaining > 0) {
+      _pauseRemaining -= clampedDt;
+      if (_pauseRemaining <= 0) {
+        _pickNewTarget();
+      }
+      return;
+    }
+  }
+
+  void _pickNewTarget() {
+    final minX = glassMargin + fishSize;
+    final maxX = tankWidth - glassMargin - fishSize;
+
+    final layerCenter = baseTopFraction * tankHeight;
+    final layerHalf = layerHalfHeightFraction * tankHeight;
+    final minY = (glassMargin + fishSize).clamp(0.0, double.infinity).toDouble();
+    final maxY = (tankHeight * sandFraction - fishSize).clamp(0.0, tankHeight);
+    final boundedMinY = (layerCenter - layerHalf < minY) ? minY : layerCenter - layerHalf;
+    final boundedMaxY = (layerCenter + layerHalf > maxY) ? maxY : layerCenter + layerHalf;
+
+    // Uniform random within bounds (edge bias added in Task 8)
+    final tx = minX + (maxX - minX) * _rng.nextDouble();
+    final ty = boundedMinY + (boundedMaxY - boundedMinY) * _rng.nextDouble();
+    _target = Offset(tx, ty);
   }
 }
