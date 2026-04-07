@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
 import '../../../models/log_entry.dart';
+import 'brass_gauge.dart';
 
 // ── Colour constants (shared within temperature package) ─────────────────────
 const kTempTeal = Color(0xFF3BBFB0);
@@ -49,110 +50,57 @@ class TempHeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Fixed thermometer dimensions — nice and large
-    const thermW = 56.0;
-    const thermH = 300.0;
+    // Enforce gauge precondition: optimal range must be inside gauge range
+    // and min <= max. This prevents negative-sweep in BrassGaugePainter.
+    assert(
+      optimalMin <= optimalMax,
+      'optimalMin ($optimalMin) must be <= optimalMax ($optimalMax)',
+    );
+    assert(
+      gaugeMin < gaugeMax,
+      'gaugeMin ($gaugeMin) must be < gaugeMax ($gaugeMax)',
+    );
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
       children: [
-        // ── Large thermometer ────────────────────────────────────────────
-        SizedBox(
-          width: thermW,
-          height: thermH,
-          child: AnimatedBuilder(
-            animation: fillAnim,
-            builder: (context, _) {
-              final fillFraction = temp != null
-                  ? ((temp! - gaugeMin) / (gaugeMax - gaugeMin)).clamp(0.0, 1.0)
-                  : 0.0;
-              final animatedFill =
-                  Curves.easeOutCubic.transform(fillAnim.value) * fillFraction;
-              return CustomPaint(
-                painter: ThermometerPainter(
-                  fillFraction: animatedFill,
-                  optimalMin: optimalMin,
-                  optimalMax: optimalMax,
-                  gaugeMin: gaugeMin,
-                  gaugeMax: gaugeMax,
-                ),
-              );
-            },
+        AspectRatio(
+          aspectRatio: 1,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: BrassGauge(
+              temp: temp,
+              gaugeMin: gaugeMin,
+              gaugeMax: gaugeMax,
+              optimalMin: optimalMin,
+              optimalMax: optimalMax,
+            ),
           ),
         ),
-
-        const SizedBox(width: 8),
-
-        // ── Scale labels on the LEFT of gauge ───────────────────────────
-        SizedBox(
-          width: 28,
-          height: thermH,
-          child: TempScaleLabels(gaugeMin: gaugeMin, gaugeMax: gaugeMax),
-        ),
-
-        const SizedBox(width: 12),
-
-        // ── Right column: big temp + badge + info ────────────────────────
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        const SizedBox(height: AppSpacing.sm),
+        if (status != null) TempStatusBadge(status: status!),
+        const SizedBox(height: AppSpacing.xs),
+        TempOptimalRangeRow(min: optimalMin, max: optimalMax),
+        if (lastEntry != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Big temp display with fish emoji
-              Text(
-                temp != null ? '🐟 ${temp!.toStringAsFixed(1)}°C' : '🐟 --°C',
-                style: AppTypography.headlineLarge.copyWith(
-                  color: temp != null ? kTempCharcoal : kTempCharcoal.withAlpha(100),
-                  fontWeight: FontWeight.w800,
-                  fontSize: 42,
-                  letterSpacing: -1.5,
-                  height: 1.0,
-                ),
+              Icon(
+                Icons.access_time_rounded,
+                size: 12,
+                color: kTempCharcoal.withAlpha(100),
               ),
-              const SizedBox(height: AppSpacing.xxs),
+              const SizedBox(width: 4),
               Text(
-                temp != null ? 'current temperature' : 'no data yet',
+                'Last logged: ${formatTimestamp(lastEntry!.timestamp)}',
                 style: AppTypography.labelSmall.copyWith(
-                  color: kTempCharcoal.withAlpha(110),
+                  color: kTempCharcoal.withAlpha(120),
                   fontSize: 11,
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm4),
-
-              // Status badge
-              if (status != null) TempStatusBadge(status: status!),
-
-              const SizedBox(height: AppSpacing.sm4),
-
-              // Optimal range indicator
-              TempOptimalRangeRow(min: optimalMin, max: optimalMax),
-              const SizedBox(height: AppSpacing.sm2),
-
-              // Fish decorations
-              const TempFishDecorations(),
-              const SizedBox(height: AppSpacing.sm2),
-
-              // Last logged timestamp
-              if (lastEntry != null)
-                Row(
-                  children: [
-                    Icon(
-                      Icons.access_time_rounded,
-                      size: 12,
-                      color: kTempCharcoal.withAlpha(100),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Last logged: ${formatTimestamp(lastEntry!.timestamp)}',
-                      style: AppTypography.labelSmall.copyWith(
-                        color: kTempCharcoal.withAlpha(120),
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
             ],
           ),
-        ),
+        ],
       ],
     );
   }
