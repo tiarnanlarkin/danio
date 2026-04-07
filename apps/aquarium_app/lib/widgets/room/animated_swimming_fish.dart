@@ -87,6 +87,14 @@ class _AnimatedSwimmingFishState extends State<AnimatedSwimmingFish>
   }
 
   FishMotion _buildMotion() {
+    // Degenerate-input safety. Asserts catch bad callers in debug builds; the
+    // defensive substitutions below prevent 0/Infinity from reaching the speed
+    // derivation in release, so the R-088 render guard only has to fire on
+    // true NaN propagation (not on caller misuse).
+    assert(widget.tankWidth > 0,
+        'AnimatedSwimmingFish requires tankWidth > 0, got ${widget.tankWidth}');
+    assert(widget.swimSpeed > 0,
+        'AnimatedSwimmingFish requires swimSpeed > 0, got ${widget.swimSpeed}');
     final tw = widget.tankWidth > 0 ? widget.tankWidth : 1;
     final speed = widget.swimSpeed > 0 ? widget.swimSpeed : 8;
     return FishMotion(

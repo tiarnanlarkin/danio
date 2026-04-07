@@ -27,7 +27,7 @@ A scope discovery during exploration: `AnimatedSwimmingFish` is only used in `ta
 ## Component Layout
 
 **New file (1):**
-- `lib/widgets/room/fish_motion.dart` — pure-Dart `FishMotion` class. Imports only `dart:math` and `dart:ui`. No Flutter widget dependencies.
+- `lib/widgets/room/fish_motion.dart` — pure-Dart `FishMotion` class. Imports `dart:math`, `dart:ui`, and `package:flutter/foundation.dart` (for the `@visibleForTesting` annotation only — `foundation.dart` is the widget-free leaf of the Flutter stack and carries no UI dependencies). Zero coupling to rendering.
 
 **Modified files (2):**
 - `lib/widgets/room/animated_swimming_fish.dart` — swaps `AnimationController.repeat()` for `Ticker` + `FishMotion`. Public API unchanged.

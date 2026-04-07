@@ -50,12 +50,10 @@ class FishMotion {
     return Offset(_position.dx, _position.dy + bobOffset);
   }
 
-  bool get facingRight {
-    final dx = _target.dx - _position.dx;
-    if (dx.abs() < 0.01) return _lastFacingRight;
-    _lastFacingRight = dx > 0;
-    return _lastFacingRight;
-  }
+  /// Cached facing direction. Updated inside [tick] from horizontal
+  /// velocity sign with a small hysteresis band — the getter itself is
+  /// pure so multiple reads per frame are safe.
+  bool get facingRight => _lastFacingRight;
 
   bool get isHovering => _pauseRemaining > 0;
 
@@ -110,23 +108,26 @@ class FishMotion {
 
     // Wall proximity factor — 0 at any wall, 1 mid-tank
     final comfortDistance = fishSize * 2;
-    final xMargin = (_position.dx - glassMargin) < (tankWidth - glassMargin - _position.dx)
-        ? (_position.dx - glassMargin)
-        : (tankWidth - glassMargin - _position.dx);
-    final yMargin = (_position.dy - glassMargin) < (tankHeight * sandFraction - _position.dy)
-        ? (_position.dy - glassMargin)
-        : (tankHeight * sandFraction - _position.dy);
+    final xMargin = min(
+      _position.dx - glassMargin,
+      tankWidth - glassMargin - _position.dx,
+    );
+    final yMargin = min(
+      _position.dy - glassMargin,
+      tankHeight * sandFraction - _position.dy,
+    );
     final xFactor = (xMargin / comfortDistance).clamp(0.0, 1.0);
     final yFactor = (yMargin / comfortDistance).clamp(0.0, 1.0);
-    final edgeFactor = xFactor < yFactor ? xFactor : yFactor;
+    final edgeFactor = min(xFactor, yFactor);
 
     // Approach factor — 0 right at target, 1 outside deceleration radius
     final decelDistance = tankWidth * 0.18;
     final approachFactor = (distance / decelDistance).clamp(0.0, 1.0);
 
-    // Target speed and smooth easing
+    // Target speed with exponential ease-in (time constant ≈ 0.25s; clamps
+    // to snap on large dt).
     final targetSpeed = minSpeed + (maxSpeed - minSpeed) * approachFactor * edgeFactor;
-    _speed += (targetSpeed - _speed) * (clampedDt * 4 < 1 ? clampedDt * 4 : 1);
+    _speed += (targetSpeed - _speed) * min(clampedDt * 4, 1.0);
 
     final direction = Offset(toTarget.dx / distance, toTarget.dy / distance);
     _position = Offset(
@@ -159,6 +160,14 @@ class FishMotion {
       minYC < maxYC ? maxYC : minYC,
     );
     _position = Offset(clampedX, clampedY);
+
+    // Update cached facing direction from horizontal velocity sign with
+    // hysteresis. Runs only on movement ticks (pause/arrival branches early
+    // return), so _lastFacingRight stays stable while the fish is hovering.
+    final facingDx = _target.dx - _position.dx;
+    if (facingDx.abs() >= 0.01) {
+      _lastFacingRight = facingDx > 0;
+    }
   }
 
   ({double start, double end}) _biasAwayFromCurrentEdge(
@@ -179,6 +188,10 @@ class FishMotion {
   }
 
   void _pickNewTarget() {
+    // Target bounds use full `fishSize` (not `fishSize / 2`) so picked targets
+    // sit at least one body length inside the glass. The tick() BUG-08 clamp
+    // uses `fishSize / 2` — the extra margin here gives the fish room to
+    // decelerate before the hard clamp kicks in.
     final minX = glassMargin + fishSize;
     final maxX = tankWidth - glassMargin - fishSize;
 

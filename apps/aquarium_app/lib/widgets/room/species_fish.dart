@@ -131,9 +131,11 @@ class _SpeciesFishState extends State<SpeciesFish>
   }
 
   FishMotion _buildMotion() {
-    // Depth scaling: background fish smaller + slower.
-    final depthScale = math.max(0.5, 1.0 - widget.depth * 0.4);
-    final effectiveSize = widget.tankHeight * 0.15 * depthScale;
+    // Depth scaling: background fish smaller + slower. Reuse the `_scale`
+    // and `_spriteSize` getters so the engine and renderer always agree on
+    // size if the depth math is ever tuned.
+    final depthScale = _scale;
+    final effectiveSize = _spriteSize;
     final effectiveMaxSpeed = widget.baseSpeed * depthScale;
     final effectiveMinSpeed = effectiveMaxSpeed * 0.25;
     return FishMotion(
