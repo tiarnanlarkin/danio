@@ -58,4 +58,11 @@ class FishMotion {
     _target = _position;
     _pauseRemaining = clampedPhase * 0.5;  // staggered start so fish don't sync
   }
+
+  void tick(double dt) {
+    if (dt <= 0) return;
+    final clampedDt = dt > 0.1 ? 0.1 : dt;
+    _bobPhase += clampedDt * 2 * pi / bobPeriodSeconds;
+    // Movement logic comes in later tasks.
+  }
 }
