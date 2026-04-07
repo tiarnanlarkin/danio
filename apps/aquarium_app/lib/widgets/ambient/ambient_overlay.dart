@@ -51,10 +51,18 @@ class AmbientLightingOverlay extends ConsumerWidget {
 
     final effectiveOpacity = intensityOverride ?? config.overlayOpacity;
 
+    // StackFit.expand ensures the Stack fills its parent's constraints
+    // rather than shrinking to fit the room background image's intrinsic
+    // size. The room background uses cacheWidth: 1024 which can produce
+    // an image narrower than the screen, and a loose-fit Stack would then
+    // leave the right edge of the screen showing the Scaffold background
+    // through as a vertical strip (QA fix 2026-04).
     return Stack(
+      fit: StackFit.expand,
       children: [
-        // Main content
-        child,
+        // Main content — wrapped in Positioned.fill so it covers the full
+        // expanded Stack rather than relying on its intrinsic size.
+        Positioned.fill(child: child),
 
         // Color overlay with gradient (if configured).
         // AnimatedOpacity handles the smooth visual transition when

@@ -503,65 +503,79 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
           // Bottom sheet panel (single DraggableScrollableSheet with 4 tabs)
+          //
+          // QA fix 2026-04: wrapped in MediaQuery.removePadding(removeBottom)
+          // because DraggableScrollableSheet internally subtracts MediaQuery
+          // .padding.bottom from its child size to leave room for system
+          // insets. The TabNavigator parent already shrinks this region to
+          // exclude the nav bar via Padding(bottom: padding.bottom), but
+          // MediaQuery.padding.bottom still reports the nav-bar height
+          // (because TabNavigator's Scaffold uses extendBody:true). Without
+          // removePadding, the sheet's bottom edge sat ~80dp above the nav
+          // bar top, leaving a visible cream gap.
           Positioned.fill(
-            child: Semantics(
-              label: 'Activity panel — Progress, Tanks, Today',
-              child: BottomSheetPanel(
-                progressContent: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
-                ),
-                tanksContent: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: AppSpacing.sm),
-                    if (!_isSelectMode)
-                      TankSwitcher(
-                        tanks: tanks, currentIndex: _currentTankIndex,
-                        onChanged: (index) => setState(() => _currentTankIndex = index),
-                        onAddTank: () => _navigateToCreateTank(context),
-                        onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
-                      )
-                    else
-                      SelectionModePanel(
-                        tanks: tanks, selectedIds: _selectedTankIds,
-                        onToggleSelection: _toggleTankSelection,
-                        onCancel: _toggleSelectMode,
-                        onDeleteSelected: () => _bulkDelete(context, tanks),
-                        onExportSelected: () => _bulkExport(context, tanks),
-                      ),
-                    const SizedBox(height: AppSpacing.sm),
-                    ...tanks.asMap().entries.map((e) => TankListTile(
-                      name: e.value.name,
-                      volumeLitres: e.value.volumeLitres,
-                      isSelected: e.key == _currentTankIndex,
-                      showChevron: true,
-                      isDemoTank: e.value.isDemoTank,
-                      onTap: () => _navigateToTankDetail(context, e.value),
-                    )),
-                    // Add New Tank action
-                    ListTile(
-                      dense: true,
-                      leading: Icon(
-                        Icons.add_circle_outline_rounded,
-                        color: context.textSecondary.withAlpha(128),
-                        size: 20,
-                      ),
-                      title: Text(
-                        'Add New Tank',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: context.textSecondary.withAlpha(160),
+            child: MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              child: Semantics(
+                label: 'Activity panel — Progress, Tanks, Today',
+                child: BottomSheetPanel(
+                  progressContent: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
+                  ),
+                  tanksContent: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: AppSpacing.sm),
+                      if (!_isSelectMode)
+                        TankSwitcher(
+                          tanks: tanks, currentIndex: _currentTankIndex,
+                          onChanged: (index) => setState(() => _currentTankIndex = index),
+                          onAddTank: () => _navigateToCreateTank(context),
+                          onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
+                        )
+                      else
+                        SelectionModePanel(
+                          tanks: tanks, selectedIds: _selectedTankIds,
+                          onToggleSelection: _toggleTankSelection,
+                          onCancel: _toggleSelectMode,
+                          onDeleteSelected: () => _bulkDelete(context, tanks),
+                          onExportSelected: () => _bulkExport(context, tanks),
                         ),
+                      const SizedBox(height: AppSpacing.sm),
+                      ...tanks.asMap().entries.map((e) => TankListTile(
+                        name: e.value.name,
+                        volumeLitres: e.value.volumeLitres,
+                        isSelected: e.key == _currentTankIndex,
+                        showChevron: true,
+                        isDemoTank: e.value.isDemoTank,
+                        onTap: () => _navigateToTankDetail(context, e.value),
+                      )),
+                      // Add New Tank action
+                      ListTile(
+                        dense: true,
+                        leading: Icon(
+                          Icons.add_circle_outline_rounded,
+                          color: context.textSecondary.withAlpha(128),
+                          size: 20,
+                        ),
+                        title: Text(
+                          'Add New Tank',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: context.textSecondary.withAlpha(160),
+                          ),
+                        ),
+                        trailing: Icon(Icons.add, color: context.textHint, size: 18),
+                        onTap: () => _navigateToCreateTank(context),
                       ),
-                      trailing: Icon(Icons.add, color: context.textHint, size: 18),
-                      onTap: () => _navigateToCreateTank(context),
-                    ),
-                    const Divider(height: 1),
-                  ],
-                ),
-                todayContent: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
-                  child: TodayBoardCard(tankId: currentTank.id),
+                      const Divider(height: 1),
+                    ],
+                  ),
+                  todayContent: Padding(
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
+                    child: TodayBoardCard(tankId: currentTank.id),
+                  ),
                 ),
               ),
             ),
