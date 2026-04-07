@@ -112,6 +112,14 @@ class FishMotion {
       _position.dx + direction.dx * _speed * clampedDt,
       _position.dy + direction.dy * _speed * clampedDt,
     );
+
+    // Wander: small perpendicular noise
+    final perpendicular = Offset(-direction.dy, direction.dx);
+    final wanderAmount = (_rng.nextDouble() - 0.5) * 0.5 * clampedDt * _speed;
+    _position = Offset(
+      _position.dx + perpendicular.dx * wanderAmount,
+      _position.dy + perpendicular.dy * wanderAmount,
+    );
   }
 
   void _pickNewTarget() {

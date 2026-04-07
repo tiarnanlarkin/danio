@@ -798,10 +798,10 @@ git commit -m "feat(fish-motion): Task 7 — speed model (ease-out + wall slowdo
 **Step 1: Write the failing test**
 
 ```dart
-test('position wanders perpendicular to direction of travel', () {
-  // Reseed with a far target for a long straight journey
+test('wander adds curvature — total path length exceeds straight-line distance', () {
+  // Tick past initial pause + first target pick so the fish is moving
   for (int i = 0; i < 30; i++) {
-    motion.tick(0.016);  // get past initial pause + pick target
+    motion.tick(0.016);
   }
 
   final samples = <Offset>[];
@@ -810,34 +810,40 @@ test('position wanders perpendicular to direction of travel', () {
     samples.add(motion.position);
   }
 
-  // Compute the average straight-line slope vs. actual zigzag
-  // A pure straight-line motion has zero variance perpendicular to direction.
-  // With wander, samples should NOT all lie on the line from samples[0] to samples[-1].
-  final start = samples.first;
-  final end = samples.last;
-  final lineDir = (end - start);
-  final lineLength = lineDir.distance;
-  if (lineLength < 1) {
-    // Not enough movement to test
-    return;
+  // Without wander: total path length == straight-line distance.
+  // With wander: total path length > straight-line distance because each
+  // tick adds a small lateral perturbation that increases the curve length.
+  double pathLength = 0;
+  for (int i = 1; i < samples.length; i++) {
+    pathLength += (samples[i] - samples[i - 1]).distance;
   }
-  final unit = Offset(lineDir.dx / lineLength, lineDir.dy / lineLength);
+  final straightLine = (samples.last - samples.first).distance;
 
-  double maxPerpDeviation = 0;
-  for (final s in samples) {
-    final v = s - start;
-    // perpendicular component magnitude
-    final perp = (v.dx * -unit.dy + v.dy * unit.dx).abs();
-    if (perp > maxPerpDeviation) maxPerpDeviation = perp;
-  }
-  expect(maxPerpDeviation, greaterThan(0.5),
-    reason: 'expected wander to produce >0.5 px lateral deviation');
+  // If the fish hovered for the whole window, both will be ≈ 0; skip the assertion
+  if (straightLine < 1) return;
+
+  // Wander should add measurable curvature to the path length.
+  // No-wander baseline: pathLength == straightLine (to FP epsilon).
+  // With the current wander amplitude (±0.5·dt·speed/2 per tick) and 60
+  // samples ≈ 1 s of travel, measured curvature is ~0.5%–1% of straight-line
+  // distance for typical seeds. Threshold of 0.3% gives a comfortable margin
+  // above FP epsilon while remaining below the observed wander signal.
+  expect(pathLength, greaterThan(straightLine * 1.003),
+      reason: 'expected wander to increase path length measurably over straight-line distance');
 });
 ```
 
+This measurement is robust across RNG seeds because wander strictly adds
+path length (triangle inequality): each per-tick lateral perturbation makes
+the segment length sqrt(forward² + lateral²) > forward, so the integrated
+path curve can only ever be ≥ the straight-line endpoint distance. A prior
+chord-based perpendicular-deviation test was rejected because monotonic
+random-walk drift shifts the chord along with the drift, hiding the signal.
+
 **Step 2: Run, verify fail**
 
-Expected: FAIL — current motion is straight-line, perp deviation is ~0.
+Expected: FAIL — current motion is straight-line, pathLength ≈ straightLine
+(to floating-point epsilon).
 
 **Step 3: Implement**
 

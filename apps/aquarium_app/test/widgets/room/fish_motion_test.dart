@@ -227,5 +227,39 @@ void main() {
       expect(maxObserved - minObserved, greaterThan(2.0),
         reason: 'expected speed to vary by at least 2 px/sec');
     });
+
+    test('wander adds curvature — total path length exceeds straight-line distance', () {
+      // Tick past initial pause + first target pick so the fish is moving
+      for (int i = 0; i < 30; i++) {
+        motion.tick(0.016);
+      }
+
+      final samples = <Offset>[];
+      for (int i = 0; i < 60; i++) {
+        motion.tick(0.016);
+        samples.add(motion.position);
+      }
+
+      // Without wander: total path length == straight-line distance.
+      // With wander: total path length > straight-line distance because each
+      // tick adds a small lateral perturbation that increases the curve length.
+      double pathLength = 0;
+      for (int i = 1; i < samples.length; i++) {
+        pathLength += (samples[i] - samples[i - 1]).distance;
+      }
+      final straightLine = (samples.last - samples.first).distance;
+
+      // If the fish hovered for the whole window, both will be ≈ 0; skip the assertion
+      if (straightLine < 1) return;
+
+      // Wander should add measurable curvature to the path length.
+      // No-wander baseline: pathLength == straightLine (to FP epsilon).
+      // With the current wander amplitude (±0.5·dt·speed/2 per tick) and 60
+      // samples ≈ 1 s of travel, measured curvature is ~0.5%–1% of straight-line
+      // distance for typical seeds. Threshold of 0.3% gives a comfortable margin
+      // above FP epsilon while remaining below the observed wander signal.
+      expect(pathLength, greaterThan(straightLine * 1.003),
+          reason: 'expected wander to increase path length measurably over straight-line distance');
+    });
   });
 }
