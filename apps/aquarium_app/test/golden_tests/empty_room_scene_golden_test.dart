@@ -16,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/providers/settings_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/create_tank_screen/setup_mode.dart';
 import 'package:danio/screens/home/widgets/empty_room_scene.dart';
@@ -26,11 +27,32 @@ import 'package:danio/services/storage_service.dart';
 // ratio matters more than the 400x800 used for component tests.
 const Size _sceneSurfaceSize = Size(400, 860);
 
+// ---------------------------------------------------------------------------
+// Fake SettingsNotifier — disables ambient lighting so the scene renders
+// deterministically regardless of the wall-clock time bucket.
+// ---------------------------------------------------------------------------
+//
+// AmbientLightingOverlay reads settingsProvider.ambientLightingEnabled and,
+// when true, transitively watches ambientTimeProvider which is driven by
+// DateTime.now().hour. That makes the golden match only when re-run in the
+// same dawn/day/dusk/night bucket it was originally captured in. Forcing
+// ambientLightingEnabled=false short-circuits the overlay to return the
+// unmodified child, eliminating the time dependency entirely.
+class _FakeSettingsNotifier extends StateNotifier<AppSettings>
+    implements SettingsNotifier {
+  _FakeSettingsNotifier()
+      : super(const AppSettings(ambientLightingEnabled: false));
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _fullScreenWrapper(Widget child) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+      settingsProvider.overrideWith((ref) => _FakeSettingsNotifier()),
     ],
     child: MaterialApp(
       debugShowCheckedModeBanner: false,

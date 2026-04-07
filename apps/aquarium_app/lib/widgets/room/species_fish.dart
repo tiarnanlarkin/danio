@@ -1,18 +1,20 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
+import 'fish_motion.dart';
 import 'fish_tap_interaction.dart';
 
 /// A single fish rendered using its species sprite from assets/images/fish/.
 ///
 /// ## Animation
-/// The fish swims procedurally:
-/// - Horizontal: constant-speed swim that bounces at the tank boundaries,
-///   with a brief pause (200 ms) before reversing direction.
-/// - Vertical: sine-wave bobbing with configurable amplitude and period.
-/// - Speed jitter: a small random modifier changes every few seconds to
-///   prevent all fish moving in perfect lockstep.
+/// The fish swims procedurally using the shared [FishMotion] engine:
+/// - Horizontal + vertical: goal-seeking motion with ease-out speed and a
+///   brief hover on arrival at each target.
+/// - Vertical bob: sine-wave bobbing layered on top of the engine position,
+///   with amplitude increased during an excited wiggle (tap feedback).
+/// - Wall avoidance: edge-biased target picking plus a hard clamp on position.
 ///
 /// ## Depth layering
 /// [depth] (0.0 = front, 1.0 = back) affects:
@@ -69,24 +71,14 @@ class SpeciesFish extends StatefulWidget {
 
 class _SpeciesFishState extends State<SpeciesFish>
     with SingleTickerProviderStateMixin {
-  // ── Animation controller — runs 0→1 continuously ───────────────────────
-  late AnimationController _ticker;
+  // ── Motion engine ──────────────────────────────────────────────────────
+  late Ticker _ticker;
+  late FishMotion _motion;
+  Duration _lastElapsed = Duration.zero;
 
-  // ── Fish state ──────────────────────────────────────────────────────────
-  double _x = 0.0; // current x position (left edge)
-  double _speedX = 1.0; // +1 = right, -1 = left
-  bool _facingRight = true;
-  bool _paused = false; // brief pause at boundary reversal
-  double _lastElapsed = 0.0; // seconds at last frame
-  double _speedJitter = 1.0; // random speed modifier
-  double _nextJitterAt = 0.0; // elapsed seconds when jitter changes
-  final _rng = math.Random();
-
-  // ── Sprite size (after depth scaling) ──────────────────────────────────
+  // ── Depth-derived render values ────────────────────────────────────────
   double get _scale => math.max(0.5, 1.0 - widget.depth * 0.4);
   double get _opacity => math.max(0.7, 1.0 - widget.depth * 0.2);
-  double get _effectiveSpeed =>
-      widget.baseSpeed * _speedJitter * (1.0 - widget.depth * 0.4);
 
   // Sprite drawn at 15% of tank height, scaled by depth
   double get _spriteSize => widget.tankHeight * 0.15 * _scale;
@@ -94,16 +86,33 @@ class _SpeciesFishState extends State<SpeciesFish>
   @override
   void initState() {
     super.initState();
+    _motion = _buildMotion();
+    _motion.seedInitialPosition(phaseOffset: widget.phaseOffset);
+    _ticker = createTicker(_onTick);
+    _ticker.start();
+  }
 
-    // Stagger start X using phase offset
-    _x = widget.phaseOffset * widget.tankWidth;
-    _speedX = _x < widget.tankWidth / 2 ? 1.0 : -1.0;
-    _facingRight = _speedX > 0;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _ticker.muted = MediaQuery.of(context).disableAnimations;
+  }
 
-    _ticker = AnimationController(
-      vsync: this,
-      duration: const Duration(days: 1), // effectively infinite
-    )..addListener(_onTick)..repeat();
+  @override
+  void didUpdateWidget(covariant SpeciesFish oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.tankWidth != widget.tankWidth ||
+        oldWidget.tankHeight != widget.tankHeight ||
+        oldWidget.depth != widget.depth ||
+        oldWidget.baseSpeed != widget.baseSpeed ||
+        oldWidget.bobAmplitude != widget.bobAmplitude ||
+        oldWidget.bobPeriod != widget.bobPeriod ||
+        oldWidget.baseTop != widget.baseTop ||
+        oldWidget.phaseOffset != widget.phaseOffset) {
+      _motion = _buildMotion();
+      _motion.seedInitialPosition(phaseOffset: widget.phaseOffset);
+      _lastElapsed = Duration.zero;
+    }
   }
 
   @override
@@ -112,43 +121,34 @@ class _SpeciesFishState extends State<SpeciesFish>
     super.dispose();
   }
 
-  void _onTick() {
-    if (!mounted) return;
+  void _onTick(Duration elapsed) {
+    final dtMicros = (elapsed - _lastElapsed).inMicroseconds;
+    _lastElapsed = elapsed;
+    final dt = dtMicros / 1e6;
+    if (dt <= 0) return;
+    _motion.tick(dt);
+    if (mounted) setState(() {});
+  }
 
-    // Compute elapsed seconds since last frame
-    final elapsed = _ticker.lastElapsedDuration?.inMicroseconds ?? 0;
-    final elapsedSeconds = elapsed / 1e6;
-    final dt = (elapsedSeconds - _lastElapsed).clamp(0.0, 0.05); // cap at 50ms
-    _lastElapsed = elapsedSeconds;
-
-    if (_paused) return;
-
-    // Speed jitter: update every 3–6 seconds
-    if (elapsedSeconds >= _nextJitterAt) {
-      _speedJitter = 0.7 + _rng.nextDouble() * 0.6; // 0.7 – 1.3
-      _nextJitterAt = elapsedSeconds + 3.0 + _rng.nextDouble() * 3.0;
-    }
-
-    // Move horizontally
-    final newX = _x + _speedX * _effectiveSpeed * dt;
-    final maxX = widget.tankWidth - _spriteSize;
-    const minX = 0.0;
-
-    if (newX >= maxX || newX <= minX) {
-      // Hit a wall — reverse after a short pause
-      _x = newX.clamp(minX, maxX);
-      _speedX = -_speedX;
-      _facingRight = _speedX > 0;
-      _paused = true;
-      Future.delayed(const Duration(milliseconds: 200), () {
-        if (mounted) {
-          setState(() => _paused = false);
-        }
-      });
-    } else {
-      _x = newX;
-    }
-    // No setState here — AnimatedBuilder in build() reacts to _ticker directly.
+  FishMotion _buildMotion() {
+    // Depth scaling: background fish smaller + slower. Reuse the `_scale`
+    // and `_spriteSize` getters so the engine and renderer always agree on
+    // size if the depth math is ever tuned.
+    final depthScale = _scale;
+    final effectiveSize = _spriteSize;
+    final effectiveMaxSpeed = widget.baseSpeed * depthScale;
+    final effectiveMinSpeed = effectiveMaxSpeed * 0.25;
+    return FishMotion(
+      tankWidth: widget.tankWidth,
+      tankHeight: widget.tankHeight,
+      fishSize: effectiveSize,
+      baseTopFraction: widget.baseTop,
+      layerHalfHeightFraction: 0.20,
+      maxSpeed: effectiveMaxSpeed,
+      minSpeed: effectiveMinSpeed,
+      bobAmplitude: widget.bobAmplitude,
+      bobPeriodSeconds: widget.bobPeriod,
+    );
   }
 
   @override
@@ -157,57 +157,58 @@ class _SpeciesFishState extends State<SpeciesFish>
     // Transform.scale with invalid matrix and clamp(min > max) errors).
     if (_spriteSize <= 0) return const SizedBox.shrink();
 
+    final pos = _motion.position;
+    // R-088 finite guard at the render boundary — engine does not guarantee
+    // pos.isFinite for degenerate tanks (zero width/height), so we defend here.
+    if (!pos.dx.isFinite || !pos.dy.isFinite) {
+      return const SizedBox.shrink();
+    }
+
+    // Extra wiggle amplitude during tap feedback. The base bob is applied by
+    // the engine inside _motion.position; this multiplier adds "excited" bob
+    // on top by reading the engine's live `bobPhase` directly so the extra sin
+    // term stays perfectly in phase with the underlying motion — producing a
+    // clean amplitude scale-up instead of a sum of two out-of-phase sinusoids.
+    //
+    // Accessibility: under reduced motion the ticker is muted, so
+    // _motion.bobPhase is frozen. If we still applied extraBob on a tap, the
+    // fish would jump by a fixed offset for 500ms and snap back. Gate the
+    // whole wiggle on !disableMotion so reduced motion is truly motion-free.
     final disableMotion = MediaQuery.of(context).disableAnimations;
+    final wiggleMult = FishWiggleHelper.amplitudeMultiplier();
+    final extraBob = (wiggleMult > 1.0 && !disableMotion)
+        ? math.sin(_motion.bobPhase) *
+            widget.bobAmplitude *
+            (wiggleMult - 1.0)
+        : 0.0;
 
-    // AnimatedBuilder subscribes to _ticker so the builder runs every frame
-    // without calling setState on _SpeciesFishState — eliminating full widget
-    // tree rebuilds. The fish Image is passed as `child` so it is created
-    // once and reused across builder invocations (only position changes).
-    return AnimatedBuilder(
-      animation: _ticker,
-      child: ExcludeSemantics(
-        child: Image.asset(
-          'assets/images/fish/${widget.speciesId}.webp',
-          fit: BoxFit.contain,
-          cacheWidth: 128,
-          cacheHeight: 128,
-          errorBuilder: (_, __, ___) => _FallbackFish(size: _spriteSize),
-        ),
-      ),
-      builder: (context, child) {
-        // Vertical bob — amplitude increases during an excited wiggle
-        final wiggleMult = FishWiggleHelper.amplitudeMultiplier();
-        final phase = 2 *
-            math.pi *
-            ((_lastElapsed / widget.bobPeriod) + widget.phaseOffset);
-        final bobY = disableMotion
-            ? 0.0
-            : math.sin(phase) * widget.bobAmplitude * wiggleMult;
+    final left = pos.dx - _spriteSize / 2;
+    final top = pos.dy - _spriteSize / 2 + extraBob;
 
-        final rawTop = widget.baseTop * widget.tankHeight + bobY;
-        final clampedTop = rawTop.clamp(
-          4.0,
-          widget.tankHeight * 0.78 - _spriteSize,
-        );
-
-        return Positioned(
-          left: _x,
-          top: clampedTop,
-          child: RepaintBoundary(
-            child: Opacity(
-              opacity: _opacity,
-              child: Transform.scale(
-                scaleX: _facingRight ? 1.0 : -1.0,
-                child: SizedBox(
-                  width: _spriteSize,
-                  height: _spriteSize,
-                  child: child,
+    return Positioned(
+      left: left,
+      top: top,
+      child: RepaintBoundary(
+        child: Opacity(
+          opacity: _opacity,
+          child: Transform.scale(
+            scaleX: _motion.facingRight ? 1.0 : -1.0,
+            child: SizedBox(
+              width: _spriteSize,
+              height: _spriteSize,
+              child: ExcludeSemantics(
+                child: Image.asset(
+                  'assets/images/fish/${widget.speciesId}.webp',
+                  fit: BoxFit.contain,
+                  cacheWidth: 128,
+                  cacheHeight: 128,
+                  errorBuilder: (_, __, ___) => _FallbackFish(size: _spriteSize),
                 ),
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
