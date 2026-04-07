@@ -12,7 +12,6 @@
 ///   flutter test --update-goldens test/golden_tests/mc_card_golden_test.dart
 library;
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/models/resolved_question.dart';
