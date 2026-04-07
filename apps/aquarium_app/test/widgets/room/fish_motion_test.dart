@@ -35,4 +35,35 @@ void main() {
       expect(motion, isNotNull);
     });
   });
+
+  group('FishMotion seedInitialPosition', () {
+    late FishMotion motion;
+
+    setUp(() {
+      motion = FishMotion(
+        tankWidth: 300,
+        tankHeight: 200,
+        fishSize: 20,
+        rng: Random(42),
+      );
+    });
+
+    test('phaseOffset 0 places fish at left edge', () {
+      motion.seedInitialPosition(phaseOffset: 0);
+      expect(motion.position.dx, lessThan(50));
+      expect(motion.position.dx, greaterThanOrEqualTo(motion.glassMargin + motion.fishSize / 2));
+    });
+
+    test('phaseOffset 1 places fish at right edge', () {
+      motion.seedInitialPosition(phaseOffset: 1.0);
+      expect(motion.position.dx, greaterThan(250));
+      expect(motion.position.dx, lessThanOrEqualTo(300 - motion.glassMargin - motion.fishSize / 2));
+    });
+
+    test('initial position is within tank glass bounds', () {
+      motion.seedInitialPosition(phaseOffset: 0.5);
+      expect(motion.position.dx, inInclusiveRange(motion.glassMargin + motion.fishSize / 2, 300 - motion.glassMargin - motion.fishSize / 2));
+      expect(motion.position.dy, inInclusiveRange(motion.glassMargin + motion.fishSize / 2, 200 * 0.78 - motion.fishSize / 2));
+    });
+  });
 }

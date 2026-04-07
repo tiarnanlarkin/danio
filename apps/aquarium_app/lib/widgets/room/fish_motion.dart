@@ -46,4 +46,16 @@ class FishMotion {
   Offset get position => _position;
   bool get facingRight => _lastFacingRight;
   bool get isHovering => _pauseRemaining > 0;
+
+  void seedInitialPosition({double phaseOffset = 0}) {
+    final clampedPhase = phaseOffset.clamp(0.0, 1.0);
+    final minX = glassMargin + fishSize / 2;
+    final maxX = tankWidth - glassMargin - fishSize / 2;
+    _position = Offset(
+      minX + (maxX - minX) * clampedPhase,
+      baseTopFraction * tankHeight,
+    );
+    _target = _position;
+    _pauseRemaining = clampedPhase * 0.5;  // staggered start so fish don't sync
+  }
 }
