@@ -1,9 +1,11 @@
 // test/widgets/stage/temp_panel_content_test.dart
+import 'package:danio/models/log_entry.dart';
+import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/theme/room_themes.dart';
+import 'package:danio/widgets/stage/temp_panel_content.dart';
 import 'package:danio/widgets/stage/temperature/brass_gauge.dart';
-import 'package:danio/widgets/stage/temperature/heater_status.dart';
-import 'package:danio/widgets/stage/temperature/temperature_gauge.dart';
-import 'package:danio/widgets/stage/temperature/temperature_history.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -138,6 +140,62 @@ void main() {
           .where((sb) => sb.height != null && sb.height! > 20 && sb.height! <= 40)
           .toList();
       expect(sizedBox, isNotEmpty);
+    });
+
+    testWidgets('TempPanelContent has no outer gradient + outlined log button',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            latestWaterTestProvider('t1').overrideWith((_) => Future.value(null)),
+            latestWaterTestEntryProvider('t1')
+                .overrideWith((_) => Future.value(null)),
+            testStreakProvider('t1').overrideWith((_) => Future.value(0)),
+            logsProvider('t1').overrideWith((_) => Future.value(<LogEntry>[])),
+            tankHeaterProvider('t1').overrideWith((_) => Future.value(null)),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: TempPanelContent(tankId: 't1', theme: RoomTheme.ocean),
+            ),
+          ),
+        ),
+      );
+      // Pump past the 200ms Future.delayed in initState
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pumpAndSettle();
+
+      final gradientContainers = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(TempPanelContent),
+              matching: find.byType(Container),
+            ),
+          )
+          .where(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                (c.decoration as BoxDecoration).gradient != null,
+          )
+          .toList();
+      expect(gradientContainers, isEmpty);
+
+      // Log button is outlined pill
+      expect(
+        find.descendant(
+          of: find.byType(TempPanelContent),
+          matching: find.byType(ElevatedButton),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(TempPanelContent),
+          matching: find.byType(OutlinedButton),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Log Temperature'), findsOneWidget);
     });
   });
 }
