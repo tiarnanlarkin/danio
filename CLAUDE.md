@@ -14,7 +14,7 @@ A Stop hook will remind you if new .dart files were added to key directories.
 
 ## IMPORTANT: Workflow Guardrails
 
-**Feature branches:** Before starting any new feature, create a branch: `git checkout -b feature/description`. Do NOT commit directly to `main` or `openclaw/stage-system` for new feature work. Only merge back via PR or explicit user request.
+**Feature branches:** Before starting any new feature, create a branch: `git checkout -b feature/description`. Do NOT commit directly to `main` for new feature work. Only merge back via PR or explicit user request.
 
 **One feature per session:** If the user asks about a completely different feature than what you've been working on, suggest starting a new session or using `/clear` first. Mixing unrelated features in one session leads to context pollution and mistakes.
 
@@ -209,6 +209,8 @@ Import `theme/app_theme.dart` for all design tokens (barrel exports `app_colors.
 
 ## Git
 
-- Branch: `openclaw/stage-system`
+- Default branch: `main` (renamed from `openclaw/stage-system` on 2026-04-07 — see `docs/planning/2026-04-master-merge-strategy.md` for migration details)
+- Old `master` branch is frozen, preserved as tag `master-archive-2026-04-07`
 - Remote: `origin` → `https://github.com/tiarnanlarkin/danio.git`
 - Always run `flutter analyze` and `flutter test` before committing
+- Feature branches branch off `main` and merge back via PR
