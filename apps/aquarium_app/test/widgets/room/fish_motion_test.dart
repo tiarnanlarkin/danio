@@ -228,6 +228,67 @@ void main() {
         reason: 'expected speed to vary by at least 2 px/sec');
     });
 
+    test('fish near left wall picks targets in right portion', () {
+      // Force fish to the left wall by manually placing it there
+      motion.seedInitialPosition(phaseOffset: 0);  // far left
+      // Tick long enough to outlast initial-arrival hover (up to ~0.8s) and
+      // pick a first real target. 80 ticks = 1.28s is a safe upper bound.
+      for (int i = 0; i < 80; i++) {
+        motion.tick(0.016);
+      }
+      // First target should be biased right
+      expect(motion.debugTarget.dx, greaterThan(300 * 0.40),
+        reason: 'fish near left wall should pick target in right 60%');
+
+      // Seed-robustness: also assert the bias holds across many seeds.
+      // With uniform random (no bias), targets near the far-left edge would
+      // fall below 120 ~40% of the time. With edge bias, they should fall
+      // >= 124.8 (= minX + (maxX-minX)*0.40) for every seed.
+      for (int seed = 0; seed < 20; seed++) {
+        final m = FishMotion(
+          tankWidth: 300,
+          tankHeight: 200,
+          fishSize: 20,
+          baseTopFraction: 0.4,
+          layerHalfHeightFraction: 0.15,
+          rng: Random(seed),
+        );
+        m.seedInitialPosition(phaseOffset: 0);
+        for (int i = 0; i < 80; i++) {
+          m.tick(0.016);
+        }
+        expect(m.debugTarget.dx, greaterThanOrEqualTo(300 * 0.40),
+          reason: 'seed=$seed: fish near left wall should pick target in right 60%');
+      }
+    });
+
+    test('fish near right wall picks targets in left portion', () {
+      motion.seedInitialPosition(phaseOffset: 1.0);  // far right
+      for (int i = 0; i < 80; i++) {
+        motion.tick(0.016);
+      }
+      expect(motion.debugTarget.dx, lessThan(300 * 0.60),
+        reason: 'fish near right wall should pick target in left 60%');
+
+      // Seed-robustness: verify bias holds across many seeds.
+      for (int seed = 0; seed < 20; seed++) {
+        final m = FishMotion(
+          tankWidth: 300,
+          tankHeight: 200,
+          fishSize: 20,
+          baseTopFraction: 0.4,
+          layerHalfHeightFraction: 0.15,
+          rng: Random(seed),
+        );
+        m.seedInitialPosition(phaseOffset: 1.0);
+        for (int i = 0; i < 80; i++) {
+          m.tick(0.016);
+        }
+        expect(m.debugTarget.dx, lessThanOrEqualTo(300 * 0.60),
+          reason: 'seed=$seed: fish near right wall should pick target in left 60%');
+      }
+    });
+
     test('wander adds curvature — total path length exceeds straight-line distance', () {
       // Tick past initial pause + first target pick so the fish is moving
       for (int i = 0; i < 30; i++) {

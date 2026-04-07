@@ -122,20 +122,47 @@ class FishMotion {
     );
   }
 
+  ({double start, double end}) _biasAwayFromCurrentEdge(
+    double current,
+    double min,
+    double max,
+  ) {
+    final total = max - min;
+    if (total <= 0) return (start: min, end: max);
+    final fraction = (current - min) / total;
+    if (fraction < 0.33) {
+      return (start: min + total * 0.40, end: max);
+    }
+    if (fraction > 0.67) {
+      return (start: min, end: min + total * 0.60);
+    }
+    return (start: min, end: max);
+  }
+
   void _pickNewTarget() {
     final minX = glassMargin + fishSize;
     final maxX = tankWidth - glassMargin - fishSize;
 
     final layerCenter = baseTopFraction * tankHeight;
     final layerHalf = layerHalfHeightFraction * tankHeight;
-    final minY = (glassMargin + fishSize).clamp(0.0, double.infinity).toDouble();
-    final maxY = (tankHeight * sandFraction - fishSize).clamp(0.0, tankHeight);
-    final boundedMinY = (layerCenter - layerHalf < minY) ? minY : layerCenter - layerHalf;
-    final boundedMaxY = (layerCenter + layerHalf > maxY) ? maxY : layerCenter + layerHalf;
+    final minYBound = (glassMargin + fishSize).toDouble();
+    final maxYBound = (tankHeight * sandFraction - fishSize).clamp(0.0, tankHeight);
+    final minY = layerCenter - layerHalf < minYBound ? minYBound : layerCenter - layerHalf;
+    final maxY = layerCenter + layerHalf > maxYBound ? maxYBound : layerCenter + layerHalf;
 
-    // Uniform random within bounds (edge bias added in Task 8)
-    final tx = minX + (maxX - minX) * _rng.nextDouble();
-    final ty = boundedMinY + (boundedMaxY - boundedMinY) * _rng.nextDouble();
-    _target = Offset(tx, ty);
+    final xRange = _biasAwayFromCurrentEdge(_position.dx, minX, maxX);
+    final yRange = _biasAwayFromCurrentEdge(_position.dy, minY, maxY);
+
+    // Try up to 5 samples for minTravelDistance
+    final minTravel = tankWidth * 0.25;
+    Offset candidate = _position;
+    for (int i = 0; i < 5; i++) {
+      candidate = Offset(
+        xRange.start + (xRange.end - xRange.start) * _rng.nextDouble(),
+        yRange.start + (yRange.end - yRange.start) * _rng.nextDouble(),
+      );
+      if ((candidate - _position).distance >= minTravel) break;
+    }
+    _target = candidate;
   }
 }
