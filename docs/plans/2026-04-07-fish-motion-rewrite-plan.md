@@ -60,7 +60,6 @@ If `flutter analyze` or the baseline tests fail, stop and report — the rewrite
 ```dart
 // test/widgets/room/fish_motion_test.dart
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:danio/widgets/room/fish_motion.dart';
 import 'package:flutter_test/flutter_test.dart';
