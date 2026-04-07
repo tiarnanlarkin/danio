@@ -153,9 +153,13 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                         child: SingleChildScrollView(
                           controller: scrollController,
                           physics: const ClampingScrollPhysics(),
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).padding.bottom,
-                          ),
+                          // No bottom padding here. The TabNavigator parent already
+                          // wraps this screen in `Padding(bottom: padding.bottom)`
+                          // (tab_navigator.dart) so the sheet's parent stops at
+                          // the navigation bar top. Adding padding.bottom inside
+                          // the sheet content double-counts that inset and creates
+                          // a visible gap above the bottom navigation bar.
+                          padding: EdgeInsets.zero,
                           child: Column(
                             children: [
                               // Drag handle + tabs header

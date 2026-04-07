@@ -54,6 +54,13 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  /// Vertical offset (in dp) added to `MediaQuery.padding.top` to anchor
+  /// in-room notification banners (demo tank, daily nudge) into the slot
+  /// between the top bar (Tank Toolbox / Tank Settings IconButtons) and the
+  /// top of the tank scene. Per QA brief 2026-04, banners should sit in this
+  /// dedicated slot rather than each computing their own offset.
+  static const double _notificationSlotTopOffset = 100;
+
   int _currentTankIndex = 0;
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
@@ -402,43 +409,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           AmbientTipOverlay(theme: theme),
 
           // Stage handle strips
+          //
+          // Note: previously had subtle 3px translucent accent strips on each
+          // edge (when the matching panel was closed) as a "panel exists" hint.
+          // QA brief 2026-04 flagged the right strip as an unwanted transparent
+          // edge — removed both for symmetry. The StageHandleStrip widgets
+          // themselves remain as the panel-open affordance.
           Builder(builder: (context) {
             final topOffset = MediaQuery.of(context).size.height * 0.38;
             return Stack(children: [
-              // Subtle edge accent lines when panels are closed
-              Consumer(builder: (context, ref, _) {
-                final openPanels = ref.watch(stageProvider.select((s) => s.openPanels));
-                final leftClosed = !openPanels.contains(StagePanel.temp);
-                final rightClosed = !openPanels.contains(StagePanel.waterQuality);
-                return Stack(children: [
-                  if (leftClosed)
-                    Positioned(
-                      left: 0,
-                      top: topOffset - 4,
-                      child: Container(
-                        width: 3,
-                        height: 88,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withAlpha(90),
-                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(2)),
-                        ),
-                      ),
-                    ),
-                  if (rightClosed)
-                    Positioned(
-                      right: 0,
-                      top: topOffset - 4,
-                      child: Container(
-                        width: 3,
-                        height: 88,
-                        decoration: BoxDecoration(
-                          color: AppColors.accent.withAlpha(90),
-                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(2)),
-                        ),
-                      ),
-                    ),
-                ]);
-              }),
               Positioned(left: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.temp, isLeft: true, icon: Icons.thermostat_rounded)),
               Positioned(right: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.waterQuality, isLeft: false, icon: Icons.science_rounded)),
             ]);
@@ -480,7 +459,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           // Demo tank banner (Fix 2: has dismiss × button)
           if (currentTank.isDemoTank && !_demoModeDismissed)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 100,
+              top: MediaQuery.of(context).padding.top + _notificationSlotTopOffset,
               left: AppSpacing.md,
               right: AppSpacing.md,
               child: Container(
@@ -524,65 +503,79 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
           // Bottom sheet panel (single DraggableScrollableSheet with 4 tabs)
+          //
+          // QA fix 2026-04: wrapped in MediaQuery.removePadding(removeBottom)
+          // because DraggableScrollableSheet internally subtracts MediaQuery
+          // .padding.bottom from its child size to leave room for system
+          // insets. The TabNavigator parent already shrinks this region to
+          // exclude the nav bar via Padding(bottom: padding.bottom), but
+          // MediaQuery.padding.bottom still reports the nav-bar height
+          // (because TabNavigator's Scaffold uses extendBody:true). Without
+          // removePadding, the sheet's bottom edge sat ~80dp above the nav
+          // bar top, leaving a visible cream gap.
           Positioned.fill(
-            child: Semantics(
-              label: 'Activity panel — Progress, Tanks, Today',
-              child: BottomSheetPanel(
-                progressContent: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
-                ),
-                tanksContent: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: AppSpacing.sm),
-                    if (!_isSelectMode)
-                      TankSwitcher(
-                        tanks: tanks, currentIndex: _currentTankIndex,
-                        onChanged: (index) => setState(() => _currentTankIndex = index),
-                        onAddTank: () => _navigateToCreateTank(context),
-                        onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
-                      )
-                    else
-                      SelectionModePanel(
-                        tanks: tanks, selectedIds: _selectedTankIds,
-                        onToggleSelection: _toggleTankSelection,
-                        onCancel: _toggleSelectMode,
-                        onDeleteSelected: () => _bulkDelete(context, tanks),
-                        onExportSelected: () => _bulkExport(context, tanks),
-                      ),
-                    const SizedBox(height: AppSpacing.sm),
-                    ...tanks.asMap().entries.map((e) => TankListTile(
-                      name: e.value.name,
-                      volumeLitres: e.value.volumeLitres,
-                      isSelected: e.key == _currentTankIndex,
-                      showChevron: true,
-                      isDemoTank: e.value.isDemoTank,
-                      onTap: () => _navigateToTankDetail(context, e.value),
-                    )),
-                    // Add New Tank action
-                    ListTile(
-                      dense: true,
-                      leading: Icon(
-                        Icons.add_circle_outline_rounded,
-                        color: context.textSecondary.withAlpha(128),
-                        size: 20,
-                      ),
-                      title: Text(
-                        'Add New Tank',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: context.textSecondary.withAlpha(160),
+            child: MediaQuery.removePadding(
+              context: context,
+              removeBottom: true,
+              child: Semantics(
+                label: 'Activity panel — Progress, Tanks, Today',
+                child: BottomSheetPanel(
+                  progressContent: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
+                  ),
+                  tanksContent: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: AppSpacing.sm),
+                      if (!_isSelectMode)
+                        TankSwitcher(
+                          tanks: tanks, currentIndex: _currentTankIndex,
+                          onChanged: (index) => setState(() => _currentTankIndex = index),
+                          onAddTank: () => _navigateToCreateTank(context),
+                          onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
+                        )
+                      else
+                        SelectionModePanel(
+                          tanks: tanks, selectedIds: _selectedTankIds,
+                          onToggleSelection: _toggleTankSelection,
+                          onCancel: _toggleSelectMode,
+                          onDeleteSelected: () => _bulkDelete(context, tanks),
+                          onExportSelected: () => _bulkExport(context, tanks),
                         ),
+                      const SizedBox(height: AppSpacing.sm),
+                      ...tanks.asMap().entries.map((e) => TankListTile(
+                        name: e.value.name,
+                        volumeLitres: e.value.volumeLitres,
+                        isSelected: e.key == _currentTankIndex,
+                        showChevron: true,
+                        isDemoTank: e.value.isDemoTank,
+                        onTap: () => _navigateToTankDetail(context, e.value),
+                      )),
+                      // Add New Tank action
+                      ListTile(
+                        dense: true,
+                        leading: Icon(
+                          Icons.add_circle_outline_rounded,
+                          color: context.textSecondary.withAlpha(128),
+                          size: 20,
+                        ),
+                        title: Text(
+                          'Add New Tank',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: context.textSecondary.withAlpha(160),
+                          ),
+                        ),
+                        trailing: Icon(Icons.add, color: context.textHint, size: 18),
+                        onTap: () => _navigateToCreateTank(context),
                       ),
-                      trailing: Icon(Icons.add, color: context.textHint, size: 18),
-                      onTap: () => _navigateToCreateTank(context),
-                    ),
-                    const Divider(height: 1),
-                  ],
-                ),
-                todayContent: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
-                  child: TodayBoardCard(tankId: currentTank.id),
+                      const Divider(height: 1),
+                    ],
+                  ),
+                  todayContent: Padding(
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
+                    child: TodayBoardCard(tankId: currentTank.id),
+                  ),
                 ),
               ),
             ),
@@ -598,7 +591,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
 
           if (!_dailyNudgeDismissed)
-            DailyNudgeBanner(onDismiss: () => setState(() => _dailyNudgeDismissed = true)),
+            DailyNudgeBanner(
+              topOffset: _notificationSlotTopOffset,
+              onDismiss: () => setState(() => _dailyNudgeDismissed = true),
+            ),
         ],
       );
     });
