@@ -135,5 +135,25 @@ void main() {
       // And within glass bounds
       expect(motion.debugTarget.dx, inInclusiveRange(motion.glassMargin + motion.fishSize, 300 - motion.glassMargin - motion.fishSize));
     });
+
+    test('position moves toward target after pause clears', () {
+      // Clear initial pause + pick first target
+      for (int i = 0; i < 30; i++) {
+        motion.tick(0.016);
+      }
+      final positionAfterTargetPicked = motion.position;
+      final target = motion.debugTarget;
+
+      // Tick more — position should move toward target
+      for (int i = 0; i < 30; i++) {
+        motion.tick(0.016);
+      }
+      final positionAfterMovement = motion.position;
+
+      // Distance to target should have decreased
+      final distBefore = (target - positionAfterTargetPicked).distance;
+      final distAfter = (target - positionAfterMovement).distance;
+      expect(distAfter, lessThan(distBefore));
+    });
   });
 }

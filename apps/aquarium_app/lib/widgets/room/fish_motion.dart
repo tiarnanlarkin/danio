@@ -76,6 +76,21 @@ class FishMotion {
       }
       return;
     }
+
+    final toTarget = _target - _position;
+    final distance = toTarget.distance;
+
+    if (distance < fishSize * 0.25) {
+      // Arrived — handled in Task 6 (hover phase)
+      return;
+    }
+
+    // Constant speed for now (Task 7 adds the speed model)
+    final direction = Offset(toTarget.dx / distance, toTarget.dy / distance);
+    _position = Offset(
+      _position.dx + direction.dx * maxSpeed * clampedDt,
+      _position.dy + direction.dy * maxSpeed * clampedDt,
+    );
   }
 
   void _pickNewTarget() {
