@@ -81,7 +81,9 @@ class FishMotion {
     final distance = toTarget.distance;
 
     if (distance < fishSize * 0.25) {
-      // Arrived — handled in Task 6 (hover phase)
+      // Arrived — enter hover phase with random pause 0.3-0.8s
+      _pauseRemaining = 0.3 + _rng.nextDouble() * 0.5;
+      _speed = 0;
       return;
     }
 

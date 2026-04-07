@@ -155,5 +155,39 @@ void main() {
       final distAfter = (target - positionAfterMovement).distance;
       expect(distAfter, lessThan(distBefore));
     });
+
+    test('isHovering becomes true after fish reaches a target', () {
+      bool everHovered = false;
+      for (int i = 0; i < 600; i++) {  // 10 seconds
+        motion.tick(0.016);
+        if (motion.isHovering) {
+          everHovered = true;
+          break;
+        }
+      }
+      expect(everHovered, isTrue);
+    });
+
+    test('after hover, a new target is picked', () {
+      // Run until first hover
+      for (int i = 0; i < 600; i++) {
+        motion.tick(0.016);
+        if (motion.isHovering) break;
+      }
+      expect(motion.isHovering, isTrue);
+      final firstHoverTarget = motion.debugTarget;
+
+      // Run until hover ends + new target picked
+      for (int i = 0; i < 100; i++) {
+        motion.tick(0.016);
+        if (!motion.isHovering) break;
+      }
+      expect(motion.isHovering, isFalse);
+      // Tick a few more to let _pickNewTarget run on the next cycle
+      for (int i = 0; i < 5; i++) {
+        motion.tick(0.016);
+      }
+      expect(motion.debugTarget, isNot(equals(firstHoverTarget)));
+    });
   });
 }
