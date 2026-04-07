@@ -87,11 +87,30 @@ class FishMotion {
       return;
     }
 
-    // Constant speed for now (Task 7 adds the speed model)
+    // Wall proximity factor — 0 at any wall, 1 mid-tank
+    final comfortDistance = fishSize * 2;
+    final xMargin = (_position.dx - glassMargin) < (tankWidth - glassMargin - _position.dx)
+        ? (_position.dx - glassMargin)
+        : (tankWidth - glassMargin - _position.dx);
+    final yMargin = (_position.dy - glassMargin) < (tankHeight * sandFraction - _position.dy)
+        ? (_position.dy - glassMargin)
+        : (tankHeight * sandFraction - _position.dy);
+    final xFactor = (xMargin / comfortDistance).clamp(0.0, 1.0);
+    final yFactor = (yMargin / comfortDistance).clamp(0.0, 1.0);
+    final edgeFactor = xFactor < yFactor ? xFactor : yFactor;
+
+    // Approach factor — 0 right at target, 1 outside deceleration radius
+    final decelDistance = tankWidth * 0.18;
+    final approachFactor = (distance / decelDistance).clamp(0.0, 1.0);
+
+    // Target speed and smooth easing
+    final targetSpeed = minSpeed + (maxSpeed - minSpeed) * approachFactor * edgeFactor;
+    _speed += (targetSpeed - _speed) * (clampedDt * 4 < 1 ? clampedDt * 4 : 1);
+
     final direction = Offset(toTarget.dx / distance, toTarget.dy / distance);
     _position = Offset(
-      _position.dx + direction.dx * maxSpeed * clampedDt,
-      _position.dy + direction.dy * maxSpeed * clampedDt,
+      _position.dx + direction.dx * _speed * clampedDt,
+      _position.dy + direction.dy * _speed * clampedDt,
     );
   }
 

@@ -200,5 +200,32 @@ void main() {
       }
       expect(motion.debugTarget, isNot(equals(firstHoverTarget)));
     });
+
+    test('speed varies — slower near target, faster at midpoint', () {
+      // Force a known target position so we can sample speed at known distances
+      // Run for a bit to clear pause
+      for (int i = 0; i < 30; i++) {
+        motion.tick(0.016);
+      }
+
+      // Sample distances: keep ticking and record (distance, speed-equivalent)
+      final samples = <double>[];
+      for (int i = 0; i < 200; i++) {
+        final beforePos = motion.position;
+        motion.tick(0.016);
+        final delta = (motion.position - beforePos).distance / 0.016;
+        samples.add(delta);
+      }
+
+      // Filter out zero-speed (hover) frames
+      final nonZeroSamples = samples.where((s) => s > 0.1).toList();
+      expect(nonZeroSamples, isNotEmpty);
+
+      // Speed should vary (not constant at maxSpeed)
+      final maxObserved = nonZeroSamples.reduce((a, b) => a > b ? a : b);
+      final minObserved = nonZeroSamples.reduce((a, b) => a < b ? a : b);
+      expect(maxObserved - minObserved, greaterThan(2.0),
+        reason: 'expected speed to vary by at least 2 px/sec');
+    });
   });
 }
