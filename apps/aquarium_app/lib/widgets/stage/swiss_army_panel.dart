@@ -134,10 +134,17 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
                 right: widget.isLeft ? const Radius.circular(16) : Radius.zero,
               ),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: widget.theme.glassCard,
+                    color: widget.theme.glassCard.withValues(alpha: 0.92),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x40000000), // black @ 25% alpha
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                     border: Border(
                       left: widget.isLeft
                           ? BorderSide.none
