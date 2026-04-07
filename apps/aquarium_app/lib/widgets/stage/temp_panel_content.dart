@@ -125,58 +125,58 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
         ? sparkData.reduce((a, b) => a + b) / sparkData.length
         : null;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            widget.theme.glassCard.withValues(alpha: 0.95),
-            widget.theme.glassCard.withValues(alpha: 0.85),
-          ],
-        ),
+    return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.sm4,
+        AppSpacing.md,
+        AppSpacing.lg2,
       ),
-      child: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
-          AppSpacing.sm4,
-          AppSpacing.md,
-          AppSpacing.lg2,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TempHeader(streak: streak),
-            const SizedBox(height: AppSpacing.sm4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TempHeader(streak: streak),
+          const SizedBox(height: AppSpacing.sm4),
 
-            TempHeroSection(
-              temp: temp,
-              fillAnim: _fillAnim,
-              gaugeMin: _gaugeMin,
-              gaugeMax: _gaugeMax,
-              optimalMin: optimalMin,
-              optimalMax: optimalMax,
-              status: status,
-              lastEntry: lastEntry,
-              formatTimestamp: _formatTimestamp,
+          TempHeroSection(
+            temp: temp,
+            fillAnim: _fillAnim,
+            gaugeMin: _gaugeMin,
+            gaugeMax: _gaugeMax,
+            optimalMin: optimalMin,
+            optimalMax: optimalMax,
+            status: status,
+            lastEntry: lastEntry,
+            formatTimestamp: _formatTimestamp,
+          ),
+          // Only show the heater status pill when we actually have heater
+          // data or a recent test reading — otherwise a permanent "OFF"
+          // would mislead.
+          if ((heater?.settings?['on'] as bool?) != null ||
+              lastEntry != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Center(
+              child: HeaterStatusPill(
+                heaterOn: (heater?.settings?['on'] as bool?) ?? false,
+                lastTestLabel: lastEntry != null
+                    ? _formatTimestamp(lastEntry.timestamp)
+                    : null,
+              ),
             ),
-            const SizedBox(height: AppSpacing.sm4),
-
-            Container(height: 1, color: kTempTeal.withAlpha(40)),
-            const SizedBox(height: AppSpacing.sm4),
-
-            TempTrendSection(
-              sparkData: sparkData,
-              minTemp: minTemp,
-              maxTemp: maxTemp,
-              avgTemp: avgTemp,
-            ),
-            const SizedBox(height: AppSpacing.sm4),
-
-            TempLogButton(tankId: widget.tankId),
+            const SizedBox(height: AppSpacing.md),
           ],
-        ),
+
+          TempTrendSection(
+            sparkData: sparkData,
+            minTemp: minTemp,
+            maxTemp: maxTemp,
+            avgTemp: avgTemp,
+          ),
+          const SizedBox(height: AppSpacing.sm4),
+
+          TempLogButton(tankId: widget.tankId),
+        ],
       ),
     );
   }

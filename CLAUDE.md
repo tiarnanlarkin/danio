@@ -197,6 +197,7 @@ Import `theme/app_theme.dart` for all design tokens (barrel exports `app_colors.
 - `AppButton` with variants: primary, destructive, text
 - `AppHaptics` — Haptic feedback (light, medium, selection, success, error)
 - `showAppBottomSheet()`, `showAppDragSheet()`, `showAppScrollableSheet()` — Sheet primitives
+- **Side panels (Phase 5):** `BrassMedallion` (`widgets/stage/water_quality/brass_medallion.dart`) for water params; `BrassGauge` + `BrassGaugePainter` (`widgets/stage/temperature/brass_gauge.dart`, `brass_gauge_painter.dart`) for the temperature dial. Panels render on a σ:14 glass frame (`SwissArmyPanel`) with no inner card wrappers.
 
 ## Key Conventions
 

@@ -16,9 +16,6 @@ import 'water_quality/water_health_card.dart';
 import 'water_quality/water_param_card.dart';
 import 'water_quality/water_sparkline.dart';
 
-// ── Colour constants ──────────────────────────────────────────────────────────
-// _kCream removed — panels now use theme-derived gradient backgrounds
-
 // ── Panel Content ─────────────────────────────────────────────────────────────
 
 /// Content for the right (water quality) Swiss Army panel.
@@ -152,78 +149,66 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
     final sparkPh = _buildSparkData(recentLogs, 'ph');
     final sparkNO3 = _buildSparkData(recentLogs, 'nitrate');
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            widget.theme.glassCard.withValues(alpha: 0.95),
-            widget.theme.glassCard.withValues(alpha: 0.85),
-          ],
-        ),
+    return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.lg,
       ),
-      child: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
-          AppSpacing.md,
-          AppSpacing.md,
-          AppSpacing.lg,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ── Header ───────────────────────────────────────────────────
-            _WqHeader(theme: widget.theme),
-            const SizedBox(height: AppSpacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ── Header ───────────────────────────────────────────────────
+          _WqHeader(theme: widget.theme),
+          const SizedBox(height: AppSpacing.sm),
 
-            // ── Last tested ──────────────────────────────────────────────
-            if (lastEntry != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.access_time_rounded,
-                      size: 13,
-                      color: kWqCharcoal.withAlpha(100),
+          // ── Last tested ──────────────────────────────────────────────
+          if (lastEntry != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.access_time_rounded,
+                    size: 13,
+                    color: kWqCharcoal.withAlpha(100),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    'Last tested: ${_formatTimestamp(lastEntry.timestamp)}',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: kWqCharcoal.withAlpha(120),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      'Last tested: ${_formatTimestamp(lastEntry.timestamp)}',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: kWqCharcoal.withAlpha(120),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-            // ── Health score ring ────────────────────────────────────────
-            WqHealthScoreCard(health: health, ringAnim: _ringAnim),
+          // ── Health score ring ────────────────────────────────────────
+          WqHealthScoreCard(health: health, ringAnim: _ringAnim),
+          const SizedBox(height: AppSpacing.md),
+
+          // ── Perfect! celebration badge ───────────────────────────────
+          if (allPerfect) ...[
+            const WqPerfectBadge(),
             const SizedBox(height: AppSpacing.md),
-
-            // ── Perfect! celebration badge ───────────────────────────────
-            if (allPerfect) ...[
-              const WqPerfectBadge(),
-              const SizedBox(height: AppSpacing.md),
-            ],
-
-            // ── Parameter cards (2-column grid) ─────────────────────────
-            WqParamGrid(params: params),
-            const SizedBox(height: AppSpacing.md),
-
-            // ── Sparklines (pH + Nitrate trend) ─────────────────────────
-            if (sparkPh.length >= 2 || sparkNO3.length >= 2) ...[
-              WqSparklineSection(phData: sparkPh, nitData: sparkNO3),
-              const SizedBox(height: AppSpacing.md),
-            ],
-
-            // ── Log Water Test button ────────────────────────────────────
-            _WqLogButton(tankId: widget.tankId),
           ],
-        ),
+
+          // ── Parameter cards (2-column grid) ─────────────────────────
+          WqParamGrid(params: params),
+          const SizedBox(height: AppSpacing.md),
+
+          // ── Sparklines (pH + Nitrate trend) ─────────────────────────
+          if (sparkPh.length >= 2 || sparkNO3.length >= 2) ...[
+            WqSparklineSection(phData: sparkPh, nitData: sparkNO3),
+            const SizedBox(height: AppSpacing.md),
+          ],
+
+          // ── Log Water Test button ────────────────────────────────────
+          _WqLogButton(tankId: widget.tankId),
+        ],
       ),
     );
   }
@@ -317,20 +302,19 @@ class _WqLogButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
-      height: 52,
-      child: ElevatedButton.icon(
+      height: 48,
+      child: OutlinedButton.icon(
         onPressed: () {
           ref.read(stageProvider.notifier).close(StagePanel.waterQuality);
           AppRoutes.toAddLog(context, tankId, initialType: LogType.waterTest);
         },
-        icon: const Icon(Icons.science_rounded, size: 20),
+        icon: const Icon(Icons.science_rounded, size: 18),
         label: Text('Log Water Test', style: AppTypography.labelLarge),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kWqAmber,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
-          textStyle: AppTypography.labelLarge,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: kWqCharcoal,
+          side: BorderSide(color: kWqAmber, width: 1.5),
+          shape: const StadiumBorder(),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         ),
       ),
     );

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
+import 'brass_medallion.dart';
 
 // ── Colour constants ──────────────────────────────────────────────────────────
 const kWqCharcoal = Color(0xFF2D3436);
@@ -124,280 +125,63 @@ class WqParamGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Priority: first 3 params (pH, NH₃, NO₂)
+    // Secondary: next 3 (NO₃, GH, KH)
+    final priority = params.take(3).toList();
+    final secondary = params.skip(3).take(3).toList();
+
     return Column(
       children: [
-        for (var i = 0; i < params.length; i += 2)
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: Row(
-              children: [
-                Expanded(child: WqParamCard(spec: params[i])),
-                const SizedBox(width: AppSpacing.sm),
-                if (i + 1 < params.length)
-                  Expanded(child: WqParamCard(spec: params[i + 1]))
-                else
-                  const Expanded(child: SizedBox()),
-              ],
-            ),
-          ),
+        _MedallionRow(params: priority),
+        const SizedBox(height: AppSpacing.sm),
+        _MedallionRow(params: secondary),
       ],
     );
   }
 }
 
-// ── Parameter Card ────────────────────────────────────────────────────────────
-
-class WqParamCard extends StatelessWidget {
-  final WqParamSpec spec;
-
-  const WqParamCard({super.key, required this.spec});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = wqStatusColor(spec.status);
-    final bg = wqStatusBg(spec.status);
-    final border = wqStatusBorder(spec.status);
-
-    final displayValue = spec.value != null
-        ? spec.value!.toStringAsFixed(spec.value! < 10 ? 2 : 1)
-        : '--';
-
-    return RepaintBoundary(
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm2),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: AppRadius.largeRadius,
-          border: Border.all(color: border),
-          boxShadow: [
-            BoxShadow(
-              color: color.withAlpha(18),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Status dot + label row
-            Row(
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Expanded(
-                  child: Text(
-                    spec.label,
-                    style: AppTypography.labelSmall.copyWith(
-                      color: kWqCharcoal.withAlpha(160),
-                      fontWeight: FontWeight.w700,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            // Big value
-            Text(
-              displayValue,
-              style: AppTypography.headlineSmall.copyWith(
-                color: kWqCharcoal,
-                fontWeight: FontWeight.w800,
-                fontSize: 22,
-                letterSpacing: -0.5,
-              ),
-            ),
-            if (spec.unit.isNotEmpty)
-              Text(
-                spec.unit,
-                style: AppTypography.labelSmall.copyWith(
-                  color: kWqCharcoal.withAlpha(100),
-                ),
-              ),
-            const SizedBox(height: AppSpacing.xs),
-            // Colour-coded status bar (green=safe, amber=caution, red=danger)
-            _WqStatusBar(status: spec.status),
-            const SizedBox(height: AppSpacing.xs),
-            // Status chip
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xs2,
-                vertical: AppSpacing.xxs,
-              ),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: AppRadius.pillRadius,
-              ),
-              child: Text(
-                wqStatusLabel(spec.status),
-                style: AppTypography.labelSmall.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 10,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            // Ideal range
-            Text(
-              spec.idealRange,
-              style: AppTypography.labelSmall.copyWith(
-                color: kWqCharcoal.withAlpha(100),
-                fontSize: 10,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Colour-coded status bar ───────────────────────────────────────────────────
-
-/// A small 3-segment status bar: green | amber | red.
-/// The current status segment is highlighted; others are faded.
-class _WqStatusBar extends StatelessWidget {
-  final WqParamStatus status;
-
-  const _WqStatusBar({required this.status});
+class _MedallionRow extends StatelessWidget {
+  final List<WqParamSpec> params;
+  const _MedallionRow({required this.params});
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Segment(
-          color: kWqGreen,
-          active: status == WqParamStatus.perfect,
-          isFirst: true,
-        ),
-        _Segment(color: kWqAmber, active: status == WqParamStatus.watch),
-        _Segment(
-          color: kWqRed,
-          active: status == WqParamStatus.danger,
-          isLast: true,
-        ),
+        for (var i = 0; i < 3; i++) ...[
+          Expanded(
+            child: i < params.length
+                ? BrassMedallion(
+                    label: _shortLabel(params[i].label),
+                    value: params[i].value?.toStringAsFixed(
+                      (params[i].value ?? 0) < 10 ? 2 : 1,
+                    ),
+                    unit: params[i].unit,
+                    status: params[i].status,
+                  )
+                : const SizedBox.shrink(),
+          ),
+          if (i < 2) const SizedBox(width: AppSpacing.sm),
+        ],
       ],
     );
   }
-}
 
-class _Segment extends StatelessWidget {
-  final Color color;
-  final bool active;
-  final bool isFirst;
-  final bool isLast;
-
-  const _Segment({
-    required this.color,
-    required this.active,
-    this.isFirst = false,
-    this.isLast = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 5,
-        margin: EdgeInsets.only(
-          right: isLast ? 0 : 2,
-          left: isFirst ? 0 : 2,
-        ),
-        decoration: BoxDecoration(
-          color: active ? color : color.withAlpha(40),
-          borderRadius: BorderRadius.horizontal(
-            left: isFirst ? const Radius.circular(3) : Radius.zero,
-            right: isLast ? const Radius.circular(3) : Radius.zero,
-          ),
-        ),
-      ),
-    );
+  String _shortLabel(String long) {
+    switch (long) {
+      case 'Ammonia':
+        return 'NH₃';
+      case 'Nitrite':
+        return 'NO₂';
+      case 'Nitrate':
+        return 'NO₃';
+      default:
+        return long;
+    }
   }
 }
 
-// ── Glass Panel Container (water quality) ────────────────────────────────────
-
-/// Glassmorphism container for water quality panels.
-class WqGlassPanel extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry? padding;
-
-  const WqGlassPanel({super.key, required this.child, this.padding});
-
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          color: Colors.white.withAlpha(51), // 20% fill — slightly brighter without blur
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
-          border: Border.all(
-            color: Colors.white.withAlpha(51),
-            width: 1.0,
-          ),
-        ),
-        child: child,
-      ),
-    );
-  }
-}
-
-// ── Slide+Fade Entry Animation (water quality) ────────────────────────────────
-
-/// Wraps a widget in a slide-from-left + fade entry animation.
-class WqPanelEntryAnimation extends StatefulWidget {
-  final Widget child;
-
-  const WqPanelEntryAnimation({super.key, required this.child});
-
-  @override
-  State<WqPanelEntryAnimation> createState() => _WqPanelEntryAnimationState();
-}
-
-class _WqPanelEntryAnimationState extends State<WqPanelEntryAnimation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _slide;
-  late Animation<double> _fade;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: AppDurations.medium4,
-    );
-    _slide = Tween<Offset>(
-      begin: const Offset(-0.12, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
-    _fade = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final reduceMotion = MediaQuery.of(context).disableAnimations;
-    if (reduceMotion) return widget.child;
-    return SlideTransition(
-      position: _slide,
-      child: FadeTransition(opacity: _fade, child: widget.child),
-    );
-  }
-}
+// Task 14: Removed legacy WqParamCard / _WqStatusBar / _Segment /
+// WqGlassPanel / WqPanelEntryAnimation — replaced by BrassMedallion
+// (Task 5) and the slim WqParamGrid layout above.

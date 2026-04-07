@@ -8,6 +8,11 @@ import 'stage_provider.dart';
 
 /// Side panel that hinges in from left or right with a blade-curve animation.
 class SwissArmyPanel extends ConsumerStatefulWidget {
+  /// Blur sigma for the glass frame (concept lock 2026-04-07).
+  /// Reduced from σ:20 → σ:14 to let the inner instruments feel more present.
+  @visibleForTesting
+  static const double kGlassBlurSigma = 14.0;
+
   final StagePanel panel;
   final bool isLeft;
   final RoomTheme theme;
@@ -128,49 +133,68 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
             transform: Matrix4.identity()
               ..translateByDouble(translateX, translateY, 0.0, 1.0)
               ..rotateZ(rotateZ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.horizontal(
-                left: widget.isLeft ? Radius.zero : const Radius.circular(16),
-                right: widget.isLeft ? const Radius.circular(16) : Radius.zero,
-              ),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: widget.theme.glassCard,
-                    border: Border(
-                      left: widget.isLeft
-                          ? BorderSide.none
-                          : BorderSide(
-                              color: widget.theme.glassBorder,
-                              width: 1,
-                            ),
-                      right: widget.isLeft
-                          ? BorderSide(
-                              color: widget.theme.glassBorder,
-                              width: 1,
-                            )
-                          : BorderSide.none,
-                    ),
+            child: DecoratedBox(
+              key: const Key('swiss-frame-shadow'),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.horizontal(
+                  left: widget.isLeft ? Radius.zero : const Radius.circular(16),
+                  right: widget.isLeft ? const Radius.circular(16) : Radius.zero,
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x40000000), // black @ 25% alpha
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
                   ),
-                  child: SafeArea(
-                    left: false,
-                    right: false,
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 40,
-                            height: 4,
-                            margin: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.sm),
-                            decoration: BoxDecoration(
-                              color: context.textHint,
-                              borderRadius: AppRadius.xxsRadius,
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.horizontal(
+                  left: widget.isLeft ? Radius.zero : const Radius.circular(16),
+                  right: widget.isLeft ? const Radius.circular(16) : Radius.zero,
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: SwissArmyPanel.kGlassBlurSigma,
+                    sigmaY: SwissArmyPanel.kGlassBlurSigma,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: widget.theme.glassCard.withValues(alpha: 0.92),
+                      border: Border(
+                        left: widget.isLeft
+                            ? BorderSide.none
+                            : BorderSide(
+                                color: widget.theme.glassBorder,
+                                width: 1,
+                              ),
+                        right: widget.isLeft
+                            ? BorderSide(
+                                color: widget.theme.glassBorder,
+                                width: 1,
+                              )
+                            : BorderSide.none,
+                      ),
+                    ),
+                    child: SafeArea(
+                      left: false,
+                      right: false,
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.sm),
+                              decoration: BoxDecoration(
+                                color: context.textHint,
+                                borderRadius: AppRadius.xxsRadius,
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(child: widget.child),
-                      ],
+                          Expanded(child: widget.child),
+                        ],
+                      ),
                     ),
                   ),
                 ),
