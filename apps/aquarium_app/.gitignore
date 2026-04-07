@@ -71,3 +71,5 @@ META-INF/
 # across Windows, macOS, Linux, and CI). Each developer regenerates locally:
 #   flutter test --update-goldens test/golden_tests/
 test/golden_tests/goldens/
+
+test/golden_tests/failures/

@@ -24,6 +24,7 @@ import '../../widgets/room_scene.dart';
 import '../../widgets/first_visit_tooltip.dart';
 import '../onboarding/returning_user_flows.dart';
 import '../create_tank_screen.dart';
+import '../create_tank_screen/setup_mode.dart';
 import '../add_log_screen.dart';
 import '../journal_screen.dart';
 import '../tank_settings_screen.dart';
@@ -255,10 +256,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   // ── Navigation ────────────────────────────────────────────────────────
 
-  void _navigateToCreateTank(BuildContext context) {
+  void _navigateToCreateTank(BuildContext context, {SetupMode mode = SetupMode.guided}) {
     if (!mounted || _isNavigatingToCreate) return;
     setState(() => _isNavigatingToCreate = true);
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CreateTankScreen()))
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => CreateTankScreen(mode: mode)))
         .whenComplete(() async {
       if (mounted) {
         setState(() => _isNavigatingToCreate = false);
@@ -347,7 +349,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       if (tanks.isEmpty) {
         return EmptyRoomScene(
-          onCreateTank: () => _navigateToCreateTank(context),
+          onCreateTank: (mode) => _navigateToCreateTank(context, mode: mode),
           onLoadDemo: () async {
             final actions = ref.read(tankActionsProvider);
             final demoTank = await actions.seedDemoTankIfEmpty();

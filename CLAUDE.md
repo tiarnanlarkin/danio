@@ -96,9 +96,12 @@ repo/apps/aquarium_app/
 
 ### Tank Management
 - `home/home_screen.dart` — Main room scene with animated aquarium
+- `home/widgets/empty_room_scene.dart` — First-run scene (reuses `buildRoomBackground` + `AquariumStand` with a ghost-glass outline; content panel hosts `SetupPathSelector`)
+- `home/widgets/setup_path_selector.dart` — Two-card guided vs. expert picker for first tank creation
 - `tank_detail/` — Individual tank view with logs and parameters
 - `add_log/` — Water test, feeding, cleaning, maintenance log entry
-- `create_tank_screen/` — Tank creation wizard
+- `create_tank_screen.dart` — Tank creation; accepts a `SetupMode` to switch between the 3-page wizard (`SetupMode.guided`) and a single expert form (`SetupMode.expert`)
+- `create_tank_screen/setup_mode.dart` — `enum SetupMode { guided, expert }` passed from `EmptyRoomScene`
 - `livestock/` — Fish/plant species management per tank
 
 ### Learning System
