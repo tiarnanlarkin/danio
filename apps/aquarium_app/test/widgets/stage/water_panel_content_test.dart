@@ -168,5 +168,39 @@ void main() {
       // No legacy WqParamCard remaining
       expect(find.byType(WqParamCard), findsNothing);
     });
+
+    testWidgets('WqSparklineSection has no card wrapper', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: WqSparklineSection(
+              phData: const [7.0, 7.1, 7.0, 7.2, 7.1, 7.0, 7.1],
+              nitData: const [10, 12, 10, 14, 12, 11, 10],
+            ),
+          ),
+        ),
+      );
+
+      final decorated = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(WqSparklineSection),
+              matching: find.byType(Container),
+            ),
+          )
+          .where(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                ((c.decoration as BoxDecoration).color != null ||
+                    (c.decoration as BoxDecoration).border != null),
+          )
+          .toList();
+
+      expect(
+        decorated,
+        isEmpty,
+        reason: 'Concept lock: sparkline section has no card wrapper',
+      );
+    });
   });
 }

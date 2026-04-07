@@ -19,73 +19,63 @@ class WqSparklineSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm2),
-      decoration: BoxDecoration(
-        color: AppColors.whiteAlpha70,
-        borderRadius: AppRadius.largeRadius,
-        border: Border.all(
-          color: const Color(0xFF3BBFB0).withAlpha(50),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '7-day trends',
-            style: AppTypography.labelSmall.copyWith(
-              color: kWqCharcoal.withAlpha(140),
-              fontWeight: FontWeight.w700,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '7-day trends',
+          style: AppTypography.labelSmall.copyWith(
+            color: kWqCharcoal.withAlpha(140),
+            fontWeight: FontWeight.w700,
           ),
-          const SizedBox(height: AppSpacing.sm),
-          if (phData.length >= 2) ...[
-            Row(
-              children: [
-                Text(
-                  'pH  ',
-                  style: AppTypography.labelSmall.copyWith(
-                    color: kWqCharcoal.withAlpha(120),
-                  ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        if (phData.length >= 2) ...[
+          Row(
+            children: [
+              Text(
+                'pH  ',
+                style: AppTypography.labelSmall.copyWith(
+                  color: kWqCharcoal.withAlpha(120),
                 ),
-                Expanded(
-                  child: SizedBox(
-                    height: 36,
-                    child: CustomPaint(
-                      painter: WqSparklinePainter(
-                        data: phData,
-                        color: const Color(0xFF3BBFB0),
-                      ),
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 28, // slimmer per concept lock
+                  child: CustomPaint(
+                    painter: WqSparklinePainter(
+                      data: phData,
+                      color: const Color(0xFF3BBFB0),
                     ),
                   ),
                 ),
-              ],
-            ),
-          ],
-          if (nitData.length >= 2 && phData.length >= 2)
-            const SizedBox(height: AppSpacing.xs),
-          if (nitData.length >= 2) ...[
-            Row(
-              children: [
-                Text(
-                  'NO₃ ',
-                  style: AppTypography.labelSmall.copyWith(
-                    color: kWqCharcoal.withAlpha(120),
-                  ),
-                ),
-                Expanded(
-                  child: SizedBox(
-                    height: 36,
-                    child: CustomPaint(
-                      painter: WqSparklinePainter(data: nitData, color: kWqRed),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ],
-      ),
+        if (nitData.length >= 2 && phData.length >= 2)
+          const SizedBox(height: AppSpacing.xs),
+        if (nitData.length >= 2) ...[
+          Row(
+            children: [
+              Text(
+                'NO₃ ',
+                style: AppTypography.labelSmall.copyWith(
+                  color: kWqCharcoal.withAlpha(120),
+                ),
+              ),
+              Expanded(
+                child: SizedBox(
+                  height: 28,
+                  child: CustomPaint(
+                    painter: WqSparklinePainter(data: nitData, color: kWqRed),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
     );
   }
 }
