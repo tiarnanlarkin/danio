@@ -5,10 +5,19 @@ import '../../../theme/app_theme.dart';
 
 /// Daily nudge banner shown when the user hasn't earned any XP today.
 /// Only rebuilds when today's XP changes.
+///
+/// Positioned in the shared notification slot below the top bar. The
+/// [topOffset] parameter is added to `MediaQuery.padding.top` so the parent
+/// can keep multiple banners aligned on the same horizontal anchor.
 class DailyNudgeBanner extends ConsumerWidget {
   final VoidCallback onDismiss;
+  final double topOffset;
 
-  const DailyNudgeBanner({super.key, required this.onDismiss});
+  const DailyNudgeBanner({
+    super.key,
+    required this.onDismiss,
+    this.topOffset = 100,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,10 +30,8 @@ class DailyNudgeBanner extends ConsumerWidget {
     );
     if (todayXp > 0) return const SizedBox.shrink();
 
-    // P0-5 FIX: Push daily nudge below the streak/hearts overlay area
-    // to prevent banner stacking at identical top positions.
     return Positioned(
-      top: MediaQuery.of(context).padding.top + 100,
+      top: MediaQuery.of(context).padding.top + topOffset,
       left: AppSpacing.md,
       right: AppSpacing.md,
       child: Semantics(

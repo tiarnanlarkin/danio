@@ -54,6 +54,13 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  /// Vertical offset (in dp) added to `MediaQuery.padding.top` to anchor
+  /// in-room notification banners (demo tank, daily nudge) into the slot
+  /// between the top bar (Tank Toolbox / Tank Settings IconButtons) and the
+  /// top of the tank scene. Per QA brief 2026-04, banners should sit in this
+  /// dedicated slot rather than each computing their own offset.
+  static const double _notificationSlotTopOffset = 100;
+
   int _currentTankIndex = 0;
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
@@ -402,43 +409,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           AmbientTipOverlay(theme: theme),
 
           // Stage handle strips
+          //
+          // Note: previously had subtle 3px translucent accent strips on each
+          // edge (when the matching panel was closed) as a "panel exists" hint.
+          // QA brief 2026-04 flagged the right strip as an unwanted transparent
+          // edge — removed both for symmetry. The StageHandleStrip widgets
+          // themselves remain as the panel-open affordance.
           Builder(builder: (context) {
             final topOffset = MediaQuery.of(context).size.height * 0.38;
             return Stack(children: [
-              // Subtle edge accent lines when panels are closed
-              Consumer(builder: (context, ref, _) {
-                final openPanels = ref.watch(stageProvider.select((s) => s.openPanels));
-                final leftClosed = !openPanels.contains(StagePanel.temp);
-                final rightClosed = !openPanels.contains(StagePanel.waterQuality);
-                return Stack(children: [
-                  if (leftClosed)
-                    Positioned(
-                      left: 0,
-                      top: topOffset - 4,
-                      child: Container(
-                        width: 3,
-                        height: 88,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withAlpha(90),
-                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(2)),
-                        ),
-                      ),
-                    ),
-                  if (rightClosed)
-                    Positioned(
-                      right: 0,
-                      top: topOffset - 4,
-                      child: Container(
-                        width: 3,
-                        height: 88,
-                        decoration: BoxDecoration(
-                          color: AppColors.accent.withAlpha(90),
-                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(2)),
-                        ),
-                      ),
-                    ),
-                ]);
-              }),
               Positioned(left: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.temp, isLeft: true, icon: Icons.thermostat_rounded)),
               Positioned(right: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.waterQuality, isLeft: false, icon: Icons.science_rounded)),
             ]);
@@ -480,7 +459,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           // Demo tank banner (Fix 2: has dismiss × button)
           if (currentTank.isDemoTank && !_demoModeDismissed)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 100,
+              top: MediaQuery.of(context).padding.top + _notificationSlotTopOffset,
               left: AppSpacing.md,
               right: AppSpacing.md,
               child: Container(
@@ -598,7 +577,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
 
           if (!_dailyNudgeDismissed)
-            DailyNudgeBanner(onDismiss: () => setState(() => _dailyNudgeDismissed = true)),
+            DailyNudgeBanner(
+              topOffset: _notificationSlotTopOffset,
+              onDismiss: () => setState(() => _dailyNudgeDismissed = true),
+            ),
         ],
       );
     });
