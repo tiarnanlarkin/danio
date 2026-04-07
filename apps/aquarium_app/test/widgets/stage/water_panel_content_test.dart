@@ -1,0 +1,65 @@
+import 'package:danio/models/log_entry.dart';
+import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/theme/room_themes.dart';
+import 'package:danio/widgets/stage/water_panel_content.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('WaterPanelContent (concept lock 2026-04-07)', () {
+    testWidgets('has no outer gradient container wrapping the scroll view',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            latestWaterTestProvider('t1').overrideWith(
+              (_) => Future.value(null),
+            ),
+            latestWaterTestEntryProvider('t1').overrideWith(
+              (_) => Future.value(null),
+            ),
+            logsProvider('t1').overrideWith((_) => Future.value(<LogEntry>[])),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: WaterPanelContent(tankId: 't1', theme: RoomTheme.ocean),
+            ),
+          ),
+        ),
+      );
+      // Advance past the 150 ms post-frame delay that schedules the
+      // health-ring animation, then settle the animation itself.
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      // The first descendant of WaterPanelContent should be a SingleChildScrollView,
+      // not a Container-with-gradient.
+      final scroll = find.byType(SingleChildScrollView);
+      expect(scroll, findsOneWidget);
+
+      // Walk the tree and assert no descendant Container
+      // inside WaterPanelContent has a BoxDecoration with a gradient.
+      final containersWithGradient = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(WaterPanelContent),
+              matching: find.byType(Container),
+            ),
+          )
+          .where(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                (c.decoration as BoxDecoration).gradient != null,
+          )
+          .toList();
+
+      expect(
+        containersWithGradient,
+        isEmpty,
+        reason:
+            'Concept lock: no outer card container on water panel content',
+      );
+    });
+  });
+}
