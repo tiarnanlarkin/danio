@@ -26,111 +26,48 @@ class TempTrendSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section header
         Row(
           children: [
-            const Icon(Icons.show_chart_rounded, size: 16, color: kTempTealDark),
+            const Icon(Icons.show_chart_rounded, size: 14, color: kTempTealDark),
             const SizedBox(width: 6),
             Text(
-              '7-Day Trend',
-              style: AppTypography.titleMedium.copyWith(
-                color: kTempCharcoal,
-                fontWeight: FontWeight.w800,
-                fontSize: 15,
+              '7-day trend',
+              style: AppTypography.labelSmall.copyWith(
+                color: kTempCharcoal.withAlpha(160),
+                fontWeight: FontWeight.w700,
               ),
             ),
+            const Spacer(),
+            if (minTemp != null && maxTemp != null && avgTemp != null)
+              Flexible(
+                child: Text(
+                  'min ${minTemp!.toStringAsFixed(1)}° · avg ${avgTemp!.toStringAsFixed(1)}° · max ${maxTemp!.toStringAsFixed(1)}°',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: kTempCharcoal.withAlpha(120),
+                    fontSize: 10,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
           ],
         ),
-        const SizedBox(height: AppSpacing.sm3),
-
-        // Sparkline chart
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.whiteAlpha80,
-            borderRadius: AppRadius.largeRadius,
-            border: Border.all(color: kTempTeal.withAlpha(50)),
-            boxShadow: [
-              BoxShadow(
-                color: kTempTeal.withAlpha(20),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              // Chart area
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.sm2,
-                  AppSpacing.sm2,
-                  AppSpacing.sm2,
-                  AppSpacing.xs,
-                ),
-                child: SizedBox(
-                  height: 72,
-                  child: sparkData.length >= 2
-                      ? CustomPaint(
-                          size: const Size(double.infinity, 72),
-                          painter: TempSparklinePainter(data: sparkData),
-                        )
-                      : Center(
-                          child: Text(
-                            'No data yet — log some readings!',
-                            style: AppTypography.labelSmall.copyWith(
-                              color: kTempCharcoal.withAlpha(100),
-                              fontSize: 11,
-                            ),
-                          ),
-                        ),
-                ),
-              ),
-
-              // Day labels under chart
-              if (sparkData.length >= 2)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.sm2,
-                    0,
-                    AppSpacing.sm2,
-                    AppSpacing.sm3,
+        const SizedBox(height: AppSpacing.xs),
+        SizedBox(
+          height: 32,
+          child: sparkData.length >= 2
+              ? CustomPaint(
+                  size: const Size(double.infinity, 32),
+                  painter: TempSparklinePainter(data: sparkData),
+                )
+              : Center(
+                  child: Text(
+                    'No data yet',
+                    style: AppTypography.labelSmall.copyWith(
+                      color: kTempCharcoal.withAlpha(100),
+                    ),
                   ),
-                  child: TempDayLabels(count: sparkData.length),
                 ),
-            ],
-          ),
         ),
-        const SizedBox(height: AppSpacing.sm3),
-
-        // Stats row
-        if (minTemp != null && maxTemp != null && avgTemp != null)
-          Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppSpacing.sm3,
-              horizontal: AppSpacing.xs,
-            ),
-            child: Row(
-              children: [
-                TempStatCell(
-                  label: 'Min',
-                  value: '${minTemp!.toStringAsFixed(1)}°',
-                  color: kTempTealDark,
-                ),
-                TempStatDivider(),
-                TempStatCell(
-                  label: 'Avg',
-                  value: '${avgTemp!.toStringAsFixed(1)}°',
-                  color: kTempTeal,
-                ),
-                TempStatDivider(),
-                TempStatCell(
-                  label: 'Max',
-                  value: '${maxTemp!.toStringAsFixed(1)}°',
-                  color: kTempAmberWarn,
-                ),
-              ],
-            ),
-          ),
       ],
     );
   }

@@ -2,6 +2,7 @@
 import 'package:danio/widgets/stage/temperature/brass_gauge.dart';
 import 'package:danio/widgets/stage/temperature/heater_status.dart';
 import 'package:danio/widgets/stage/temperature/temperature_gauge.dart';
+import 'package:danio/widgets/stage/temperature/temperature_history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -73,6 +74,70 @@ void main() {
         ),
       );
       expect(find.text('Heater OFF'), findsOneWidget);
+    });
+
+    testWidgets('TempTrendSection has no card wrapper decoration',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 360,
+              child: TempTrendSection(
+                sparkData: const [24, 24.5, 25, 24.5, 24, 24, 24.5],
+                minTemp: 24,
+                maxTemp: 25,
+                avgTemp: 24.4,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final decorated = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(TempTrendSection),
+              matching: find.byType(Container),
+            ),
+          )
+          .where(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                ((c.decoration as BoxDecoration).color != null ||
+                    (c.decoration as BoxDecoration).boxShadow != null),
+          )
+          .toList();
+      expect(decorated, isEmpty);
+    });
+
+    testWidgets('TempTrendSection chart is slim (<= 40px tall)', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 360,
+              child: TempTrendSection(
+                sparkData: const [24, 24.5, 25, 24.5, 24, 24, 24.5],
+                minTemp: 24,
+                maxTemp: 25,
+                avgTemp: 24.4,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final sizedBox = tester
+          .widgetList<SizedBox>(
+            find.descendant(
+              of: find.byType(TempTrendSection),
+              matching: find.byType(SizedBox),
+            ),
+          )
+          .where((sb) => sb.height != null && sb.height! > 20 && sb.height! <= 40)
+          .toList();
+      expect(sizedBox, isNotEmpty);
     });
   });
 }
