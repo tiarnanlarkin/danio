@@ -120,3 +120,65 @@ class TempLogButton extends ConsumerWidget {
     );
   }
 }
+
+// ── Heater Status Pill ────────────────────────────────────────────────────────
+
+class HeaterStatusPill extends StatelessWidget {
+  final bool heaterOn;
+  final String? lastTestLabel;
+
+  const HeaterStatusPill({
+    super.key,
+    required this.heaterOn,
+    required this.lastTestLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dotColor =
+        heaterOn ? const Color(0xFFE67E22) : const Color(0xFF9E9E9E);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm2,
+        vertical: AppSpacing.xs2,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.5),
+        borderRadius: AppRadius.pillRadius,
+        border: Border.all(color: dotColor.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            heaterOn ? 'Heater ON' : 'Heater OFF',
+            style: AppTypography.labelSmall.copyWith(
+              color: const Color(0xFF2D3436),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (lastTestLabel != null) ...[
+            const SizedBox(width: 8),
+            Text('•',
+                style: AppTypography.labelSmall.copyWith(
+                  color: const Color(0xFF2D3436).withValues(alpha: 0.4),
+                )),
+            const SizedBox(width: 8),
+            Text(
+              'Last test: $lastTestLabel',
+              style: AppTypography.labelSmall.copyWith(
+                color: const Color(0xFF2D3436).withValues(alpha: 0.65),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}

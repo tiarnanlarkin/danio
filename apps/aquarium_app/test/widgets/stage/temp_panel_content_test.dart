@@ -1,5 +1,6 @@
 // test/widgets/stage/temp_panel_content_test.dart
 import 'package:danio/widgets/stage/temperature/brass_gauge.dart';
+import 'package:danio/widgets/stage/temperature/heater_status.dart';
 import 'package:danio/widgets/stage/temperature/temperature_gauge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,6 +49,30 @@ void main() {
           reason: 'ThermometerPainter replaced by BrassGaugePainter');
 
       anim.dispose();
+    });
+
+    testWidgets('HeaterStatusPill renders ON state and last-test string',
+        (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: HeaterStatusPill(heaterOn: true, lastTestLabel: '2h ago'),
+          ),
+        ),
+      );
+      expect(find.text('Heater ON'), findsOneWidget);
+      expect(find.textContaining('2h ago'), findsOneWidget);
+    });
+
+    testWidgets('HeaterStatusPill renders OFF state', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: HeaterStatusPill(heaterOn: false, lastTestLabel: null),
+          ),
+        ),
+      );
+      expect(find.text('Heater OFF'), findsOneWidget);
     });
   });
 }
