@@ -62,6 +62,12 @@ class FishMotion {
   @visibleForTesting
   Offset get debugTarget => _target;
 
+  @visibleForTesting
+  Offset get debugPosition => _position;
+
+  @visibleForTesting
+  set debugPosition(Offset value) => _position = value;
+
   void seedInitialPosition({double phaseOffset = 0}) {
     final clampedPhase = phaseOffset.clamp(0.0, 1.0);
     final minX = glassMargin + fishSize / 2;
@@ -130,6 +136,24 @@ class FishMotion {
       _position.dx + perpendicular.dx * wanderAmount,
       _position.dy + perpendicular.dy * wanderAmount,
     );
+
+    // BUG-08 hard clamp — last line of defense against any code path that
+    // leaves _position outside the glass bounds. The min/max swap defends
+    // against degenerate `tankWidth ≤ 2 * glassMargin + fishSize` cases where
+    // the inversion would otherwise cause clamp() to throw.
+    final minXC = glassMargin + fishSize / 2;
+    final maxXC = tankWidth - glassMargin - fishSize / 2;
+    final minYC = glassMargin + fishSize / 2;
+    final maxYC = tankHeight * sandFraction - fishSize / 2;
+    final clampedX = _position.dx.clamp(
+      minXC < maxXC ? minXC : maxXC,
+      minXC < maxXC ? maxXC : minXC,
+    );
+    final clampedY = _position.dy.clamp(
+      minYC < maxYC ? minYC : maxYC,
+      minYC < maxYC ? maxYC : minYC,
+    );
+    _position = Offset(clampedX, clampedY);
   }
 
   ({double start, double end}) _biasAwayFromCurrentEdge(
