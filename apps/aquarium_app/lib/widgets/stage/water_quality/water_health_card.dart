@@ -58,20 +58,8 @@ class WqHealthScoreCard extends StatelessWidget {
     final score = wqHealthScore(health);
     final label = wqHealthLabel(health);
 
-    return Container(
+    return Padding(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.whiteAlpha70,
-        borderRadius: AppRadius.largeRadius,
-        border: Border.all(color: color.withAlpha(60)),
-        boxShadow: [
-          BoxShadow(
-            color: color.withAlpha(25),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
       child: Row(
         children: [
           // Progress ring — large and prominent

@@ -61,5 +61,55 @@ void main() {
             'Concept lock: no outer card container on water panel content',
       );
     });
+
+    testWidgets('WqHealthScoreCard has no card wrapper decoration',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Builder(
+                  builder: (context) {
+                    final anim = AnimationController(
+                      vsync: const TestVSync(),
+                      duration: Duration.zero,
+                    )..value = 1.0;
+                    return WqHealthScoreCard(
+                      health: WqHealthStatus.excellent,
+                      ringAnim: anim,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final decorated = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(WqHealthScoreCard),
+              matching: find.byType(Container),
+            ),
+          )
+          .where(
+            (c) =>
+                c.decoration is BoxDecoration &&
+                ((c.decoration as BoxDecoration).color != null ||
+                    (c.decoration as BoxDecoration).boxShadow != null ||
+                    (c.decoration as BoxDecoration).border != null),
+          )
+          .toList();
+
+      expect(
+        decorated,
+        isEmpty,
+        reason:
+            'Concept lock: health score ring keeps its widget but loses the card wrapper',
+      );
+    });
   });
 }
