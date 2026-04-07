@@ -59,6 +59,11 @@ class FishMotion {
 
   bool get isHovering => _pauseRemaining > 0;
 
+  /// Current bob phase in radians, used by widgets that want to layer
+  /// additional bob effects (e.g. tap-feedback wiggle) in phase with
+  /// the engine's sine bob.
+  double get bobPhase => _bobPhase;
+
   @visibleForTesting
   Offset get debugTarget => _target;
 

@@ -164,18 +164,18 @@ class _SpeciesFishState extends State<SpeciesFish>
 
     // Extra wiggle amplitude during tap feedback. The base bob is applied by
     // the engine inside _motion.position; this multiplier adds "excited" bob
-    // on top by applying an additional sin term aligned with the engine's
-    // phase. We don't have direct access to _bobPhase, so approximate with
-    // elapsed-time phase — this only runs for 500ms after a tap and just
-    // amplifies the existing up-down motion visually.
+    // on top by reading the engine's live `bobPhase` directly so the extra sin
+    // term stays perfectly in phase with the underlying motion — producing a
+    // clean amplitude scale-up instead of a sum of two out-of-phase sinusoids.
+    //
+    // Accessibility: under reduced motion the ticker is muted, so
+    // _motion.bobPhase is frozen. If we still applied extraBob on a tap, the
+    // fish would jump by a fixed offset for 500ms and snap back. Gate the
+    // whole wiggle on !disableMotion so reduced motion is truly motion-free.
+    final disableMotion = MediaQuery.of(context).disableAnimations;
     final wiggleMult = FishWiggleHelper.amplitudeMultiplier();
-    final extraBob = wiggleMult > 1.0
-        ? math.sin(
-              2 *
-                  math.pi *
-                  ((_lastElapsed.inMicroseconds / 1e6) / widget.bobPeriod +
-                      widget.phaseOffset),
-            ) *
+    final extraBob = (wiggleMult > 1.0 && !disableMotion)
+        ? math.sin(_motion.bobPhase) *
             widget.bobAmplitude *
             (wiggleMult - 1.0)
         : 0.0;
