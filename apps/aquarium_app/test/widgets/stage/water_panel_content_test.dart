@@ -202,5 +202,46 @@ void main() {
         reason: 'Concept lock: sparkline section has no card wrapper',
       );
     });
+
+    testWidgets('Water Log button is an OutlinedButton pill, not filled',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            latestWaterTestProvider('t1').overrideWith((_) => Future.value(null)),
+            latestWaterTestEntryProvider('t1')
+                .overrideWith((_) => Future.value(null)),
+            logsProvider('t1').overrideWith((_) => Future.value(<LogEntry>[])),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: WaterPanelContent(tankId: 't1', theme: RoomTheme.ocean),
+            ),
+          ),
+        ),
+      );
+      // Pump past the 150ms Future.delayed in initState (see Task 2 test)
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      // No filled ElevatedButton in the water panel
+      expect(
+        find.descendant(
+          of: find.byType(WaterPanelContent),
+          matching: find.byType(ElevatedButton),
+        ),
+        findsNothing,
+      );
+
+      // A single OutlinedButton (the log button)
+      expect(
+        find.descendant(
+          of: find.byType(WaterPanelContent),
+          matching: find.byType(OutlinedButton),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Log Water Test'), findsOneWidget);
+    });
   });
 }

@@ -302,20 +302,19 @@ class _WqLogButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: double.infinity,
-      height: 52,
-      child: ElevatedButton.icon(
+      height: 48,
+      child: OutlinedButton.icon(
         onPressed: () {
           ref.read(stageProvider.notifier).close(StagePanel.waterQuality);
           AppRoutes.toAddLog(context, tankId, initialType: LogType.waterTest);
         },
-        icon: const Icon(Icons.science_rounded, size: 20),
+        icon: const Icon(Icons.science_rounded, size: 18),
         label: Text('Log Water Test', style: AppTypography.labelLarge),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kWqAmber,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
-          textStyle: AppTypography.labelLarge,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: kWqCharcoal,
+          side: BorderSide(color: kWqAmber, width: 1.5),
+          shape: const StadiumBorder(),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         ),
       ),
     );
