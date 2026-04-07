@@ -198,6 +198,16 @@ Import `theme/app_theme.dart` for all design tokens (barrel exports `app_colors.
 - `AppHaptics` — Haptic feedback (light, medium, selection, success, error)
 - `showAppBottomSheet()`, `showAppDragSheet()`, `showAppScrollableSheet()` — Sheet primitives
 
+## Asset Pipeline
+
+AI-generated illustrations (empty states, onboarding, error states, badges, feature graphics) live in `comfyui/batch-pipeline/`. The pipeline uses ComfyUI + Flux.1 Dev on Windows, triggered from WSL2. All 88 Danio illustrations follow a single visual bible.
+
+**Start here:** `comfyui/batch-pipeline/docs/ART_DIRECTION.md` — palette, prompt templates, consistency checklist, quality gates, and subject matter constraints (§6 forbids fishing imagery; the app is fish-positive, no human characters).
+
+**Generate new assets:** See `comfyui/batch-pipeline/README.md` for the `full_pipeline.sh` command and manifest format.
+
+**Before shipping new celebration / achievement / onboarding strings:** Grep `rg -i "hook|lure|catch|caught|bait|fishing" lib/` and check results against `ART_DIRECTION.md §6.2` (forbidden) vs `§6.3` (permitted aquarium terminology — "wild-caught", "caught early", etc. stay).
+
 ## Key Conventions
 
 - **Imports:** Use `package:danio/` for all internal imports

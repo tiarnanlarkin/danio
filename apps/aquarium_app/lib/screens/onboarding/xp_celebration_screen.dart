@@ -291,7 +291,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                     child: Semantics(
                       header: true,
                       child: Text(
-                        'First lesson complete 🎣',
+                        'First lesson complete 📖',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: AppColors.textPrimary,
                         ),

@@ -370,7 +370,7 @@ class Day30CommittedCard extends StatelessWidget {
           children: [
             // Headline
             Text(
-              '30 days of Danio 🎣',
+              '30 days of Danio 🌊',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: AppColors.textPrimary,
               ),

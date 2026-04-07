@@ -149,7 +149,7 @@ class AchievementDefinitions {
     id: 'streak_14',
     name: 'Two Week Wonder',
     description:
-        'Two solid weeks! They say it takes 14 days to form a habit. You are hooked!',
+        "Two solid weeks! They say it takes 14 days to form a habit. Looks like you're in the flow.",
     icon: '🌟',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
