@@ -61,7 +61,10 @@ class _AnimatedSwimmingFishState extends State<AnimatedSwimmingFish>
     if (oldWidget.tankWidth != widget.tankWidth ||
         oldWidget.tankHeight != widget.tankHeight ||
         oldWidget.size != widget.size ||
-        oldWidget.swimSpeed != widget.swimSpeed) {
+        oldWidget.swimSpeed != widget.swimSpeed ||
+        oldWidget.baseTop != widget.baseTop ||
+        oldWidget.verticalBob != widget.verticalBob ||
+        oldWidget.startOffset != widget.startOffset) {
       _motion = _buildMotion();
       _motion.seedInitialPosition(phaseOffset: widget.startOffset);
       _lastElapsed = Duration.zero;

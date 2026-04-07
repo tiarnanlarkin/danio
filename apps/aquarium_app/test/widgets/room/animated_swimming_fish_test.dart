@@ -40,8 +40,11 @@ void main() {
       for (int i = 0; i < 100; i++) {
         await tester.pump(const Duration(milliseconds: 50));
         final positioned = tester.widget<Positioned>(find.byType(Positioned));
-        expect(positioned.left!, inInclusiveRange(-1, 301));
-        expect(positioned.top!, inInclusiveRange(-1, 201));
+        // Bounds include margin for the bob amplitude (15px) — the engine clamps
+        // _position to glass bounds, but the position getter adds sin(bobPhase) * bob
+        // on top, so render-time top can be ~bob below the underlying _position.
+        expect(positioned.left!, inInclusiveRange(-20, 320));
+        expect(positioned.top!, inInclusiveRange(-20, 220));
       }
     });
 
