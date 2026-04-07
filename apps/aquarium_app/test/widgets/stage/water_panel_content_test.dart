@@ -2,6 +2,7 @@ import 'package:danio/models/log_entry.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/widgets/stage/water_panel_content.dart';
+import 'package:danio/widgets/stage/water_quality/brass_medallion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -110,6 +111,62 @@ void main() {
         reason:
             'Concept lock: health score ring keeps its widget but loses the card wrapper',
       );
+    });
+
+    testWidgets('WqParamGrid lays out priority/secondary as 2×3 brass medallions',
+        (tester) async {
+      final params = [
+        const WqParamSpec(
+          key: 'pH', label: 'pH', unit: '', idealRange: '6.5 – 7.8',
+          value: 7.2, status: WqParamStatus.perfect,
+        ),
+        const WqParamSpec(
+          key: 'NH₃', label: 'Ammonia', unit: 'ppm', idealRange: '< 0.25',
+          value: 0, status: WqParamStatus.perfect,
+        ),
+        const WqParamSpec(
+          key: 'NO₂', label: 'Nitrite', unit: 'ppm', idealRange: '0',
+          value: 0, status: WqParamStatus.perfect,
+        ),
+        const WqParamSpec(
+          key: 'NO₃', label: 'Nitrate', unit: 'ppm', idealRange: '< 20',
+          value: 10, status: WqParamStatus.perfect,
+        ),
+        const WqParamSpec(
+          key: 'GH', label: 'GH', unit: 'dGH', idealRange: '4–12',
+          value: 8, status: WqParamStatus.perfect,
+        ),
+        const WqParamSpec(
+          key: 'KH', label: 'KH', unit: 'dKH', idealRange: '3–8',
+          value: 5, status: WqParamStatus.perfect,
+        ),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 360,
+              child: WqParamGrid(params: params),
+            ),
+          ),
+        ),
+      );
+
+      // 6 medallions in the grid
+      expect(find.byType(BrassMedallion), findsNWidgets(6));
+
+      // Priority row contains the top 3 param keys
+      expect(find.text('pH'), findsOneWidget);
+      expect(find.text('NH₃'), findsOneWidget);
+      expect(find.text('NO₂'), findsOneWidget);
+      // Secondary row
+      expect(find.text('NO₃'), findsOneWidget);
+      expect(find.text('GH'), findsOneWidget);
+      expect(find.text('KH'), findsOneWidget);
+
+      // No legacy WqParamCard remaining
+      expect(find.byType(WqParamCard), findsNothing);
     });
   });
 }

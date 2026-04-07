@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
+import 'brass_medallion.dart';
 
 // ── Colour constants ──────────────────────────────────────────────────────────
 const kWqCharcoal = Color(0xFF2D3436);
@@ -124,24 +125,60 @@ class WqParamGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Priority: first 3 params (pH, NH₃, NO₂)
+    // Secondary: next 3 (NO₃, GH, KH)
+    final priority = params.take(3).toList();
+    final secondary = params.skip(3).take(3).toList();
+
     return Column(
       children: [
-        for (var i = 0; i < params.length; i += 2)
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: Row(
-              children: [
-                Expanded(child: WqParamCard(spec: params[i])),
-                const SizedBox(width: AppSpacing.sm),
-                if (i + 1 < params.length)
-                  Expanded(child: WqParamCard(spec: params[i + 1]))
-                else
-                  const Expanded(child: SizedBox()),
-              ],
-            ),
-          ),
+        _MedallionRow(params: priority),
+        const SizedBox(height: AppSpacing.sm),
+        _MedallionRow(params: secondary),
       ],
     );
+  }
+}
+
+class _MedallionRow extends StatelessWidget {
+  final List<WqParamSpec> params;
+  const _MedallionRow({required this.params});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < 3; i++) ...[
+          Expanded(
+            child: i < params.length
+                ? BrassMedallion(
+                    label: _shortLabel(params[i].label),
+                    value: params[i].value?.toStringAsFixed(
+                      (params[i].value ?? 0) < 10 ? 2 : 1,
+                    ),
+                    unit: params[i].unit,
+                    status: params[i].status,
+                  )
+                : const SizedBox.shrink(),
+          ),
+          if (i < 2) const SizedBox(width: AppSpacing.sm),
+        ],
+      ],
+    );
+  }
+
+  String _shortLabel(String long) {
+    switch (long) {
+      case 'Ammonia':
+        return 'NH₃';
+      case 'Nitrite':
+        return 'NO₂';
+      case 'Nitrate':
+        return 'NO₃';
+      default:
+        return long;
+    }
   }
 }
 
