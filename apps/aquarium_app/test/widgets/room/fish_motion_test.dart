@@ -289,16 +289,43 @@ void main() {
       }
     });
 
-    test('facingRight reflects horizontal velocity sign', () {
-      // Force fish at left, target should be to the right → facingRight = true
+    test('facingRight reflects horizontal velocity sign — both directions', () {
+      // Verify the getter is sensitive to direction in BOTH right-going and
+      // left-going cases. Old hardcoded `true` implementation would fail the
+      // left-going assertion.
+
+      // Direction 1: fish at left, target on right → facingRight should be true
       motion.seedInitialPosition(phaseOffset: 0);
-      for (int i = 0; i < 30; i++) {
-        motion.tick(0.016);
+      for (int i = 0; i < 80; i++) {
+        motion.tick(0.016);  // get past initial pause + arrival hover
       }
-      // Now moving — facingRight should match sign of (target - position).dx
-      final dx = motion.debugTarget.dx - motion.position.dx;
-      if (dx.abs() > 0.5) {
-        expect(motion.facingRight, equals(dx > 0));
+      final dxRight = motion.debugTarget.dx - motion.position.dx;
+      if (dxRight.abs() > 0.5) {
+        expect(motion.facingRight, equals(dxRight > 0),
+            reason: 'right-going fish should match dx > 0');
+      }
+
+      // Direction 2: fresh fish at right, target on left → facingRight should be false
+      final motion2 = FishMotion(
+        tankWidth: 300,
+        tankHeight: 200,
+        fishSize: 20,
+        baseTopFraction: 0.4,
+        layerHalfHeightFraction: 0.15,
+        rng: Random(7),  // use a different seed to ensure target lands on the left
+      );
+      motion2.seedInitialPosition(phaseOffset: 1.0);  // fish at right edge
+      for (int i = 0; i < 80; i++) {
+        motion2.tick(0.016);
+      }
+      final dxLeft = motion2.debugTarget.dx - motion2.position.dx;
+      if (dxLeft.abs() > 0.5) {
+        expect(motion2.facingRight, equals(dxLeft > 0),
+            reason: 'left-going fish should match dx > 0 (which is false here)');
+        // Additional sanity: with phaseOffset 1.0 and edge bias, target should be
+        // in the left 60% — i.e., target.dx < position.dx → facingRight = false
+        expect(motion2.facingRight, isFalse,
+            reason: 'fish near right wall picks left-biased target → facing left');
       }
     });
 
