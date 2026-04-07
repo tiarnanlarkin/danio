@@ -289,6 +289,35 @@ void main() {
       }
     });
 
+    test('facingRight reflects horizontal velocity sign', () {
+      // Force fish at left, target should be to the right → facingRight = true
+      motion.seedInitialPosition(phaseOffset: 0);
+      for (int i = 0; i < 30; i++) {
+        motion.tick(0.016);
+      }
+      // Now moving — facingRight should match sign of (target - position).dx
+      final dx = motion.debugTarget.dx - motion.position.dx;
+      if (dx.abs() > 0.5) {
+        expect(motion.facingRight, equals(dx > 0));
+      }
+    });
+
+    test('position has sine bob layered on Y', () {
+      motion.seedInitialPosition(phaseOffset: 0.5);
+      // Sample Y over time without horizontal movement (force pause)
+      // Approximate by sampling rapidly while pauseRemaining > 0
+      final samples = <double>[];
+      for (int i = 0; i < 30; i++) {
+        motion.tick(0.016);
+        samples.add(motion.position.dy);
+      }
+      // With bob amplitude 6.0 default, Y should oscillate by at least 1.0 px
+      final maxY = samples.reduce((a, b) => a > b ? a : b);
+      final minY = samples.reduce((a, b) => a < b ? a : b);
+      expect(maxY - minY, greaterThan(1.0),
+        reason: 'sine bob should produce Y oscillation');
+    });
+
     test('wander adds curvature — total path length exceeds straight-line distance', () {
       // Tick past initial pause + first target pick so the fish is moving
       for (int i = 0; i < 30; i++) {

@@ -45,8 +45,18 @@ class FishMotion {
   double _bobPhase = 0;
   bool _lastFacingRight = true;
 
-  Offset get position => _position;
-  bool get facingRight => _lastFacingRight;
+  Offset get position {
+    final bobOffset = sin(_bobPhase) * bobAmplitude;
+    return Offset(_position.dx, _position.dy + bobOffset);
+  }
+
+  bool get facingRight {
+    final dx = _target.dx - _position.dx;
+    if (dx.abs() < 0.01) return _lastFacingRight;
+    _lastFacingRight = dx > 0;
+    return _lastFacingRight;
+  }
+
   bool get isHovering => _pauseRemaining > 0;
 
   @visibleForTesting
