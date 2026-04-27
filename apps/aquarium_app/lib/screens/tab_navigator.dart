@@ -141,13 +141,14 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                 // Each tab has its own Navigator to preserve state
                 // Wrapped in FadeTransition for smooth tab switching
                 // Bottom padding ensures content doesn't hide behind NavigationBar.
-                // With extendBody:true, MediaQuery.padding.bottom already includes
-                // the NavigationBar height — no extra offset needed.
+                // With extendBody:true, Scaffold does NOT add the NavigationBar height
+                // to MediaQuery.padding.bottom, so we must add it explicitly.
+                // M3 NavigationBar default height = 80dp.
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: Padding(
                     padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom,
+                      bottom: MediaQuery.of(context).padding.bottom + 80,
                     ),
                     child: IndexedStack(
                     index: currentTab,

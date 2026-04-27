@@ -506,15 +506,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
           // Bottom sheet panel (single DraggableScrollableSheet with 4 tabs)
           //
-          // QA fix 2026-04: wrapped in MediaQuery.removePadding(removeBottom)
-          // because DraggableScrollableSheet internally subtracts MediaQuery
-          // .padding.bottom from its child size to leave room for system
-          // insets. The TabNavigator parent already shrinks this region to
-          // exclude the nav bar via Padding(bottom: padding.bottom), but
-          // MediaQuery.padding.bottom still reports the nav-bar height
-          // (because TabNavigator's Scaffold uses extendBody:true). Without
-          // removePadding, the sheet's bottom edge sat ~80dp above the nav
-          // bar top, leaving a visible cream gap.
+          // MediaQuery.removePadding(removeBottom) prevents
+          // DraggableScrollableSheet from internally subtracting the bottom
+          // padding when sizing itself. The TabNavigator parent already
+          // excludes the nav bar area via Padding(bottom: systemInset + 80),
+          // so the sheet should fill the available space without any extra
+          // bottom inset.
           Positioned.fill(
             child: MediaQuery.removePadding(
               context: context,
