@@ -38,52 +38,52 @@ class DailyNudgeBanner extends ConsumerWidget {
         label: 'Dismiss daily nudge',
         button: true,
         child: GestureDetector(
-        onTap: onDismiss,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm2,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.primaryAlpha90,
-            borderRadius: AppRadius.mediumRadius,
-            boxShadow: [
-              BoxShadow(
-                color: AppOverlays.black20,
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Text('\u{1F3AF}', style: Theme.of(context).textTheme.titleLarge!),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  fishName != null
-                      ? "Learn something new for $fishName today!"
-                      : "Start a quick lesson to earn XP today!",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.onPrimary,
-                    fontWeight: FontWeight.w500,
+          onTap: onDismiss,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm2,
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primaryAlpha90,
+              borderRadius: AppRadius.lg2Radius,
+              boxShadow: AppShadows.medium,
+            ),
+            child: Row(
+              children: [
+                const Text(
+                  '\u{1F3AF}',
+                  style: TextStyle(fontSize: 22, height: 1),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    fishName != null
+                        ? "Learn something new for $fishName today!"
+                        : "Start a quick lesson to earn XP today!",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.onPrimary,
+                      fontWeight: FontWeight.w700,
+                      height: 1.25,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 48,
-                height: 48,
-                child: Center(
-                  child: Icon(
-                    Icons.close,
-                    size: 18,
-                    color: AppColors.onPrimary.withAlpha(180),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Center(
+                    child: Icon(
+                      Icons.close,
+                      size: 18,
+                      color: AppColors.onPrimary.withAlpha(180),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
         ),
       ),
     );

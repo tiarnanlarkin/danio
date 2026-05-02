@@ -92,8 +92,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final seenTank = prefs.getBool('tooltip_seen_tank') ?? false;
     final seenHearts = prefs.getBool('tooltip_seen_hearts') ?? false;
-    final seenStageHandles = prefs.getBool('tooltip_seen_stage_handles') ?? false;
-    final seenRoomMetaphor = prefs.getBool('tooltip_seen_room_metaphor') ?? false;
+    final seenStageHandles =
+        prefs.getBool('tooltip_seen_stage_handles') ?? false;
+    final seenRoomMetaphor =
+        prefs.getBool('tooltip_seen_room_metaphor') ?? false;
     if (mounted) {
       setState(() {
         _showTankTooltip = !seenTank;
@@ -160,14 +162,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       final today = DateTime.now();
       final todayStr = today.toIso8601String().substring(0, 10);
-      final yesterdayStr = today.subtract(const Duration(days: 1)).toIso8601String().substring(0, 10);
+      final yesterdayStr = today
+          .subtract(const Duration(days: 1))
+          .toIso8601String()
+          .substring(0, 10);
       final lastStr = lastActivity.toIso8601String().substring(0, 10);
 
       if (lastStr != todayStr && lastStr != yesterdayStr && mounted) {
         setState(() => _showComebackBanner = true);
       }
     } catch (e, st) {
-      logError('HomeScreen: comeback banner check failed: $e', stackTrace: st, tag: 'HomeScreen');
+      logError(
+        'HomeScreen: comeback banner check failed: $e',
+        stackTrace: st,
+        tag: 'HomeScreen',
+      );
     }
   }
 
@@ -186,7 +195,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       Widget? milestoneCard;
       String? prefsKey;
 
-      if (daysSinceSignup >= 1 && daysSinceSignup <= 2 && currentStreak >= 1 &&
+      if (daysSinceSignup >= 1 &&
+          daysSinceSignup <= 2 &&
+          currentStreak >= 1 &&
           (prefs.getBool('seen_day2_prompt') ?? false) == false) {
         milestoneCard = Day2StreakPrompt(
           fishName: fishName,
@@ -194,15 +205,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           onDismiss: () => Navigator.of(context).pop(),
         );
         prefsKey = 'seen_day2_prompt';
-      } else if (daysSinceSignup >= 7 && daysSinceSignup <= 8 && currentStreak >= 5 &&
+      } else if (daysSinceSignup >= 7 &&
+          daysSinceSignup <= 8 &&
+          currentStreak >= 5 &&
           (prefs.getBool('seen_day7_milestone') ?? false) == false) {
         // FB-B3 fix: pop the dialog first, then navigate to Compatibility Checker
-        milestoneCard = Day7MilestoneCard(onFeatureTap: () {
-          Navigator.of(context).pop();
-          NavigationThrottle.push(context, const CompatibilityCheckerScreen());
-        });
+        milestoneCard = Day7MilestoneCard(
+          onFeatureTap: () {
+            Navigator.of(context).pop();
+            NavigationThrottle.push(
+              context,
+              const CompatibilityCheckerScreen(),
+            );
+          },
+        );
         prefsKey = 'seen_day7_milestone';
-      } else if (daysSinceSignup >= 30 && daysSinceSignup <= 31 && currentStreak >= 1 &&
+      } else if (daysSinceSignup >= 30 &&
+          daysSinceSignup <= 31 &&
+          currentStreak >= 1 &&
           (prefs.getBool('seen_day30_committed') ?? false) == false) {
         final totalXp = profile.totalXp;
         final lessonsCompleted = profile.completedLessons.length;
@@ -225,7 +245,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         if (prefsKey != null) await prefs.setBool(prefsKey, true);
       }
     } catch (e, st) {
-      logError('HomeScreen: returning user flow check failed: $e', stackTrace: st, tag: 'HomeScreen');
+      logError(
+        'HomeScreen: returning user flow check failed: $e',
+        stackTrace: st,
+        tag: 'HomeScreen',
+      );
     }
   }
 
@@ -251,30 +275,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // ── Helpers ───────────────────────────────────────────────────────────
 
   bool _isNewUser(WidgetRef ref) {
-    return !ref.watch(userProfileProvider.select((p) => p.value?.hasSeenTutorial ?? false));
+    return !ref.watch(
+      userProfileProvider.select((p) => p.value?.hasSeenTutorial ?? false),
+    );
   }
 
   // ── Navigation ────────────────────────────────────────────────────────
 
-  void _navigateToCreateTank(BuildContext context, {SetupMode mode = SetupMode.guided}) {
+  void _navigateToCreateTank(
+    BuildContext context, {
+    SetupMode mode = SetupMode.guided,
+  }) {
     if (!mounted || _isNavigatingToCreate) return;
     setState(() => _isNavigatingToCreate = true);
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (_) => CreateTankScreen(mode: mode)))
         .whenComplete(() async {
-      if (mounted) {
-        setState(() => _isNavigatingToCreate = false);
-        final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
-        ref.invalidate(tanksProvider);
-        final tanksAfter = await ref.read(tanksProvider.future)
-            .timeout(const Duration(seconds: 3), onTimeout: () => []);
-        if (mounted && tanksAfter.length > tanksBefore.length) {
-          final beforeIds = tanksBefore.map((t) => t.id).toSet();
-          final newIndex = tanksAfter.indexWhere((t) => !beforeIds.contains(t.id));
-          if (newIndex >= 0) setState(() => _currentTankIndex = newIndex);
-        }
-      }
-    });
+          if (mounted) {
+            setState(() => _isNavigatingToCreate = false);
+            final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
+            ref.invalidate(tanksProvider);
+            final tanksAfter = await ref
+                .read(tanksProvider.future)
+                .timeout(const Duration(seconds: 3), onTimeout: () => []);
+            if (mounted && tanksAfter.length > tanksBefore.length) {
+              final beforeIds = tanksBefore.map((t) => t.id).toSet();
+              final newIndex = tanksAfter.indexWhere(
+                (t) => !beforeIds.contains(t.id),
+              );
+              if (newIndex >= 0) setState(() => _currentTankIndex = newIndex);
+            }
+          }
+        });
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
@@ -283,7 +315,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _navigateToWaterChange(BuildContext context, Tank tank) {
     Navigator.of(context).push(
-      ModalScaleRoute(page: AddLogScreen(tankId: tank.id, initialType: LogType.waterChange)),
+      ModalScaleRoute(
+        page: AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
+      ),
     );
   }
 
@@ -294,25 +328,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
       return;
     }
-    final selectedTanks = allTanks.where((t) => _selectedTankIds.contains(t.id)).toList();
+    final selectedTanks = allTanks
+        .where((t) => _selectedTankIds.contains(t.id))
+        .toList();
     final tankNames = selectedTanks.map((t) => t.name).join(', ');
     final confirmed = await showAppDestructiveDialog(
       context: context,
-      title: 'Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?',
-      message: 'Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.',
-      destructiveLabel: 'Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}',
+      title:
+          'Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?',
+      message:
+          'Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.',
+      destructiveLabel:
+          'Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}',
       cancelLabel: 'Keep',
     );
     if (confirmed != true || !mounted) return;
     try {
-      await ref.read(tankActionsProvider).bulkDeleteTanks(_selectedTankIds.toList());
+      await ref
+          .read(tankActionsProvider)
+          .bulkDeleteTanks(_selectedTankIds.toList());
       if (context.mounted) {
-        setState(() { _isSelectMode = false; _selectedTankIds.clear(); _currentTankIndex = 0; });
-        DanioSnackBar.success(context, '${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted');
+        setState(() {
+          _isSelectMode = false;
+          _selectedTankIds.clear();
+          _currentTankIndex = 0;
+        });
+        DanioSnackBar.success(
+          context,
+          '${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted',
+        );
       }
     } catch (e, st) {
-      logError('HomeScreen: bulk delete tanks failed: $e', stackTrace: st, tag: 'HomeScreen');
-      if (context.mounted) DanioSnackBar.error(context, 'Couldn\'t delete those tanks, try again in a moment');
+      logError(
+        'HomeScreen: bulk delete tanks failed: $e',
+        stackTrace: st,
+        tag: 'HomeScreen',
+      );
+      if (context.mounted) {
+        DanioSnackBar.error(
+          context,
+          'Couldn\'t delete those tanks, try again in a moment',
+        );
+      }
     }
   }
 
@@ -333,7 +390,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final theme = ref.watch(currentRoomThemeProvider);
     final tanksAsync = ref.watch(tanksProvider);
     if (!mounted) return const SkeletonRoom();
-    if (tanksAsync.isLoading && !tanksAsync.hasValue) return const SkeletonRoom();
+    if (tanksAsync.isLoading && !tanksAsync.hasValue) {
+      return const SkeletonRoom();
+    }
     if (tanksAsync.hasError && !tanksAsync.hasValue) {
       return AppErrorState(
         title: 'Couldn\'t load your tanks',
@@ -343,160 +402,199 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     final tanksData = tanksAsync.valueOrNull ?? [];
-    return Builder(builder: (context) {
-      final tanks = tanksData;
-      if (!mounted) return const SkeletonRoom();
+    return Builder(
+      builder: (context) {
+        final tanks = tanksData;
+        if (!mounted) return const SkeletonRoom();
 
-      if (tanks.isEmpty) {
-        return EmptyRoomScene(
-          onCreateTank: (mode) => _navigateToCreateTank(context, mode: mode),
-          onLoadDemo: () async {
-            final actions = ref.read(tankActionsProvider);
-            final demoTank = await actions.seedDemoTankIfEmpty();
-            if (!mounted) return;
-            ref.invalidate(tanksProvider);
-            try {
-              await ref.read(tanksProvider.future).timeout(const Duration(seconds: 3), onTimeout: () => [demoTank]);
-            } catch (e, st) {
-              logError('HomeScreen: demo tank refresh after delete failed: $e', stackTrace: st, tag: 'HomeScreen');
-            }
-            if (context.mounted) _navigateToTankDetail(context, demoTank);
-          },
-        );
-      }
+        if (tanks.isEmpty) {
+          return EmptyRoomScene(
+            onCreateTank: (mode) => _navigateToCreateTank(context, mode: mode),
+            onLoadDemo: () async {
+              final actions = ref.read(tankActionsProvider);
+              final demoTank = await actions.seedDemoTankIfEmpty();
+              if (!mounted) return;
+              ref.invalidate(tanksProvider);
+              try {
+                await ref
+                    .read(tanksProvider.future)
+                    .timeout(
+                      const Duration(seconds: 3),
+                      onTimeout: () => [demoTank],
+                    );
+              } catch (e, st) {
+                logError(
+                  'HomeScreen: demo tank refresh after delete failed: $e',
+                  stackTrace: st,
+                  tag: 'HomeScreen',
+                );
+              }
+              if (context.mounted) _navigateToTankDetail(context, demoTank);
+            },
+          );
+        }
 
-      final currentTank = tanks[_currentTankIndex % tanks.length];
-      final currentLogs =
-          ref.watch(logsProvider(currentTank.id)).valueOrNull ?? [];
-      return Stack(
-        children: [
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: LightingPulseWrapper(
-                child: LivingRoomScene(
-                  tankId: currentTank.id,
-                  tankName: currentTank.name,
-                  tankVolume: currentTank.volumeLitres,
-                  theme: theme,
-                  isNewUser: _isNewUser(ref),
-                  onTankTap: () => _navigateToTankDetail(context, currentTank),
-                  onTestKitTap: () => showWaterParams(context, currentLogs, currentTank.id),
-                  onFoodTap: () => showFeedingInfo(context, currentLogs, currentTank.id),
-                  onPlantTap: () => showPlantInfo(context),
-                  onStatsTap: () => showStatsInfo(context, currentLogs, currentTank.id),
-                  onThemeTap: () => showThemePicker(context, ref),
-                  onJournalTap: () => NavigationThrottle.push(context, JournalScreen(tankId: currentTank.id), route: RoomSlideRoute(page: JournalScreen(tankId: currentTank.id))),
-                  onCalendarTap: () => showStreakCalendar(context),
-                ),
-              ),
-            ),
-          ),
-
-          // Stage system
-          Positioned.fill(
-            child: Consumer(builder: (context, ref, _) {
-              final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
-              return IgnorePointer(ignoring: !hasOpen, child: const StageScrim());
-            }),
-          ),
-          Positioned.fill(
-            child: Consumer(builder: (context, ref, _) {
-              final roomTheme = ref.watch(currentRoomThemeProvider);
-              return Stack(children: [
-                SwissArmyPanel.left(theme: roomTheme, child: TempPanelContent(tankId: currentTank.id, theme: roomTheme)),
-                SwissArmyPanel.right(theme: roomTheme, child: WaterPanelContent(tankId: currentTank.id, theme: roomTheme)),
-              ]);
-            }),
-          ),
-          AmbientTipOverlay(theme: theme),
-
-          // Stage handle strips
-          //
-          // Note: previously had subtle 3px translucent accent strips on each
-          // edge (when the matching panel was closed) as a "panel exists" hint.
-          // QA brief 2026-04 flagged the right strip as an unwanted transparent
-          // edge — removed both for symmetry. The StageHandleStrip widgets
-          // themselves remain as the panel-open affordance.
-          Builder(builder: (context) {
-            final topOffset = MediaQuery.of(context).size.height * 0.38;
-            return Stack(children: [
-              Positioned(left: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.temp, isLeft: true, icon: Icons.thermostat_rounded)),
-              Positioned(right: 0, top: topOffset, child: const StageHandleStrip(panel: StagePanel.waterQuality, isLeft: false, icon: Icons.science_rounded)),
-            ]);
-          }),
-
-          // Top bar overlay
-          Positioned(
-            top: 0, left: 0, right: 0,
-            child: Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + AppSpacing.sm,
-                left: AppSpacing.md, right: AppSpacing.sm, bottom: AppSpacing.sm,
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [AppOverlays.black30, Colors.transparent]),
-              ),
-              child: Row(children: [
-                const Spacer(),
-                const Padding(padding: EdgeInsets.only(right: AppSpacing.sm), child: HeartIndicator(compact: true)),
-                Semantics(
-                  label: 'Tank Toolbox', button: true,
-                  child: IconButton(
-                    icon: const Icon(Icons.build_outlined, color: AppOverlays.white90),
-                    tooltip: 'Tank Toolbox',
-                    onPressed: () => showTankToolbox(context, ref, currentTank.id),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.settings_outlined, color: AppOverlays.white90),
-                  tooltip: 'Tank Settings',
-                  onPressed: () => NavigationThrottle.push(context, TankSettingsScreen(tankId: currentTank.id)),
-                ),
-              ]),
-            ),
-          ),
-
-          const StreakHeartsOverlay(),
-
-          // Demo tank banner (Fix 2: has dismiss × button)
-          if (currentTank.isDemoTank && !_demoModeDismissed)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + _notificationSlotTopOffset,
-              left: AppSpacing.md,
-              right: AppSpacing.md,
-              child: Container(
-                padding: const EdgeInsets.only(left: AppSpacing.sm, top: AppSpacing.xs, bottom: AppSpacing.xs, right: AppSpacing.xs),
-                decoration: BoxDecoration(
-                  color: AppColors.warning,
-                  borderRadius: AppRadius.smallRadius,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.science_outlined, size: 14, color: AppColors.onWarning),
-                    const SizedBox(width: AppSpacing.xs),
-                    Flexible(
-                      child: Text(
-                        'Demo Mode — this is sample data',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.onWarning,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+        final currentTank = tanks[_currentTankIndex % tanks.length];
+        final currentLogs =
+            ref.watch(logsProvider(currentTank.id)).valueOrNull ?? [];
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: RepaintBoundary(
+                child: LightingPulseWrapper(
+                  child: LivingRoomScene(
+                    tankId: currentTank.id,
+                    tankName: currentTank.name,
+                    tankVolume: currentTank.volumeLitres,
+                    theme: theme,
+                    isNewUser: _isNewUser(ref),
+                    onTankTap: () =>
+                        _navigateToTankDetail(context, currentTank),
+                    onTestKitTap: () =>
+                        showWaterParams(context, currentLogs, currentTank.id),
+                    onFoodTap: () =>
+                        showFeedingInfo(context, currentLogs, currentTank.id),
+                    onPlantTap: () => showPlantInfo(context),
+                    onStatsTap: () =>
+                        showStatsInfo(context, currentLogs, currentTank.id),
+                    onThemeTap: () => showThemePicker(context, ref),
+                    onJournalTap: () => NavigationThrottle.push(
+                      context,
+                      JournalScreen(tankId: currentTank.id),
+                      route: RoomSlideRoute(
+                        page: JournalScreen(tankId: currentTank.id),
                       ),
                     ),
-                    Semantics(
-                      label: 'Dismiss demo mode banner',
-                      button: true,
-                      child: GestureDetector(
-                        onTap: () => setState(() => _demoModeDismissed = true),
-                        child: const SizedBox(
-                          width: 48,
-                          height: 48,
-                          child: Center(
-                            child: Icon(Icons.close, size: 18, color: AppColors.onWarning),
-                          ),
+                    onCalendarTap: () => showStreakCalendar(context),
+                  ),
+                ),
+              ),
+            ),
+
+            // Stage system
+            Positioned.fill(
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final hasOpen = ref.watch(
+                    stageProvider.select((s) => s.openPanels.isNotEmpty),
+                  );
+                  return IgnorePointer(
+                    ignoring: !hasOpen,
+                    child: const StageScrim(),
+                  );
+                },
+              ),
+            ),
+            Positioned.fill(
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final roomTheme = ref.watch(currentRoomThemeProvider);
+                  return Stack(
+                    children: [
+                      SwissArmyPanel.left(
+                        theme: roomTheme,
+                        child: TempPanelContent(
+                          tankId: currentTank.id,
+                          theme: roomTheme,
                         ),
+                      ),
+                      SwissArmyPanel.right(
+                        theme: roomTheme,
+                        child: WaterPanelContent(
+                          tankId: currentTank.id,
+                          theme: roomTheme,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            AmbientTipOverlay(theme: theme),
+
+            // Stage handle strips
+            //
+            // Note: previously had subtle 3px translucent accent strips on each
+            // edge (when the matching panel was closed) as a "panel exists" hint.
+            // QA brief 2026-04 flagged the right strip as an unwanted transparent
+            // edge — removed both for symmetry. The StageHandleStrip widgets
+            // themselves remain as the panel-open affordance.
+            Builder(
+              builder: (context) {
+                final topOffset = MediaQuery.of(context).size.height * 0.38;
+                return Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: topOffset,
+                      child: const StageHandleStrip(
+                        panel: StagePanel.temp,
+                        isLeft: true,
+                        icon: Icons.thermostat_rounded,
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: topOffset,
+                      child: const StageHandleStrip(
+                        panel: StagePanel.waterQuality,
+                        isLeft: false,
+                        icon: Icons.science_rounded,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+
+            // Top bar overlay
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + AppSpacing.sm,
+                  left: AppSpacing.md,
+                  right: AppSpacing.sm,
+                  bottom: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [AppOverlays.black30, Colors.transparent],
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    const Padding(
+                      padding: EdgeInsets.only(right: AppSpacing.sm),
+                      child: HeartIndicator(compact: true),
+                    ),
+                    Semantics(
+                      label: 'Tank Toolbox',
+                      button: true,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.build_outlined,
+                          color: AppOverlays.white90,
+                        ),
+                        tooltip: 'Tank Toolbox',
+                        onPressed: () =>
+                            showTankToolbox(context, ref, currentTank.id),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.settings_outlined,
+                        color: AppOverlays.white90,
+                      ),
+                      tooltip: 'Tank Settings',
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        TankSettingsScreen(tankId: currentTank.id),
                       ),
                     ),
                   ],
@@ -504,102 +602,193 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-          // Bottom sheet panel (single DraggableScrollableSheet with 4 tabs)
-          //
-          // QA fix 2026-04: wrapped in MediaQuery.removePadding(removeBottom)
-          // because DraggableScrollableSheet internally subtracts MediaQuery
-          // .padding.bottom from its child size to leave room for system
-          // insets. The TabNavigator parent already shrinks this region to
-          // exclude the nav bar via Padding(bottom: padding.bottom), but
-          // MediaQuery.padding.bottom still reports the nav-bar height
-          // (because TabNavigator's Scaffold uses extendBody:true). Without
-          // removePadding, the sheet's bottom edge sat ~80dp above the nav
-          // bar top, leaving a visible cream gap.
-          Positioned.fill(
-            child: MediaQuery.removePadding(
-              context: context,
-              removeBottom: true,
-              child: Semantics(
-                label: 'Activity panel — Progress, Tanks, Today',
-                child: BottomSheetPanel(
-                  progressContent: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                    child: GamificationDashboard(onTap: () => showStatsDetails(context, ref)),
+            const StreakHeartsOverlay(),
+
+            // Demo tank banner (Fix 2: has dismiss × button)
+            if (currentTank.isDemoTank && !_demoModeDismissed)
+              Positioned(
+                top:
+                    MediaQuery.of(context).padding.top +
+                    _notificationSlotTopOffset,
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                child: Container(
+                  padding: const EdgeInsets.only(
+                    left: AppSpacing.sm,
+                    top: AppSpacing.xs,
+                    bottom: AppSpacing.xs,
+                    right: AppSpacing.xs,
                   ),
-                  tanksContent: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                  decoration: BoxDecoration(
+                    color: AppColors.warning,
+                    borderRadius: AppRadius.smallRadius,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: AppSpacing.sm),
-                      if (!_isSelectMode)
-                        TankSwitcher(
-                          tanks: tanks, currentIndex: _currentTankIndex,
-                          onChanged: (index) => setState(() => _currentTankIndex = index),
-                          onAddTank: () => _navigateToCreateTank(context),
-                          onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
-                        )
-                      else
-                        SelectionModePanel(
-                          tanks: tanks, selectedIds: _selectedTankIds,
-                          onToggleSelection: _toggleTankSelection,
-                          onCancel: _toggleSelectMode,
-                          onDeleteSelected: () => _bulkDelete(context, tanks),
-                          onExportSelected: () => _bulkExport(context, tanks),
+                      const Icon(
+                        Icons.science_outlined,
+                        size: 14,
+                        color: AppColors.onWarning,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Flexible(
+                        child: Text(
+                          'Demo Mode — this is sample data',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.onWarning,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      const SizedBox(height: AppSpacing.sm),
-                      ...tanks.asMap().entries.map((e) => TankListTile(
-                        name: e.value.name,
-                        volumeLitres: e.value.volumeLitres,
-                        isSelected: e.key == _currentTankIndex,
-                        showChevron: true,
-                        isDemoTank: e.value.isDemoTank,
-                        onTap: () => _navigateToTankDetail(context, e.value),
-                      )),
-                      // Add New Tank action
-                      ListTile(
-                        dense: true,
-                        leading: Icon(
-                          Icons.add_circle_outline_rounded,
-                          color: context.textSecondary.withAlpha(128),
-                          size: 20,
-                        ),
-                        title: Text(
-                          'Add New Tank',
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: context.textSecondary.withAlpha(160),
+                      ),
+                      Semantics(
+                        label: 'Dismiss demo mode banner',
+                        button: true,
+                        child: GestureDetector(
+                          onTap: () =>
+                              setState(() => _demoModeDismissed = true),
+                          child: const SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: Center(
+                              child: Icon(
+                                Icons.close,
+                                size: 18,
+                                color: AppColors.onWarning,
+                              ),
+                            ),
                           ),
                         ),
-                        trailing: Icon(Icons.add, color: context.textHint, size: 18),
-                        onTap: () => _navigateToCreateTank(context),
                       ),
-                      const Divider(height: 1),
                     ],
                   ),
-                  todayContent: Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
-                    child: TodayBoardCard(tankId: currentTank.id),
+                ),
+              ),
+
+            // Bottom sheet panel (single DraggableScrollableSheet with 4 tabs)
+            //
+            // MediaQuery.removePadding(removeBottom) prevents
+            // DraggableScrollableSheet from internally subtracting the bottom
+            // padding when sizing itself. The TabNavigator parent already
+            // excludes the nav bar area via Padding(bottom: systemInset + 80),
+            // so the sheet should fill the available space without any extra
+            // bottom inset.
+            Positioned.fill(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeBottom: true,
+                child: Semantics(
+                  label: 'Activity panel — Progress, Tanks, Today',
+                  child: BottomSheetPanel(
+                    progressContent: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
+                      child: GamificationDashboard(
+                        onTap: () => showStatsDetails(context, ref),
+                      ),
+                    ),
+                    tanksContent: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: AppSpacing.sm),
+                        if (!_isSelectMode)
+                          TankSwitcher(
+                            tanks: tanks,
+                            currentIndex: _currentTankIndex,
+                            onChanged: (index) =>
+                                setState(() => _currentTankIndex = index),
+                            onAddTank: () => _navigateToCreateTank(context),
+                            onLongPress: tanks.length > 1
+                                ? _toggleSelectMode
+                                : null,
+                          )
+                        else
+                          SelectionModePanel(
+                            tanks: tanks,
+                            selectedIds: _selectedTankIds,
+                            onToggleSelection: _toggleTankSelection,
+                            onCancel: _toggleSelectMode,
+                            onDeleteSelected: () => _bulkDelete(context, tanks),
+                            onExportSelected: () => _bulkExport(context, tanks),
+                          ),
+                        const SizedBox(height: AppSpacing.sm),
+                        ...tanks.asMap().entries.map(
+                          (e) => TankListTile(
+                            name: e.value.name,
+                            volumeLitres: e.value.volumeLitres,
+                            isSelected: e.key == _currentTankIndex,
+                            showChevron: true,
+                            isDemoTank: e.value.isDemoTank,
+                            onTap: () =>
+                                _navigateToTankDetail(context, e.value),
+                          ),
+                        ),
+                        // Add New Tank action
+                        ListTile(
+                          dense: true,
+                          leading: Icon(
+                            Icons.add_circle_outline_rounded,
+                            color: context.textSecondary.withAlpha(128),
+                            size: 20,
+                          ),
+                          title: Text(
+                            'Add New Tank',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: context.textSecondary.withAlpha(160),
+                            ),
+                          ),
+                          trailing: Icon(
+                            Icons.add,
+                            color: context.textHint,
+                            size: 18,
+                          ),
+                          onTap: () => _navigateToCreateTank(context),
+                        ),
+                        const Divider(height: 1),
+                      ],
+                    ),
+                    todayContent: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        AppSpacing.sm,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                      ),
+                      child: TodayBoardCard(tankId: currentTank.id),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          RoomControlFAB(
-            isHidden: _isNavigatingToCreate,
-            onStats: () => showStatsInfo(context, currentLogs, currentTank.id),
-            onWaterChange: () => _navigateToWaterChange(context, currentTank),
-            onFeed: () => showFeedingInfo(context, currentLogs, currentTank.id),
-            onQuickTest: () => showQuickLogSheet(context, ref, currentTank),
-            onAddTank: () => _navigateToCreateTank(context),
-          ),
-
-          if (!_dailyNudgeDismissed)
-            DailyNudgeBanner(
-              topOffset: _notificationSlotTopOffset,
-              onDismiss: () => setState(() => _dailyNudgeDismissed = true),
+            RoomControlFAB(
+              isHidden: _isNavigatingToCreate,
+              onStats: () =>
+                  showStatsInfo(context, currentLogs, currentTank.id),
+              onWaterChange: () => _navigateToWaterChange(context, currentTank),
+              onFeed: () =>
+                  showFeedingInfo(context, currentLogs, currentTank.id),
+              onQuickTest: () => showQuickLogSheet(context, ref, currentTank),
+              onAddTank: () => _navigateToCreateTank(context),
             ),
-        ],
-      );
-    });
+
+            if (!_dailyNudgeDismissed &&
+                !_showWelcomeBanner &&
+                !_showComebackBanner &&
+                !_showTankTooltip &&
+                !_showHeartsTooltip &&
+                !_showStageHandleTooltip &&
+                !_showRoomMetaphorTooltip)
+              DailyNudgeBanner(
+                topOffset: _notificationSlotTopOffset,
+                onDismiss: () => setState(() => _dailyNudgeDismissed = true),
+              ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -644,12 +833,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: FirstVisitTooltip(
                   prefsKey: 'tooltip_seen_tank',
                   emoji: '🏠',
-                  message: 'This is your Living Room — manage your aquariums here!',
+                  message:
+                      'This is your Living Room — manage your aquariums here.',
                   onDismissed: () => setState(() => _showTankTooltip = false),
                 ),
               ),
             ),
-          if (_showHeartsTooltip && !showWelcome && !showComeback)
+          if (_showHeartsTooltip &&
+              !showWelcome &&
+              !showComeback &&
+              !_showTankTooltip)
             Positioned(
               top: 56,
               left: 0,
@@ -657,12 +850,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: FirstVisitTooltip(
                 prefsKey: 'tooltip_seen_hearts',
                 emoji: '❤️',
-                message: 'Hearts show your progress! Earn them by completing lessons and caring for your tank. Lose one for each wrong quiz answer — but don\'t worry, they reset daily!',
+                message:
+                    'Hearts track progress. Wrong quiz answers cost one, and they reset daily.',
                 autoDismissDuration: const Duration(seconds: 6),
                 onDismissed: () => setState(() => _showHeartsTooltip = false),
               ),
             ),
-          if (_showStageHandleTooltip && !showWelcome && !showComeback)
+          if (_showStageHandleTooltip &&
+              !showWelcome &&
+              !showComeback &&
+              !_showTankTooltip &&
+              !_showHeartsTooltip)
             Positioned(
               bottom: 160,
               left: 0,
@@ -670,12 +868,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: FirstVisitTooltip(
                 prefsKey: 'tooltip_seen_stage_handles',
                 emoji: '👆',
-                message: 'Tap the side handles to check water parameters and feeding info!',
+                message: 'Tap the side handles for water and feeding details.',
                 autoDismissDuration: const Duration(seconds: 5),
-                onDismissed: () => setState(() => _showStageHandleTooltip = false),
+                onDismissed: () =>
+                    setState(() => _showStageHandleTooltip = false),
               ),
             ),
-          if (_showRoomMetaphorTooltip && !showWelcome && !showComeback && !_showTankTooltip && !_showHeartsTooltip && !_showStageHandleTooltip)
+          if (_showRoomMetaphorTooltip &&
+              !showWelcome &&
+              !showComeback &&
+              !_showTankTooltip &&
+              !_showHeartsTooltip &&
+              !_showStageHandleTooltip)
             Positioned(
               top: 0,
               left: 0,
@@ -685,9 +889,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: FirstVisitTooltip(
                   prefsKey: 'tooltip_seen_room_metaphor',
                   emoji: '🏡',
-                  message: 'This is your virtual fish room. Your tank lives in the centre — tap the panels on each side to check water parameters, lighting, and more!',
+                  message:
+                      'Your tank lives in the centre. Use side panels for care details.',
                   autoDismissDuration: const Duration(seconds: 6),
-                  onDismissed: () => setState(() => _showRoomMetaphorTooltip = false),
+                  onDismissed: () =>
+                      setState(() => _showRoomMetaphorTooltip = false),
                 ),
               ),
             ),

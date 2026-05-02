@@ -8,21 +8,21 @@ class AppTypography {
   static TextStyle get headlineLarge => GoogleFonts.fredoka(
     fontSize: 32,
     fontWeight: FontWeight.w700,
-    letterSpacing: -0.5,
+    letterSpacing: 0,
     height: 1.2,
   );
 
   static TextStyle get headlineMedium => GoogleFonts.fredoka(
     fontSize: 24,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     height: 1.3,
   );
 
   static TextStyle get headlineSmall => GoogleFonts.fredoka(
     fontSize: 20,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.2,
+    letterSpacing: 0,
     height: 1.3,
   );
 
@@ -30,14 +30,14 @@ class AppTypography {
   static TextStyle get titleLarge => GoogleFonts.fredoka(
     fontSize: 22,
     fontWeight: FontWeight.w600,
-    letterSpacing: -0.2,
+    letterSpacing: 0,
     height: 1.3,
   );
 
   static TextStyle get titleMedium => GoogleFonts.nunito(
     fontSize: 18,
     fontWeight: FontWeight.w700,
-    letterSpacing: -0.1,
+    letterSpacing: 0,
     height: 1.3,
   );
 

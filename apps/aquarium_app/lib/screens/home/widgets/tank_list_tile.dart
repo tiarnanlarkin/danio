@@ -37,17 +37,24 @@ class TankListTile extends StatelessWidget {
       ),
       title: Row(
         children: [
-          Text(
-            name,
-            style: TextStyle(
-              color: isSelected ? context.textPrimary : context.textSecondary,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          Flexible(
+            child: Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: isSelected ? context.textPrimary : context.textSecondary,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
             ),
           ),
           if (isDemoTank) ...[
             const SizedBox(width: AppSpacing.xs2),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs2, vertical: AppSpacing.hairline),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xs2,
+                vertical: AppSpacing.hairline,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.primary.withAlpha(30),
                 borderRadius: AppRadius.xsRadius,

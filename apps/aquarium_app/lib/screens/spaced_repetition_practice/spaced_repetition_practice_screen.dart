@@ -14,6 +14,7 @@ import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/danio_snack_bar.dart';
 import 'review_session_screen.dart';
+import '../tab_navigator.dart';
 
 class SpacedRepetitionPracticeScreen extends ConsumerStatefulWidget {
   const SpacedRepetitionPracticeScreen({super.key});
@@ -60,8 +61,7 @@ class _SpacedRepetitionPracticeScreenState
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 ElevatedButton.icon(
-                  onPressed: () =>
-                      ref.invalidate(spacedRepetitionProvider),
+                  onPressed: () => ref.invalidate(spacedRepetitionProvider),
                   icon: const Icon(Icons.refresh),
                   label: const Text('Try again'),
                 ),
@@ -129,8 +129,10 @@ class _SpacedRepetitionPracticeScreenState
             const SizedBox(height: AppSpacing.lg),
             AppButton(
               label: 'Try a new lesson',
-              onPressed: () =>
-                  Navigator.of(context).popUntil((route) => route.isFirst),
+              onPressed: () {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                ref.read(currentTabProvider.notifier).state = 0;
+              },
               leadingIcon: Icons.auto_stories,
               variant: AppButtonVariant.primary,
             ),
@@ -177,7 +179,7 @@ class _SpacedRepetitionPracticeScreenState
   }
 
   int _getPracticeHomeItemCount(SpacedRepetitionState srState) {
-    return srState.stats.totalCards > 0 ? 15 : 12;
+    return srState.stats.totalCards > 0 ? 16 : 12;
   }
 
   Widget _buildPracticeHomeItem(
@@ -414,8 +416,7 @@ class _SpacedRepetitionPracticeScreenState
                 child: Text(
                   count == 0 ? 'None' : '$count',
                   style: AppTypography.labelLarge.copyWith(
-                    color:
-                        enabled && count > 0 ? color : context.textHint,
+                    color: enabled && count > 0 ? color : context.textHint,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

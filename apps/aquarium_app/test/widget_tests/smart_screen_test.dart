@@ -16,18 +16,19 @@ import 'package:danio/widgets/offline_indicator.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({bool isOnline = true}) {
+Widget _wrap({bool isOnline = true, bool aiConfigured = false}) {
   return ProviderScope(
     overrides: [
-      openAIServiceProvider.overrideWithValue(OpenAIService()),
+      openAIServiceProvider.overrideWithValue(
+        OpenAIService(directApiKey: aiConfigured ? 'sk-test' : ''),
+      ),
+      openAIConfiguredProvider.overrideWith((ref) async => aiConfigured),
       isOnlineProvider.overrideWithValue(isOnline),
       aiHistoryProvider.overrideWith((ref) => AIHistoryNotifier(ref)),
       anomalyHistoryProvider.overrideWith((ref) => AnomalyHistoryNotifier(ref)),
       // apiRateLimiterProvider is built by the framework — not overridden here
     ],
-    child: const MaterialApp(
-      home: SmartScreen(),
-    ),
+    child: const MaterialApp(home: SmartScreen()),
   );
 }
 
@@ -60,11 +61,17 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
+      expect(find.textContaining('coming soon'), findsNothing);
+      expect(find.textContaining('AI is configured'), findsOneWidget);
+
       // When not configured, feature cards are rendered but may be offstage
       // (below the viewport fold in the SliverList). Use skipOffstage: false.
       expect(find.text('Fish & Plant ID', skipOffstage: false), findsOneWidget);
       expect(find.text('Symptom Checker', skipOffstage: false), findsOneWidget);
-      expect(find.text('Weekly Care Plan', skipOffstage: false), findsOneWidget);
+      expect(
+        find.text('Weekly Care Plan', skipOffstage: false),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows AI feature section cards', (tester) async {
@@ -72,7 +79,24 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       // Weekly Care Plan card should be present (may be offstage in SliverList)
-      expect(find.text('Weekly Care Plan', skipOffstage: false), findsOneWidget);
+      expect(
+        find.text('Weekly Care Plan', skipOffstage: false),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('shows AI-only controls when Smart features are configured', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(aiConfigured: true));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Ask Danio', skipOffstage: false), findsOneWidget);
+      expect(
+        find.text('Snap a photo to identify species', skipOffstage: false),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -78,6 +78,9 @@ class OpenAIService {
   static const _requestTimeout = Duration(seconds: 30);
 
   final http.Client _client;
+  final String _proxyUrl;
+  final String _proxyAuthToken;
+  final String? _directApiKeyOverride;
   DateTime _lastCallTime = DateTime.fromMillisecondsSinceEpoch(0);
 
   /// Monthly usage tracking - resets on first call each month.
@@ -86,17 +89,29 @@ class OpenAIService {
 
   int get apiCallsThisMonth => _apiCallsThisMonth;
 
-  OpenAIService({http.Client? client}) : _client = client ?? http.Client();
+  OpenAIService({
+    http.Client? client,
+    String? proxyUrl,
+    String? proxyAuthToken,
+    String? directApiKey,
+  }) : _client = client ?? http.Client(),
+       _proxyUrl = proxyUrl ?? AiProxyService.proxyUrl,
+       _proxyAuthToken = proxyAuthToken ?? AiProxyService.proxyAuthToken,
+       _directApiKeyOverride = directApiKey;
 
   /// Whether the API key is configured.
   /// Synchronous check — uses cached/build-time key for quick UI decisions.
   /// For a definitive async check, use [isConfiguredAsync].
   bool get isConfigured {
+    if (_usesProxy) return _proxyAuthToken.isNotEmpty;
+
     // Fast path: check build-time key first, then cached prefs synchronously.
     // AiProxyService.getApiKey() is async, so we use the build-time fallback
     // here for backward-compatible synchronous callers (SmartScreen, etc.).
     const buildKey = String.fromEnvironment('OPENAI_API_KEY');
-    return buildKey.isNotEmpty || _cachedUserKey != null;
+    return (_directApiKeyOverride?.isNotEmpty ?? false) ||
+        buildKey.isNotEmpty ||
+        _cachedUserKey != null;
   }
 
   /// Cached user key loaded at service initialisation (or on demand).
@@ -104,8 +119,18 @@ class OpenAIService {
 
   /// Async initialise — load user key into cache so [isConfigured] is accurate.
   Future<void> init() async {
-    final key = await AiProxyService.getApiKey();
+    if (_usesProxy) return;
+
+    final key = await _directApiKey();
     _cachedUserKey = key.isNotEmpty ? key : null;
+  }
+
+  /// Definitive async configuration check used before sending requests.
+  Future<bool> isConfiguredAsync() async {
+    if (_usesProxy) return _proxyAuthToken.isNotEmpty;
+    final key = await _directApiKey();
+    _cachedUserKey = key.isNotEmpty ? key : null;
+    return key.isNotEmpty;
   }
 
   /// Chat completion (non-streaming).
@@ -127,7 +152,7 @@ class OpenAIService {
     };
     if (maxTokens != null) body['max_tokens'] = maxTokens;
 
-    final response = await _postWithRetry('$_baseUrl/chat/completions', body);
+    final response = await _postWithRetry(_chatCompletionsUrl, body);
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     final choices = data['choices'] as List;
@@ -161,10 +186,9 @@ class OpenAIService {
     };
     if (maxTokens != null) body['max_tokens'] = maxTokens;
 
-    final request =
-        http.Request('POST', Uri.parse('$_baseUrl/chat/completions'))
-          ..headers.addAll(await _headers())
-          ..body = jsonEncode(body);
+    final request = http.Request('POST', Uri.parse(_chatCompletionsUrl))
+      ..headers.addAll(await _headers())
+      ..body = jsonEncode(body);
 
     final streamedResponse = await _client.send(request);
     if (streamedResponse.statusCode != 200) {
@@ -192,7 +216,10 @@ class OpenAIService {
         }
       } catch (e) {
         // Skip malformed chunks
-        logError('OpenAI: skipping malformed SSE chunk: $e', tag: 'OpenaiService');
+        logError(
+          'OpenAI: skipping malformed SSE chunk: $e',
+          tag: 'OpenaiService',
+        );
       }
     }
   }
@@ -237,16 +264,45 @@ class OpenAIService {
 
   // --- Private helpers ---
 
+  bool get _usesProxy => _proxyUrl.isNotEmpty;
+
+  String get _chatCompletionsUrl =>
+      _usesProxy ? _proxyUrl : '$_baseUrl/chat/completions';
+
+  Future<String> _directApiKey() async {
+    final override = _directApiKeyOverride;
+    if (override != null) return override;
+    return AiProxyService.getApiKey();
+  }
+
   Future<Map<String, String>> _headers() async {
-    final key = await AiProxyService.getApiKey();
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $key',
-    };
+    if (_usesProxy) {
+      if (_proxyAuthToken.isEmpty) {
+        throw const OpenAIException(
+          'AI proxy is configured but the Supabase anon key is missing.',
+        );
+      }
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $_proxyAuthToken',
+      };
+    }
+
+    final key = await _directApiKey();
+    return {'Content-Type': 'application/json', 'Authorization': 'Bearer $key'};
   }
 
   Future<void> _assertConfigured() async {
-    final key = await AiProxyService.getApiKey();
+    if (_usesProxy) {
+      if (_proxyAuthToken.isEmpty) {
+        throw const OpenAIException(
+          'AI proxy is configured but the Supabase anon key is missing.',
+        );
+      }
+      return;
+    }
+
+    final key = await _directApiKey();
     // Refresh cache for synchronous `isConfigured` getter.
     _cachedUserKey = key.isNotEmpty ? key : null;
     if (key.isEmpty) {
@@ -305,7 +361,11 @@ class OpenAIService {
       attempt++;
       try {
         final response = await _client
-            .post(Uri.parse(url), headers: await _headers(), body: jsonEncode(body))
+            .post(
+              Uri.parse(url),
+              headers: await _headers(),
+              body: jsonEncode(body),
+            )
             .timeout(_requestTimeout);
 
         if (response.statusCode == 200) return response;
@@ -313,7 +373,10 @@ class OpenAIService {
         if (response.statusCode == 429 && attempt < _maxRetries) {
           // Rate limited — exponential backoff.
           final delay = Duration(seconds: math.min(attempt * 2, 16));
-          appLog('OpenAI rate limited, retrying in ${delay.inSeconds}s', tag: 'OpenaiService');
+          appLog(
+            'OpenAI rate limited, retrying in ${delay.inSeconds}s',
+            tag: 'OpenaiService',
+          );
           await Future<void>.delayed(delay);
           continue;
         }
@@ -321,7 +384,10 @@ class OpenAIService {
         if (response.statusCode >= 500 && attempt < _maxRetries) {
           // Transient server error — retry once with backoff.
           final delay = Duration(seconds: math.min(attempt * 2, 16));
-          appLog('OpenAI server error ${response.statusCode}, retrying in ${delay.inSeconds}s', tag: 'OpenaiService');
+          appLog(
+            'OpenAI server error ${response.statusCode}, retrying in ${delay.inSeconds}s',
+            tag: 'OpenaiService',
+          );
           await Future<void>.delayed(delay);
           continue;
         }
@@ -377,4 +443,10 @@ final openAIServiceProvider = Provider<OpenAIService>((ref) {
   final service = OpenAIService();
   ref.onDispose(service.dispose);
   return service;
+});
+
+/// Reactive configuration state for UI gating. The service itself still checks
+/// configuration before each request so stale UI state cannot send bad calls.
+final openAIConfiguredProvider = FutureProvider<bool>((ref) async {
+  return AiProxyService.hasApiKey;
 });

@@ -161,6 +161,7 @@ class BackupService {
     if (!await photosDir.exists()) {
       await photosDir.create(recursive: true);
     }
+    final restorePrefix = await _restorePhotoPrefix(zipPath);
 
     final photoFiles = archive.files
         .where((f) => f.isFile && f.name.startsWith('$_photosFolder/'))
@@ -175,7 +176,7 @@ class BackupService {
 
     for (var i = 0; i < totalPhotos; i++) {
       final file = photoFiles[i];
-      final filename = p.basename(file.name);
+      final filename = _restoredPhotoFilename(restorePrefix, file.name);
       final destPath = p.join(photosDir.path, filename);
       final destFile = File(destPath);
 
@@ -219,7 +220,7 @@ class BackupService {
     final data = jsonDecode(jsonString) as Map<String, dynamic>;
 
     // Resolve any photo refs to current device paths.
-    return _resolvePhotoRefsToAbsolute(data);
+    return _resolvePhotoRefsToAbsolute(data, zipPath: zipPath);
   }
 
   Future<Archive> _decodeZip(String zipPath) async {
@@ -234,6 +235,20 @@ class BackupService {
   Future<Directory> _getPhotosDirectory() async {
     final docs = await _getDocumentsDirectory();
     return Directory(p.join(docs.path, _photosFolder));
+  }
+
+  Future<String> _restorePhotoPrefix(String zipPath) async {
+    final zipFile = File(zipPath);
+    final modified = await zipFile.lastModified();
+    final baseName = p.basenameWithoutExtension(zipPath);
+    final safeBaseName = baseName
+        .replaceAll(RegExp(r'[^A-Za-z0-9_-]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_');
+    return 'import_${safeBaseName}_${modified.millisecondsSinceEpoch}';
+  }
+
+  String _restoredPhotoFilename(String restorePrefix, String photoRef) {
+    return '${restorePrefix}_${p.basename(photoRef)}';
   }
 
   Future<Directory> _getDocumentsDirectory() async {
@@ -315,9 +330,11 @@ class BackupService {
   /// Resolve any photo refs in [data] to absolute paths under the current
   /// documents directory.
   Future<Map<String, dynamic>> _resolvePhotoRefsToAbsolute(
-    Map<String, dynamic> data,
-  ) async {
+    Map<String, dynamic> data, {
+    required String zipPath,
+  }) async {
     final photosDir = await _getPhotosDirectory();
+    final restorePrefix = await _restorePhotoPrefix(zipPath);
 
     dynamic resolve(dynamic v) {
       if (v is Map) {
@@ -330,7 +347,7 @@ class BackupService {
         return v.map(resolve).toList();
       }
       if (v is String && _isPhotoRef(v)) {
-        final filename = p.basename(v);
+        final filename = _restoredPhotoFilename(restorePrefix, v);
         return p.join(photosDir.path, filename);
       }
       return v;

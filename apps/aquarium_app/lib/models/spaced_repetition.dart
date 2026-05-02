@@ -46,9 +46,10 @@ class ReviewCard {
   });
 
   /// Check if card is due for review
-  bool get isDue =>
-      DateTime.now().isAfter(nextReview) ||
-      DateTime.now().isAtSameMomentAs(nextReview);
+  bool get isDue {
+    final now = DateTime.now();
+    return !nextReview.isAfter(now);
+  }
 
   /// Check if card is weak (needs priority)
   bool get isWeak => strength < 0.5;
@@ -205,7 +206,7 @@ class ReviewCard {
       conceptType: conceptType,
       strength: 0.0,
       lastReviewed: now,
-      nextReview: now, // Due immediately for first review
+      nextReview: now.subtract(const Duration(milliseconds: 1)),
       reviewCount: 0,
       correctCount: 0,
       incorrectCount: 0,

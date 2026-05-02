@@ -1,120 +1,38 @@
 appId: com.tiarnanlarkin.danio
 ---
-# Flow: Settings — open Toolbox tab → Preferences → toggle options,
-# then check the About screen.
+# Current More/settings inventory smoke.
 
-- launchApp
-
+- launchApp:
+    clearState: true
 - waitForAnimationToEnd
 
-# Navigate to Toolbox tab
-- tapOn: "Toolbox"
+- assertVisible: "Your Privacy Matters"
+- tapOn:
+    point: "11%,49%"
+- tapOn:
+    point: "11%,59%"
+- tapOn:
+    point: "50%,88%"
 - waitForAnimationToEnd
 
-- assertVisible: "🧰 Toolbox"
-- takeScreenshot: toolbox_screen
-
-# ── Preferences / Settings ────────────────────────────────────────────────────
-- tapOn: "Preferences"
+- tapOn:
+    point: "50%,91%"
 - waitForAnimationToEnd
-
-- takeScreenshot: settings_screen
-
-# Toggle sound/notification switches if present
-- runFlow:
-    when:
-      visible: "Sound"
-    commands:
-      - tapOn: "Sound"
-      - waitForAnimationToEnd
-      - takeScreenshot: sound_toggled
-      # Toggle back
-      - tapOn: "Sound"
-      - waitForAnimationToEnd
 
 - runFlow:
     when:
-      visible: "Notifications"
+      visible: "Close tooltip"
     commands:
-      - tapOn: "Notifications"
-      - waitForAnimationToEnd
-      - takeScreenshot: notifications_toggled
-      # Toggle back
-      - tapOn: "Notifications"
+      - tapOn: "Close tooltip"
       - waitForAnimationToEnd
 
-- runFlow:
-    when:
-      visible: "Dark mode"
-    commands:
-      - tapOn: "Dark mode"
-      - waitForAnimationToEnd
-      - takeScreenshot: dark_mode_toggled
-      # Toggle back
-      - tapOn: "Dark mode"
-      - waitForAnimationToEnd
-
-- runFlow:
-    when:
-      visible: "Theme"
-    commands:
-      - tapOn: "Theme"
-      - waitForAnimationToEnd
-      - takeScreenshot: theme_options
-
-# Navigate back to Toolbox
-- back
+- tapOn:
+    point: "90%,92%"
 - waitForAnimationToEnd
 
-# ── About Screen ──────────────────────────────────────────────────────────────
-- tapOn: "About"
-- waitForAnimationToEnd
-
-- takeScreenshot: about_screen
-
-# Verify about screen content
-- assertVisible: "Danio"
-
-- runFlow:
-    when:
-      visible: "Version"
-    commands:
-      - assertVisible: "Version"
-
-- runFlow:
-    when:
-      visible: "Privacy"
-    commands:
-      - tapOn: "Privacy"
-      - waitForAnimationToEnd
-      - takeScreenshot: privacy_policy
-      - back
-      - waitForAnimationToEnd
-
-- runFlow:
-    when:
-      visible: "Terms"
-    commands:
-      - tapOn: "Terms"
-      - waitForAnimationToEnd
-      - takeScreenshot: terms_of_service
-      - back
-      - waitForAnimationToEnd
-
-# Navigate back to Toolbox
-- back
-- waitForAnimationToEnd
-
-# ── Backup & Restore ──────────────────────────────────────────────────────────
-- tapOn: "Backup & Restore"
-- waitForAnimationToEnd
-
-- takeScreenshot: backup_restore_screen
-
-- assertVisible: "Backup"
-
-- back
-- waitForAnimationToEnd
-
-- assertVisible: "🧰 Toolbox"
-- takeScreenshot: settings_flow_complete
+- assertVisible: "More"
+- assertVisible: ".*Achievements.*"
+- assertVisible: ".*Workshop.*"
+- assertVisible: ".*Analytics.*"
+- assertVisible: ".*Preferences.*"
+- assertVisible: ".*Backup.*"

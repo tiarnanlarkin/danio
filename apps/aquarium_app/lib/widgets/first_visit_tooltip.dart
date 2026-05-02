@@ -57,7 +57,9 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
   @override
   void initState() {
     super.initState();
-    final disableMotion = ref.read(reducedMotionProvider).disableDecorativeAnimations;
+    final disableMotion = ref
+        .read(reducedMotionProvider)
+        .disableDecorativeAnimations;
     _controller = AnimationController(
       vsync: this,
       duration: disableMotion ? Duration.zero : AppDurations.long1,
@@ -109,48 +111,60 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
           child: SlideTransition(
             position: _slideAnimation,
             child: Container(
-              margin: const EdgeInsets.only(top: AppSpacing.md),
+              margin: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.sm,
+                AppSpacing.md,
+                0,
+              ),
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm2,
+                horizontal: AppSpacing.sm2,
+                vertical: AppSpacing.sm,
               ),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                borderRadius: AppRadius.mediumRadius,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.blackAlpha15,
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                borderRadius: AppRadius.lg2Radius,
+                border: Border.all(color: AppColors.blackAlpha05),
+                boxShadow: AppShadows.medium,
               ),
               child: Row(
                 children: [
                   if (widget.emoji != null) ...[
-                    Text(
-                      widget.emoji!,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: context.surfaceVariant,
+                        borderRadius: AppRadius.sm4Radius,
+                      ),
+                      child: Center(
+                        child: Text(
+                          widget.emoji!,
+                          style: const TextStyle(fontSize: 22, height: 1),
+                        ),
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                   ],
                   Expanded(
                     child: Text(
                       widget.message,
-                      style: AppTypography.bodyMedium.copyWith(
+                      style: AppTypography.bodySmall.copyWith(
                         color: context.textPrimary,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
                       ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.xs),
                   Semantics(
                     label: 'Close tooltip',
                     button: true,
                     child: GestureDetector(
                       onTap: _dismiss,
                       child: SizedBox(
-                        width: 48,
-                        height: 48,
+                        width: 40,
+                        height: 40,
                         child: Center(
                           child: Icon(
                             Icons.close,

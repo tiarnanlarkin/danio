@@ -44,7 +44,8 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
-  static const double _snapPeek = 0.16; // was 0.12 — increased for better tab visibility
+  static const double _snapPeek =
+      0.16; // was 0.12 — increased for better tab visibility
   static const double _snapHalf = 0.45;
   static const double _snapFull = 0.92;
 
@@ -118,10 +119,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
             child: DecoratedBox(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(
-                    color: AppColors.whiteAlpha20,
-                    width: 1,
-                  ),
+                  top: BorderSide(color: AppColors.whiteAlpha20, width: 1),
                 ),
               ),
               child: Stack(
@@ -131,9 +129,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                   Positioned.fill(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                      child: Container(
-                        color: AppColors.whiteAlpha25,
-                      ),
+                      child: Container(color: AppColors.blackAlpha20),
                     ),
                   ),
 
@@ -232,7 +228,7 @@ class _SheetHeader extends StatelessWidget {
           indicatorColor: Colors.transparent,
           dividerColor: Colors.transparent,
           labelColor: Colors.white,
-          unselectedLabelColor: AppColors.whiteAlpha50,
+          unselectedLabelColor: AppColors.whiteAlpha70,
           labelStyle: AppTypography.labelMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -241,10 +237,10 @@ class _SheetHeader extends StatelessWidget {
           ),
           indicator: _PillTabIndicator(),
           tabs: const [
-            Tab(text: '🔥  Progress'),
-            Tab(text: '🐠  Tanks'),
-            Tab(text: '📋  Today'),
-            Tab(text: '🔧  Tools'),
+            Tab(text: 'Progress'),
+            Tab(text: 'Tanks'),
+            Tab(text: 'Today'),
+            Tab(text: 'Tools'),
           ],
         ),
       ],
@@ -295,10 +291,7 @@ class _AnimatedTabContent extends StatefulWidget {
   final int currentTab;
   final List<Widget> contents;
 
-  const _AnimatedTabContent({
-    required this.currentTab,
-    required this.contents,
-  });
+  const _AnimatedTabContent({required this.currentTab, required this.contents});
 
   @override
   State<_AnimatedTabContent> createState() => _AnimatedTabContentState();
@@ -369,9 +362,10 @@ class _BouncingChevronHintState extends State<_BouncingChevronHint>
       vsync: this,
       duration: AppDurations.extraLong,
     )..repeat(reverse: true);
-    _bounce = Tween<double>(begin: 0.0, end: -8.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _bounce = Tween<double>(
+      begin: 0.0,
+      end: -8.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -495,17 +489,13 @@ class _WorkshopToolsContent extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () => NavigationThrottle.push(
-                context,
-                const WorkshopScreen(),
-              ),
+              onPressed: () =>
+                  NavigationThrottle.push(context, const WorkshopScreen()),
               icon: const Icon(Icons.build_outlined, size: 16),
               label: const Text('See All Tools'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.whiteAlpha85,
-                side: BorderSide(
-                  color: AppColors.whiteAlpha30,
-                ),
+                side: BorderSide(color: AppColors.whiteAlpha30),
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm2),
               ),
             ),
@@ -561,9 +551,7 @@ class _SheetToolCardState extends State<_SheetToolCard> {
             decoration: BoxDecoration(
               color: AppColors.whiteAlpha12,
               borderRadius: AppRadius.mediumRadius,
-              border: Border.all(
-                color: AppColors.whiteAlpha20,
-              ),
+              border: Border.all(color: AppColors.whiteAlpha20),
             ),
             child: Row(
               children: [
@@ -573,7 +561,11 @@ class _SheetToolCardState extends State<_SheetToolCard> {
                     color: widget.color.withAlpha(51),
                     borderRadius: AppRadius.smallRadius,
                   ),
-                  child: Icon(widget.icon, color: widget.color, size: AppIconSizes.sm),
+                  child: Icon(
+                    widget.icon,
+                    color: widget.color,
+                    size: AppIconSizes.sm,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(

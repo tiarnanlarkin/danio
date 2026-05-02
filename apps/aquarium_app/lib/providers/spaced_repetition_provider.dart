@@ -79,6 +79,40 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     _scheduleNotifications();
   }
 
+  static Set<String> resolvePathIdsForConceptIds(Iterable<String> conceptIds) {
+    final lessonToPathId = <String, String>{};
+    for (final path in LessonProvider.allPathMetadata) {
+      for (final lessonId in path.lessonIds) {
+        lessonToPathId[lessonId] = path.id;
+      }
+    }
+
+    final pathIds = <String>{};
+    for (final conceptId in conceptIds) {
+      final pathId = _resolvePathIdForConceptId(conceptId, lessonToPathId);
+      if (pathId != null) {
+        pathIds.add(pathId);
+      }
+    }
+    return pathIds;
+  }
+
+  static String? _resolvePathIdForConceptId(
+    String conceptId,
+    Map<String, String> lessonToPathId,
+  ) {
+    final exactPathId = lessonToPathId[conceptId];
+    if (exactPathId != null) return exactPathId;
+
+    for (final entry in lessonToPathId.entries) {
+      final lessonId = entry.key;
+      if (conceptId.startsWith('${lessonId}_')) {
+        return entry.value;
+      }
+    }
+    return null;
+  }
+
   /// Load cards from storage
   Future<void> _loadData() async {
     state = state.copyWith(isLoading: true, clearError: true);
@@ -141,7 +175,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           }
         } catch (e) {
           // Ignore parse errors — keep value loaded from statsKey
-          logError('SpacedRepetitionProvider: failed to parse streak JSON: $e', tag: 'SpacedRepetitionProvider');
+          logError(
+            'SpacedRepetitionProvider: failed to parse streak JSON: $e',
+            tag: 'SpacedRepetitionProvider',
+          );
         }
       }
 
@@ -160,7 +197,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         clearError: true,
       );
     } catch (e, stackTrace) {
-      logError('Failed to load review cards: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to load review cards: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       final stats = ReviewStats.fromCards([]);
       state = state.copyWith(
         cards: [],
@@ -229,7 +269,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         errorMessage: "Couldn't create that review card. Please try again.",
       );
-      logError('Failed to create review card: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to create review card: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       rethrow;
     }
   }
@@ -348,7 +391,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         errorMessage: "Couldn't set up your review cards. Please try again.",
       );
-      logError('Failed to seed review cards: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to seed review cards: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       // Don't rethrow - lesson completion should still succeed
     }
   }
@@ -374,9 +420,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     final periodIdx = segment.lastIndexOf('. ');
     final exclamIdx = segment.lastIndexOf('! ');
     final questionIdx = segment.lastIndexOf('? ');
-    final breakIdx = [periodIdx, exclamIdx, questionIdx]
-        .where((i) => i > 40)
-        .fold<int>(-1, (best, i) => i > best ? i : best);
+    final breakIdx = [
+      periodIdx,
+      exclamIdx,
+      questionIdx,
+    ].where((i) => i > 40).fold<int>(-1, (best, i) => i > best ? i : best);
     final questionBody = breakIdx > 0
         ? trimmed.substring(0, breakIdx + 1)
         : (trimmed.length > 200 ? '${trimmed.substring(0, 197)}…' : trimmed);
@@ -465,7 +513,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         errorMessage:
             'Couldn\'t save that review — it\'ll retry automatically.',
       );
-      logError('Failed to save review result: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to save review result: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       // Don't rethrow - let review flow continue
     }
   }
@@ -481,9 +532,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       // Pre-load lesson paths needed for question resolution
-      final pathIds = session.cards
-          .map((c) => c.conceptId.split('_').first)
-          .toSet();
+      final pathIds = resolvePathIdsForConceptIds(
+        session.cards.map((c) => c.conceptId),
+      );
       final lessonNotifier = _ref.read(lessonProvider.notifier);
       for (final pathId in pathIds) {
         await lessonNotifier.loadPath(pathId);
@@ -504,7 +555,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         errorMessage: "Couldn't start your review session. Please try again.",
       );
-      logError('Failed to start review session: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to start review session: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       rethrow;
     }
   }
@@ -567,7 +621,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         errorMessage:
             "Couldn't save your answer. Your progress is safe — try again.",
       );
-      logError('Failed to record session result: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to record session result: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       rethrow;
     }
   }
@@ -594,13 +651,19 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await prefs.setString(_sessionsKey, jsonEncode({'count': sessionCount}));
 
       // Route through the full achievement system so XP, gems, and dialogs fire
-      await _ref.read(achievementCheckerProvider).checkAfterReview(
-        reviewsCompleted: sessionCount,
-        reviewStreak: state.stats.currentStreak,
-      );
+      await _ref
+          .read(achievementCheckerProvider)
+          .checkAfterReview(
+            reviewsCompleted: sessionCount,
+            reviewStreak: state.stats.currentStreak,
+          );
 
       // Session is complete, clear it
-      state = state.copyWith(clearSession: true, clearResolvedQuestions: true, clearError: true);
+      state = state.copyWith(
+        clearSession: true,
+        clearResolvedQuestions: true,
+        clearError: true,
+      );
       await _saveData();
 
       // Refresh notifications for next review
@@ -610,7 +673,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         errorMessage:
             "Couldn't save your session results. Don't worry — your progress is tracked.",
       );
-      logError('Failed to complete review session: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to complete review session: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       rethrow;
     }
   }
@@ -714,10 +780,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         errorMessage: "Couldn't update your streak. It'll catch up next time.",
       );
-      logError('Failed to update review streak: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to update review streak: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
     }
   }
-
 
   /// Schedule notifications for due reviews
   Future<void> _scheduleNotifications() async {
@@ -738,7 +806,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         errorMessage: "Couldn't set up your review reminders.",
       );
-      logError('Failed to schedule notifications: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to schedule notifications: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
     }
   }
 
@@ -769,7 +840,10 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         errorMessage: "Couldn't remove that card. Please try again.",
       );
-      logError('Failed to delete review card: $e\n$stackTrace', tag: 'SpacedRepetitionProvider');
+      logError(
+        'Failed to delete review card: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
       rethrow;
     }
   }

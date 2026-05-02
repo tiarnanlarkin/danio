@@ -1,118 +1,79 @@
-# 🎭 Maestro Test Flows — Danio Aquarium App
+# Maestro Flows - Danio Aquarium App
 
-Automated UI test flows for `com.tiarnanlarkin.danio` using [Maestro](https://maestro.mobile.dev/).
+Automated black-box Android UI flows for `com.tiarnanlarkin.danio`.
 
----
+These flows are for user-like checks on an installed APK. They complement,
+not replace, Flutter unit/widget/integration tests.
 
 ## Prerequisites
 
-### 1. Install Maestro
-```bash
-curl -Ls "https://get.maestro.mobile.dev" | bash
+1. Start an Android emulator or connect a device.
+2. Install the app build you want to test.
+3. Put Maestro on `PATH`.
+
+On this Windows workstation the local Maestro install is:
+
+```powershell
+$env:Path="$env:USERPROFILE\maestro\maestro\bin;$env:Path"
+$env:MAESTRO_CLI_NO_ANALYTICS="true"
+$env:MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED="true"
 ```
 
-Add to PATH if needed (add to `~/.bashrc` or `~/.zshrc`):
-```bash
-export PATH="$PATH:$HOME/.maestro/bin"
-```
+Verify:
 
-Verify installation:
-```bash
+```powershell
+adb devices
 maestro --version
 ```
 
-### 2. Device / Emulator
-- **Android emulator** running, or physical device connected via ADB
-- Verify with: `adb devices`
-- **The app must already be installed**: `adb install app-debug.apk`
+## Current App Shell
 
----
-
-## Running Flows
-
-### Run a single flow
-```bash
-maestro test .maestro/onboarding.yaml
-maestro test .maestro/tab-navigation.yaml
-maestro test .maestro/tank-creation.yaml
-maestro test .maestro/learning-lesson.yaml
-maestro test .maestro/calculators.yaml
-maestro test .maestro/settings.yaml
-maestro test .maestro/tank-management.yaml
-maestro test .maestro/achievements.yaml
-maestro test .maestro/edge-cases.yaml
-```
-
-### Run all flows
-```bash
-maestro test .maestro/
-```
-
-### Run with screenshot output
-```bash
-maestro test .maestro/onboarding.yaml --output maestro-output/
-```
-
-### Run on a specific device
-```bash
-maestro test --device <device-id> .maestro/onboarding.yaml
-```
-
----
-
-## Flow Overview
-
-| File | What it tests |
-|------|--------------|
-| `onboarding.yaml` | First launch → profile creation → placement test → main screen |
-| `tab-navigation.yaml` | Navigate through all 5 tabs and verify each loads |
-| `tank-creation.yaml` | Create a new tank via the 3-step wizard |
-| `learning-lesson.yaml` | Open a lesson, read content, complete quiz, verify XP |
-| `calculators.yaml` | Workshop tools: water change, stocking, CO₂, dosing, unit converter, tank volume |
-| `settings.yaml` | Preferences toggles, About screen, Backup & Restore |
-| `tank-management.yaml` | Open a tank, add a log entry, add livestock, open tank settings |
-| `achievements.yaml` | Trophy Case screen, filter/sort, tap achievement for detail |
-| `edge-cases.yaml` | Empty states, form validation, rapid back nav, double-back-to-exit |
-
----
-
-## App Structure (Reference)
-
-The app has 5 bottom-nav tabs:
+Bottom navigation:
 
 | Index | Label | Screen |
-|-------|-------|--------|
-| 0 | Learn | `LearnScreen` — learning paths & lessons |
-| 1 | Practice | `PracticeHubScreen` — spaced repetition quiz |
-| 2 | Tank | `HomeScreen` — tank management |
-| 3 | Smart | `SmartScreen` — AI features |
-| 4 | Toolbox | `SettingsHubScreen` — workshop, achievements, settings |
+| --- | --- | --- |
+| 0 | Learn | Learning paths and stories |
+| 1 | Practice | Spaced repetition and practice modes |
+| 2 | Tank | Tank room, progress, tanks, today, and tank tools |
+| 3 | Smart | AI and offline smart tools |
+| 4 | More | Profile, shop, achievements, workshop, settings, backup |
 
-Package ID: `com.tiarnanlarkin.danio`
+First launch starts with the GDPR/COPPA consent gate. After consent, the
+current quick path for black-box smoke testing is "Skip setup, I'll explore
+first", which lands in the main app shell with seed/demo state.
 
----
+## Main Flows
 
-## Tips
-
-- Flows use **text-based selectors** wherever possible (more stable than IDs for Flutter).
-- `runFlow: when:` guards handle optional UI states gracefully — flows don't crash if a button isn't visible.
-- Run `onboarding.yaml` with `clearState: true` to test from a clean install state.
-- Run `tank-creation.yaml` before `tank-management.yaml` if starting from a fresh state.
-- Screenshots are saved to the working directory when `takeScreenshot:` commands are present.
-
----
-
-## Troubleshooting
-
-| Problem | Fix |
-|---------|-----|
-| `maestro: command not found` | Add `~/.maestro/bin` to PATH |
-| `No devices found` | Start emulator or plug in device, run `adb devices` |
-| Flow times out | Increase wait time or check for UI changes after app updates |
-| Element not found | UI text may have changed — inspect with `maestro studio` |
-
-### Launch Maestro Studio (interactive)
-```bash
-maestro studio
+```powershell
+maestro test .maestro\smoke-test.yaml
+maestro test .maestro\tab-navigation.yaml
+maestro test .maestro\settings.yaml
+maestro test .maestro\calculators.yaml
+maestro test .maestro\achievements.yaml
 ```
-This opens a browser UI for recording and debugging flows interactively.
+
+Run every current flow:
+
+```powershell
+maestro test .maestro
+```
+
+## QA Ladder
+
+Use this order for release confidence:
+
+1. `flutter analyze --no-pub`
+2. `flutter test`
+3. Android debug APK build
+4. Android release APK/AAB build
+5. Fresh-install Maestro smoke on Android
+6. Targeted Maestro journeys for Learn, Practice, Tank, Smart, More
+7. Logcat scan for `FATAL EXCEPTION`, `AndroidRuntime`, `ANR in`, and known plugin errors
+
+## Notes
+
+- Prefer visible text and accessibility labels over coordinates.
+- Coordinates are only used where Flutter semantics do not expose a stable
+  target, such as the current consent checkboxes.
+- Do not commit generated Maestro binaries, `patrol_test/`, screenshots, or
+  run output.

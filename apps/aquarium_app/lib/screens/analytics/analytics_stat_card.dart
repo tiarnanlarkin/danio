@@ -63,7 +63,12 @@ class AnalyticsStatCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (trend != null) Text(trend!.emoji),
+              if (trend != null)
+                Icon(
+                  _trendIcon(trend!),
+                  color: _trendColor(trend!),
+                  size: AppIconSizes.sm,
+                ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -88,5 +93,27 @@ class AnalyticsStatCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  IconData _trendIcon(ProgressTrend trend) {
+    switch (trend) {
+      case ProgressTrend.increasing:
+        return Icons.trending_up;
+      case ProgressTrend.stable:
+        return Icons.trending_flat;
+      case ProgressTrend.decreasing:
+        return Icons.trending_down;
+    }
+  }
+
+  Color _trendColor(ProgressTrend trend) {
+    switch (trend) {
+      case ProgressTrend.increasing:
+        return AppColors.success;
+      case ProgressTrend.stable:
+        return AppColors.textSecondary;
+      case ProgressTrend.decreasing:
+        return AppColors.error;
+    }
   }
 }

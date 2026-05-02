@@ -17,7 +17,6 @@
 // direct OpenAI calls using a user-supplied or build-time API key.
 // ---------------------------------------------------------------------------
 
-
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -61,6 +60,10 @@ class AiProxyService {
   static String get proxyUrl =>
       const String.fromEnvironment('SUPABASE_AI_PROXY_URL');
 
+  /// Safe-to-expose Supabase anon key used to authenticate proxy calls.
+  static String get proxyAuthToken =>
+      const String.fromEnvironment('SUPABASE_ANON_KEY');
+
   /// Returns true when a server-side proxy is configured.
   ///
   /// When true, AI requests should be sent to [proxyUrl] instead of directly
@@ -95,8 +98,10 @@ class AiProxyService {
         if (decrypted != null && decrypted.isNotEmpty) return decrypted;
       }
     } catch (e) {
-      logError('AiProxyService: failed to load user key — $e',
-          tag: 'AiProxyService');
+      logError(
+        'AiProxyService: failed to load user key — $e',
+        tag: 'AiProxyService',
+      );
     }
 
     // Fall back to build-time define.
@@ -105,7 +110,9 @@ class AiProxyService {
 
   /// Returns `true` if any API key is available (proxy, user-supplied, or build-time).
   static Future<bool> get hasApiKey async {
-    if (hasProxy) return true; // Proxy handles its own key server-side.
+    if (hasProxy) {
+      return proxyAuthToken.isNotEmpty;
+    }
     final key = await getApiKey();
     return key.isNotEmpty;
   }

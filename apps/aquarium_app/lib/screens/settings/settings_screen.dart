@@ -19,6 +19,7 @@ import '../../providers/settings_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/ai_proxy_service.dart';
+import '../../services/openai_service.dart';
 import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
@@ -124,8 +125,7 @@ class SettingsScreen extends ConsumerWidget {
         icon: Icons.storefront,
         title: 'Shop Street',
         subtitle: 'Find aquarium supplies online',
-        onTap: () =>
-            NavigationThrottle.push(context, const ShopStreetScreen()),
+        onTap: () => NavigationThrottle.push(context, const ShopStreetScreen()),
       ),
 
       (_) => const Divider(),
@@ -170,7 +170,11 @@ class SettingsScreen extends ConsumerWidget {
               AppRoutes.toTankDetail(context, demoTank.id);
             }
           } catch (e, st) {
-            logError('SettingsScreen: add sample tank failed: $e', stackTrace: st, tag: 'SettingsScreen');
+            logError(
+              'SettingsScreen: add sample tank failed: $e',
+              stackTrace: st,
+              tag: 'SettingsScreen',
+            );
             if (context.mounted) {
               AppFeedback.showError(
                 context,
@@ -197,8 +201,7 @@ class SettingsScreen extends ConsumerWidget {
       (_) => const Divider(),
 
       // Danger zone
-      (_) =>
-          const _SectionHeader(title: 'Danger Zone', color: AppColors.error),
+      (_) => const _SectionHeader(title: 'Danger Zone', color: AppColors.error),
       (_) => AppListTile(
         leading: const Icon(
           Icons.delete_forever_outlined,
@@ -318,7 +321,12 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.xl, AppSpacing.lg2, AppSpacing.sm2),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg2,
+        AppSpacing.xl,
+        AppSpacing.lg2,
+        AppSpacing.sm2,
+      ),
       child: Row(
         children: [
           Container(
@@ -436,8 +444,7 @@ class _ThemeModeTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode =
-        ref.watch(settingsProvider.select((s) => s.themeMode));
+    final themeMode = ref.watch(settingsProvider.select((s) => s.themeMode));
     return NavListTile(
       icon: Icons.palette_outlined,
       title: 'Light/Dark Mode',
@@ -475,9 +482,8 @@ class _AmbientLightingToggle extends ConsumerWidget {
       title: const Text('Day/Night Ambiance'),
       subtitle: const Text('Subtle lighting based on time of day'),
       value: enabled,
-      onChanged: (value) => ref
-          .read(settingsProvider.notifier)
-          .setAmbientLightingEnabled(value),
+      onChanged: (value) =>
+          ref.read(settingsProvider.notifier).setAmbientLightingEnabled(value),
     );
   }
 }
@@ -495,9 +501,8 @@ class _HapticFeedbackToggle extends ConsumerWidget {
       title: const Text('Haptic Feedback'),
       subtitle: const Text('Vibration for important interactions'),
       value: enabled,
-      onChanged: (value) => ref
-          .read(settingsProvider.notifier)
-          .setHapticFeedbackEnabled(value),
+      onChanged: (value) =>
+          ref.read(settingsProvider.notifier).setHapticFeedbackEnabled(value),
     );
   }
 }
@@ -546,8 +551,7 @@ class _LearnCard extends ConsumerWidget {
           button: true,
           label: 'Learn Fishkeeping. Tap to open lessons',
           child: InkWell(
-            onTap: () =>
-                NavigationThrottle.push(context, const LearnScreen()),
+            onTap: () => NavigationThrottle.push(context, const LearnScreen()),
             borderRadius: AppRadius.largeRadius,
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg2),
@@ -643,7 +647,10 @@ class _LearnCard extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right, color: AppColors.whiteAlpha70),
+                  const Icon(
+                    Icons.chevron_right,
+                    color: AppColors.whiteAlpha70,
+                  ),
                 ],
               ),
             ),
@@ -691,8 +698,7 @@ class _GoalOptionState extends State<_GoalOption> {
           ? const BubbleLoader.small()
           : Text(
               widget.icon,
-              style:
-                  Theme.of(context).textTheme.headlineMedium!.copyWith(),
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
             ),
       title: Text('${widget.goal} XP/day'),
       subtitle: Text('${widget.label} • ${widget.description}'),
@@ -841,7 +847,12 @@ class _ReducedMotionToggle extends ConsumerWidget {
         if (reducedMotion.systemPreference &&
             reducedMotion.userOverride == false)
           Padding(
-            padding: const EdgeInsets.fromLTRB(72, 0, AppSpacing.md, AppSpacing.sm2),
+            padding: const EdgeInsets.fromLTRB(
+              72,
+              0,
+              AppSpacing.md,
+              AppSpacing.sm2,
+            ),
             child: Text(
               'ℹ️ Your system has animations disabled, but you\'ve manually enabled them in this app.',
               style: AppTypography.bodySmall.copyWith(
@@ -852,7 +863,12 @@ class _ReducedMotionToggle extends ConsumerWidget {
           ),
         if (reducedMotion.isEnabled)
           Padding(
-            padding: const EdgeInsets.fromLTRB(72, 0, AppSpacing.md, AppSpacing.sm2),
+            padding: const EdgeInsets.fromLTRB(
+              72,
+              0,
+              AppSpacing.md,
+              AppSpacing.sm2,
+            ),
             child: Text(
               'Benefits: Reduces motion sickness, improves battery life, and makes the app more comfortable for users with vestibular disorders.',
               style: AppTypography.bodySmall.copyWith(
@@ -912,9 +928,7 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
     return SwitchListTile(
       secondary: const Icon(Icons.analytics_outlined),
       title: const Text('Analytics & Crash Reports'),
-      subtitle: const Text(
-        'Send anonymous usage data to help improve Danio',
-      ),
+      subtitle: const Text('Send anonymous usage data to help improve Danio'),
       value: _enabled,
       onChanged: _toggle,
     );
@@ -925,14 +939,14 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
 // Smart Hub — Configure AI tile
 // ---------------------------------------------------------------------------
 
-class _ConfigureAiTile extends StatefulWidget {
+class _ConfigureAiTile extends ConsumerStatefulWidget {
   const _ConfigureAiTile();
 
   @override
-  State<_ConfigureAiTile> createState() => _ConfigureAiTileState();
+  ConsumerState<_ConfigureAiTile> createState() => _ConfigureAiTileState();
 }
 
-class _ConfigureAiTileState extends State<_ConfigureAiTile> {
+class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
   bool _hasUserKey = false;
 
   @override
@@ -948,13 +962,25 @@ class _ConfigureAiTileState extends State<_ConfigureAiTile> {
 
   @override
   Widget build(BuildContext context) {
+    final hasProxy = AiProxyService.hasProxy;
+    final proxyReady = AiProxyService.proxyAuthToken.isNotEmpty;
+
     return AppListTile(
       leading: const Icon(Icons.smart_toy_outlined),
       title: 'Configure AI',
-      subtitle: _hasUserKey
-          ? 'Custom API key active — tap to manage'
-          : 'Add your OpenAI API key to enable Smart Hub features',
-      trailing: _hasUserKey
+      subtitle: hasProxy
+          ? (proxyReady
+                ? 'Secure AI proxy active'
+                : 'AI proxy configured, but app auth is missing')
+          : (_hasUserKey
+                ? 'Custom API key active — tap to manage'
+                : 'Add your OpenAI API key to enable Smart Hub features'),
+      trailing: hasProxy
+          ? Icon(
+              proxyReady ? Icons.check_circle : Icons.error_outline,
+              color: proxyReady ? AppColors.success : AppColors.warning,
+            )
+          : _hasUserKey
           ? const Icon(Icons.check_circle, color: AppColors.success)
           : null,
       onTap: () => _showConfigureAiDialog(context),
@@ -962,7 +988,11 @@ class _ConfigureAiTileState extends State<_ConfigureAiTile> {
   }
 
   Future<void> _showConfigureAiDialog(BuildContext context) async {
-    await _ConfigureAiDialog.show(context, _reload);
+    await _ConfigureAiDialog.show(context, () {
+      _reload();
+      ref.invalidate(aiProxyHasKeyProvider);
+      ref.invalidate(openAIConfiguredProvider);
+    });
   }
 }
 
@@ -990,6 +1020,9 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   String? _statusMessage;
   bool _statusIsError = false;
 
+  bool get _hasProxy => AiProxyService.hasProxy;
+  bool get _proxyReady => AiProxyService.proxyAuthToken.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
@@ -1008,6 +1041,8 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   }
 
   Future<void> _saveKey() async {
+    if (_hasProxy) return;
+
     final key = _controller.text.trim();
     if (key.isEmpty) return;
     if (!key.startsWith('sk-')) {
@@ -1033,7 +1068,11 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
         _controller.clear();
       }
     } catch (e, st) {
-      logError('SettingsScreen: API key save failed: $e', stackTrace: st, tag: 'SettingsScreen');
+      logError(
+        'SettingsScreen: API key save failed: $e',
+        stackTrace: st,
+        tag: 'SettingsScreen',
+      );
       if (mounted) {
         setState(() {
           _statusMessage = 'Couldn\'t save the key. Try again.';
@@ -1045,6 +1084,8 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   }
 
   Future<void> _clearKey() async {
+    if (_hasProxy) return;
+
     setState(() => _isBusy = true);
     try {
       await AiProxyService.clearApiKey();
@@ -1057,7 +1098,11 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
         });
       }
     } catch (e, st) {
-      logError('SettingsScreen: API key clear failed: $e', stackTrace: st, tag: 'SettingsScreen');
+      logError(
+        'SettingsScreen: API key clear failed: $e',
+        stackTrace: st,
+        tag: 'SettingsScreen',
+      );
       if (mounted) {
         setState(() {
           _statusMessage = 'Couldn\'t clear the key. Try again.';
@@ -1073,7 +1118,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
     return AppDialog(
       title: 'Configure AI',
       actions: [
-        if (_hasUserKey) ...[
+        if (!_hasProxy && _hasUserKey) ...[
           AppButton(
             label: 'Remove key',
             onPressed: _isBusy ? null : _clearKey,
@@ -1092,74 +1137,113 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
           isFullWidth: true,
         ),
         const SizedBox(height: AppSpacing.xs),
-        AppButton(
-          label: 'Save',
-          onPressed: _isBusy ? null : _saveKey,
-          isLoading: _isBusy,
-          variant: AppButtonVariant.primary,
-          isFullWidth: true,
-        ),
+        if (!_hasProxy)
+          AppButton(
+            label: 'Save',
+            onPressed: _isBusy ? null : _saveKey,
+            isLoading: _isBusy,
+            variant: AppButtonVariant.primary,
+            isFullWidth: true,
+          ),
       ],
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Your key is stored locally on your device and never shared with us.',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            if (_hasUserKey) ...[
-              Row(
+        child: _hasProxy
+            ? _ProxyAiStatus(isReady: _proxyReady)
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(
-                    Icons.check_circle,
-                    color: AppColors.success,
-                    size: 20,
+                  const Text(
+                    'Your key is stored locally on your device and never shared with us.',
+                    style: TextStyle(fontStyle: FontStyle.italic),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  const Expanded(
-                    child: Text(
-                      'Custom API key is active.',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                  const SizedBox(height: AppSpacing.md),
+                  if (_hasUserKey) ...[
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.check_circle,
+                          color: AppColors.success,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        const Expanded(
+                          child: Text(
+                            'Custom API key is active.',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: AppSpacing.sm),
+                  ],
+                  TextField(
+                    controller: _controller,
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      labelText: 'OpenAI API key',
+                      hintText: 'sk-...',
+                      suffixIcon: IconButton(
+                        tooltip: _obscureText
+                            ? 'Show password'
+                            : 'Hide password',
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () =>
+                            setState(() => _obscureText = !_obscureText),
+                      ),
+                    ),
+                    maxLength: kNotesMaxLength,
+                    enabled: !_isBusy,
                   ),
+                  if (_statusMessage != null) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      _statusMessage!,
+                      style: TextStyle(
+                        color: _statusIsError
+                            ? AppColors.error
+                            : AppColors.success,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
                 ],
               ),
-              const SizedBox(height: AppSpacing.sm),
-            ],
-            TextField(
-              controller: _controller,
-              obscureText: _obscureText,
-              decoration: InputDecoration(
-                labelText: 'OpenAI API key',
-                hintText: 'sk-...',
-                suffixIcon: IconButton(
-                  tooltip: _obscureText ? 'Show password' : 'Hide password',
-                  icon: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: () =>
-                      setState(() => _obscureText = !_obscureText),
-                ),
-              ),
-              maxLength: kNotesMaxLength,
-              enabled: !_isBusy,
-            ),
-            if (_statusMessage != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                _statusMessage!,
-                style: TextStyle(
-                  color: _statusIsError ? AppColors.error : AppColors.success,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
+    );
+  }
+}
+
+class _ProxyAiStatus extends StatelessWidget {
+  const _ProxyAiStatus({required this.isReady});
+
+  final bool isReady;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          isReady ? Icons.shield_outlined : Icons.error_outline,
+          color: isReady ? AppColors.success : AppColors.warning,
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: Text(
+            isReady
+                ? 'AI is managed by Danio\'s secure server proxy. No OpenAI API key is stored on this device.'
+                : 'The AI proxy URL is built in, but this build is missing the Supabase anon key.',
+            style: AppTypography.bodyMedium.copyWith(
+              color: context.textSecondary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

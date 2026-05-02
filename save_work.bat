@@ -1,28 +1,42 @@
 @echo off
-REM Simple workflow to save all work to remote repo
-REM Run this after each build/work session
+setlocal
 
-cd "C:\Users\larki\Documents\Aquarium App Dev\repo"
+REM Safe Danio save helper. Refuses to commit from main.
+cd /d "C:\Users\larki\Documents\Danio Aquarium App Project\repo"
 
-echo 📦 Checking for changes...
+for /f "delims=" %%b in ('git branch --show-current') do set BRANCH=%%b
 
-REM Stage all changes
-git add -A
-
-REM Check if there are changes
-git diff-index --quiet HEAD
-if %errorlevel% neq 0 (
-    echo 💾 Committing changes...
-    REM Commit with timestamp
-    git commit -m "Work session: %date% %time%"
-) else (
-    echo ✅ No changes to commit - everything already saved
+if "%BRANCH%"=="" (
+    echo Error: could not determine current branch.
+    exit /b 1
 )
 
-echo 🚀 Pushing to remote...
-git push origin master
+if "%BRANCH%"=="main" (
+    echo Refusing to commit or push directly from main.
+    echo Create a branch first, for example:
+    echo   git checkout -b fix/short-description
+    exit /b 1
+)
 
-echo.
-echo ✅ All work saved to GitHub!
-echo    View at: https://github.com/tiarnanlarkin/aquarium-app
-pause
+echo Checking for changes on branch %BRANCH%...
+git status --short
+
+git diff --quiet
+set WORKTREE_DIFF=%errorlevel%
+git diff --cached --quiet
+set INDEX_DIFF=%errorlevel%
+
+if "%WORKTREE_DIFF%"=="0" if "%INDEX_DIFF%"=="0" (
+    echo No changes to commit.
+) else (
+    git add -A
+    git commit -m "Work session: %date% %time%"
+    if errorlevel 1 exit /b 1
+)
+
+echo Pushing %BRANCH% to origin...
+git push -u origin %BRANCH%
+if errorlevel 1 exit /b 1
+
+echo Work saved to GitHub on branch %BRANCH%.
+echo Remote: https://github.com/tiarnanlarkin/danio

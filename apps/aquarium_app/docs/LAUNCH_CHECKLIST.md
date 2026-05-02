@@ -1,5 +1,7 @@
 # 🚀 Danio — Master Pre-Launch Checklist
 
+> Status note (2026-05-02): historical checklist for `openclaw/stage-system`. Reconcile blockers against current `main` before release. Use `docs/development/CODEX_SAFE_WORKFLOW.md` as the active gate.
+
 > **Compiled by:** Themis (Legal & Compliance, Mount Olympus)  
 > **Date:** 2026-03-29  
 > **Branch:** `openclaw/stage-system`  

@@ -1,26 +1,34 @@
-#!/bin/bash
-# Simple workflow to save all work to remote repo
-# Run this after each build/work session
+#!/usr/bin/env bash
+set -euo pipefail
 
-cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo"
+# Safe Danio save helper. Refuses to commit from main.
+cd "/mnt/c/Users/larki/Documents/Danio Aquarium App Project/repo"
 
-echo "📦 Checking for changes..."
+branch="$(git branch --show-current)"
+if [[ -z "$branch" ]]; then
+  echo "Error: could not determine current branch." >&2
+  exit 1
+fi
 
-# Stage all changes
-git add -A
+if [[ "$branch" == "main" ]]; then
+  echo "Refusing to commit or push directly from main." >&2
+  echo "Create a branch first, for example:" >&2
+  echo "  git checkout -b fix/short-description" >&2
+  exit 1
+fi
 
-# Check if there are changes to commit
-if git diff-staged --quiet; then
-  echo "✅ No changes to commit - everything already saved"
+echo "Checking for changes on branch $branch..."
+git status --short
+
+if git diff --quiet && git diff --cached --quiet; then
+  echo "No changes to commit."
 else
-  echo "💾 Committing changes..."
-  # Commit with timestamp
+  git add -A
   git commit -m "Work session: $(date '+%Y-%m-%d %H:%M')"
 fi
 
-echo "🚀 Pushing to remote..."
-git push origin master
+echo "Pushing $branch to origin..."
+git push -u origin "$branch"
 
-echo ""
-echo "✅ All work saved to GitHub!"
-echo "   View at: https://github.com/tiarnanlarkin/aquarium-app"
+echo "Work saved to GitHub on branch $branch."
+echo "Remote: https://github.com/tiarnanlarkin/danio"

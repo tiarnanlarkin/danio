@@ -7,6 +7,8 @@ import 'package:supabase_flutter/supabase_flutter.dart' show FileOptions;
 
 import '../models/models.dart';
 import 'local_json_storage_service.dart';
+import 'shared_preferences_backup.dart';
+import 'storage_service.dart';
 import 'supabase_service.dart';
 import '../utils/logger.dart';
 
@@ -21,6 +23,17 @@ class CloudBackupService {
 
   static const String _bucketName = 'user-backups';
   static const int _keyLength = 32; // AES-256
+
+  Future<Map<String, dynamic>> exportAllDataForTesting(StorageService storage) {
+    return _exportAllData(storage);
+  }
+
+  Future<CloudBackupRestoreResult> importDataForTesting(
+    StorageService storage,
+    Map<String, dynamic> data,
+  ) {
+    return _importData(storage, data);
+  }
 
   // ---------------------------------------------------------------------------
   // Backup: serialise → encrypt → upload
@@ -61,7 +74,10 @@ class CloudBackupService {
         .from(_bucketName)
         .uploadBinary(path, blob, fileOptions: const FileOptions(upsert: true));
 
-    appLog('[CloudBackup] Uploaded ${blob.length} bytes → $path', tag: 'CloudBackupService');
+    appLog(
+      '[CloudBackup] Uploaded ${blob.length} bytes → $path',
+      tag: 'CloudBackupService',
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -71,7 +87,7 @@ class CloudBackupService {
   /// Download the encrypted backup and merge into local storage.
   ///
   /// Merge strategy: local data wins on conflict (based on id).
-  Future<void> downloadAndRestoreBackup() async {
+  Future<CloudBackupRestoreResult> downloadAndRestoreBackup() async {
     if (!SupabaseService.isInitialised) {
       throw StateError('Supabase not initialised');
     }
@@ -103,18 +119,20 @@ class CloudBackupService {
     final data = json.decode(jsonString) as Map<String, dynamic>;
 
     // 5. Merge into local storage (local wins)
-    await _importData(LocalJsonStorageService(), data);
+    final result = await _importData(LocalJsonStorageService(), data);
 
-    appLog('[CloudBackup] Restored backup from $path', tag: 'CloudBackupService');
+    appLog(
+      '[CloudBackup] Restored backup from $path',
+      tag: 'CloudBackupService',
+    );
+    return result;
   }
 
   // ---------------------------------------------------------------------------
   // Data export (uses public StorageService API)
   // ---------------------------------------------------------------------------
 
-  Future<Map<String, dynamic>> _exportAllData(
-    LocalJsonStorageService storage,
-  ) async {
+  Future<Map<String, dynamic>> _exportAllData(StorageService storage) async {
     final tanks = await storage.getAllTanks();
     final allLivestock = <Map<String, dynamic>>[];
     final allEquipment = <Map<String, dynamic>>[];
@@ -133,6 +151,9 @@ class CloudBackupService {
       allTasks.addAll(tasks.map((t) => t.toJson()));
     }
 
+    final prefsBackupJson = await SharedPreferencesBackup.exportAsJson();
+    final prefsBackupData = jsonDecode(prefsBackupJson) as Map<String, dynamic>;
+
     return {
       'version': 1,
       'exported_at': DateTime.now().toIso8601String(),
@@ -141,6 +162,7 @@ class CloudBackupService {
       'equipment': allEquipment,
       'logs': allLogs,
       'tasks': allTasks,
+      'sharedPreferences': prefsBackupData,
     };
   }
 
@@ -148,10 +170,14 @@ class CloudBackupService {
   // Data import (local wins on conflict)
   // ---------------------------------------------------------------------------
 
-  Future<void> _importData(
-    LocalJsonStorageService storage,
+  Future<CloudBackupRestoreResult> _importData(
+    StorageService storage,
     Map<String, dynamic> data,
   ) async {
+    final changedTankIds = <String>{};
+    var preferenceEntriesRestored = 0;
+    var preferencesRestoreFailed = false;
+
     // Import tanks - skip if already exists locally (local wins)
     final tanksJson = data['tanks'] as List<dynamic>? ?? [];
     for (final tJson in tanksJson) {
@@ -161,40 +187,114 @@ class CloudBackupService {
       if (existing == null) {
         final tank = Tank.fromJson(map);
         await storage.saveTank(tank);
+        changedTankIds.add(tank.id);
       }
     }
 
-    // Import livestock
+    // Import livestock - skip existing ids (local wins)
     final livestockJson = data['livestock'] as List<dynamic>? ?? [];
     for (final lJson in livestockJson) {
       final map = lJson as Map<String, dynamic>;
       final livestock = Livestock.fromJson(map);
+      if (await _livestockExists(storage, livestock.tankId, livestock.id)) {
+        continue;
+      }
       await storage.saveLivestock(livestock);
+      changedTankIds.add(livestock.tankId);
     }
 
-    // Import equipment
+    // Import equipment - skip existing ids (local wins)
     final equipmentJson = data['equipment'] as List<dynamic>? ?? [];
     for (final eJson in equipmentJson) {
       final map = eJson as Map<String, dynamic>;
       final equipment = Equipment.fromJson(map);
+      if (await _equipmentExists(storage, equipment.tankId, equipment.id)) {
+        continue;
+      }
       await storage.saveEquipment(equipment);
+      changedTankIds.add(equipment.tankId);
     }
 
-    // Import logs (always append - water test history is never overwritten)
+    // Import logs (append missing entries only - same ids stay local)
     final logsJson = data['logs'] as List<dynamic>? ?? [];
     for (final logJson in logsJson) {
       final map = logJson as Map<String, dynamic>;
       final log = LogEntry.fromJson(map);
+      if (await _logExists(storage, log.tankId, log.id)) {
+        continue;
+      }
       await storage.saveLog(log);
+      changedTankIds.add(log.tankId);
     }
 
-    // Import tasks
+    // Import tasks - skip existing ids (local wins)
     final tasksJson = data['tasks'] as List<dynamic>? ?? [];
     for (final taskJson in tasksJson) {
       final map = taskJson as Map<String, dynamic>;
       final task = Task.fromJson(map);
+      if (await _taskExists(storage, task.tankId, task.id)) {
+        continue;
+      }
       await storage.saveTask(task);
+      final tankId = task.tankId;
+      if (tankId != null) changedTankIds.add(tankId);
     }
+
+    final prefsData = data['sharedPreferences'];
+    if (prefsData != null && prefsData is Map<String, dynamic>) {
+      try {
+        preferenceEntriesRestored =
+            await SharedPreferencesBackup.restoreFromJson(prefsData);
+      } catch (e) {
+        preferencesRestoreFailed = true;
+        logError(
+          '[CloudBackup] SharedPreferences restore warning: $e',
+          tag: 'CloudBackupService',
+        );
+      }
+    }
+
+    return CloudBackupRestoreResult(
+      changedTankIds: changedTankIds,
+      preferenceEntriesRestored: preferenceEntriesRestored,
+      preferencesRestoreFailed: preferencesRestoreFailed,
+    );
+  }
+
+  Future<bool> _livestockExists(
+    StorageService storage,
+    String tankId,
+    String id,
+  ) async {
+    final items = await storage.getLivestockForTank(tankId);
+    return items.any((item) => item.id == id);
+  }
+
+  Future<bool> _equipmentExists(
+    StorageService storage,
+    String tankId,
+    String id,
+  ) async {
+    final items = await storage.getEquipmentForTank(tankId);
+    return items.any((item) => item.id == id);
+  }
+
+  Future<bool> _logExists(
+    StorageService storage,
+    String tankId,
+    String id,
+  ) async {
+    final items = await storage.getLogsForTank(tankId);
+    return items.any((item) => item.id == id);
+  }
+
+  Future<bool> _taskExists(
+    StorageService storage,
+    String? tankId,
+    String id,
+  ) async {
+    final items = await storage.getTasksForTank(tankId);
+    return items.any((item) => item.id == id);
   }
 
   // ---------------------------------------------------------------------------
@@ -213,4 +313,18 @@ class CloudBackupService {
       Uint8List.fromList(hash.bytes.sublist(0, _keyLength)),
     );
   }
+}
+
+class CloudBackupRestoreResult {
+  final Set<String> changedTankIds;
+  final int preferenceEntriesRestored;
+  final bool preferencesRestoreFailed;
+
+  const CloudBackupRestoreResult({
+    required this.changedTankIds,
+    required this.preferenceEntriesRestored,
+    required this.preferencesRestoreFailed,
+  });
+
+  bool get restoredPreferences => preferenceEntriesRestored > 0;
 }

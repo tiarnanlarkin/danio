@@ -48,40 +48,37 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
 
     // Reduced motion: show static placeholder instead of shimmer
     if (reduceMotion) {
-      return Opacity(
-        opacity: 0.4,
-        child: widget.child,
-      );
+      return Opacity(opacity: 0.4, child: widget.child);
     }
 
     return ExcludeSemantics(
       child: AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return ShaderMask(
-          blendMode: BlendMode.srcATop,
-          shaderCallback: (bounds) {
-            return LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                context.borderColor,
-                context.surfaceColor,
-                context.borderColor,
-              ],
-              stops: [
-                _animation.value - 0.3,
-                _animation.value,
-                _animation.value + 0.3,
-              ],
-              transform: GradientRotation(_animation.value),
-            ).createShader(bounds);
-          },
-          child: child,
-        );
-      },
-      child: widget.child,
-    ),
+        animation: _animation,
+        builder: (context, child) {
+          return ShaderMask(
+            blendMode: BlendMode.srcATop,
+            shaderCallback: (bounds) {
+              return LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  context.borderColor,
+                  context.surfaceColor,
+                  context.borderColor,
+                ],
+                stops: [
+                  _animation.value - 0.3,
+                  _animation.value,
+                  _animation.value + 0.3,
+                ],
+                transform: GradientRotation(_animation.value),
+              ).createShader(bounds);
+            },
+            child: child,
+          );
+        },
+        child: widget.child,
+      ),
     );
   }
 }
@@ -118,9 +115,12 @@ class SkeletonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cardHeight = height ?? 100;
+    final isCompact = cardHeight <= 80;
+
     return ShimmerLoading(
       child: Container(
-        height: height ?? 100,
+        height: cardHeight,
         margin:
             padding ??
             const EdgeInsets.symmetric(
@@ -134,39 +134,60 @@ class SkeletonCard extends StatelessWidget {
               : context.surfaceColor,
           borderRadius: AppRadius.mediumRadius,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: isCompact ? _buildCompactContent() : _buildStandardContent(),
+      ),
+    );
+  }
+
+  Widget _buildCompactContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SkeletonBox(
+          width: double.infinity,
+          height: 16,
+          borderRadius: AppRadius.xsRadius,
+        ),
+        const Spacer(),
+        SkeletonBox(
+          width: double.infinity,
+          height: 12,
+          borderRadius: AppRadius.xsRadius,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStandardContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SkeletonBox(
+          width: double.infinity,
+          height: 16,
+          borderRadius: AppRadius.xsRadius,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        SkeletonBox(
+          width: double.infinity,
+          height: 14,
+          borderRadius: AppRadius.xsRadius,
+        ),
+        const Spacer(),
+        Row(
           children: [
-            SkeletonBox(
-              width: double.infinity,
-              height: 16,
-              borderRadius: AppRadius.xsRadius,
+            Expanded(
+              flex: 3,
+              child: SkeletonBox(height: 12, borderRadius: AppRadius.xsRadius),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            SkeletonBox(
-              width: 200,
-              height: 14,
-              borderRadius: AppRadius.xsRadius,
-            ),
-            const Spacer(),
-            Row(
-              children: [
-                SkeletonBox(
-                  width: 60,
-                  height: 12,
-                  borderRadius: AppRadius.xsRadius,
-                ),
-                const Spacer(),
-                SkeletonBox(
-                  width: 80,
-                  height: 12,
-                  borderRadius: AppRadius.xsRadius,
-                ),
-              ],
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              flex: 4,
+              child: SkeletonBox(height: 12, borderRadius: AppRadius.xsRadius),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 }

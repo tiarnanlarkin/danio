@@ -70,9 +70,20 @@ serve(async (req: Request) => {
       }
     );
 
-    const data = await openaiResponse.json();
+    if (body.stream === true) {
+      return new Response(openaiResponse.body, {
+        status: openaiResponse.status,
+        headers: {
+          ...corsHeaders,
+          "Content-Type":
+            openaiResponse.headers.get("Content-Type") ?? "text/event-stream",
+        },
+      });
+    }
 
-    return new Response(JSON.stringify(data), {
+    const data = await openaiResponse.text();
+
+    return new Response(data, {
       status: openaiResponse.status,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -53,19 +53,14 @@ Future<T?> showAppBottomSheet<T>({
         padding: padding,
         constraints: maxHeightFraction != null
             ? BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * maxHeightFraction,
+                maxHeight:
+                    MediaQuery.of(context).size.height * maxHeightFraction,
               )
             : null,
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: AppRadius.largeRadius,
-          boxShadow: [
-            BoxShadow(
-              color: AppOverlays.black12,
-              blurRadius: 16,
-              offset: const Offset(0, -4),
-            ),
-          ],
+          borderRadius: AppRadius.lg2Radius,
+          boxShadow: AppShadows.medium,
         ),
         child: child,
       ),
@@ -95,7 +90,7 @@ Future<T?> showAppDragSheet<T>({
     isScrollControlled: isScrollControlled,
     useSafeArea: useSafeArea,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg2)),
     ),
     builder: builder,
   );
@@ -141,7 +136,9 @@ Future<T?> showAppScrollableSheet<T>({
       builder: (ctx, scrollController) => Container(
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(AppRadius.lg2),
+          ),
         ),
         child: builder(ctx, scrollController),
       ),

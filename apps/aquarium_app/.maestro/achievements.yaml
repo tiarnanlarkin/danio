@@ -1,95 +1,35 @@
 appId: com.tiarnanlarkin.danio
 ---
-# Flow: Achievements — navigate to the Trophy Case and verify badges display.
+# Current Achievements entry smoke.
+# The deeper route-open check is covered by scripts/run_android_blackbox_smoke.ps1.
 
-- launchApp
-
+- launchApp:
+    clearState: true
 - waitForAnimationToEnd
 
-# Navigate to Toolbox tab (Achievements lives under Toolbox)
-- tapOn: "Toolbox"
+- assertVisible: "Your Privacy Matters"
+- tapOn:
+    point: "11%,49%"
+- tapOn:
+    point: "11%,59%"
+- tapOn:
+    point: "50%,88%"
 - waitForAnimationToEnd
 
-- assertVisible: "🧰 Toolbox"
-- takeScreenshot: toolbox_before_achievements
-
-# Open Achievements
-- tapOn: "Achievements"
+- tapOn:
+    point: "50%,91%"
 - waitForAnimationToEnd
 
-- assertVisible: "🏆 Trophy Case"
-- takeScreenshot: achievements_screen
-
-# ── Verify Content ────────────────────────────────────────────────────────────
-# Achievements screen shows a completion percentage and a list of badges
 - runFlow:
     when:
-      visible: "unlocked"
+      visible: "Close tooltip"
     commands:
-      - assertVisible: "unlocked"
-
-# Scroll through achievements list
-- scroll:
-    direction: DOWN
-    duration: 1500
-
-- takeScreenshot: achievements_scrolled
-
-# ── Filter Controls ───────────────────────────────────────────────────────────
-# Sort menu should be available in the AppBar
-- runFlow:
-    when:
-      visible: "Sort by Rarity"
-    commands:
-      - tapOn: "Sort by Rarity"
-      - waitForAnimationToEnd
-      - takeScreenshot: achievements_sorted
-
-# Try filter by unlocked
-- runFlow:
-    when:
-      visible: "Unlocked"
-    commands:
-      - tapOn: "Unlocked"
-      - waitForAnimationToEnd
-      - takeScreenshot: achievements_unlocked_filter
-
-# Try filter by locked
-- runFlow:
-    when:
-      visible: "Locked"
-    commands:
-      - tapOn: "Locked"
-      - waitForAnimationToEnd
-      - takeScreenshot: achievements_locked_filter
-
-# Reset filter to All
-- runFlow:
-    when:
-      visible: "All"
-    commands:
-      - tapOn: "All"
+      - tapOn: "Close tooltip"
       - waitForAnimationToEnd
 
-# ── Tap an Achievement for Detail ─────────────────────────────────────────────
-# Scroll back to top and tap first achievement
-- scroll:
-    direction: UP
-    duration: 1000
-
-- runFlow:
-    when:
-      visible: "First Tank"
-    commands:
-      - tapOn: "First Tank"
-      - waitForAnimationToEnd
-      - takeScreenshot: achievement_detail_modal
-      - back
-      - waitForAnimationToEnd
-
-# Navigate back
-- back
+- tapOn:
+    point: "90%,92%"
 - waitForAnimationToEnd
 
-- assertVisible: "🧰 Toolbox"
-- takeScreenshot: achievements_flow_complete
+- assertVisible: "More"
+- assertVisible: ".*Achievements.*"

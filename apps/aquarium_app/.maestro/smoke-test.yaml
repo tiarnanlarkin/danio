@@ -1,55 +1,66 @@
 appId: com.tiarnanlarkin.danio
 ---
-# === FULL SMOKE TEST ===
+# Current black-box smoke test.
 
-# 1. FRESH LAUNCH + QUICK START
+# 1. Fresh launch and privacy consent.
 - launchApp:
     clearState: true
 - waitForAnimationToEnd
-- assertVisible: "Quick Start"
-- tapOn: "Quick Start"
+- assertVisible: "Your Privacy Matters"
+- tapOn:
+    point: "11%,49%"
+- tapOn:
+    point: "11%,59%"
+- tapOn:
+    point: "50%,88%"
 - waitForAnimationToEnd
 
-# We should now be on Learn tab
-- assertVisible: "Nitrogen Cycle"
+# 2. Current first-run entry.
+- tapOn:
+    point: "50%,91%"
+- waitForAnimationToEnd
+
+# We should now be on the Learn tab.
 - assertVisible: "Learning Paths"
 
-# 2. TAB NAVIGATION — tap each tab by its label
-- tapOn:
-    text: "Practice"
-    index: 0
-- waitForAnimationToEnd
+# Dismiss the first-run tooltip if present.
+- runFlow:
+    when:
+      visible: "Close tooltip"
+    commands:
+      - tapOn: "Close tooltip"
+      - waitForAnimationToEnd
 
+# 3. Tab navigation.
 - tapOn:
-    text: "Tank"
-    index: 0
-- waitForAnimationToEnd
-
-- tapOn:
-    text: "Smart"
-    index: 0
+    point: "30%,92%"
 - waitForAnimationToEnd
 
 - tapOn:
-    text: "Toolbox"
-    index: 0
+    point: "50%,92%"
 - waitForAnimationToEnd
 
 - tapOn:
-    text: "Learn"
-    index: 0
+    point: "70%,92%"
 - waitForAnimationToEnd
 
-# 3. OPEN A LESSON
-- tapOn: "Nitrogen Cycle"
+- tapOn:
+    point: "90%,92%"
 - waitForAnimationToEnd
 
-# 4. GO BACK
+- tapOn:
+    point: "10%,92%"
+- waitForAnimationToEnd
+
+# 4. Open the first learning path and return.
+- tapOn:
+    point: "50%,18%"
+- waitForAnimationToEnd
+- assertVisible: "Learning Paths"
 - back
 - waitForAnimationToEnd
 
-# 5. GO TO TANK TAB
+# 5. Finish on Tank tab.
 - tapOn:
-    text: "Tank"
-    index: 0
+    point: "50%,92%"
 - waitForAnimationToEnd

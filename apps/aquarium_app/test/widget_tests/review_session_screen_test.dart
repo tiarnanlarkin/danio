@@ -22,20 +22,60 @@ import 'package:danio/providers/spaced_repetition_provider.dart';
 /// LateInitializationError from NotificationService in tests.
 class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
-  _FakeSrNotifier()
-      : super(SpacedRepetitionState(
-          cards: const [],
+  _FakeSrNotifier(ReviewSession session)
+    : super(
+        SpacedRepetitionState(
+          cards: session.cards,
+          currentSession: session,
           stats: ReviewStats(
-            totalCards: 0,
-            dueCards: 0,
-            weakCards: 0,
+            totalCards: session.cards.length,
+            dueCards: session.cards.length,
+            weakCards: session.cards.length,
             masteredCards: 0,
             averageStrength: 0.0,
             cardsByMastery: const {},
             reviewsToday: 0,
             currentStreak: 0,
           ),
-        ));
+        ),
+      );
+
+  @override
+  Future<ReviewSessionResult> recordSessionResult({
+    required String cardId,
+    required bool correct,
+    required Duration timeSpent,
+  }) async {
+    final session = state.currentSession;
+    if (session == null) {
+      throw StateError('No active session');
+    }
+
+    final result = ReviewSessionResult(
+      cardId: cardId,
+      correct: correct,
+      timestamp: DateTime.now(),
+      xpEarned: correct ? 12 : 4,
+      timeSpent: timeSpent,
+    );
+    final results = [...session.results, result];
+    final updatedSession = ReviewSession(
+      id: session.id,
+      startTime: session.startTime,
+      endTime: results.length == session.cards.length ? DateTime.now() : null,
+      cards: session.cards,
+      results: results,
+      mode: session.mode,
+    );
+
+    state = state.copyWith(currentSession: updatedSession, clearError: true);
+    return result;
+  }
+
+  @override
+  Future<void> completeSession() async {
+    state = state.copyWith(clearSession: true);
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -43,7 +83,10 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
 
 final _now = DateTime.now();
 
-ReviewCard _makeCard({String id = 'card-1', String concept = 'Nitrogen Cycle'}) {
+ReviewCard _makeCard({
+  String id = 'card-1',
+  String concept = 'Nitrogen Cycle',
+}) {
   return ReviewCard(
     id: id,
     conceptId: 'concept-$id',
@@ -77,13 +120,9 @@ Widget _wrap(ReviewSession session) {
   return ProviderScope(
     overrides: [
       _prefsOverride,
-      spacedRepetitionProvider.overrideWith(
-        (ref) => _FakeSrNotifier(),
-      ),
+      spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier(session)),
     ],
-    child: MaterialApp(
-      home: ReviewSessionScreen(session: session),
-    ),
+    child: MaterialApp(home: ReviewSessionScreen(session: session)),
   );
 }
 
@@ -146,6 +185,21 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       // First card of 5 = 20% complete
       expect(find.text('20% complete'), findsOneWidget);
+    });
+
+    testWidgets('records fallback answer and advances using returned result', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(_makeSession(cardCount: 2)));
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Remembered'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Card 2 of 2'), findsOneWidget);
+      expect(find.text('1 correct'), findsOneWidget);
+      expect(find.textContaining('Couldn\'t record'), findsNothing);
     });
   });
 }

@@ -13,29 +13,44 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// await SharedPreferencesBackup.restore(map);
 /// ```
 class SharedPreferencesBackup {
-  /// Keys that are safe to export/import (user data, not device-specific
-  /// settings or transient flags).
-  static const _exportablePrefixes = [
+  /// Exact keys that are safe to export/import: user data and preferences,
+  /// not device-specific secrets, legal consent flags, or transient queues.
+  static const _exportableExactKeys = [
     'user_profile',
+    'user_skill_profile',
     'gems_state',
     'gems_cumulative',
     'shop_inventory',
-    'settings_',
-    'onboarding_',
-    'daily_goal_',
+    'theme_mode',
+    'use_metric',
+    'notifications_enabled',
+    'ambient_lighting_enabled',
+    'haptic_feedback_enabled',
+    'onboarding_completed',
     'ai_interaction_history',
     'anomaly_history',
     'weekly_plan_cache',
-    'spaced_repetition_',
-    'reduced_motion',
-    'haptic_feedback',
-    'analytics_consent',
+    'reduced_motion_override',
     'streak_freeze',
+    'achievement_progress',
+    'room_theme',
+    'unlocked_species_v1',
+    'wishlist_items',
+    'shop_budget',
+    'local_shops',
+    'cost_tracker_expenses',
+    'cost_tracker_currency',
+    'aquarium_reminders',
+  ];
+
+  /// Prefixes for grouped user data keys.
+  static const _exportablePrefixes = [
+    'onboarding_',
+    'daily_goal_',
+    'spaced_repetition_',
     'daily_xp',
     'lesson_progress',
     'completed_lessons',
-    'cost_tracker',
-    'aquarium_reminders',
   ];
 
   static const _metadataKey = '__backup_version';
@@ -82,36 +97,39 @@ class SharedPreferencesBackup {
 
     final prefs = await SharedPreferences.getInstance();
 
-    // Clear existing exportable keys first so stale data doesn't linger.
-    for (final key in entries.keys) {
-      if (_isExportable(key)) {
-        await prefs.remove(key);
-      }
+    // Clear all existing exportable keys first so stale data from an older
+    // profile or a backup with fewer keys cannot linger after restore.
+    for (final key in prefs.getKeys().where(_isExportable).toList()) {
+      await prefs.remove(key);
     }
 
     // Write each entry with the correct type.
+    var restored = 0;
     for (final entry in entries.entries) {
       final key = entry.key;
       final value = entry.value;
+      if (!_isExportable(key)) continue;
       if (value == null) continue;
 
       if (value is bool) {
         await prefs.setBool(key, value);
+        restored++;
       } else if (value is int) {
         await prefs.setInt(key, value);
+        restored++;
       } else if (value is double) {
         await prefs.setDouble(key, value);
+        restored++;
       } else if (value is String) {
         await prefs.setString(key, value);
+        restored++;
       } else if (value is List) {
-        await prefs.setStringList(
-          key,
-          value.map((e) => e.toString()).toList(),
-        );
+        await prefs.setStringList(key, value.map((e) => e.toString()).toList());
+        restored++;
       }
     }
 
-    return entries.length;
+    return restored;
   }
 
   /// Check whether a given SharedPreferences key should be included in
@@ -122,6 +140,7 @@ class SharedPreferencesBackup {
     // Skip internal/flutter keys.
     if (key.startsWith('flutter.') || key.startsWith('package:')) return false;
 
-    return _exportablePrefixes.any((prefix) => key.startsWith(prefix));
+    return _exportableExactKeys.contains(key) ||
+        _exportablePrefixes.any((prefix) => key.startsWith(prefix));
   }
 }

@@ -4,7 +4,8 @@
 
 | Document | Description |
 |----------|-------------|
-| **[ROADMAP.md](ROADMAP.md)** | Master roadmap — single source of truth for all dev work |
+| **[ROADMAP.md](ROADMAP.md)** | Master roadmap - product and development direction |
+| **[development/CODEX_SAFE_WORKFLOW.md](development/CODEX_SAFE_WORKFLOW.md)** | Current safe workflow for Codex, Git, testing, and Android launch checks |
 | [FEATURE_LIST.md](FEATURE_LIST.md) | Complete feature inventory (150+ features) |
 | [DECISIONS.md](DECISIONS.md) | Key architectural decisions |
 
@@ -13,6 +14,7 @@
 | Folder | Contents |
 |--------|----------|
 | `planning/` | Research & design docs (market research, room concepts) |
+| `development/` | Active development and agent workflow |
 | `guides/` | User-facing guides |
 | `completed/` | Completion reports for finished work |
 | `testing/` | Test reports and QA |
@@ -31,4 +33,4 @@ Old planning documents consolidated into ROADMAP.md:
 
 ---
 
-*Last updated: 2026-02-13*
+*Last updated: 2026-05-02*

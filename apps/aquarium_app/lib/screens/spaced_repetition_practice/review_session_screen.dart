@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/resolved_question.dart';
 import '../../models/spaced_repetition.dart';
-import '../../providers/achievement_provider.dart' show achievementCheckerProvider;
 import '../../providers/inventory_provider.dart';
 import '../../providers/spaced_repetition_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -34,25 +33,29 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   DateTime? _questionStartTime;
   String? _errorMessage;
   bool _isSubmitting = false;
+  late ReviewSession _session;
 
   @override
   void initState() {
     super.initState();
+    _session = widget.session;
     _questionStartTime = DateTime.now();
   }
 
-  ReviewCard get _currentCard => widget.session.cards[_currentCardIndex];
+  ReviewCard get _currentCard => _session.cards[_currentCardIndex];
 
   @override
   Widget build(BuildContext context) {
-    final resolvedQuestions = ref.read(spacedRepetitionProvider).resolvedQuestions;
+    final resolvedQuestions = ref
+        .read(spacedRepetitionProvider)
+        .resolvedQuestions;
     final currentQuestion = _currentCardIndex < resolvedQuestions.length
         ? resolvedQuestions[_currentCardIndex]
         : null;
 
-    final progress = (_currentCardIndex + 1) / widget.session.cards.length;
-    final cardsReviewed = widget.session.results.length;
-    final correctSoFar = widget.session.results.where((r) => r.correct).length;
+    final progress = (_currentCardIndex + 1) / _session.cards.length;
+    final cardsReviewed = _session.results.length;
+    final correctSoFar = _session.results.where((r) => r.correct).length;
     final accuracy = cardsReviewed > 0
         ? (correctSoFar / cardsReviewed * 100).round()
         : 0;
@@ -109,7 +112,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Card ${_currentCardIndex + 1} of ${widget.session.cards.length}',
+                        'Card ${_currentCardIndex + 1} of ${_session.cards.length}',
                         style: AppTypography.labelLarge,
                       ),
                       Text(
@@ -184,8 +187,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   question: currentQuestion,
                   onAnswered: (correct) => _recordAnswer(correct),
                   onNext: _nextCard,
-                  isLastCard:
-                      _currentCardIndex >= widget.session.cards.length - 1,
+                  isLastCard: _currentCardIndex >= _session.cards.length - 1,
                 ),
               )
             else if (currentQuestion is MatchingPairsQuestion)
@@ -194,16 +196,15 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   question: currentQuestion,
                   onCompleted: (score) => _recordAnswer(score >= 0.5),
                   onNext: _nextCard,
-                  isLastCard:
-                      _currentCardIndex >= widget.session.cards.length - 1,
+                  isLastCard: _currentCardIndex >= _session.cards.length - 1,
                 ),
               )
             else
-              // Fallback: old self-assess UI for cards without resolved questions
-              ...[
-                Expanded(child: _buildCardContent()),
-                _buildAnswerButtons(),
-              ],
+            // Fallback: old self-assess UI for cards without resolved questions
+            ...[
+              Expanded(child: _buildCardContent()),
+              _buildAnswerButtons(),
+            ],
           ],
         ),
       ),
@@ -267,10 +268,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm2),
-                Text(
-                  _getQuestionText(),
-                  style: AppTypography.headlineMedium,
-                ),
+                Text(_getQuestionText(), style: AppTypography.headlineMedium),
                 if (_currentCard.questionText != null &&
                     _currentCard.questionText!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.md),
@@ -353,7 +351,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 children: [
                   Expanded(
                     child: AppButton(
-                      onPressed: () => _recordAnswer(false),
+                      onPressed: () => _recordAnswer(false, autoAdvance: true),
                       variant: AppButtonVariant.destructive,
                       label: 'Forgot',
                       leadingIcon: Icons.close,
@@ -364,7 +362,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: AppButton(
-                      onPressed: () => _recordAnswer(true),
+                      onPressed: () => _recordAnswer(true, autoAdvance: true),
                       variant: AppButtonVariant.primary,
                       label: 'Remembered',
                       leadingIcon: Icons.check,
@@ -382,7 +380,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
   String _getQuestionText() => conceptDisplayName(_currentCard.conceptId);
 
-  Future<void> _recordAnswer(bool correct) async {
+  Future<void> _recordAnswer(bool correct, {bool autoAdvance = false}) async {
     if (_questionStartTime == null || _isSubmitting) return;
 
     final timeSpent = DateTime.now().difference(_questionStartTime!);
@@ -390,7 +388,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      await ref
+      final result = await ref
           .read(spacedRepetitionProvider.notifier)
           .recordSessionResult(
             cardId: _currentCard.id,
@@ -398,7 +396,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             timeSpent: timeSpent,
           );
 
-      final result = widget.session.results.last;
+      final latestSession = ref.read(spacedRepetitionProvider).currentSession;
       final isBoostActive = ref.read(xpBoostActiveProvider);
       await ref
           .read(userProfileProvider.notifier)
@@ -406,8 +404,12 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
       if (mounted) {
         setState(() {
+          _session = latestSession ?? _appendResult(result);
           _errorMessage = null;
         });
+        if (autoAdvance) {
+          _nextCard();
+        }
       }
     } catch (e, st) {
       logError(
@@ -424,7 +426,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         DanioSnackBar.error(
           context,
           'Couldn\'t record that answer, try again',
-          onRetry: () => _recordAnswer(correct),
+          onRetry: () => _recordAnswer(correct, autoAdvance: autoAdvance),
         );
       }
     } finally {
@@ -434,8 +436,22 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     }
   }
 
+  ReviewSession _appendResult(ReviewSessionResult result) {
+    final results = [..._session.results, result];
+    return ReviewSession(
+      id: _session.id,
+      startTime: _session.startTime,
+      endTime: results.length == _session.cards.length
+          ? DateTime.now()
+          : _session.endTime,
+      cards: _session.cards,
+      results: results,
+      mode: _session.mode,
+    );
+  }
+
   void _nextCard() {
-    if (_currentCardIndex < widget.session.cards.length - 1) {
+    if (_currentCardIndex < _session.cards.length - 1) {
       setState(() {
         _currentCardIndex++;
         _questionStartTime = DateTime.now();
@@ -449,26 +465,17 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   Future<void> _completeSession() async {
     await ref.read(spacedRepetitionProvider.notifier).completeSession();
 
-    final srState = ref.read(spacedRepetitionProvider);
-    await ref
-        .read(achievementCheckerProvider)
-        .checkAfterReview(
-          reviewsCompleted: srState.stats.totalReviews,
-          reviewStreak: srState.stats.currentStreak,
-        );
-
     if (mounted) {
       _showCompletionDialog();
     }
   }
 
   void _showCompletionDialog() {
-    final totalCards = widget.session.cards.length;
-    final correctCards =
-        widget.session.results.where((r) => r.correct).length;
+    final totalCards = _session.cards.length;
+    final correctCards = _session.results.where((r) => r.correct).length;
     final incorrectCards = totalCards - correctCards;
-    final accuracy = (widget.session.score * 100).round();
-    final totalXp = widget.session.totalXp;
+    final accuracy = (_session.score * 100).round();
+    final totalXp = _session.totalXp;
 
     showAppDialog<void>(
       context: context,
@@ -584,7 +591,8 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         ),
         Text(
           value,
-          style: valueStyle ??
+          style:
+              valueStyle ??
               AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
@@ -592,9 +600,8 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   }
 
   Future<bool?> _showExitDialog() {
-    final cardsReviewed = widget.session.results.length;
-    final cardsRemaining =
-        widget.session.cards.length - cardsReviewed;
+    final cardsReviewed = _session.results.length;
+    final cardsRemaining = _session.cards.length - cardsReviewed;
 
     return showAppDialog<bool>(
       context: context,
