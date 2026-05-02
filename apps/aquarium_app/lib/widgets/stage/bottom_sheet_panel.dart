@@ -16,8 +16,30 @@ import 'stage_handle.dart';
 /// BottomPlate system. Contains a horizontal TabBar with four tabs:
 /// Progress | Tanks | Today | Tools.
 ///
-/// Snap points: 0.12 (peek), 0.45 (half), 0.92 (full).
+/// Snap points: closed handle, peek, half, and full.
 class BottomSheetPanel extends ConsumerStatefulWidget {
+  /// Closed state leaves the intentional handle visible without showing tabs.
+  @visibleForTesting
+  static const double kSnapClosed = 0.055;
+
+  /// Peek state shows the handle and tab row.
+  @visibleForTesting
+  static const double kSnapPeek = 0.16;
+
+  @visibleForTesting
+  static const double kSnapHalf = 0.45;
+
+  @visibleForTesting
+  static const double kSnapFull = 0.92;
+
+  @visibleForTesting
+  static const List<double> kSnapSizes = [
+    kSnapClosed,
+    kSnapPeek,
+    kSnapHalf,
+    kSnapFull,
+  ];
+
   /// Content for the Progress tab.
   final Widget progressContent;
 
@@ -43,11 +65,6 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
   late TabController _tabController;
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
-
-  static const double _snapPeek =
-      0.16; // was 0.12 — increased for better tab visibility
-  static const double _snapHalf = 0.45;
-  static const double _snapFull = 0.92;
 
   int _currentTab = 0;
 
@@ -106,10 +123,10 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
 
     return DraggableScrollableSheet(
       controller: _sheetController,
-      initialChildSize: _snapPeek,
-      minChildSize: _snapPeek,
-      maxChildSize: _snapFull,
-      snapSizes: const [_snapPeek, _snapHalf, _snapFull],
+      initialChildSize: BottomSheetPanel.kSnapClosed,
+      minChildSize: BottomSheetPanel.kSnapClosed,
+      maxChildSize: BottomSheetPanel.kSnapFull,
+      snapSizes: BottomSheetPanel.kSnapSizes,
       snap: true,
       shouldCloseOnMinExtent: false,
       builder: (context, scrollController) {
@@ -161,9 +178,12 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
                               // Drag handle + tabs header
                               _SheetHeader(
                                 tabController: _tabController,
-                                onSnapPeek: () => _snapTo(_snapPeek),
-                                onSnapHalf: () => _snapTo(_snapHalf),
-                                onSnapFull: () => _snapTo(_snapFull),
+                                onSnapPeek: () =>
+                                    _snapTo(BottomSheetPanel.kSnapPeek),
+                                onSnapHalf: () =>
+                                    _snapTo(BottomSheetPanel.kSnapHalf),
+                                onSnapFull: () =>
+                                    _snapTo(BottomSheetPanel.kSnapFull),
                               ),
 
                               // Tab content

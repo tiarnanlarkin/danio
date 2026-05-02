@@ -19,14 +19,19 @@ import 'package:danio/models/spaced_repetition.dart';
 
 class _MockNotificationsPlatform extends FlutterLocalNotificationsPlatform
     with MockPlatformInterfaceMixin {
-  Future<bool?> initialize(dynamic settings,
-          {dynamic onDidReceiveNotificationResponse,
-          dynamic onDidReceiveBackgroundNotificationResponse}) async =>
-      true;
+  Future<bool?> initialize(
+    dynamic settings, {
+    dynamic onDidReceiveNotificationResponse,
+    dynamic onDidReceiveBackgroundNotificationResponse,
+  }) async => true;
 
   @override
-  Future<void> show(int id, String? title, String? body,
-          {String? payload}) async {}
+  Future<void> show(
+    int id,
+    String? title,
+    String? body, {
+    String? payload,
+  }) async {}
 
   @override
   Future<void> cancel(int id) async {}
@@ -35,7 +40,8 @@ class _MockNotificationsPlatform extends FlutterLocalNotificationsPlatform
   Future<void> cancelAll() async {}
 
   @override
-  Future<NotificationAppLaunchDetails?> getNotificationAppLaunchDetails() async => null;
+  Future<NotificationAppLaunchDetails?>
+  getNotificationAppLaunchDetails() async => null;
 }
 
 // ---------------------------------------------------------------------------
@@ -107,6 +113,23 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.byType(NavigationBar), findsOneWidget);
+    });
+
+    testWidgets('uses the conservative Danio dock styling contract', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final navBar = tester.widget<NavigationBar>(find.byType(NavigationBar));
+      expect(navBar.height, 78);
+      expect(navBar.elevation, 0);
+      expect(navBar.backgroundColor, const Color(0xFFFDF8EF));
+      expect(navBar.indicatorColor, const Color(0xFFE7F0EA));
+      expect(
+        navBar.labelBehavior,
+        NavigationDestinationLabelBehavior.alwaysShow,
+      );
     });
 
     testWidgets('shows 5 navigation destinations', (tester) async {

@@ -120,7 +120,7 @@ class _PathVisualIdentity {
 
 const Map<String, _PathVisualIdentity> _pathVisualIdentities = {
   'nitrogen_cycle': _PathVisualIdentity(
-    imageUrl: 'assets/images/illustrations/nitrogen_cycle_flow.png',
+    imageUrl: 'assets/images/illustrations/nitrogen_cycle_tank_flow.webp',
     caption:
         'Waste becomes ammonia, bacteria convert it through nitrite, and routine care keeps nitrate under control.',
   ),

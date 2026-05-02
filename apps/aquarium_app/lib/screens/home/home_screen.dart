@@ -802,7 +802,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ref.read(streakResetProvider.notifier).state = 0;
         DanioSnackBar.info(
           context,
-          '👋 Welcome back! Your $next-day streak reset, but let\'s start a new one! 🔥',
+          'Welcome back. Your $next-day streak reset, but let\'s start a new one.',
         );
       }
     });
@@ -832,7 +832,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 bottom: false,
                 child: FirstVisitTooltip(
                   prefsKey: 'tooltip_seen_tank',
-                  emoji: '🏠',
+                  icon: Icons.water_rounded,
+                  iconColor: AppColors.primary,
                   message:
                       'This is your Living Room — manage your aquariums here.',
                   onDismissed: () => setState(() => _showTankTooltip = false),
@@ -849,7 +850,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               right: 0,
               child: FirstVisitTooltip(
                 prefsKey: 'tooltip_seen_hearts',
-                emoji: '❤️',
+                icon: Icons.favorite_rounded,
+                iconColor: AppColors.error,
                 message:
                     'Hearts track progress. Wrong quiz answers cost one, and they reset daily.',
                 autoDismissDuration: const Duration(seconds: 6),
@@ -867,7 +869,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               right: 0,
               child: FirstVisitTooltip(
                 prefsKey: 'tooltip_seen_stage_handles',
-                emoji: '👆',
+                icon: Icons.swipe_rounded,
+                iconColor: AppColors.primary,
                 message: 'Tap the side handles for water and feeding details.',
                 autoDismissDuration: const Duration(seconds: 5),
                 onDismissed: () =>
@@ -888,7 +891,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 bottom: false,
                 child: FirstVisitTooltip(
                   prefsKey: 'tooltip_seen_room_metaphor',
-                  emoji: '🏡',
+                  icon: Icons.chair_rounded,
+                  iconColor: AppColors.primary,
                   message:
                       'Your tank lives in the centre. Use side panels for care details.',
                   autoDismissDuration: const Duration(seconds: 6),

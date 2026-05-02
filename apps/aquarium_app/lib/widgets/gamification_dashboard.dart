@@ -57,14 +57,14 @@ class GamificationDashboard extends ConsumerWidget {
               Row(
                 children: [
                   _StatItem(
-                    icon: '🔥',
+                    icon: Icons.local_fire_department_rounded,
                     value: '${data.currentStreak}',
                     label: 'day streak',
                     color: DanioColors.amberGold,
                   ),
                   const Spacer(),
                   _StatItem(
-                    icon: '⭐',
+                    icon: Icons.star_rounded,
                     value: _formatNumber(data.totalXp),
                     label: 'XP',
                     color: AppColors.accent,
@@ -194,7 +194,7 @@ class _GemsTodayHeartsRow extends ConsumerWidget {
       children: [
         Expanded(
           child: _StatItem(
-            icon: '💎',
+            icon: Icons.diamond_rounded,
             value: _formatNumber(gems),
             label: 'gems',
             color: DanioColors.tealWater,
@@ -202,7 +202,7 @@ class _GemsTodayHeartsRow extends ConsumerWidget {
         ),
         Expanded(
           child: _StatItem(
-            icon: '⚡',
+            icon: Icons.bolt_rounded,
             value: _formatNumber(todayXp),
             label: 'today',
             color: DanioColors.emeraldGreen,
@@ -249,7 +249,7 @@ class _DailyGoalProgressRow extends ConsumerWidget {
 }
 
 class _StatItem extends StatelessWidget {
-  final String icon;
+  final IconData icon;
   final String value;
   final String label;
   final Color color;
@@ -266,7 +266,7 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rowChildren = [
-      Text(icon, style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith()),
+      Icon(icon, size: AppIconSizes.md, color: color),
       const SizedBox(width: AppSpacing.xs),
       Flexible(
         child: Text(
@@ -293,7 +293,9 @@ class _StatItem extends StatelessWidget {
     ];
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: alignRight ? rowChildren.reversed.toList() : rowChildren,
+      children: alignRight
+          ? rowChildren.reversed.toList(growable: false)
+          : rowChildren,
     );
   }
 }
@@ -311,10 +313,11 @@ class _HeartsDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = current > 0 ? const Color(0xFFFFA000) : context.textHint;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('⚡', style: (Theme.of(context).textTheme.titleLarge ?? const TextStyle()).copyWith()),
+        Icon(Icons.bolt_rounded, size: AppIconSizes.md, color: color),
         const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Column(
@@ -327,7 +330,7 @@ class _HeartsDisplay extends StatelessWidget {
                     '$current',
                     style: AppTypography.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: current > 0 ? const Color(0xFFFFA000) : context.textHint,
+                      color: color,
                     ),
                   ),
                   Text(
@@ -391,11 +394,12 @@ class _DailyGoalProgress extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              '📊',
-              style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
-                color: isComplete ? DanioColors.emeraldGreen : null,
-              ),
+            Icon(
+              Icons.bar_chart_rounded,
+              size: AppIconSizes.sm,
+              color: isComplete
+                  ? DanioColors.emeraldGreen
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: AppSpacing.xs2),
             Text(
@@ -500,10 +504,13 @@ class MiniGamificationDisplay extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Streak
-            _MiniStat(emoji: '🔥', value: currentStreak),
+            _MiniStat(
+              icon: Icons.local_fire_department_rounded,
+              value: currentStreak,
+            ),
             const SizedBox(width: AppSpacing.sm2),
             // Gems
-            _MiniStat(emoji: '💎', value: gemsBalance),
+            _MiniStat(icon: Icons.diamond_rounded, value: gemsBalance),
           ],
         );
       },
@@ -512,15 +519,18 @@ class MiniGamificationDisplay extends ConsumerWidget {
 }
 
 class _MiniStat extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
   final int value;
 
-  const _MiniStat({required this.emoji, required this.value});
+  const _MiniStat({required this.icon, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: AppOverlays.black20,
         borderRadius: AppRadius.mediumRadius,
@@ -528,7 +538,7 @@ class _MiniStat extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(emoji, style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith()),
+          Icon(icon, size: AppIconSizes.sm, color: context.textPrimary),
           const SizedBox(width: AppSpacing.xs),
           Text(
             value.toString(),

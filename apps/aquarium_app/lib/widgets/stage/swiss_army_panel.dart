@@ -13,6 +13,14 @@ class SwissArmyPanel extends ConsumerStatefulWidget {
   @visibleForTesting
   static const double kGlassBlurSigma = 14.0;
 
+  /// Width kept below the old 72% so side cards feel less crowded.
+  @visibleForTesting
+  static const double kPanelWidthFactor = 0.66;
+
+  /// The tab body is already padded above the nav; keep only a small gutter.
+  @visibleForTesting
+  static const double kBottomContentGutter = 16.0;
+
   final StagePanel panel;
   final bool isLeft;
   final RoomTheme theme;
@@ -62,10 +70,7 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(
-      vsync: this,
-      duration: AppDurations.medium4,
-    );
+    _anim = AnimationController(vsync: this, duration: AppDurations.medium4);
   }
 
   @override
@@ -100,12 +105,9 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
     _wasOpen = isOpen;
 
     final screenWidth = MediaQuery.of(context).size.width;
-    final panelWidth = screenWidth * 0.72;
+    final panelWidth = screenWidth * SwissArmyPanel.kPanelWidthFactor;
     final topPad = MediaQuery.of(context).padding.top;
-    final bottomPad = MediaQuery.of(context).padding.bottom;
-    // Account for bottom nav bar so panel content stays visible above tabs.
-    const tabBarHeight = kBottomNavigationBarHeight;
-    final effectiveBottom = bottomPad + tabBarHeight;
+    final effectiveBottom = SwissArmyPanel.kBottomContentGutter;
     final sign = widget.isLeft ? -1.0 : 1.0;
 
     return AnimatedBuilder(
@@ -138,7 +140,9 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.horizontal(
                   left: widget.isLeft ? Radius.zero : const Radius.circular(16),
-                  right: widget.isLeft ? const Radius.circular(16) : Radius.zero,
+                  right: widget.isLeft
+                      ? const Radius.circular(16)
+                      : Radius.zero,
                 ),
                 boxShadow: const [
                   BoxShadow(
@@ -151,7 +155,9 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
               child: ClipRRect(
                 borderRadius: BorderRadius.horizontal(
                   left: widget.isLeft ? Radius.zero : const Radius.circular(16),
-                  right: widget.isLeft ? const Radius.circular(16) : Radius.zero,
+                  right: widget.isLeft
+                      ? const Radius.circular(16)
+                      : Radius.zero,
                 ),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(
@@ -185,7 +191,10 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
                             child: Container(
                               width: 40,
                               height: 4,
-                              margin: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.sm),
+                              margin: const EdgeInsets.only(
+                                top: AppSpacing.sm,
+                                bottom: AppSpacing.sm,
+                              ),
                               decoration: BoxDecoration(
                                 color: context.textHint,
                                 borderRadius: AppRadius.xxsRadius,
@@ -235,6 +244,11 @@ class StageHandleStrip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hasOpenPanel = ref.watch(
+      stageProvider.select((s) => s.openPanels.isNotEmpty),
+    );
+    if (hasOpenPanel) return const SizedBox.shrink();
+
     return Semantics(
       label: 'Drag to resize panel: ${_panelLabel(panel)}',
       button: true,

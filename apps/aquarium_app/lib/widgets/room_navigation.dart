@@ -34,7 +34,7 @@ class RoomNavigation extends StatelessWidget {
             children: [
               Expanded(
                 child: _RoomCard(
-                  emoji: '📚',
+                  icon: Icons.auto_stories_rounded,
                   name: 'Study',
                   description: 'Learn & guides',
                   color: const Color(0xFF1A237E),
@@ -45,7 +45,7 @@ class RoomNavigation extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: _RoomCard(
-                  emoji: '🔧',
+                  icon: Icons.build_rounded,
                   name: 'Workshop',
                   description: 'Tools & calculators',
                   color: const Color(0xFF5D4037),
@@ -57,7 +57,7 @@ class RoomNavigation extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm2),
           _RoomCard(
-            emoji: '🏪',
+            icon: Icons.storefront_rounded,
             name: 'Shop Street',
             description: 'Wishlist & costs',
             color: const Color(0xFF2E7D32),
@@ -71,14 +71,14 @@ class RoomNavigation extends StatelessWidget {
 }
 
 class _RoomCard extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
   final String name;
   final String description;
   final Color color;
   final VoidCallback? onTap;
 
   const _RoomCard({
-    required this.emoji,
+    required this.icon,
     required this.name,
     required this.description,
     required this.color,
@@ -110,10 +110,7 @@ class _RoomCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              emoji,
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
-            ),
+            Icon(icon, color: Colors.white, size: AppIconSizes.lg),
             const SizedBox(height: AppSpacing.sm),
             Text(
               name,
@@ -121,7 +118,9 @@ class _RoomCard extends StatelessWidget {
             ),
             Text(
               description,
-              style: AppTypography.bodySmall.copyWith(color: AppColors.whiteAlpha70),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.whiteAlpha70,
+              ),
             ),
           ],
         ),

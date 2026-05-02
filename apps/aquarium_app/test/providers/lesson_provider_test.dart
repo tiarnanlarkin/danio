@@ -137,7 +137,7 @@ void main() {
       expect(imageSections, isNotEmpty);
       expect(
         imageSections.first.imageUrl,
-        'assets/images/illustrations/nitrogen_cycle_flow.png',
+        'assets/images/illustrations/nitrogen_cycle_tank_flow.webp',
       );
       expect(imageSections.first.caption, isNotEmpty);
     });

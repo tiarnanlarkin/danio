@@ -37,6 +37,8 @@ class TabNavigator extends ConsumerStatefulWidget {
 
 class _TabNavigatorState extends ConsumerState<TabNavigator>
     with SingleTickerProviderStateMixin {
+  static const double _bottomNavHeight = 78;
+
   // Track last back button press for double-tap-to-exit
   DateTime? _lastBackPress;
 
@@ -56,10 +58,14 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
   @override
   void initState() {
     super.initState();
-    final disableMotion = ref.read(reducedMotionProvider).disableDecorativeAnimations;
+    final disableMotion = ref
+        .read(reducedMotionProvider)
+        .disableDecorativeAnimations;
     _fadeController = AnimationController(
       vsync: this,
-      duration: disableMotion ? Duration.zero : AppDurations.medium2, // 200ms – crisp tab cross-fade
+      duration: disableMotion
+          ? Duration.zero
+          : AppDurations.medium2, // 200ms – crisp tab cross-fade
       value: 1.0, // Start fully visible
     );
     _fadeAnimation = CurvedAnimation(
@@ -71,7 +77,6 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
   }
 
   @override
@@ -143,83 +148,85 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                 // Bottom padding ensures content doesn't hide behind NavigationBar.
                 // With extendBody:true, Scaffold does NOT add the NavigationBar height
                 // to MediaQuery.padding.bottom, so we must add it explicitly.
-                // M3 NavigationBar default height = 80dp.
+                // Conservative Danio dock height = 78dp.
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: Padding(
                     padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 80,
+                      bottom:
+                          MediaQuery.of(context).padding.bottom +
+                          _bottomNavHeight,
                     ),
                     child: IndexedStack(
-                    index: currentTab,
-                    children: [
-                      // Tab 0: Learn
-                      TickerMode(
-                        enabled: currentTab == 0,
-                        child: Navigator(
-                          key: _navigatorKeys[0],
-                          onGenerateRoute: (settings) {
-                            return MaterialPageRoute(
-                              builder: (context) => const LearnScreen(),
-                              settings: settings,
-                            );
-                          },
+                      index: currentTab,
+                      children: [
+                        // Tab 0: Learn
+                        TickerMode(
+                          enabled: currentTab == 0,
+                          child: Navigator(
+                            key: _navigatorKeys[0],
+                            onGenerateRoute: (settings) {
+                              return MaterialPageRoute(
+                                builder: (context) => const LearnScreen(),
+                                settings: settings,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      // Tab 1: Quiz/Practice
-                      TickerMode(
-                        enabled: currentTab == 1,
-                        child: Navigator(
-                          key: _navigatorKeys[1],
-                          onGenerateRoute: (settings) {
-                            return MaterialPageRoute(
-                              builder: (context) => const PracticeHubScreen(),
-                              settings: settings,
-                            );
-                          },
+                        // Tab 1: Quiz/Practice
+                        TickerMode(
+                          enabled: currentTab == 1,
+                          child: Navigator(
+                            key: _navigatorKeys[1],
+                            onGenerateRoute: (settings) {
+                              return MaterialPageRoute(
+                                builder: (context) => const PracticeHubScreen(),
+                                settings: settings,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      // Tab 2: Tank
-                      TickerMode(
-                        enabled: currentTab == 2,
-                        child: Navigator(
-                          key: _navigatorKeys[2],
-                          onGenerateRoute: (settings) {
-                            return MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                              settings: settings,
-                            );
-                          },
+                        // Tab 2: Tank
+                        TickerMode(
+                          enabled: currentTab == 2,
+                          child: Navigator(
+                            key: _navigatorKeys[2],
+                            onGenerateRoute: (settings) {
+                              return MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                                settings: settings,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      // Tab 3: Smart
-                      TickerMode(
-                        enabled: currentTab == 3,
-                        child: Navigator(
-                          key: _navigatorKeys[3],
-                          onGenerateRoute: (settings) {
-                            return MaterialPageRoute(
-                              builder: (context) => const SmartScreen(),
-                              settings: settings,
-                            );
-                          },
+                        // Tab 3: Smart
+                        TickerMode(
+                          enabled: currentTab == 3,
+                          child: Navigator(
+                            key: _navigatorKeys[3],
+                            onGenerateRoute: (settings) {
+                              return MaterialPageRoute(
+                                builder: (context) => const SmartScreen(),
+                                settings: settings,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      // Tab 4: Settings
-                      TickerMode(
-                        enabled: currentTab == 4,
-                        child: Navigator(
-                          key: _navigatorKeys[4],
-                          onGenerateRoute: (settings) {
-                            return MaterialPageRoute(
-                              builder: (context) => const SettingsHubScreen(),
-                              settings: settings,
-                            );
-                          },
+                        // Tab 4: Settings
+                        TickerMode(
+                          enabled: currentTab == 4,
+                          child: Navigator(
+                            key: _navigatorKeys[4],
+                            onGenerateRoute: (settings) {
+                              return MaterialPageRoute(
+                                builder: (context) => const SettingsHubScreen(),
+                                settings: settings,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   ),
                 ),
 
@@ -232,7 +239,10 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                     bottom: false,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: [const OfflineIndicator(), if (kDebugMode) const SyncIndicator()],
+                      children: [
+                        const OfflineIndicator(),
+                        if (kDebugMode) const SyncIndicator(),
+                      ],
                     ),
                   ),
                 ),
@@ -241,6 +251,15 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
 
             // === Bottom Navigation Bar ===
             bottomNavigationBar: NavigationBar(
+              height: _bottomNavHeight,
+              elevation: 0,
+              backgroundColor: const Color(0xFFFDF8EF),
+              indicatorColor: const Color(0xFFE7F0EA),
+              indicatorShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(22),
+              ),
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              animationDuration: AppDurations.medium2,
               selectedIndex: currentTab,
               onDestinationSelected: (index) {
                 if (index == currentTab) {

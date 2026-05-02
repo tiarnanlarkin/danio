@@ -30,7 +30,7 @@ class LearningVisuals {
       icon: Icons.sync_rounded,
       color: AppColors.accentText,
       backgroundColor: AppColors.accentAlpha10,
-      assetPath: 'assets/images/illustrations/nitrogen_cycle_flow.png',
+      assetPath: 'assets/images/illustrations/nitrogen_cycle_tank_flow.webp',
     ),
     'water_parameters': LearningPathVisual(
       icon: Icons.science_rounded,

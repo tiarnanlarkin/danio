@@ -20,65 +20,72 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
     context: context,
     padding: const EdgeInsets.all(AppSpacing.md),
     child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: AppSpacing.md),
-          Semantics(
-            header: true,
-            child: Text('Tank Toolbox 🔧', style: AppTypography.headlineSmall),
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: AppSpacing.md),
+        Semantics(
+          header: true,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.build_rounded, size: AppIconSizes.md),
+              const SizedBox(width: AppSpacing.xs),
+              Text('Tank Toolbox', style: AppTypography.headlineSmall),
+            ],
           ),
-          const SizedBox(height: AppSpacing.sm2),
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: const Text('Reminders'),
-            onTap: () {
-              Navigator.maybePop(context);
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!context.mounted) return;
-                NavigationThrottle.push(
-                  context,
-                  const RemindersScreen(),
-                  route: RoomSlideRoute(page: const RemindersScreen()),
-                );
-              });
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.book_outlined),
-            title: const Text('Tank Journal'),
-            onTap: () {
-              Navigator.maybePop(context);
+        ),
+        const SizedBox(height: AppSpacing.sm2),
+        ListTile(
+          leading: const Icon(Icons.notifications_outlined),
+          title: const Text('Reminders'),
+          onTap: () {
+            Navigator.maybePop(context);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!context.mounted) return;
               NavigationThrottle.push(
                 context,
-                JournalScreen(tankId: tankId),
-                route: RoomSlideRoute(page: JournalScreen(tankId: tankId)),
+                const RemindersScreen(),
+                route: RoomSlideRoute(page: const RemindersScreen()),
               );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.analytics_outlined),
-            title: const Text('Analytics'),
-            onTap: () {
-              Navigator.maybePop(context);
-              NavigationThrottle.push(context, const AnalyticsScreen());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.search),
-            title: const Text('Species Search'),
-            onTap: () {
-              Navigator.maybePop(context);
-              NavigationThrottle.push(
-                context,
-                const SearchScreen(),
-                route: RoomSlideRoute(page: const SearchScreen()),
-              );
-            },
-          ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
-        ],
-      ),
+            });
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.book_outlined),
+          title: const Text('Tank Journal'),
+          onTap: () {
+            Navigator.maybePop(context);
+            NavigationThrottle.push(
+              context,
+              JournalScreen(tankId: tankId),
+              route: RoomSlideRoute(page: JournalScreen(tankId: tankId)),
+            );
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.analytics_outlined),
+          title: const Text('Analytics'),
+          onTap: () {
+            Navigator.maybePop(context);
+            NavigationThrottle.push(context, const AnalyticsScreen());
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.search),
+          title: const Text('Species Search'),
+          onTap: () {
+            Navigator.maybePop(context);
+            NavigationThrottle.push(
+              context,
+              const SearchScreen(),
+              route: RoomSlideRoute(page: const SearchScreen()),
+            );
+          },
+        ),
+        SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+      ],
+    ),
   );
 }
 
@@ -110,7 +117,9 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
               Expanded(
                 child: TextField(
                   controller: phC,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: const InputDecoration(labelText: 'pH'),
                 ),
               ),
@@ -118,7 +127,9 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
               Expanded(
                 child: TextField(
                   controller: tempC,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: const InputDecoration(labelText: 'Temp (°C)'),
                 ),
               ),
@@ -126,7 +137,9 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
               Expanded(
                 child: TextField(
                   controller: ammoniaC,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: const InputDecoration(labelText: 'NH3'),
                 ),
               ),
@@ -138,31 +151,31 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
             leadingIcon: Icons.save,
             isFullWidth: true,
             onPressed: () async {
-                final ph = double.tryParse(phC.text);
-                final temp = double.tryParse(tempC.text);
-                final ammonia = double.tryParse(ammoniaC.text);
-                if (ph == null && temp == null && ammonia == null) return;
-                Navigator.maybePop(ctx);
-                final now = DateTime.now();
-                final log = LogEntry(
-                  id: now.microsecondsSinceEpoch.toString(),
-                  tankId: tank.id,
-                  type: LogType.waterTest,
-                  timestamp: now,
-                  createdAt: now,
-                  title: 'Quick test',
-                  waterTest: WaterTestResults(
-                    ph: ph,
-                    temperature: temp,
-                    ammonia: ammonia,
-                  ),
-                );
-                final storage = ref.read(storageServiceProvider);
-                await storage.saveLog(log);
-                ref.invalidate(logsProvider(tank.id));
-                ref.invalidate(allLogsProvider(tank.id));
-                await ref.read(userProfileProvider.notifier).addXp(10);
-              },
+              final ph = double.tryParse(phC.text);
+              final temp = double.tryParse(tempC.text);
+              final ammonia = double.tryParse(ammoniaC.text);
+              if (ph == null && temp == null && ammonia == null) return;
+              Navigator.maybePop(ctx);
+              final now = DateTime.now();
+              final log = LogEntry(
+                id: now.microsecondsSinceEpoch.toString(),
+                tankId: tank.id,
+                type: LogType.waterTest,
+                timestamp: now,
+                createdAt: now,
+                title: 'Quick test',
+                waterTest: WaterTestResults(
+                  ph: ph,
+                  temperature: temp,
+                  ammonia: ammonia,
+                ),
+              );
+              final storage = ref.read(storageServiceProvider);
+              await storage.saveLog(log);
+              ref.invalidate(logsProvider(tank.id));
+              ref.invalidate(allLogsProvider(tank.id));
+              await ref.read(userProfileProvider.notifier).addXp(10);
+            },
           ),
         ],
       ),

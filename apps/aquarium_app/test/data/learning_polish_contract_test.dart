@@ -21,7 +21,7 @@ void main() {
 
       expect(
         visual.assetPath,
-        'assets/images/illustrations/nitrogen_cycle_flow.png',
+        'assets/images/illustrations/nitrogen_cycle_tank_flow.webp',
       );
       expect(File(visual.assetPath!).existsSync(), isTrue);
     });
@@ -31,14 +31,19 @@ void main() {
         Directory('lib/screens/learn'),
         Directory('lib/screens/lesson'),
         Directory('lib/screens/spaced_repetition_practice'),
+        File('lib/screens/home/home_screen.dart'),
+        File('lib/screens/home/home_sheets_tank.dart'),
         File('lib/screens/practice_hub_screen.dart'),
         File('lib/providers/achievement_provider.dart'),
+        File('lib/widgets/first_visit_tooltip.dart'),
         File('lib/widgets/learning_streak_badge.dart'),
         File('lib/widgets/hearts_widgets.dart'),
         File('lib/widgets/lesson_celebration_overlay.dart'),
         File('lib/widgets/celebrations/level_up_overlay.dart'),
         File('lib/widgets/level_up_dialog.dart'),
         File('lib/widgets/achievement_unlocked_dialog.dart'),
+        File('lib/widgets/room_navigation.dart'),
+        File('lib/widgets/gamification_dashboard.dart'),
       ];
 
       final files = targets.expand<File>((target) {
@@ -58,13 +63,16 @@ void main() {
         r'\\u2b50|\\ud83d|\\u\{1F|\\u\{260|\\u\{2728',
         caseSensitive: false,
       );
+      final mojibakeEmoji = RegExp(r'ðŸ|â|âœ|â­');
 
       final failures = <String>[];
       for (final file in files) {
         final lines = file.readAsLinesSync();
         for (var i = 0; i < lines.length; i++) {
           final line = lines[i];
-          if (rawEmoji.hasMatch(line) || escapedEmoji.hasMatch(line)) {
+          if (rawEmoji.hasMatch(line) ||
+              escapedEmoji.hasMatch(line) ||
+              mojibakeEmoji.hasMatch(line)) {
             failures.add('${file.path}:${i + 1}: ${line.trim()}');
           }
         }
