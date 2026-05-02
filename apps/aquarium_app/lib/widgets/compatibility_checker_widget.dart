@@ -40,7 +40,7 @@ class _CompatibilityCheckerWidgetState
     if (species.isEmpty || _selectedTankId == null) return;
 
     final openai = ref.read(openAIServiceProvider);
-    if (!openai.isConfigured) return;
+    if (!await openai.isConfiguredAsync()) return;
 
     // Offline check.
     final isOnline = ref.read(isOnlineProvider);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
-import '../providers/user_profile_provider.dart';
 import 'co2_calculator_screen.dart';
 import 'cycling_assistant_screen.dart';
 import 'dosing_calculator_screen.dart';
@@ -15,11 +14,8 @@ import 'tank_volume_calculator_screen.dart';
 import 'lighting_schedule_screen.dart';
 import '../providers/tank_provider.dart';
 import '../utils/navigation_throttle.dart';
-import '../widgets/danio_snack_bar.dart';
-import '../providers/user_profile_notifier.dart';
+import 'tab_navigator.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
-
-
 
 /// Workshop Room - Tools & Calculators
 class WorkshopScreen extends ConsumerStatefulWidget {
@@ -30,22 +26,8 @@ class WorkshopScreen extends ConsumerStatefulWidget {
 }
 
 class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _showFirstVisitTooltip();
-  }
-
-  Future<void> _showFirstVisitTooltip() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    final visited = prefs.getBool('tab_4_workshop_visited') ?? false;
-    if (!visited) {
-      await prefs.setBool('tab_4_workshop_visited', true);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        DanioSnackBar.info(context, '🔧 The Workshop — calculators, guides, and tools');
-      });
-    }
+  void _openTankTab() {
+    ref.read(currentTabProvider.notifier).state = 2;
   }
 
   /// Pick a tank, then navigate to the Cycling Assistant for that tank.
@@ -54,7 +36,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     if (!mounted) return;
 
     if (tanks.isEmpty) {
-      DanioSnackBar.info(context, 'Add a tank first to use the Cycling Assistant.');
+      _openTankTab();
       return;
     }
 
@@ -86,6 +68,10 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hasTank = ref
+        .watch(tanksProvider)
+        .maybeWhen(data: (tanks) => tanks.isNotEmpty, orElse: () => true);
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -114,6 +100,13 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                 title: const Text('🔧 Workshop'),
                 backgroundColor: Colors.transparent,
                 foregroundColor: AppColors.textPrimaryDark,
+                iconTheme: const IconThemeData(
+                  color: AppColors.textPrimaryDark,
+                ),
+                titleTextStyle: AppTypography.titleLarge.copyWith(
+                  color: AppColors.textPrimaryDark,
+                  fontWeight: FontWeight.w700,
+                ),
                 elevation: 0,
                 pinned: true,
               ),
@@ -129,7 +122,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: 1.1,
+                    childAspectRatio: 1.22,
                   ),
                   delegate: SliverChildListDelegate([
                     _ToolCard(
@@ -215,13 +208,17 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                     ),
 
                     _ToolCard(
-                      icon: Icons.science,
+                      icon: hasTank ? Icons.science : Icons.lock_outline,
                       title: 'Cycling Assistant',
-                      subtitle: 'Track tank cycle',
-                      color: DanioColors.tealWater,
-                      onTap: _openCyclingAssistant,
+                      subtitle: hasTank
+                          ? 'Track tank cycle'
+                          : 'Add a tank first',
+                      color: hasTank
+                          ? DanioColors.tealWater
+                          : DanioColors.workshopAccentSteel,
+                      onTap: hasTank ? _openCyclingAssistant : _openTankTab,
+                      locked: !hasTank,
                     ),
-
                   ]),
                 ),
               ),
@@ -242,6 +239,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       title: 'Cost Tracker',
                       subtitle: 'Track your aquarium expenses',
                       color: AppColors.success,
+                      compact: true,
                       onTap: () => NavigationThrottle.push(
                         context,
                         const CostTrackerScreen(),
@@ -264,8 +262,6 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
       ),
     );
   }
-
-
 }
 
 class _WorkshopHeader extends StatelessWidget {
@@ -298,23 +294,27 @@ class _WorkshopHeader extends StatelessWidget {
                   children: [
                     Text(
                       '🔧 Workshop',
-                      style: (Theme.of(context).textTheme.headlineSmall ?? const TextStyle())
-                          .copyWith(
-                            color: AppColors.textPrimaryDark,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style:
+                          (Theme.of(context).textTheme.headlineSmall ??
+                                  const TextStyle())
+                              .copyWith(
+                                color: AppColors.textPrimaryDark,
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Tools & calculators',
-                      style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-                        color: DanioColors.workshopTextSecondary,
-                      ),
+                      style:
+                          (Theme.of(context).textTheme.bodyLarge ??
+                                  const TextStyle())
+                              .copyWith(
+                                color: DanioColors.workshopTextSecondary,
+                              ),
                     ),
                   ],
                 ),
               ),
-
             ],
           ),
         ],
@@ -329,6 +329,8 @@ class _ToolCard extends StatelessWidget {
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
+  final bool compact;
+  final bool locked;
 
   const _ToolCard({
     required this.icon,
@@ -336,54 +338,138 @@ class _ToolCard extends StatelessWidget {
     required this.subtitle,
     required this.color,
     required this.onTap,
+    this.compact = false,
+    this.locked = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final radius = AppRadius.lg2Radius;
+
     return Semantics(
       button: true,
-      label: title,
-      child: GestureDetector(
-      onTap: onTap,
+      label: locked ? '$title, $subtitle' : title,
       child: RepaintBoundary(
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: AppColors.whiteAlpha15,
-            borderRadius: AppRadius.largeRadius,
-            border: Border.all(color: AppColors.whiteAlpha20),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm3),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(51),
-                  borderRadius: AppRadius.mediumRadius,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: radius,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: radius,
+            child: Ink(
+              decoration: BoxDecoration(
+                color: AppColors.whiteAlpha12,
+                borderRadius: radius,
+                border: Border.all(
+                  color: locked
+                      ? AppColors.whiteAlpha12
+                      : AppColors.whiteAlpha25,
                 ),
-                child: Icon(icon, color: color, size: AppIconSizes.md),
+                boxShadow: AppShadows.subtle,
               ),
-              const Spacer(),
-              Text(
-                title,
-                style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-                  color: AppColors.textPrimaryDark,
-                  fontWeight: FontWeight.w600,
-                ),
+              child: Stack(
+                children: [
+                  Opacity(
+                    opacity: locked ? 0.72 : 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: compact
+                          ? Row(
+                              children: [
+                                _ToolIconBadge(icon: icon, color: color),
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: _ToolCopy(
+                                    title: title,
+                                    subtitle: subtitle,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _ToolIconBadge(icon: icon, color: color),
+                                const SizedBox(height: AppSpacing.lg),
+                                _ToolCopy(title: title, subtitle: subtitle),
+                              ],
+                            ),
+                    ),
+                  ),
+                  if (locked)
+                    Positioned(
+                      top: AppSpacing.sm,
+                      right: AppSpacing.sm,
+                      child: Icon(
+                        Icons.lock_outline,
+                        color: DanioColors.workshopTextSecondary,
+                        size: AppIconSizes.sm,
+                      ),
+                    ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text(
-                subtitle,
-                style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
-                  color: DanioColors.workshopTextSecondary,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ToolIconBadge extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+
+  const _ToolIconBadge({required this.icon, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 52,
+      height: 52,
+      decoration: BoxDecoration(
+        color: color.withAlpha(45),
+        borderRadius: AppRadius.sm4Radius,
       ),
+      child: Icon(icon, color: color, size: AppIconSizes.md),
+    );
+  }
+}
+
+class _ToolCopy extends StatelessWidget {
+  final String title;
+  final String subtitle;
+
+  const _ToolCopy({required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle())
+              .copyWith(
+                color: AppColors.textPrimaryDark,
+                fontWeight: FontWeight.w700,
+                height: 1.2,
+              ),
+        ),
+        const SizedBox(height: AppSpacing.xxs),
+        Text(
+          subtitle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle())
+              .copyWith(color: DanioColors.workshopTextSecondary, height: 1.2),
+        ),
+      ],
     );
   }
 }
@@ -406,10 +492,13 @@ class _QuickConversions extends StatelessWidget {
             children: [
               Text(
                 'Quick Reference',
-                style: (Theme.of(context).textTheme.titleMedium ?? const TextStyle()).copyWith(
-                  color: AppColors.textPrimaryDark,
-                  fontWeight: FontWeight.w600,
-                ),
+                style:
+                    (Theme.of(context).textTheme.titleMedium ??
+                            const TextStyle())
+                        .copyWith(
+                          color: AppColors.textPrimaryDark,
+                          fontWeight: FontWeight.w600,
+                        ),
               ),
               const SizedBox(height: AppSpacing.md),
               _ConversionRow('1 gallon', '3.785 liters'),
@@ -439,16 +528,16 @@ class _ConversionRow extends StatelessWidget {
         children: [
           Text(
             left,
-            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-              color: DanioColors.workshopTextSecondary,
-            ),
+            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle())
+                .copyWith(color: DanioColors.workshopTextSecondary),
           ),
           Text(
             right,
-            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle()).copyWith(
-              color: DanioColors.studyGold,
-              fontWeight: FontWeight.w500,
-            ),
+            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle())
+                .copyWith(
+                  color: DanioColors.studyGold,
+                  fontWeight: FontWeight.w500,
+                ),
           ),
         ],
       ),

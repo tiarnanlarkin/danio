@@ -9,6 +9,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:danio/models/user_profile.dart';
 import 'package:danio/models/tank.dart';
+import 'package:danio/models/livestock.dart';
+import 'package:danio/models/equipment.dart';
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/leaderboard.dart';
 import 'package:danio/models/lesson_progress.dart';
@@ -145,6 +147,48 @@ LogEntry _testLogEntry() {
   );
 }
 
+Livestock _testLivestock() {
+  final now = DateTime.utc(2025, 6, 15, 10, 30);
+  return Livestock(
+    id: 'fish-1',
+    tankId: 'tank-1',
+    commonName: 'Betta',
+    scientificName: 'Betta splendens',
+    count: 1,
+    sizeCm: 5.5,
+    maxSizeCm: 7,
+    dateAdded: now.subtract(const Duration(days: 12)),
+    source: 'Local shop',
+    temperament: Temperament.semiAggressive,
+    notes: 'Recovering well',
+    imageUrl: '/photos/betta.jpg',
+    healthStatus: HealthStatus.quarantine,
+    createdAt: now.subtract(const Duration(days: 12)),
+    updatedAt: now,
+  );
+}
+
+Equipment _testEquipment() {
+  final now = DateTime.utc(2025, 6, 15, 10, 30);
+  return Equipment(
+    id: 'equipment-1',
+    tankId: 'tank-1',
+    type: EquipmentType.heater,
+    name: 'Precision Heater',
+    brand: 'AquaCo',
+    model: 'H-100',
+    settings: const {'temperature': 25.5},
+    maintenanceIntervalDays: 90,
+    lastServiced: now.subtract(const Duration(days: 20)),
+    installedDate: now.subtract(const Duration(days: 200)),
+    purchaseDate: now.subtract(const Duration(days: 220)),
+    expectedLifespanMonths: 36,
+    notes: 'Backup unit ready',
+    createdAt: now.subtract(const Duration(days: 220)),
+    updatedAt: now,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -248,7 +292,10 @@ void main() {
         expect(restored.tankStatus, original.tankStatus);
         expect(restored.firstFishSpeciesId, original.firstFishSpeciesId);
         expect(restored.dailyTipsEnabled, original.dailyTipsEnabled);
-        expect(restored.streakRemindersEnabled, original.streakRemindersEnabled);
+        expect(
+          restored.streakRemindersEnabled,
+          original.streakRemindersEnabled,
+        );
         expect(restored.hasSeenTutorial, original.hasSeenTutorial);
         expect(restored.morningReminderTime, original.morningReminderTime);
         expect(restored.eveningReminderTime, original.eveningReminderTime);
@@ -433,15 +480,18 @@ void main() {
         expect(profile.perfectScoreCount, 0);
       });
 
-      test('fromJson crashes on truly missing list keys (known limitation)', () {
-        // Documents that fromJson uses `is List?` which matches null,
-        // then casts with `as List` -- so absent keys throw a TypeError.
-        // This is a known defect; if fixed, flip this to expect no throw.
-        expect(
-          () => UserProfile.fromJson(<String, dynamic>{'id': 'x'}),
-          throwsA(isA<TypeError>()),
-        );
-      });
+      test(
+        'fromJson crashes on truly missing list keys (known limitation)',
+        () {
+          // Documents that fromJson uses `is List?` which matches null,
+          // then casts with `as List` -- so absent keys throw a TypeError.
+          // This is a known defect; if fixed, flip this to expect no throw.
+          expect(
+            () => UserProfile.fromJson(<String, dynamic>{'id': 'x'}),
+            throwsA(isA<TypeError>()),
+          );
+        },
+      );
     });
   });
 
@@ -587,9 +637,7 @@ void main() {
 
     group('fromJson defaults', () {
       test('provides sensible defaults for minimal JSON', () {
-        final minimalJson = <String, dynamic>{
-          'id': 'tank-min',
-        };
+        final minimalJson = <String, dynamic>{'id': 'tank-min'};
 
         final tank = Tank.fromJson(minimalJson);
 
@@ -628,6 +676,64 @@ void main() {
   });
 
   // =========================================================================
+  // Livestock
+  // =========================================================================
+  group('Livestock', () {
+    group('round-trip serialization', () {
+      test(
+        'toJson -> fromJson preserves health status and optional fields',
+        () {
+          final original = _testLivestock();
+          final restored = Livestock.fromJson(original.toJson());
+
+          expect(restored.id, original.id);
+          expect(restored.tankId, original.tankId);
+          expect(restored.commonName, original.commonName);
+          expect(restored.scientificName, original.scientificName);
+          expect(restored.count, original.count);
+          expect(restored.sizeCm, original.sizeCm);
+          expect(restored.maxSizeCm, original.maxSizeCm);
+          expect(restored.temperament, original.temperament);
+          expect(restored.healthStatus, HealthStatus.quarantine);
+          expect(restored.notes, original.notes);
+          expect(restored.imageUrl, original.imageUrl);
+        },
+      );
+    });
+  });
+
+  // =========================================================================
+  // Equipment
+  // =========================================================================
+  group('Equipment', () {
+    group('round-trip serialization', () {
+      test('toJson -> fromJson preserves lifecycle fields', () {
+        final original = _testEquipment();
+        final restored = Equipment.fromJson(original.toJson());
+
+        expect(restored.id, original.id);
+        expect(restored.tankId, original.tankId);
+        expect(restored.type, original.type);
+        expect(restored.name, original.name);
+        expect(restored.settings, original.settings);
+        expect(
+          restored.maintenanceIntervalDays,
+          original.maintenanceIntervalDays,
+        );
+        expect(
+          restored.purchaseDate?.toIso8601String(),
+          original.purchaseDate?.toIso8601String(),
+        );
+        expect(
+          restored.expectedLifespanMonths,
+          original.expectedLifespanMonths,
+        );
+        expect(restored.notes, original.notes);
+      });
+    });
+  });
+
+  // =========================================================================
   // LogEntry
   // =========================================================================
   group('LogEntry', () {
@@ -647,7 +753,10 @@ void main() {
 
         // WaterTestResults
         expect(restored.waterTest, isNotNull);
-        expect(restored.waterTest!.temperature, original.waterTest!.temperature);
+        expect(
+          restored.waterTest!.temperature,
+          original.waterTest!.temperature,
+        );
         expect(restored.waterTest!.ph, original.waterTest!.ph);
         expect(restored.waterTest!.ammonia, original.waterTest!.ammonia);
         expect(restored.waterTest!.nitrite, original.waterTest!.nitrite);
@@ -737,7 +846,11 @@ void main() {
           );
 
           final restored = LogEntry.fromJson(entry.toJson());
-          expect(restored.type, logType, reason: '${logType.name} not preserved');
+          expect(
+            restored.type,
+            logType,
+            reason: '${logType.name} not preserved',
+          );
         }
       });
     });

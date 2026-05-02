@@ -26,6 +26,7 @@ class Debouncer {
   /// Cancel any pending execution
   void cancel() {
     _timer?.cancel();
+    _pendingAction = null;
   }
 
   /// Flush: if a callback is pending, execute it immediately and cancel the timer.

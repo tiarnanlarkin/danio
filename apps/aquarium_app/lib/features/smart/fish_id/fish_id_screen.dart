@@ -132,7 +132,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     if (!accepted || !mounted) return;
 
     final openai = ref.read(openAIServiceProvider);
-    if (!openai.isConfigured) {
+    if (!await openai.isConfiguredAsync()) {
       setState(
         () => _error =
             'Fish ID isn\'t available yet — we\'re working on bringing it to you! 🐟',

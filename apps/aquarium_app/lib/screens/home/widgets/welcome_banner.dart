@@ -25,51 +25,46 @@ class WelcomeBanner extends StatelessWidget {
         label: 'Dismiss welcome banner',
         button: true,
         child: GestureDetector(
-        onTap: onDismiss,
-        child: AnimatedOpacity(
-          opacity: visible ? 1.0 : 0.0,
-          duration: AppDurations.long2,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: AppRadius.mediumRadius,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withAlpha(60),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  const Text(
-                    '\u{1F420}',
-                    style: TextStyle(fontSize: 28),
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Expanded(
-                    child: Text(
-                      userName != null
-                          ? 'Welcome, $userName! Your aquarium journey starts now'
-                          : 'Welcome! Your aquarium journey starts now',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
+          onTap: onDismiss,
+          child: AnimatedOpacity(
+            opacity: visible ? 1.0 : 0.0,
+            duration: AppDurations.long2,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm2,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: AppRadius.lg2Radius,
+                  boxShadow: AppShadows.medium,
+                ),
+                child: Row(
+                  children: [
+                    const Text(
+                      '\u{1F420}',
+                      style: TextStyle(fontSize: 24, height: 1),
+                    ),
+                    const SizedBox(width: AppSpacing.sm2),
+                    Expanded(
+                      child: Text(
+                        userName != null
+                            ? 'Welcome, $userName. Your aquarium journey starts now.'
+                            : 'Welcome. Your aquarium journey starts now.',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         ),
       ),
     );

@@ -1,4 +1,6 @@
 # 🌙 Launch Night Summary
+
+> Status note (2026-05-02): historical launch summary. It predates the current `main` branch state and must not be treated as current release approval. Use `docs/development/CODEX_SAFE_WORKFLOW.md` for the active release gate.
 **Date:** 2026-02-16 01:15 GMT  
 **Duration:** ~30 minutes  
 **Status:** ✅ COMPLETE - App ready for Play Store submission

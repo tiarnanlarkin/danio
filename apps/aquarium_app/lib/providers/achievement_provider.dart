@@ -52,6 +52,10 @@ class AchievementProgressNotifier
     super.dispose();
   }
 
+  void cancelPendingSaveForRestore() {
+    _saveDebouncer.cancel();
+  }
+
   Future<void> _load() async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
@@ -69,7 +73,11 @@ class AchievementProgressNotifier
       }
     } catch (e, st) {
       // Log error but start with empty map to not block app
-      logError('Error loading achievement progress: $e', stackTrace: st, tag: 'AchievementProvider');
+      logError(
+        'Error loading achievement progress: $e',
+        stackTrace: st,
+        tag: 'AchievementProvider',
+      );
       logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       state = {};
       // Don't rethrow - gracefully recover with empty state
@@ -89,7 +97,10 @@ class AchievementProgressNotifier
 
         await prefs.setString(_key, jsonEncode(toSave));
       } catch (e) {
-        logError('Failed to save achievement progress: $e', tag: 'AchievementProvider');
+        logError(
+          'Failed to save achievement progress: $e',
+          tag: 'AchievementProvider',
+        );
       }
     });
   }
@@ -105,7 +116,11 @@ class AchievementProgressNotifier
       await _save();
     } catch (e, st) {
       // Log the error with full context
-      logError('ACHIEVEMENT ERROR: Failed to update progress for $achievementId', stackTrace: st, tag: 'AchievementProvider');
+      logError(
+        'ACHIEVEMENT ERROR: Failed to update progress for $achievementId',
+        stackTrace: st,
+        tag: 'AchievementProvider',
+      );
       logError('Error: $e', stackTrace: st, tag: 'AchievementProvider');
       logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       rethrow; // Never fail silently
@@ -120,8 +135,16 @@ class AchievementProgressNotifier
       await _save();
     } catch (e, st) {
       // Log the error with full context
-      logError('ACHIEVEMENT ERROR: Failed to update multiple achievements', stackTrace: st, tag: 'AchievementProvider');
-      logError('Achievement IDs: ${updates.keys.join(", ")}', stackTrace: st, tag: 'AchievementProvider');
+      logError(
+        'ACHIEVEMENT ERROR: Failed to update multiple achievements',
+        stackTrace: st,
+        tag: 'AchievementProvider',
+      );
+      logError(
+        'Achievement IDs: ${updates.keys.join(", ")}',
+        stackTrace: st,
+        tag: 'AchievementProvider',
+      );
       logError('Error: $e', stackTrace: st, tag: 'AchievementProvider');
       logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       rethrow; // Never fail silently
@@ -375,7 +398,10 @@ class AchievementChecker {
                 gemsAwarded: gemReward,
               );
             } catch (e) {
-              logError('Warning: Failed to send achievement notification: $e', tag: 'AchievementProvider');
+              logError(
+                'Warning: Failed to send achievement notification: $e',
+                tag: 'AchievementProvider',
+              );
             }
           }
         }
@@ -384,7 +410,11 @@ class AchievementChecker {
       return results;
     } catch (e, st) {
       // Log comprehensive error information
-      logError('ACHIEVEMENT ERROR: Failed to check achievements', stackTrace: st, tag: 'AchievementProvider');
+      logError(
+        'ACHIEVEMENT ERROR: Failed to check achievements',
+        stackTrace: st,
+        tag: 'AchievementProvider',
+      );
       logError('Error: $e', stackTrace: st, tag: 'AchievementProvider');
       logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       rethrow; // Never fail silently
@@ -596,7 +626,10 @@ class AchievementChecker {
           const SizedBox(height: AppSpacing.md),
           // Rewards summary
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm2,
+            ),
             decoration: BoxDecoration(
               color: AppOverlays.black10,
               borderRadius: AppRadius.md2Radius,
@@ -632,8 +665,8 @@ class AchievementChecker {
 }
 
 /// Provider for filtered achievements
-final filteredAchievementsProvider =
-    Provider.autoDispose.family<List<Achievement>, AchievementFilter>((ref, filter) {
+final filteredAchievementsProvider = Provider.autoDispose
+    .family<List<Achievement>, AchievementFilter>((ref, filter) {
       final progressMap = ref.watch(achievementProgressProvider);
 
       // Exclude hidden achievements unless they've been unlocked

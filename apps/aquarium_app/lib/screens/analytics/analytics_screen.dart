@@ -39,6 +39,16 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   late Future<AnalyticsSummary> _analyticsFuture;
   bool _dataLoaded = false;
 
+  static const List<AnalyticsTimeRange> _timeRangeOptions = [
+    AnalyticsTimeRange.last30Days,
+    AnalyticsTimeRange.today,
+    AnalyticsTimeRange.thisWeek,
+    AnalyticsTimeRange.thisMonth,
+    AnalyticsTimeRange.last7Days,
+    AnalyticsTimeRange.last90Days,
+    AnalyticsTimeRange.allTime,
+  ];
+
   /// Monotonically increasing version counter. Incremented each time a new
   /// analytics load is requested so that stale `compute()` results from
   /// previous range selections are discarded.
@@ -53,6 +63,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   void _refreshAnalytics() {
     _loadVersion++;
     setState(() {
+      _dataLoaded = false;
       _analyticsFuture = _loadAnalytics();
     });
   }
@@ -86,6 +97,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             body = _buildSkeletonLoader();
           } else if (snapshot.hasError) {
+            _updateDataLoaded(false);
             body = AppErrorState(
               title: 'Couldn\'t load analytics',
               message: 'Couldn\'t load analytics. Tap to try again.',
@@ -94,12 +106,14 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           } else {
             final summary = snapshot.data;
             if (summary == null) {
+              _updateDataLoaded(false);
               body = const AppErrorState(
                 title: 'No analytics data available',
                 message:
                     'Complete some lessons to see your progress analytics.',
               );
             } else if (_isEmptySummary(summary)) {
+              _updateDataLoaded(false);
               final theme = Theme.of(context);
               body = Center(
                 key: const ValueKey('analytics-empty'),
@@ -125,11 +139,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ),
               );
             } else {
-              if (!_dataLoaded) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) setState(() => _dataLoaded = true);
-                });
-              }
+              _updateDataLoaded(true);
               body = SingleChildScrollView(
                 key: const ValueKey('analytics-content'),
                 child: Column(
@@ -165,6 +175,15 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         },
       ),
     );
+  }
+
+  void _updateDataLoaded(bool value) {
+    if (_dataLoaded == value) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _dataLoaded != value) {
+        setState(() => _dataLoaded = value);
+      }
+    });
   }
 
   Future<AnalyticsSummary> _loadAnalytics() async {
@@ -227,10 +246,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         currentStreak: profile.currentStreak,
         longestStreak: profile.longestStreak,
         lessonsCompleted: profile.completedLessons.length,
-        totalLessons: allPaths.fold<int>(
-          0,
-          (sum, p) => sum + p.lessons.length,
-        ),
+        totalLessons: allPaths.fold<int>(0, (sum, p) => sum + p.lessons.length),
         timeSpentMinutes: 0,
         recentDailyStats: const [],
         recentWeeklyStats: const [],
@@ -255,17 +271,25 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               children: [
                 Row(
                   children: [
-                    Expanded(child: SkeletonCard(height: 80)),
+                    Expanded(
+                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
+                    ),
                     SizedBox(width: AppSpacing.sm2),
-                    Expanded(child: SkeletonCard(height: 80)),
+                    Expanded(
+                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
+                    ),
                   ],
                 ),
                 SizedBox(height: AppSpacing.sm2),
                 Row(
                   children: [
-                    Expanded(child: SkeletonCard(height: 80)),
+                    Expanded(
+                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
+                    ),
                     SizedBox(width: AppSpacing.sm2),
-                    Expanded(child: SkeletonCard(height: 80)),
+                    Expanded(
+                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
+                    ),
                   ],
                 ),
               ],
@@ -302,52 +326,44 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.sm2),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: AnalyticsTimeRange.values
-                  .where((r) => r != AnalyticsTimeRange.custom)
-                  .map((range) {
-                    final isSelected = _selectedRange == range;
-                    return Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.sm),
-                      child: ChoiceChip(
-                        label: Text(
-                          range.displayName,
-                          style: TextStyle(
-                            color: isSelected
-                                ? AppColors.onPrimary
-                                : Theme.of(context).colorScheme.onSurface,
-                            fontWeight: isSelected
-                                ? FontWeight.w700
-                                : FontWeight.w500,
-                          ),
-                        ),
-                        selected: isSelected,
-                        selectedColor: Theme.of(context).colorScheme.primary,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.surfaceContainerHighest,
-                        side: BorderSide(
-                          color: isSelected
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.outline,
-                          width: isSelected ? 2 : 1,
-                        ),
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _selectedRange = range;
-                              _customStart = null;
-                              _customEnd = null;
-                            });
-                            _refreshAnalytics();
-                          }
-                        },
-                      ),
-                    );
-                  })
-                  .toList(),
-            ),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: _timeRangeOptions.map((range) {
+              final isSelected = _selectedRange == range;
+              return ChoiceChip(
+                label: Text(
+                  range.displayName,
+                  style: TextStyle(
+                    color: isSelected
+                        ? AppColors.onPrimary
+                        : Theme.of(context).colorScheme.onSurface,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
+                selected: isSelected,
+                selectedColor: Theme.of(context).colorScheme.primary,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceContainerHighest,
+                side: BorderSide(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.outline,
+                  width: isSelected ? 2 : 1,
+                ),
+                onSelected: (selected) {
+                  if (selected) {
+                    setState(() {
+                      _selectedRange = range;
+                      _customStart = null;
+                      _customEnd = null;
+                    });
+                    _refreshAnalytics();
+                  }
+                },
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -355,6 +371,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   }
 
   Widget _buildOverviewSection(AnalyticsSummary summary) {
+    final xpTrend = _weeklyXpTrend(summary);
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
@@ -375,13 +393,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   label: 'Total XP',
                   value: summary.totalXP.toString(),
                   color: DanioColors.amberGold,
-                  trend: summary.recentWeeklyStats.isNotEmpty &&
-                          summary.recentWeeklyStats.length >= 2
-                      ? summary.recentWeeklyStats[0].totalXP >
-                                summary.recentWeeklyStats[1].totalXP
-                            ? ProgressTrend.increasing
-                            : ProgressTrend.decreasing
-                      : null,
+                  trend: xpTrend,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm2),
@@ -441,6 +453,18 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     );
   }
 
+  ProgressTrend? _weeklyXpTrend(AnalyticsSummary summary) {
+    final weeks = summary.recentWeeklyStats;
+    if (weeks.length < 2) return null;
+
+    final current = weeks[0].totalXP;
+    final previous = weeks[1].totalXP;
+    if (current == 0 && previous == 0) return null;
+    if (current > previous) return ProgressTrend.increasing;
+    if (current < previous) return ProgressTrend.decreasing;
+    return ProgressTrend.stable;
+  }
+
   Widget _buildXPChart(AnalyticsSummary summary) {
     if (summary.recentDailyStats.isEmpty) return const SizedBox.shrink();
 
@@ -494,7 +518,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           if (index >= 0 && index < data.length) {
                             final date = data[index].date;
                             return Padding(
-                              padding: const EdgeInsets.only(top: AppSpacing.sm),
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.sm,
+                              ),
                               child: Text(
                                 DateFormat('d/M').format(date),
                                 style: AppTypography.labelSmall,
@@ -519,10 +545,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           .asMap()
                           .entries
                           .map(
-                            (e) => FlSpot(
-                              e.key.toDouble(),
-                              e.value.xp.toDouble(),
-                            ),
+                            (e) =>
+                                FlSpot(e.key.toDouble(), e.value.xp.toDouble()),
                           )
                           .toList(),
                       isCurved: true,
@@ -608,7 +632,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           if (index >= 0 && index < last7Days.length) {
                             final date = last7Days[index].date;
                             return Padding(
-                              padding: const EdgeInsets.only(top: AppSpacing.sm),
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.sm,
+                              ),
                               child: Text(
                                 DateFormat('E').format(date)[0],
                                 style: AppTypography.labelSmall,
@@ -633,8 +659,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   ),
                   borderData: FlBorderData(show: false),
                   barGroups: last7Days.asMap().entries.map((entry) {
-                    final isToday =
-                        entry.value.date.day == DateTime.now().day;
+                    final isToday = entry.value.date.day == DateTime.now().day;
                     return BarChartGroupData(
                       x: entry.key,
                       barRods: [
@@ -714,8 +739,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       borderColor: AppColors.info,
                       dataEntries: topics
                           .map(
-                            (t) =>
-                                RadarEntry(value: t.masteryPercentage * 100),
+                            (t) => RadarEntry(value: t.masteryPercentage * 100),
                           )
                           .toList(),
                     ),
@@ -967,10 +991,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       final file = File('${dir.path}/analytics_export.json');
       await file.writeAsString(jsonString);
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'Danio Analytics Export',
-      );
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], subject: 'Danio Analytics Export');
     } catch (e) {
       logError('Export failed: $e', tag: 'AnalyticsScreen');
       if (mounted) {
@@ -1015,10 +1038,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       final file = File('${dir.path}/analytics_export.csv');
       await file.writeAsString(csvContent);
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'Danio Analytics Export (CSV)',
-      );
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], subject: 'Danio Analytics Export (CSV)');
     } catch (e) {
       logError('CSV Export failed: $e', tag: 'AnalyticsScreen');
       if (mounted) {
@@ -1031,7 +1053,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   }
 
   Future<void> _shareReport(AnalyticsSummary summary) async {
-    final report = '''
+    final report =
+        '''
 📊 My Aquarium Learning Progress
 
 🌟 Total XP: ${summary.totalXP}

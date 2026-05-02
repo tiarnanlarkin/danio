@@ -1,4 +1,6 @@
 # 🚀 Play Store Launch Checklist
+
+> Status note (2026-05-02): historical checklist. Do not use as current release approval. Use `docs/development/CODEX_SAFE_WORKFLOW.md` plus a fresh Android release build, device smoke test, current legal URLs, and green GitHub Actions before Play Store submission.
 **App:** Aquarium Hobbyist  
 **Version:** 1.0.0+1  
 **Target Date:** 2026-02-16

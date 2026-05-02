@@ -258,7 +258,10 @@ class AnalyticsService {
         hourOfDay[simulatedHour] = (hourOfDay[simulatedHour] ?? 0) + xp;
         dayOfWeek[date.weekday] = (dayOfWeek[date.weekday] ?? 0) + xp;
       } catch (e) {
-        logError('Analytics: skipped invalid date in hourly distribution: $e', tag: 'AnalyticsService');
+        logError(
+          'Analytics: skipped invalid date in hourly distribution: $e',
+          tag: 'AnalyticsService',
+        );
       }
     }
 
@@ -307,21 +310,26 @@ class AnalyticsService {
       final thisWeek = weeklyStats[0].totalXP;
       final lastWeek = weeklyStats[1].totalXP;
       if (thisWeek > lastWeek) {
-        final percentChange = ((thisWeek - lastWeek) / lastWeek * 100).round();
+        final percentChange = lastWeek > 0
+            ? ((thisWeek - lastWeek) / lastWeek * 100).round()
+            : null;
         insights.add(
           AnalyticsInsight(
             id: 'xp_growth_${insightId++}',
             type: InsightType.improvement,
-            message: 'Your XP increased $percentChange% this week!',
-            detailedMessage:
-                'You earned $thisWeek XP this week compared to $lastWeek last week. Keep up the great work!',
+            message: percentChange != null
+                ? 'Your XP increased $percentChange% this week!'
+                : 'You earned $thisWeek XP this week!',
+            detailedMessage: lastWeek > 0
+                ? 'You earned $thisWeek XP this week compared to $lastWeek last week. Keep up the great work!'
+                : 'You earned $thisWeek XP this week after a quiet previous week. Keep up the momentum!',
             trend: ProgressTrend.increasing,
             recommendation:
                 'Try to maintain this momentum by completing at least one lesson daily.',
             data: {
               'thisWeek': thisWeek,
               'lastWeek': lastWeek,
-              'change': percentChange,
+              if (percentChange != null) 'change': percentChange,
             },
             generatedAt: DateTime.now(),
           ),

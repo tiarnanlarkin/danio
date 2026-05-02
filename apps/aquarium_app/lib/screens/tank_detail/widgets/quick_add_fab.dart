@@ -77,41 +77,47 @@ class _QuickAddFabState extends State<QuickAddFab>
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         // Mini FABs
-        ScaleTransition(
-          scale: _expandAnimation,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              MiniFabOption(
-                icon: Icons.science,
-                label: 'Water Test',
-                color: AppColors.primary,
-                onTap: () => _handleAction(widget.onWaterTest),
+        IgnorePointer(
+          ignoring: !_isExpanded,
+          child: ExcludeSemantics(
+            excluding: !_isExpanded,
+            child: ScaleTransition(
+              scale: _expandAnimation,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  MiniFabOption(
+                    icon: Icons.science,
+                    label: 'Water Test',
+                    color: AppColors.primary,
+                    onTap: () => _handleAction(widget.onWaterTest),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  MiniFabOption(
+                    icon: Icons.water_drop,
+                    label: 'Water Change',
+                    color: AppColors.secondary,
+                    onTap: () => _handleAction(widget.onWaterChange),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  MiniFabOption(
+                    icon: Icons.restaurant,
+                    label: 'Log Feeding',
+                    color: AppColors.warning,
+                    onTap: () => _handleAction(widget.onFeeding),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  MiniFabOption(
+                    icon: Icons.edit_note,
+                    label: 'Observation',
+                    color: AppColors.accentAlt,
+                    onTap: () => _handleAction(widget.onObservation),
+                  ),
+                  const SizedBox(height: AppSpacing.sm2),
+                ],
               ),
-              const SizedBox(height: AppSpacing.sm),
-              MiniFabOption(
-                icon: Icons.water_drop,
-                label: 'Water Change',
-                color: AppColors.secondary,
-                onTap: () => _handleAction(widget.onWaterChange),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              MiniFabOption(
-                icon: Icons.restaurant,
-                label: 'Log Feeding',
-                color: AppColors.warning,
-                onTap: () => _handleAction(widget.onFeeding),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              MiniFabOption(
-                icon: Icons.edit_note,
-                label: 'Observation',
-                color: AppColors.accentAlt,
-                onTap: () => _handleAction(widget.onObservation),
-              ),
-              const SizedBox(height: AppSpacing.sm2),
-            ],
+            ),
           ),
         ),
         // Main FAB

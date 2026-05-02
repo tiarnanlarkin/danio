@@ -94,14 +94,14 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
                   child: GestureDetector(
                     onTap: _close,
                     child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 8 * t, sigmaY: 8 * t),
-                    child: Container(
-                      color: Color.fromARGB((140 * t).round(), 20, 20, 30),
+                      filter: ImageFilter.blur(sigmaX: 8 * t, sigmaY: 8 * t),
+                      child: Container(
+                        color: Color.fromARGB((140 * t).round(), 20, 20, 30),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
             // ── Warm orange vignette from bottom-right ───────────────
             if (t > 0)
@@ -199,17 +199,23 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
         Positioned(
           bottom: pos.dy,
           right: pos.dx,
-          child: Transform.scale(
-            scale: curve,
-            alignment: Alignment.bottomRight,
-            child: Opacity(
-              opacity: staggerT.clamp(0.0, 1.0),
-              child: _PillButton(
-                action: action,
-                onPressed: () {
-                  _close();
-                  action.onPressed?.call();
-                },
+          child: IgnorePointer(
+            ignoring: !_isOpen,
+            child: ExcludeSemantics(
+              excluding: !_isOpen,
+              child: Transform.scale(
+                scale: curve,
+                alignment: Alignment.bottomRight,
+                child: Opacity(
+                  opacity: staggerT.clamp(0.0, 1.0),
+                  child: _PillButton(
+                    action: action,
+                    onPressed: () {
+                      _close();
+                      action.onPressed?.call();
+                    },
+                  ),
+                ),
               ),
             ),
           ),
@@ -244,7 +250,10 @@ class _PillButton extends StatelessWidget {
           onPressed();
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2, vertical: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg2,
+            vertical: AppSpacing.md,
+          ),
           decoration: BoxDecoration(
             color: bg,
             borderRadius: AppRadius.largeRadius,
@@ -298,9 +307,7 @@ class _OrangeFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = icon == Icons.add
-        ? 'Open action menu'
-        : 'Close action menu';
+    final label = icon == Icons.add ? 'Open action menu' : 'Close action menu';
     return Semantics(
       button: true,
       label: label,

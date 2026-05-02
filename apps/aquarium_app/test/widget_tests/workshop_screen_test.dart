@@ -7,15 +7,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/workshop_screen.dart';
+import 'package:danio/services/storage_service.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(home: WorkshopScreen()),
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+    ],
+    child: const MaterialApp(home: WorkshopScreen()),
   );
 }
 
@@ -48,6 +53,14 @@ void main() {
       expect(find.textContaining('Workshop'), findsWidgets);
     });
 
+    testWidgets('does not show an automatic first-visit snackbar', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+      expect(find.byType(SnackBar), findsNothing);
+    });
+
     testWidgets('shows Water Change tool', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
@@ -67,5 +80,20 @@ void main() {
       expect(find.text('CO₂ Calculator'), findsOneWidget);
       expect(find.text('Dosing'), findsOneWidget);
     });
+
+    testWidgets(
+      'shows Cycling Assistant as tank-dependent when no tanks exist',
+      (tester) async {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        await tester.scrollUntilVisible(find.text('Cycling Assistant'), 300);
+        await tester.pumpAndSettle();
+
+        expect(find.text('Cycling Assistant'), findsOneWidget);
+        expect(find.text('Add a tank first'), findsOneWidget);
+        expect(find.byIcon(Icons.lock_outline), findsWidgets);
+      },
+    );
   });
 }

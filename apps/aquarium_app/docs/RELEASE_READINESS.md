@@ -1,5 +1,7 @@
 # Danio — Release Readiness Assessment
 
+> Status note (2026-05-02): historical assessment for `openclaw/stage-system`. It is not current release approval for `main`. Use `docs/development/CODEX_SAFE_WORKFLOW.md`, current CI, Android device smoke tests, and verified legal URLs before release.
+
 **Date:** 2026-04-05
 **Version:** 1.0.0+1
 **Branch:** `openclaw/stage-system`

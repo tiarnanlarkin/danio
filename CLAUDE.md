@@ -2,7 +2,7 @@
 
 ## IMPORTANT: Read Before Modifying
 
-Before making ANY code changes, you MUST understand the area you're modifying. Read the relevant screen, provider, and model files first. Do not guess at architecture — this is a large app with 164 screens, 20 providers, 22 models, and 33 services.
+Before making ANY code changes, you MUST understand the area you're modifying. Read the relevant screen, provider, and model files first. Do not guess at architecture - this is a large app with 166 screens, 20 providers, 22 models, and 33 services.
 
 If the user asks to modify a feature, explore the relevant files BEFORE proposing changes. Use the Explore agent or read files directly.
 
@@ -14,7 +14,13 @@ A Stop hook will remind you if new .dart files were added to key directories.
 
 ## IMPORTANT: Workflow Guardrails
 
+**Canonical Codex workflow:** Follow `docs/development/CODEX_SAFE_WORKFLOW.md`. The default safety level is audit first: inspect, write a short risk note, then edit narrowly.
+
 **Feature branches:** Before starting any new feature, create a branch: `git checkout -b feature/description`. Do NOT commit directly to `main` for new feature work. Only merge back via PR or explicit user request.
+
+**Main is protected by process:** Do not commit, push, reset, rebase, or discard work on `main` unless the user explicitly asks. If local `main` is ahead of `origin/main`, preserve that commit.
+
+**Scout agents:** Use subagents as read-only scouts for larger audits. The main Codex instance remains the only editor unless the user explicitly approves worker agents with disjoint file ownership.
 
 **One feature per session:** If the user asks about a completely different feature than what you've been working on, suggest starting a new session or using `/clear` first. Mixing unrelated features in one session leads to context pollution and mistakes.
 
@@ -23,6 +29,8 @@ A Stop hook will remind you if new .dart files were added to key directories.
 **Test before final commit:** Always run `flutter test` before the final commit of a feature. The git pre-commit hook runs `flutter analyze` automatically, but tests must be run explicitly.
 
 **No broken windows:** If you encounter failing tests that are pre-existing, note them but do not ignore them. Flag them to the user and offer to fix.
+
+**High-risk areas:** Before navigation/layout work, read `main.dart`, `tab_navigator.dart`, and `navigation/app_routes.dart`. Before Tank UI work, read `home_screen.dart`, `bottom_sheet_panel.dart`, and relevant stage/home sheet widgets. Before persistence, backup, or sync work, read both JSON storage and SharedPreferences-backed providers. Before Smart/AI work, resolve the direct OpenAI vs proxy contract.
 
 ## Build & Test
 
@@ -34,16 +42,19 @@ cd repo/apps/aquarium_app
 flutter pub get
 
 # Run analysis (must pass before committing)
-flutter analyze
+flutter analyze --no-pub
 
-# Run tests (826+ tests, ~50s)
+# Run tests (900+ tests, ~50s)
 flutter test
 
-# Install on connected device
-flutter install
+# Build debug APK
+flutter build apk --debug --target-platform android-arm64 --no-pub
 
-# Build release APK
-flutter build apk --release
+# Build release app bundle for Play Store/release gating
+flutter build appbundle --release
+
+# Android smoke test on a connected emulator/device
+flutter test integration_test/smoke_test_v2.dart -d <device-id>
 ```
 
 Package name: `com.tiarnanlarkin.danio`
@@ -78,7 +89,7 @@ repo/apps/aquarium_app/
 - **Backend:** Supabase (auth, database, realtime sync)
 - **Analytics:** Firebase Crashlytics
 - **AI features:** OpenAI API via `AiProxyService` (user provides own key)
-- **Persistence:** SharedPreferences for settings/theme, Supabase for data
+- **Persistence:** JSON file storage for tank/log/task data; SharedPreferences for settings/profile/practice/gamification; Supabase/cloud sync scaffolding
 - **Fonts:** Nunito (body), Fredoka (headers)
 - **Animations:** Rive files, flutter_animate, custom painters
 
@@ -203,7 +214,7 @@ Import `theme/app_theme.dart` for all design tokens (barrel exports `app_colors.
 
 - **Imports:** Use `package:danio/` for all internal imports
 - **State:** Riverpod `StateNotifierProvider` pattern. Read with `ref.read()`, watch with `ref.watch()`
-- **Persistence:** SharedPreferences for local prefs, Supabase for cloud data
+- **Persistence:** JSON file storage for tank/log/task data; SharedPreferences for local prefs/profile/practice/gamification; Supabase/cloud sync scaffolding
 - **Error handling:** `logError()` from `utils/logger.dart`, `DanioSnackBar.error()` for user-facing
 - **Navigation:** `NavigationThrottle.push()` to prevent duplicate pushes, `AppRoutes` for named routes
 - **Accessibility:** `Semantics` on interactive elements, `reducedMotionProvider` for animation preferences, WCAG AA contrast

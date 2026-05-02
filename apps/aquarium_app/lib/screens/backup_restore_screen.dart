@@ -12,7 +12,9 @@ import 'package:uuid/uuid.dart';
 
 import '../models/models.dart';
 import '../providers/storage_provider.dart';
+import '../providers/restore_invalidation.dart';
 import '../providers/tank_provider.dart';
+import '../services/backup_import_relationships.dart';
 import '../services/backup_service.dart';
 import '../services/shared_preferences_backup.dart';
 import '../theme/app_theme.dart';
@@ -22,6 +24,7 @@ import '../widgets/core/app_card.dart';
 import '../utils/logger.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
+import 'tab_navigator.dart';
 
 const _uuid = Uuid();
 
@@ -44,6 +47,13 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void _openTankTab() {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
+    ref.read(currentTabProvider.notifier).state = 2;
   }
 
   @override
@@ -97,81 +107,109 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           message: "Couldn't load your tanks. Tap to try again.",
           onRetry: () => ref.invalidate(tanksProvider),
         ),
-        data: (tanks) => Card(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.inventory_2, color: AppColors.primary),
-                    const SizedBox(width: AppSpacing.sm),
+        data: (tanks) {
+          final hasTanks = tanks.isNotEmpty;
+          return Card(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.inventory_2, color: AppColors.primary),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        '${tanks.length} tank${tanks.length == 1 ? '' : 's'} to export',
+                        style: AppTypography.labelLarge,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  if (!hasTanks) ...[
                     Text(
-                      '${tanks.length} tank${tanks.length == 1 ? '' : 's'} to export',
-                      style: AppTypography.labelLarge,
+                      'There are no tanks to export yet. Add a tank first, then come back here to create a backup.',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: context.textSecondary,
+                      ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                ...tanks
-                    .take(5)
-                    .map(
-                      (t) => Padding(
-                        padding: const EdgeInsets.only(left: AppSpacing.xl, top: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.md),
+                    AppButton(
+                      label: 'Go to Tank',
+                      onPressed: _openTankTab,
+                      leadingIcon: Icons.water,
+                      isFullWidth: true,
+                      variant: AppButtonVariant.secondary,
+                    ),
+                  ] else ...[
+                    ...tanks
+                        .take(5)
+                        .map(
+                          (t) => Padding(
+                            padding: const EdgeInsets.only(
+                              left: AppSpacing.xl,
+                              top: AppSpacing.xs,
+                            ),
+                            child: Text(
+                              '• ${t.name}',
+                              style: AppTypography.bodySmall,
+                            ),
+                          ),
+                        ),
+                    if (tanks.length > 5)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: AppSpacing.xl,
+                          top: AppSpacing.xs,
+                        ),
                         child: Text(
-                          '• ${t.name}',
+                          '... and ${tanks.length - 5} more',
                           style: AppTypography.bodySmall,
                         ),
                       ),
-                    ),
-                if (tanks.length > 5)
-                  Padding(
-                    padding: const EdgeInsets.only(left: AppSpacing.xl, top: AppSpacing.xs),
-                    child: Text(
-                      '... and ${tanks.length - 5} more',
-                      style: AppTypography.bodySmall,
-                    ),
-                  ),
 
-                if (_isExporting) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  LinearProgressIndicator(value: _progressValue),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    _progressStatus,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: context.textSecondary,
-                    ),
-                  ),
-                ],
-
-                const SizedBox(height: AppSpacing.md),
-                AppButton(
-                  label: _isExporting ? 'Exporting...' : 'Export Backup (ZIP)',
-                  onPressed: (_isExporting || tanks.isEmpty)
-                      ? null
-                      : () => _exportData(tanks),
-                  isLoading: _isExporting,
-                  leadingIcon: Icons.file_download,
-                  isFullWidth: true,
-                  variant: AppButtonVariant.primary,
-                ),
-                if (_lastBackup != null) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  Center(
-                    child: Text(
-                      '✓ Last backup: $_lastBackup',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.success,
+                    if (_isExporting) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      LinearProgressIndicator(value: _progressValue),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        _progressStatus,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: context.textSecondary,
+                        ),
                       ),
+                    ],
+
+                    const SizedBox(height: AppSpacing.md),
+                    AppButton(
+                      label: _isExporting
+                          ? 'Exporting...'
+                          : 'Export Backup (ZIP)',
+                      onPressed: (_isExporting || tanks.isEmpty)
+                          ? null
+                          : () => _exportData(tanks),
+                      isLoading: _isExporting,
+                      leadingIcon: Icons.file_download,
+                      isFullWidth: true,
+                      variant: AppButtonVariant.primary,
                     ),
-                  ),
+                    if (_lastBackup != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Center(
+                        child: Text(
+                          '✓ Last backup: $_lastBackup',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.success,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
 
       const SizedBox(height: AppSpacing.lg),
@@ -292,8 +330,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                   Text('Import Warning', style: AppTypography.labelLarge),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Importing will ADD tanks and RESTORE your learning progress, '
-                    'gems, and profile from the backup.',
+                    'Importing adds backed-up tanks as new tanks. It also restores profile, learning progress, gems, and preferences from the backup.',
                     style: AppTypography.bodySmall,
                   ),
                 ],
@@ -345,9 +382,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       }
 
       // Create comprehensive export data
-      final prefsBackupJson =
-          await SharedPreferencesBackup.exportAsJson();
-      final prefsBackupData = jsonDecode(prefsBackupJson) as Map<String, dynamic>;
+      final prefsBackupJson = await SharedPreferencesBackup.exportAsJson();
+      final prefsBackupData =
+          jsonDecode(prefsBackupJson) as Map<String, dynamic>;
 
       final exportData = {
         'version': 3, // v3 includes SharedPreferences (profile, gems, settings)
@@ -403,7 +440,11 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         AppFeedback.showSuccess(context, 'Backup exported successfully!');
       }
     } catch (e, st) {
-      logError('BackupRestoreScreen: backup export failed: $e', stackTrace: st, tag: 'BackupRestoreScreen');
+      logError(
+        'BackupRestoreScreen: backup export failed: $e',
+        stackTrace: st,
+        tag: 'BackupRestoreScreen',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,
@@ -469,7 +510,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         title: 'Import Backup?',
         message:
             'This will import ${tanks.length} tank${tanks.length == 1 ? '' : 's'} with all photos.\n\n'
-            'Your existing data will NOT be affected.',
+            'Existing tanks and logs stay on this device. App-wide profile, learning progress, gems, and preferences will be replaced with the backup values.',
         confirmLabel: 'Import',
       );
 
@@ -489,21 +530,34 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       final imported = await _importAllData(backupData);
 
       // Restore SharedPreferences (profile, gems, settings, etc.)
+      var preferencesRestoreFailed = false;
       final prefsData = backupData['sharedPreferences'];
       if (prefsData != null && prefsData is Map<String, dynamic>) {
         try {
           await SharedPreferencesBackup.restoreFromJson(prefsData);
+          invalidateRestoredPreferenceProviders(ref);
         } catch (e) {
-          logError('SharedPreferences restore warning: $e', tag: 'BackupRestoreScreen');
+          preferencesRestoreFailed = true;
+          logError(
+            'SharedPreferences restore warning: $e',
+            tag: 'BackupRestoreScreen',
+          );
         }
       }
 
       if (mounted) {
         if (imported > 0) {
-          AppFeedback.showSuccess(
-            context,
-            'Imported $imported tank${imported == 1 ? '' : 's'} with all data successfully!',
-          );
+          if (preferencesRestoreFailed) {
+            AppFeedback.showWarning(
+              context,
+              'Imported $imported tank${imported == 1 ? '' : 's'}, but profile and preferences could not be restored.',
+            );
+          } else {
+            AppFeedback.showSuccess(
+              context,
+              'Imported $imported tank${imported == 1 ? '' : 's'} with all data successfully!',
+            );
+          }
         } else {
           AppFeedback.showWarning(
             context,
@@ -512,7 +566,11 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         }
       }
     } catch (e, st) {
-      logError('BackupRestoreScreen: backup import failed: $e', stackTrace: st, tag: 'BackupRestoreScreen');
+      logError(
+        'BackupRestoreScreen: backup import failed: $e',
+        stackTrace: st,
+        tag: 'BackupRestoreScreen',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,
@@ -537,6 +595,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
     // Map old tank IDs to new tank IDs
     final tankIdMap = <String, String>{};
+    final livestockIdMap = <String, String>{};
+    final equipmentIdMap = <String, String>{};
+    final taskIdMap = <String, String>{};
 
     // Import tanks first
     final tanksJson = backupData['tanks'] as List? ?? [];
@@ -565,18 +626,28 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       }
     }
 
-    // Import livestock with updated tankIds
     final livestockJson = backupData['livestock'] as List? ?? [];
+    final equipmentJson = backupData['equipment'] as List? ?? [];
+    final tasksJson = backupData['tasks'] as List? ?? [];
+
+    _prepareEntityIdMap(livestockJson, tankIdMap, livestockIdMap);
+    _prepareEntityIdMap(equipmentJson, tankIdMap, equipmentIdMap);
+    _prepareEntityIdMap(tasksJson, tankIdMap, taskIdMap);
+
+    // Import livestock with updated tankIds
     for (final lJson in livestockJson) {
       try {
         if (lJson is! Map<String, dynamic>) continue;
         final oldTankId = lJson['tankId'] as String;
         final newTankId = tankIdMap[oldTankId];
         if (newTankId == null) continue; // Skip if tank wasn't imported
+        final oldLivestockId = lJson['id'] as String;
+        final newLivestockId = livestockIdMap[oldLivestockId];
+        if (newLivestockId == null) continue;
 
         final livestock = _livestockFromJson({
           ...lJson,
-          'id': _uuid.v4(),
+          'id': newLivestockId,
           'tankId': newTankId,
           'createdAt': now.toIso8601String(),
           'updatedAt': now.toIso8601String(),
@@ -590,17 +661,19 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     }
 
     // Import equipment with updated tankIds
-    final equipmentJson = backupData['equipment'] as List? ?? [];
     for (final eJson in equipmentJson) {
       try {
         if (eJson is! Map<String, dynamic>) continue;
         final oldTankId = eJson['tankId'] as String;
         final newTankId = tankIdMap[oldTankId];
         if (newTankId == null) continue;
+        final oldEquipmentId = eJson['id'] as String;
+        final newEquipmentId = equipmentIdMap[oldEquipmentId];
+        if (newEquipmentId == null) continue;
 
         final equipment = _equipmentFromJson({
           ...eJson,
-          'id': _uuid.v4(),
+          'id': newEquipmentId,
           'tankId': newTankId,
           'createdAt': now.toIso8601String(),
           'updatedAt': now.toIso8601String(),
@@ -623,7 +696,12 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         if (newTankId == null) continue;
 
         final log = _logFromJson({
-          ...lJson,
+          ...remapBackupLogRelationships(
+            lJson,
+            equipmentIdMap: equipmentIdMap,
+            livestockIdMap: livestockIdMap,
+            taskIdMap: taskIdMap,
+          ),
           'id': _uuid.v4(),
           'tankId': newTankId,
           'createdAt': now.toIso8601String(),
@@ -637,17 +715,22 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     }
 
     // Import tasks with updated tankIds
-    final tasksJson = backupData['tasks'] as List? ?? [];
     for (final tJson in tasksJson) {
       try {
         if (tJson is! Map<String, dynamic>) continue;
         final oldTankId = tJson['tankId'] as String;
         final newTankId = tankIdMap[oldTankId];
         if (newTankId == null) continue;
+        final oldTaskId = tJson['id'] as String;
+        final newTaskId = taskIdMap[oldTaskId];
+        if (newTaskId == null) continue;
 
         final task = _taskFromJson({
-          ...tJson,
-          'id': _uuid.v4(),
+          ...remapBackupTaskRelationships(
+            tJson,
+            equipmentIdMap: equipmentIdMap,
+          ),
+          'id': newTaskId,
           'tankId': newTankId,
           'createdAt': now.toIso8601String(),
           'updatedAt': now.toIso8601String(),
@@ -668,6 +751,21 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     return imported;
   }
 
+  void _prepareEntityIdMap(
+    List<dynamic> jsonItems,
+    Map<String, String> tankIdMap,
+    Map<String, String> output,
+  ) {
+    for (final item in jsonItems) {
+      if (item is! Map<String, dynamic>) continue;
+      final oldId = item['id'];
+      final oldTankId = item['tankId'];
+      if (oldId is! String || oldId.isEmpty) continue;
+      if (oldTankId is! String || !tankIdMap.containsKey(oldTankId)) continue;
+      output.putIfAbsent(oldId, () => _uuid.v4());
+    }
+  }
+
   // Serialization helpers (matching local_json_storage_service.dart format)
   Map<String, dynamic> _livestockToJson(Livestock l) => {
     'id': l.id,
@@ -680,6 +778,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'dateAdded': l.dateAdded.toIso8601String(),
     'source': l.source,
     'temperament': l.temperament?.name,
+    'healthStatus': l.healthStatus.name,
     'notes': l.notes,
     'imageUrl': l.imageUrl,
     'createdAt': l.createdAt.toIso8601String(),
@@ -702,6 +801,12 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             (e) => e.name == m['temperament'],
             orElse: () => Temperament.peaceful,
           ),
+    healthStatus: m['healthStatus'] != null
+        ? HealthStatus.values.firstWhere(
+            (e) => e.name == m['healthStatus'],
+            orElse: () => HealthStatus.healthy,
+          )
+        : HealthStatus.healthy,
     notes: m['notes'] as String?,
     imageUrl: m['imageUrl'] as String?,
     createdAt: DateTime.parse(m['createdAt'] as String),
@@ -719,6 +824,8 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'maintenanceIntervalDays': e.maintenanceIntervalDays,
     'lastServiced': e.lastServiced?.toIso8601String(),
     'installedDate': e.installedDate?.toIso8601String(),
+    'purchaseDate': e.purchaseDate?.toIso8601String(),
+    'expectedLifespanMonths': e.expectedLifespanMonths,
     'notes': e.notes,
     'createdAt': e.createdAt.toIso8601String(),
     'updatedAt': e.updatedAt.toIso8601String(),
@@ -742,6 +849,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     installedDate: m['installedDate'] != null
         ? DateTime.parse(m['installedDate'] as String)
         : null,
+    purchaseDate: m['purchaseDate'] != null
+        ? DateTime.parse(m['purchaseDate'] as String)
+        : null,
+    expectedLifespanMonths: (m['expectedLifespanMonths'] as num?)?.toInt(),
     notes: m['notes'] as String?,
     createdAt: DateTime.parse(m['createdAt'] as String),
     updatedAt: DateTime.parse(m['updatedAt'] as String),

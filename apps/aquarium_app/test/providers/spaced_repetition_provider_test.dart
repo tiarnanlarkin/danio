@@ -61,8 +61,9 @@ Map<String, dynamic> _cardJson({
 class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
   _FakeSrNotifier({SpacedRepetitionState? initialState})
-      : super(initialState ??
-            SpacedRepetitionState(stats: ReviewStats.fromCards([])));
+    : super(
+        initialState ?? SpacedRepetitionState(stats: ReviewStats.fromCards([])),
+      );
 
   /// Simulate loading cards from prefs (no notification side-effects).
   void loadCards(List<ReviewCard> cards, {ReviewStats? stats}) {
@@ -115,8 +116,7 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
       state.cards.where((c) => c.conceptId == conceptId).toList();
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 /// Decode cards from a JSON string (simulates what _loadData does).
@@ -287,18 +287,13 @@ void main() {
 
     test('does not duplicate an existing card', () {
       final notifier = _FakeSrNotifier();
-      notifier.addCard(
-        conceptId: 'existing',
-        conceptType: ConceptType.lesson,
-      );
+      notifier.addCard(conceptId: 'existing', conceptType: ConceptType.lesson);
       // Try to add the same concept again.
-      notifier.addCard(
-        conceptId: 'existing',
-        conceptType: ConceptType.lesson,
-      );
+      notifier.addCard(conceptId: 'existing', conceptType: ConceptType.lesson);
 
-      final matching =
-          notifier.state.cards.where((c) => c.conceptId == 'existing').length;
+      final matching = notifier.state.cards
+          .where((c) => c.conceptId == 'existing')
+          .length;
       expect(matching, equals(1), reason: 'Should not create a duplicate card');
     });
 
@@ -370,14 +365,8 @@ void main() {
   group('SpacedRepetitionNotifier - stats loading', () {
     test('ReviewStats.fromCards computes totalCards correctly', () {
       final cards = [
-        ReviewCard.newCard(
-          conceptId: 'a',
-          conceptType: ConceptType.lesson,
-        ),
-        ReviewCard.newCard(
-          conceptId: 'b',
-          conceptType: ConceptType.lesson,
-        ),
+        ReviewCard.newCard(conceptId: 'a', conceptType: ConceptType.lesson),
+        ReviewCard.newCard(conceptId: 'b', conceptType: ConceptType.lesson),
       ];
       final stats = ReviewStats.fromCards(
         cards,
@@ -397,6 +386,22 @@ void main() {
       expect(stats.dueCards, equals(0));
       expect(stats.weakCards, equals(0));
       expect(stats.averageStrength, equals(0.0));
+    });
+  });
+
+  group('SpacedRepetitionNotifier - session path preload mapping', () {
+    test('maps production quiz and lesson concept IDs to real path IDs', () {
+      final pathIds = SpacedRepetitionNotifier.resolvePathIdsForConceptIds([
+        'nc_intro_quiz_q0',
+        'nc_testing_section_2',
+        'wp_ph_quiz_q1',
+        'unknown_concept',
+      ]);
+
+      expect(pathIds, contains('nitrogen_cycle'));
+      expect(pathIds, contains('water_parameters'));
+      expect(pathIds, isNot(contains('nc')));
+      expect(pathIds, isNot(contains('wp')));
     });
   });
 

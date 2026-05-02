@@ -5,7 +5,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 /// Provider that monitors network connectivity status
 final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
-  return Connectivity().onConnectivityChanged;
+  final connectivity = Connectivity();
+
+  return (() async* {
+    yield await connectivity.checkConnectivity();
+    yield* connectivity.onConnectivityChanged;
+  })();
 });
 
 /// Provider that exposes a simple boolean for online/offline status

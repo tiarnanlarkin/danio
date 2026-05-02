@@ -47,14 +47,11 @@ class AppDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        isDark ? AppColors.surfaceDark : AppColors.surface;
+    final backgroundColor = isDark ? AppColors.surfaceDark : AppColors.surface;
 
     return Dialog(
       backgroundColor: backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -62,11 +59,7 @@ class AppDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (icon != null) ...[
-              Icon(
-                icon,
-                size: 40,
-                color: iconColor ?? AppColors.primary,
-              ),
+              Icon(icon, size: 40, color: iconColor ?? AppColors.primary),
               const SizedBox(height: AppSpacing.sm),
             ],
             if (title != null) ...[
@@ -80,7 +73,9 @@ class AppDialog extends StatelessWidget {
             if (child != null) ...[
               DefaultTextStyle(
                 style: AppTypography.body.copyWith(
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+                  color: isDark
+                      ? AppColors.textSecondaryDark
+                      : AppColors.textSecondary,
                 ),
                 child: child!,
               ),

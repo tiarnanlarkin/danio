@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/auth/auth_provider.dart';
+import '../providers/restore_invalidation.dart';
 import '../services/supabase_service.dart';
 import '../services/cloud_backup_service.dart';
 // import '../services/cloud_sync_service.dart'; // FB-H1: hidden with sync UI
@@ -45,10 +46,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: PopScope(
-        canPop: !(_emailController.text.isNotEmpty || _passwordController.text.isNotEmpty),
+        canPop:
+            !(_emailController.text.isNotEmpty ||
+                _passwordController.text.isNotEmpty),
         onPopInvokedWithResult: (didPop, result) {
           if (didPop) return;
-          if (_emailController.text.isEmpty && _passwordController.text.isEmpty) return;
+          if (_emailController.text.isEmpty &&
+              _passwordController.text.isEmpty) {
+            return;
+          }
           showAppDestructiveDialog(
             context: context,
             title: 'Unsaved Changes',
@@ -264,73 +270,73 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     ThemeData theme,
   ) {
     final items = <Widget>[
-        // Profile card
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: kAvatarSizeLg,
-                  backgroundColor: theme.colorScheme.primaryContainer,
-                  child: Text(
-                    (auth.displayName.isNotEmpty ? auth.displayName[0] : '?')
-                        .toUpperCase(),
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      color: theme.colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(auth.displayName, style: theme.textTheme.titleMedium),
-                if (auth.displayEmail.isNotEmpty)
-                  Text(
-                    auth.displayEmail,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-
-        // FB-H1: Sync status hidden — SyncService is scaffolding only.
-        // No HTTP requests are made; showing sync status would mislead users.
-        // const SizedBox(height: AppSpacing.md),
-
-        // Backup & Restore
-        Card(
+      // Profile card
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
-              ListTile(
-                leading: const Icon(Icons.cloud_upload),
-                title: const Text('Backup Now'),
-                subtitle: const Text('Encrypt & upload to cloud'),
-                onTap: () => _createBackup(context),
+              CircleAvatar(
+                radius: kAvatarSizeLg,
+                backgroundColor: theme.colorScheme.primaryContainer,
+                child: Text(
+                  (auth.displayName.isNotEmpty ? auth.displayName[0] : '?')
+                      .toUpperCase(),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
+                ),
               ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.cloud_download),
-                title: const Text('Restore from Backup'),
-                subtitle: const Text('Download & decrypt from cloud'),
-                onTap: () => _restoreBackup(context),
-              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(auth.displayName, style: theme.textTheme.titleMedium),
+              if (auth.displayEmail.isNotEmpty)
+                Text(
+                  auth.displayEmail,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
             ],
           ),
         ),
-        const SizedBox(height: AppSpacing.xl),
+      ),
+      const SizedBox(height: AppSpacing.lg),
 
-        // Sign out
-        OutlinedButton.icon(
-          onPressed: () => _signOut(context),
-          icon: const Icon(Icons.logout),
-          label: const Text('Sign Out'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: theme.colorScheme.error,
-          ),
+      // FB-H1: Sync status hidden — SyncService is scaffolding only.
+      // No HTTP requests are made; showing sync status would mislead users.
+      // const SizedBox(height: AppSpacing.md),
+
+      // Backup & Restore
+      Card(
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.cloud_upload),
+              title: const Text('Backup Now'),
+              subtitle: const Text('Encrypt & upload to cloud'),
+              onTap: () => _createBackup(context),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.cloud_download),
+              title: const Text('Restore from Backup'),
+              subtitle: const Text('Download & decrypt from cloud'),
+              onTap: () => _restoreBackup(context),
+            ),
+          ],
         ),
+      ),
+      const SizedBox(height: AppSpacing.xl),
+
+      // Sign out
+      OutlinedButton.icon(
+        onPressed: () => _signOut(context),
+        icon: const Icon(Icons.logout),
+        label: const Text('Sign Out'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: theme.colorScheme.error,
+        ),
+      ),
     ];
 
     return ListView.builder(
@@ -379,9 +385,16 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         DanioSnackBar.success(context, 'Backup uploaded successfully ✓');
       }
     } catch (e, st) {
-      logError('AccountScreen: cloud backup failed: $e', stackTrace: st, tag: 'AccountScreen');
+      logError(
+        'AccountScreen: cloud backup failed: $e',
+        stackTrace: st,
+        tag: 'AccountScreen',
+      );
       if (context.mounted) {
-        DanioSnackBar.error(context, 'Backup didn\'t go through. Check your connection and try again!');
+        DanioSnackBar.error(
+          context,
+          'Backup didn\'t go through. Check your connection and try again!',
+        );
       }
     }
   }
@@ -399,14 +412,32 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     try {
       DanioSnackBar.info(context, 'Restoring backup...');
-      await CloudBackupService.instance.downloadAndRestoreBackup();
-      if (context.mounted) {
+      final result = await CloudBackupService.instance
+          .downloadAndRestoreBackup();
+      invalidateTankDataProviders(ref, result.changedTankIds);
+      if (result.restoredPreferences || result.preferencesRestoreFailed) {
+        invalidateRestoredPreferenceProviders(ref);
+      }
+      if (context.mounted && result.preferencesRestoreFailed) {
+        DanioSnackBar.warning(
+          context,
+          'Backup restored, but profile and preferences could not be restored.',
+        );
+      }
+      if (context.mounted && !result.preferencesRestoreFailed) {
         DanioSnackBar.success(context, 'Backup restored successfully ✓');
       }
     } catch (e, st) {
-      logError('AccountScreen: cloud restore failed: $e', stackTrace: st, tag: 'AccountScreen');
+      logError(
+        'AccountScreen: cloud restore failed: $e',
+        stackTrace: st,
+        tag: 'AccountScreen',
+      );
       if (context.mounted) {
-        DanioSnackBar.error(context, 'Restore didn\'t go through. Check your connection and try again!');
+        DanioSnackBar.error(
+          context,
+          'Restore didn\'t go through. Check your connection and try again!',
+        );
       }
     }
   }
@@ -477,4 +508,3 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     );
   }
 } */
-

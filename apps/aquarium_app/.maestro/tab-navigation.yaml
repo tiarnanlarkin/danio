@@ -1,43 +1,67 @@
 appId: com.tiarnanlarkin.danio
 ---
-# Flow: Tab Navigation — verify all 5 tabs load correctly
-# Tabs: Learn (0), Practice (1), Tank (2), Smart (3), Toolbox (4)
-# NOTE: App starts on Learn tab (index 0) by default.
+# Current shell navigation flow.
+# Starts from a clean install, accepts privacy choices, skips setup, then
+# verifies each bottom tab exposes the expected current content.
 
-- launchApp
-
+- launchApp:
+    clearState: true
 - waitForAnimationToEnd
 
-# ── Tab 0: Learn ─────────────────────────────────────────────────────────────
-- tapOn: "Learn"
+# Consent gate. The checkbox semantics are not currently exposed to Maestro,
+# so these taps use stable relative positions in the consent sheet.
+- assertVisible: "Your Privacy Matters"
+- tapOn:
+    point: "11%,49%"
+- tapOn:
+    point: "11%,59%"
+- tapOn:
+    point: "50%,88%"
 - waitForAnimationToEnd
-# Learn screen shows either the study room scene or profile setup prompt
-- assertTrue:
-    visible: "Learn"
-- takeScreenshot: tab_learn
 
-# ── Tab 1: Practice ──────────────────────────────────────────────────────────
-- tapOn: "Practice"
+# Enter the current main-shell quick path.
+- tapOn:
+    point: "50%,91%"
 - waitForAnimationToEnd
-- takeScreenshot: tab_practice
 
-# ── Tab 2: Tank ───────────────────────────────────────────────────────────────
-- tapOn: "Tank"
-- waitForAnimationToEnd
-- takeScreenshot: tab_tank
+- runFlow:
+    when:
+      visible: "Close tooltip"
+    commands:
+      - tapOn: "Close tooltip"
+      - waitForAnimationToEnd
 
-# ── Tab 3: Smart ─────────────────────────────────────────────────────────────
-- tapOn: "Smart"
-- waitForAnimationToEnd
-- takeScreenshot: tab_smart
+# Learn
+- assertVisible: "Learning Paths"
+- assertVisible: "12 paths to explore"
 
-# ── Tab 4: Toolbox ───────────────────────────────────────────────────────────
-- tapOn: "Toolbox"
+# Practice
+- tapOn:
+    point: "30%,92%"
 - waitForAnimationToEnd
-- assertVisible: "🧰 Toolbox"
-- takeScreenshot: tab_toolbox
+- assertVisible: "Practice Modes"
 
-# Return to Learn tab
-- tapOn: "Learn"
+# Tank
+- tapOn:
+    point: "50%,92%"
 - waitForAnimationToEnd
-- assertVisible: "Learn"
+- assertVisible: "Tank Toolbox"
+
+# Smart
+- tapOn:
+    point: "70%,92%"
+- waitForAnimationToEnd
+- assertVisible: ".*Smart.*"
+
+# More
+- tapOn:
+    point: "90%,92%"
+- waitForAnimationToEnd
+- assertVisible: "More"
+- assertVisible: ".*Workshop.*"
+
+# Return to Learn.
+- tapOn:
+    point: "10%,92%"
+- waitForAnimationToEnd
+- assertVisible: "Learning Paths"

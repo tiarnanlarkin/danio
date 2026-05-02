@@ -37,7 +37,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   @override
   Widget build(BuildContext context) {
     final srState = ref.watch(spacedRepetitionProvider);
-    final profile = ref.watch(userProfileProvider.select((p) => p.value?.currentStreak));
+    final profile = ref.watch(
+      userProfileProvider.select((p) => p.value?.currentStreak),
+    );
     final dueCards = srState.stats.dueCards;
     final totalCards = srState.stats.totalCards;
 
@@ -66,10 +68,11 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                     ),
                     child: Text(
                       'Practice',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                   ),
                 ),
@@ -122,7 +125,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
               child: FirstVisitTooltip(
                 prefsKey: 'tooltip_seen_practice',
                 emoji: '🧪',
-                message: 'Practice Hub — test your knowledge and review lessons here!',
+                message:
+                    'Practice Hub — test your knowledge and review lessons here!',
                 onDismissed: () => setState(() => _showTooltip = false),
               ),
             ),
@@ -173,7 +177,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           return _buildHeroCard(
             context,
             title: 'All Caught Up! 🎉',
-            subtitle: 'No cards to review right now. Keep learning to unlock more!',
+            subtitle:
+                'No cards to review right now. Keep learning to unlock more!',
             icon: Icons.check_circle,
             color: AppColors.success,
             actionLabel: 'Try a new lesson',
@@ -185,7 +190,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           // No cards at all — user hasn't started yet
           return _buildHeroCard(
             context,
-            title: '🎴 No practice cards yet',
+            title: 'No practice cards yet',
             subtitle: 'Complete lessons to unlock flashcards for review',
             icon: Icons.auto_stories,
             color: AppColors.primary,
@@ -230,7 +235,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         return _buildPracticeCard(
           context,
           title: 'Spaced Repetition',
-          subtitle: 'Review cards based on memory strength — the most effective way to learn',
+          subtitle:
+              'Review cards based on memory strength — the most effective way to learn',
           icon: Icons.psychology,
           iconColor: AppColors.primary,
           onTap: () {
@@ -301,12 +307,12 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           final accuracyPct = allCards.isEmpty
               ? 0
               : (totalCorrect /
-                    allCards.fold<int>(
-                      0,
-                      (sum, card) => sum + card.reviewCount,
-                    ) *
-                    100)
-                  .round();
+                        allCards.fold<int>(
+                          0,
+                          (sum, card) => sum + card.reviewCount,
+                        ) *
+                        100)
+                    .round();
           final accuracyColor = accuracyPct >= 80
               ? AppColors.success
               : accuracyPct >= 60
@@ -337,63 +343,77 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     return Semantics(
       button: onTap != null,
       child: Card(
-      elevation: AppElevation.level2,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppRadius.mediumRadius,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(26),
-                  borderRadius: AppRadius.mediumRadius,
+        elevation: AppElevation.level1,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppRadius.lg2Radius,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(24),
+                    borderRadius: AppRadius.md2Radius,
+                  ),
+                  child: Icon(icon, size: 34, color: color),
                 ),
-                child: Icon(icon, size: 40, color: color),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: AppTypography.titleLarge),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      subtitle,
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: context.textSecondary,
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.titleMedium.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                    if (actionLabel != null) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: AppSpacing.xs,
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: context.textSecondary,
                         ),
-                        decoration: BoxDecoration(
-                          color: color.withAlpha(26),
-                          borderRadius: AppRadius.md2Radius,
-                        ),
-                        child: Text(
-                          actionLabel,
-                          style: AppTypography.labelSmall.copyWith(
-                            color: color,
-                            fontWeight: FontWeight.w600,
+                      ),
+                      if (actionLabel != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: color.withAlpha(24),
+                            borderRadius: AppRadius.md2Radius,
+                          ),
+                          child: Text(
+                            actionLabel,
+                            style: AppTypography.labelMedium.copyWith(
+                              color: color,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-              if (onTap != null) Icon(Icons.arrow_forward_ios, color: color),
-            ],
+                if (onTap != null)
+                  Icon(Icons.arrow_forward_ios, color: color, size: 20),
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -403,34 +423,42 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     required List<_StatItem> stats,
   }) {
     return Row(
-      children: stats.map((stat) {
+      children: List.generate(stats.length, (index) {
+        final stat = stats[index];
         return Expanded(
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                children: [
-                  Text(
-                    stat.value,
-                    style: AppTypography.headlineMedium.copyWith(
-                      color: stat.color,
-                      fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: EdgeInsets.only(
+              right: index == stats.length - 1 ? 0 : AppSpacing.sm,
+            ),
+            child: Card(
+              surfaceTintColor: Colors.transparent,
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  children: [
+                    Text(
+                      stat.value,
+                      style: AppTypography.headlineMedium.copyWith(
+                        color: stat.color,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    stat.label,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: context.textSecondary,
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      stat.label,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         );
-      }).toList(),
+      }),
     );
   }
 
@@ -443,18 +471,32 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     required VoidCallback onTap,
   }) {
     return Card(
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm2,
+        ),
         leading: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          width: 44,
+          height: 44,
           decoration: BoxDecoration(
             color: iconColor.withAlpha(26),
             borderRadius: AppRadius.smallRadius,
           ),
-          child: Icon(icon, color: iconColor),
+          child: Icon(icon, color: iconColor, size: AppIconSizes.md),
         ),
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
+        title: Text(title, style: AppTypography.titleMedium),
+        subtitle: Text(
+          subtitle,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: AppTypography.bodyMedium.copyWith(
+            color: context.textSecondary,
+          ),
+        ),
+        trailing: Icon(Icons.chevron_right, color: context.textSecondary),
         onTap: onTap,
       ),
     );
@@ -466,6 +508,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   ) {
     if (srState.stats.totalCards == 0) {
       return Card(
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Text(
@@ -496,6 +540,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     };
 
     return Card(
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -509,10 +555,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
               child: Row(
                 children: [
-                  Text(
-                    level.emoji,
-                    style: AppTypography.bodyMedium,
-                  ),
+                  Text(level.emoji, style: AppTypography.bodyMedium),
                   const SizedBox(width: AppSpacing.sm),
                   SizedBox(
                     width: 80,
@@ -568,9 +611,15 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     final isLongCta = value == longCta;
 
     return Card(
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
         leading: Icon(icon, color: color, size: AppIconSizes.lg),
-        title: Text(title),
+        title: Text(title, style: AppTypography.titleSmall),
         subtitle: isLongCta
             ? Text(
                 longCta,

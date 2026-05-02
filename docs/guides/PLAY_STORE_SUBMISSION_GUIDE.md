@@ -1,8 +1,10 @@
-# Play Store Submission Guide - Aquarium Hobbyist
+# Play Store Submission Guide - Danio
 
 **App Version:** 1.0.0+1  
-**Package:** com.tiarnanlarkin.aquarium.aquarium_app  
+**Package:** com.tiarnanlarkin.danio
 **Target:** Google Play Store (Android)
+
+> Current status note (2026-05-02): verify this guide against `docs/development/CODEX_SAFE_WORKFLOW.md` before submission. Android release build, legal URLs, GitHub Actions, and Play Console Data Safety must be green before upload.
 
 ---
 
@@ -25,13 +27,13 @@ Before submitting, ensure you have:
 
 ### Option A: Windows PowerShell (FAST - 2-4 min)
 ```powershell
-cd "C:\Users\larki\Documents\Aquarium App Dev\repo\apps\aquarium_app"
+cd "C:\Users\larki\Documents\Danio Aquarium App Project\repo\apps\aquarium_app"
 .\build-release.ps1
 ```
 
 ### Option B: WSL (SLOW - 10-15 min)
 ```bash
-cd "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app"
+cd "/mnt/c/Users/larki/Documents/Danio Aquarium App Project/repo/apps/aquarium_app"
 /home/tiarnanlarkin/flutter/bin/flutter build appbundle --release
 ```
 
@@ -49,7 +51,7 @@ build\app\outputs\bundle\release\app-release.aab
 1. Go to https://play.google.com/console
 2. Click **"Create app"**
 3. Fill in details:
-   - **App name:** Aquarium Hobbyist
+   - **App name:** Danio
    - **Default language:** English (United States)
    - **App or game:** App
    - **Free or paid:** Free
@@ -90,7 +92,7 @@ See `docs/completed/STORE_LISTING_CONTENT.md` for full copy (3,847 chars)
 #### Feature Graphic (1024x500)
 - **Need to create:** Simple banner with app name + aquarium visual
 - **Requirements:** JPEG or 24-bit PNG, no transparency
-- **Text:** "Aquarium Hobbyist" + tagline
+- **Text:** "Danio" + tagline
 
 #### Screenshots (minimum 2, we have 7)
 **Location:** `docs/screenshots/`
@@ -123,9 +125,9 @@ See `docs/completed/STORE_LISTING_CONTENT.md` for full copy (3,847 chars)
 ### Hosting Options:
 
 **Option A: GitHub Pages (Free)**
-1. Upload `docs/legal/privacy-policy.md` to GitHub repo
-2. Enable GitHub Pages in repo settings
-3. URL: `https://yourusername.github.io/aquarium-app/privacy-policy`
+1. Regenerate current Danio legal HTML from the canonical legal Markdown.
+2. Publish it to GitHub Pages from the intended branch.
+3. Verify the final URL, expected format: `https://tiarnanlarkin.github.io/danio/privacy-policy.html`
 
 **Option B: Google Sites (Free)**
 1. Create site at https://sites.google.com
@@ -136,7 +138,7 @@ See `docs/completed/STORE_LISTING_CONTENT.md` for full copy (3,847 chars)
 - Host on your own website
 
 **Privacy Policy Text:**
-See `docs/legal/privacy-policy.md` (5,813 bytes - comprehensive)
+Use the current Danio legal policy. Do not submit until the public URL shows current Danio wording.
 
 ---
 
@@ -173,22 +175,18 @@ Complete the Content Rating Questionnaire:
 
 Play Store now requires "Data Safety" disclosure:
 
-### What data is collected?
-- **Tank information:** Names, volumes, parameters (LOCAL ONLY)
-- **Photos:** User-taken tank photos (LOCAL ONLY)
-- **Progress:** XP, achievements, streaks (LOCAL ONLY)
+### Current rule
 
-### Is data shared with third parties?
-- **NO** - All data stored locally on device
+Do not reuse the older "No data collected" draft without revalidating it. The current app includes Firebase, Supabase/cloud sync scaffolding, notifications, user-provided AI features, local tank data, photos, and learning/profile progress. Data Safety must match the current privacy policy and actual enabled production configuration.
 
-### Is data encrypted in transit?
-- **NO** - No network transmission (local storage only)
+### Before submission
 
-### Can users request data deletion?
-- **YES** - Uninstalling app deletes all data
-- Or use "Clear App Data" in Settings
-
-**Summary:** Check "No data collected" OR select categories and mark as "Not shared"
+- Review current Android permissions and SDKs.
+- Verify whether Firebase collection is enabled only after consent.
+- Verify whether Supabase/cloud sync is enabled or still optional/scaffolded.
+- Verify how Smart/AI requests are handled and whether data leaves the device.
+- Confirm account/data deletion paths.
+- Use Play Console wording that exactly matches the verified behavior.
 
 ---
 
@@ -211,7 +209,7 @@ Play Store now requires "Data Safety" disclosure:
 ```
 🎉 Initial Release - Version 1.0
 
-Welcome to Aquarium Hobbyist! Your personal fishkeeping companion.
+Welcome to Danio! Your personal fishkeeping companion.
 
 ✨ Features:
 • Track unlimited aquariums with detailed parameters
@@ -219,7 +217,7 @@ Welcome to Aquarium Hobbyist! Your personal fishkeeping companion.
 • Gamification: Earn XP, unlock achievements, maintain streaks
 • Species database: 122 fish + 52 plants with full care guides
 • Tools: Volume calculator, dosing calculator, stocking analyzer
-• 100% FREE, no ads, all data stored locally (privacy-first)
+• No ads, privacy-conscious design, and clear user controls
 
 📚 Perfect for:
 • Beginners learning to keep fish alive
@@ -272,7 +270,7 @@ App goes live automatically (usually within hours after approval).
 
 **Play Store URL:**
 ```
-https://play.google.com/store/apps/details?id=com.tiarnanlarkin.aquarium.aquarium_app
+https://play.google.com/store/apps/details?id=com.tiarnanlarkin.danio
 ```
 
 ### If Changes Requested

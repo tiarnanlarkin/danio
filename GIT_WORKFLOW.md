@@ -1,67 +1,82 @@
-# Git Workflow - Simple & Safe
+# Git Workflow - Danio
 
-**Goal**: Single local source, one remote repo, never lose work.
+Last updated: 2026-05-02
 
-## After Each Work Session
+The old `master` / `aquarium-app` workflow is retired. The current source of truth is:
 
-### Option 1: Use the Script (Easiest)
-**Windows**: Double-click `save_work.bat`  
-**WSL/Linux**: Run `./save_work.sh`
+- Local repo: `C:\Users\larki\Documents\Danio Aquarium App Project\repo`
+- Remote: `https://github.com/tiarnanlarkin/danio.git`
+- Default branch: `main`
+- App path: `apps/aquarium_app`
 
-This automatically:
-1. Stages all changes
-2. Commits with timestamp
-3. Pushes to GitHub
+## Safe Start
 
-### Option 2: Manual Commands
-```bash
-cd "C:\Users\larki\Documents\Aquarium App Dev\repo"
-
-# Save everything
-git add -A
-git commit -m "Work session: [describe what you did]"
-git push origin master
+```powershell
+cd "C:\Users\larki\Documents\Danio Aquarium App Project\repo"
+git status --short --branch
+git fetch origin
+git log --oneline --decorate --max-count=5
 ```
 
-## Current Setup
+Do not run `git pull --rebase`, `git reset --hard`, or `git checkout -- <file>` unless the user explicitly asks for that operation.
 
-- **Local repo**: `C:\Users\larki\Documents\Aquarium App Dev\repo`
-- **Remote repo**: https://github.com/tiarnanlarkin/aquarium-app
-- **Branch**: `master`
+## Branch Per Fix
 
-## Safety Checks
+Create a branch for every fix or audit implementation:
 
-Before starting work, make sure you're up to date:
-```bash
-git pull origin master
+```powershell
+git checkout -b fix/short-description
 ```
 
-Check status anytime:
-```bash
-git status
+Use small branches. One user-visible issue or workflow improvement per branch is the default.
+
+## Before Committing
+
+From `apps/aquarium_app`, run the appropriate checks:
+
+```powershell
+flutter analyze --no-pub
+flutter test
+flutter build apk --debug --target-platform android-arm64 --no-pub
 ```
 
-See what's changed:
-```bash
-git log --oneline -10
+For release readiness, also run:
+
+```powershell
+flutter build appbundle --release
 ```
+
+For UI/navigation/Tank/onboarding changes, run Android device smoke tests once Android tooling is available.
+
+## Saving Work
+
+The helper scripts now refuse to commit from `main`. Use them only from a feature/fix branch:
+
+```powershell
+.\save_work.bat
+```
+
+or:
+
+```bash
+./save_work.sh
+```
+
+They commit and push the current branch to `origin`.
+
+## GitHub
+
+Open PRs against `main` after local checks pass. GitHub Actions must be green before treating the branch as release-ready. If CI fails before runner steps start, check GitHub account/billing status before assuming the app is broken.
 
 ## Recovery
 
-If something goes wrong, you can always restore from GitHub:
-```bash
-git reset --hard origin/master  # ⚠️ Discards local changes
-git pull origin master
+Prefer non-destructive inspection first:
+
+```powershell
+git status --short --branch
+git diff --stat
+git diff
+git log --oneline --decorate --max-count=10
 ```
 
-## Rules
-
-1. ✅ Always commit and push after each work session
-2. ✅ Pull before starting new work (if working from multiple machines)
-3. ✅ Keep it simple - one branch (master)
-4. ✅ Remote always matches local after a push
-
----
-
-**Last updated**: 2026-02-08
-**Remote repo**: https://github.com/tiarnanlarkin/aquarium-app
+Ask before any destructive recovery. The repo may contain local work that is intentionally ahead of GitHub.

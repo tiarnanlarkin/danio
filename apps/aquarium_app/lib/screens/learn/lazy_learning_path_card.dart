@@ -253,7 +253,14 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                       ),
                     ],
                   ),
-                  children: _buildExpandedContent(loadedPath, isLoading),
+                  children: _buildExpandedContent(
+                    context,
+                    meta,
+                    loadedPath,
+                    isLoading,
+                    lessonState.pathLoadStates[meta.id] ==
+                        LessonLoadState.error,
+                  ),
                 ),
         ),
       ),
@@ -261,25 +268,25 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
   }
 
   Widget _buildPathLockedTile(BuildContext context, PathMetadata meta) {
-    final prereqNames = meta.prerequisitePathIds.map((id) {
-      final found = widget.allPathMetadata.firstWhere(
-        (m) => m.id == id,
-        orElse: () => PathMetadata(
-          id: id,
-          title: id,
-          description: '',
-          emoji: '🔒',
-          orderIndex: 0,
-          lessonIds: const [],
-        ),
-      );
-      return '"${found.emoji} ${found.title}"';
-    }).join(', ');
+    final prereqNames = meta.prerequisitePathIds
+        .map((id) {
+          final found = widget.allPathMetadata.firstWhere(
+            (m) => m.id == id,
+            orElse: () => PathMetadata(
+              id: id,
+              title: id,
+              description: '',
+              emoji: '🔒',
+              orderIndex: 0,
+              lessonIds: const [],
+            ),
+          );
+          return '"${found.emoji} ${found.title}"';
+        })
+        .join(', ');
 
     return ListTile(
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.largeRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
@@ -291,9 +298,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
           color: context.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
         ),
-        child: const Center(
-          child: Icon(Icons.lock, size: 26),
-        ),
+        child: const Center(child: Icon(Icons.lock, size: 26)),
       ),
       title: Row(
         children: [
@@ -348,9 +353,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
     bool isDark,
   ) {
     return ListTile(
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.largeRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
@@ -435,7 +438,56 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
     );
   }
 
-  List<Widget> _buildExpandedContent(LearningPath? path, bool isLoading) {
+  List<Widget> _buildExpandedContent(
+    BuildContext context,
+    PathMetadata meta,
+    LearningPath? path,
+    bool isLoading,
+    bool hasError,
+  ) {
+    if (hasError) {
+      return [
+        const Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: context.textSecondary,
+                size: AppIconSizes.xl,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Couldn\'t load this path',
+                style: AppTypography.labelLarge.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Check your connection and try again.',
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AppButton(
+                label: 'Try again',
+                leadingIcon: Icons.refresh,
+                variant: AppButtonVariant.secondary,
+                onPressed: () {
+                  ref.read(lessonProvider.notifier).loadPath(meta.id);
+                },
+              ),
+            ],
+          ),
+        ),
+      ];
+    }
+
     if (isLoading || path == null) {
       return [
         const Divider(height: 1),

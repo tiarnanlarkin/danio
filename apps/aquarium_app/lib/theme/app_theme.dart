@@ -80,29 +80,98 @@ class AppTheme {
   /// See plans/typography-spec.md for full rationale. (Lora removed R-089)
   static TextTheme get _textTheme => TextTheme(
     // ── Display (Fredoka — hero/splash, largest impact text) ──────
-    displayLarge: GoogleFonts.fredoka(fontSize: 40, fontWeight: FontWeight.w700, letterSpacing: -0.5, height: 1.2),
-    displayMedium: GoogleFonts.fredoka(fontSize: 34, fontWeight: FontWeight.w700, letterSpacing: -0.5, height: 1.2),
-    displaySmall: GoogleFonts.fredoka(fontSize: 28, fontWeight: FontWeight.w600, letterSpacing: -0.3, height: 1.25),
+    displayLarge: GoogleFonts.fredoka(
+      fontSize: 40,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+      height: 1.2,
+    ),
+    displayMedium: GoogleFonts.fredoka(
+      fontSize: 34,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+      height: 1.2,
+    ),
+    displaySmall: GoogleFonts.fredoka(
+      fontSize: 28,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+      height: 1.25,
+    ),
 
     // ── Headline (Fredoka — section headings, card titles) ────────
-    headlineLarge: GoogleFonts.fredoka(fontSize: 32, fontWeight: FontWeight.w700, letterSpacing: -0.5, height: 1.2),
-    headlineMedium: GoogleFonts.fredoka(fontSize: 24, fontWeight: FontWeight.w600, letterSpacing: -0.3, height: 1.3),
-    headlineSmall: GoogleFonts.fredoka(fontSize: 20, fontWeight: FontWeight.w600, letterSpacing: -0.2, height: 1.3),
+    headlineLarge: GoogleFonts.fredoka(
+      fontSize: 32,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+      height: 1.2,
+    ),
+    headlineMedium: GoogleFonts.fredoka(
+      fontSize: 24,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+      height: 1.3,
+    ),
+    headlineSmall: GoogleFonts.fredoka(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+      height: 1.3,
+    ),
 
     // ── Title (Fredoka large, Nunito medium/small) ────────────────
-    titleLarge: GoogleFonts.fredoka(fontSize: 22, fontWeight: FontWeight.w600, letterSpacing: -0.2, height: 1.3),
-    titleMedium: GoogleFonts.nunito(fontSize: 18, fontWeight: FontWeight.w700, letterSpacing: -0.1, height: 1.3),
-    titleSmall: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0, height: 1.3),
+    titleLarge: GoogleFonts.fredoka(
+      fontSize: 22,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+      height: 1.3,
+    ),
+    titleMedium: GoogleFonts.nunito(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0,
+      height: 1.3,
+    ),
+    titleSmall: GoogleFonts.nunito(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+      height: 1.3,
+    ),
 
     // ── Body (Nunito — readable, friendly UI prose) ───────────────
-    bodyLarge: GoogleFonts.nunito(fontSize: 17, fontWeight: FontWeight.w400, height: 1.5),
-    bodyMedium: GoogleFonts.nunito(fontSize: 15, fontWeight: FontWeight.w400, height: 1.5),
-    bodySmall: GoogleFonts.nunito(fontSize: 13, fontWeight: FontWeight.w400, height: 1.4),
+    bodyLarge: GoogleFonts.nunito(
+      fontSize: 17,
+      fontWeight: FontWeight.w400,
+      height: 1.5,
+    ),
+    bodyMedium: GoogleFonts.nunito(
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+      height: 1.5,
+    ),
+    bodySmall: GoogleFonts.nunito(
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      height: 1.4,
+    ),
 
     // ── Label (Nunito — buttons, chips, navigation) ───────────────
-    labelLarge: GoogleFonts.nunito(fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: 0.1),
-    labelMedium: GoogleFonts.nunito(fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.1),
-    labelSmall: GoogleFonts.nunito(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.2),
+    labelLarge: GoogleFonts.nunito(
+      fontSize: 15,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.1,
+    ),
+    labelMedium: GoogleFonts.nunito(
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.1,
+    ),
+    labelSmall: GoogleFonts.nunito(
+      fontSize: 11,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.2,
+    ),
   );
 
   static ThemeData get light {
@@ -143,7 +212,9 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: AppColors.card,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
+        surfaceTintColor: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
         margin: EdgeInsets.zero,
       ),
 
@@ -312,7 +383,7 @@ class AppTheme {
       // Dialog
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.xlRadius),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
         titleTextStyle: AppTypography.headlineSmall.copyWith(
           color: AppColors.textPrimary,
         ),
@@ -379,7 +450,9 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: AppColors.cardDark,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
+        surfaceTintColor: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
         margin: EdgeInsets.zero,
       ),
 
@@ -475,7 +548,7 @@ class AppTheme {
 
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surfaceDark,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.xlRadius),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
         titleTextStyle: AppTypography.headlineSmall.copyWith(
           color: AppColors.textPrimaryDark,
         ),
@@ -520,8 +593,6 @@ class AppTheme {
     );
   }
 }
-
-
 
 class PillButton extends StatelessWidget {
   final String label;

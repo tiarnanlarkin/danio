@@ -24,7 +24,10 @@ import '../utils/logger.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
-  DanioSnackBar.warning(context, "You're offline — AI features require an internet connection.");
+  DanioSnackBar.warning(
+    context,
+    "You're offline — AI features require an internet connection.",
+  );
 }
 
 /// Smart Hub - central screen for all AI-powered features.
@@ -63,13 +66,15 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     if (question.isEmpty) return;
 
     final openai = ref.read(openAIServiceProvider);
-    if (!openai.isConfigured) return;
+    if (!await openai.isConfiguredAsync()) return;
 
     // Offline check.
     final isOnline = ref.read(isOnlineProvider);
     if (!isOnline) {
-      setState(() => _askResponse =
-          "You're offline — check your connection and tap send to retry.");
+      setState(
+        () => _askResponse =
+            "You're offline — check your connection and tap send to retry.",
+      );
       return;
     }
 
@@ -115,7 +120,11 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       if (!mounted) return;
       setState(() => _askResponse = OpenAIUserMessages.timeout);
     } catch (e, st) {
-      logError('SmartScreen: AI ask failed: $e', stackTrace: st, tag: 'SmartScreen');
+      logError(
+        'SmartScreen: AI ask failed: $e',
+        stackTrace: st,
+        tag: 'SmartScreen',
+      );
       if (!mounted) return;
       final isAuthError =
           e is OpenAIException && (e.statusCode == 401 || e.statusCode == 403);
@@ -134,220 +143,224 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final ref = this.ref;
     final theme = Theme.of(context);
     final openai = ref.watch(openAIServiceProvider);
+    final aiConfigured = ref
+        .watch(openAIConfiguredProvider)
+        .maybeWhen(
+          data: (configured) => configured,
+          orElse: () => openai.isConfigured,
+        );
     final history = ref.watch(aiHistoryProvider);
     final anomalies = ref.watch(anomalyHistoryProvider);
     final activeAnomalies = anomalies.where((a) => !a.dismissed).toList();
 
-      final items = <Widget>[
-            // First-visit tooltip
-            if (_showTooltip)
-              FirstVisitTooltip(
-                prefsKey: 'tooltip_seen_smart',
-                emoji: '🧠',
-                message: 'Smart Hub — AI tools to help you care for your fish!',
-                onDismissed: () => setState(() => _showTooltip = false),
-              ),
+    final items = <Widget>[
+      // First-visit tooltip
+      if (_showTooltip)
+        FirstVisitTooltip(
+          prefsKey: 'tooltip_seen_smart',
+          emoji: '🧠',
+          message: 'Smart Hub — AI tools to help you care for your fish!',
+          onDismissed: () => setState(() => _showTooltip = false),
+        ),
 
-            // API status / connectivity
-            if (!openai.isConfigured)
-              const _OfflineBanner()
-            else
-              ref.watch(isOnlineProvider)
-                  ? _UsageChip(callCount: openai.apiCallsThisMonth)
-                  : const OfflineIndicatorCompact(),
+      // API status / connectivity
+      if (!aiConfigured)
+        const _AiSetupBanner()
+      else
+        ref.watch(isOnlineProvider)
+            ? _UsageChip(callCount: openai.apiCallsThisMonth)
+            : const OfflineIndicatorCompact(),
 
-            const SizedBox(height: AppSpacing.md),
+      const SizedBox(height: AppSpacing.md),
 
-            // Feature cards — gated behind API key (CA-004) + connectivity
-            _FeatureCard(
-              icon: Icons.camera_alt,
-              title: 'Fish & Plant ID',
-              subtitle: openai.isConfigured
-                  ? 'Snap a photo to identify species'
-                  : 'Requires AI setup',
-              color: AppColors.primary,
-              onTap: openai.isConfigured
-                  ? () {
-                      if (!ref.read(isOnlineProvider)) {
-                        _showOfflineSnackBar(context);
-                        return;
-                      }
-                      AppRoutes.toFishId(context);
-                    }
-                  : null,
-            ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
+      // Feature cards — gated behind API key (CA-004) + connectivity
+      _FeatureCard(
+        icon: Icons.camera_alt,
+        title: 'Fish & Plant ID',
+        subtitle: aiConfigured
+            ? 'Snap a photo to identify species'
+            : 'Requires AI setup',
+        color: AppColors.primary,
+        onTap: aiConfigured
+            ? () {
+                if (!ref.read(isOnlineProvider)) {
+                  _showOfflineSnackBar(context);
+                  return;
+                }
+                AppRoutes.toFishId(context);
+              }
+            : null,
+      ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
-            _FeatureCard(
-              icon: Icons.healing,
-              title: 'Symptom Checker',
-              subtitle: openai.isConfigured
-                  ? 'Describe symptoms, get instant advice'
-                  : 'Requires AI setup',
-              color: AppColors.error,
-              onTap: openai.isConfigured
-                  ? () {
-                      if (!ref.read(isOnlineProvider)) {
-                        _showOfflineSnackBar(context);
-                        return;
-                      }
-                      AppRoutes.toSymptomTriage(context);
-                    }
-                  : null,
-            ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
+      _FeatureCard(
+        icon: Icons.healing,
+        title: 'Symptom Checker',
+        subtitle: aiConfigured
+            ? 'Describe symptoms, get instant advice'
+            : 'Requires AI setup',
+        color: AppColors.error,
+        onTap: aiConfigured
+            ? () {
+                if (!ref.read(isOnlineProvider)) {
+                  _showOfflineSnackBar(context);
+                  return;
+                }
+                AppRoutes.toSymptomTriage(context);
+              }
+            : null,
+      ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
 
-            _FeatureCard(
-              icon: Icons.calendar_month,
-              title: 'Weekly Care Plan',
-              subtitle: openai.isConfigured
-                  ? 'Your personalised maintenance schedule'
-                  : 'Requires AI setup',
-              color: AppColors
-                  .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
-              onTap: openai.isConfigured
-                  ? () {
-                      if (!ref.read(isOnlineProvider)) {
-                        _showOfflineSnackBar(context);
-                        return;
-                      }
-                      AppRoutes.toWeeklyPlan(context);
-                    }
-                  : null,
-            ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
-            // Compatibility Checker (AI version when key configured)
-            if (openai.isConfigured) ...[
-              const SizedBox(height: AppSpacing.sm),
-              const CompatibilityCheckerWidget(),
-            ],
+      _FeatureCard(
+        icon: Icons.calendar_month,
+        title: 'Weekly Care Plan',
+        subtitle: aiConfigured
+            ? 'Your personalised maintenance schedule'
+            : 'Requires AI setup',
+        color: AppColors
+            .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
+        onTap: aiConfigured
+            ? () {
+                if (!ref.read(isOnlineProvider)) {
+                  _showOfflineSnackBar(context);
+                  return;
+                }
+                AppRoutes.toWeeklyPlan(context);
+              }
+            : null,
+      ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
+      // Compatibility Checker (AI version when key configured)
+      if (aiConfigured) ...[
+        const SizedBox(height: AppSpacing.sm),
+        const CompatibilityCheckerWidget(),
+      ],
 
-            // Offline Compatibility Checker — always available (uses local species data)
-            if (!openai.isConfigured) ...[
-              const SizedBox(height: AppSpacing.sm),
-              _FeatureCard(
-                icon: Icons.compare_arrows,
-                title: 'Compatibility Checker',
-                subtitle: 'Check if your fish are compatible — works offline!',
-                color: AppColors.success,
-                onTap: () => NavigationThrottle.push(
-                  context,
-                  const CompatibilityCheckerScreen(),
-                ),
-              ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
-            ],
+      // Offline Compatibility Checker — always available (uses local species data)
+      if (!aiConfigured) ...[
+        const SizedBox(height: AppSpacing.sm),
+        _FeatureCard(
+          icon: Icons.compare_arrows,
+          title: 'Compatibility Checker',
+          subtitle: 'Check if your fish are compatible — works offline!',
+          color: AppColors.success,
+          onTap: () => NavigationThrottle.push(
+            context,
+            const CompatibilityCheckerScreen(),
+          ),
+        ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
+      ],
 
-            // Ask Danio - quick question
-            if (openai.isConfigured) ...[
-              const SizedBox(height: AppSpacing.md),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.md2Radius,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.chat_bubble_outline,
-                            color: AppColors.primary,
-                            size: 20,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Text(
-                            'Ask Danio',
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+      // Ask Danio - quick question
+      if (aiConfigured) ...[
+        const SizedBox(height: AppSpacing.md),
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.chat_bubble_outline,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Ask Danio',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
-                      const SizedBox(height: AppSpacing.sm),
-                      TextField(
-                        controller: _askController,
-                        decoration: InputDecoration(
-                          hintText: 'e.g. "Can neon tetras live with bettas?"',
-                          border: const OutlineInputBorder(),
-                          isDense: true,
-                          suffixIcon: _askLoading
-                              ? const Padding(
-                                  padding: EdgeInsets.all(AppSpacing.sm2),
-                                  child: SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: BubbleLoader(),
-                                  ),
-                                )
-                              : IconButton(
-                                  tooltip: 'Send question',
-                                  icon: const Icon(Icons.send),
-                                  onPressed: _askDanio,
-                                ),
-                        ),
-                        textInputAction: TextInputAction.send,
-                        onSubmitted: (_) => _askDanio(),
-                        maxLines: 2,
-                        minLines: 1,
-                      ),
-                      if (_askResponse != null) ...[
-                        const SizedBox(height: AppSpacing.sm),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(AppSpacing.sm),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryAlpha05,
-                            borderRadius: AppRadius.smallRadius,
-                          ),
-                          child: Semantics(
-                            liveRegion: true,
-                            child: SelectableText(
-                              _askResponse!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                height: 1.4,
-                              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                TextField(
+                  controller: _askController,
+                  decoration: InputDecoration(
+                    hintText: 'e.g. "Can neon tetras live with bettas?"',
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                    suffixIcon: _askLoading
+                        ? const Padding(
+                            padding: EdgeInsets.all(AppSpacing.sm2),
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: BubbleLoader(),
                             ),
+                          )
+                        : IconButton(
+                            tooltip: 'Send question',
+                            icon: const Icon(Icons.send),
+                            onPressed: _askDanio,
                           ),
+                  ),
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _askDanio(),
+                  maxLines: 2,
+                  minLines: 1,
+                ),
+                if (_askResponse != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryAlpha05,
+                      borderRadius: AppRadius.smallRadius,
+                    ),
+                    child: Semantics(
+                      liveRegion: true,
+                      child: SelectableText(
+                        _askResponse!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          height: 1.4,
                         ),
-                      ],
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              ).animate(delay: 200.ms).fadeIn().slideX(begin: 0.05),
-            ],
+                ],
+              ],
+            ),
+          ),
+        ).animate(delay: 200.ms).fadeIn().slideX(begin: 0.05),
+      ],
 
-            const SizedBox(height: AppSpacing.sm),
+      const SizedBox(height: AppSpacing.sm),
 
-            _FeatureCard(
-              icon: activeAnomalies.isEmpty ? Icons.check_circle_outline : Icons.warning_amber,
-              title: 'Anomaly History',
-              subtitle: activeAnomalies.isEmpty
-                  ? 'All clear — no issues detected'
-                  : '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
-              color: activeAnomalies.isEmpty ? AppColors.success : AppColors.warning,
-              onTap: () => _showAnomalyHistory(context, ref),
-            ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
+      _FeatureCard(
+        icon: activeAnomalies.isEmpty
+            ? Icons.check_circle_outline
+            : Icons.warning_amber,
+        title: 'Anomaly History',
+        subtitle: activeAnomalies.isEmpty
+            ? 'All clear — no issues detected'
+            : '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
+        color: activeAnomalies.isEmpty ? AppColors.success : AppColors.warning,
+        onTap: () => _showAnomalyHistory(context, ref),
+      ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
 
-            const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-            // Recent AI interactions
-            if (history.isNotEmpty) ...[
-              Semantics(
-                header: true,
-                child: Text(
-                  'Recent AI Activity',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              ...history
-                  .take(10)
-                  .map(
-                    (interaction) => _InteractionTile(interaction: interaction),
-                  ),
-            ],
-      ];
+      // Recent AI interactions
+      if (history.isNotEmpty) ...[
+        Semantics(
+          header: true,
+          child: Text(
+            'Recent AI Activity',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        ...history
+            .take(10)
+            .map((interaction) => _InteractionTile(interaction: interaction)),
+      ],
+    ];
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -409,110 +422,110 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       maxSize: 0.9,
       minSize: 0.3,
       builder: (ctx, scrollController) {
-          // Use Consumer so the sheet rebuilds reactively when anomalies change.
-          return Consumer(
-            builder: (ctx, innerRef, _) {
-              final anomalies = innerRef.watch(anomalyHistoryProvider);
-              if (anomalies.isEmpty) {
-                return Column(
-                  children: [
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
+        // Use Consumer so the sheet rebuilds reactively when anomalies change.
+        return Consumer(
+          builder: (ctx, innerRef, _) {
+            final anomalies = innerRef.watch(anomalyHistoryProvider);
+            if (anomalies.isEmpty) {
+              return Column(
+                children: [
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Anomaly History',
+                    style: AppTypography.titleLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.monitor_heart_outlined,
+                    size: 56,
+                    color: ctx.textHint,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    'No anomalies detected — looking good! 🐟',
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: ctx.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Anomaly detection runs automatically\nwhen you log water parameters.',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: ctx.textHint,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  AppButton(
+                    label: 'Run Symptom Triage',
+                    onPressed: () {
+                      Navigator.maybePop(ctx);
+                      AppRoutes.toSymptomTriage(context);
+                    },
+                    leadingIcon: Icons.medical_services_outlined,
+                    variant: AppButtonVariant.primary,
+                  ),
+                  const Spacer(),
+                ],
+              );
+            }
+            return ListView.builder(
+              controller: scrollController,
+              padding: const EdgeInsets.only(
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                bottom: AppSpacing.md,
+                top: 0,
+              ),
+              itemCount: anomalies.length + 2,
+              itemBuilder: (ctx, i) {
+                if (i == 0) {
+                  return const SizedBox(height: AppSpacing.sm);
+                }
+                if (i == 1) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: Text(
                       'Anomaly History',
-                      style: AppTypography.titleLarge.copyWith(
+                      style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Spacer(),
-                    Icon(
-                      Icons.monitor_heart_outlined,
-                      size: 56,
-                      color: ctx.textHint,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      'No anomalies detected — looking good! 🐟',
-                      style: AppTypography.bodyLarge.copyWith(
-                        color: ctx.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Anomaly detection runs automatically\nwhen you log water parameters.',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: ctx.textHint,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    AppButton(
-                      label: 'Run Symptom Triage',
-                      onPressed: () {
-                        Navigator.maybePop(ctx);
-                        AppRoutes.toSymptomTriage(context);
-                      },
-                      leadingIcon: Icons.medical_services_outlined,
-                      variant: AppButtonVariant.primary,
-                    ),
-                    const Spacer(),
-                  ],
-                );
-              }
-              return ListView.builder(
-                controller: scrollController,
-                padding: const EdgeInsets.only(
-                  left: AppSpacing.md,
-                  right: AppSpacing.md,
-                  bottom: AppSpacing.md,
-                  top: 0,
-                ),
-                itemCount: anomalies.length + 2,
-                itemBuilder: (ctx, i) {
-                  if (i == 0) {
-                    return const SizedBox(height: AppSpacing.sm);
-                  }
-                  if (i == 1) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Text(
-                        'Anomaly History',
-                        style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    );
-                  }
-                  final a = anomalies[i - 2];
-                  return ListTile(
-                    leading: _severityIcon(a.severity),
-                    title: Text(
-                      a.description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      a.dismissed
-                          ? '${a.parameter} · ${_formatTime(a.detectedAt)} · Dismissed — will flag again if detected.'
-                          : '${a.parameter} · ${_formatTime(a.detectedAt)}',
-                    ),
-                    dense: true,
-                    trailing: a.dismissed
-                        ? null
-                        : TextButton(
-                            onPressed: () {
-                              innerRef
-                                  .read(anomalyHistoryProvider.notifier)
-                                  .dismiss(a.id);
-                            },
-                            child: const Text('Dismiss'),
-                          ),
                   );
-                },
-              );
-            },
-          );
-        },
+                }
+                final a = anomalies[i - 2];
+                return ListTile(
+                  leading: _severityIcon(a.severity),
+                  title: Text(
+                    a.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    a.dismissed
+                        ? '${a.parameter} · ${_formatTime(a.detectedAt)} · Dismissed — will flag again if detected.'
+                        : '${a.parameter} · ${_formatTime(a.detectedAt)}',
+                  ),
+                  dense: true,
+                  trailing: a.dismissed
+                      ? null
+                      : TextButton(
+                          onPressed: () {
+                            innerRef
+                                .read(anomalyHistoryProvider.notifier)
+                                .dismiss(a.id);
+                          },
+                          child: const Text('Dismiss'),
+                        ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -536,8 +549,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
 // ── Subwidgets ──────────────────────────────────────────────────────────
 
-class _OfflineBanner extends StatelessWidget {
-  const _OfflineBanner();
+class _AiSetupBanner extends StatelessWidget {
+  const _AiSetupBanner();
 
   @override
   Widget build(BuildContext context) {
@@ -568,8 +581,8 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Some Smart features are coming soon. Fish & Plant ID, Symptom Checker, '
-            'and Weekly Care Plan will be available in a future update.',
+            'Fish & Plant ID, Symptom Checker, and Weekly Care Plan are ready '
+            'once AI is configured in Preferences.',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
             ),
@@ -577,7 +590,7 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Compatibility Checker and Anomaly History work offline — ready to use! 👇',
+            'Compatibility Checker and Anomaly History work offline now.',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w500,

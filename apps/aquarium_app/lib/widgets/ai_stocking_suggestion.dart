@@ -71,7 +71,7 @@ class _AiStockingSuggestionSheetState
 
   Future<void> _fetchSuggestion() async {
     final openai = ref.read(openAIServiceProvider);
-    if (!openai.isConfigured) {
+    if (!await openai.isConfiguredAsync()) {
       setState(
         () => _error =
             'AI stocking suggestions aren\'t available yet — we\'re working on bringing them to you! 🐟',
