@@ -1,9 +1,9 @@
-// Phase 2 tests: Practice Hub consolidation & cross-path prerequisites
+// Phase 2 tests: Practice Hub consolidation & path availability
 //
 // 1. Verify PracticeScreen is gone — no dead imports
-// 2. Verify fish_health path requires nitrogen_cycle (cross-path prereq)
-// 3. Verify PathMetadata.isUnlocked correctly enforces cross-path prerequisites
-// 4. Unit test: cross-path prerequisite blocks fish_health when nitrogen_cycle incomplete
+// 2. Verify fish_health stays emergency-accessible
+// 3. Verify PathMetadata.isUnlocked still supports cross-path prerequisites
+// 4. Verify the Practice hub keeps spaced repetition as the review surface
 //
 // Run: flutter test test/phase2/practice_hub_phase2_test.dart
 
@@ -20,7 +20,7 @@ void main() {
       'practice_hub_screen no longer lists a "Quick Practice" path in metadata',
       () {
         // Quick Practice was never a PathMetadata entry, but we confirm the
-        // path metadata set is clean and contains only the expected 9 paths.
+        // path metadata set is clean and contains only the expected 12 paths.
         final ids = LessonProvider.allPathMetadata.map((p) => p.id).toSet();
         // Sanity: exactly 9 real paths
         expect(ids.length, equals(12));
@@ -31,65 +31,81 @@ void main() {
   });
 
   // ─────────────────────────────────────────────────────────────────────────────
-  // 2.3  Cross-path prerequisites — fish_health requires nitrogen_cycle
+  // 2.3  Path availability — fish_health must stay emergency-accessible
   // ─────────────────────────────────────────────────────────────────────────────
-  group('2.3 Cross-path prerequisites', () {
-    test('fish_health PathMetadata declares nitrogen_cycle as prerequisite', () {
-      final fishHealth = LessonProvider.allPathMetadata
-          .firstWhere((p) => p.id == 'fish_health');
-      expect(fishHealth.prerequisitePathIds, contains('nitrogen_cycle'));
-    });
+  group('2.3 Path availability', () {
+    test(
+      'fish_health PathMetadata has no prerequisite',
+      () {
+        final fishHealth = LessonProvider.allPathMetadata.firstWhere(
+          (p) => p.id == 'fish_health',
+        );
+        expect(fishHealth.prerequisitePathIds, isEmpty);
+      },
+    );
 
     test(
-        'fish_health is LOCKED when nitrogen_cycle lessons are not all complete',
-        () {
-      final allMeta = LessonProvider.allPathMetadata;
-      final fishHealth = allMeta.firstWhere((p) => p.id == 'fish_health');
-      final nitrogenCycle = allMeta.firstWhere((p) => p.id == 'nitrogen_cycle');
+      'fish_health stays unlocked when nitrogen_cycle lessons are incomplete',
+      () {
+        final allMeta = LessonProvider.allPathMetadata;
+        final fishHealth = allMeta.firstWhere((p) => p.id == 'fish_health');
+        final nitrogenCycle = allMeta.firstWhere(
+          (p) => p.id == 'nitrogen_cycle',
+        );
 
-      // Simulate: user has completed zero lessons
-      final noCompletions = <String>[];
-      expect(
-        fishHealth.isUnlocked(noCompletions, allMeta),
-        isFalse,
-        reason: 'fish_health must be locked when nitrogen_cycle is incomplete',
-      );
+        // Simulate: user has completed zero lessons
+        final noCompletions = <String>[];
+        expect(
+          fishHealth.isUnlocked(noCompletions, allMeta),
+          isTrue,
+          reason:
+              'fish_health must be available when a user has a sick fish now',
+        );
 
-      // Simulate: user has completed some but not all nitrogen_cycle lessons
-      final partialCompletions = nitrogenCycle.lessonIds.take(3).toList();
-      expect(
-        fishHealth.isUnlocked(partialCompletions, allMeta),
-        isFalse,
-        reason:
-            'fish_health must be locked when nitrogen_cycle is only partially complete',
-      );
-    });
+        // Simulate: user has completed some but not all nitrogen_cycle lessons
+        final partialCompletions = nitrogenCycle.lessonIds.take(3).toList();
+        expect(
+          fishHealth.isUnlocked(partialCompletions, allMeta),
+          isTrue,
+          reason: 'fish_health must stay accessible during emergencies',
+        );
+      },
+    );
 
     test(
-        'fish_health is UNLOCKED when all nitrogen_cycle lessons are complete',
-        () {
-      final allMeta = LessonProvider.allPathMetadata;
-      final fishHealth = allMeta.firstWhere((p) => p.id == 'fish_health');
-      final nitrogenCycle = allMeta.firstWhere((p) => p.id == 'nitrogen_cycle');
+      'fish_health stays unlocked after nitrogen_cycle is complete',
+      () {
+        final allMeta = LessonProvider.allPathMetadata;
+        final fishHealth = allMeta.firstWhere((p) => p.id == 'fish_health');
+        final nitrogenCycle = allMeta.firstWhere(
+          (p) => p.id == 'nitrogen_cycle',
+        );
 
-      // Simulate: user has completed all nitrogen_cycle lessons
-      final ncComplete = nitrogenCycle.lessonIds.toList();
-      expect(
-        fishHealth.isUnlocked(ncComplete, allMeta),
-        isTrue,
-        reason: 'fish_health must be unlocked once nitrogen_cycle is complete',
-      );
-    });
+        // Simulate: user has completed all nitrogen_cycle lessons
+        final ncComplete = nitrogenCycle.lessonIds.toList();
+        expect(
+          fishHealth.isUnlocked(ncComplete, allMeta),
+          isTrue,
+          reason:
+              'fish_health must be unlocked once nitrogen_cycle is complete',
+        );
+      },
+    );
 
-    test('nitrogen_cycle itself has no prerequisitePathIds (it is the entry path)', () {
-      final nc = LessonProvider.allPathMetadata
-          .firstWhere((p) => p.id == 'nitrogen_cycle');
-      expect(
-        nc.prerequisitePathIds,
-        isEmpty,
-        reason: 'nitrogen_cycle is a foundational path and must be open from the start',
-      );
-    });
+    test(
+      'nitrogen_cycle itself has no prerequisitePathIds (it is the entry path)',
+      () {
+        final nc = LessonProvider.allPathMetadata.firstWhere(
+          (p) => p.id == 'nitrogen_cycle',
+        );
+        expect(
+          nc.prerequisitePathIds,
+          isEmpty,
+          reason:
+              'nitrogen_cycle is a foundational path and must be open from the start',
+        );
+      },
+    );
 
     test('paths without prerequisitePathIds are always unlocked', () {
       final allMeta = LessonProvider.allPathMetadata;
@@ -106,42 +122,46 @@ void main() {
       }
     });
 
-    test('LearningPath.isPathUnlocked mirrors PathMetadata.isUnlocked logic', () {
-      final allMeta = LessonProvider.allPathMetadata;
-      final ncLessonIds = allMeta
-          .firstWhere((p) => p.id == 'nitrogen_cycle')
-          .lessonIds
-          .toList();
-      final pathLessonIdMap = PathMetadata.buildLessonIdMap(allMeta);
+    test(
+      'LearningPath.isPathUnlocked mirrors PathMetadata.isUnlocked logic',
+      () {
+        final allMeta = LessonProvider.allPathMetadata;
+        final ncLessonIds = allMeta
+            .firstWhere((p) => p.id == 'nitrogen_cycle')
+            .lessonIds
+            .toList();
+        final pathLessonIdMap = PathMetadata.buildLessonIdMap(allMeta);
 
-      // Build a minimal LearningPath for fish_health with the prerequisite
-      final fishHealthPath = LearningPath(
-        id: 'fish_health',
-        title: 'Fish Health',
-        description: 'test',
-        emoji: '🏥',
-        lessons: const [],
-        prerequisitePathIds: const ['nitrogen_cycle'],
-      );
+        // Build a minimal path with a prerequisite to verify the generic
+        // prerequisite logic separately from emergency-accessible Fish Health.
+        final advancedPath = LearningPath(
+          id: 'advanced_health',
+          title: 'Advanced Health',
+          description: 'test',
+          emoji: '🏥',
+          lessons: const [],
+          prerequisitePathIds: const ['nitrogen_cycle'],
+        );
 
-      // Locked when NC incomplete
-      expect(
-        fishHealthPath.isPathUnlocked(
-          completedLessons: [],
-          pathLessonIds: pathLessonIdMap,
-        ),
-        isFalse,
-      );
+        // Locked when NC incomplete
+        expect(
+          advancedPath.isPathUnlocked(
+            completedLessons: [],
+            pathLessonIds: pathLessonIdMap,
+          ),
+          isFalse,
+        );
 
-      // Unlocked when NC complete
-      expect(
-        fishHealthPath.isPathUnlocked(
-          completedLessons: ncLessonIds,
-          pathLessonIds: pathLessonIdMap,
-        ),
-        isTrue,
-      );
-    });
+        // Unlocked when NC complete
+        expect(
+          advancedPath.isPathUnlocked(
+            completedLessons: ncLessonIds,
+            pathLessonIds: pathLessonIdMap,
+          ),
+          isTrue,
+        );
+      },
+    );
   });
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -149,14 +169,14 @@ void main() {
   // ─────────────────────────────────────────────────────────────────────────────
   group('2.2 Practice Hub SR as primary', () {
     test(
-      'fish_health prereq path is nitrogen_cycle — confirms SR-centric design '
-      'decision: mastery of fundamentals before advanced content',
+      'fish_health remains open while SR drives review mastery',
       () {
-        final fishHealth = LessonProvider.allPathMetadata
-            .firstWhere((p) => p.id == 'fish_health');
-        // SR is the engine that drives mastery; fish_health prereq is NC, which
-        // users should master via SR before moving on.
-        expect(fishHealth.prerequisitePathIds, equals(['nitrogen_cycle']));
+        final fishHealth = LessonProvider.allPathMetadata.firstWhere(
+          (p) => p.id == 'fish_health',
+        );
+        // Fish Health must stay reachable for urgent care. Mastery reinforcement
+        // happens through review cards seeded from completed lessons.
+        expect(fishHealth.prerequisitePathIds, isEmpty);
       },
     );
 

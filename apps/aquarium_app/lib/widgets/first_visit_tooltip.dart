@@ -25,8 +25,18 @@ class FirstVisitTooltip extends ConsumerStatefulWidget {
   /// Tooltip text (1–2 sentences max).
   final String message;
 
-  /// Optional leading emoji.
+  /// Optional leading emoji. Kept for older callers; polished surfaces should
+  /// prefer [icon].
   final String? emoji;
+
+  /// Optional leading icon.
+  final IconData? icon;
+
+  /// Optional leading icon color.
+  final Color? iconColor;
+
+  /// Optional leading icon background color.
+  final Color? iconBackgroundColor;
 
   /// How long before the tooltip auto-dismisses.
   final Duration autoDismissDuration;
@@ -39,6 +49,9 @@ class FirstVisitTooltip extends ConsumerStatefulWidget {
     required this.prefsKey,
     required this.message,
     this.emoji,
+    this.icon,
+    this.iconColor,
+    this.iconBackgroundColor,
     this.autoDismissDuration = const Duration(seconds: 4),
     this.onDismissed,
   });
@@ -129,19 +142,27 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
               ),
               child: Row(
                 children: [
-                  if (widget.emoji != null) ...[
+                  if (widget.icon != null || widget.emoji != null) ...[
                     Container(
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: context.surfaceVariant,
+                        color:
+                            widget.iconBackgroundColor ??
+                            context.surfaceVariant,
                         borderRadius: AppRadius.sm4Radius,
                       ),
                       child: Center(
-                        child: Text(
-                          widget.emoji!,
-                          style: const TextStyle(fontSize: 22, height: 1),
-                        ),
+                        child: widget.icon != null
+                            ? Icon(
+                                widget.icon,
+                                color: widget.iconColor ?? context.textPrimary,
+                                size: 22,
+                              )
+                            : Text(
+                                widget.emoji!,
+                                style: const TextStyle(fontSize: 22, height: 1),
+                              ),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),

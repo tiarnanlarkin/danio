@@ -4,7 +4,10 @@ import '../models/spaced_repetition.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../theme/learning_visuals.dart';
+import '../utils/logger.dart';
 import '../widgets/hearts_widgets.dart';
+import '../widgets/danio_snack_bar.dart';
 import '../widgets/first_visit_tooltip.dart';
 import '../widgets/themed_tab_header.dart';
 import 'spaced_repetition_practice_screen.dart';
@@ -22,6 +25,7 @@ class PracticeHubScreen extends ConsumerStatefulWidget {
 
 class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   bool _showTooltip = true;
+  SpacedRepetitionState? _latestSrState;
 
   @override
   void initState() {
@@ -42,6 +46,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     );
     final dueCards = srState.stats.dueCards;
     final totalCards = srState.stats.totalCards;
+    _latestSrState = srState;
 
     final body = Scaffold(
       body: CustomScrollView(
@@ -94,17 +99,15 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           SliverPadding(
             padding: const EdgeInsets.all(AppSpacing.md),
             sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => _buildPracticeHubItem(
+              delegate: SliverChildListDelegate(
+                _buildPracticeHubItems(
                   context,
                   ref,
-                  index,
                   dueCards,
                   totalCards,
                   srState,
                   profile,
                 ),
-                childCount: _getPracticeHubItemCount(dueCards, totalCards),
               ),
             ),
           ),
@@ -124,9 +127,11 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
               bottom: false,
               child: FirstVisitTooltip(
                 prefsKey: 'tooltip_seen_practice',
-                emoji: '🧪',
+                icon: Icons.repeat_rounded,
+                iconColor: AppColors.primary,
+                iconBackgroundColor: AppColors.primaryAlpha10,
                 message:
-                    'Practice Hub — test your knowledge and review lessons here!',
+                    'Practice strengthens concepts you have unlocked in Learn.',
                 onDismissed: () => setState(() => _showTooltip = false),
               ),
             ),
@@ -138,9 +143,230 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     return body;
   }
 
+  List<Widget> _buildPracticeHubItems(
+    BuildContext context,
+    WidgetRef ref,
+    int dueCards,
+    int totalCards,
+    SpacedRepetitionState srState,
+    dynamic profile,
+  ) {
+    final items = totalCards == 0
+        ? _buildEmptyPracticeDeckItems(context, ref)
+        : <Widget>[
+            for (
+              int index = 0;
+              index < _getPracticeHubItemCount(dueCards, totalCards);
+              index++
+            )
+              _buildPracticeHubItem(
+                context,
+                ref,
+                index,
+                dueCards,
+                totalCards,
+                srState,
+                profile,
+              ),
+          ];
+
+    if (srState.errorMessage != null) {
+      final insertAt = items.length > 2 ? 2 : items.length;
+      items.insert(
+        insertAt,
+        _buildErrorBanner(context, ref, srState.errorMessage!),
+      );
+      items.insert(insertAt + 1, const SizedBox(height: AppSpacing.lg));
+    }
+
+    return items;
+  }
+
+  List<Widget> _buildEmptyPracticeDeckItems(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    return [
+      _buildHeroCard(
+        context,
+        title: 'Build your review deck',
+        subtitle: 'Finish one Learn lesson to create Practice cards.',
+        icon: Icons.auto_stories_rounded,
+        color: AppColors.primary,
+        actionLabel: 'Start first lesson',
+        onTap: () {
+          ref.read(currentTabProvider.notifier).state = 0;
+        },
+      ),
+      const SizedBox(height: AppSpacing.md),
+      _buildLearningLoopCard(context),
+      const SizedBox(height: AppSpacing.md),
+      _buildEmptyModeHint(context),
+    ];
+  }
+
+  Widget _buildErrorBanner(
+    BuildContext context,
+    WidgetRef ref,
+    String message,
+  ) {
+    return Card(
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.error_outline, color: AppColors.error),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                message,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () =>
+                  ref.read(spacedRepetitionProvider.notifier).reload(),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLearningLoopCard(BuildContext context) {
+    const steps = [
+      _LoopStep(
+        icon: Icons.menu_book_rounded,
+        label: 'Learn',
+        detail: 'Unlock one safe tank habit',
+      ),
+      _LoopStep(
+        icon: Icons.repeat_rounded,
+        label: 'Practice',
+        detail: 'First review tomorrow',
+      ),
+      _LoopStep(
+        icon: Icons.verified_rounded,
+        label: 'Mastery',
+        detail: 'Build care confidence',
+      ),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: AppRadius.lg2Radius,
+        border: Border.all(color: AppColors.primaryAlpha15),
+      ),
+      child: Row(
+        children: [
+          for (int i = 0; i < steps.length; i++) ...[
+            Expanded(child: _buildLoopStep(context, steps[i])),
+            if (i < steps.length - 1)
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.primary,
+                size: AppIconSizes.sm,
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoopStep(BuildContext context, _LoopStep step) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: const BoxDecoration(
+            color: AppColors.primaryAlpha10,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(step.icon, color: AppColors.primary, size: 22),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          step.label,
+          style: AppTypography.labelMedium.copyWith(
+            color: context.textPrimary,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xxs),
+        Text(
+          step.detail,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: AppTypography.bodySmall.copyWith(
+            color: context.textSecondary,
+            height: 1.2,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyModeHint(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: context.surfaceVariant,
+        borderRadius: AppRadius.md2Radius,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.lock_clock_rounded,
+            color: context.textSecondary,
+            size: AppIconSizes.sm,
+          ),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: Text(
+              'Quick, Standard, Weak Spots, and Mixed sessions unlock once your review deck has cards.',
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _startReviewSession(ReviewSessionMode mode) async {
+    try {
+      await ref
+          .read(spacedRepetitionProvider.notifier)
+          .startSession(mode: mode);
+      if (!mounted) return;
+      NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
+    } catch (e, st) {
+      logError(
+        'PracticeHubScreen: start session failed: $e',
+        stackTrace: st,
+        tag: 'PracticeHubScreen',
+      );
+      if (!mounted) return;
+      DanioSnackBar.error(context, 'No cards are ready for that session yet.');
+    }
+  }
+
   int _getPracticeHubItemCount(int dueCards, int totalCards) {
     // Hero (1) + spacer + stats row + spacer +
-    // section header (Practice Modes) + spacer + SR card + spacer +
+    // section header (Review Sessions) + spacer + SR choices + spacer +
     // section header (Mastery Breakdown) + spacer + mastery widget + spacer +
     // section header (Your Progress) + spacer +
     // streak + spacer + mastered + spacer + accuracy = 19 items
@@ -161,27 +387,23 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         if (dueCards > 0) {
           return _buildHeroCard(
             context,
-            title: 'Review Due Cards',
-            subtitle: '$dueCards cards waiting for review',
+            title: 'Start Review',
+            subtitle: '$dueCards card${dueCards == 1 ? '' : 's'} ready now',
             icon: Icons.replay,
             color: AppColors.error,
-            onTap: () {
-              NavigationThrottle.push(
-                context,
-                const SpacedRepetitionPracticeScreen(),
-              );
-            },
+            actionLabel: 'Start Review',
+            onTap: () => _startReviewSession(ReviewSessionMode.standard),
           );
         } else if (dueCards == 0 && totalCards > 0) {
           // Has cards but none are due — genuinely all caught up
           return _buildHeroCard(
             context,
-            title: 'All Caught Up! 🎉',
+            title: 'All caught up',
             subtitle:
-                'No cards to review right now. Keep learning to unlock more!',
+                'No reviews due right now. Learn the next concept to grow your queue.',
             icon: Icons.check_circle,
             color: AppColors.success,
-            actionLabel: 'Try a new lesson',
+            actionLabel: 'Learn Next',
             onTap: () {
               ref.read(currentTabProvider.notifier).state = 0;
             },
@@ -191,10 +413,10 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           return _buildHeroCard(
             context,
             title: 'No practice cards yet',
-            subtitle: 'Complete lessons to unlock flashcards for review',
+            subtitle: 'Complete a Learn lesson to create review cards',
             icon: Icons.auto_stories,
             color: AppColors.primary,
-            actionLabel: 'Start Learning →',
+            actionLabel: 'Start Learning',
             onTap: () {
               ref.read(currentTabProvider.notifier).state = 0;
             },
@@ -227,8 +449,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         );
       case 3:
         return const SizedBox(height: AppSpacing.lg);
-      case 4: // Section: Practice Modes
-        return Text('Practice Modes', style: AppTypography.headlineSmall);
+      case 4: // Section: Review Sessions
+        return Text('Review Sessions', style: AppTypography.headlineSmall);
       case 5:
         return const SizedBox(height: AppSpacing.sm2);
       case 6: // Spaced Repetition card — PRIMARY practice mode
@@ -267,7 +489,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             context,
             title: 'Study Streak',
             value: streak > 0
-                ? '${streak == 1 ? '1 day' : '$streak days'} 🔥'
+                ? (streak == 1 ? '1 day' : '$streak days')
                 : '0 days',
             icon: streak > 0
                 ? Icons.local_fire_department
@@ -468,8 +690,92 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     required String subtitle,
     required IconData icon,
     required Color iconColor,
-    required VoidCallback onTap,
+    required VoidCallback? onTap,
   }) {
+    final srState = _latestSrState;
+    if (title == 'Spaced Repetition' && srState != null) {
+      return _buildSessionChoices(context, srState);
+    }
+
+    return _buildModeChoice(
+      context,
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      iconColor: iconColor,
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildSessionChoices(
+    BuildContext context,
+    SpacedRepetitionState srState,
+  ) {
+    final dueCards = srState.stats.dueCards;
+    final mixedAvailable =
+        dueCards > 0 || srState.cards.any((card) => card.isStrong);
+
+    return Column(
+      children: [
+        _buildModeChoice(
+          context,
+          title: 'Standard Review',
+          subtitle: '${dueCards.clamp(0, 10)} due cards, balanced pace',
+          icon: Icons.psychology,
+          iconColor: AppColors.primary,
+          onTap: dueCards > 0
+              ? () => _startReviewSession(ReviewSessionMode.standard)
+              : null,
+        ),
+        const SizedBox(height: AppSpacing.sm2),
+        _buildModeChoice(
+          context,
+          title: 'Quick Review',
+          subtitle: '${dueCards.clamp(0, 5)} due cards, fast session',
+          icon: Icons.flash_on,
+          iconColor: AppColors.accent,
+          onTap: dueCards > 0
+              ? () => _startReviewSession(ReviewSessionMode.quick)
+              : null,
+        ),
+        const SizedBox(height: AppSpacing.sm2),
+        _buildModeChoice(
+          context,
+          title: 'Weak Spots',
+          subtitle:
+              '${srState.stats.weakCards.clamp(0, 10)} cards that need reinforcement',
+          icon: Icons.trending_down,
+          iconColor: AppColors.warning,
+          onTap: srState.stats.weakCards > 0
+              ? () => _startReviewSession(ReviewSessionMode.intensive)
+              : null,
+        ),
+        const SizedBox(height: AppSpacing.sm2),
+        _buildModeChoice(
+          context,
+          title: 'Mixed Practice',
+          subtitle: 'Due cards plus strong cards for interleaving',
+          icon: Icons.shuffle,
+          iconColor: AppColors.secondary,
+          onTap: mixedAvailable
+              ? () => _startReviewSession(ReviewSessionMode.mixed)
+              : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModeChoice(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color iconColor,
+    required VoidCallback? onTap,
+  }) {
+    final enabled = onTap != null;
+    final effectiveColor = enabled ? iconColor : context.textHint;
+
     return Card(
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
@@ -482,21 +788,29 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: iconColor.withAlpha(26),
+            color: effectiveColor.withAlpha(26),
             borderRadius: AppRadius.smallRadius,
           ),
-          child: Icon(icon, color: iconColor, size: AppIconSizes.md),
+          child: Icon(icon, color: effectiveColor, size: AppIconSizes.md),
         ),
-        title: Text(title, style: AppTypography.titleMedium),
+        title: Text(
+          title,
+          style: AppTypography.titleMedium.copyWith(
+            color: enabled ? null : context.textHint,
+          ),
+        ),
         subtitle: Text(
           subtitle,
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
           style: AppTypography.bodyMedium.copyWith(
-            color: context.textSecondary,
+            color: enabled ? context.textSecondary : context.textHint,
           ),
         ),
-        trailing: Icon(Icons.chevron_right, color: context.textSecondary),
+        trailing: Icon(
+          Icons.chevron_right,
+          color: enabled ? context.textSecondary : context.textHint,
+        ),
         onTap: onTap,
       ),
     );
@@ -550,12 +864,18 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             final count = byMastery[level] ?? 0;
             final total = srState.stats.totalCards;
             final fraction = total > 0 ? count / total : 0.0;
-            final color = levelColors[level] ?? context.textSecondary;
+            final color =
+                levelColors[level] ??
+                LearningVisuals.masteryColor(context, level);
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
               child: Row(
                 children: [
-                  Text(level.emoji, style: AppTypography.bodyMedium),
+                  Icon(
+                    LearningVisuals.masteryIcon(level),
+                    size: AppIconSizes.sm,
+                    color: color,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   SizedBox(
                     width: 80,
@@ -644,4 +964,16 @@ class _StatItem {
   final Color color;
 
   _StatItem({required this.label, required this.value, required this.color});
+}
+
+class _LoopStep {
+  final IconData icon;
+  final String label;
+  final String detail;
+
+  const _LoopStep({
+    required this.icon,
+    required this.label,
+    required this.detail,
+  });
 }

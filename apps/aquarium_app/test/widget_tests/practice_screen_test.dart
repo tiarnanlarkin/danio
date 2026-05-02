@@ -34,15 +34,15 @@ void main() {
       expect(ids.length, equals(12));
     });
 
-    test('fish_health requires nitrogen_cycle (cross-path prereq enforced)', () {
+    test('fish_health stays accessible for urgent health issues', () {
       final allMeta = LessonProvider.allPathMetadata;
       final fishHealth = allMeta.firstWhere((p) => p.id == 'fish_health');
-      expect(fishHealth.prerequisitePathIds, contains('nitrogen_cycle'));
+      expect(fishHealth.prerequisitePathIds, isEmpty);
 
-      // Verify lock when NC incomplete
-      expect(fishHealth.isUnlocked([], allMeta), isFalse);
+      // Verify access when NC is incomplete
+      expect(fishHealth.isUnlocked([], allMeta), isTrue);
 
-      // Verify unlock when NC complete
+      // Verify it remains available when NC is complete
       final ncLessonIds = allMeta
           .firstWhere((p) => p.id == 'nitrogen_cycle')
           .lessonIds

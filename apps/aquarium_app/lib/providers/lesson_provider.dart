@@ -17,7 +17,8 @@ import '../data/lessons/fish_health.dart' deferred as fish_health;
 import '../data/lessons/species_care.dart' deferred as species_care;
 import '../data/lessons/advanced_topics.dart' deferred as advanced_topics;
 import '../data/lessons/equipment_expanded.dart' deferred as equipment_expanded;
-import '../data/lessons/species_care_expanded.dart' deferred as species_care_expanded;
+import '../data/lessons/species_care_expanded.dart'
+    deferred as species_care_expanded;
 import '../data/lessons/aquascaping.dart' deferred as aquascaping;
 import '../data/lessons/breeding.dart' deferred as breeding;
 import '../data/lessons/troubleshooting.dart' deferred as troubleshooting;
@@ -110,6 +111,76 @@ class LessonState {
   }
 }
 
+class _PathVisualIdentity {
+  final String imageUrl;
+  final String caption;
+
+  const _PathVisualIdentity({required this.imageUrl, required this.caption});
+}
+
+const Map<String, _PathVisualIdentity> _pathVisualIdentities = {
+  'nitrogen_cycle': _PathVisualIdentity(
+    imageUrl: 'assets/images/illustrations/nitrogen_cycle_flow.png',
+    caption:
+        'Waste becomes ammonia, bacteria convert it through nitrite, and routine care keeps nitrate under control.',
+  ),
+  'water_parameters': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/learn-header-watercolor.webp',
+    caption:
+        'Water tests turn invisible chemistry into clear decisions you can act on.',
+  ),
+  'first_fish': _PathVisualIdentity(
+    imageUrl: 'assets/images/fish/zebra_danio.webp',
+    caption:
+        'Hardy starter species give beginners room to learn while keeping fish welfare first.',
+  ),
+  'maintenance': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/learn-header-cozy-living.webp',
+    caption:
+        'Consistent small maintenance keeps the aquarium stable before problems build up.',
+  ),
+  'planted': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/learn-header-forest.webp',
+    caption:
+        'Plants turn light, nutrients, and trimming into a healthier aquascape.',
+  ),
+  'equipment': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/practice-header-ocean.webp',
+    caption:
+        'Good equipment choices make the tank easier to keep stable every day.',
+  ),
+  'fish_health': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/practice-header-evening-glow.webp',
+    caption:
+        'Health lessons connect symptoms back to water quality, stress, and careful treatment.',
+  ),
+  'species_care': _PathVisualIdentity(
+    imageUrl: 'assets/images/fish/neon_tetra.webp',
+    caption:
+        'Species care starts with the fish in front of you: behaviour, size, diet, and tank mates.',
+  ),
+  'advanced_topics': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/learn-header-aurora.webp',
+    caption:
+        'Advanced topics build on stable basics with more deliberate choices and tradeoffs.',
+  ),
+  'aquascaping': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/learn-header-golden.webp',
+    caption:
+        'Aquascaping uses focal points, plant zones, and maintenance plans to guide the eye.',
+  ),
+  'breeding_basics': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/learn-header-pastel.webp',
+    caption:
+        'Breeding success depends on preparation, clean nursery space, and fry food readiness.',
+  ),
+  'troubleshooting': _PathVisualIdentity(
+    imageUrl: 'assets/images/headers/practice-header-midnight.webp',
+    caption:
+        'Troubleshooting works best when you narrow symptoms into testable causes quickly.',
+  ),
+};
+
 /// Provider for lazy-loaded lessons
 class LessonProvider extends StateNotifier<LessonState> {
   LessonProvider() : super(const LessonState());
@@ -194,7 +265,8 @@ class LessonProvider extends StateNotifier<LessonState> {
     PathMetadata(
       id: 'equipment',
       title: 'Equipment Guide',
-      description: 'Filters, heaters, lights, and essential gear — beginner to advanced',
+      description:
+          'Filters, heaters, lights, and essential gear — beginner to advanced',
       emoji: '⚙️',
       orderIndex: 5,
       lessonIds: [
@@ -226,9 +298,9 @@ class LessonProvider extends StateNotifier<LessonState> {
         'fh_fin_rot',
         'fh_fungal',
         'fh_parasites',
+        'fh_medication_dosing',
         'fh_hospital_tank',
       ],
-      prerequisitePathIds: ['nitrogen_cycle'],
     ),
     PathMetadata(
       id: 'species_care',
@@ -334,10 +406,11 @@ class LessonProvider extends StateNotifier<LessonState> {
 
       // Load the path content
       final path = await _loadPathContent(pathId);
+      final decoratedPath = path == null ? null : _withPathVisualIdentity(path);
 
-      if (path != null) {
+      if (decoratedPath != null) {
         state = state.copyWith(
-          loadedPaths: {...state.loadedPaths, pathId: path},
+          loadedPaths: {...state.loadedPaths, pathId: decoratedPath},
           pathLoadStates: {
             ...state.pathLoadStates,
             pathId: LessonLoadState.loaded,
@@ -347,7 +420,11 @@ class LessonProvider extends StateNotifier<LessonState> {
         throw Exception('Path $pathId not found');
       }
     } catch (e, st) {
-      logError('LessonProvider: failed to load path $pathId: $e', stackTrace: st, tag: 'LessonProvider');
+      logError(
+        'LessonProvider: failed to load path $pathId: $e',
+        stackTrace: st,
+        tag: 'LessonProvider',
+      );
       state = state.copyWith(
         pathLoadStates: {
           ...state.pathLoadStates,
@@ -421,6 +498,56 @@ class LessonProvider extends StateNotifier<LessonState> {
     }
   }
 
+  LearningPath _withPathVisualIdentity(LearningPath path) {
+    final visual = _pathVisualIdentities[path.id];
+    if (visual == null || path.lessons.isEmpty) return path;
+
+    final firstLesson = path.lessons.first;
+    if (firstLesson.sections.any((s) => s.type == LessonSectionType.image)) {
+      return path;
+    }
+
+    final sections = [...firstLesson.sections];
+    final firstTextIndex = sections.indexWhere(
+      (section) => section.type == LessonSectionType.text,
+    );
+    final insertIndex = firstTextIndex >= 0 ? firstTextIndex + 1 : 0;
+    sections.insert(
+      insertIndex,
+      LessonSection(
+        type: LessonSectionType.image,
+        content: visual.caption,
+        imageUrl: visual.imageUrl,
+        caption: visual.caption,
+      ),
+    );
+
+    final updatedFirstLesson = Lesson(
+      id: firstLesson.id,
+      pathId: firstLesson.pathId,
+      title: firstLesson.title,
+      description: firstLesson.description,
+      orderIndex: firstLesson.orderIndex,
+      xpReward: firstLesson.xpReward,
+      estimatedMinutes: firstLesson.estimatedMinutes,
+      sections: sections,
+      quiz: firstLesson.quiz,
+      prerequisites: firstLesson.prerequisites,
+    );
+
+    return LearningPath(
+      id: path.id,
+      title: path.title,
+      description: path.description,
+      emoji: path.emoji,
+      recommendedFor: path.recommendedFor,
+      relevantTankTypes: path.relevantTankTypes,
+      lessons: [updatedFirstLesson, ...path.lessons.skip(1)],
+      orderIndex: path.orderIndex,
+      prerequisitePathIds: path.prerequisitePathIds,
+    );
+  }
+
   // Lazy loaders - deferred imports only load when first accessed
   Future<LearningPath> _loadNitrogenCycle() async {
     await nitrogen_cycle.loadLibrary();
@@ -457,6 +584,7 @@ class LessonProvider extends StateNotifier<LessonState> {
       description: basePath.description,
       emoji: basePath.emoji,
       recommendedFor: basePath.recommendedFor,
+      relevantTankTypes: basePath.relevantTankTypes,
       orderIndex: basePath.orderIndex,
       lessons: [
         ...basePath.lessons,
@@ -480,6 +608,7 @@ class LessonProvider extends StateNotifier<LessonState> {
       description: basePath.description,
       emoji: basePath.emoji,
       recommendedFor: basePath.recommendedFor,
+      relevantTankTypes: basePath.relevantTankTypes,
       orderIndex: basePath.orderIndex,
       lessons: [
         ...basePath.lessons,

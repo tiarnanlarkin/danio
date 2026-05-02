@@ -24,16 +24,34 @@ final needsOnboardingProvider = Provider<bool>((ref) {
 /// Provider for learning progress stats
 final learningStatsProvider = Provider<LearningStats?>((ref) {
   // Use .select() to only rebuild when learning-relevant fields change
-  final totalXp = ref.watch(userProfileProvider.select((a) => a.value?.totalXp));
+  final totalXp = ref.watch(
+    userProfileProvider.select((a) => a.value?.totalXp),
+  );
   if (totalXp == null) return null;
-  final currentLevel = ref.watch(userProfileProvider.select((a) => a.value?.currentLevel ?? 1));
-  final levelTitle = ref.watch(userProfileProvider.select((a) => a.value?.levelTitle ?? ''));
-  final levelProgress = ref.watch(userProfileProvider.select((a) => a.value?.levelProgress ?? 0.0));
-  final xpToNextLevel = ref.watch(userProfileProvider.select((a) => a.value?.xpToNextLevel ?? 0));
-  final currentStreak = ref.watch(userProfileProvider.select((a) => a.value?.currentStreak ?? 0));
-  final longestStreak = ref.watch(userProfileProvider.select((a) => a.value?.longestStreak ?? 0));
-  final lessonsCompleted = ref.watch(userProfileProvider.select((a) => a.value?.completedLessons.length ?? 0));
-  final achievementsUnlocked = ref.watch(userProfileProvider.select((a) => a.value?.achievements.length ?? 0));
+  final currentLevel = ref.watch(
+    userProfileProvider.select((a) => a.value?.currentLevel ?? 1),
+  );
+  final levelTitle = ref.watch(
+    userProfileProvider.select((a) => a.value?.levelTitle ?? ''),
+  );
+  final levelProgress = ref.watch(
+    userProfileProvider.select((a) => a.value?.levelProgress ?? 0.0),
+  );
+  final xpToNextLevel = ref.watch(
+    userProfileProvider.select((a) => a.value?.xpToNextLevel ?? 0),
+  );
+  final currentStreak = ref.watch(
+    userProfileProvider.select((a) => a.value?.currentStreak ?? 0),
+  );
+  final longestStreak = ref.watch(
+    userProfileProvider.select((a) => a.value?.longestStreak ?? 0),
+  );
+  final lessonsCompleted = ref.watch(
+    userProfileProvider.select((a) => a.value?.completedLessons.length ?? 0),
+  );
+  final achievementsUnlocked = ref.watch(
+    userProfileProvider.select((a) => a.value?.achievements.length ?? 0),
+  );
 
   return LearningStats(
     totalXp: totalXp,
@@ -55,9 +73,13 @@ final learningStatsProvider = Provider<LearningStats?>((ref) {
 /// break while still encouraging light engagement.
 final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
   // Use .select() to only rebuild when goal-relevant fields change
-  final dailyXpGoal = ref.watch(userProfileProvider.select((a) => a.value?.dailyXpGoal));
+  final dailyXpGoal = ref.watch(
+    userProfileProvider.select((a) => a.value?.dailyXpGoal),
+  );
   if (dailyXpGoal == null) return null;
-  final dailyXpHistory = ref.watch(userProfileProvider.select((a) => a.value?.dailyXpHistory));
+  final dailyXpHistory = ref.watch(
+    userProfileProvider.select((a) => a.value?.dailyXpHistory),
+  );
   if (dailyXpHistory == null) return null;
 
   // Weekend Amulet: halve the daily goal on Sat/Sun when the item is active.
@@ -72,7 +94,8 @@ final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
   );
 
   final today = DateTime.now();
-  final isWeekend = today.weekday == DateTime.saturday || today.weekday == DateTime.sunday;
+  final isWeekend =
+      today.weekday == DateTime.saturday || today.weekday == DateTime.sunday;
   final effectiveGoal = (isWeekendAmuletActive && isWeekend)
       ? (dailyXpGoal ~/ 2).clamp(5, dailyXpGoal)
       : dailyXpGoal;
@@ -159,6 +182,11 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
 
         // Level up detected!
         if (nextLevel > prevLevel) {
+          if (_suppressNextEvent) {
+            state = null;
+            return;
+          }
+
           state = LevelUpEvent(
             newLevel: nextLevel,
             levelTitle: nextProfile.levelTitle,
@@ -170,6 +198,18 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
   }
 
   final Ref ref;
+  bool _suppressNextEvent = false;
+
+  /// Suppress level-up events while the caller owns the celebration flow.
+  void suppressNextLevelUp() {
+    _suppressNextEvent = true;
+    state = null;
+  }
+
+  /// Clear a pending suppression if the operation did not actually level up.
+  void allowLevelUpEvents() {
+    _suppressNextEvent = false;
+  }
 
   /// Clear the level up event after it's been handled
   void clearEvent() {

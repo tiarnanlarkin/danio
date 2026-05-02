@@ -57,15 +57,20 @@ class LessonCompletionFlow extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
+            child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 120,
-                    height: 120,
+                    width: 96,
+                    height: 96,
                     decoration: BoxDecoration(
                       color: passed
                           ? AppOverlays.success10
@@ -73,23 +78,23 @@ class LessonCompletionFlow extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: Text(
-                        passed ? '🎉' : '📚',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium!.copyWith(fontSize: 56),
+                      child: Icon(
+                        passed
+                            ? Icons.workspace_premium_rounded
+                            : Icons.menu_book_rounded,
+                        color: passed ? AppColors.success : AppColors.warning,
+                        size: 48,
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.md),
                   Semantics(
                     liveRegion: true,
                     header: true,
                     child: Text(
-                      passed
-                          ? passedMessage(percentage)
-                          : tryAgainMessage(),
+                      passed ? passedMessage(percentage) : tryAgainMessage(),
                       style: AppTypography.headlineLarge,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -103,11 +108,11 @@ class LessonCompletionFlow extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // XP earned
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.lg2),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
                       borderRadius: AppRadius.mediumRadius,
@@ -138,6 +143,35 @@ class LessonCompletionFlow extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.md),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryAlpha10,
+                      borderRadius: AppRadius.mediumRadius,
+                      border: Border.all(color: AppColors.primaryAlpha15),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.repeat_rounded,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: AppSpacing.sm2),
+                        Expanded(
+                          child: Text(
+                            'XP earned. Key points moved into your Practice review deck, with the first review due tomorrow. Continue when you want a new concept.',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: context.textSecondary,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -149,9 +183,7 @@ class LessonCompletionFlow extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.lg2),
           child: SafeArea(
             child: AppButton(
-              onPressed: isCompletingLesson
-                  ? null
-                  : () => onCompleteLesson(),
+              onPressed: isCompletingLesson ? null : () => onCompleteLesson(),
               label: 'Complete Lesson',
               isLoading: isCompletingLesson,
               isFullWidth: true,
@@ -242,20 +274,24 @@ void showLessonXpAnimation(
       // the lesson-scoped LevelUpDialog so LevelUpListener (tab navigator)
       // doesn't fire a second celebration for the same level-up event.
       final profile = ref.read(userProfileProvider).value;
-      if (profile != null && levelBeforeLesson != null) {
-        final currentLevel = profile.currentLevel;
+      try {
+        if (profile != null && levelBeforeLesson != null) {
+          final currentLevel = profile.currentLevel;
 
-        if (currentLevel > levelBeforeLesson) {
-          // Consume the provider event so LevelUpListener stays silent.
-          ref.read(levelUpEventProvider.notifier).clearEvent();
+          if (currentLevel > levelBeforeLesson) {
+            // Consume the provider event so LevelUpListener stays silent.
+            ref.read(levelUpEventProvider.notifier).clearEvent();
 
-          await showLevelUpCelebration(
-            context,
-            currentLevel,
-            profile.levelTitle,
-            profile.totalXp,
-          );
+            await showLevelUpCelebration(
+              context,
+              currentLevel,
+              profile.levelTitle,
+              profile.totalXp,
+            );
+          }
         }
+      } finally {
+        ref.read(levelUpEventProvider.notifier).allowLevelUpEvents();
       }
 
       onComplete();
@@ -311,11 +347,10 @@ void showNextLessonOrPop(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              '🎉',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineMedium!.copyWith(fontSize: 40),
+            Icon(
+              Icons.check_circle_rounded,
+              color: AppColors.success,
+              size: 44,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(

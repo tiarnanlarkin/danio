@@ -63,7 +63,6 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
       duration: const Duration(seconds: 5),
     );
 
-
     // Animation controller for entrance
     _animationController = AnimationController(
       vsync: this,
@@ -89,7 +88,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final disableMotion = MediaQuery.of(context).disableAnimations;
-    _animationController.duration = disableMotion ? Duration.zero : AppDurations.long3;
+    _animationController.duration = disableMotion
+        ? Duration.zero
+        : AppDurations.long3;
   }
 
   @override
@@ -147,7 +148,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // "Achievement Unlocked" header
                         Text(
-                          '🎉 ACHIEVEMENT UNLOCKED! 🎉',
+                          'ACHIEVEMENT UNLOCKED',
                           style: Theme.of(context).textTheme.titleLarge!
                               .copyWith(
                                 color: Colors.white,
@@ -175,11 +176,10 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                             ],
                           ),
                           child: Center(
-                            child: Text(
-                              widget.achievement.icon,
-                              style: Theme.of(
-                                context,
-                              ).textTheme.headlineMedium!.copyWith(),
+                            child: Icon(
+                              _achievementIcon(widget.achievement.category),
+                              size: 72,
+                              color: rarityColor,
                             ),
                           ),
                         ),
@@ -215,7 +215,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // Achievement name
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
+                          ),
                           child: Text(
                             widget.achievement.name,
                             style: Theme.of(context).textTheme.headlineMedium!
@@ -232,7 +234,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // Achievement description
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xl,
+                          ),
                           child: Text(
                             widget.achievement.description,
                             style: Theme.of(context).textTheme.titleMedium!
@@ -248,7 +252,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // Rewards section
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
+                          ),
                           padding: const EdgeInsets.all(AppSpacing.lg2),
                           decoration: BoxDecoration(
                             color: AppOverlays.white20,
@@ -276,13 +282,13 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                                 children: [
                                   // XP reward
                                   _buildRewardItem(
-                                    icon: '⭐',
+                                    icon: Icons.stars_rounded,
                                     amount: '+${widget.xpAwarded}',
                                     label: 'XP',
                                   ),
                                   // Gems reward
                                   _buildRewardItem(
-                                    icon: '💎',
+                                    icon: Icons.diamond_rounded,
                                     amount: '+$gemReward',
                                     label: 'Gems',
                                   ),
@@ -296,7 +302,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
                         // "Awesome!" button
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
+                          ),
                           child: AppButton(
                             label: 'Awesome!',
                             onPressed: () => Navigator.of(context).pop(),
@@ -379,7 +387,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
   /// Build individual reward item (XP or Gems)
   Widget _buildRewardItem({
-    required String icon,
+    required IconData icon,
     required String amount,
     required String label,
   }) {
@@ -388,7 +396,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(icon, style: Theme.of(context).textTheme.headlineMedium!),
+            Icon(icon, size: AppIconSizes.lg, color: Colors.white),
             const SizedBox(width: AppSpacing.sm),
             Text(
               amount,
@@ -427,6 +435,21 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
         return GemRewards.achievementGold;
       case AchievementRarity.platinum:
         return GemRewards.achievementPlatinum;
+    }
+  }
+
+  IconData _achievementIcon(AchievementCategory category) {
+    switch (category) {
+      case AchievementCategory.learningProgress:
+        return Icons.menu_book_rounded;
+      case AchievementCategory.streaks:
+        return Icons.local_fire_department_rounded;
+      case AchievementCategory.xpMilestones:
+        return Icons.stars_rounded;
+      case AchievementCategory.special:
+        return Icons.auto_awesome_rounded;
+      case AchievementCategory.engagement:
+        return Icons.task_alt_rounded;
     }
   }
 }

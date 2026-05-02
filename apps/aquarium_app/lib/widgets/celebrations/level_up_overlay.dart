@@ -197,11 +197,13 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
 
   Color _getSparkleColor(int index) {
     const colors = [
-      DanioColors.topaz,        // Gold
-      AppColors.primaryLight,   // Amber
-      Color(0xFFFFE082),        // Light gold — intentionally decorative sparkle, no shared token
-      Colors.white,             // White sparkle
-      AppColors.primary,        // Deep gold
+      DanioColors.topaz, // Gold
+      AppColors.primaryLight, // Amber
+      Color(
+        0xFFFFE082,
+      ), // Light gold — intentionally decorative sparkle, no shared token
+      Colors.white, // White sparkle
+      AppColors.primary, // Deep gold
     ];
     return colors[index];
   }
@@ -234,12 +236,13 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     }
   }
 
-  void _dismiss() async {
+  void _dismiss() {
     // Guard against double-dismiss (race between button tap and auto-dismiss)
     if (_isDismissing) return;
     _isDismissing = true;
-    // Reverse animations
-    if (mounted) await _overlayController.reverse();
+    if (mounted) {
+      _overlayController.reverse();
+    }
     widget.onDismiss?.call();
   }
 
@@ -314,110 +317,110 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                 child: Container(color: AppOverlays.black60),
               ),
 
-            // Sparkle particles
-            AnimatedBuilder(
-              animation: _particleController,
-              builder: (context, _) => CustomPaint(
-                painter: _SparklePainter(
-                  sparkles: _sparkles,
-                  progress: _particleController.value,
-                  center: Offset(size.width / 2, size.height / 2 - 40),
+              // Sparkle particles
+              AnimatedBuilder(
+                animation: _particleController,
+                builder: (context, _) => CustomPaint(
+                  painter: _SparklePainter(
+                    sparkles: _sparkles,
+                    progress: _particleController.value,
+                    center: Offset(size.width / 2, size.height / 2 - 40),
+                  ),
+                  size: size,
                 ),
-                size: size,
               ),
-            ),
 
-            // Confetti from left
-            Positioned(
-              left: 0,
-              top: size.height * 0.3,
-              child: ConfettiWidget(
-                confettiController: _leftConfettiController,
-                blastDirection: -math.pi / 4, // Up-right
-                blastDirectionality: BlastDirectionality.directional,
-                emissionFrequency: 0.05,
-                numberOfParticles: 15,
-                gravity: 0.2,
-                colors: ConfettiColors.levelUp,
-                createParticlePath: _createStarPath,
+              // Confetti from left
+              Positioned(
+                left: 0,
+                top: size.height * 0.3,
+                child: ConfettiWidget(
+                  confettiController: _leftConfettiController,
+                  blastDirection: -math.pi / 4, // Up-right
+                  blastDirectionality: BlastDirectionality.directional,
+                  emissionFrequency: 0.05,
+                  numberOfParticles: 15,
+                  gravity: 0.2,
+                  colors: ConfettiColors.levelUp,
+                  createParticlePath: _createStarPath,
+                ),
               ),
-            ),
 
-            // Confetti from right
-            Positioned(
-              right: 0,
-              top: size.height * 0.3,
-              child: ConfettiWidget(
-                confettiController: _rightConfettiController,
-                blastDirection: -3 * math.pi / 4, // Up-left
-                blastDirectionality: BlastDirectionality.directional,
-                emissionFrequency: 0.05,
-                numberOfParticles: 15,
-                gravity: 0.2,
-                colors: ConfettiColors.levelUp,
-                createParticlePath: _createStarPath,
+              // Confetti from right
+              Positioned(
+                right: 0,
+                top: size.height * 0.3,
+                child: ConfettiWidget(
+                  confettiController: _rightConfettiController,
+                  blastDirection: -3 * math.pi / 4, // Up-left
+                  blastDirectionality: BlastDirectionality.directional,
+                  emissionFrequency: 0.05,
+                  numberOfParticles: 15,
+                  gravity: 0.2,
+                  colors: ConfettiColors.levelUp,
+                  createParticlePath: _createStarPath,
+                ),
               ),
-            ),
 
-            // Central content
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // "LEVEL UP!" text
-                  ScaleTransition(
-                    scale: _textScale,
-                    child: _buildLevelUpText(),
-                  ),
-
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // Level number with glow
-                  FadeTransition(
-                    opacity: _levelFade,
-                    child: ScaleTransition(
-                      scale: _levelScale,
-                      child: _buildLevelNumber(),
+              // Central content
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // "LEVEL UP!" text
+                    ScaleTransition(
+                      scale: _textScale,
+                      child: _buildLevelUpText(),
                     ),
-                  ),
 
-                  // Level title (if provided)
-                  if (widget.levelTitle != null) ...[
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Level number with glow
                     FadeTransition(
                       opacity: _levelFade,
-                      child: _buildLevelTitle(),
-                    ),
-                  ],
-
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Continue button instead of just tap hint
-                  FadeTransition(
-                    opacity: _overlayFade,
-                    child: AppButton(
-                      label: 'Continue',
-                      onPressed: _dismiss,
-                      variant: AppButtonVariant.primary,
-                    ),
-                  ),
-
-                  const SizedBox(height: AppSpacing.sm),
-
-                  // Tap anywhere hint
-                  FadeTransition(
-                    opacity: _overlayFade,
-                    child: Text(
-                      'or tap anywhere',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppOverlays.white50,
+                      child: ScaleTransition(
+                        scale: _levelScale,
+                        child: _buildLevelNumber(),
                       ),
                     ),
-                  ),
-                ],
+
+                    // Level title (if provided)
+                    if (widget.levelTitle != null) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      FadeTransition(
+                        opacity: _levelFade,
+                        child: _buildLevelTitle(),
+                      ),
+                    ],
+
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // Continue button instead of just tap hint
+                    FadeTransition(
+                      opacity: _overlayFade,
+                      child: AppButton(
+                        label: 'Continue',
+                        onPressed: _dismiss,
+                        variant: AppButtonVariant.primary,
+                      ),
+                    ),
+
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // Tap anywhere hint
+                    FadeTransition(
+                      opacity: _overlayFade,
+                      child: Text(
+                        'or tap anywhere',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppOverlays.white50,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
           ),
         ),
       ),
@@ -428,9 +431,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     return ShaderMask(
       shaderCallback: (bounds) => const LinearGradient(
         colors: [
-          DanioColors.topaz,   // Gold
-          AppColors.primary,   // Deep amber
-          DanioColors.topaz,   // Gold
+          DanioColors.topaz, // Gold
+          AppColors.primary, // Deep amber
+          DanioColors.topaz, // Gold
         ],
         stops: [0.0, 0.5, 1.0],
       ).createShader(bounds),
@@ -475,14 +478,16 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
             ),
             boxShadow: [
               BoxShadow(
-                color: DanioColors.amethyst
-                    .withValues(alpha: 0.4 + _glowPulse.value * 0.4),
+                color: DanioColors.amethyst.withValues(
+                  alpha: 0.4 + _glowPulse.value * 0.4,
+                ),
                 blurRadius: 30 + _glowPulse.value * 20,
                 spreadRadius: 5 + _glowPulse.value * 10,
               ),
               BoxShadow(
-                color: DanioColors.levelUpFuchsia
-                    .withValues(alpha: 0.3 + _glowPulse.value * 0.3),
+                color: DanioColors.levelUpFuchsia.withValues(
+                  alpha: 0.3 + _glowPulse.value * 0.3,
+                ),
                 blurRadius: 50 + _glowPulse.value * 30,
                 spreadRadius: 10,
               ),
@@ -522,7 +527,11 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('🏆', style: Theme.of(context).textTheme.titleLarge!),
+          const Icon(
+            Icons.workspace_premium,
+            color: Colors.white,
+            size: AppIconSizes.md,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Text(
             widget.levelTitle!,

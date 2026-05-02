@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/spaced_repetition.dart';
 import '../../providers/spaced_repetition_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/learning_visuals.dart';
 import '../../utils/logger.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
@@ -108,11 +109,10 @@ class _SpacedRepetitionPracticeScreenState
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Text(
-                  '🎯',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineMedium!.copyWith(fontSize: 56),
+                child: Icon(
+                  Icons.track_changes_rounded,
+                  color: AppColors.success,
+                  size: 58,
                 ),
               ),
             ),
@@ -312,7 +312,7 @@ class _SpacedRepetitionPracticeScreenState
               Expanded(
                 child: _buildStatItem(
                   'Streak',
-                  '${srState.stats.currentStreak}🔥',
+                  '${srState.stats.currentStreak}',
                   Icons.whatshot,
                 ),
               ),
@@ -454,9 +454,10 @@ class _SpacedRepetitionPracticeScreenState
             padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
             child: Row(
               children: [
-                Text(
-                  level.emoji,
-                  style: Theme.of(context).textTheme.titleLarge!,
+                Icon(
+                  LearningVisuals.masteryIcon(level),
+                  color: LearningVisuals.masteryColor(context, level),
+                  size: AppIconSizes.md,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(

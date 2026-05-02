@@ -882,7 +882,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Don't double-count
     if (current.achievements.contains(achievementId)) return;
 
-    // Use canonical AchievementDefinitions (55+ achievements)
+    // Use canonical AchievementDefinitions as the source of truth.
     final newAchievement = AchievementDefinitions.getById(achievementId);
     final bonusXp = newAchievement?.rarity.xpReward ?? 0;
 

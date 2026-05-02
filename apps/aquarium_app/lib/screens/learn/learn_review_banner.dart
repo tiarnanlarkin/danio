@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../models/spaced_repetition.dart';
 import '../../providers/spaced_repetition_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/logger.dart';
+import '../../utils/navigation_throttle.dart';
+import '../../widgets/danio_snack_bar.dart';
 import '../spaced_repetition_practice_screen.dart';
 
 /// Banner shown on the Learn screen when spaced repetition cards are due.
@@ -30,12 +34,28 @@ class LearnReviewBanner extends ConsumerWidget {
         label:
             'Time to Review! You have $dueCount card${dueCount == 1 ? '' : 's'} ready to review. Tap to start practicing.',
         child: InkWell(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const SpacedRepetitionPracticeScreen(),
-              ),
-            );
+          onTap: () async {
+            try {
+              await ref
+                  .read(spacedRepetitionProvider.notifier)
+                  .startSession(mode: ReviewSessionMode.standard);
+              if (!context.mounted) return;
+              NavigationThrottle.push(
+                context,
+                const SpacedRepetitionPracticeScreen(),
+              );
+            } catch (e, st) {
+              logError(
+                'LearnReviewBanner: start session failed: $e',
+                stackTrace: st,
+                tag: 'LearnReviewBanner',
+              );
+              if (!context.mounted) return;
+              DanioSnackBar.error(
+                context,
+                'Couldn\'t start review. Try the Practice tab.',
+              );
+            }
           },
           borderRadius: AppRadius.mediumRadius,
           child: Container(
@@ -75,12 +95,14 @@ class LearnReviewBanner extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            '🔔 ',
-                            style: Theme.of(context).textTheme.titleLarge!,
+                          const Icon(
+                            Icons.notifications_active_rounded,
+                            color: AppColors.onPrimary,
+                            size: AppIconSizes.sm,
                           ),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
-                            'Time to Review!',
+                            'Review deck ready',
                             style: AppTypography.headlineSmall.copyWith(
                               color: AppColors.onPrimary,
                               fontWeight: FontWeight.bold,
@@ -90,14 +112,14 @@ class LearnReviewBanner extends ConsumerWidget {
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        'You have $dueCount card${dueCount == 1 ? '' : 's'} ready to review',
+                        '$dueCount card${dueCount == 1 ? '' : 's'} ready for care-confidence practice',
                         style: AppTypography.bodyMedium.copyWith(
                           color: AppOverlays.white90,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        'Tap to start practicing',
+                        'Tap to start review',
                         style: AppTypography.bodySmall.copyWith(
                           color: AppOverlays.white70,
                         ),

@@ -50,9 +50,7 @@ Widget _wrap() {
       sharedPreferencesProvider.overrideWith((ref) async {
         return SharedPreferences.getInstance();
       }),
-      spacedRepetitionProvider.overrideWith(
-        (ref) => _FakeSrNotifier(),
-      ),
+      spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier()),
     ],
     child: const MaterialApp(home: PracticeHubScreen()),
   );
@@ -61,7 +59,8 @@ Widget _wrap() {
 class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
   _FakeSrNotifier()
-      : super(SpacedRepetitionState(
+    : super(
+        SpacedRepetitionState(
           cards: const [],
           stats: ReviewStats(
             totalCards: 0,
@@ -73,7 +72,8 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
             reviewsToday: 0,
             currentStreak: 0,
           ),
-        ));
+        ),
+      );
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -105,13 +105,26 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       // Title is now in the illustrated header (no AppBar), text reads 'Practice'
-      expect(find.text('Practice'), findsOneWidget);
+      expect(find.text('Practice'), findsWidgets);
     });
 
     testWidgets('shows scaffold', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.byType(Scaffold), findsOneWidget);
+    });
+    testWidgets('empty deck explains the Learn to Practice mastery loop', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('Build your review deck'), findsOneWidget);
+      expect(find.text('Learn'), findsOneWidget);
+      expect(find.text('Practice'), findsWidgets);
+      expect(find.text('Mastery'), findsOneWidget);
+      expect(find.text('Review Sessions'), findsNothing);
+      expect(find.text('Standard Review'), findsNothing);
     });
   });
 }

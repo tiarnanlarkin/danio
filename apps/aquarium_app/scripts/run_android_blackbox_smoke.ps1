@@ -249,7 +249,7 @@ Assert-Visible "Learning Paths"
 
 Write-Host "Checking bottom tabs..."
 Tap-Percent 30 92
-Assert-Visible "Practice Modes"
+Assert-Visible "Build your review deck|Start Review|Standard Review|All caught up"
 Tap-Percent 50 92
 Assert-Visible "Tank Toolbox"
 Tap-Percent 70 92

@@ -4,8 +4,7 @@ import '../../providers/user_profile_provider.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 
-/// Shows a one-time explanation of the energy system on the user's first
-/// lesson.  Call from [initState] via [WidgetsBinding.addPostFrameCallback].
+/// Shows an explanation of the energy system when the user asks for it.
 Future<void> maybeExplainHearts(
   BuildContext context,
   WidgetRef ref, {
@@ -19,7 +18,7 @@ Future<void> maybeExplainHearts(
   if (!context.mounted) return;
   showAppDialog(
     context: context,
-    title: '⚡ Energy',
+    title: 'Energy',
     child: const Text(
       'Energy gives you bonus XP! You lose a little per wrong answer, '
       'and it refills over time (1 charge every 30 minutes). '

@@ -245,7 +245,11 @@ class LessonCardWidget extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('🤓', style: Theme.of(context).textTheme.headlineSmall!),
+              const Icon(
+                Icons.lightbulb_outline_rounded,
+                color: AppColors.accentAlt,
+                size: AppIconSizes.lg,
+              ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
@@ -297,33 +301,92 @@ class LessonCardWidget extends StatelessWidget {
         );
 
       case LessonSectionType.image:
-        // Placeholder for future image support
-        return Container(
-          height: 200,
-          decoration: BoxDecoration(
-            color: context.surfaceVariant,
-            borderRadius: AppRadius.mediumRadius,
-          ),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.image_outlined,
-                  size: AppIconSizes.xl,
-                  color: context.textHint,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Visual guide on the way!',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: context.textHint,
-                  ),
-                ),
-              ],
+        return _buildImageSection(context, section);
+    }
+  }
+
+  Widget _buildImageSection(BuildContext context, LessonSection section) {
+    final imageUrl = section.imageUrl?.trim();
+    final caption = section.caption?.trim();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: AppRadius.mediumRadius,
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: DecoratedBox(
+              decoration: BoxDecoration(color: context.surfaceVariant),
+              child: imageUrl == null || imageUrl.isEmpty
+                  ? _buildImageFallback(context)
+                  : _buildImage(context, imageUrl),
             ),
           ),
-        );
-    }
+        ),
+        if (caption != null && caption.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            caption,
+            style: AppTypography.bodySmall.copyWith(
+              color: context.textSecondary,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildImage(BuildContext context, String imageUrl) {
+    final image = imageUrl.startsWith('assets/')
+        ? Image.asset(
+            imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => _buildImageFallback(context),
+          )
+        : Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    value: loadingProgress.expectedTotalBytes == null
+                        ? null
+                        : loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!,
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (_, __, ___) => _buildImageFallback(context),
+          );
+
+    return Semantics(image: true, label: 'Lesson visual', child: image);
+  }
+
+  Widget _buildImageFallback(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.broken_image_outlined,
+            size: AppIconSizes.xl,
+            color: context.textHint,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Visual unavailable',
+            style: AppTypography.bodySmall.copyWith(color: context.textHint),
+          ),
+        ],
+      ),
+    );
   }
 }

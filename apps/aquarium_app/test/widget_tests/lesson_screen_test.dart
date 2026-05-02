@@ -23,7 +23,8 @@ import 'package:danio/models/spaced_repetition.dart';
 class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
   _FakeSrNotifier()
-      : super(SpacedRepetitionState(
+    : super(
+        SpacedRepetitionState(
           cards: const [],
           stats: ReviewStats(
             totalCards: 0,
@@ -35,7 +36,8 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
             reviewsToday: 0,
             currentStreak: 0,
           ),
-        ));
+        ),
+      );
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -55,7 +57,8 @@ final _testLesson = Lesson(
   sections: const [
     LessonSection(
       type: LessonSectionType.text,
-      content: 'The nitrogen cycle is the most important concept in fishkeeping.',
+      content:
+          'The nitrogen cycle is the most important concept in fishkeeping.',
     ),
     LessonSection(
       type: LessonSectionType.text,
@@ -68,7 +71,7 @@ final _testLesson = Lesson(
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() {
+Widget _wrap({Lesson? lesson}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
@@ -79,7 +82,7 @@ Widget _wrap() {
     ],
     child: MaterialApp(
       home: LessonScreen(
-        lesson: _testLesson,
+        lesson: lesson ?? _testLesson,
         pathTitle: 'Getting Started',
       ),
     ),
@@ -127,6 +130,116 @@ void main() {
         find.textContaining('nitrogen cycle is the most important'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('opens the first lesson without blocking energy explainer', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('Energy'), findsNothing);
+      expect(find.textContaining('Energy gives you bonus XP'), findsNothing);
+      expect(
+        find.textContaining('nitrogen cycle is the most important'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('renders image sections with asset and caption', (
+      tester,
+    ) async {
+      final lesson = Lesson(
+        id: 'lesson-image',
+        pathId: 'path-1',
+        title: 'Visual Lesson',
+        description: 'A lesson with an image section.',
+        orderIndex: 1,
+        sections: const [
+          LessonSection(
+            type: LessonSectionType.image,
+            content: 'Tank visual',
+            imageUrl: 'assets/images/placeholder.webp',
+            caption: 'A clear visual anchor for this concept.',
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(_wrap(lesson: lesson));
+      await _advance(tester);
+
+      expect(find.byType(Image), findsOneWidget);
+      expect(
+        find.text('A clear visual anchor for this concept.'),
+        findsOneWidget,
+      );
+      expect(find.text('Visual guide on the way!'), findsNothing);
+    });
+
+    testWidgets('completion flow fits a compact Android viewport', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final lesson = Lesson(
+        id: 'lesson-complete',
+        pathId: 'path-1',
+        title: 'Completion Lesson',
+        description: 'A lesson with a quiz.',
+        orderIndex: 1,
+        xpReward: 50,
+        sections: _testLesson.sections,
+        quiz: Quiz(
+          id: 'quiz-complete',
+          lessonId: 'lesson-complete',
+          questions: const [
+            QuizQuestion(
+              id: 'q1',
+              question: 'What matters most?',
+              options: ['Speed', 'Testing', 'Guessing', 'Skipping'],
+              correctIndex: 1,
+              explanation: 'Testing keeps the tank safe.',
+            ),
+            QuizQuestion(
+              id: 'q2',
+              question: 'When is review due?',
+              options: ['Never', 'Tomorrow', 'In a year', 'Only on Sundays'],
+              correctIndex: 1,
+              explanation: 'First review returns tomorrow.',
+            ),
+            QuizQuestion(
+              id: 'q3',
+              question: 'What does Practice build?',
+              options: ['Pressure', 'Care confidence', 'Noise', 'Confusion'],
+              correctIndex: 1,
+              explanation: 'Practice builds care confidence.',
+            ),
+          ],
+          passingScore: 70,
+          bonusXp: 25,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: LessonCompletionFlow(
+              lesson: lesson,
+              pathTitle: 'The Nitrogen Cycle',
+              isPracticeMode: false,
+              correctAnswers: 3,
+              isCompletingLesson: false,
+              onCompleteLesson: () {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Complete Lesson'), findsOneWidget);
+      expect(find.textContaining('review deck'), findsOneWidget);
     });
   });
 }

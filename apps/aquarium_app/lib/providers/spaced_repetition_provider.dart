@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'user_profile_provider.dart';
 import 'dart:convert';
 import '../models/spaced_repetition.dart';
+import '../models/learning.dart';
 import '../services/review_queue_service.dart';
 import '../services/notification_service.dart';
 import 'achievement_provider.dart';
@@ -113,6 +114,29 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     return null;
   }
 
+  static String? readLessonContentField(dynamic obj, String fieldName) {
+    if (obj is LessonSection) {
+      return switch (fieldName) {
+        'content' => obj.content,
+        'imageUrl' => obj.imageUrl,
+        'caption' => obj.caption,
+        _ => null,
+      };
+    }
+
+    if (obj is QuizQuestion) {
+      return switch (fieldName) {
+        'question' => obj.question,
+        'explanation' => obj.explanation,
+        _ => null,
+      };
+    }
+
+    // ignore: avoid_dynamic_calls
+    final json = (obj as dynamic).toJson() as Map<String, dynamic>;
+    return json[fieldName] as String?;
+  }
+
   /// Load cards from storage
   Future<void> _loadData() async {
     state = state.copyWith(isLoading: true, clearError: true);
@@ -210,6 +234,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
     }
   }
+
+  Future<void> reload() => _loadData();
 
   /// Save cards to storage
   Future<void> _saveData() async {
@@ -447,6 +473,23 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   /// is non-String.
   String? _safeStringField(dynamic obj, String fieldName) {
     try {
+      if (obj is LessonSection) {
+        return switch (fieldName) {
+          'content' => obj.content,
+          'imageUrl' => obj.imageUrl,
+          'caption' => obj.caption,
+          _ => null,
+        };
+      }
+
+      if (obj is QuizQuestion) {
+        return switch (fieldName) {
+          'question' => obj.question,
+          'explanation' => obj.explanation,
+          _ => null,
+        };
+      }
+
       // ignore: avoid_dynamic_calls
       final json = (obj as dynamic).toJson() as Map<String, dynamic>;
       return json[fieldName] as String?;
@@ -530,6 +573,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         allCards: state.cards,
         mode: mode,
       );
+      if (session.cards.isEmpty) {
+        throw StateError('No review cards available for $mode');
+      }
 
       // Pre-load lesson paths needed for question resolution
       final pathIds = resolvePathIdsForConceptIds(

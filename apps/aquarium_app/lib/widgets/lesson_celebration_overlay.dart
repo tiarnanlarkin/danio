@@ -126,19 +126,13 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
       vsync: this,
       duration: AppDurations.long1, // 400ms
     );
-    _heroScale = CurvedAnimation(
-      parent: _heroCtrl,
-      curve: _SpringLikeCurve(),
-    );
+    _heroScale = CurvedAnimation(parent: _heroCtrl, curve: _SpringLikeCurve());
     _heroFade = CurvedAnimation(
       parent: _heroCtrl,
       curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
     );
 
-    _badgeCtrl = AnimationController(
-      vsync: this,
-      duration: AppDurations.long1,
-    );
+    _badgeCtrl = AnimationController(vsync: this, duration: AppDurations.long1);
     _badgeFade = CurvedAnimation(
       parent: _badgeCtrl,
       curve: AppCurves.emphasized,
@@ -146,9 +140,7 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
     _badgeSlide = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _badgeCtrl, curve: AppCurves.emphasized),
-    );
+    ).animate(CurvedAnimation(parent: _badgeCtrl, curve: AppCurves.emphasized));
 
     _xpCtrl = AnimationController(
       vsync: this,
@@ -225,9 +217,7 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
           // Semi-transparent scrim
           GestureDetector(
             onTap: widget.onDismiss,
-            child: Container(
-              color: Colors.black.withValues(alpha: 0.45),
-            ),
+            child: Container(color: Colors.black.withValues(alpha: 0.45)),
           ),
 
           // Bubble particles
@@ -326,12 +316,7 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
   Widget _buildBadgeRow(BuildContext context, _CelebrationCopy copy) {
     final row = Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _BadgeChip(
-          emoji: copy.badgeEmoji,
-          label: copy.badgeLabel,
-        ),
-      ],
+      children: [_BadgeChip(icon: copy.badgeIcon, label: copy.badgeLabel)],
     );
 
     if (_reduceMotion) return row;
@@ -351,8 +336,7 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
 
     return AnimatedBuilder(
       animation: _xpCtrl,
-      builder: (_, __) =>
-          _XpDisplay(xp: _xpCount.value, glow: _xpGlow.value),
+      builder: (_, __) => _XpDisplay(xp: _xpCount.value, glow: _xpGlow.value),
     );
   }
 
@@ -408,10 +392,10 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
 // ── Sub-widgets ──────────────────────────────────────────────────────────────
 
 class _BadgeChip extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
   final String label;
 
-  const _BadgeChip({required this.emoji, required this.label});
+  const _BadgeChip({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -423,15 +407,12 @@ class _BadgeChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.successAlpha10,
         borderRadius: AppRadius.pillRadius,
-        border: Border.all(
-          color: AppColors.successAlpha30,
-          width: 1.0,
-        ),
+        border: Border.all(color: AppColors.successAlpha30, width: 1.0),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 20)),
+          Icon(icon, color: AppColors.success, size: AppIconSizes.sm),
           const SizedBox(width: AppSpacing.sm),
           Text(
             label,
@@ -502,7 +483,11 @@ class _GemBonusRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('💎', style: TextStyle(fontSize: 18)),
+          const Icon(
+            Icons.diamond_rounded,
+            color: AppColors.accentText,
+            size: AppIconSizes.sm,
+          ),
           const SizedBox(width: AppSpacing.xs),
           Text(
             '+$gems gem${gems == 1 ? '' : 's'} earned',
@@ -521,12 +506,12 @@ class _GemBonusRow extends StatelessWidget {
 
 class _CelebrationCopy {
   final String headline;
-  final String badgeEmoji;
+  final IconData badgeIcon;
   final String badgeLabel;
 
   const _CelebrationCopy({
     required this.headline,
-    required this.badgeEmoji,
+    required this.badgeIcon,
     required this.badgeLabel,
   });
 
@@ -541,7 +526,7 @@ class _CelebrationCopy {
       case LessonCelebrationVariant.firstLesson:
         return const _CelebrationCopy(
           headline: 'You did it — first lesson complete!',
-          badgeEmoji: '🌱',
+          badgeIcon: Icons.spa_rounded,
           badgeLabel: 'First lesson',
         );
       case LessonCelebrationVariant.streakMilestone:
@@ -552,13 +537,13 @@ class _CelebrationCopy {
         ];
         return _CelebrationCopy(
           headline: headlines[_rng.nextInt(headlines.length)],
-          badgeEmoji: '🔥',
+          badgeIcon: Icons.local_fire_department_rounded,
           badgeLabel: '$streakDays-day streak',
         );
       case LessonCelebrationVariant.gemEarned:
         return _CelebrationCopy(
           headline: 'Lesson complete — and you earned gems!',
-          badgeEmoji: '💎',
+          badgeIcon: Icons.diamond_rounded,
           badgeLabel: gemsEarned > 1 ? '$gemsEarned gems' : 'Gem earned',
         );
       case LessonCelebrationVariant.regular:
@@ -571,7 +556,7 @@ class _CelebrationCopy {
         ];
         return _CelebrationCopy(
           headline: headlines[_rng.nextInt(headlines.length)],
-          badgeEmoji: '✅',
+          badgeIcon: Icons.check_circle_rounded,
           badgeLabel: 'Lesson complete',
         );
     }

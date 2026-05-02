@@ -587,7 +587,7 @@ class AchievementChecker {
 
     await showAppDialog(
       context: context,
-      title: '${results.length} Achievements Unlocked! 🎉',
+      title: '${results.length} Achievements Unlocked',
       barrierDismissible: false,
       actions: [
         AppButton(
@@ -606,9 +606,12 @@ class AchievementChecker {
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
               child: Row(
                 children: [
-                  Text(
-                    r.achievement.icon,
-                    style: const TextStyle(fontSize: 24),
+                  Icon(
+                    _achievementIcon(r.achievement.category),
+                    size: 24,
+                    color: AppAchievementColors.forTier(
+                      r.achievement.rarity.name,
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.sm2),
                   Expanded(
@@ -639,7 +642,11 @@ class AchievementChecker {
               children: [
                 Column(
                   children: [
-                    const Text('⭐', style: TextStyle(fontSize: 20)),
+                    Icon(
+                      Icons.stars_rounded,
+                      size: 20,
+                      color: AppAchievementColors.forTier('gold'),
+                    ),
                     Text(
                       '+$totalXp XP',
                       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -648,7 +655,11 @@ class AchievementChecker {
                 ),
                 Column(
                   children: [
-                    const Text('💎', style: TextStyle(fontSize: 20)),
+                    Icon(
+                      Icons.diamond_rounded,
+                      size: 20,
+                      color: DanioColors.tealWater,
+                    ),
                     Text(
                       '+$totalGems Gems',
                       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -661,6 +672,21 @@ class AchievementChecker {
         ],
       ),
     );
+  }
+
+  IconData _achievementIcon(AchievementCategory category) {
+    switch (category) {
+      case AchievementCategory.learningProgress:
+        return Icons.menu_book_rounded;
+      case AchievementCategory.streaks:
+        return Icons.local_fire_department_rounded;
+      case AchievementCategory.xpMilestones:
+        return Icons.stars_rounded;
+      case AchievementCategory.special:
+        return Icons.auto_awesome_rounded;
+      case AchievementCategory.engagement:
+        return Icons.task_alt_rounded;
+    }
   }
 }
 

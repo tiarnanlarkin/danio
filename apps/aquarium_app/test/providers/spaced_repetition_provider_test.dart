@@ -24,6 +24,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/models/learning.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -402,6 +403,34 @@ void main() {
       expect(pathIds, contains('water_parameters'));
       expect(pathIds, isNot(contains('nc')));
       expect(pathIds, isNot(contains('wp')));
+    });
+  });
+
+  group('SpacedRepetitionNotifier - review prompt extraction', () {
+    test('reads prompt text from typed LessonSection instances', () {
+      const section = LessonSection(
+        type: LessonSectionType.keyPoint,
+        content: 'Stable water matters more than chasing perfect numbers.',
+      );
+
+      expect(
+        SpacedRepetitionNotifier.readLessonContentField(section, 'content'),
+        equals('Stable water matters more than chasing perfect numbers.'),
+      );
+    });
+
+    test('reads prompt text from typed QuizQuestion instances', () {
+      const question = QuizQuestion(
+        id: 'q1',
+        question: 'What should you test before adding fish?',
+        options: ['Ammonia', 'Decor', 'Filter colour', 'Substrate depth'],
+        correctIndex: 0,
+      );
+
+      expect(
+        SpacedRepetitionNotifier.readLessonContentField(question, 'question'),
+        equals('What should you test before adding fish?'),
+      );
     });
   });
 

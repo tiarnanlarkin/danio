@@ -7,6 +7,7 @@ import '../../providers/inventory_provider.dart';
 import '../../providers/spaced_repetition_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/learning_visuals.dart';
 import '../../utils/concept_display_names.dart';
 import '../../utils/logger.dart';
 import '../../widgets/core/app_button.dart';
@@ -220,9 +221,13 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           // Mastery indicator
           Row(
             children: [
-              Text(
-                _currentCard.masteryLevel.emoji,
-                style: Theme.of(context).textTheme.headlineSmall!,
+              Icon(
+                LearningVisuals.masteryIcon(_currentCard.masteryLevel),
+                color: LearningVisuals.masteryColor(
+                  context,
+                  _currentCard.masteryLevel,
+                ),
+                size: AppIconSizes.md,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
@@ -479,7 +484,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
     showAppDialog<void>(
       context: context,
-      title: 'Session Complete! 🎉',
+      title: 'Session complete',
       barrierDismissible: false,
       actions: [
         AppButton(
@@ -602,6 +607,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   Future<bool?> _showExitDialog() {
     final cardsReviewed = _session.results.length;
     final cardsRemaining = _session.cards.length - cardsReviewed;
+    final navigator = Navigator.of(context);
 
     return showAppDialog<bool>(
       context: context,
@@ -662,14 +668,14 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
       actions: [
         AppButton(
           label: 'Continue Session',
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () => navigator.pop(false),
           variant: AppButtonVariant.text,
           isFullWidth: true,
         ),
         const SizedBox(height: AppSpacing.xs),
         AppButton(
           label: 'Exit',
-          onPressed: () => Navigator.of(context).pop(true),
+          onPressed: () => navigator.pop(true),
           variant: AppButtonVariant.destructive,
           isFullWidth: true,
         ),

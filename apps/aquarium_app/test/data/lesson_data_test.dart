@@ -31,45 +31,44 @@ import 'package:danio/data/lessons/troubleshooting.dart';
 
 /// Build merged equipment path (base + expanded)
 LearningPath get _mergedEquipmentPath => LearningPath(
-      id: equipmentPath.id,
-      title: equipmentPath.title,
-      description: equipmentPath.description,
-      emoji: equipmentPath.emoji,
-      recommendedFor: equipmentPath.recommendedFor,
-      orderIndex: equipmentPath.orderIndex,
-      lessons: [...equipmentPath.lessons, ...equipmentExpandedLessons],
-    );
+  id: equipmentPath.id,
+  title: equipmentPath.title,
+  description: equipmentPath.description,
+  emoji: equipmentPath.emoji,
+  recommendedFor: equipmentPath.recommendedFor,
+  orderIndex: equipmentPath.orderIndex,
+  lessons: [...equipmentPath.lessons, ...equipmentExpandedLessons],
+);
 
 /// Build merged species care path (base + expanded)
 LearningPath get _mergedSpeciesCarePath => LearningPath(
-      id: speciesCarePath.id,
-      title: speciesCarePath.title,
-      description: speciesCarePath.description,
-      emoji: speciesCarePath.emoji,
-      recommendedFor: speciesCarePath.recommendedFor,
-      orderIndex: speciesCarePath.orderIndex,
-      lessons: [...speciesCarePath.lessons, ...speciesCareExpandedLessons],
-    );
+  id: speciesCarePath.id,
+  title: speciesCarePath.title,
+  description: speciesCarePath.description,
+  emoji: speciesCarePath.emoji,
+  recommendedFor: speciesCarePath.recommendedFor,
+  orderIndex: speciesCarePath.orderIndex,
+  lessons: [...speciesCarePath.lessons, ...speciesCareExpandedLessons],
+);
 
 /// All paths, combined for cross-file tests.
 List<LearningPath> get _allPaths => [
-      nitrogenCyclePath,
-      waterParametersPath,
-      firstFishPath,
-      maintenancePath,
-      plantedTankPath,
-      _mergedEquipmentPath,
-      fishHealthPath,
-      _mergedSpeciesCarePath,
-      advancedTopicsPath,
-      aquascapingPath,
-      breedingBasicsPath,
-      troubleshootingPath,
-    ];
+  nitrogenCyclePath,
+  waterParametersPath,
+  firstFishPath,
+  maintenancePath,
+  plantedTankPath,
+  _mergedEquipmentPath,
+  fishHealthPath,
+  _mergedSpeciesCarePath,
+  advancedTopicsPath,
+  aquascapingPath,
+  breedingBasicsPath,
+  troubleshootingPath,
+];
 
 /// All lessons across every path.
-List<Lesson> get _allLessons =>
-    _allPaths.expand((p) => p.lessons).toList();
+List<Lesson> get _allLessons => _allPaths.expand((p) => p.lessons).toList();
 
 void main() {
   group('Lesson data — individual lesson integrity', () {
@@ -124,6 +123,59 @@ void main() {
           greaterThan(0),
           reason: 'Lesson "${lesson.id}" has xpReward <= 0',
         );
+      }
+    });
+
+    test('every lesson can seed at least one review card', () {
+      const seedableSectionTypes = {
+        LessonSectionType.keyPoint,
+        LessonSectionType.tip,
+        LessonSectionType.warning,
+        LessonSectionType.funFact,
+      };
+
+      for (final lesson in _allLessons) {
+        final hasSeedableSection = lesson.sections.any(
+          (section) =>
+              seedableSectionTypes.contains(section.type) &&
+              section.content.trim().isNotEmpty,
+        );
+        final hasQuizQuestion = lesson.quiz?.questions.any(
+              (question) => question.question.trim().isNotEmpty,
+            ) ??
+            false;
+
+        expect(
+          hasSeedableSection || hasQuizQuestion,
+          isTrue,
+          reason:
+              'Lesson "${lesson.id}" has no key section or quiz question for Practice seeding',
+        );
+      }
+    });
+
+    test('lesson content has no stale image placeholders', () {
+      for (final lesson in _allLessons) {
+        for (final section in lesson.sections) {
+          expect(
+            section.content,
+            isNot(contains('Visual guide on the way')),
+            reason: 'Lesson "${lesson.id}" still contains image placeholder copy',
+          );
+          if (section.type == LessonSectionType.image) {
+            expect(
+              section.imageUrl,
+              isNotNull,
+              reason: 'Lesson "${lesson.id}" image section has no imageUrl',
+            );
+            expect(
+              section.imageUrl,
+              isNot(contains('placeholder')),
+              reason:
+                  'Lesson "${lesson.id}" image section still points at a placeholder',
+            );
+          }
+        }
       }
     });
   });
@@ -213,18 +265,54 @@ void main() {
     });
 
     test(
-        'every lesson ID in LessonProvider.allPathMetadata exists in data files',
-        () {
-      final dataIds = _allLessons.map((l) => l.id).toSet();
-      for (final path in LessonProvider.allPathMetadata) {
-        for (final lessonId in path.lessonIds) {
-          expect(
-            dataIds,
-            contains(lessonId),
-            reason:
-                'Lesson "$lessonId" (in path "${path.id}") not found in data files',
-          );
+      'every lesson ID in LessonProvider.allPathMetadata exists in data files',
+      () {
+        final dataIds = _allLessons.map((l) => l.id).toSet();
+        for (final path in LessonProvider.allPathMetadata) {
+          for (final lessonId in path.lessonIds) {
+            expect(
+              dataIds,
+              contains(lessonId),
+              reason:
+                  'Lesson "$lessonId" (in path "${path.id}") not found in data files',
+            );
+          }
         }
+      },
+    );
+
+    test('every data lesson ID is listed in LessonProvider metadata', () {
+      final metadataIds = LessonProvider.allPathMetadata
+          .expand((path) => path.lessonIds)
+          .toSet();
+      for (final lesson in _allLessons) {
+        expect(
+          metadataIds,
+          contains(lesson.id),
+          reason:
+              'Lesson "${lesson.id}" exists in data but is missing from metadata',
+        );
+      }
+    });
+
+    test('metadata lesson order matches loaded lesson order per path', () {
+      final metadataByPath = {
+        for (final path in LessonProvider.allPathMetadata)
+          path.id: path.lessonIds,
+      };
+
+      for (final path in _allPaths) {
+        final metadataIds = metadataByPath[path.id];
+        expect(
+          metadataIds,
+          isNotNull,
+          reason: 'Path "${path.id}" is missing from metadata',
+        );
+        expect(
+          metadataIds,
+          equals(path.lessons.map((lesson) => lesson.id).toList()),
+          reason: 'Metadata order/count drifted for path "${path.id}"',
+        );
       }
     });
 

@@ -131,10 +131,8 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                     cacheWidth: (spriteSize * 2).toInt(),
                     cacheHeight: (spriteSize * 2).toInt(),
                     semanticLabel: _displayName,
-                    errorBuilder: (_, __, ___) => _FallbackSprite(
-                      size: spriteSize,
-                      name: _displayName,
-                    ),
+                    errorBuilder: (_, __, ___) =>
+                        _FallbackSprite(size: spriteSize, name: _displayName),
                   ),
                 ),
               ),
@@ -169,7 +167,8 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                 child: Column(
                   children: [
                     AppButton(
-                      label: 'See My Tank 🐟',
+                      label: 'See My Tank',
+                      leadingIcon: Icons.water_rounded,
                       onPressed: _goToTank,
                       isFullWidth: true,
                       size: AppButtonSize.large,
@@ -225,9 +224,10 @@ class _FallbackSprite extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: Center(
-        child: Text(
-          '🐟',
-          style: TextStyle(fontSize: size * 0.4),
+        child: Icon(
+          Icons.set_meal_rounded,
+          color: Colors.white.withValues(alpha: 0.85),
+          size: size * 0.42,
         ),
       ),
     );

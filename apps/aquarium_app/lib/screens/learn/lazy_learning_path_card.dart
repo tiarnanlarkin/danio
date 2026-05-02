@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/learning.dart';
 import '../../providers/lesson_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/learning_visuals.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
@@ -16,7 +17,7 @@ import '../lesson_screen.dart';
 const comingSoonPathIds = <String>{};
 
 /// Lazy-loading learning path card.
-/// Shows metadata (emoji, title, description, progress) immediately.
+/// Shows metadata (title, description, progress) immediately.
 /// Loads full LearningPath only when the user expands the card.
 class LazyLearningPathCard extends ConsumerStatefulWidget {
   final PathMetadata metadata;
@@ -27,7 +28,7 @@ class LazyLearningPathCard extends ConsumerStatefulWidget {
   /// All path metadata — needed to evaluate cross-path prerequisites.
   final List<PathMetadata> allPathMetadata;
 
-  /// When true, renders a "Start Here 👋" badge to nudge new users.
+  /// When true, renders a first-path badge to nudge new users.
   final bool showStartHereBadge;
 
   const LazyLearningPathCard({
@@ -57,6 +58,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
         widget.totalLessons > 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isComingSoon = comingSoonPathIds.contains(meta.id);
+    final visual = LearningVisuals.forPath(meta.id);
 
     // Cross-path prerequisite locking
     final isPathLocked = !meta.isUnlocked(
@@ -112,32 +114,21 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                     width: 52,
                     height: 52,
                     decoration: BoxDecoration(
-                      gradient: isComplete
-                          ? LinearGradient(
-                              colors: [
-                                AppColors.successAlpha20,
-                                AppColors.successAlpha10,
-                              ],
-                            )
-                          : LinearGradient(
-                              colors: [
-                                AppColors.primaryAlpha15,
-                                AppColors.primaryAlpha10,
-                              ],
-                            ),
+                      color: isComplete
+                          ? AppColors.successAlpha10
+                          : visual.backgroundColor,
                       borderRadius: AppRadius.mediumRadius,
                       border: Border.all(
                         color: isComplete
                             ? AppColors.successAlpha30
-                            : AppColors.primaryAlpha15,
+                            : visual.color.withAlpha(42),
                         width: 1,
                       ),
                     ),
-                    child: Center(
-                      child: Text(
-                        meta.emoji,
-                        style: Theme.of(context).textTheme.headlineSmall!,
-                      ),
+                    child: Icon(
+                      visual.icon,
+                      color: isComplete ? AppColors.success : visual.color,
+                      size: AppIconSizes.lg,
                     ),
                   ),
                   title: Row(
@@ -163,7 +154,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
                             border: Border.all(color: AppColors.primaryAlpha30),
                           ),
                           child: Text(
-                            'Start Here 👋',
+                            'Start here',
                             style: AppTypography.labelSmall.copyWith(
                               color: AppColors.primary,
                               fontWeight: FontWeight.w600,
@@ -276,12 +267,12 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
               id: id,
               title: id,
               description: '',
-              emoji: '🔒',
+              emoji: '',
               orderIndex: 0,
               lessonIds: const [],
             ),
           );
-          return '"${found.emoji} ${found.title}"';
+          return '"${found.title}"';
         })
         .join(', ');
 
@@ -320,7 +311,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
               borderRadius: AppRadius.md2Radius,
             ),
             child: Text(
-              '🔒 Locked',
+              'Locked',
               style: AppTypography.labelSmall.copyWith(
                 color: context.textSecondary,
                 fontWeight: FontWeight.w600,
@@ -341,7 +332,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
       onTap: () {
         DanioSnackBar.warning(
           context,
-          'Complete $prereqNames first to unlock ${meta.emoji} ${meta.title} 🔒',
+          'Complete $prereqNames first to unlock ${meta.title}.',
         );
       },
     );
@@ -352,6 +343,8 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
     PathMetadata meta,
     bool isDark,
   ) {
+    final visual = LearningVisuals.forPath(meta.id);
+
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
       contentPadding: const EdgeInsets.symmetric(
@@ -362,18 +355,11 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
         width: 52,
         height: 52,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.primaryAlpha15, AppColors.primaryAlpha10],
-          ),
+          color: visual.backgroundColor,
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppColors.primaryAlpha15, width: 1),
+          border: Border.all(color: visual.color.withAlpha(42), width: 1),
         ),
-        child: Center(
-          child: Text(
-            meta.emoji,
-            style: Theme.of(context).textTheme.headlineSmall!,
-          ),
-        ),
+        child: Icon(visual.icon, color: visual.color, size: AppIconSizes.lg),
       ),
       title: Row(
         children: [
@@ -398,7 +384,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
               ),
             ),
             child: Text(
-              'Coming Soon 🚧',
+              'Coming Soon',
               style: AppTypography.labelSmall.copyWith(
                 color: DanioColors.amberGoldText,
                 fontWeight: FontWeight.w600,
@@ -419,10 +405,10 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
       onTap: () {
         showAppDialog(
           context: context,
-          title: '${meta.emoji} Coming Soon!',
+          title: 'Coming Soon',
           child: Text(
             'The "${meta.title}" path is coming soon — we\'re crafting something great! '
-            'Stay tuned 🐟',
+            'Stay tuned.',
             style: AppTypography.bodyLarge,
           ),
           actions: [
@@ -515,7 +501,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
               : () {
                   DanioSnackBar.warning(
                     context,
-                    'Complete the previous lesson to unlock this one 🔒',
+                    'Complete the previous lesson to unlock this one.',
                   );
                 },
           child: ListTile(

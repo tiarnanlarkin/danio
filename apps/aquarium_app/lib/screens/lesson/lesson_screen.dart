@@ -19,7 +19,6 @@ import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
 import '../../widgets/lesson_celebration_overlay.dart';
-import 'lesson_hearts_modal.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../providers/species_unlock_provider.dart';
@@ -84,11 +83,6 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           _levelBeforeLesson = profile.currentLevel;
         });
       }
-      maybeExplainHearts(
-        context,
-        ref,
-        isPracticeMode: widget.isPracticeMode,
-      );
     });
   }
 
@@ -222,9 +216,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           final quiz = widget.lesson.quiz;
           final bonusXp = quiz != null
               ? ((_correctAnswers / quiz.questions.length * 100).round() >=
-                          quiz.passingScore
-                      ? quiz.bonusXp
-                      : 0)
+                        quiz.passingScore
+                    ? quiz.bonusXp
+                    : 0)
               : 0;
           _completeLesson(bonusXp: bonusXp);
         },
@@ -291,7 +285,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             if (mounted) {
               DanioSnackBar.info(
                 context,
-                '⚡ Energy depleted — keep going! No bonus XP until it refills.',
+                'Energy depleted - keep going. Bonus XP pauses until it refills.',
               );
             }
           }
@@ -365,8 +359,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           // Show unlock celebration screen, then continue to next lesson flow
           await Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) =>
-                  UnlockCelebrationScreen(speciesId: newSpeciesId),
+              builder: (_) => UnlockCelebrationScreen(speciesId: newSpeciesId),
             ),
           );
           if (!mounted) return;
@@ -406,7 +399,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               .read(userProfileProvider.notifier)
               .reviewLesson(widget.lesson.id, practiceXp);
         } catch (e) {
-          logError('LessonScreen: reviewLesson failed, falling back to addXp: $e', tag: 'LessonScreen');
+          logError(
+            'LessonScreen: reviewLesson failed, falling back to addXp: $e',
+            tag: 'LessonScreen',
+          );
           try {
             await ref.read(userProfileProvider.notifier).addXp(practiceXp);
           } catch (e) {
@@ -430,7 +426,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           AppFeedback.showSuccess(
             context,
             gainedHeart
-                ? 'Practice complete!$xpMsg +1 ⚡ energy'
+                ? 'Practice complete!$xpMsg +1 energy'
                 : 'Practice complete!$xpMsg (energy full)',
           );
           Navigator.of(context).pop();
@@ -453,10 +449,21 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           .value
           ?.lastActivityDate;
 
+      // Lesson completion owns the level-up dialog; suppress the global
+      // listener before XP changes so it cannot schedule a duplicate overlay.
+      ref.read(levelUpEventProvider.notifier).suppressNextLevelUp();
+
       // Record completion and XP
       await ref
           .read(userProfileProvider.notifier)
           .completeLesson(widget.lesson.id, totalXp);
+
+      final completedProfile = ref.read(userProfileProvider).value;
+      if (_levelBeforeLesson != null &&
+          completedProfile != null &&
+          completedProfile.currentLevel <= _levelBeforeLesson!) {
+        ref.read(levelUpEventProvider.notifier).allowLevelUpEvents();
+      }
 
       // Auto-seed spaced repetition cards (non-critical)
       try {
@@ -497,8 +504,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           }
         }
       } catch (e) {
-        logError('Onboarding achievement notification failed: $e',
-            tag: 'LessonScreen');
+        logError(
+          'Onboarding achievement notification failed: $e',
+          tag: 'LessonScreen',
+        );
       }
 
       // Check for achievements (fire-and-forget — see comment in original)
@@ -511,7 +520,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // PS-10 FIX: Increment persistent perfect-score counter
         if (isPerfect) {
-          unawaited(ref.read(userProfileProvider.notifier).incrementPerfectScoreCount());
+          unawaited(
+            ref.read(userProfileProvider.notifier).incrementPerfectScoreCount(),
+          );
         }
 
         // PS-11 FIX: Use actual elapsed time
@@ -569,8 +580,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         unawaited(() async {
           try {
             final prefs = await ref.read(sharedPreferencesProvider.future);
-            final alreadyRequested =
-                prefs.getBool('review_requested') ?? false;
+            final alreadyRequested = prefs.getBool('review_requested') ?? false;
             if (!alreadyRequested) {
               final inAppReview = InAppReview.instance;
               if (await inAppReview.isAvailable()) {
@@ -589,8 +599,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         _showCelebrationThenXp(totalXp);
       }
     } catch (e, st) {
-      logError('Lesson completion error: $e',
-          stackTrace: st, tag: 'LessonScreen');
+      ref.read(levelUpEventProvider.notifier).allowLevelUpEvents();
+      logError(
+        'Lesson completion error: $e',
+        stackTrace: st,
+        tag: 'LessonScreen',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,
@@ -605,5 +619,3 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
   }
 }
-
-

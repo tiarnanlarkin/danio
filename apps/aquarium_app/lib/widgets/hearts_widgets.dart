@@ -6,6 +6,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/app_button.dart';
+import 'core/app_dialog.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/gems_provider.dart';
@@ -45,35 +46,65 @@ class HeartIndicator extends ConsumerWidget {
 
     return Semantics(
       liveRegion: true,
+      button: true,
       label: '$energy of $maxEnergy energy remaining',
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: compact ? 8 : 12,
-          vertical: compact ? 4 : 6,
-        ),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: compact ? AppRadius.md2Radius : AppRadius.mediumRadius,
-          border: Border.all(color: borderColor),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isEmpty ? Icons.flash_off : Icons.flash_on,
-              size: compact ? 14 : 16,
-              color: iconColor,
-            ),
-            SizedBox(width: compact ? 4 : 6),
-            Text(
-              '$energy/$maxEnergy',
-              style:
-                  (compact ? AppTypography.labelSmall : AppTypography.labelMedium)
-                      .copyWith(color: textColor, fontWeight: FontWeight.bold),
-            ),
-          ],
+      child: GestureDetector(
+        onTap: () => _showEnergyInfo(context, energy, maxEnergy),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: compact ? 8 : 12,
+            vertical: compact ? 4 : 6,
+          ),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: compact
+                ? AppRadius.md2Radius
+                : AppRadius.mediumRadius,
+            border: Border.all(color: borderColor),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isEmpty ? Icons.flash_off : Icons.flash_on,
+                size: compact ? 14 : 16,
+                color: iconColor,
+              ),
+              SizedBox(width: compact ? 4 : 6),
+              Text(
+                '$energy/$maxEnergy',
+                style:
+                    (compact
+                            ? AppTypography.labelSmall
+                            : AppTypography.labelMedium)
+                        .copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  void _showEnergyInfo(BuildContext context, int energy, int maxEnergy) {
+    showAppDialog<void>(
+      context: context,
+      title: 'Energy',
+      child: Text(
+        'Energy adds bonus XP during lessons and reviews. Wrong quiz answers spend energy, but learning never stops. Current energy: $energy of $maxEnergy.',
+        style: AppTypography.bodyLarge,
+      ),
+      actions: [
+        AppButton(
+          label: 'Got it',
+          onPressed: () => Navigator.of(context).pop(),
+          variant: AppButtonVariant.text,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 }
@@ -133,7 +164,9 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                   padding: const EdgeInsets.only(right: AppSpacing.sm),
                   child: Icon(
                     filled ? Icons.flash_on : Icons.flash_off,
-                    color: filled ? const Color(0xFFFFA000) : const Color(0x4DFFA000),
+                    color: filled
+                        ? const Color(0xFFFFA000)
+                        : const Color(0x4DFFA000),
                     size: 32,
                   ),
                 ),
@@ -144,7 +177,9 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
           ValueListenableBuilder<int>(
             valueListenable: _tick,
             builder: (_, __, ___) {
-              final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
+              final timeUntilRefill = heartsService.getTimeUntilNextRefill(
+                profile,
+              );
               if (timeUntilRefill != null) {
                 return Row(
                   children: [
@@ -155,7 +190,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                     ),
                     const SizedBox(width: AppSpacing.xs2),
                     Text(
-                      'Next ⚡ in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
+                      'Next energy in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                       style: AppTypography.bodySmall.copyWith(
                         color: context.textSecondary,
                       ),
@@ -164,7 +199,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                 );
               }
               return Text(
-                '⚡ Energy is full!',
+                'Energy is full',
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.success,
                   fontWeight: FontWeight.w600,
@@ -275,12 +310,14 @@ class _HeartAnimationState extends State<HeartAnimation>
                 children: [
                   Icon(
                     widget.gained ? Icons.flash_on : Icons.flash_off,
-                    color: widget.gained ? AppColors.success : const Color(0xFFFFA000),
+                    color: widget.gained
+                        ? AppColors.success
+                        : const Color(0xFFFFA000),
                     size: AppIconSizes.xxl,
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    widget.gained ? '+1 ⚡' : '-1 ⚡',
+                    widget.gained ? '+1 energy' : '-1 energy',
                     style: AppTypography.headlineLarge.copyWith(
                       color: widget.gained
                           ? AppColors.success
@@ -352,9 +389,10 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Text(
-                  '⚡',
-                  style: (Theme.of(context).textTheme.headlineMedium ?? const TextStyle()).copyWith(fontSize: 56),
+                child: Icon(
+                  Icons.flash_on_rounded,
+                  color: const Color(0xFFFFA000),
+                  size: 56,
                 ),
               ),
             ),
@@ -382,7 +420,9 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
             ValueListenableBuilder<int>(
               valueListenable: _tick,
               builder: (_, __, ___) {
-                final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
+                final timeUntilRefill = heartsService.getTimeUntilNextRefill(
+                  profile,
+                );
                 if (timeUntilRefill == null) return const SizedBox.shrink();
                 return Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
@@ -396,7 +436,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                       Icon(Icons.schedule, color: AppColors.primary),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        'Next ⚡ in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
+                        'Next energy in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -425,7 +465,11 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('💎', style: TextStyle(fontSize: 18)),
+                      const Icon(
+                        Icons.diamond_rounded,
+                        color: AppColors.accentText,
+                        size: AppIconSizes.sm,
+                      ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         '$gemBalance gems',
@@ -513,7 +557,9 @@ class CompactHeartsDisplay extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 4),
               child: Icon(
                 filled ? Icons.flash_on : Icons.flash_off,
-                color: filled ? const Color(0xFFFFA000) : const Color(0x4DFFA000),
+                color: filled
+                    ? const Color(0xFFFFA000)
+                    : const Color(0x4DFFA000),
                 size: AppIconSizes.sm,
               ),
             ),

@@ -59,7 +59,6 @@ class _LevelUpDialogState extends State<LevelUpDialog>
   void initState() {
     super.initState();
 
-
     // Scale animation for dialog
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -85,8 +84,12 @@ class _LevelUpDialogState extends State<LevelUpDialog>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final disableMotion = MediaQuery.of(context).disableAnimations;
-    _scaleController.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 600);
-    _confettiController.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 3000);
+    _scaleController.duration = disableMotion
+        ? Duration.zero
+        : const Duration(milliseconds: 600);
+    _confettiController.duration = disableMotion
+        ? Duration.zero
+        : const Duration(milliseconds: 3000);
   }
 
   @override
@@ -103,7 +106,10 @@ class _LevelUpDialogState extends State<LevelUpDialog>
         // Confetti particles — IgnorePointer so taps pass through to the dialog
         IgnorePointer(
           child: Stack(
-            children: List.generate(30, (index) => _buildConfettiParticle(index)),
+            children: List.generate(
+              30,
+              (index) => _buildConfettiParticle(index),
+            ),
           ),
         ),
 
@@ -266,6 +272,8 @@ class _LevelUpDialogState extends State<LevelUpDialog>
     final rotation = random.nextDouble() * 2 * math.pi;
     final color = _getRandomColor(random);
     final delay = random.nextInt(500);
+    final isCircle = random.nextBool();
+    final hasRoundedCorners = !isCircle && random.nextBool();
 
     return AnimatedBuilder(
       animation: _confettiController,
@@ -285,12 +293,8 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                 height: size,
                 decoration: BoxDecoration(
                   color: color,
-                  shape: random.nextBool()
-                      ? BoxShape.circle
-                      : BoxShape.rectangle,
-                  borderRadius: random.nextBool()
-                      ? null
-                      : AppRadius.xxsRadius,
+                  shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
+                  borderRadius: hasRoundedCorners ? AppRadius.xxsRadius : null,
                 ),
               ),
             ),

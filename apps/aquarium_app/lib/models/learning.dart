@@ -19,7 +19,8 @@ class LearningPath {
   final int orderIndex;
 
   /// Path IDs that must be fully completed before this path unlocks.
-  /// Cross-path prerequisites (e.g. fish_health requires nitrogen_cycle).
+  /// Fish Health intentionally has no prerequisite so urgent care content
+  /// stays available.
   final List<String> prerequisitePathIds;
 
   const LearningPath({
@@ -42,7 +43,7 @@ class LearningPath {
   }
 
   /// Check whether this path is unlocked given the set of completed lesson IDs
-  /// and the map of path-id → total-lesson-count.
+  /// and the map of path IDs to their lesson IDs.
   ///
   /// A path is locked if any [prerequisitePathIds] path is not yet complete
   /// (i.e. the user hasn't completed every lesson in that path).
@@ -90,6 +91,19 @@ class Lesson {
     if (prerequisites.isEmpty) return true;
     return prerequisites.every((p) => completedLessons.contains(p));
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'pathId': pathId,
+    'title': title,
+    'description': description,
+    'orderIndex': orderIndex,
+    'xpReward': xpReward,
+    'estimatedMinutes': estimatedMinutes,
+    'sections': sections.map((section) => section.toJson()).toList(),
+    if (quiz != null) 'quiz': quiz!.toJson(),
+    'prerequisites': prerequisites,
+  };
 }
 
 /// A section within a lesson (text, image, tip, etc.)
@@ -106,6 +120,13 @@ class LessonSection {
     this.imageUrl,
     this.caption,
   });
+
+  Map<String, dynamic> toJson() => {
+    'type': type.name,
+    'content': content,
+    if (imageUrl != null) 'imageUrl': imageUrl,
+    if (caption != null) 'caption': caption,
+  };
 }
 
 enum LessonSectionType {
@@ -138,6 +159,14 @@ class Quiz {
   });
 
   int get maxScore => questions.length;
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'lessonId': lessonId,
+    'questions': questions.map((question) => question.toJson()).toList(),
+    'passingScore': passingScore,
+    'bonusXp': bonusXp,
+  };
 }
 
 /// A single quiz question
@@ -156,8 +185,15 @@ class QuizQuestion {
     required this.correctIndex,
     this.explanation,
   });
-}
 
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'question': question,
+    'options': options,
+    'correctIndex': correctIndex,
+    if (explanation != null) 'explanation': explanation,
+  };
+}
 
 /// Daily tip with personalization
 @immutable

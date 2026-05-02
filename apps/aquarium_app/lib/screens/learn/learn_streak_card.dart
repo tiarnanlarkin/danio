@@ -49,7 +49,7 @@ class LearnStreakCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$streak-day streak! 🔥',
+                  '$streak-day learning streak',
                   style: AppTypography.labelLarge.copyWith(
                     color: AppColors.primary,
                   ),

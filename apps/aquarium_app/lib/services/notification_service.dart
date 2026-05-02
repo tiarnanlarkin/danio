@@ -5,6 +5,7 @@ import '../widgets/core/app_dialog.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/models.dart';
+import '../providers/lesson_provider.dart';
 import '../utils/logger.dart';
 
 // Notification IDs for streak reminders
@@ -96,7 +97,11 @@ class NotificationService {
       );
       _initCompleter!.complete();
     } catch (e, st) {
-      logError('NotificationService: initialization failed: $e', stackTrace: st, tag: 'NotificationService');
+      logError(
+        'NotificationService: initialization failed: $e',
+        stackTrace: st,
+        tag: 'NotificationService',
+      );
       _initCompleter!.completeError(e);
       _initCompleter = null;
       rethrow;
@@ -131,14 +136,20 @@ class NotificationService {
               ? AndroidScheduleMode.exactAllowWhileIdle
               : AndroidScheduleMode.inexactAllowWhileIdle;
         } catch (e) {
-          appLog('NotificationService: exact alarm permission request failed, using inexact: $e', tag: 'NotificationService');
+          appLog(
+            'NotificationService: exact alarm permission request failed, using inexact: $e',
+            tag: 'NotificationService',
+          );
           _cachedScheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
         }
       } else {
         _cachedScheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
       }
     } catch (e) {
-      logError('Notification: failed to detect exact alarm support: $e', tag: 'NotificationService');
+      logError(
+        'Notification: failed to detect exact alarm support: $e',
+        tag: 'NotificationService',
+      );
       _cachedScheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
     }
     return _cachedScheduleMode!;
@@ -187,7 +198,10 @@ class NotificationService {
     try {
       return await android.canScheduleExactNotifications() ?? true;
     } catch (e) {
-      appLog('NotificationService: canScheduleExactNotifications check failed: $e', tag: 'NotificationService');
+      appLog(
+        'NotificationService: canScheduleExactNotifications check failed: $e',
+        tag: 'NotificationService',
+      );
       return false;
     }
   }
@@ -403,8 +417,8 @@ class NotificationService {
 
     await _plugin.show(
       notificationId,
-      '🎉 Achievement Unlocked!',
-      '${achievement.icon} ${achievement.name} - +$xpAwarded XP, +$gemsAwarded 💎',
+      'Achievement unlocked',
+      '${achievement.name} - +$xpAwarded XP, +$gemsAwarded gems',
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'achievements',
@@ -1033,7 +1047,8 @@ class NotificationService {
     // --- Day 7: Weekly fishkeeping tip ---
     final day7 = DateTime(now.year, now.month, now.day + 7, 9, 0);
     final day7Tz = tz.TZDateTime.from(day7, tz.local);
-    final tip = _weeklyTips[DateTime.now().millisecondsSinceEpoch % _weeklyTips.length];
+    final tip =
+        _weeklyTips[DateTime.now().millisecondsSinceEpoch % _weeklyTips.length];
     await _plugin.zonedSchedule(
       _weeklyTipDay7Id,
       '🐠 Your weekly fishkeeping tip',
@@ -1062,12 +1077,16 @@ class NotificationService {
     );
 
     // --- Day 21: Discovery hook ---
+    final lessonCount = LessonProvider.allPathMetadata
+        .expand((path) => path.lessonIds)
+        .toSet()
+        .length;
     final day21 = DateTime(now.year, now.month, now.day + 21, 9, 0);
     final day21Tz = tz.TZDateTime.from(day21, tz.local);
     await _plugin.zonedSchedule(
       _discoveryHookDay21Id,
       'Discover something new 🧠',
-      'There are 44 bite-sized lessons waiting for you. Even 3 minutes a day builds expertise!',
+      'There are $lessonCount bite-sized lessons waiting for you. Even 3 minutes a day builds expertise!',
       day21Tz,
       details,
       androidScheduleMode: scheduleMode,

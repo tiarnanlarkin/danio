@@ -41,7 +41,9 @@ class _LevelUpListenerState extends ConsumerState<LevelUpListener> {
         // element lifecycle transitions (e.g. provider init on cold restart
         // racing with tab navigation → _ElementLifecycle.active assertion).
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted && !_isShowingCelebration) {
+          if (mounted &&
+              !_isShowingCelebration &&
+              identical(ref.read(levelUpEventProvider), next)) {
             _showLevelUpCelebration(next);
           }
         });
