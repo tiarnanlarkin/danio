@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/data/shop_catalog.dart';
+import 'package:danio/models/shop_item.dart';
 import 'package:danio/screens/gem_shop_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -62,6 +64,31 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.byType(Scaffold), findsOneWidget);
+    });
+
+    testWidgets('renders shop item icons instead of catalog emoji', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      for (final item in ShopCatalog.getByCategory(ShopItemCategory.powerUps)) {
+        expect(find.text(item.emoji), findsNothing, reason: item.id);
+      }
+    });
+
+    testWidgets('purchase dialog title omits catalog emoji', (tester) async {
+      final item = ShopCatalog.getById('xp_boost_1h')!;
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+      await tester.tap(
+        find.bySemanticsLabel(RegExp(RegExp.escape(item.name))).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(item.emoji), findsNothing);
+      expect(find.text(item.name), findsWidgets);
     });
   });
 }

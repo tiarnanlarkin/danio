@@ -8,6 +8,7 @@ import '../services/shop_service.dart';
 import '../providers/inventory_provider.dart'; // ownsItemProvider
 import '../data/shop_catalog.dart';
 import '../theme/app_theme.dart';
+import '../theme/danio_surface_visuals.dart';
 import '../widgets/empty_state.dart';
 import 'inventory_screen.dart';
 import '../widgets/mascot/mascot_widgets.dart';
@@ -217,11 +218,13 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
 
     return await showAppDialog<bool>(
           context: context,
-          title: '${item.emoji} ${item.name}',
+          title: item.name,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _ShopItemIcon(item: item, size: 48),
+              const SizedBox(height: AppSpacing.md),
               Text(item.description),
               const SizedBox(height: AppSpacing.lg2),
               Container(
@@ -317,7 +320,8 @@ class _ShopItemGrid extends ConsumerWidget {
       return EmptyState.withMascot(
         icon: Icons.shopping_bag_outlined,
         title: 'Nothing in stock right now',
-        message: 'Check back soon — new goodies are on the way!',
+        message:
+            'Stock is refreshing. Your gems and inventory stay saved locally.',
         mascotContext: MascotContext.encouragement,
       );
     }
@@ -401,15 +405,7 @@ class _ShopItemCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Emoji icon
-                        Center(
-                          child: Text(
-                            item.emoji,
-                            style: Theme.of(
-                              context,
-                            ).textTheme.headlineMedium!.copyWith(),
-                          ),
-                        ),
+                        Center(child: _ShopItemIcon(item: item, size: 48)),
                         const SizedBox(height: AppSpacing.sm2),
                         // Name
                         Text(
@@ -540,6 +536,33 @@ class _ShopItemCard extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ShopItemIcon extends StatelessWidget {
+  final ShopItem item;
+  final double size;
+
+  const _ShopItemIcon({required this.item, required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    final visual = danioShopItemVisual(item);
+
+    return Semantics(
+      label: '${item.name} icon',
+      image: true,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: visual.color.withAlpha(38),
+          borderRadius: BorderRadius.circular(size * 0.25),
+          border: Border.all(color: visual.color.withAlpha(90)),
+        ),
+        child: Icon(visual.icon, color: visual.color, size: size * 0.52),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../theme/danio_surface_visuals.dart';
 import '../utils/app_constants.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/common/common_widgets.dart';
@@ -13,6 +14,7 @@ import 'achievements_screen.dart';
 import 'analytics_screen.dart';
 import 'backup_restore_screen.dart';
 import 'debug_menu_screen.dart';
+import 'gem_shop_screen.dart';
 import 'settings_screen.dart';
 // friends_screen.dart — hidden until feature ships (CA-002)
 // leaderboard_screen.dart — hidden until feature ships (CA-003)
@@ -65,16 +67,25 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     if (_versionTapCount >= 5) {
       _versionTapCount = 0;
       _firstVersionTap = null;
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const DebugMenuScreen()),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const DebugMenuScreen()));
     }
   }
   // ── End debug menu tap gate ──────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider.select((p) => (p.value?.name, p.value?.currentLevel, p.value?.totalXp, p.value?.currentStreak)));
+    final profile = ref.watch(
+      userProfileProvider.select(
+        (p) => (
+          p.value?.name,
+          p.value?.currentLevel,
+          p.value?.totalXp,
+          p.value?.currentStreak,
+        ),
+      ),
+    );
     final name = profile.$1 ?? 'Aquarist';
     final level = profile.$2 ?? 1;
     final xp = profile.$3 ?? 0;
@@ -91,13 +102,20 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     );
   }
 
-  List<Widget> _buildListItems(BuildContext context, String name, int level, int xp, int streak) {
+  List<Widget> _buildListItems(
+    BuildContext context,
+    String name,
+    int level,
+    int xp,
+    int streak,
+  ) {
     return [
       if (_showTooltip)
         FirstVisitTooltip(
           prefsKey: 'tooltip_seen_more',
-          emoji: '🧰',
-          message: 'More — your toolbox for settings, profile, and extras!',
+          icon: Icons.dashboard_customize_outlined,
+          iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.workshop).color,
+          message: 'More keeps your tools, settings, rewards, and app details.',
           onDismissed: () => setState(() => _showTooltip = false),
         ),
 
@@ -121,6 +139,23 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             NavigationThrottle.push(context, const ShopStreetScreen());
+          },
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.sm),
+
+      Semantics(
+        button: true,
+        label: 'Gem Shop, Spend gems on rewards and cosmetics',
+        child: PrimaryActionTile(
+          icon: danioSurfaceVisual(DanioSurfaceVisualKey.gemShop).icon,
+          title: 'Gem Shop',
+          subtitle: 'Spend gems on rewards and cosmetics',
+          iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.gemShop).color,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            NavigationThrottle.push(context, const GemShopScreen());
           },
         ),
       ),
@@ -248,7 +283,9 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           onTap: _handleVersionTap,
           child: Text(
             'Danio v$appVersion',
-            style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+            style: AppTypography.bodySmall.copyWith(
+              color: context.textSecondary,
+            ),
           ),
         ),
       ),
@@ -257,7 +294,13 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     ];
   }
 
-  Widget _buildProfileCard(BuildContext context, String name, int level, int xp, int streak) {
+  Widget _buildProfileCard(
+    BuildContext context,
+    String name,
+    int level,
+    int xp,
+    int streak,
+  ) {
     return Semantics(
       label: '$name, Level $level, $xp XP, $streak-day streak',
       child: CozyCard(
@@ -288,10 +331,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: AppTypography.titleLarge,
-                  ),
+                  Text(name, style: AppTypography.titleLarge),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Level $level • $xp XP',
@@ -306,15 +346,27 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                     showLevel: false,
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    // BUG-06: hide fire emoji when streak is 0
-                    '$streak-day streak${streak > 0 ? " 🔥" : ""}',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: streak > 0
-                          ? AppColors.warning
-                          : context.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (streak > 0) ...[
+                        Icon(
+                          danioSurfaceVisual(DanioSurfaceVisualKey.streak).icon,
+                          size: 14,
+                          color: AppColors.warning,
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                      ],
+                      Text(
+                        '$streak-day streak',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: streak > 0
+                              ? AppColors.warning
+                              : context.textSecondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

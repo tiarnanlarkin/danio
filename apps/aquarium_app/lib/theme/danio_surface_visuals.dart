@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/shop_item.dart';
 import 'app_colors.dart';
 
 enum DanioSurfaceVisualKey {
@@ -22,6 +23,14 @@ enum DanioSurfaceVisualKey {
   info,
   onboardingLesson,
   fishFallback,
+  shopXpBoost,
+  shopStreakFreeze,
+  shopHeartsRefill,
+  shopGoalShield,
+  shopLessonHelper,
+  shopProfileBadge,
+  shopTankTheme,
+  shopCelebration,
 }
 
 class DanioSurfaceVisual {
@@ -108,6 +117,66 @@ DanioSurfaceVisual danioSurfaceVisual(DanioSurfaceVisualKey key) {
     DanioSurfaceVisualKey.fishFallback => const DanioSurfaceVisual(
       icon: Icons.set_meal_outlined,
       color: DanioColors.tealWaterText,
+    ),
+    DanioSurfaceVisualKey.shopXpBoost => const DanioSurfaceVisual(
+      icon: Icons.bolt_outlined,
+      color: DanioColors.gemPowerUp,
+    ),
+    DanioSurfaceVisualKey.shopStreakFreeze => const DanioSurfaceVisual(
+      icon: Icons.ac_unit_outlined,
+      color: AppColors.info,
+    ),
+    DanioSurfaceVisualKey.shopHeartsRefill => const DanioSurfaceVisual(
+      icon: Icons.favorite_border,
+      color: AppColors.error,
+    ),
+    DanioSurfaceVisualKey.shopGoalShield => const DanioSurfaceVisual(
+      icon: Icons.shield_outlined,
+      color: AppColors.warning,
+    ),
+    DanioSurfaceVisualKey.shopLessonHelper => const DanioSurfaceVisual(
+      icon: Icons.lock_open_outlined,
+      color: AppColors.primary,
+    ),
+    DanioSurfaceVisualKey.shopProfileBadge => const DanioSurfaceVisual(
+      icon: Icons.workspace_premium_outlined,
+      color: AppAchievementColors.gold,
+    ),
+    DanioSurfaceVisualKey.shopTankTheme => const DanioSurfaceVisual(
+      icon: Icons.wallpaper_outlined,
+      color: DanioColors.tealWaterText,
+    ),
+    DanioSurfaceVisualKey.shopCelebration => const DanioSurfaceVisual(
+      icon: Icons.celebration_outlined,
+      color: AppColors.accentAlt,
+    ),
+  };
+}
+
+DanioSurfaceVisual danioShopItemVisual(ShopItem item) {
+  return switch (item.type) {
+    ShopItemType.xpBoost => danioSurfaceVisual(
+      DanioSurfaceVisualKey.shopXpBoost,
+    ),
+    ShopItemType.streakFreeze => danioSurfaceVisual(
+      DanioSurfaceVisualKey.shopStreakFreeze,
+    ),
+    ShopItemType.heartsRefill => danioSurfaceVisual(
+      DanioSurfaceVisualKey.shopHeartsRefill,
+    ),
+    ShopItemType.goalAdjust => danioSurfaceVisual(
+      DanioSurfaceVisualKey.shopGoalShield,
+    ),
+    ShopItemType.quizSecondChance || ShopItemType.lessonHelper =>
+      danioSurfaceVisual(DanioSurfaceVisualKey.shopLessonHelper),
+    ShopItemType.profileBadge => danioSurfaceVisual(
+      DanioSurfaceVisualKey.shopProfileBadge,
+    ),
+    ShopItemType.tankTheme => danioSurfaceVisual(
+      DanioSurfaceVisualKey.shopTankTheme,
+    ),
+    ShopItemType.celebrationEffect => danioSurfaceVisual(
+      DanioSurfaceVisualKey.shopCelebration,
     ),
   };
 }

@@ -44,9 +44,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     final tankAsync = ref.watch(tankProvider(widget.tankId));
 
     return tankAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: BubbleLoader()),
-      ),
+      loading: () => const Scaffold(body: Center(child: BubbleLoader())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Tank Settings')),
         body: const Center(child: Text('Couldn\'t load tank settings')),
@@ -96,36 +94,36 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
             _showUnsavedChangesDialog(context);
           },
           child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Tank Settings'),
-            actions: [
-              AppButton(
-                label: 'Save',
-                onPressed: _isSaving ? null : () => _save(tank),
-                isLoading: _isSaving,
-                variant: AppButtonVariant.primary,
-                size: AppButtonSize.small,
-              ),
-            ],
-          ),
-          body: FocusTraversalGroup(
-            policy: OrderedTraversalPolicy(),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: ListView.builder(
-                padding: EdgeInsets.only(
-                  left: AppSpacing.md,
-                  right: AppSpacing.md,
-                  top: AppSpacing.md,
-                  bottom: MediaQuery.of(context).padding.bottom + 96,
+            appBar: AppBar(
+              title: const Text('Tank Settings'),
+              actions: [
+                AppButton(
+                  label: 'Save',
+                  onPressed: _isSaving ? null : () => _save(tank),
+                  isLoading: _isSaving,
+                  variant: AppButtonVariant.primary,
+                  size: AppButtonSize.small,
                 ),
-                itemCount: _buildItems(tank).length,
-                itemBuilder: (context, index) => _buildItems(tank)[index],
+              ],
+            ),
+            body: FocusTraversalGroup(
+              policy: OrderedTraversalPolicy(),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: ListView.builder(
+                  padding: EdgeInsets.only(
+                    left: AppSpacing.md,
+                    right: AppSpacing.md,
+                    top: AppSpacing.md,
+                    bottom: MediaQuery.of(context).padding.bottom + 96,
+                  ),
+                  itemCount: _buildItems(tank).length,
+                  itemBuilder: (context, index) => _buildItems(tank)[index],
+                ),
               ),
             ),
           ),
-        ),
         );
       },
     );
@@ -159,7 +157,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           ),
           DropdownMenuItem(
             value: TankType.marine,
-            child: Text('Marine (arriving soon)'),
+            child: Text('Marine (not available in this version)'),
           ),
         ],
         onChanged: (v) {
@@ -168,7 +166,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           if (v == TankType.marine) {
             AppFeedback.showInfo(
               context,
-              'Marine tanks are on the way — stay tuned!',
+              'Marine setup is not available in this version. Use freshwater profiles for now.',
             );
             return;
           }
@@ -278,44 +276,48 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           ),
         )
       else
-        const Text('Marine targets not available yet.'),
+        const Text('Marine targets are not available in this version.'),
 
       const SizedBox(height: AppSpacing.lg),
       Text('Start date', style: AppTypography.headlineSmall),
       const SizedBox(height: AppSpacing.sm2),
       Semantics(
         button: true,
-        label: 'Start date. Currently ${DateFormat('d MMM yyyy').format(_startDate)}',
+        label:
+            'Start date. Currently ${DateFormat('d MMM yyyy').format(_startDate)}',
         child: InkWell(
-        onTap: () async {
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: _startDate,
-            firstDate: DateTime(2020),
-            lastDate: DateTime.now(),
-          );
-          if (picked != null && mounted) setState(() => _startDate = picked);
-        },
-        borderRadius: AppRadius.mediumRadius,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm4),
-          decoration: BoxDecoration(
-            color: context.surfaceVariant,
-            borderRadius: AppRadius.mediumRadius,
+          onTap: () async {
+            final picked = await showDatePicker(
+              context: context,
+              initialDate: _startDate,
+              firstDate: DateTime(2020),
+              lastDate: DateTime.now(),
+            );
+            if (picked != null && mounted) setState(() => _startDate = picked);
+          },
+          borderRadius: AppRadius.mediumRadius,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm4,
+            ),
+            decoration: BoxDecoration(
+              color: context.surfaceVariant,
+              borderRadius: AppRadius.mediumRadius,
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today, color: context.textSecondary),
+                const SizedBox(width: AppSpacing.sm2),
+                Text(
+                  DateFormat('d MMM yyyy').format(_startDate),
+                  style: AppTypography.bodyLarge,
+                ),
+                const Spacer(),
+                Icon(Icons.edit, color: context.textHint, size: 18),
+              ],
+            ),
           ),
-          child: Row(
-            children: [
-              Icon(Icons.calendar_today, color: context.textSecondary),
-              const SizedBox(width: AppSpacing.sm2),
-              Text(
-                DateFormat('d MMM yyyy').format(_startDate),
-                style: AppTypography.bodyLarge,
-              ),
-              const Spacer(),
-              Icon(Icons.edit, color: context.textHint, size: 18),
-            ],
-          ),
-        ),
         ),
       ),
 
@@ -419,7 +421,11 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         Navigator.maybePop(context);
       }
     } catch (e, st) {
-      logError('TankSettingsScreen: tank update failed: $e', stackTrace: st, tag: 'TankSettingsScreen');
+      logError(
+        'TankSettingsScreen: tank update failed: $e',
+        stackTrace: st,
+        tag: 'TankSettingsScreen',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,

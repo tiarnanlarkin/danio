@@ -738,11 +738,22 @@ class _ShopTile extends StatelessWidget {
               ),
             ),
             if (shop.rating != null)
-              Text(
-                '⭐ ${shop.rating!.toStringAsFixed(1)}',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.primary),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.star_rounded,
+                    color: AppColors.primary,
+                    size: AppIconSizes.xs,
+                  ),
+                  const SizedBox(width: AppSpacing.xs2),
+                  Text(
+                    shop.rating!.toStringAsFixed(1),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.primary),
+                  ),
+                ],
               ),
             IconButton(
               tooltip: 'Close',

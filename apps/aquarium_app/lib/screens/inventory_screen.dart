@@ -8,10 +8,10 @@ import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/hearts_provider.dart';
+import '../theme/danio_surface_visuals.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
-import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
@@ -46,8 +46,16 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     final heartsState = ref.watch(heartsStateProvider);
 
     final gradientColors = (Theme.of(context).brightness == Brightness.dark
-        ? [DanioColors.inventoryBackground1Dark, DanioColors.inventoryBackground2Dark, DanioColors.inventoryBackground3Dark]
-        : [DanioColors.inventoryBackground1, DanioColors.inventoryBackground2, DanioColors.inventoryBackground3]);
+        ? [
+            DanioColors.inventoryBackground1Dark,
+            DanioColors.inventoryBackground2Dark,
+            DanioColors.inventoryBackground3Dark,
+          ]
+        : [
+            DanioColors.inventoryBackground1,
+            DanioColors.inventoryBackground2,
+            DanioColors.inventoryBackground3,
+          ]);
 
     return Container(
       decoration: BoxDecoration(
@@ -63,7 +71,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           backgroundColor: Colors.transparent,
           elevation: AppElevation.level0,
           title: Text(
-            '🎒 My Items',
+            'My Items',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: AppColors.textPrimaryDark,
               fontWeight: FontWeight.bold,
@@ -179,16 +187,16 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
   String _getUseSuccessMessage(ShopItem item) {
     switch (item.type) {
       case ShopItemType.heartsRefill:
-        return 'Hearts refilled to full! ❤️';
+        return 'Energy refilled to full!';
       case ShopItemType.streakFreeze:
-        return 'Streak freeze activated! 🧊';
+        return 'Streak freeze activated!';
       case ShopItemType.xpBoost:
-        return '2x XP active for 1 hour! ⚡';
+        return '2x XP active for 1 hour!';
       case ShopItemType.quizSecondChance:
       case ShopItemType.lessonHelper:
         return 'Item used!';
       case ShopItemType.goalAdjust:
-        return 'Goal protection active! 🛡️';
+        return 'Goal protection active!';
       default:
         return 'Item used successfully!';
     }
@@ -227,11 +235,10 @@ class _InventoryGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return EmptyState.withMascot(
+      return EmptyState(
         icon: Icons.inventory_2_outlined,
         title: emptyTitle,
         message: emptyMessage,
-        mascotContext: MascotContext.encouragement,
       );
     }
 
@@ -294,78 +301,100 @@ class _InventoryItemCard extends StatelessWidget {
           borderRadius: AppRadius.largeRadius,
           border: Border.all(color: accentColor.withAlpha(128), width: 2),
         ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.sm2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header row with item icon and quantity
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Header row with emoji and quantity
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        shopItem.emoji,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium!.copyWith(),
+                  _InventoryItemIcon(item: shopItem, color: accentColor),
+                  if (item.quantity > 1 || shopItem.isConsumable)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
                       ),
-                      if (item.quantity > 1 || shopItem.isConsumable)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.sm,
-                            vertical: AppSpacing.xs,
-                          ),
-                          decoration: BoxDecoration(
-                            color: accentColor,
-                            borderRadius: AppRadius.smallRadius,
-                          ),
-                          child: Text(
-                            'x${item.quantity}',
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: AppColors.onPrimary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
+                      decoration: BoxDecoration(
+                        color: accentColor,
+                        borderRadius: AppRadius.smallRadius,
+                      ),
+                      child: Text(
+                        'x${item.quantity}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.onPrimary,
+                          fontWeight: FontWeight.bold,
                         ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  // Name
-                  Text(
-                    shopItem.name,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textPrimaryDark,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  // Description or timer
-                  Expanded(
-                    child: showTimer && item.expiresAt != null
-                        ? _ExpiryTimer(expiresAt: item.expiresAt!)
-                        : Text(
-                            shopItem.description,
-                            style: Theme.of(context).textTheme.labelSmall
-                                ?.copyWith(color: AppColors.textSecondaryDark),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                  ),
-                  // Use button
-                  if (showUseButton && item.quantity > 0)
-                    AppButton(
-                      label: 'USE',
-                      onPressed: () => onUse?.call(item),
-                      variant: AppButtonVariant.primary,
-                      isFullWidth: true,
-                      size: AppButtonSize.small,
+                      ),
                     ),
                 ],
               ),
-            ),
+              const SizedBox(height: AppSpacing.sm),
+              // Name
+              Text(
+                shopItem.name,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimaryDark,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              // Description or timer
+              Expanded(
+                child: showTimer && item.expiresAt != null
+                    ? _ExpiryTimer(expiresAt: item.expiresAt!)
+                    : Text(
+                        shopItem.description,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppColors.textSecondaryDark,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+              ),
+              // Use button
+              if (showUseButton && item.quantity > 0)
+                AppButton(
+                  label: 'USE',
+                  onPressed: () => onUse?.call(item),
+                  variant: AppButtonVariant.primary,
+                  isFullWidth: true,
+                  size: AppButtonSize.small,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InventoryItemIcon extends StatelessWidget {
+  final ShopItem item;
+  final Color color;
+
+  const _InventoryItemIcon({required this.item, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final visual = danioShopItemVisual(item);
+
+    return Semantics(
+      label: '${item.name} icon',
+      image: true,
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: color.withAlpha(34),
+          borderRadius: AppRadius.mediumRadius,
+          border: Border.all(color: color.withAlpha(90)),
+        ),
+        child: Icon(visual.icon, color: visual.color, size: 23),
       ),
     );
   }
@@ -412,7 +441,10 @@ class _ExpiryTimerState extends State<_ExpiryTimer> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: AppColors.infoAlpha20,
         borderRadius: AppRadius.smallRadius,
@@ -461,7 +493,11 @@ class _HeartsChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('❤️', style: Theme.of(context).textTheme.titleMedium!),
+          const Icon(
+            Icons.favorite,
+            color: AppColors.error,
+            size: AppIconSizes.sm,
+          ),
           const SizedBox(width: AppSpacing.xs2),
           Text(
             '$currentHearts/$maxHearts',

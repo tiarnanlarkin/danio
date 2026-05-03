@@ -108,11 +108,14 @@ class _TypeSelector extends StatelessWidget {
           child: _TypeCard(
             icon: Icons.waves,
             title: 'Marine',
-            subtitle: 'Arriving soon',
+            subtitle: 'Not available in this version',
             isSelected: selected == TankType.marine,
             isDisabled: true,
             onTap: () {
-              DanioSnackBar.info(context, 'Marine tanks are on the way — stay tuned! 🐠🦀🐙');
+              DanioSnackBar.info(
+                context,
+                'Marine setup is not available in this version. Use freshwater profiles for now.',
+              );
             },
           ),
         ),
@@ -142,7 +145,7 @@ class _TypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: A11yLabels.selectableItem(title, isSelected),
-      hint: isDisabled ? 'Arriving soon' : subtitle,
+      hint: isDisabled ? 'Not available in this version' : subtitle,
       button: true,
       enabled: !isDisabled,
       selected: isSelected,

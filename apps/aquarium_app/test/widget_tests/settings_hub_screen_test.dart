@@ -14,9 +14,7 @@ import 'package:danio/screens/settings_hub_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(home: SettingsHubScreen()),
-  );
+  return const ProviderScope(child: MaterialApp(home: SettingsHubScreen()));
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -53,6 +51,14 @@ void main() {
       expect(find.text('Shop Street'), findsOneWidget);
     });
 
+    testWidgets('shows Gem Shop as a clear More hub destination', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+      expect(find.text('Gem Shop'), findsOneWidget);
+    });
+
     testWidgets('shows Achievements category', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
@@ -62,6 +68,11 @@ void main() {
     testWidgets('shows Workshop category', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
+      await tester.scrollUntilVisible(
+        find.text('Workshop'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Workshop'), findsOneWidget);
     });
   });

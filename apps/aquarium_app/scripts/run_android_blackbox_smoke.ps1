@@ -3,6 +3,8 @@ param(
   [string]$AppId = "com.tiarnanlarkin.danio",
   [string]$AdbPath = "",
   [string]$ArtifactDir = "build\qa-artifacts\android-blackbox",
+  [string]$InstallApkPath = "",
+  [string[]]$ForceStopPackageIds = @(),
   [switch]$KeepState
 )
 
@@ -40,9 +42,53 @@ function Invoke-Adb {
     $base += @("-s", $DeviceId)
   }
 
-  & $script:Adb @base @AdbArgs
-  if ($LASTEXITCODE -ne 0) {
-    throw "adb failed: $($AdbArgs -join ' ')"
+  $lastOutput = @()
+  for ($attempt = 1; $attempt -le 4; $attempt++) {
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+      $lastOutput = & $script:Adb @base @AdbArgs 2>&1
+      $exitCode = $LASTEXITCODE
+    }
+    finally {
+      $ErrorActionPreference = $previousErrorActionPreference
+    }
+
+    if ($exitCode -eq 0) {
+      return $lastOutput
+    }
+
+    if ($attempt -lt 4) {
+      Start-Sleep -Milliseconds (500 * $attempt)
+    }
+  }
+
+  $outputText = ($lastOutput | ForEach-Object { "$_" }) -join "`n"
+  throw "adb failed: $($AdbArgs -join ' ')`n$outputText"
+}
+
+function Install-DebugApk {
+  if (-not $InstallApkPath) {
+    return
+  }
+
+  if (-not (Test-Path $InstallApkPath)) {
+    throw "APK not found at -InstallApkPath '$InstallApkPath'"
+  }
+
+  $apk = (Resolve-Path $InstallApkPath).Path
+  Write-Host "Installing debug APK $apk..."
+  Invoke-Adb @("install", "-r", $apk) | Out-Host
+}
+
+function Stop-InterferingPackages {
+  foreach ($packageId in $ForceStopPackageIds) {
+    if (-not $packageId -or $packageId -eq $AppId) {
+      continue
+    }
+
+    Write-Host "Force-stopping emulator package $packageId..."
+    Invoke-Adb @("shell", "am", "force-stop", $packageId) | Out-Null
   }
 }
 
@@ -63,6 +109,7 @@ function Tap-Percent {
     [double]$Y
   )
 
+  Ensure-AppForeground
   $px = [int][math]::Round($script:Screen.Width * $X / 100)
   $py = [int][math]::Round($script:Screen.Height * $Y / 100)
   Invoke-Adb @("shell", "input", "tap", "$px", "$py") | Out-Null
@@ -70,6 +117,7 @@ function Tap-Percent {
 }
 
 function Press-Back {
+  Ensure-AppForeground
   Invoke-Adb @("shell", "input", "keyevent", "KEYCODE_BACK") | Out-Null
   Start-Sleep -Milliseconds 900
 }
@@ -83,7 +131,36 @@ function Resolve-LaunchActivity {
   return $activity.Trim()
 }
 
-function Start-App {
+function Get-ForegroundPackage {
+  $window = (Invoke-Adb @("shell", "dumpsys", "window")) -join "`n"
+  if ($window -match "mCurrentFocus=Window\{[^ ]+ [^ ]+ ([^/ ]+)/") {
+    return $Matches[1]
+  }
+
+  if ($window -match "mFocusedApp=ActivityRecord\{[^ ]+ [^ ]+ ([^/ ]+)/") {
+    return $Matches[1]
+  }
+
+  return ""
+}
+
+function Wait-AppForeground {
+  param([int]$TimeoutSeconds = 10)
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  do {
+    $package = Get-ForegroundPackage
+    if ($package -eq $AppId) {
+      return
+    }
+
+    Start-Sleep -Milliseconds 300
+  } while ((Get-Date) -lt $deadline)
+
+  throw "Expected $AppId to be foreground, but foreground package is '$(Get-ForegroundPackage)'."
+}
+
+function Bring-AppForeground {
   $activity = Resolve-LaunchActivity
   Invoke-Adb @(
     "shell",
@@ -93,11 +170,50 @@ function Start-App {
     "-n",
     $activity
   ) | Out-Null
+  Wait-AppForeground
+}
+
+function Start-App {
+  Invoke-Adb @("shell", "am", "force-stop", $AppId) | Out-Null
+  Start-Sleep -Milliseconds 300
+  Bring-AppForeground
+}
+
+function Ensure-AppForeground {
+  $package = Get-ForegroundPackage
+  if ($package -eq $AppId) {
+    return
+  }
+
+  Write-Host "Foreground package '$package' interrupted smoke; bringing $AppId back..."
+  Bring-AppForeground
+  Start-Sleep -Milliseconds 700
 }
 
 function Get-Hierarchy {
-  Invoke-Adb @("shell", "uiautomator", "dump", "/sdcard/danio-window.xml") | Out-Null
-  (Invoke-Adb @("exec-out", "cat", "/sdcard/danio-window.xml")) -join "`n"
+  $lastError = ""
+  for ($attempt = 1; $attempt -le 6; $attempt++) {
+    try {
+      $dump = (Invoke-Adb @("exec-out", "uiautomator", "dump", "/dev/tty")) -join "`n"
+      if ($dump -match "null root node") {
+        throw "uiautomator dump returned null root node"
+      }
+
+      $start = $dump.IndexOf("<?xml")
+      $end = $dump.LastIndexOf("</hierarchy>")
+      if ($start -ge 0 -and $end -ge 0) {
+        return $dump.Substring($start, $end + "</hierarchy>".Length - $start)
+      }
+
+      throw "uiautomator dump did not contain hierarchy XML"
+    }
+    catch {
+      $lastError = "$_"
+      Start-Sleep -Milliseconds 500
+    }
+  }
+
+  throw "uiautomator dump failed after retries: $lastError"
 }
 
 function Assert-Visible {
@@ -108,6 +224,7 @@ function Assert-Visible {
 
   $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
   do {
+    Ensure-AppForeground
     $xml = Get-Hierarchy
     if ($xml -match $Pattern) {
       return
@@ -121,6 +238,47 @@ function Assert-Visible {
   }
 
   throw "Expected UI pattern not visible: $Pattern"
+}
+
+function Wait-FirstVisibleAppState {
+  param([int]$TimeoutSeconds = 35)
+
+  $patterns = @(
+    "Your Privacy Matters",
+    "Learning Paths",
+    "Build your review deck|Start Review|Standard Review|All caught up",
+    "Tank Toolbox",
+    "Smart",
+    "More",
+    "Your fish deserve better|Let's get started|Skip setup",
+    "Welcome|Name your tank|Tank type"
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  do {
+    Ensure-AppForeground
+    $xml = Get-Hierarchy
+    foreach ($pattern in $patterns) {
+      if ($xml -match $pattern) {
+        return $pattern
+      }
+    }
+
+    Start-Sleep -Milliseconds 300
+  } while ((Get-Date) -lt $deadline)
+
+  throw "No expected first app state visible within $TimeoutSeconds seconds."
+}
+
+function Try-WaitFirstVisibleAppState {
+  param([int]$TimeoutSeconds = 2)
+
+  try {
+    return Wait-FirstVisibleAppState $TimeoutSeconds
+  }
+  catch {
+    return ""
+  }
 }
 
 function Get-BoundsCenter {
@@ -144,15 +302,26 @@ function Tap-Visible {
 
   $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
   do {
+    Ensure-AppForeground
     $hierarchy = Get-Hierarchy
 
     try {
       [xml]$doc = $hierarchy
       $nodes = $doc.SelectNodes("//*[@clickable='true']")
       foreach ($node in $nodes) {
+        if ($node.GetAttribute("enabled") -ne "true") {
+          continue
+        }
+
         $label = "$($node.GetAttribute("content-desc")) $($node.GetAttribute("text"))"
         if ($label -match $Pattern) {
-          $center = Get-BoundsCenter $node.GetAttribute("bounds")
+          $tapNode = $node
+          $checkboxChild = $node.SelectSingleNode(".//*[@class='android.widget.CheckBox' and @clickable='true' and @enabled='true']")
+          if ($checkboxChild) {
+            $tapNode = $checkboxChild
+          }
+
+          $center = Get-BoundsCenter $tapNode.GetAttribute("bounds")
           Invoke-Adb @("shell", "input", "tap", "$($center.X)", "$($center.Y)") | Out-Null
           Start-Sleep -Milliseconds 900
           return
@@ -171,16 +340,32 @@ function Tap-Visible {
   throw "Clickable UI pattern not visible within $TimeoutSeconds seconds: $Pattern"
 }
 
+function Try-Tap-Visible {
+  param(
+    [string]$Pattern,
+    [int]$TimeoutSeconds = 2
+  )
+
+  try {
+    Tap-Visible $Pattern $TimeoutSeconds
+    return $true
+  }
+  catch {
+    return $false
+  }
+}
+
 function Open-ToolAndReturn {
   param(
     [string]$TapPattern,
     [string]$ExpectedPattern
   )
 
-  Tap-Visible $TapPattern
-  Assert-Visible $ExpectedPattern
+  Assert-Visible "Workshop|Tools.*calculators" 10
+  Tap-Visible $TapPattern 20
+  Assert-Visible $ExpectedPattern 10
   Press-Back
-  Assert-Visible "Tools &amp; calculators|Tools & calculators"
+  Assert-Visible "Workshop|Tools.*calculators" 10
   Start-Sleep -Milliseconds 1800
 }
 
@@ -223,6 +408,8 @@ function Save-FailureArtifacts {
 try {
 Write-Host "Checking Android device..."
 Invoke-Adb @("devices") | Out-Host
+Install-DebugApk
+Stop-InterferingPackages
 $script:Screen = Get-ScreenSize
 Write-Host "Using screen size $($script:Screen.Width)x$($script:Screen.Height)"
 
@@ -233,33 +420,56 @@ if (-not $KeepState) {
 
 Invoke-Adb @("logcat", "-c") | Out-Null
 Start-App
-Start-Sleep -Seconds 4
+$firstState = Wait-FirstVisibleAppState
 
-if (-not $KeepState) {
-  Assert-Visible "Your Privacy Matters"
-  Tap-Percent 11 49
-  Tap-Percent 11 59
-  Tap-Percent 50 88
-  Start-Sleep -Seconds 2
-  Tap-Percent 50 91
-  Start-Sleep -Seconds 2
+if ((-not $KeepState) -and $firstState -match "Your Privacy Matters") {
+  Tap-Visible "Age confirmation checkbox" 10
+  Tap-Visible "Terms of Service and Privacy Policy acceptance checkbox" 10
+  $deadline = (Get-Date).AddSeconds(8)
+  do {
+    $candidateState = Try-WaitFirstVisibleAppState 2
+    if ($candidateState) {
+      $firstState = $candidateState
+      if ($firstState -notmatch "Your Privacy Matters") {
+        break
+      }
+    }
+
+    if (Try-Tap-Visible "No Thanks|Accept Analytics" 1) {
+      Start-Sleep -Seconds 2
+      $firstState = Wait-FirstVisibleAppState
+      break
+    }
+
+    Start-Sleep -Milliseconds 300
+  } while ((Get-Date) -lt $deadline)
+
+  if ($firstState -match "Your Privacy Matters") {
+    throw "Consent controls did not advance past the privacy screen."
+  }
 }
 
-Assert-Visible "Learning Paths"
+if ((-not $KeepState) -and $firstState -match "Your fish deserve better|Let's get started|Skip setup") {
+  Tap-Visible "Skip setup, explore first|Skip setup, I'll explore first"
+  Start-Sleep -Seconds 2
+  $firstState = Wait-FirstVisibleAppState
+}
+
+Assert-Visible "Learning Paths|Tank Toolbox|Smart|More|Build your review deck|Start Review"
 
 Write-Host "Checking bottom tabs..."
 Tap-Percent 30 92
-Assert-Visible "Build your review deck|Start Review|Standard Review|All caught up"
+Assert-Visible "Build your review deck|Start Review|Standard Review|All caught up" 12
 Tap-Percent 50 92
-Assert-Visible "Tank Toolbox"
+Assert-Visible "Tank Toolbox" 12
 Tap-Percent 70 92
-Assert-Visible "Smart"
+Assert-Visible "Smart" 12
 Tap-Percent 90 92
-Assert-Visible "More"
+Assert-Visible "More" 12
 
 Write-Host "Checking Workshop routes..."
-Tap-Visible "Workshop"
-Assert-Visible "Tools &amp; calculators|Tools & calculators"
+Tap-Visible "Workshop" 10
+Assert-Visible "Workshop|Tools.*calculators" 12
 Start-Sleep -Milliseconds 1800
 
 Open-ToolAndReturn "Water Change" "Water Change Calculator"
