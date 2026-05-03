@@ -284,8 +284,9 @@ class AchievementChecker {
   /// Check achievements and return newly unlocked ones
   /// Will throw exception on failure - does not fail silently
   Future<List<AchievementUnlockResult>> checkAchievements(
-    AchievementStats stats,
-  ) async {
+    AchievementStats stats, {
+    bool showCelebrations = true,
+  }) async {
     try {
       final userProfileAsync = ref.read(userProfileProvider);
       final userProfile = userProfileAsync.value;
@@ -368,23 +369,25 @@ class AchievementChecker {
           // Show celebration for each unlocked achievement
           // 3.34 FIX: Show a single summary dialog for multiple unlocks
           // instead of sequential dialogs that block the UI.
-          await _waitForNextFrame();
-          final context = navigatorKey.currentContext;
-          if (context != null && context.mounted) {
-            if (newlyUnlocked.length == 1) {
-              // Single achievement — show the full dialog as before
-              final result = newlyUnlocked.first;
-              await showAchievementUnlockedDialog(
-                context: context,
-                achievement: result.achievement,
-                xpAwarded: result.xpAwarded,
-              );
-            } else {
-              // Multiple achievements — show a single summary dialog
-              await _showBatchAchievementDialog(
-                context: context,
-                results: newlyUnlocked,
-              );
+          if (showCelebrations) {
+            await _waitForNextFrame();
+            final context = navigatorKey.currentContext;
+            if (context != null && context.mounted) {
+              if (newlyUnlocked.length == 1) {
+                // Single achievement — show the full dialog as before
+                final result = newlyUnlocked.first;
+                await showAchievementUnlockedDialog(
+                  context: context,
+                  achievement: result.achievement,
+                  xpAwarded: result.xpAwarded,
+                );
+              } else {
+                // Multiple achievements — show a single summary dialog
+                await _showBatchAchievementDialog(
+                  context: context,
+                  results: newlyUnlocked,
+                );
+              }
             }
           }
 
@@ -433,6 +436,7 @@ class AchievementChecker {
     required int todayLessonsCompleted,
     required List<String> completedLessonIds,
     DateTime? previousLastActivityDate, // PS-12: For comeback achievement
+    bool showCelebrations = true,
   }) async {
     final userProfileAsync = ref.read(userProfileProvider);
     final stats = AchievementStats(
@@ -451,7 +455,7 @@ class AchievementChecker {
           userProfileAsync.value?.hasCompletedPlacementTest ?? false,
     );
 
-    return await checkAchievements(stats);
+    return await checkAchievements(stats, showCelebrations: showCelebrations);
   }
 
   /// Check after daily tip read

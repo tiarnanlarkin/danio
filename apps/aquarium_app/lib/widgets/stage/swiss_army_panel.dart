@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import 'stage_provider.dart';
+import 'stage_sheet_controller.dart';
 
 /// Side panel that hinges in from left or right with a blade-curve animation.
 class SwissArmyPanel extends ConsumerStatefulWidget {
@@ -249,12 +250,17 @@ class StageHandleStrip extends ConsumerWidget {
     );
     if (hasOpenPanel) return const SizedBox.shrink();
 
+    void openPanel() {
+      ref.read(stageSheetControllerProvider.notifier).requestClosed();
+      ref.read(stageProvider.notifier).toggle(panel);
+    }
+
     return Semantics(
       label: 'Drag to resize panel: ${_panelLabel(panel)}',
       button: true,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => ref.read(stageProvider.notifier).toggle(panel),
+        onTap: openPanel,
         // Horizontal drag: swipe toward centre to open, swipe to edge to close.
         // Left panel: rightward drag (positive dx) = open.
         // Right panel: leftward drag (negative dx) = open.
@@ -265,6 +271,7 @@ class StageHandleStrip extends ConsumerWidget {
           final notifier = ref.read(stageProvider.notifier);
           final isOpen = ref.read(stageProvider).openPanels.contains(panel);
           if (openVelocity && !isOpen) {
+            ref.read(stageSheetControllerProvider.notifier).requestClosed();
             notifier.toggle(panel);
           } else if (closeVelocity && isOpen) {
             notifier.toggle(panel);

@@ -6,7 +6,6 @@ import '../../providers/lesson_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
-import '../../widgets/level_up_dialog.dart';
 import '../../widgets/xp_award_animation.dart';
 
 import '../../navigation/app_routes.dart';
@@ -252,6 +251,44 @@ class LessonCompletionFlow extends StatelessWidget {
 
 // ── Free functions used by _LessonScreenState ──────────────────────────────
 
+class _RewardSummaryRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _RewardSummaryRow({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm2,
+      ),
+      decoration: BoxDecoration(
+        color: AppOverlays.primary10,
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(color: AppColors.primaryAlpha15),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: AppColors.primary, size: AppIconSizes.sm),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: Text(
+              label,
+              style: AppTypography.bodyMedium.copyWith(
+                color: context.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Show XP animation and check for level-up.  Navigation happens inside
 /// [onComplete] so the caller controls what happens after animations.
 void showLessonXpAnimation(
@@ -269,26 +306,12 @@ void showLessonXpAnimation(
     onComplete: () async {
       if (!context.mounted) return;
 
-      // Check for level up after XP animation.
-      // Guard: clear the global levelUpEventProvider event BEFORE showing
-      // the lesson-scoped LevelUpDialog so LevelUpListener (tab navigator)
-      // doesn't fire a second celebration for the same level-up event.
       final profile = ref.read(userProfileProvider).value;
       try {
-        if (profile != null && levelBeforeLesson != null) {
-          final currentLevel = profile.currentLevel;
-
-          if (currentLevel > levelBeforeLesson) {
-            // Consume the provider event so LevelUpListener stays silent.
-            ref.read(levelUpEventProvider.notifier).clearEvent();
-
-            await showLevelUpCelebration(
-              context,
-              currentLevel,
-              profile.levelTitle,
-              profile.totalXp,
-            );
-          }
+        if (profile != null &&
+            levelBeforeLesson != null &&
+            profile.currentLevel > levelBeforeLesson) {
+          ref.read(levelUpEventProvider.notifier).clearEvent();
         }
       } finally {
         ref.read(levelUpEventProvider.notifier).allowLevelUpEvents();
@@ -299,32 +322,17 @@ void showLessonXpAnimation(
   );
 }
 
-/// Show level-up celebration dialog.
-Future<void> showLevelUpCelebration(
-  BuildContext context,
-  int newLevel,
-  String levelTitle,
-  int totalXp,
-) async {
-  if (!context.mounted) return;
-
-  await LevelUpDialog.show(
-    context,
-    newLevel: newLevel,
-    levelTitle: levelTitle,
-    totalXp: totalXp,
-    unlockMessage: LessonCompletionFlow.getUnlockMessage(newLevel),
-  );
-}
-
 /// Find and show the next lesson, or just pop back.
 void showNextLessonOrPop(
   BuildContext context,
   WidgetRef ref,
   Lesson currentLesson,
   String pathTitle,
-  bool isPracticeMode,
-) {
+  bool isPracticeMode, {
+  int xpAmount = 0,
+  int? levelBeforeLesson,
+  int unlockedAchievementCount = 0,
+}) {
   // R-090: Guard against calling Navigator.of(context) when the widget has
   // been disposed between the post-frame callback registration and execution.
   if (!context.mounted) return;
@@ -336,6 +344,12 @@ void showNextLessonOrPop(
     }
     return;
   }
+
+  final profile = ref.read(userProfileProvider).value;
+  final leveledUp =
+      profile != null &&
+      levelBeforeLesson != null &&
+      profile.currentLevel > levelBeforeLesson;
 
   // Show next lesson bottom sheet
   showAppDragSheet<bool>(
@@ -354,11 +368,37 @@ void showNextLessonOrPop(
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Lesson Complete!',
+              'Lesson complete',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: AppSpacing.md),
+            _RewardSummaryRow(
+              icon: Icons.star_rounded,
+              label: xpAmount > 0 ? '+$xpAmount XP saved' : 'Progress saved',
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            const _RewardSummaryRow(
+              icon: Icons.repeat_rounded,
+              label: 'Practice deck updated',
+            ),
+            if (leveledUp) ...[
+              const SizedBox(height: AppSpacing.sm),
+              _RewardSummaryRow(
+                icon: Icons.workspace_premium_rounded,
+                label: 'Level ${profile.currentLevel}: ${profile.levelTitle}',
+              ),
+            ],
+            if (unlockedAchievementCount > 0) ...[
+              const SizedBox(height: AppSpacing.sm),
+              _RewardSummaryRow(
+                icon: Icons.emoji_events_outlined,
+                label: unlockedAchievementCount == 1
+                    ? '1 achievement unlocked'
+                    : '$unlockedAchievementCount achievements unlocked',
+              ),
+            ],
             const SizedBox(height: AppSpacing.lg),
             Container(
               width: double.infinity,

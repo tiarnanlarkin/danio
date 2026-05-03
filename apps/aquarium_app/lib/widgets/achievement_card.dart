@@ -63,6 +63,16 @@ class AchievementCard extends StatelessWidget {
     this.showSparkle = false,
   });
 
+  static IconData iconFor(AchievementCategory category) {
+    return switch (category) {
+      AchievementCategory.learningProgress => Icons.menu_book_outlined,
+      AchievementCategory.streaks => Icons.local_fire_department_outlined,
+      AchievementCategory.xpMilestones => Icons.star_outline_rounded,
+      AchievementCategory.special => Icons.auto_awesome_outlined,
+      AchievementCategory.engagement => Icons.task_alt_outlined,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLocked = !progress.isUnlocked;
@@ -116,12 +126,12 @@ class AchievementCard extends StatelessWidget {
                     children: [
                       // Icon
                       Center(
-                        child: Text(
-                          achievement.icon,
-                          style: Theme.of(context).textTheme.headlineMedium!
-                              .copyWith(
-                                color: isLocked ? AppColors.blackAlpha25 : null,
-                              ),
+                        child: Icon(
+                          iconFor(achievement.category),
+                          size: AppIconSizes.xl,
+                          color: isLocked
+                              ? AppColors.blackAlpha25
+                              : rarityColor,
                         ),
                       ),
 

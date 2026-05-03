@@ -22,6 +22,7 @@ import '../../services/ai_proxy_service.dart';
 import '../../services/openai_service.dart';
 import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/danio_surface_visuals.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../providers/room_theme_provider.dart';
@@ -261,7 +262,7 @@ class SettingsScreen extends ConsumerWidget {
               label: 'Casual',
               description: 'Just a few minutes',
               current: currentGoal,
-              icon: '🐢',
+              visualKey: DanioSurfaceVisualKey.dailyGoalCasual,
             ),
             _GoalOption(
               ref: ref,
@@ -269,7 +270,7 @@ class SettingsScreen extends ConsumerWidget {
               label: 'Regular',
               description: 'One lesson per day',
               current: currentGoal,
-              icon: '🐟',
+              visualKey: DanioSurfaceVisualKey.dailyGoalRegular,
             ),
             _GoalOption(
               ref: ref,
@@ -277,7 +278,7 @@ class SettingsScreen extends ConsumerWidget {
               label: 'Serious',
               description: 'Multiple lessons',
               current: currentGoal,
-              icon: '🦈',
+              visualKey: DanioSurfaceVisualKey.dailyGoalSerious,
             ),
             _GoalOption(
               ref: ref,
@@ -285,7 +286,7 @@ class SettingsScreen extends ConsumerWidget {
               label: 'Intense',
               description: 'Max dedication',
               current: currentGoal,
-              icon: '🐋',
+              visualKey: DanioSurfaceVisualKey.dailyGoalIntense,
             ),
             const SizedBox(height: AppSpacing.md),
           ],
@@ -620,7 +621,7 @@ class _LearnCard extends ConsumerWidget {
                           if (stats.currentStreak > 0) ...[
                             const SizedBox(height: AppSpacing.xxs),
                             Text(
-                              '🔥 ${stats.currentStreak}-day streak',
+                              '${stats.currentStreak}-day streak',
                               style: AppTypography.bodySmall.copyWith(
                                 color: AppColors.whiteAlpha70,
                               ),
@@ -629,8 +630,8 @@ class _LearnCard extends ConsumerWidget {
                               const SizedBox(height: AppSpacing.xxs),
                               Text(
                                 profile.$1 == true
-                                    ? '🧊 Streak freeze available'
-                                    : '🧊 Streak freeze used this week',
+                                    ? 'Streak freeze available'
+                                    : 'Streak freeze used this week',
                                 style: AppTypography.bodySmall.copyWith(
                                   color: AppColors.whiteAlpha70,
                                 ),
@@ -671,7 +672,7 @@ class _GoalOption extends StatefulWidget {
   final String label;
   final String description;
   final int current;
-  final String icon;
+  final DanioSurfaceVisualKey visualKey;
 
   const _GoalOption({
     required this.ref,
@@ -679,7 +680,7 @@ class _GoalOption extends StatefulWidget {
     required this.label,
     required this.description,
     required this.current,
-    required this.icon,
+    required this.visualKey,
   });
 
   @override
@@ -692,14 +693,12 @@ class _GoalOptionState extends State<_GoalOption> {
   @override
   Widget build(BuildContext context) {
     final isSelected = widget.goal == widget.current;
+    final visual = danioSurfaceVisual(widget.visualKey);
 
     return ListTile(
       leading: _isLoading
           ? const BubbleLoader.small()
-          : Text(
-              widget.icon,
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
-            ),
+          : Icon(visual.icon, color: visual.color),
       title: Text('${widget.goal} XP/day'),
       subtitle: Text('${widget.label} • ${widget.description}'),
       trailing: isSelected
@@ -854,7 +853,7 @@ class _ReducedMotionToggle extends ConsumerWidget {
               AppSpacing.sm2,
             ),
             child: Text(
-              'ℹ️ Your system has animations disabled, but you\'ve manually enabled them in this app.',
+              'Your system has animations disabled, but you\'ve manually enabled them in this app.',
               style: AppTypography.bodySmall.copyWith(
                 color: context.textSecondary,
                 fontStyle: FontStyle.italic,

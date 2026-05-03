@@ -19,24 +19,26 @@ import 'package:danio/models/models.dart';
 final _now = DateTime.now();
 
 Tank _makeTank({String id = 'tank-1'}) => Tank(
-      id: id,
-      name: 'Test Tank',
-      type: TankType.freshwater,
-      volumeLitres: 100,
-      startDate: _now,
-      targets: WaterTargets.freshwaterTropical(),
-      createdAt: _now,
-      updatedAt: _now,
-    );
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
 
-Widget _wrap({InMemoryStorageService? storage, LogType type = LogType.waterTest}) {
+Widget _wrap({
+  InMemoryStorageService? storage,
+  LogType type = LogType.waterTest,
+  String tankId = 'tank-1',
+}) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
-    overrides: [
-      storageServiceProvider.overrideWithValue(svc),
-    ],
+    overrides: [storageServiceProvider.overrideWithValue(svc)],
     child: MaterialApp(
-      home: AddLogScreen(tankId: 'tank-1', initialType: type),
+      home: AddLogScreen(tankId: tankId, initialType: type),
     ),
   );
 }
@@ -91,12 +93,14 @@ void main() {
       await _advance(tester);
       // The save button should be somewhere in the widget tree
       expect(
-        find.byWidgetPredicate((w) =>
-            w is Text &&
-            (w.data == 'Save Log' ||
-                w.data == 'Save' ||
-                w.data == 'Log Entry' ||
-                w.data == 'Submit')),
+        find.byWidgetPredicate(
+          (w) =>
+              w is Text &&
+              (w.data == 'Save Log' ||
+                  w.data == 'Save' ||
+                  w.data == 'Log Entry' ||
+                  w.data == 'Submit'),
+        ),
         findsWidgets,
       );
     });
@@ -110,6 +114,47 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       // No crash — chip tapped successfully
       expect(find.text('Water Change'), findsWidgets);
+    });
+  });
+
+  group('AddLogScreen validation', () {
+    testWidgets('blocks blank water tests before saving', (tester) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'blank-water-test-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.text('Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(
+        find.text('Add at least one tested water value before saving.'),
+        findsOneWidget,
+      );
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+      expect(find.byType(AddLogScreen), findsOneWidget);
+    });
+
+    testWidgets('saves a water test once a parameter is entered', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'valid-water-test-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.enterText(find.widgetWithText(TextFormField, 'pH'), '7.2');
+      await tester.tap(find.text('Save'));
+      await _advance(tester);
+
+      final logs = await svc.getLogsForTank(tankId);
+      expect(logs, hasLength(1));
+      expect(logs.single.waterTest?.ph, 7.2);
     });
   });
 }

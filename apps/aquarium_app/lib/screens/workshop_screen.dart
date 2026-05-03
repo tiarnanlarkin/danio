@@ -97,7 +97,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
             slivers: [
               // AppBar with back button
               SliverAppBar(
-                title: const Text('🔧 Workshop'),
+                title: const Text('Workshop'),
                 backgroundColor: Colors.transparent,
                 foregroundColor: AppColors.textPrimaryDark,
                 iconTheme: const IconThemeData(
@@ -293,7 +293,7 @@ class _WorkshopHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '🔧 Workshop',
+                      'Workshop',
                       style:
                           (Theme.of(context).textTheme.headlineSmall ??
                                   const TextStyle())

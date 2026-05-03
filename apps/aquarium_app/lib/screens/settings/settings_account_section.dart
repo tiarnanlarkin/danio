@@ -10,9 +10,9 @@ class SettingsAccountSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NavListTile(
-      icon: Icons.account_circle,
-      title: 'Account & Sync',
-      subtitle: 'Sign in, backup, multi-device sync',
+      icon: Icons.phonelink_lock_outlined,
+      title: 'Offline Data',
+      subtitle: 'Local-only storage and optional account status',
       onTap: () => NavigationThrottle.push(context, const AccountScreen()),
     );
   }

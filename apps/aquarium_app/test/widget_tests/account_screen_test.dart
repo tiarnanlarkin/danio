@@ -50,26 +50,24 @@ void main() {
       expect(find.byType(AccountScreen), findsOneWidget);
     });
 
-    testWidgets('shows Account app bar title', (tester) async {
+    testWidgets('shows Offline Data app bar title', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('Account'), findsOneWidget);
+      expect(find.text('Offline Data'), findsOneWidget);
     });
 
-    testWidgets('shows Cloud Not Configured when Supabase uninitialised',
-        (tester) async {
+    testWidgets('shows local data status when Supabase uninitialised', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('Cloud Not Configured'), findsOneWidget);
+      expect(find.text('Offline data is active'), findsOneWidget);
     });
 
-    testWidgets('shows offline-only explanation text', (tester) async {
+    testWidgets('shows local storage explanation text', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(
-        find.textContaining('offline-only mode'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('storing your tanks'), findsOneWidget);
     });
 
     testWidgets('shows cloud_off icon', (tester) async {

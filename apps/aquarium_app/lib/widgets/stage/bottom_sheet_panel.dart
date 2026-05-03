@@ -11,6 +11,7 @@ import '../../screens/stocking_calculator_screen.dart';
 import '../../screens/compatibility_checker_screen.dart';
 import '../../screens/co2_calculator_screen.dart';
 import 'stage_handle.dart';
+import 'stage_sheet_controller.dart';
 
 /// A single DraggableScrollableSheet that replaces the three-stacked
 /// BottomPlate system. Contains a horizontal TabBar with four tabs:
@@ -107,18 +108,33 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
     super.dispose();
   }
 
-  void _snapTo(double size) {
+  void _snapTo(double size, {bool haptic = true}) {
     if (!_sheetController.isAttached) return;
     _sheetController.animateTo(
       size,
       duration: AppDurations.medium4,
       curve: Curves.easeOutCubic,
     );
-    HapticFeedback.selectionClick();
+    if (haptic) HapticFeedback.selectionClick();
+  }
+
+  void _handleSheetRequest(StageSheetRequest request) {
+    final size = switch (request.snap) {
+      StageSheetSnap.closed => BottomSheetPanel.kSnapClosed,
+      StageSheetSnap.peek => BottomSheetPanel.kSnapPeek,
+      StageSheetSnap.half => BottomSheetPanel.kSnapHalf,
+      StageSheetSnap.full => BottomSheetPanel.kSnapFull,
+    };
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _snapTo(size, haptic: false);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<StageSheetRequest>(stageSheetControllerProvider, (_, next) {
+      _handleSheetRequest(next);
+    });
     final reducedMotion = MediaQuery.of(context).disableAnimations;
 
     return DraggableScrollableSheet(

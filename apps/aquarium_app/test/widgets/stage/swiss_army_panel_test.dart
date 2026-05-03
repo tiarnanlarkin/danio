@@ -126,16 +126,18 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Stack(
-              children: [
-                BottomSheetPanel(
-                  progressContent: SizedBox(),
-                  tanksContent: SizedBox(),
-                  todayContent: SizedBox(),
-                ),
-              ],
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: Stack(
+                children: [
+                  BottomSheetPanel(
+                    progressContent: SizedBox(),
+                    tanksContent: SizedBox(),
+                    todayContent: SizedBox(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

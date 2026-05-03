@@ -14,8 +14,11 @@ import '../../theme/app_theme.dart';
 /// )
 /// ```
 class RoomHeader extends StatelessWidget {
-  /// Emoji displayed before the title
-  final String emoji;
+  /// Legacy emoji displayed before the title.
+  final String? emoji;
+
+  /// Preferred Material icon displayed before the title.
+  final IconData? icon;
 
   /// Header title text
   final String title;
@@ -28,8 +31,9 @@ class RoomHeader extends StatelessWidget {
 
   const RoomHeader({
     super.key,
-    required this.emoji,
     required this.title,
+    this.emoji,
+    this.icon,
     this.subtitle,
     this.trailing,
   });
@@ -43,10 +47,13 @@ class RoomHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(
-            emoji,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
-          ),
+          if (icon != null)
+            Icon(icon, size: AppIconSizes.lg, color: AppColors.primary)
+          else if (emoji != null)
+            Text(
+              emoji!,
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+            ),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Column(

@@ -35,16 +35,24 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
   void initState() {
     super.initState();
 
-    final disableAnimations =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
-            .disableAnimations;
+    final disableAnimations = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .disableAnimations;
 
     _fishBounceController = AnimationController(
       vsync: this,
       duration: AppDurations.medium4,
     );
-    _fishBounceCurve = CurvedAnimation(parent: _fishBounceController, curve: Curves.easeInOut);
-    _fishBounceAnim = Tween<double>(begin: 1.0, end: 1.05).animate(_fishBounceCurve);
+    _fishBounceCurve = CurvedAnimation(
+      parent: _fishBounceController,
+      curve: Curves.easeInOut,
+    );
+    _fishBounceAnim = Tween<double>(
+      begin: 1.0,
+      end: 1.05,
+    ).animate(_fishBounceCurve);
 
     if (!disableAnimations) {
       _fishBounceController.forward();
@@ -87,9 +95,8 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                     // Title
                     Text(
                       'Everything you need, right here.',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(color: AppColors.textPrimary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -120,15 +127,11 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
   Widget _buildFishHeader() {
     final spritePath = SpeciesSprites.thumbFor(widget.selectedFish.commonName);
     return Semantics(
-      label:
-          'Your ${widget.selectedFish.commonName} care guide is ready',
+      label: 'Your ${widget.selectedFish.commonName} care guide is ready',
       child: AnimatedBuilder(
         animation: _fishBounceAnim,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _fishBounceAnim.value,
-            child: child,
-          );
+          return Transform.scale(scale: _fishBounceAnim.value, child: child);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -145,7 +148,11 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                       cacheHeight: 96,
                     ),
                   )
-                : const Text('🐟', style: TextStyle(fontSize: 48)),
+                : const Icon(
+                    Icons.set_meal_outlined,
+                    color: AppColors.onboardingAmberText,
+                    size: 48,
+                  ),
             const SizedBox(width: AppSpacing.sm2),
             Flexible(
               child: Text(
@@ -179,7 +186,11 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_rounded, color: AppColors.onboardingAmber, size: 22),
+                  const Icon(
+                    Icons.check_rounded,
+                    color: AppColors.onboardingAmber,
+                    size: 22,
+                  ),
                   const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
@@ -201,7 +212,12 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
 
   Widget _buildBottomSection(double bottomPadding) {
     return Container(
-      padding: EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, bottomPadding + AppSpacing.md),
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.lg,
+        bottomPadding + AppSpacing.md,
+      ),
       decoration: BoxDecoration(
         color: AppColors.onboardingWarmCream,
         boxShadow: [

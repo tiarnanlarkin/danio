@@ -165,7 +165,9 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
     final newValue = MediaQuery.of(context).disableAnimations;
     if (newValue != _disableMotion) {
       _disableMotion = newValue;
-      _scaleController.duration = _disableMotion ? Duration.zero : AppDurations.short;
+      _scaleController.duration = _disableMotion
+          ? Duration.zero
+          : AppDurations.short;
     }
   }
 
@@ -227,7 +229,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
     if (_isInteractive) {
       card = Semantics(
-        label: widget.semanticsLabel ?? 'Interactive card',
+        label: widget.semanticsLabel,
         button: true,
         child: GestureDetector(
           onTapDown: _handleTapDown,

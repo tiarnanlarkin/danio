@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/compatibility_checker_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/models/models.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -17,14 +18,27 @@ import 'package:danio/providers/tank_provider.dart';
 Widget _wrap({List<Override> overrides = const []}) {
   return ProviderScope(
     overrides: overrides,
-    child: const MaterialApp(
-      home: CompatibilityCheckerScreen(),
-    ),
+    child: const MaterialApp(home: CompatibilityCheckerScreen()),
   );
 }
 
 /// Mock tanks provider that returns no tanks (empty list).
 final _emptyTanksProvider = tanksProvider.overrideWith((ref) async => []);
+
+final _smallTankProvider = tanksProvider.overrideWith(
+  (ref) async => [
+    Tank(
+      id: 'small-tank',
+      name: 'Small Tank',
+      type: TankType.freshwater,
+      volumeLitres: 40,
+      startDate: DateTime(2026, 1, 1),
+      targets: WaterTargets.freshwaterTropical(),
+      createdAt: DateTime(2026, 1, 1),
+      updatedAt: DateTime(2026, 1, 1),
+    ),
+  ],
+);
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -168,7 +182,9 @@ void main() {
       );
     });
 
-    testWidgets('recommended setup section shows with 2+ species', (tester) async {
+    testWidgets('recommended setup section shows with 2+ species', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
       await tester.pump();
 
@@ -186,6 +202,44 @@ void main() {
       await tester.drag(find.byType(ListView).last, const Offset(0, -300));
       await tester.pump();
       expect(find.text('Recommended Setup'), findsOneWidget);
+    });
+
+    testWidgets('Betta and Neon Tetra are shown as a cautious match', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
+      await tester.pump();
+
+      for (final query in ['Betta', 'Neon Tetra']) {
+        await tester.enterText(find.byType(TextField), query);
+        await tester.pump(const Duration(milliseconds: 350));
+        final addBtn = find.byIcon(Icons.add_circle_outline);
+        expect(addBtn, findsWidgets);
+        await tester.tap(addBtn.first);
+        await tester.pump();
+      }
+
+      expect(find.text('Proceed with Caution'), findsOneWidget);
+      expect(find.textContaining('Betta temperament varies'), findsOneWidget);
+    });
+
+    testWidgets('single-species tank warnings do not render dangling plus', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(overrides: [_smallTankProvider]));
+      await tester.pump();
+
+      for (final query in ['Common Goldfish', 'Neon Tetra']) {
+        await tester.enterText(find.byType(TextField), query);
+        await tester.pump(const Duration(milliseconds: 350));
+        final addBtn = find.byIcon(Icons.add_circle_outline);
+        expect(addBtn, findsWidgets);
+        await tester.tap(addBtn.first);
+        await tester.pump();
+      }
+
+      expect(find.text('Common Goldfish +'), findsNothing);
+      expect(find.text('Common Goldfish'), findsWidgets);
     });
   });
 }

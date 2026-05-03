@@ -14,11 +14,7 @@ import 'package:danio/screens/gem_shop_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(
-      home: GemShopScreen(),
-    ),
-  );
+  return const ProviderScope(child: MaterialApp(home: GemShopScreen()));
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -46,7 +42,7 @@ void main() {
     testWidgets('shows Gem Shop title', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('💎 Gem Shop'), findsOneWidget);
+      expect(find.text('Gem Shop'), findsOneWidget);
     });
 
     testWidgets('shows tab bar with three tabs', (tester) async {

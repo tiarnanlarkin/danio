@@ -150,15 +150,17 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                 // Header
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xs,
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.xs,
                   ),
                   child: Semantics(
                     header: true,
                     child: Text(
                       _headerText,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(color: AppColors.textPrimary),
                     ),
                   ),
                 ),
@@ -190,9 +192,8 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                       style: Theme.of(context).textTheme.bodyMedium,
                       decoration: InputDecoration(
                         hintText: 'Search 125+ species...',
-                        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textHint,
-                        ),
+                        hintStyle: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: AppColors.textHint),
                         prefixIcon: const Icon(
                           Icons.search_rounded,
                           color: AppColors.textHint,
@@ -276,9 +277,9 @@ class _FishSelectScreenState extends State<FishSelectScreen>
         children: [
           Text(
             'Popular starter fish',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelMedium?.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.sm),
           Expanded(
@@ -315,9 +316,9 @@ class _FishSelectScreenState extends State<FishSelectScreen>
         key: const ValueKey('empty'),
         child: Text(
           'No species found. Try another name.',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
         ),
       );
     }
@@ -349,7 +350,10 @@ class _FishSelectScreenState extends State<FishSelectScreen>
 
     return Container(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.lg,
+        AppSpacing.lg,
       ),
       decoration: const BoxDecoration(
         color: AppColors.onPrimary,
@@ -368,9 +372,9 @@ class _FishSelectScreenState extends State<FishSelectScreen>
           Expanded(
             child: Text(
               _selectedFish!.commonName,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(color: AppColors.textPrimary),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -398,10 +402,7 @@ class _FishSpriteImage extends StatelessWidget {
   final String commonName;
   final double size;
 
-  const _FishSpriteImage({
-    required this.commonName,
-    required this.size,
-  });
+  const _FishSpriteImage({required this.commonName, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -431,7 +432,11 @@ class _FishSpriteImage extends StatelessWidget {
       shape: BoxShape.circle,
     ),
     alignment: Alignment.center,
-    child: Text('🐠', style: TextStyle(fontSize: size * 0.5)),
+    child: Icon(
+      Icons.set_meal_outlined,
+      color: AppColors.onboardingAmberText,
+      size: size * 0.5,
+    ),
   );
 }
 
@@ -463,9 +468,7 @@ class _PopularTile extends StatelessWidget {
                 : AppColors.onPrimary,
             borderRadius: AppRadius.md2Radius,
             border: Border.all(
-              color: isSelected
-                  ? AppColors.onboardingAmber
-                  : AppColors.border,
+              color: isSelected ? AppColors.onboardingAmber : AppColors.border,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -474,10 +477,7 @@ class _PopularTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Fish sprite or fallback emoji
-              _FishSpriteImage(
-                commonName: fish.commonName,
-                size: 40,
-              ),
+              _FishSpriteImage(commonName: fish.commonName, size: 40),
               const SizedBox(height: AppSpacing.xs2),
               // Common name
               Text(
@@ -485,9 +485,9 @@ class _PopularTile extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelMedium?.copyWith(color: AppColors.textPrimary),
               ),
               // Scientific name (italic, smaller — secondary info)
               Text(
@@ -502,7 +502,11 @@ class _PopularTile extends StatelessWidget {
                 ),
               ),
               if (isSelected)
-                const Icon(Icons.check_circle, color: AppColors.onboardingAmber, size: 16),
+                const Icon(
+                  Icons.check_circle,
+                  color: AppColors.onboardingAmber,
+                  size: 16,
+                ),
             ],
           ),
         ),
@@ -547,26 +551,24 @@ class _SearchResultCard extends StatelessWidget {
         onTap: onTap,
         child: AnimatedContainer(
           duration: AppDurations.medium1,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.sm2),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm4,
+            vertical: AppSpacing.sm2,
+          ),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.onboardingAmber.withAlpha(26)
                 : AppColors.onPrimary,
             borderRadius: AppRadius.md2Radius,
             border: Border.all(
-              color: isSelected
-                  ? AppColors.onboardingAmber
-                  : AppColors.border,
+              color: isSelected ? AppColors.onboardingAmber : AppColors.border,
               width: isSelected ? 2 : 1,
             ),
           ),
           child: Row(
             children: [
               // Fish sprite or fallback emoji
-              _FishSpriteImage(
-                commonName: fish.commonName,
-                size: 36,
-              ),
+              _FishSpriteImage(commonName: fish.commonName, size: 36),
               const SizedBox(width: AppSpacing.sm2),
               // Names
               Expanded(
@@ -603,7 +605,11 @@ class _SearchResultCard extends StatelessWidget {
               ),
               if (isSelected) ...[
                 const SizedBox(width: AppSpacing.sm),
-                const Icon(Icons.check_circle, color: AppColors.onboardingAmber, size: 20),
+                const Icon(
+                  Icons.check_circle,
+                  color: AppColors.onboardingAmber,
+                  size: 20,
+                ),
               ],
             ],
           ),
@@ -638,10 +644,7 @@ class _PulsingButtonState extends State<_PulsingButton>
       duration: AppDurations.long3,
     );
 
-    _scaleCurve = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
+    _scaleCurve = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _scale = Tween<double>(begin: 1.0, end: 1.02).animate(_scaleCurve);
 
     if (widget.animate) _controller.repeat();

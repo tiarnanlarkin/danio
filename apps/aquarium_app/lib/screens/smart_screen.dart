@@ -10,6 +10,7 @@ import '../navigation/app_routes.dart';
 import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
+import '../theme/danio_surface_visuals.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/compatibility_checker_widget.dart';
 import '../widgets/core/bubble_loader.dart';
@@ -158,7 +159,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       if (_showTooltip)
         FirstVisitTooltip(
           prefsKey: 'tooltip_seen_smart',
-          emoji: '🧠',
+          icon: danioSurfaceVisual(DanioSurfaceVisualKey.smart).icon,
+          iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.smart).color,
           message: 'Smart Hub — AI tools to help you care for your fish!',
           onDismissed: () => setState(() => _showTooltip = false),
         ),
@@ -387,7 +389,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         borderRadius: AppRadius.md2Radius,
                       ),
                       child: Text(
-                        '\ud83e\udde0 Smart',
+                        'Smart',
                         style: theme.textTheme.headlineMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -444,7 +446,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'No anomalies detected — looking good! 🐟',
+                    'No anomalies detected — looking good.',
                     style: AppTypography.bodyLarge.copyWith(
                       color: ctx.textSecondary,
                     ),
@@ -570,7 +572,11 @@ class _AiSetupBanner extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text('🤖', style: Theme.of(context).textTheme.headlineMedium!),
+          Icon(
+            danioSurfaceVisual(DanioSurfaceVisualKey.aiSetup).icon,
+            color: danioSurfaceVisual(DanioSurfaceVisualKey.aiSetup).color,
+            size: AppIconSizes.xl,
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Smart AI Features',

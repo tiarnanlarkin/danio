@@ -66,7 +66,8 @@ class _WaterChangeCalculatorScreenState
       setState(() {
         _changePercent = null;
         _changeVolume = null;
-        _recommendation = 'Tank volume seems too large. Please check your input.';
+        _recommendation =
+            'Tank volume seems too large. Please check your input.';
       });
       return;
     }
@@ -165,204 +166,206 @@ class _WaterChangeCalculatorScreenState
 
   @override
   Widget build(BuildContext context) {
-      final items = <Widget>[
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.standard,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.calculate,
-                  size: AppIconSizes.lg,
-                  color: context.textSecondary,
-                ),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Text(
-                    'Calculate exactly how much water to change to reach your target nitrate level.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ),
-              ],
+    final items = <Widget>[
+      AppCard(
+        backgroundColor: AppOverlays.info10,
+        padding: AppCardPadding.standard,
+        child: Row(
+          children: [
+            Icon(
+              Icons.calculate,
+              size: AppIconSizes.lg,
+              color: context.textSecondary,
             ),
-          ),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                'Calculate exactly how much water to change to reach your target nitrate level.',
+                style: AppTypography.bodyMedium,
+              ),
+            ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          Text('Tank Info', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
+      Text('Tank Info', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
 
-          AppTextField(
-            controller: _tankVolumeController,
-            label: 'Tank Volume (litres)',
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
-            onChanged: (_) => _calculate(),
-          ),
+      AppTextField(
+        controller: _tankVolumeController,
+        label: 'Tank Volume (litres)',
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+        onChanged: (_) => _calculate(),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          Text('Nitrate Levels', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
+      Text('Nitrate Levels', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
 
-          AppTextField(
-            controller: _currentNitrateController,
-            label: 'Current Nitrate (ppm)',
-            helperText: 'What your test kit shows now',
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
-            onChanged: (_) => _calculate(),
-          ),
+      AppTextField(
+        controller: _currentNitrateController,
+        label: 'Current Nitrate (ppm)',
+        helperText: 'What your test kit shows now',
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+        onChanged: (_) => _calculate(),
+      ),
 
-          const SizedBox(height: AppSpacing.sm2),
+      const SizedBox(height: AppSpacing.sm2),
 
-          AppTextField(
-            controller: _targetNitrateController,
-            label: 'Target Nitrate (ppm)',
-            helperText: 'Usually 10-20 ppm for most tanks',
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
-            onChanged: (_) => _calculate(),
-          ),
+      AppTextField(
+        controller: _targetNitrateController,
+        label: 'Target Nitrate (ppm)',
+        helperText: 'Usually 10-20 ppm for most tanks',
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+        onChanged: (_) => _calculate(),
+      ),
 
-          const SizedBox(height: AppSpacing.sm2),
+      const SizedBox(height: AppSpacing.sm2),
 
-          AppTextField(
-            controller: _tapNitrateController,
-            label: 'Tap Water Nitrate (ppm)',
-            helperText: 'Test your tap water! Often 0-10 ppm',
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
-            onChanged: (_) => _calculate(),
-          ),
+      AppTextField(
+        controller: _tapNitrateController,
+        label: 'Tap Water Nitrate (ppm)',
+        helperText: 'Test your tap water! Often 0-10 ppm',
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+        onChanged: (_) => _calculate(),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          if (_changePercent != null && _changeVolume != null) ...[
-            AppCard(
-              backgroundColor: AppOverlays.success10,
-              padding: AppCardPadding.spacious,
-              child: Column(
+      if (_changePercent != null && _changeVolume != null) ...[
+        AppCard(
+          backgroundColor: AppOverlays.success10,
+          padding: AppCardPadding.spacious,
+          child: Column(
+            children: [
+              Text('Water Change Needed', style: AppTypography.labelLarge),
+              const SizedBox(height: AppSpacing.sm2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text('Water Change Needed', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Column(
                     children: [
-                      Column(
-                        children: [
-                          Text(
-                            '${_changePercent!.toStringAsFixed(0)}%',
-                            style: AppTypography.headlineLarge.copyWith(
-                              color: AppColors.success,
-                            ),
-                          ),
-                          Text('of tank', style: AppTypography.bodySmall),
-                        ],
+                      Text(
+                        '${_changePercent!.toStringAsFixed(0)}%',
+                        style: AppTypography.headlineLarge.copyWith(
+                          color: AppColors.success,
+                        ),
                       ),
-                      Container(width: 1, height: 40, color: context.textHint),
-                      Column(
-                        children: [
-                          Text(
-                            '${_changeVolume!.toStringAsFixed(0)}L',
-                            style: AppTypography.headlineLarge.copyWith(
-                              color: AppColors.success,
-                            ),
-                          ),
-                          Text('to remove', style: AppTypography.bodySmall),
-                        ],
+                      Text('of tank', style: AppTypography.bodySmall),
+                    ],
+                  ),
+                  Container(width: 1, height: 40, color: context.textHint),
+                  Column(
+                    children: [
+                      Text(
+                        '${_changeVolume!.toStringAsFixed(0)}L',
+                        style: AppTypography.headlineLarge.copyWith(
+                          color: AppColors.success,
+                        ),
                       ),
+                      Text('to remove', style: AppTypography.bodySmall),
                     ],
                   ),
                 ],
               ),
+            ],
+          ),
+        ),
+      ],
+
+      if (_recommendation != null) ...[
+        const SizedBox(height: AppSpacing.md),
+        AppCard(
+          padding: AppCardPadding.standard,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.lightbulb,
+                color: AppColors.warning,
+                size: AppIconSizes.sm,
+              ),
+              const SizedBox(width: AppSpacing.sm2),
+              Expanded(
+                child: Text(_recommendation!, style: AppTypography.bodyMedium),
+              ),
+            ],
+          ),
+        ),
+      ],
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Quick Reference', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _RefRow(label: 'Ideal nitrate', value: '< 20 ppm'),
+            _RefRow(label: 'Acceptable', value: '20-40 ppm'),
+            _RefRow(label: 'High (act soon)', value: '40-80 ppm'),
+            _RefRow(label: 'Dangerous', value: '> 80 ppm'),
+            const Divider(height: AppSpacing.lg),
+            Text(
+              'Tip: Regular 20-25% weekly water changes usually keep nitrates in check without needing to calculate.',
+              style: AppTypography.bodySmall,
             ),
           ],
+        ),
+      ),
 
-          if (_recommendation != null) ...[
-            const SizedBox(height: AppSpacing.md),
-            AppCard(
-              padding: AppCardPadding.standard,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.lightbulb,
-                    color: AppColors.warning,
-                    size: AppIconSizes.sm,
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Expanded(
-                    child: Text(
-                      _recommendation!,
-                      style: AppTypography.bodyMedium,
-                    ),
-                  ),
-                ],
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Multi-Change Strategy', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'For very high nitrates (>60 ppm), don\'t do one massive change. Instead:',
+              style: AppTypography.bodyMedium,
+            ),
+            const SizedBox(height: AppSpacing.sm2),
+            _StepRow(num: 1, text: 'Day 1: 30% water change'),
+            _StepRow(num: 2, text: 'Day 3: 25% water change'),
+            _StepRow(num: 3, text: 'Day 5: 20% water change'),
+            _StepRow(num: 4, text: 'Test and repeat if needed'),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'This gradual approach prevents osmotic shock to fish.',
+              style: AppTypography.bodySmall.copyWith(
+                fontStyle: FontStyle.italic,
               ),
             ),
           ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('Quick Reference', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _RefRow(label: 'Ideal nitrate', value: '< 20 ppm'),
-                _RefRow(label: 'Acceptable', value: '20-40 ppm'),
-                _RefRow(label: 'High (act soon)', value: '40-80 ppm'),
-                _RefRow(label: 'Dangerous', value: '> 80 ppm'),
-                const Divider(height: AppSpacing.lg),
-                Text(
-                  'Tip: Regular 20-25% weekly water changes usually keep nitrates in check without needing to calculate.',
-                  style: AppTypography.bodySmall,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('Multi-Change Strategy', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'For very high nitrates (>60 ppm), don\'t do one massive change. Instead:',
-                  style: AppTypography.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                _StepRow(num: 1, text: 'Day 1: 30% water change'),
-                _StepRow(num: 2, text: 'Day 3: 25% water change'),
-                _StepRow(num: 3, text: 'Day 5: 20% water change'),
-                _StepRow(num: 4, text: 'Test and repeat if needed'),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'This gradual approach prevents osmotic shock to fish.',
-                  style: AppTypography.bodySmall.copyWith(
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.xxl),
-      ];
+      const SizedBox(height: AppSpacing.xxl),
+    ];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Water Change Calculator')),
       body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+        ),
         itemBuilder: (context, index) => items[index],
         itemCount: items.length,
       ),
@@ -425,4 +428,3 @@ class _StepRow extends StatelessWidget {
     );
   }
 }
-

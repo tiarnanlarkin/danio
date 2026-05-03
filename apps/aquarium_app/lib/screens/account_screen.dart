@@ -67,7 +67,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           );
         },
         child: Scaffold(
-          appBar: AppBar(title: const Text('Account')),
+          appBar: AppBar(title: const Text('Offline Data')),
           body: !SupabaseService.isInitialised
               ? _buildOfflineOnlyMessage(theme)
               : auth.isSignedIn
@@ -95,12 +95,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               color: theme.colorScheme.outline,
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('Cloud Not Configured', style: theme.textTheme.headlineSmall),
+            Text(
+              'Offline data is active',
+              style: theme.textTheme.headlineSmall,
+            ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'The app is running in offline-only mode. '
-              'All your data is stored locally on this device.\n\n'
-              'Cloud sync will be available in a future update.',
+              'Danio is storing your tanks, logs, and preferences locally on this device. '
+              'Use Backup & Restore from Preferences when you want a portable copy of your data.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,

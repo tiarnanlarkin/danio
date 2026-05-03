@@ -13,7 +13,7 @@ import '../../widgets/quiz/quiz_answer_option.dart';
 ///
 /// Callbacks are used for all state mutations so the parent
 /// [_LessonScreenState] remains the single source of truth.
-class LessonQuizWidget extends ConsumerWidget {
+class LessonQuizWidget extends ConsumerStatefulWidget {
   final Lesson lesson;
   final bool isPracticeMode;
   final int currentQuizQuestion;
@@ -32,7 +32,8 @@ class LessonQuizWidget extends ConsumerWidget {
     required int selectedAnswer,
     required bool isCorrect,
     required bool isLastQuestion,
-  }) onCheckOrAdvance;
+  })
+  onCheckOrAdvance;
 
   /// Called to toggle the hint panel.
   final VoidCallback onShowHint;
@@ -52,7 +53,53 @@ class LessonQuizWidget extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LessonQuizWidget> createState() => _LessonQuizWidgetState();
+}
+
+class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void didUpdateWidget(covariant LessonQuizWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (!oldWidget.answered && widget.answered) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_scrollController.hasClients) return;
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: AppDurations.medium4,
+          curve: Curves.easeOutCubic,
+        );
+      });
+    }
+
+    if (oldWidget.currentQuizQuestion != widget.currentQuizQuestion) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(0);
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lesson = widget.lesson;
+    final currentQuizQuestion = widget.currentQuizQuestion;
+    final correctAnswers = widget.correctAnswers;
+    final selectedAnswer = widget.selectedAnswer;
+    final answered = widget.answered;
+    final showHint = widget.showHint;
+    final onSelectAnswer = widget.onSelectAnswer;
+    final onCheckOrAdvance = widget.onCheckOrAdvance;
+    final onShowHint = widget.onShowHint;
     final quiz = lesson.quiz;
     if (quiz == null || quiz.questions.isEmpty) {
       return Center(
@@ -83,6 +130,7 @@ class LessonQuizWidget extends ConsumerWidget {
     );
     final isBeginner = profile == ExperienceLevel.beginner;
     final hintExtraItems = (isBeginner && !answered && !showHint) ? 1 : 0;
+    final hasExplanation = answered && question.explanation != null;
 
     return Column(
       children: [
@@ -120,9 +168,12 @@ class LessonQuizWidget extends ConsumerWidget {
                   child: LinearProgressIndicator(
                     value: (currentQuizQuestion + 1) / quiz.questions.length,
                     backgroundColor: context.surfaceVariant,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.primary,
+                    ),
                     minHeight: 8,
-                    semanticsLabel: '', // Exclude default semantics (handled by wrapper)
+                    semanticsLabel:
+                        '', // Exclude default semantics (handled by wrapper)
                   ),
                 ),
               ),
@@ -132,14 +183,15 @@ class LessonQuizWidget extends ConsumerWidget {
 
         Expanded(
           child: ListView.builder(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2),
             itemCount:
                 3 +
                 hintExtraItems +
                 question.options.length +
-                (answered && question.explanation != null
-                    ? 2
-                    : 0) + // spacing + explanation
+                (hasExplanation
+                    ? 3
+                    : 0) + // spacing + explanation + breathing room
                 (showHint && !answered ? 1 : 0), // hint text
             itemBuilder: (context, index) {
               // Spacing at top
@@ -176,8 +228,7 @@ class LessonQuizWidget extends ConsumerWidget {
                       button: true,
                       label: 'Show hint',
                       child: ActionChip(
-                        avatar:
-                            const Icon(Icons.lightbulb_outline, size: 16),
+                        avatar: const Icon(Icons.lightbulb_outline, size: 16),
                         label: const Text('Need a hint?'),
                         onPressed: onShowHint,
                       ),
@@ -223,9 +274,7 @@ class LessonQuizWidget extends ConsumerWidget {
 
               // Answer options — offset by hint items
               final optionsOffset =
-                  3 +
-                  hintExtraItems +
-                  (showHint && !answered ? 1 : 0);
+                  3 + hintExtraItems + (showHint && !answered ? 1 : 0);
               if (index >= optionsOffset &&
                   index < optionsOffset + question.options.length) {
                 final optionIndex = index - optionsOffset;
@@ -234,7 +283,9 @@ class LessonQuizWidget extends ConsumerWidget {
                 final isCorrect = optionIndex == question.correctIndex;
 
                 return QuizAnswerOption(
-                  key: ValueKey('quiz_option_${currentQuizQuestion}_$optionIndex'),
+                  key: ValueKey(
+                    'quiz_option_${currentQuizQuestion}_$optionIndex',
+                  ),
                   optionIndex: optionIndex,
                   option: option,
                   isSelected: isSelected,
@@ -247,7 +298,7 @@ class LessonQuizWidget extends ConsumerWidget {
               // Explanation (after answering)
               // When answered, hint items are gone (hintExtraItems=0, showHint
               // gated on !answered) so optionsOffset is always 3 in this branch.
-              if (answered && question.explanation != null) {
+              if (hasExplanation) {
                 // Spacing before explanation
                 if (index == 3 + question.options.length) {
                   return const SizedBox(height: AppSpacing.md);
@@ -284,6 +335,10 @@ class LessonQuizWidget extends ConsumerWidget {
                     ),
                   );
                 }
+
+                if (index == 5 + question.options.length) {
+                  return const SizedBox(height: AppSpacing.xxxl);
+                }
               }
 
               return const SizedBox.shrink();
@@ -309,12 +364,10 @@ class LessonQuizWidget extends ConsumerWidget {
               onPressed: selectedAnswer == null
                   ? null
                   : () async {
-                      final question =
-                          quiz.questions[currentQuizQuestion];
-                      final isCorrect =
-                          selectedAnswer == question.correctIndex;
-                      final isLastQuestion = currentQuizQuestion >=
-                          quiz.questions.length - 1;
+                      final question = quiz.questions[currentQuizQuestion];
+                      final isCorrect = selectedAnswer == question.correctIndex;
+                      final isLastQuestion =
+                          currentQuizQuestion >= quiz.questions.length - 1;
 
                       if (!answered) {
                         // Announce result to screen readers
@@ -328,7 +381,7 @@ class LessonQuizWidget extends ConsumerWidget {
                       }
 
                       await onCheckOrAdvance(
-                        selectedAnswer: selectedAnswer!,
+                        selectedAnswer: selectedAnswer,
                         isCorrect: isCorrect,
                         isLastQuestion: isLastQuestion,
                       );

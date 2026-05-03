@@ -18,12 +18,10 @@ import '../../utils/logger.dart';
 import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
 import 'lesson_completion_flow.dart';
-import '../../widgets/lesson_celebration_overlay.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../providers/species_unlock_provider.dart';
 import '../learn/unlock_celebration_screen.dart';
-import '../../providers/gems_provider.dart';
 import '../../providers/inventory_provider.dart';
 
 export 'lesson_card_widget.dart';
@@ -306,39 +304,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
   }
 
-  /// Show the celebration overlay, then hand off to the XP animation.
-  void _showCelebrationThenXp(int xpAmount) {
-    if (!mounted) return;
-
-    // Determine which celebration variant to show.
-    final profile = ref.read(userProfileProvider).value;
-    final isFirst = profile != null && profile.completedLessons.length <= 1;
-    final streak = profile?.currentStreak ?? 0;
-    final gems = ref.read(gemBalanceProvider);
-
-    final LessonCelebrationVariant variant;
-    if (isFirst) {
-      variant = LessonCelebrationVariant.firstLesson;
-    } else if (streak > 0 && streak % 5 == 0) {
-      variant = LessonCelebrationVariant.streakMilestone;
-    } else if (gems > 0) {
-      variant = LessonCelebrationVariant.gemEarned;
-    } else {
-      variant = LessonCelebrationVariant.regular;
-    }
-
-    LessonCelebrationOverlay.show(
-      context,
-      xpAmount: xpAmount,
-      variant: variant,
-      streakDays: streak,
-      gemsEarned: gems,
-      onDismiss: () => _showXpAnimation(xpAmount),
-    );
-  }
-
   /// Show XP animation, then check for species unlock, then level-up/next.
-  void _showXpAnimation(int xpAmount) {
+  void _showXpAnimation(int xpAmount, {int unlockedAchievementCount = 0}) {
     if (!mounted) return;
     showLessonXpAnimation(
       context,
@@ -373,6 +340,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               widget.lesson,
               widget.pathTitle,
               widget.isPracticeMode,
+              xpAmount: xpAmount,
+              levelBeforeLesson: _levelBeforeLesson,
+              unlockedAchievementCount: unlockedAchievementCount,
             );
           }
         });
@@ -511,6 +481,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       }
 
       // Check for achievements (fire-and-forget — see comment in original)
+      var unlockedAchievementCount = 0;
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
         final achievementChecker = ref.read(achievementCheckerProvider);
@@ -544,29 +515,28 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             ? profile.perfectScoreCount + 1
             : profile.perfectScoreCount;
 
-        unawaited(() async {
-          try {
-            await achievementChecker.checkAfterLesson(
-              lessonsCompleted: profile.completedLessons.length + 1,
-              currentStreak: profile.currentStreak,
-              totalXp: profile.totalXp,
-              perfectScores: updatedPerfectScores,
-              lessonCompletedAt: DateTime.now(),
-              lessonDuration: actualElapsedSeconds,
-              lessonScore: quizLen != null
-                  ? (_correctAnswers * 100 ~/ quizLen)
-                  : 100,
-              todayLessonsCompleted: todayLessons,
-              completedLessonIds: [
-                ...profile.completedLessons,
-                widget.lesson.id,
-              ],
-              previousLastActivityDate: previousLastActivityDate,
-            );
-          } catch (e) {
-            logError('Achievement check failed: $e', tag: 'LessonScreen');
-          }
-        }());
+        try {
+          final results = await achievementChecker.checkAfterLesson(
+            lessonsCompleted: profile.completedLessons.length + 1,
+            currentStreak: profile.currentStreak,
+            totalXp: profile.totalXp,
+            perfectScores: updatedPerfectScores,
+            lessonCompletedAt: DateTime.now(),
+            lessonDuration: actualElapsedSeconds,
+            lessonScore: quizLen != null
+                ? (_correctAnswers * 100 ~/ quizLen)
+                : 100,
+            todayLessonsCompleted: todayLessons,
+            completedLessonIds: [...profile.completedLessons, widget.lesson.id],
+            previousLastActivityDate: previousLastActivityDate,
+            showCelebrations: false,
+          );
+          unlockedAchievementCount = results
+              .where((result) => result.wasJustUnlocked)
+              .length;
+        } catch (e) {
+          logError('Achievement check failed: $e', tag: 'LessonScreen');
+        }
       }
 
       // P5-2: In-app review trigger
@@ -596,7 +566,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       if (mounted) {
         AppHaptics.success();
-        _showCelebrationThenXp(totalXp);
+        _showXpAnimation(
+          totalXp,
+          unlockedAchievementCount: unlockedAchievementCount,
+        );
       }
     } catch (e, st) {
       ref.read(levelUpEventProvider.notifier).allowLevelUpEvents();

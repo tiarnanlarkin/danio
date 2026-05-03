@@ -15,10 +15,7 @@ import '../../widgets/core/app_button.dart';
 class XpCelebrationScreen extends StatefulWidget {
   final VoidCallback onNext;
 
-  const XpCelebrationScreen({
-    super.key,
-    required this.onNext,
-  });
+  const XpCelebrationScreen({super.key, required this.onNext});
 
   @override
   State<XpCelebrationScreen> createState() => _XpCelebrationScreenState();
@@ -26,7 +23,6 @@ class XpCelebrationScreen extends StatefulWidget {
 
 class _XpCelebrationScreenState extends State<XpCelebrationScreen>
     with TickerProviderStateMixin {
-
   late final AnimationController _confettiController;
   late final AnimationController _badgeController;
   late final AnimationController _progressController;
@@ -68,7 +64,8 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
     );
     _badgeScaleCurve = CurvedAnimation(
       parent: _badgeController,
-      curve: Curves.easeOutBack, // Overshoots to ~1.15 then settles — same spring feel
+      curve: Curves
+          .easeOutBack, // Overshoots to ~1.15 then settles — same spring feel
     );
     _badgeScale = Tween<double>(begin: 0.0, end: 1.0).animate(_badgeScaleCurve);
 
@@ -81,7 +78,10 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
       parent: _progressController,
       curve: AppCurves.standardDecelerate,
     );
-    _progressValue = Tween<double>(begin: 0, end: 0.1).animate(_progressValueCurve);
+    _progressValue = Tween<double>(
+      begin: 0,
+      end: 0.1,
+    ).animate(_progressValueCurve);
 
     // Text fade
     _textController = AnimationController(
@@ -217,7 +217,9 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                           color: AppColors.onboardingAmber,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.onboardingAmber.withAlpha(102), // 40%
+                              color: AppColors.onboardingAmber.withAlpha(
+                                102,
+                              ), // 40%
                               blurRadius: 30,
                               offset: const Offset(0, 8),
                             ),
@@ -226,9 +228,8 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                         alignment: Alignment.center,
                         child: Text(
                           '+10 XP',
-                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            color: AppColors.onboardingWarmCream,
-                          ),
+                          style: Theme.of(context).textTheme.headlineLarge
+                              ?.copyWith(color: AppColors.onboardingWarmCream),
                         ),
                       ),
                     ),
@@ -264,8 +265,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                           width: 200,
                           decoration: BoxDecoration(
                             color: AppColors.border,
-                            borderRadius:
-                                AppRadius.pillRadius,
+                            borderRadius: AppRadius.pillRadius,
                           ),
                           alignment: Alignment.centerLeft,
                           child: FractionallySizedBox(
@@ -273,8 +273,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                             child: Container(
                               decoration: BoxDecoration(
                                 color: AppColors.onboardingAmber,
-                                borderRadius:
-                                    AppRadius.pillRadius,
+                                borderRadius: AppRadius.pillRadius,
                               ),
                             ),
                           ),
@@ -291,7 +290,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                     child: Semantics(
                       header: true,
                       child: Text(
-                        'First lesson complete 🎣',
+                        'First lesson complete',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: AppColors.textPrimary,
                         ),
@@ -357,10 +356,10 @@ class _ConfettiParticle {
   final Color color;
 
   _ConfettiParticle(Random r)
-      : angle = r.nextDouble() * 2 * pi,
-        speed = 80 + r.nextDouble() * 200,
-        size = 3 + r.nextDouble() * 5,
-        color = _confettiColors[r.nextInt(_confettiColors.length)];
+    : angle = r.nextDouble() * 2 * pi,
+      speed = 80 + r.nextDouble() * 200,
+      size = 3 + r.nextDouble() * 5,
+      color = _confettiColors[r.nextInt(_confettiColors.length)];
 
   static const _confettiColors = [
     AppColors.onboardingAmber, // amber
@@ -386,7 +385,8 @@ class _ConfettiPainter extends CustomPainter {
 
     for (final p in particles) {
       final dx = cos(p.angle) * p.speed * progress;
-      final dy = sin(p.angle) * p.speed * progress +
+      final dy =
+          sin(p.angle) * p.speed * progress +
           (50 * progress * progress); // gravity
       final pos = center + Offset(dx, dy);
 

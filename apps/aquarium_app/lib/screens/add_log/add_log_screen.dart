@@ -89,6 +89,39 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       _notes.isNotEmpty ||
       _photoPaths.isNotEmpty;
 
+  bool get _hasWaterParameter =>
+      _temperature != null ||
+      _ph != null ||
+      _ammonia != null ||
+      _nitrite != null ||
+      _nitrate != null ||
+      _gh != null ||
+      _kh != null ||
+      _phosphate != null;
+
+  String? _logContentValidationMessage() {
+    switch (_type) {
+      case LogType.waterTest:
+        return _hasWaterParameter
+            ? null
+            : 'Add at least one tested water value before saving.';
+      case LogType.waterChange:
+        return (_waterChangePercent != null && _waterChangePercent! > 0)
+            ? null
+            : 'Please enter water change percentage';
+      case LogType.observation:
+        return (_notes.trim().isNotEmpty || _photoPaths.isNotEmpty)
+            ? null
+            : 'Add a note or photo before saving this observation.';
+      case LogType.medication:
+        return (_notes.trim().isNotEmpty || _photoPaths.isNotEmpty)
+            ? null
+            : 'Add medication details or a photo before saving.';
+      default:
+        return null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -304,9 +337,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                               const Spacer(),
                               AppButton(
                                 label: 'Now',
-                                onPressed: () => setState(
-                                  () => _timestamp = DateTime.now(),
-                                ),
+                                onPressed: () =>
+                                    setState(() => _timestamp = DateTime.now()),
                                 variant: AppButtonVariant.text,
                                 size: AppButtonSize.small,
                               ),
@@ -374,10 +406,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Water Parameters',
-                    style: AppTypography.headlineSmall,
-                  ),
+                  Text('Water Parameters', style: AppTypography.headlineSmall),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Enter the values you tested. Leave blank if not tested.',
@@ -389,7 +418,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             const SizedBox(width: AppSpacing.sm),
             // Bulk entry toggle
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
               decoration: BoxDecoration(
                 color: _bulkEntryMode
                     ? AppOverlays.primary10
@@ -724,10 +756,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         Text('Water Change', style: AppTypography.headlineSmall),
         const SizedBox(height: AppSpacing.md),
 
-        Text(
-          'How much water did you change?',
-          style: AppTypography.bodyMedium,
-        ),
+        Text('How much water did you change?', style: AppTypography.bodyMedium),
         const SizedBox(height: AppSpacing.sm2),
 
         // Preset buttons
@@ -739,8 +768,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             return ChoiceChip(
               label: Text('$percent%'),
               selected: isSelected,
-              onSelected: (_) =>
-                  setState(() => _waterChangePercent = percent),
+              onSelected: (_) => setState(() => _waterChangePercent = percent),
               selectedColor: AppOverlays.secondary30,
             );
           }).toList(),
@@ -904,9 +932,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
     // Validate all form fields (range checks on water params)
     if (!(_formKey.currentState?.validate() ?? true)) return;
 
-    // Validate based on type
-    if (_type == LogType.waterChange && _waterChangePercent == null) {
-      AppFeedback.showWarning(context, 'Please enter water change percentage');
+    final contentValidationMessage = _logContentValidationMessage();
+    if (contentValidationMessage != null) {
+      AppFeedback.showWarning(context, contentValidationMessage);
       return;
     }
 

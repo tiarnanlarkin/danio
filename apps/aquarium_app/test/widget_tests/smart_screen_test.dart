@@ -53,7 +53,7 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
-      expect(find.text('🧠 Smart'), findsOneWidget);
+      expect(find.text('Smart'), findsOneWidget);
     });
 
     testWidgets('shows feature cards when API not configured', (tester) async {

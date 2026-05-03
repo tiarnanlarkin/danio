@@ -7,6 +7,7 @@ import '../widgets/core/app_text_field.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
+
 class CompatibilityCheckerScreen extends ConsumerStatefulWidget {
   const CompatibilityCheckerScreen({super.key});
 
@@ -47,6 +48,18 @@ class _CompatibilityCheckerScreenState
     });
   }
 
+  bool _isBettaNeonPair(SpeciesInfo a, SpeciesInfo b) {
+    final names = [a.commonName.toLowerCase(), b.commonName.toLowerCase()];
+    return names.any((name) => name.contains('betta')) &&
+        names.any((name) => name.contains('neon tetra'));
+  }
+
+  String _issueTitle(_CompatibilityIssue issue) {
+    return issue.species2.trim().isEmpty
+        ? issue.species1
+        : '${issue.species1} + ${issue.species2}';
+  }
+
   List<_CompatibilityIssue> get _issues {
     final issues = <_CompatibilityIssue>[];
 
@@ -54,6 +67,18 @@ class _CompatibilityCheckerScreenState
       for (var j = i + 1; j < _selectedSpecies.length; j++) {
         final a = _selectedSpecies[i];
         final b = _selectedSpecies[j];
+
+        if (_isBettaNeonPair(a, b)) {
+          issues.add(
+            _CompatibilityIssue(
+              species1: 'Betta + Neon Tetra',
+              species2: '',
+              severity: _Severity.warning,
+              reason:
+                  'Betta temperament varies. This can work in a planted tank with cover, but watch for chasing, fin nipping, and stress during the first week.',
+            ),
+          );
+        }
 
         // Check explicit incompatibility (exact match on name/family)
         if (a.avoidWith.any(
@@ -176,7 +201,7 @@ class _CompatibilityCheckerScreenState
               species2: '',
               severity: _Severity.warning,
               reason:
-                  '⚠️ ${species.commonName} requires at least ${species.minTankLitres.toStringAsFixed(0)}ℓ — your tank may be too small',
+                  '${species.commonName} requires at least ${species.minTankLitres.toStringAsFixed(0)}ℓ — your tank may be too small',
             ),
           );
         }
@@ -393,9 +418,7 @@ class _CompatibilityCheckerScreenState
                                     ? AppColors.error
                                     : AppColors.warning,
                               ),
-                              title: Text(
-                                '${issue.species1} + ${issue.species2}',
-                              ),
+                              title: Text(_issueTitle(issue)),
                               subtitle: Text(
                                 issue.reason,
                                 style: AppTypography.bodySmall,

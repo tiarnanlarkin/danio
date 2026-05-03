@@ -67,6 +67,32 @@ final _testLesson = Lesson(
   ],
 );
 
+final _quizLesson = Lesson(
+  id: 'lesson-quiz',
+  pathId: 'path-1',
+  title: 'Quiz Lesson',
+  description: 'A lesson with a quiz.',
+  orderIndex: 1,
+  xpReward: 50,
+  sections: _testLesson.sections,
+  quiz: Quiz(
+    id: 'quiz-1',
+    lessonId: 'lesson-quiz',
+    passingScore: 70,
+    bonusXp: 25,
+    questions: const [
+      QuizQuestion(
+        id: 'q1',
+        question: 'Which reading must stay at zero in a safe aquarium?',
+        options: ['Ammonia', 'Nitrate', 'GH', 'KH'],
+        correctIndex: 0,
+        explanation:
+            'Ammonia should read zero in a stable tank because even small amounts can burn gills and signal that the biofilter is not keeping up.',
+      ),
+    ],
+  ),
+);
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -240,6 +266,60 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.text('Complete Lesson'), findsOneWidget);
       expect(find.textContaining('review deck'), findsOneWidget);
+    });
+
+    testWidgets('quiz scrolls answer explanation into view after checking', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 560));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      int? selected;
+      var answered = false;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: StatefulBuilder(
+                builder: (context, setState) {
+                  return LessonQuizWidget(
+                    lesson: _quizLesson,
+                    isPracticeMode: false,
+                    currentQuizQuestion: 0,
+                    correctAnswers: answered ? 1 : 0,
+                    selectedAnswer: selected,
+                    answered: answered,
+                    showHint: false,
+                    onSelectAnswer: (index) => setState(() {
+                      selected = index;
+                    }),
+                    onShowHint: () {},
+                    onCheckOrAdvance:
+                        ({
+                          required selectedAnswer,
+                          required isCorrect,
+                          required isLastQuestion,
+                        }) async {
+                          setState(() {
+                            answered = true;
+                          });
+                        },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Ammonia'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Check Answer'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Ammonia should read zero'), findsOneWidget);
     });
   });
 }
