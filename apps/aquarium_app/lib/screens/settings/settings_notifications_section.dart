@@ -51,16 +51,17 @@ class _NotificationsToggle extends ConsumerWidget {
           title: const Text('Task Reminders'),
           subtitle: const Text('Get notified when tasks are due'),
           value: notificationsEnabled,
-          onChanged: (value) =>
-              _toggleNotifications(context, ref, value),
+          onChanged: (value) => _toggleNotifications(context, ref, value),
         ),
-        if (notificationsEnabled)
-          AppListTile(
-            leading: const SizedBox(width: AppSpacing.lg),
-            title: 'Test Notification',
-            subtitle: 'Send a test notification',
-            onTap: () => _testNotification(context),
-          ),
+        AppListTile(
+          leading: const SizedBox(width: AppSpacing.lg),
+          title: 'Test Notification',
+          subtitle: notificationsEnabled
+              ? 'Send a test notification'
+              : 'Enable Task Reminders to send a test notification',
+          isDisabled: !notificationsEnabled,
+          onTap: notificationsEnabled ? () => _testNotification(context) : null,
+        ),
       ],
     );
   }
@@ -84,9 +85,7 @@ Future<void> _toggleNotifications(
     }
   }
 
-  await ref
-      .read(settingsProvider.notifier)
-      .setNotificationsEnabled(enable);
+  await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
 
   if (context.mounted) {
     if (enable) {
@@ -107,7 +106,11 @@ Future<void> _testNotification(BuildContext context) async {
       AppFeedback.showSuccess(context, 'Test notification sent!');
     }
   } catch (e, st) {
-    logError('SettingsNotificationsSection: test notification failed: $e', stackTrace: st, tag: 'SettingsNotificationsSection');
+    logError(
+      'SettingsNotificationsSection: test notification failed: $e',
+      stackTrace: st,
+      tag: 'SettingsNotificationsSection',
+    );
     if (context.mounted) {
       AppFeedback.showError(
         context,

@@ -352,7 +352,11 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           .read(spacedRepetitionProvider.notifier)
           .startSession(mode: mode);
       if (!mounted) return;
-      NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
+      NavigationThrottle.push(
+        context,
+        const SpacedRepetitionPracticeScreen(),
+        rootNavigator: true,
+      );
     } catch (e, st) {
       logError(
         'PracticeHubScreen: start session failed: $e',
@@ -465,6 +469,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             NavigationThrottle.push(
               context,
               const SpacedRepetitionPracticeScreen(),
+              rootNavigator: true,
             );
           },
         );

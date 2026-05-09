@@ -56,6 +56,8 @@ class LogDetailScreen extends ConsumerWidget {
                     initialType: log.type,
                     existingLog: log,
                   ),
+                  rootNavigator: true,
+                  fullscreenDialog: true,
                 ),
               ),
               IconButton(

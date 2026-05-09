@@ -15,13 +15,11 @@ appId: com.tiarnanlarkin.danio
     point: "11%,49%"
 - tapOn:
     point: "11%,59%"
-- tapOn:
-    point: "50%,88%"
+- tapOn: "No Thanks"
 - waitForAnimationToEnd
 
 # Enter the current main-shell quick path.
-- tapOn:
-    point: "50%,91%"
+- tapOn: "Skip setup, explore first|Skip setup, I'll explore first"
 - waitForAnimationToEnd
 
 - runFlow:

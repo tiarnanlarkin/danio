@@ -46,8 +46,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final notificationPayloadNotifier = ValueNotifier<String?>(null);
 
 // Performance monitoring toggle (enable in debug mode)
-const bool _enablePerformanceMonitoring =
-    kDebugMode; // Set to true to enable
+const bool _enablePerformanceMonitoring = kDebugMode; // Set to true to enable
 const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 
 /// Buffer for errors that occur before Firebase Crashlytics initializes.
@@ -59,11 +58,13 @@ void main() async {
 
   // Enable edge-to-edge display (transparent status/nav bars)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarDividerColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ),
+  );
 
   // Fonts are bundled locally in assets/fonts/ (GDPR compliance — no runtime
   // network requests to Google servers). GoogleFonts will serve from the
@@ -118,22 +119,29 @@ void main() async {
   // callback so the splash/loading screen renders instantly.
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     // Initialize Firebase — graceful fallback if google-services.json is missing
+    final prefs = await SharedPreferences.getInstance();
+    final consent = prefs.getBool(kGdprAnalyticsConsentKey);
     bool firebaseInitialized = false;
-    try {
-      await Firebase.initializeApp();
-      firebaseInitialized = true;
-      appLog('Firebase initialised successfully', tag: 'Main');
-    } catch (e) {
-      logError('Firebase initialisation failed: $e', tag: 'Main');
+    if (consent == true) {
+      try {
+        await Firebase.initializeApp();
+        firebaseInitialized = true;
+        appLog('Firebase initialised successfully', tag: 'Main');
+      } catch (e) {
+        logError('Firebase initialisation failed: $e', tag: 'Main');
+      }
+    } else {
+      appLog(
+        'Firebase initialisation skipped until analytics consent is accepted',
+        tag: 'Main',
+      );
     }
 
     // ── Apply persisted GDPR analytics consent ──
     if (firebaseInitialized) {
-      final prefs = await SharedPreferences.getInstance();
-      final consent = prefs.getBool(kGdprAnalyticsConsentKey);
       // null means user hasn't decided yet — keep collection disabled
       // (AndroidManifest defaults are already false).
-      await applyAnalyticsConsent(consent == true);
+      await applyAnalyticsConsent(true);
     }
 
     // ── Upgrade error handlers to Crashlytics now that Firebase is ready ──
@@ -276,15 +284,13 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     notificationPayloadNotifier.value = null;
 
     int targetTab = -1;
-    MaterialPageRoute<void>? route;
+    WidgetBuilder? routeBuilder;
 
     if (payload == 'learn') {
       targetTab = 0;
     } else if (payload == 'review') {
       targetTab = 1;
-      route = MaterialPageRoute(
-        builder: (_) => const SpacedRepetitionPracticeScreen(),
-      );
+      routeBuilder = (_) => const SpacedRepetitionPracticeScreen();
     } else if (payload == 'home') {
       targetTab = 2;
     } else if (payload == 'care' || payload == 'water_change') {
@@ -292,9 +298,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       targetTab = 2;
     } else if (payload == 'achievements') {
       targetTab = 4;
-      route = MaterialPageRoute(
-        builder: (_) => const AchievementsScreen(),
-      );
+      routeBuilder = (_) => const AchievementsScreen();
     }
 
     if (targetTab < 0) return;
@@ -302,14 +306,37 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     ref.read(currentTabProvider.notifier).state = targetTab;
 
     // Tab-only navigation (no in-tab push) for payloads without a route.
-    if (route == null) return;
+    if (routeBuilder == null) return;
 
+    _pushNotificationRouteWhenReady(targetTab, routeBuilder);
+  }
+
+  void _pushNotificationRouteWhenReady(
+    int targetTab,
+    WidgetBuilder routeBuilder, {
+    int attempt = 0,
+  }) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final keys = ref.read(tabNavigatorKeysProvider);
       final tabNav = keys[targetTab].currentState;
-      if (tabNav != null && route != null) {
-        tabNav.push(route);
+      if (tabNav != null) {
+        tabNav.push(MaterialPageRoute<void>(builder: routeBuilder));
+        return;
       }
+
+      if (attempt >= 10) {
+        debugPrint(
+          '[Notifications] Dropped payload route: tab navigator $targetTab not ready',
+        );
+        return;
+      }
+
+      _pushNotificationRouteWhenReady(
+        targetTab,
+        routeBuilder,
+        attempt: attempt + 1,
+      );
     });
   }
 
@@ -414,7 +441,9 @@ class _AppRouterState extends ConsumerState<_AppRouter>
             context,
           );
           precacheImage(
-            const AssetImage('assets/images/illustrations/practice_header.webp'),
+            const AssetImage(
+              'assets/images/illustrations/practice_header.webp',
+            ),
             context,
           );
           // Precache room background for the user's selected theme
@@ -486,10 +515,13 @@ class _AppRouterState extends ConsumerState<_AppRouter>
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Danio',
-                style: (Theme.of(context).textTheme.headlineMedium ?? const TextStyle()).copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style:
+                    (Theme.of(context).textTheme.headlineMedium ??
+                            const TextStyle())
+                        .copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
               ),
               const SizedBox(height: AppSpacing.lg),
               const BubbleLoader.small(color: AppColors.whiteAlpha70),

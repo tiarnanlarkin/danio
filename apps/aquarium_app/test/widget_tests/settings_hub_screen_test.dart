@@ -75,5 +75,31 @@ void main() {
       );
       expect(find.text('Workshop'), findsOneWidget);
     });
+
+    testWidgets('More action tiles expose one concise semantics node', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        await tester.scrollUntilVisible(
+          find.text('Preferences'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+
+        final finder = find.bySemanticsLabel(
+          'Preferences, Theme, sounds and notifications',
+        );
+        expect(finder, findsOneWidget);
+
+        final node = tester.getSemantics(finder);
+        expect(node.childrenCount, 0);
+      } finally {
+        semantics.dispose();
+      }
+    });
   });
 }

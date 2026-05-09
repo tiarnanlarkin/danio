@@ -8,7 +8,6 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/bubble_loader.dart';
-import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
@@ -449,9 +448,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     );
 
     if (confirmed != true) return;
+    if (!mounted) return;
 
     // Soft delete the tank
     final actions = ref.read(tankActionsProvider);
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     actions.softDeleteTank(
       widget.tankId,
       onUndoExpired: () {
@@ -460,18 +462,16 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     );
 
     // Navigate back: pop TankSettings and TankDetail only (2 screens)
-    if (mounted) {
-      Navigator.of(context)
-        ..pop()
-        ..pop();
+    navigator
+      ..pop()
+      ..pop();
 
-      DanioSnackBar.show(
-        context,
-        'Tank deleted',
-        duration: kSnackbarDuration,
-        actionLabel: 'Undo',
-        onAction: () => actions.undoDeleteTank(widget.tankId),
-      );
-    }
+    AppFeedback.showNeutralViaMessenger(
+      messenger,
+      'Tank deleted',
+      duration: kSnackbarDuration,
+      actionLabel: 'Undo',
+      onAction: () => actions.undoDeleteTank(widget.tankId),
+    );
   }
 }

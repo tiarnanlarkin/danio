@@ -216,6 +216,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             NavigationThrottle.push(
               context,
               const CompatibilityCheckerScreen(),
+              rootNavigator: true,
             );
           },
         );
@@ -288,7 +289,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }) {
     if (!mounted || _isNavigatingToCreate) return;
     setState(() => _isNavigatingToCreate = true);
-    Navigator.of(context)
+    Navigator.of(context, rootNavigator: true)
         .push(MaterialPageRoute(builder: (_) => CreateTankScreen(mode: mode)))
         .whenComplete(() async {
           if (mounted) {
@@ -314,7 +315,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToWaterChange(BuildContext context, Tank tank) {
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       ModalScaleRoute(
         page: AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
       ),
@@ -380,7 +381,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
     if (mounted) {
       setState(() => _selectedTankIds.clear());
-      NavigationThrottle.push(context, const BackupRestoreScreen());
+      NavigationThrottle.push(
+        context,
+        const BackupRestoreScreen(),
+        rootNavigator: true,
+      );
     }
   }
 

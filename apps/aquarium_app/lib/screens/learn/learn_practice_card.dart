@@ -38,6 +38,7 @@ class LearnPracticeCard extends ConsumerWidget {
             NavigationThrottle.push(
               context,
               const SpacedRepetitionPracticeScreen(),
+              rootNavigator: true,
             );
           },
           borderRadius: AppRadius.mediumRadius,

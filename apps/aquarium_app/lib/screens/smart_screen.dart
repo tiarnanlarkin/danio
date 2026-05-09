@@ -22,6 +22,7 @@ import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/themed_tab_header.dart';
 import '../utils/logger.dart';
+import 'settings_screen.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
@@ -167,7 +168,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
       // API status / connectivity
       if (!aiConfigured)
-        const _AiSetupBanner()
+        _AiSetupBanner(
+          onOpenPreferences: () => NavigationThrottle.push(
+            context,
+            const SettingsScreen(),
+            rootNavigator: true,
+          ),
+        )
       else
         ref.watch(isOnlineProvider)
             ? _UsageChip(callCount: openai.apiCallsThisMonth)
@@ -181,8 +188,9 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Fish & Plant ID',
         subtitle: aiConfigured
             ? 'Snap a photo to identify species'
-            : 'Requires AI setup',
+            : 'Requires AI setup - tap to open Preferences',
         color: AppColors.primary,
+        isLocked: !aiConfigured,
         onTap: aiConfigured
             ? () {
                 if (!ref.read(isOnlineProvider)) {
@@ -191,7 +199,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 }
                 AppRoutes.toFishId(context);
               }
-            : null,
+            : () => _showAiSetupSheet(context),
       ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
       _FeatureCard(
@@ -199,8 +207,9 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Symptom Checker',
         subtitle: aiConfigured
             ? 'Describe symptoms, get instant advice'
-            : 'Requires AI setup',
+            : 'Requires AI setup - tap to open Preferences',
         color: AppColors.error,
+        isLocked: !aiConfigured,
         onTap: aiConfigured
             ? () {
                 if (!ref.read(isOnlineProvider)) {
@@ -209,7 +218,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 }
                 AppRoutes.toSymptomTriage(context);
               }
-            : null,
+            : () => _showAiSetupSheet(context),
       ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
 
       _FeatureCard(
@@ -217,9 +226,10 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Weekly Care Plan',
         subtitle: aiConfigured
             ? 'Your personalised maintenance schedule'
-            : 'Requires AI setup',
+            : 'Requires AI setup - tap to open Preferences',
         color: AppColors
             .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
+        isLocked: !aiConfigured,
         onTap: aiConfigured
             ? () {
                 if (!ref.read(isOnlineProvider)) {
@@ -228,7 +238,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 }
                 AppRoutes.toWeeklyPlan(context);
               }
-            : null,
+            : () => _showAiSetupSheet(context),
       ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
       // Compatibility Checker (AI version when key configured)
       if (aiConfigured) ...[
@@ -247,6 +257,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           onTap: () => NavigationThrottle.push(
             context,
             const CompatibilityCheckerScreen(),
+            rootNavigator: true,
           ),
         ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
       ],
@@ -403,7 +414,12 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             // Content
             SliverPadding(
               // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.md,
+                MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+              ),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) => items[index],
@@ -413,6 +429,67 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showAiSetupSheet(BuildContext context) {
+    showAppBottomSheet<void>(
+      context: context,
+      child: Builder(
+        builder: (sheetContext) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    danioSurfaceVisual(DanioSurfaceVisualKey.aiSetup).icon,
+                    color: danioSurfaceVisual(
+                      DanioSurfaceVisualKey.aiSetup,
+                    ).color,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    'Set up Smart Hub',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Fish & Plant ID, Symptom Checker, and Weekly Care Plan need AI setup before they can run.',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AppButton(
+                label: 'Open Preferences',
+                leadingIcon: Icons.tune,
+                isFullWidth: true,
+                onPressed: () {
+                  Navigator.maybePop(sheetContext);
+                  NavigationThrottle.push(
+                    context,
+                    const SettingsScreen(),
+                    rootNavigator: true,
+                  );
+                },
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              AppButton(
+                label: 'Not now',
+                isFullWidth: true,
+                variant: AppButtonVariant.text,
+                onPressed: () => Navigator.maybePop(sheetContext),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -552,7 +629,9 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 // ── Subwidgets ──────────────────────────────────────────────────────────
 
 class _AiSetupBanner extends StatelessWidget {
-  const _AiSetupBanner();
+  final VoidCallback onOpenPreferences;
+
+  const _AiSetupBanner({required this.onOpenPreferences});
 
   @override
   Widget build(BuildContext context) {
@@ -603,6 +682,14 @@ class _AiSetupBanner extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: 'Open Preferences',
+            leadingIcon: Icons.tune,
+            onPressed: onOpenPreferences,
+            isFullWidth: true,
+            variant: AppButtonVariant.secondary,
+          ),
         ],
       ),
     );
@@ -637,6 +724,7 @@ class _FeatureCard extends StatelessWidget {
   final String subtitle;
   final Color color;
   final VoidCallback? onTap;
+  final bool isLocked;
 
   const _FeatureCard({
     required this.icon,
@@ -644,6 +732,7 @@ class _FeatureCard extends StatelessWidget {
     required this.subtitle,
     required this.color,
     required this.onTap,
+    this.isLocked = false,
   });
 
   @override
@@ -651,48 +740,58 @@ class _FeatureCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     final isDisabled = onTap == null;
+    final semanticLabel = isLocked
+        ? '$title. $subtitle. Locked. Open Preferences to set up AI.'
+        : '$title. $subtitle';
 
-    return Opacity(
-      opacity: isDisabled ? 0.6 : 1.0,
-      child: Card(
-        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: AppRadius.md2Radius,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: color.withValues(alpha: 0.1),
-                  child: Icon(icon, color: color),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        subtitle,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
+    return Semantics(
+      container: true,
+      excludeSemantics: true,
+      button: onTap != null,
+      enabled: onTap != null,
+      label: semanticLabel,
+      child: Opacity(
+        opacity: isDisabled ? 0.6 : (isLocked ? 0.75 : 1.0),
+        child: Card(
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: AppRadius.md2Radius,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: color.withValues(alpha: 0.1),
+                    child: Icon(icon, color: color),
                   ),
-                ),
-                if (isDisabled)
-                  Icon(Icons.lock_outline, color: context.textSecondary)
-                else
-                  Icon(Icons.chevron_right, color: context.textSecondary),
-              ],
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          subtitle,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (isLocked || isDisabled)
+                    Icon(Icons.lock_outline, color: context.textSecondary)
+                  else
+                    Icon(Icons.chevron_right, color: context.textSecondary),
+                ],
+              ),
             ),
           ),
         ),

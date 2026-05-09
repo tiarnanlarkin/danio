@@ -1,8 +1,9 @@
 appId: com.tiarnanlarkin.danio
 ---
 # Current Learn surface smoke.
-# Full lesson completion is better covered by Flutter integration/widget tests
-# because Maestro cannot reliably activate every Flutter card in this build.
+# Full lesson completion and lesson hint expansion are better covered by a
+# seeded integration/debug-deep-link flow because Maestro cannot reliably
+# activate every Flutter lesson card in this build.
 
 - launchApp:
     clearState: true
@@ -13,12 +14,10 @@ appId: com.tiarnanlarkin.danio
     point: "11%,49%"
 - tapOn:
     point: "11%,59%"
-- tapOn:
-    point: "50%,88%"
+- tapOn: "No Thanks"
 - waitForAnimationToEnd
 
-- tapOn:
-    point: "50%,91%"
+- tapOn: "Skip setup, explore first|Skip setup, I'll explore first"
 - waitForAnimationToEnd
 
 - runFlow:

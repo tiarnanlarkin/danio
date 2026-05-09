@@ -44,6 +44,15 @@ first", which lands in the main app shell with seed/demo state.
 
 ## Main Flows
 
+Run the deterministic release-smoke batch one flow at a time. The runner
+clears app state before each flow unless `-KeepState` is passed:
+
+```powershell
+.\scripts\run_maestro_smoke.ps1 -DeviceId emulator-5554
+```
+
+Individual flows are still useful while debugging a single journey:
+
 ```powershell
 maestro test .maestro\smoke-test.yaml
 maestro test .maestro\tab-navigation.yaml
@@ -52,10 +61,28 @@ maestro test .maestro\calculators.yaml
 maestro test .maestro\achievements.yaml
 ```
 
-Run every current flow:
+Avoid using folder-wide Maestro execution as the release gate. It is fine for
+local exploration, but the explicit runner above gives each deterministic flow
+a fresh app state and a stable order.
 
 ```powershell
 maestro test .maestro
+```
+
+## Flutter Integration Smoke
+
+Use `flutter drive` for the current device smoke. Do not use the old
+`flutter test` device invocation for this release check; it has drifted from
+the working driver entrypoint.
+
+```powershell
+flutter drive -d emulator-5554 --driver=test_driver\integration_test.dart --target=integration_test\smoke_test_v2.dart
+```
+
+Wrapper:
+
+```powershell
+.\scripts\run_integration_smoke.ps1 -DeviceId emulator-5554
 ```
 
 ## QA Ladder
@@ -66,14 +93,19 @@ Use this order for release confidence:
 2. `flutter test`
 3. Android debug APK build
 4. Android release APK/AAB build
-5. Fresh-install Maestro smoke on Android
-6. Targeted Maestro journeys for Learn, Practice, Tank, Smart, More
-7. Logcat scan for `FATAL EXCEPTION`, `AndroidRuntime`, `ANR in`, and known plugin errors
+5. Flutter integration smoke with `flutter drive`
+6. Fresh-install black-box Android smoke with `scripts\run_android_blackbox_smoke.ps1`
+7. Deterministic Maestro smoke with `scripts\run_maestro_smoke.ps1`
+8. Targeted Maestro journeys for Learn, Practice, Tank, Smart, More
+9. Logcat scan for `FATAL EXCEPTION`, `AndroidRuntime`, `ANR in`, and known plugin errors
 
 ## Notes
 
 - Prefer visible text and accessibility labels over coordinates.
 - Coordinates are only used where Flutter semantics do not expose a stable
   target, such as the current consent checkboxes.
+- Debug-only QA deep links can be checked by running
+  `scripts\run_android_blackbox_smoke.ps1 -IncludeQaDeepLinks` against a debug
+  build. Release builds do not register `danio://qa/...` routes.
 - Do not commit generated Maestro binaries, `patrol_test/`, screenshots, or
   run output.

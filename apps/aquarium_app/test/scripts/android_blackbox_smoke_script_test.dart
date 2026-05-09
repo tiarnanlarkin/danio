@@ -43,6 +43,34 @@ void main() {
     expect(source, contains('Try-WaitFirstVisibleAppState 2'));
     expect(source, contains("android.widget.CheckBox"));
     expect(source, contains(r'$tapNode = $checkboxChild'));
+    expect(source, contains(r'$clickableChild = $node.SelectSingleNode'));
+    expect(source, contains(r'$tapNode = $clickableChild'));
+    expect(
+      source,
+      contains(
+        r'if ($tapNode.GetAttribute("class") -eq "android.widget.CheckBox")',
+      ),
+    );
+    expect(
+      source,
+      contains(r'$center.X = [int][math]::Min($center.X, $left + 96)'),
+    );
+  });
+
+  test('blackbox smoke script verifies create tank dirty text was entered', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    expect(source, contains('danio://qa/create-tank?name=Q'));
+    expect(source, contains('"input", "text", "Q"'));
+    expect(
+      source,
+      contains(r'Assert-Visible "text=`"Q`"|49 characters remaining" 6'),
+    );
+    expect(source, contains('function Hide-SoftKeyboard'));
+    expect(source, contains('Hide-SoftKeyboard'));
+    expect(source, contains(r'if (Try-Assert-Visible "Discard new tank\?" 1)'));
   });
 
   test('blackbox smoke script can bypass first-run onboarding', () {
@@ -52,7 +80,9 @@ void main() {
 
     expect(
       source,
-      contains('Tap-Visible "Skip setup, explore first|Skip setup, I\'ll explore first"'),
+      contains(
+        'Tap-Visible "Skip setup, explore first|Skip setup, I\'ll explore first"',
+      ),
     );
   });
 
@@ -81,10 +111,7 @@ void main() {
       'scripts/run_android_blackbox_smoke.ps1',
     ).readAsStringSync();
 
-    expect(
-      source,
-      contains('Assert-Visible "Workshop|Tools.*calculators" 10'),
-    );
+    expect(source, contains('Assert-Visible "Workshop|Tools.*calculators" 10'));
     expect(source, contains(r'Tap-Visible $TapPattern 20'));
     expect(source, contains(r'Assert-Visible $ExpectedPattern 10'));
   });
@@ -106,22 +133,28 @@ void main() {
     ).readAsStringSync();
 
     expect(source, contains(r'for ($attempt = 1; $attempt -le 4; $attempt++)'));
-    expect(source, contains(r'$previousErrorActionPreference = $ErrorActionPreference'));
+    expect(
+      source,
+      contains(r'$previousErrorActionPreference = $ErrorActionPreference'),
+    );
     expect(source, contains(r'$ErrorActionPreference = "Continue"'));
     expect(source, contains(r'Start-Sleep -Milliseconds (500 * $attempt)'));
     expect(source, contains(r'$outputText'));
   });
 
-  test('blackbox smoke script can stop known emulator-interfering packages', () {
-    final source = File(
-      'scripts/run_android_blackbox_smoke.ps1',
-    ).readAsStringSync();
+  test(
+    'blackbox smoke script can stop known emulator-interfering packages',
+    () {
+      final source = File(
+        'scripts/run_android_blackbox_smoke.ps1',
+      ).readAsStringSync();
 
-    expect(source, contains(r'[string[]]$ForceStopPackageIds = @()'));
-    expect(source, contains('function Stop-InterferingPackages'));
-    expect(source, contains('Force-stopping emulator package'));
-    expect(source, contains(r'"am", "force-stop", $packageId'));
-  });
+      expect(source, contains(r'[string[]]$ForceStopPackageIds = @()'));
+      expect(source, contains('function Stop-InterferingPackages'));
+      expect(source, contains('Force-stopping emulator package'));
+      expect(source, contains(r'"am", "force-stop", $packageId'));
+    },
+  );
 
   test('blackbox smoke script recovers if another app steals foreground', () {
     final source = File(
@@ -132,5 +165,22 @@ void main() {
     expect(source, contains('function Bring-AppForeground'));
     expect(source, contains("interrupted smoke; bringing \$AppId back"));
     expect(source, contains('Ensure-AppForeground'));
+    expect(source, contains(r'if ($ForceStopPackageIds -contains $package)'));
+    expect(
+      source,
+      contains(r'Invoke-Adb @("shell", "am", "force-stop", $package)'),
+    );
   });
+
+  test(
+    'blackbox smoke script does not over-back out of More after Workshop',
+    () {
+      final source = File(
+        'scripts/run_android_blackbox_smoke.ps1',
+      ).readAsStringSync();
+
+      expect(source, contains('if (-not (Try-Assert-Visible "More" 2)) {'));
+      expect(source, contains('Assert-Visible "More"'));
+    },
+  );
 }

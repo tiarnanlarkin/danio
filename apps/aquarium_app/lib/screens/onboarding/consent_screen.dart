@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,12 +25,19 @@ Future<void> applyAnalyticsConsent(bool accepted) async {
   // firebase_analytics removed — no-op; crash reporting toggled below.
   appLog('ConsentScreen: analytics consent=$accepted', tag: 'ConsentScreen');
   try {
+    if (accepted && Firebase.apps.isEmpty) {
+      await Firebase.initializeApp();
+    }
+    if (Firebase.apps.isEmpty) return;
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
       accepted,
     );
   } catch (e) {
     // Firebase may not be initialised — safe to ignore.
-    appLog('ConsentScreen: Firebase Crashlytics not available: $e', tag: 'ConsentScreen');
+    appLog(
+      'ConsentScreen: Firebase Crashlytics not available: $e',
+      tag: 'ConsentScreen',
+    );
   }
 }
 
@@ -50,11 +60,19 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   bool _ageConfirmed = false;
   bool _tosAccepted = false;
 
+  void _toggleAgeConfirmed() {
+    setState(() => _ageConfirmed = !_ageConfirmed);
+  }
+
+  void _toggleTosAccepted() {
+    setState(() => _tosAccepted = !_tosAccepted);
+  }
+
   Future<void> _respond(bool accepted) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setBool(kGdprAnalyticsConsentKey, accepted);
     await prefs.setBool('tos_accepted', true);
-    await applyAnalyticsConsent(accepted);
+    unawaited(applyAnalyticsConsent(accepted));
     widget.onConsentGiven();
   }
 
@@ -112,30 +130,37 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               // ── Age confirmation checkbox (REQUIRED R3) ──────────────
               Semantics(
                 label: 'Age confirmation checkbox',
-                child: InkWell(
-                  borderRadius: AppRadius.smallRadius,
-                  onTap: () => setState(() => _ageConfirmed = !_ageConfirmed),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Checkbox(
-                          value: _ageConfirmed,
-                          onChanged: (v) =>
-                              setState(() => _ageConfirmed = v ?? false),
-                          activeColor: AppColors.primary,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            'I confirm I am 13 years of age or older',
-                            style: theme.textTheme.bodyMedium,
+                checked: _ageConfirmed,
+                button: true,
+                onTap: _toggleAgeConfirmed,
+                child: ExcludeSemantics(
+                  child: InkWell(
+                    borderRadius: AppRadius.smallRadius,
+                    onTap: _toggleAgeConfirmed,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.xs,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: _ageConfirmed,
+                            onChanged: (v) =>
+                                setState(() => _ageConfirmed = v ?? false),
+                            activeColor: AppColors.primary,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              'I confirm I am 13 years of age or older',
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -178,60 +203,68 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
 
               // ── ToS & Privacy Policy acceptance checkbox (REQUIRED R6) ──
               Semantics(
-                label: 'Terms of Service and Privacy Policy acceptance checkbox',
-                child: InkWell(
-                  borderRadius: AppRadius.smallRadius,
-                  onTap: () => setState(() => _tosAccepted = !_tosAccepted),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Checkbox(
-                          value: _tosAccepted,
-                          onChanged: (v) =>
-                              setState(() => _tosAccepted = v ?? false),
-                          activeColor: AppColors.primary,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: theme.textTheme.bodyMedium,
-                              children: [
-                                const TextSpan(
-                                  text: 'I have read and agree to the ',
-                                ),
-                                TextSpan(
-                                  text: 'Terms of Service',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: AppColors.primary,
-                                    decoration: TextDecoration.underline,
+                label:
+                    'Terms of Service and Privacy Policy acceptance checkbox',
+                checked: _tosAccepted,
+                button: true,
+                onTap: _toggleTosAccepted,
+                child: ExcludeSemantics(
+                  child: InkWell(
+                    borderRadius: AppRadius.smallRadius,
+                    onTap: _toggleTosAccepted,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.xs,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: _tosAccepted,
+                            onChanged: (v) =>
+                                setState(() => _tosAccepted = v ?? false),
+                            activeColor: AppColors.primary,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                style: theme.textTheme.bodyMedium,
+                                children: [
+                                  const TextSpan(
+                                    text: 'I have read and agree to the ',
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => _launchUrl(
-                                          'https://tiarnanlarkin.github.io/danio/terms-of-service.html',
-                                        ),
-                                ),
-                                const TextSpan(text: ' and '),
-                                TextSpan(
-                                  text: 'Privacy Policy',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: AppColors.primary,
-                                    decoration: TextDecoration.underline,
+                                  TextSpan(
+                                    text: 'Terms of Service',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: AppColors.primary,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchUrl(
+                                        'https://tiarnanlarkin.github.io/danio/terms-of-service.html',
+                                      ),
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => _launchUrl(
-                                          'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
-                                        ),
-                                ),
-                              ],
+                                  const TextSpan(text: ' and '),
+                                  TextSpan(
+                                    text: 'Privacy Policy',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: AppColors.primary,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchUrl(
+                                        'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
+                                      ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

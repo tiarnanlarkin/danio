@@ -330,7 +330,7 @@ This is a safety/trust issue. Users who see empty data think their fish data is 
 
 **3. Wire integration tests to CI**
 
-Add a GitHub Actions step or Firebase Test Lab run for `smoke_test_v2.dart`. Even one E2E test on a real device running before every merge to `main` is worth more than 100 more smoke widget tests.
+Add a GitHub Actions step or Firebase Test Lab run for `smoke_test_v2.dart` using `flutter drive -d emulator-5554 --driver=test_driver\integration_test.dart --target=integration_test\smoke_test_v2.dart`. Even one E2E test on a real device running before every merge to `main` is worth more than 100 more smoke widget tests.
 
 **4. Livestock add dialog: at minimum a smoke test**
 

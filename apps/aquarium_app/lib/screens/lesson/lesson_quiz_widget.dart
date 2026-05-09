@@ -21,6 +21,7 @@ class LessonQuizWidget extends ConsumerStatefulWidget {
   final int? selectedAnswer;
   final bool answered;
   final bool showHint;
+  final bool forceShowHintControls;
 
   /// Called when the user selects an answer option (before checking).
   final ValueChanged<int> onSelectAnswer;
@@ -47,6 +48,7 @@ class LessonQuizWidget extends ConsumerStatefulWidget {
     required this.selectedAnswer,
     required this.answered,
     required this.showHint,
+    this.forceShowHintControls = false,
     required this.onSelectAnswer,
     required this.onCheckOrAdvance,
     required this.onShowHint,
@@ -57,6 +59,9 @@ class LessonQuizWidget extends ConsumerStatefulWidget {
 }
 
 class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
+  static const String _hintText =
+      'Look for keywords in the question - the correct answer often relates directly to the lesson content you just read.';
+
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -89,6 +94,15 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
     super.dispose();
   }
 
+  void _showHint() {
+    SemanticsService.sendAnnouncement(
+      View.of(context),
+      'Hint shown. $_hintText',
+      TextDirection.ltr,
+    );
+    widget.onShowHint();
+  }
+
   @override
   Widget build(BuildContext context) {
     final lesson = widget.lesson;
@@ -99,7 +113,6 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
     final showHint = widget.showHint;
     final onSelectAnswer = widget.onSelectAnswer;
     final onCheckOrAdvance = widget.onCheckOrAdvance;
-    final onShowHint = widget.onShowHint;
     final quiz = lesson.quiz;
     if (quiz == null || quiz.questions.isEmpty) {
       return Center(
@@ -129,7 +142,10 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
       userProfileProvider.select((p) => p.value?.experienceLevel),
     );
     final isBeginner = profile == ExperienceLevel.beginner;
-    final hintExtraItems = (isBeginner && !answered && !showHint) ? 1 : 0;
+    final shouldShowHintControls = isBeginner || widget.forceShowHintControls;
+    final showHintButton = shouldShowHintControls && !answered && !showHint;
+    final showHintPanel = shouldShowHintControls && !answered && showHint;
+    final hintItemCount = (showHintButton || showHintPanel) ? 1 : 0;
     final hasExplanation = answered && question.explanation != null;
 
     return Column(
@@ -187,12 +203,11 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2),
             itemCount:
                 3 +
-                hintExtraItems +
+                hintItemCount +
                 question.options.length +
                 (hasExplanation
                     ? 3
-                    : 0) + // spacing + explanation + breathing room
-                (showHint && !answered ? 1 : 0), // hint text
+                    : 0), // spacing + explanation + breathing room
             itemBuilder: (context, index) {
               // Spacing at top
               if (index == 0) {
@@ -218,8 +233,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
 
               // Hint button (beginners only, before options)
               const hintButtonIndex = 3;
-              const hintTextIndex = hintButtonIndex + 1;
-              if (hintExtraItems > 0 && index == hintButtonIndex) {
+              if (showHintButton && index == hintButtonIndex) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: Align(
@@ -230,16 +244,13 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
                       child: ActionChip(
                         avatar: const Icon(Icons.lightbulb_outline, size: 16),
                         label: const Text('Need a hint?'),
-                        onPressed: onShowHint,
+                        onPressed: _showHint,
                       ),
                     ),
                   ),
                 );
               }
-              if (showHint &&
-                  !answered &&
-                  index == hintTextIndex &&
-                  hintExtraItems > 0) {
+              if (showHintPanel && index == hintButtonIndex) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: Container(
@@ -273,8 +284,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
               }
 
               // Answer options — offset by hint items
-              final optionsOffset =
-                  3 + hintExtraItems + (showHint && !answered ? 1 : 0);
+              final optionsOffset = 3 + hintItemCount;
               if (index >= optionsOffset &&
                   index < optionsOffset + question.options.length) {
                 final optionIndex = index - optionsOffset;
@@ -282,7 +292,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
                 final isSelected = selectedAnswer == optionIndex;
                 final isCorrect = optionIndex == question.correctIndex;
 
-                return QuizAnswerOption(
+                final answerOption = QuizAnswerOption(
                   key: ValueKey(
                     'quiz_option_${currentQuizQuestion}_$optionIndex',
                   ),
@@ -293,6 +303,28 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
                   answered: answered,
                   onTap: () => onSelectAnswer(optionIndex),
                 );
+
+                if (answered && isSelected && isCorrect) {
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      answerOption,
+                      Positioned(
+                        left: AppSpacing.md,
+                        top: AppSpacing.md,
+                        child: Semantics(
+                          label:
+                              'Selected answer ${String.fromCharCode(65 + optionIndex)}, correct',
+                          selected: true,
+                          liveRegion: true,
+                          child: const _SelectedCorrectAnswerMarker(),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                return answerOption;
               }
 
               // Explanation (after answering)
@@ -397,6 +429,28 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SelectedCorrectAnswerMarker extends StatelessWidget {
+  const _SelectedCorrectAnswerMarker();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 32,
+      height: 32,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: AppColors.success,
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(
+        Icons.check,
+        size: AppIconSizes.sm,
+        color: Colors.white,
+      ),
     );
   }
 }

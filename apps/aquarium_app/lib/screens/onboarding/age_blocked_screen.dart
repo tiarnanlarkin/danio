@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../theme/app_theme.dart';
 
@@ -32,13 +33,31 @@ class AgeBlockedScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                TextButton(
-                  onPressed: () => launchUrl(
-                    Uri.parse(
-                      'https://tiarnanlarkin.github.io/danio-legal/privacy/',
-                    ),
-                  ),
-                  child: const Text('Privacy Policy'),
+                FilledButton.icon(
+                  onPressed: () => SystemNavigator.pop(),
+                  icon: const Icon(Icons.close),
+                  label: const Text('Close Danio'),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                TextButton.icon(
+                  onPressed: () async {
+                    await launchUrl(
+                      Uri.parse(
+                        'https://tiarnanlarkin.github.io/danio-legal/privacy/',
+                      ),
+                      mode: LaunchMode.externalApplication,
+                    );
+                  },
+                  icon: const Icon(Icons.privacy_tip_outlined),
+                  label: const Text('Privacy Policy'),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'If this was selected by mistake, ask a parent or guardian to reinstall and complete setup with you.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: context.textSecondary),
                 ),
               ],
             ),

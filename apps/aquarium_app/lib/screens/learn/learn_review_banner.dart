@@ -43,6 +43,7 @@ class LearnReviewBanner extends ConsumerWidget {
               NavigationThrottle.push(
                 context,
                 const SpacedRepetitionPracticeScreen(),
+                rootNavigator: true,
               );
             } catch (e, st) {
               logError(

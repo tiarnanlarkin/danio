@@ -54,6 +54,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   bool _isSaving = false;
   bool _isPickingImages = false;
   bool _bulkEntryMode = false;
+  bool _discardConfirmed = false;
 
   // Photos
   final List<String> _photoPaths = [];
@@ -213,7 +214,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !_hasUnsavedData || _isSaving,
+      canPop: _discardConfirmed || !_hasUnsavedData || _isSaving,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         final shouldPop = await showAppDestructiveDialog(
@@ -223,7 +224,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           destructiveLabel: 'Discard',
         );
         if (shouldPop == true && context.mounted) {
-          Navigator.maybePop(context);
+          setState(() => _discardConfirmed = true);
+          Navigator.of(context).pop();
         }
       },
       child: GestureDetector(
@@ -362,7 +364,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         hintText: 'e.g. fish behaviour, products added...',
                       ),
                       maxLines: 3,
-                      onChanged: (v) => _notes = v,
+                      onChanged: (v) => setState(() => _notes = v),
                     ),
                   ],
                 ),
@@ -1043,6 +1045,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
 
       if (mounted) {
+        final messenger = ScaffoldMessenger.of(context);
         // Show water change celebration on root overlay (survives nav pop)
         if (log.type == LogType.waterChange) {
           final rootOverlay = Overlay.of(context, rootOverlay: true);
@@ -1054,11 +1057,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           );
           rootOverlay.insert(celebrationEntry);
         }
-        Navigator.maybePop(context);
-        AppFeedback.showSuccess(
-          context,
+        AppFeedback.showSuccessViaMessenger(
+          messenger,
           '${log.typeName} logged! +$effectiveXp XP',
         );
+        Navigator.maybePop(context);
       }
     } catch (e, st) {
       logError(

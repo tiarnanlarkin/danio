@@ -238,12 +238,13 @@ class _AppListTileState extends State<AppListTile> {
     }
 
     tile = Semantics(
+      container: true,
       button: _isInteractive,
       selected: widget.isSelected,
       enabled: !widget.isDisabled,
       label: widget.title,
       hint: widget.subtitle,
-      child: tile,
+      child: ExcludeSemantics(child: tile),
     );
 
     if (widget.showDivider) {

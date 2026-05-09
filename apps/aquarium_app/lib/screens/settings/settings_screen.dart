@@ -56,6 +56,9 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Preferences')),
       body: ListView.builder(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+        ),
         itemCount: sections.length,
         itemBuilder: (ctx, i) => sections[i](ctx),
       ),
@@ -189,8 +192,11 @@ class SettingsScreen extends ConsumerWidget {
         icon: Icons.backup,
         title: 'Backup & Restore',
         subtitle: 'Export or import your tank data',
-        onTap: () =>
-            NavigationThrottle.push(context, const BackupRestoreScreen()),
+        onTap: () => NavigationThrottle.push(
+          context,
+          const BackupRestoreScreen(),
+          rootNavigator: true,
+        ),
       ),
       (_) => NavListTile(
         icon: Icons.info_outline,

@@ -95,7 +95,12 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('More')),
       body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+        ),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],
       ),
@@ -130,7 +135,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'Shop Street, Discover local aquarium shops',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const ShopStreetScreen(),
+            rootNavigator: true,
+          );
+        },
         child: PrimaryActionTile(
           icon: Icons.storefront,
           title: 'Shop Street',
@@ -138,7 +151,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           iconColor: AppColors.success,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const ShopStreetScreen());
+            NavigationThrottle.push(
+              context,
+              const ShopStreetScreen(),
+              rootNavigator: true,
+            );
           },
         ),
       ),
@@ -147,7 +164,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'Gem Shop, Spend gems on rewards and cosmetics',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const GemShopScreen(),
+            rootNavigator: true,
+          );
+        },
         child: PrimaryActionTile(
           icon: danioSurfaceVisual(DanioSurfaceVisualKey.gemShop).icon,
           title: 'Gem Shop',
@@ -155,7 +180,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.gemShop).color,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const GemShopScreen());
+            NavigationThrottle.push(
+              context,
+              const GemShopScreen(),
+              rootNavigator: true,
+            );
           },
         ),
       ),
@@ -164,7 +193,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'Achievements, Badges and achievements',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const AchievementsScreen(),
+            rootNavigator: true,
+          );
+        },
         child: PrimaryActionTile(
           icon: Icons.emoji_events,
           title: 'Achievements',
@@ -172,7 +209,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           iconColor: AppColors.warning,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const AchievementsScreen());
+            NavigationThrottle.push(
+              context,
+              const AchievementsScreen(),
+              rootNavigator: true,
+            );
           },
         ),
       ),
@@ -185,7 +226,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'Workshop, Calculators, guides and planners',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const WorkshopScreen(),
+            rootNavigator: true,
+          );
+        },
         child: PrimaryActionTile(
           icon: Icons.build,
           title: 'Workshop',
@@ -194,7 +243,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
               .primary, // BUG-10: was textSecondary (gray), now warm amber
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const WorkshopScreen());
+            NavigationThrottle.push(
+              context,
+              const WorkshopScreen(),
+              rootNavigator: true,
+            );
           },
         ),
       ),
@@ -203,7 +256,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'Analytics, Progress charts and statistics',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const AnalyticsScreen(),
+            rootNavigator: true,
+          );
+        },
         child: PrimaryActionTile(
           icon: Icons.analytics,
           title: 'Analytics',
@@ -211,7 +272,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           iconColor: AppColors.primary,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const AnalyticsScreen());
+            NavigationThrottle.push(
+              context,
+              const AnalyticsScreen(),
+              rootNavigator: true,
+            );
           },
         ),
       ),
@@ -224,7 +289,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'Preferences, Theme, sounds and notifications',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const SettingsScreen(),
+            rootNavigator: true,
+          );
+        },
         child: PrimaryActionTile(
           icon: Icons.tune,
           title: 'Preferences',
@@ -232,7 +305,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           iconColor: context.textSecondary,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const SettingsScreen());
+            NavigationThrottle.push(
+              context,
+              const SettingsScreen(),
+              rootNavigator: true,
+            );
           },
         ),
       ),
@@ -242,7 +319,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       // P3-003: wrap with ConstrainedBox so the card is never less than 80 px tall
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'Backup and Restore, Export or sync your aquarium data',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const BackupRestoreScreen(),
+            rootNavigator: true,
+          );
+        },
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 80),
           child: PrimaryActionTile(
@@ -252,7 +337,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
             iconColor: context.textSecondary,
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              NavigationThrottle.push(context, const BackupRestoreScreen());
+              NavigationThrottle.push(
+                context,
+                const BackupRestoreScreen(),
+                rootNavigator: true,
+              );
             },
           ),
         ),
@@ -262,7 +351,15 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       Semantics(
         button: true,
+        excludeSemantics: true,
         label: 'About, Version, privacy and support',
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const AboutScreen(),
+            rootNavigator: true,
+          );
+        },
         child: PrimaryActionTile(
           icon: Icons.info,
           title: 'About',
@@ -270,7 +367,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           iconColor: context.textSecondary,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const AboutScreen());
+            NavigationThrottle.push(
+              context,
+              const AboutScreen(),
+              rootNavigator: true,
+            );
           },
         ),
       ),
@@ -289,8 +390,6 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           ),
         ),
       ),
-      // Extra padding so version footer clears the bottom nav bar
-      const SizedBox(height: 80),
     ];
   }
 
@@ -376,7 +475,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
               tooltip: 'Settings',
               icon: const Icon(Icons.edit),
               onPressed: () {
-                NavigationThrottle.push(context, const SettingsScreen());
+                NavigationThrottle.push(
+                  context,
+                  const SettingsScreen(),
+                  rootNavigator: true,
+                );
               },
             ),
           ],

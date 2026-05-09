@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../providers/tank_provider.dart';
@@ -89,6 +90,18 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       });
 
       await _identify();
+    } on PlatformException catch (e, st) {
+      logError(
+        'FishIdScreen: image pick failed: $e',
+        stackTrace: st,
+        tag: 'FishIdScreen',
+      );
+      if (!mounted) return;
+      setState(
+        () => _error = _isPermissionError(e)
+            ? 'Danio needs camera or photo permission to identify an image. Open Android Settings > Apps > Danio > Permissions, then try again.'
+            : 'Couldn\'t grab that image. Try again?',
+      );
     } catch (e, st) {
       logError(
         'FishIdScreen: image pick failed: $e',
@@ -98,6 +111,15 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       if (!mounted) return;
       setState(() => _error = 'Couldn\'t grab that image. Try again?');
     }
+  }
+
+  bool _isPermissionError(PlatformException error) {
+    final code = error.code.toLowerCase();
+    final message = (error.message ?? '').toLowerCase();
+    return code.contains('permission') ||
+        code.contains('denied') ||
+        message.contains('permission') ||
+        message.contains('denied');
   }
 
   /// Key for persisting the OpenAI data disclosure acceptance.

@@ -43,6 +43,35 @@ Widget _wrap({
   );
 }
 
+Widget _wrapWithLauncher({
+  required InMemoryStorageService storage,
+  LogType type = LogType.waterTest,
+  String tankId = 'tank-1',
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        AddLogScreen(tankId: tankId, initialType: type),
+                  ),
+                );
+              },
+              child: const Text('Open log form'),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
@@ -155,6 +184,57 @@ void main() {
       final logs = await svc.getLogsForTank(tankId);
       expect(logs, hasLength(1));
       expect(logs.single.waterTest?.ph, 7.2);
+    });
+  });
+
+  group('AddLogScreen dirty close behavior', () {
+    testWidgets('cancel keeps a dirty log form open', (tester) async {
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      await tester.pumpWidget(_wrapWithLauncher(storage: svc));
+
+      await tester.tap(find.text('Open log form'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextFormField).last, 'Some notes');
+      await tester.pump();
+      await tester.tap(find.byTooltip('Back'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Discard changes?'), findsOneWidget);
+
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddLogScreen), findsOneWidget);
+      expect(find.text('Some notes'), findsOneWidget);
+    });
+
+    testWidgets('discard closes a dirty log form without looping', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      await tester.pumpWidget(_wrapWithLauncher(storage: svc));
+
+      await tester.tap(find.text('Open log form'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextFormField).last, 'Some notes');
+      await tester.pump();
+      await tester.tap(find.byTooltip('Back'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Discard changes?'), findsOneWidget);
+
+      await tester.tap(find.text('Discard'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddLogScreen), findsNothing);
+      expect(find.text('Open log form'), findsOneWidget);
+      expect(find.text('Discard changes?'), findsNothing);
     });
   });
 }

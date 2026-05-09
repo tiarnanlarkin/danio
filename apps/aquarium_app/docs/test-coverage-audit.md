@@ -27,7 +27,7 @@
 Two integration test files exist:
 
 - `integration_test/smoke_test.dart` — Patrol-based, requires `patrol_cli` and a running emulator
-- `integration_test/smoke_test_v2.dart` — Standard `flutter_test` integration runner
+- `integration_test/smoke_test_v2.dart` — Standard `flutter_test` integration runner, run with `flutter drive -d emulator-5554 --driver=test_driver\integration_test.dart --target=integration_test\smoke_test_v2.dart`
 
 Both test: app launch, tab navigation, Learn tab load, basic smoke checks. No CI automation was found wiring these. They exist but are likely run manually.
 
@@ -294,7 +294,7 @@ Both test: app launch, tab navigation, Learn tab load, basic smoke checks. No CI
 
 5. **Add provider state tests for `TankProvider` and `UserProfileNotifier`** — the two providers that gate the most app behaviour. Test state transitions, not just initial values.
 
-6. **Wire integration tests to CI.** Add a GitHub Actions (or equivalent) step that runs `flutter test integration_test/smoke_test_v2.dart` on a Firebase Test Lab device or emulator, at minimum on PRs to `main`.
+6. **Wire integration tests to CI.** Add a GitHub Actions (or equivalent) step that runs `flutter drive -d emulator-5554 --driver=test_driver\integration_test.dart --target=integration_test\smoke_test_v2.dart` on a Firebase Test Lab device or emulator, at minimum on PRs to `main`.
 
 ### Long term
 

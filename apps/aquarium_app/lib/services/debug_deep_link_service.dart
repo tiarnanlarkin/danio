@@ -16,13 +16,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/lesson_provider.dart';
 import '../screens/tab_navigator.dart'; // currentTabProvider, tabNavigatorKeysProvider
 import '../screens/achievements_screen.dart';
+import '../screens/create_tank_screen.dart';
 import '../screens/debug_menu_screen.dart';
+import '../screens/debug_qa_seed_screen.dart';
 import '../screens/species_browser_screen.dart';
 import '../screens/plant_browser_screen.dart';
 import '../screens/tank_comparison_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/glossary_screen.dart';
 import '../screens/faq_screen.dart';
+import '../screens/settings_screen.dart';
 import '../screens/lesson/lesson_screen.dart';
 
 /// Method channel used by [MainActivity] (debug build only) to pass the
@@ -82,13 +85,25 @@ class DebugDeepLinkService {
 
     final route = segments[0];
 
+    if (route == 'settings') {
+      ref.read(currentTabProvider.notifier).state = 4;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
+      });
+      return;
+    }
+
     // ── Tab routes ────────────────────────────────────────────────────────
     final tabIndex = const {
       'learn': 0,
       'practice': 1,
       'tank': 2,
       'smart': 3,
-      'settings': 4,
+      'more': 4,
     }[route];
 
     if (tabIndex != null) {
@@ -102,6 +117,16 @@ class DebugDeepLinkService {
     switch (route) {
       case 'debug':
         nav.push(MaterialPageRoute(builder: (_) => const DebugMenuScreen()));
+
+      case 'new-tank':
+      case 'create-tank':
+        nav.push(
+          MaterialPageRoute(
+            builder: (_) => CreateTankScreen(
+              initialName: uri.queryParameters['name'] ?? '',
+            ),
+          ),
+        );
 
       case 'achievements':
         nav.push(MaterialPageRoute(builder: (_) => const AchievementsScreen()));
@@ -129,10 +154,32 @@ class DebugDeepLinkService {
         nav.push(MaterialPageRoute(builder: (_) => const FaqScreen()));
 
       case 'lesson':
+        ref.read(currentTabProvider.notifier).state = 0;
         final pathId = segments.length > 1 ? segments[1] : null;
         if (pathId != null) {
           _navigateToLesson(pathId, context, ref);
         }
+
+      case 'lesson-quiz':
+        ref.read(currentTabProvider.notifier).state = 0;
+        nav.push(
+          MaterialPageRoute(
+            builder: (_) => DebugQaLessonQuizScreen(
+              state: uri.queryParameters['state'] ?? 'hint',
+              pathId: uri.queryParameters['path'] ?? 'nitrogen_cycle',
+            ),
+          ),
+        );
+
+      case 'practice-session':
+        ref.read(currentTabProvider.notifier).state = 1;
+        nav.push(
+          MaterialPageRoute(
+            builder: (_) => DebugQaPracticeSessionScreen(
+              pathId: uri.queryParameters['path'] ?? 'nitrogen_cycle',
+            ),
+          ),
+        );
 
       default:
         debugPrint('[QA] Unknown route: $route');

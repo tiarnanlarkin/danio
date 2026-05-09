@@ -727,6 +727,16 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     }
   }
 
+  /// Abandon the active session without deleting or rescheduling remaining
+  /// review cards. Used when the user explicitly exits mid-session.
+  void abandonSession() {
+    state = state.copyWith(
+      clearSession: true,
+      clearResolvedQuestions: true,
+      clearError: true,
+    );
+  }
+
   /// Get due cards count
   int getDueCount() {
     return state.cards.where((c) => c.isDue).length;

@@ -5,6 +5,8 @@
 // LessonScreen depends on spacedRepetitionProvider (which triggers
 // NotificationService), so we override it with a fake notifier.
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/lesson_screen.dart';
 import 'package:danio/models/learning.dart';
+import 'package:danio/models/user_profile.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
@@ -96,6 +99,18 @@ final _quizLesson = Lesson(
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+String _profileJson({ExperienceLevel level = ExperienceLevel.beginner}) {
+  final now = DateTime(2026, 1, 1);
+  return jsonEncode(
+    UserProfile(
+      id: 'profile-1',
+      experienceLevel: level,
+      createdAt: now,
+      updatedAt: now,
+    ).toJson(),
+  );
+}
 
 Widget _wrap({Lesson? lesson}) {
   SharedPreferences.setMockInitialValues({});
@@ -320,6 +335,99 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Ammonia should read zero'), findsOneWidget);
+    });
+
+    testWidgets('quiz keeps selected correct answer marker after reveal', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: MediaQuery(
+              data: const MediaQueryData(disableAnimations: true),
+              child: Scaffold(
+                body: LessonQuizWidget(
+                  lesson: _quizLesson,
+                  isPracticeMode: false,
+                  currentQuizQuestion: 0,
+                  correctAnswers: 1,
+                  selectedAnswer: 0,
+                  answered: true,
+                  showHint: false,
+                  onSelectAnswer: (_) {},
+                  onShowHint: () {},
+                  onCheckOrAdvance:
+                      ({
+                        required selectedAnswer,
+                        required isCorrect,
+                        required isLastQuestion,
+                      }) async {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.bySemanticsLabel('Selected answer A, correct'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('hint chip reveals visible hint panel and announces it', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'user_profile': _profileJson()});
+
+      var showHint = false;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: StatefulBuilder(
+                builder: (context, setState) {
+                  return LessonQuizWidget(
+                    lesson: _quizLesson,
+                    isPracticeMode: false,
+                    currentQuizQuestion: 0,
+                    correctAnswers: 0,
+                    selectedAnswer: null,
+                    answered: false,
+                    showHint: showHint,
+                    onSelectAnswer: (_) {},
+                    onShowHint: () {
+                      setState(() {
+                        showHint = true;
+                      });
+                    },
+                    onCheckOrAdvance:
+                        ({
+                          required selectedAnswer,
+                          required isCorrect,
+                          required isLastQuestion,
+                        }) async {},
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Need a hint?'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Look for keywords'), findsOneWidget);
+      final announcements = tester.takeAnnouncements();
+      expect(
+        announcements.any((announcement) {
+          return announcement.message.contains('Hint shown');
+        }),
+        isTrue,
+      );
     });
   });
 }

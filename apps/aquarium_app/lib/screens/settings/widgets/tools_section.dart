@@ -26,7 +26,8 @@ class ToolsSection extends StatelessWidget {
           icon: Icons.notifications_active,
           title: 'Reminders',
           subtitle: 'Schedule maintenance tasks',
-          onTap: () => NavigationThrottle.push(context, const RemindersScreen()),
+          onTap: () =>
+              NavigationThrottle.push(context, const RemindersScreen()),
         ),
         NavListTile(
           icon: Icons.favorite,
@@ -35,14 +36,18 @@ class ToolsSection extends StatelessWidget {
           onTap: () => NavigationThrottle.push(
             context,
             const WishlistScreen(category: WishlistCategory.fish),
+            rootNavigator: true,
           ),
         ),
         NavListTile(
           icon: Icons.compare,
           title: 'Compare Tanks',
           subtitle: 'Side-by-side tank comparison',
-          onTap: () =>
-              NavigationThrottle.push(context, const TankComparisonScreen()),
+          onTap: () => NavigationThrottle.push(
+            context,
+            const TankComparisonScreen(),
+            rootNavigator: true,
+          ),
         ),
         NavListTile(
           icon: Icons.calculate_outlined,
@@ -51,21 +56,28 @@ class ToolsSection extends StatelessWidget {
           onTap: () => NavigationThrottle.push(
             context,
             const WaterChangeCalculatorScreen(),
+            rootNavigator: true,
           ),
         ),
         NavListTile(
           icon: Icons.science_outlined,
           title: 'Dosing Calculator',
           subtitle: 'Calculate fertiliser & medication doses',
-          onTap: () =>
-              NavigationThrottle.push(context, const DosingCalculatorScreen()),
+          onTap: () => NavigationThrottle.push(
+            context,
+            const DosingCalculatorScreen(),
+            rootNavigator: true,
+          ),
         ),
         NavListTile(
           icon: Icons.straighten,
           title: 'Unit Converter',
           subtitle: 'Volume, temperature, length, hardness',
-          onTap: () =>
-              NavigationThrottle.push(context, const UnitConverterScreen()),
+          onTap: () => NavigationThrottle.push(
+            context,
+            const UnitConverterScreen(),
+            rootNavigator: true,
+          ),
         ),
         NavListTile(
           icon: Icons.view_in_ar,
@@ -74,6 +86,7 @@ class ToolsSection extends StatelessWidget {
           onTap: () => NavigationThrottle.push(
             context,
             const TankVolumeCalculatorScreen(),
+            rootNavigator: true,
           ),
         ),
         NavListTile(
@@ -83,21 +96,28 @@ class ToolsSection extends StatelessWidget {
           onTap: () => NavigationThrottle.push(
             context,
             const CompatibilityCheckerScreen(),
+            rootNavigator: true,
           ),
         ),
         NavListTile(
           icon: Icons.lightbulb,
           title: 'Lighting Schedule',
           subtitle: 'Optimise light duration for your setup',
-          onTap: () =>
-              NavigationThrottle.push(context, const LightingScheduleScreen()),
+          onTap: () => NavigationThrottle.push(
+            context,
+            const LightingScheduleScreen(),
+            rootNavigator: true,
+          ),
         ),
         NavListTile(
           icon: Icons.bar_chart,
           title: 'Stocking Calculator',
           subtitle: 'Check if your tank is overstocked',
-          onTap: () =>
-              NavigationThrottle.push(context, const StockingCalculatorScreen()),
+          onTap: () => NavigationThrottle.push(
+            context,
+            const StockingCalculatorScreen(),
+            rootNavigator: true,
+          ),
         ),
       ],
     );

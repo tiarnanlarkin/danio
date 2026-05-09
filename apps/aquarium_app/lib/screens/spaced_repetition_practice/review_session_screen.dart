@@ -67,6 +67,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         if (!didPop) {
           final shouldPop = await _showExitDialog();
           if (shouldPop == true && mounted && context.mounted) {
+            ref.read(spacedRepetitionProvider.notifier).abandonSession();
             Navigator.of(context).pop();
           }
         }
@@ -86,6 +87,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 final shouldExit = await _showExitDialog();
                 if (!context.mounted) return;
                 if (shouldExit == true && mounted) {
+                  ref.read(spacedRepetitionProvider.notifier).abandonSession();
                   Navigator.of(context).pop();
                 }
               },
@@ -183,8 +185,8 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
             // Question content
             if (currentQuestion is MultipleChoiceQuestion)
-              Expanded(
-                child: McCardWidget(
+              _buildResolvedQuestionBody(
+                McCardWidget(
                   question: currentQuestion,
                   onAnswered: (correct) => _recordAnswer(correct),
                   onNext: _nextCard,
@@ -192,8 +194,8 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 ),
               )
             else if (currentQuestion is MatchingPairsQuestion)
-              Expanded(
-                child: MatchingCardWidget(
+              _buildResolvedQuestionBody(
+                MatchingCardWidget(
                   question: currentQuestion,
                   onCompleted: (score) => _recordAnswer(score >= 0.5),
                   onNext: _nextCard,
@@ -208,6 +210,15 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             ],
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildResolvedQuestionBody(Widget child) {
+    return Expanded(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg2),
+        child: child,
       ),
     );
   }

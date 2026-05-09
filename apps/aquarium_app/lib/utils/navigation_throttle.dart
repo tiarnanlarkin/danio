@@ -18,8 +18,8 @@ class NavigationThrottle {
   static int _busyCount = 0;
   static Timer? _safetyTimer;
 
-  /// Starts a 2-second safety-reset timer that clears all navigation locks
-  /// in case an exception or hang prevents the finally block from running.
+  /// Starts a safety-reset timer that clears all navigation locks in case an
+  /// exception or hang prevents the normal short debounce from running.
   static void _startSafetyTimer() {
     _safetyTimer?.cancel();
     _safetyTimer = Timer(const Duration(seconds: 5), () {
@@ -27,10 +27,23 @@ class NavigationThrottle {
     });
   }
 
-  /// Cancels the safety timer (called when navigation completes normally).
+  /// Cancels the safety timer.
   static void _cancelSafetyTimer() {
     _safetyTimer?.cancel();
     _safetyTimer = null;
+  }
+
+  static void _releaseLock() {
+    if (_busyCount > 0) {
+      _busyCount--;
+    }
+    if (_busyCount == 0) {
+      _cancelSafetyTimer();
+    }
+  }
+
+  static void _scheduleShortRelease() {
+    Timer(const Duration(milliseconds: 450), _releaseLock);
   }
 
   /// Push a route with tap-spam protection.
@@ -39,6 +52,8 @@ class NavigationThrottle {
     BuildContext context,
     Widget page, {
     Route<T>? route,
+    bool rootNavigator = false,
+    bool fullscreenDialog = false,
   }) async {
     if (_busyCount > 0) return null;
     // R-090: Guard against stale context — widget may have been unmounted
@@ -47,19 +62,22 @@ class NavigationThrottle {
     _busyCount++;
     _startSafetyTimer();
     try {
-      final result = await Navigator.push<T>(
-        context,
-        route ?? MaterialPageRoute<T>(builder: (_) => page),
+      final navigator = Navigator.of(context, rootNavigator: rootNavigator);
+      final result = navigator.push<T>(
+        route ??
+            MaterialPageRoute<T>(
+              builder: (_) => page,
+              fullscreenDialog: fullscreenDialog,
+            ),
       );
+      _scheduleShortRelease();
       return result;
     } catch (e) {
+      _releaseLock();
       // Absorb Navigator-not-ready errors (null check / lookup failure)
       // that can occur if the widget tree is torn down mid-navigation.
       debugPrint('[NavigationThrottle] push failed: $e');
       return null;
-    } finally {
-      _cancelSafetyTimer();
-      _busyCount = 0;
     }
   }
 
@@ -75,18 +93,17 @@ class NavigationThrottle {
     _busyCount++;
     _startSafetyTimer();
     try {
-      final result = await Navigator.pushNamed<T>(
+      final result = Navigator.pushNamed<T>(
         context,
         routeName,
         arguments: arguments,
       );
+      _scheduleShortRelease();
       return result;
     } catch (e) {
+      _releaseLock();
       debugPrint('[NavigationThrottle] pushNamed failed: $e');
       return null;
-    } finally {
-      _cancelSafetyTimer();
-      _busyCount = 0;
     }
   }
 

@@ -15,7 +15,6 @@ import '../../widgets/core/app_states.dart';
 import '../../widgets/core/glass_card.dart';
 import '../onboarding_screen.dart';
 import '../../widgets/themed_tab_header.dart';
-import '../../utils/app_constants.dart';
 import '../../widgets/learning_streak_badge.dart';
 import '../../widgets/placement_challenge_card.dart';
 import '../../navigation/app_routes.dart';
@@ -695,8 +694,12 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           }, childCount: metadata.length),
                         ),
 
-                        const SliverToBoxAdapter(
-                          child: SizedBox(height: kScrollEndPadding),
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height:
+                                MediaQuery.of(context).padding.bottom +
+                                AppSpacing.xxxl,
+                          ),
                         ),
                       ],
                     ],

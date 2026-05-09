@@ -40,17 +40,29 @@ class AppRoutes {
 
   /// Navigate to the Achievements screen.
   static void toAchievements(BuildContext context) {
-    NavigationThrottle.push(context, const AchievementsScreen());
+    NavigationThrottle.push(
+      context,
+      const AchievementsScreen(),
+      rootNavigator: true,
+    );
   }
 
   /// Navigate to the Gem Shop screen.
   static void toGemShop(BuildContext context) {
-    NavigationThrottle.push(context, const GemShopScreen());
+    NavigationThrottle.push(
+      context,
+      const GemShopScreen(),
+      rootNavigator: true,
+    );
   }
 
   /// Navigate to the Workshop screen.
   static void toWorkshop(BuildContext context) {
-    NavigationThrottle.push(context, const WorkshopScreen());
+    NavigationThrottle.push(
+      context,
+      const WorkshopScreen(),
+      rootNavigator: true,
+    );
   }
 
   /// Navigate to the Smart screen (AI features).
@@ -60,7 +72,11 @@ class AppRoutes {
 
   /// Navigate to the Spaced Repetition practice screen.
   static void toSpacedRepetition(BuildContext context) {
-    NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
+    NavigationThrottle.push(
+      context,
+      const SpacedRepetitionPracticeScreen(),
+      rootNavigator: true,
+    );
   }
 
   // ── Tank management ──────────────────────────────────────────────────────
@@ -76,6 +92,8 @@ class AppRoutes {
     NavigationThrottle.push(
       context,
       AddLogScreen(tankId: tankId, initialType: initialType),
+      rootNavigator: true,
+      fullscreenDialog: true,
     );
   }
 
@@ -86,41 +104,63 @@ class AppRoutes {
       context,
       page,
       route: TankDetailRoute(page: page),
+      rootNavigator: true,
     );
   }
 
   /// Navigate to the Create Tank screen.
   static void toCreateTank(BuildContext context) {
-    NavigationThrottle.push(context, const CreateTankScreen());
+    NavigationThrottle.push(
+      context,
+      const CreateTankScreen(),
+      rootNavigator: true,
+      fullscreenDialog: true,
+    );
   }
 
   // ── Smart / AI features ──────────────────────────────────────────────────
 
   /// Navigate to the Symptom Triage screen.
   static void toSymptomTriage(BuildContext context) {
-    NavigationThrottle.push(context, const SymptomTriageScreen());
+    NavigationThrottle.push(
+      context,
+      const SymptomTriageScreen(),
+      rootNavigator: true,
+    );
   }
 
   /// Navigate to the Fish ID screen.
   static void toFishId(BuildContext context) {
-    NavigationThrottle.push(context, const FishIdScreen());
+    NavigationThrottle.push(context, const FishIdScreen(), rootNavigator: true);
   }
 
   /// Navigate to the Weekly Plan screen.
   static void toWeeklyPlan(BuildContext context) {
-    NavigationThrottle.push(context, const WeeklyPlanScreen());
+    NavigationThrottle.push(
+      context,
+      const WeeklyPlanScreen(),
+      rootNavigator: true,
+    );
   }
 
   // ── Stories & lessons ────────────────────────────────────────────────────
 
   /// Navigate to the Story Browser screen.
   static void toStoryBrowser(BuildContext context) {
-    NavigationThrottle.push(context, const StoryBrowserScreen());
+    NavigationThrottle.push(
+      context,
+      const StoryBrowserScreen(),
+      rootNavigator: true,
+    );
   }
 
   /// Navigate to a specific story's play screen.
   static void toStoryPlay(BuildContext context, Story story) {
-    NavigationThrottle.push(context, StoryPlayScreen(story: story));
+    NavigationThrottle.push(
+      context,
+      StoryPlayScreen(story: story),
+      rootNavigator: true,
+    );
   }
 
   /// Replace the current route with the next lesson (used in lesson

@@ -16,15 +16,47 @@ import 'package:danio/services/storage_service.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({SetupMode mode = SetupMode.guided}) {
+Widget _wrap({SetupMode mode = SetupMode.guided, String initialName = ''}) {
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(InMemoryStorageService()),
     ],
     child: MaterialApp(
-      home: CreateTankScreen(mode: mode),
+      home: CreateTankScreen(mode: mode, initialName: initialName),
     ),
   );
+}
+
+Widget _wrapWithLauncher({SetupMode mode = SetupMode.guided}) {
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+    ],
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CreateTankScreen(mode: mode),
+                  ),
+                );
+              },
+              child: const Text('Open tank form'),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Future<void> _openTankForm(WidgetTester tester) async {
+  await tester.tap(find.text('Open tank form'));
+  await tester.pumpAndSettle();
+  expect(find.byType(CreateTankScreen), findsOneWidget);
 }
 
 // ---------------------------------------------------------------------------
@@ -76,7 +108,9 @@ void main() {
       );
     });
 
-    testWidgets('tapping continue without name shows validation', (tester) async {
+    testWidgets('tapping continue without name shows validation', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
@@ -101,8 +135,9 @@ void main() {
       expect(find.text('New Tank'), findsNothing);
     });
 
-    testWidgets('renders single-form layout (no progress bar, no Next)',
-        (tester) async {
+    testWidgets('renders single-form layout (no progress bar, no Next)', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(mode: SetupMode.expert));
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
@@ -133,8 +168,9 @@ void main() {
       expect(find.text('300L'), findsOneWidget);
     });
 
-    testWidgets('tapping a size preset populates the volume field',
-        (tester) async {
+    testWidgets('tapping a size preset populates the volume field', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(mode: SetupMode.expert));
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
@@ -144,6 +180,59 @@ void main() {
 
       // The volume TextFormField should now contain "120".
       expect(find.widgetWithText(TextFormField, '120'), findsOneWidget);
+    });
+  });
+
+  group('CreateTankScreen dirty close behavior', () {
+    testWidgets('initial name seeds a dirty guided form', (tester) async {
+      await tester.pumpWidget(_wrap(initialName: 'Q'));
+      await tester.pumpAndSettle();
+
+      expect(find.widgetWithText(TextFormField, 'Q'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Close and discard new tank'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Discard new tank?'), findsOneWidget);
+    });
+
+    testWidgets('cancel keeps a dirty guided form open', (tester) async {
+      await tester.pumpWidget(_wrapWithLauncher());
+      await _openTankForm(tester);
+
+      await tester.enterText(find.byType(TextFormField).first, 'QA Tank');
+      await tester.pump();
+      await tester.tap(find.byTooltip('Close and discard new tank'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Discard new tank?'), findsOneWidget);
+
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CreateTankScreen), findsOneWidget);
+      expect(find.text('QA Tank'), findsOneWidget);
+    });
+
+    testWidgets('discard closes a dirty guided form without looping', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrapWithLauncher());
+      await _openTankForm(tester);
+
+      await tester.enterText(find.byType(TextFormField).first, 'QA Tank');
+      await tester.pump();
+      await tester.tap(find.byTooltip('Close and discard new tank'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Discard new tank?'), findsOneWidget);
+
+      await tester.tap(find.text('Discard'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CreateTankScreen), findsNothing);
+      expect(find.text('Open tank form'), findsOneWidget);
+      expect(find.text('Discard new tank?'), findsNothing);
     });
   });
 }

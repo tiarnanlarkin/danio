@@ -66,7 +66,12 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Backup & Restore')),
       body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+        ),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],
       ),

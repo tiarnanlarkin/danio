@@ -5,7 +5,10 @@ param(
   [string]$ArtifactDir = "build\qa-artifacts\android-blackbox",
   [string]$InstallApkPath = "",
   [string[]]$ForceStopPackageIds = @(),
-  [switch]$KeepState
+  [switch]$KeepState,
+  [switch]$IncludeQaDeepLinks,
+  [switch]$ExercisePlatformHandoffs,
+  [string]$QaLessonPathId = "nitrogen_cycle"
 )
 
 $ErrorActionPreference = "Stop"
@@ -78,7 +81,21 @@ function Install-DebugApk {
 
   $apk = (Resolve-Path $InstallApkPath).Path
   Write-Host "Installing debug APK $apk..."
-  Invoke-Adb @("install", "-r", $apk) | Out-Host
+  try {
+    Invoke-Adb @("shell", "am", "force-stop", $AppId) | Out-Null
+    Invoke-Adb @("install", "-r", $apk) | Out-Host
+  }
+  catch {
+    if ("$_" -notmatch "INSTALL_FAILED_UPDATE_INCOMPATIBLE") {
+      throw
+    }
+
+    Write-Host "Existing package signature differs; uninstalling $AppId and retrying install..."
+    Invoke-Adb @("uninstall", $AppId) | Out-Null
+    Invoke-Adb @("install", $apk) | Out-Host
+  }
+
+  Invoke-Adb @("shell", "am", "force-stop", $AppId) | Out-Null
 }
 
 function Stop-InterferingPackages {
@@ -117,6 +134,12 @@ function Tap-Percent {
 }
 
 function Press-Back {
+  Ensure-AppForeground
+  Invoke-Adb @("shell", "input", "keyevent", "KEYCODE_BACK") | Out-Null
+  Start-Sleep -Milliseconds 900
+}
+
+function Hide-SoftKeyboard {
   Ensure-AppForeground
   Invoke-Adb @("shell", "input", "keyevent", "KEYCODE_BACK") | Out-Null
   Start-Sleep -Milliseconds 900
@@ -166,7 +189,6 @@ function Bring-AppForeground {
     "shell",
     "am",
     "start",
-    "-W",
     "-n",
     $activity
   ) | Out-Null
@@ -186,6 +208,9 @@ function Ensure-AppForeground {
   }
 
   Write-Host "Foreground package '$package' interrupted smoke; bringing $AppId back..."
+  if ($ForceStopPackageIds -contains $package) {
+    Invoke-Adb @("shell", "am", "force-stop", $package) | Out-Null
+  }
   Bring-AppForeground
   Start-Sleep -Milliseconds 700
 }
@@ -307,21 +332,34 @@ function Tap-Visible {
 
     try {
       [xml]$doc = $hierarchy
-      $nodes = $doc.SelectNodes("//*[@clickable='true']")
+      $nodes = $doc.SelectNodes("//*[@clickable='true' or @checkable='true' or @class='android.widget.Button']")
       foreach ($node in $nodes) {
         if ($node.GetAttribute("enabled") -ne "true") {
           continue
         }
 
-        $label = "$($node.GetAttribute("content-desc")) $($node.GetAttribute("text"))"
+        $label = "$($node.GetAttribute("content-desc")) $($node.GetAttribute("text")) $($node.GetAttribute("hint"))"
         if ($label -match $Pattern) {
           $tapNode = $node
           $checkboxChild = $node.SelectSingleNode(".//*[@class='android.widget.CheckBox' and @clickable='true' and @enabled='true']")
           if ($checkboxChild) {
             $tapNode = $checkboxChild
           }
+          elseif ($node.GetAttribute("clickable") -ne "true") {
+            $clickableChild = $node.SelectSingleNode(".//*[@clickable='true' and @enabled='true']")
+            if ($clickableChild) {
+              $tapNode = $clickableChild
+            }
+          }
 
           $center = Get-BoundsCenter $tapNode.GetAttribute("bounds")
+          if ($tapNode.GetAttribute("class") -eq "android.widget.CheckBox") {
+            $bounds = $tapNode.GetAttribute("bounds")
+            if ($bounds -match "\[(\d+),(\d+)\]\[(\d+),(\d+)\]") {
+              $left = [int]$Matches[1]
+              $center.X = [int][math]::Min($center.X, $left + 96)
+            }
+          }
           Invoke-Adb @("shell", "input", "tap", "$($center.X)", "$($center.Y)") | Out-Null
           Start-Sleep -Milliseconds 900
           return
@@ -352,6 +390,115 @@ function Try-Tap-Visible {
   }
   catch {
     return $false
+  }
+}
+
+function Try-Assert-Visible {
+  param(
+    [string]$Pattern,
+    [int]$TimeoutSeconds = 2
+  )
+
+  try {
+    Assert-Visible $Pattern $TimeoutSeconds
+    return $true
+  }
+  catch {
+    return $false
+  }
+}
+
+function Open-QaDeepLink {
+  param([Parameter(Mandatory = $true)][string]$Uri)
+
+  Write-Host "Opening QA deep link $Uri..."
+  Invoke-Adb @(
+    "shell",
+    "am",
+    "start",
+    "-W",
+    "-a",
+    "android.intent.action.VIEW",
+    "-d",
+    $Uri,
+    $AppId
+  ) | Out-Host
+  Wait-AppForeground
+  Start-Sleep -Milliseconds 1200
+}
+
+function Check-QaDeepLinks {
+  Write-Host "Checking debug QA deep links..."
+
+  Open-QaDeepLink "danio://qa/settings"
+  Assert-Visible "Preferences" 12
+  Assert-Visible "Backup|Light/Dark Mode|Daily Goal" 12
+  Press-Back
+  Assert-Visible "More" 12
+
+  Open-QaDeepLink "danio://qa/create-tank?name=Q"
+  Assert-Visible "New Tank|Tank Name|Tank name" 12
+  if (-not (Try-Assert-Visible "text=`"Q`"|49 characters remaining" 2)) {
+    if (-not (Try-Tap-Visible "Tank Name|Tank name|Name" 2)) {
+      Tap-Percent 50 28
+    }
+    Invoke-Adb @("shell", "input", "text", "Q") | Out-Null
+    Start-Sleep -Milliseconds 700
+  }
+  Assert-Visible "text=`"Q`"|49 characters remaining" 6
+  Hide-SoftKeyboard
+  if (Try-Assert-Visible "Discard new tank\?" 1) {
+    Tap-Visible "Cancel" 6
+    Assert-Visible "New Tank|Tank Name|Tank name" 8
+  }
+  Tap-Visible "Close and discard new tank|Close" 8
+  Assert-Visible "Discard new tank\?" 8
+  Tap-Visible "Cancel" 6
+  Assert-Visible "New Tank|Tank Name|Tank name" 8
+  Tap-Visible "Close and discard new tank|Close" 8
+  Assert-Visible "Discard new tank\?" 8
+  Tap-Visible "Discard" 6
+  Assert-Visible "More|Learning Paths|Tank Toolbox|Smart" 12
+
+  Open-QaDeepLink "danio://qa/lesson/$QaLessonPathId"
+  Assert-Visible "Question|Need a hint|Check Answer|Lesson|Nitrogen" 15
+
+  if (Try-Tap-Visible "Need a hint|Show hint" 3) {
+    Assert-Visible "Look for keywords|hint" 6
+  }
+  else {
+    Write-Host "Lesson opened, but hint control was not visible in the current lesson state."
+  }
+
+  Press-Back
+
+  Open-QaDeepLink "danio://qa/lesson-quiz?state=hint"
+  Assert-Visible "QA Lesson Quiz" 12
+  Assert-Visible "Need a hint\\?|Show hint" 12
+  Tap-Visible "Need a hint\\?|Show hint" 8
+  Assert-Visible "Look for keywords|Hint shown|correct answer often relates" 8
+  Press-Back
+
+  Open-QaDeepLink "danio://qa/lesson-quiz?state=selected-correct"
+  Assert-Visible "QA Lesson Quiz" 12
+  Assert-Visible "Selected answer [A-D], correct|Explanation:" 12
+  Press-Back
+
+  Open-QaDeepLink "danio://qa/practice-session?mode=due-mc"
+  Assert-Visible "Practice Session" 20
+  Assert-Visible "Card 1 of 1|Check Answer|Question" 12
+  $practiceXml = Get-Hierarchy
+  if (
+    $practiceXml -match 'content-desc="Learn' -and
+    $practiceXml -match 'content-desc="Tank' -and
+    $practiceXml -match 'content-desc="Smart' -and
+    $practiceXml -match 'content-desc="More'
+  ) {
+    throw "Bottom navigation is visible during seeded practice session."
+  }
+  Press-Back
+  if (Try-Assert-Visible "Exit Session\\?" 3) {
+    Tap-Visible "Exit" 6
   }
 }
 
@@ -415,6 +562,7 @@ Write-Host "Using screen size $($script:Screen.Width)x$($script:Screen.Height)"
 
 if (-not $KeepState) {
   Write-Host "Clearing app state for fresh-install smoke..."
+  Invoke-Adb @("shell", "am", "force-stop", $AppId) | Out-Null
   Invoke-Adb @("shell", "pm", "clear", $AppId) | Out-Null
 }
 
@@ -459,11 +607,34 @@ Assert-Visible "Learning Paths|Tank Toolbox|Smart|More|Build your review deck|St
 
 Write-Host "Checking bottom tabs..."
 Tap-Percent 30 92
-Assert-Visible "Build your review deck|Start Review|Standard Review|All caught up" 12
+Assert-Visible "Practice Modes|Build your review deck|Start Review|Standard Review|All caught up" 12
+if (Try-Tap-Visible "Standard Practice|Quick Review" 2) {
+  Assert-Visible "Practice Session|Review this concept" 10
+  if (Try-Tap-Visible "Exit Session" 2) {
+    Tap-Visible "^Exit$" 5
+  }
+  else {
+    Press-Back
+    if (Try-Assert-Visible "Exit Session" 2) {
+      Tap-Visible "^Exit$" 5
+    }
+  }
+  Assert-Visible "Practice Modes|Build your review deck|Start Review|Standard Review|All caught up" 12
+}
+else {
+  Write-Host "Practice session smoke skipped: no enabled review mode was visible."
+}
 Tap-Percent 50 92
 Assert-Visible "Tank Toolbox" 12
 Tap-Percent 70 92
 Assert-Visible "Smart" 12
+if (Try-Tap-Visible "Fish & Plant ID" 4) {
+  Assert-Visible "Set up Smart Hub|Open Preferences" 8
+  if (-not (Try-Tap-Visible "Not now" 2)) {
+    Press-Back
+  }
+  Assert-Visible "Smart" 8
+}
 Tap-Percent 90 92
 Assert-Visible "More" 12
 
@@ -482,7 +653,9 @@ Open-ToolAndReturn "Lighting" "Lighting"
 Open-ToolAndReturn "Compatibility" "Compatibility"
 
 Write-Host "Checking More hub routes..."
-Press-Back
+if (-not (Try-Assert-Visible "More" 2)) {
+  Press-Back
+}
 Assert-Visible "More"
 Start-Sleep -Milliseconds 1800
 
@@ -502,7 +675,19 @@ Invoke-Adb @("shell", "input", "swipe", "540", "1900", "540", "1100", "500") | O
 Start-Sleep -Milliseconds 1200
 Assert-Visible "Backup"
 Tap-Visible "Backup"
-Assert-Visible "Backup|Restore"
+Assert-Visible "Backup|Restore" 10
+Assert-Visible "Export Data" 10
+Assert-Visible "Import Data" 10
+Assert-Visible "Export Backup.*ZIP|Go to Tank" 10
+if ($ExercisePlatformHandoffs -and (Try-Tap-Visible "Export Backup.*ZIP" 2)) {
+  Start-Sleep -Seconds 3
+  $foregroundAfterExport = Get-ForegroundPackage
+  Write-Host "Foreground package after export handoff: '$foregroundAfterExport'"
+  if ($foregroundAfterExport -ne $AppId) {
+    Bring-AppForeground
+  }
+  Assert-Visible "Backup|Restore|More" 12
+}
 Press-Back
 Assert-Visible "More"
 Start-Sleep -Milliseconds 1800
@@ -526,6 +711,12 @@ Start-Sleep -Milliseconds 1200
 
 Press-Back
 Assert-Visible "More"
+
+if ($IncludeQaDeepLinks) {
+  Check-QaDeepLinks
+  Tap-Percent 90 92
+  Assert-Visible "More" 12
+}
 
 Write-Host "Checking logcat for crash signatures..."
 $logcat = (Invoke-Adb @("logcat", "-d", "-t", "5000")) -join "`n"

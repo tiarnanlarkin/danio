@@ -124,7 +124,9 @@ class _AppButtonState extends State<AppButton>
     final newValue = MediaQuery.of(context).disableAnimations;
     if (newValue != _disableMotion) {
       _disableMotion = newValue;
-      _scaleController.duration = _disableMotion ? Duration.zero : AppDurations.short;
+      _scaleController.duration = _disableMotion
+          ? Duration.zero
+          : AppDurations.short;
     }
   }
 
@@ -162,62 +164,65 @@ class _AppButtonState extends State<AppButton>
       button: true,
       enabled: _isEnabled,
       label: widget.semanticsLabel ?? widget.label,
-      child: GestureDetector(
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        onTap: _handleTap,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: AnimatedContainer(
-            duration: AppDurations.short,
-            height: _getHeight(),
-            constraints: BoxConstraints(
-              minWidth: widget.isFullWidth ? double.infinity : _getMinWidth(),
-            ),
-            padding: _getPadding(),
-            decoration: BoxDecoration(
-              color: _getBackgroundColor(isDark),
-              borderRadius: AppRadius.smallRadius,
-              border: _getBorder(isDark),
-              boxShadow: _getShadow(),
-            ),
-            child: Row(
-              mainAxisSize: widget.isFullWidth
-                  ? MainAxisSize.max
-                  : MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (widget.isLoading) ...[
-                  SizedBox(
-                    width: _getIconSize(),
-                    height: _getIconSize(),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(
-                        _getForegroundColor(isDark),
+      onTap: _isEnabled ? _handleTap : null,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTapDown: _handleTapDown,
+          onTapUp: _handleTapUp,
+          onTapCancel: _handleTapCancel,
+          onTap: _handleTap,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: AnimatedContainer(
+              duration: AppDurations.short,
+              height: _getHeight(),
+              constraints: BoxConstraints(
+                minWidth: widget.isFullWidth ? double.infinity : _getMinWidth(),
+              ),
+              padding: _getPadding(),
+              decoration: BoxDecoration(
+                color: _getBackgroundColor(isDark),
+                borderRadius: AppRadius.smallRadius,
+                border: _getBorder(isDark),
+                boxShadow: _getShadow(),
+              ),
+              child: Row(
+                mainAxisSize: widget.isFullWidth
+                    ? MainAxisSize.max
+                    : MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (widget.isLoading) ...[
+                    SizedBox(
+                      width: _getIconSize(),
+                      height: _getIconSize(),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(
+                          _getForegroundColor(isDark),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                ] else if (widget.leadingIcon != null) ...[
-                  Icon(
-                    widget.leadingIcon,
-                    size: _getIconSize(),
-                    color: _getForegroundColor(isDark),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
+                    const SizedBox(width: AppSpacing.sm),
+                  ] else if (widget.leadingIcon != null) ...[
+                    Icon(
+                      widget.leadingIcon,
+                      size: _getIconSize(),
+                      color: _getForegroundColor(isDark),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                  ],
+                  Text(widget.label, style: _getTextStyle(isDark)),
+                  if (widget.trailingIcon != null && !widget.isLoading) ...[
+                    const SizedBox(width: AppSpacing.sm),
+                    Icon(
+                      widget.trailingIcon,
+                      size: _getIconSize(),
+                      color: _getForegroundColor(isDark),
+                    ),
+                  ],
                 ],
-                Text(widget.label, style: _getTextStyle(isDark)),
-                if (widget.trailingIcon != null && !widget.isLoading) ...[
-                  const SizedBox(width: AppSpacing.sm),
-                  Icon(
-                    widget.trailingIcon,
-                    size: _getIconSize(),
-                    color: _getForegroundColor(isDark),
-                  ),
-                ],
-              ],
+              ),
             ),
           ),
         ),

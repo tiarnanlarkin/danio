@@ -10,23 +10,22 @@
 //
 // Run: flutter test test/widget/settings_screen_test.dart
 
+import 'dart:ui' show Tristate;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/widgets/core/app_list_tile.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 Widget _wrap(Widget child) {
-  return ProviderScope(
-    child: MaterialApp(
-      home: child,
-    ),
-  );
+  return ProviderScope(child: MaterialApp(home: child));
 }
 
 // ---------------------------------------------------------------------------
@@ -59,8 +58,9 @@ void main() {
   });
 
   group('_ThemeModeTile — theme mode switching', () {
-    testWidgets('displays Light/Dark Mode tile and System default subtitle',
-        (tester) async {
+    testWidgets('displays Light/Dark Mode tile and System default subtitle', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const SettingsScreen()));
       await tester.pump();
 
@@ -185,11 +185,55 @@ void main() {
       expect(tester.widget<SwitchListTile>(switchFinder).value, isFalse);
     });
 
-    testWidgets('Test Notification hidden when notifications off', (tester) async {
-      await tester.pumpWidget(_wrap(const SettingsScreen()));
-      await tester.pump();
-      // Notifications default to off — test notification sub-tile must be hidden
-      expect(find.text('Test Notification'), findsNothing);
+    testWidgets(
+      'Test Notification explains disabled state when reminders off',
+      (tester) async {
+        await tester.pumpWidget(_wrap(const SettingsScreen()));
+        await tester.pump();
+        await tester.scrollUntilVisible(find.text('Task Reminders'), 500.0);
+
+        expect(find.text('Test Notification'), findsOneWidget);
+        expect(
+          find.text('Enable Task Reminders to send a test notification'),
+          findsOneWidget,
+        );
+
+        final testTile = tester.widget<AppListTile>(
+          find.ancestor(
+            of: find.text('Test Notification'),
+            matching: find.byType(AppListTile),
+          ),
+        );
+        expect(testTile.isDisabled, isTrue);
+      },
+    );
+  });
+
+  group('Settings semantics', () {
+    testWidgets('Backup tile exposes one complete semantics node', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap(const SettingsScreen()));
+        await tester.pump();
+
+        await tester.scrollUntilVisible(find.text('Backup & Restore'), 500.0);
+
+        final tileFinder = find.ancestor(
+          of: find.text('Backup & Restore'),
+          matching: find.byType(AppListTile),
+        );
+        final node = tester.getSemantics(tileFinder);
+
+        expect(node.label, 'Backup & Restore');
+        expect(node.hint, 'Export or import your tank data');
+        expect(node.flagsCollection.isButton, isTrue);
+        expect(node.flagsCollection.isEnabled, Tristate.isTrue);
+        expect(node.childrenCount, 0);
+      } finally {
+        semantics.dispose();
+      }
     });
   });
 
@@ -222,43 +266,51 @@ void main() {
 
   group('Granular rebuild isolation', () {
     testWidgets(
-        'all five toggle tiles render without error after ambient toggle',
-        (tester) async {
-      await tester.pumpWidget(_wrap(const SettingsScreen()));
-      await tester.pump();
+      'all five toggle tiles render without error after ambient toggle',
+      (tester) async {
+        await tester.pumpWidget(_wrap(const SettingsScreen()));
+        await tester.pump();
 
-      // Toggle ambient lighting (should only rebuild _AmbientLightingToggle)
-      await tester.scrollUntilVisible(find.text('Day/Night Ambiance'), 500.0);
-      final ambientSwitch = find.ancestor(
-        of: find.text('Day/Night Ambiance'),
-        matching: find.byType(SwitchListTile),
-      );
-      await tester.tap(ambientSwitch);
-      await tester.pumpAndSettle();
+        // Toggle ambient lighting (should only rebuild _AmbientLightingToggle)
+        await tester.scrollUntilVisible(find.text('Day/Night Ambiance'), 500.0);
+        final ambientSwitch = find.ancestor(
+          of: find.text('Day/Night Ambiance'),
+          matching: find.byType(SwitchListTile),
+        );
+        await tester.tap(ambientSwitch);
+        await tester.pumpAndSettle();
 
-      // All other toggles should still render fine
-      // Note: scrollUntilVisible only scrolls forward (down). After toggling
-      // ambient, the list position is near "Day/Night Ambiance". We verify
-      // each tile by scrolling forward through the remaining labels.
-      final labelsBelow = [
-        'Day/Night Ambiance',
-        'Reduce Motion',
-        'Haptic Feedback',
-        'Task Reminders',
-      ];
-      for (final label in labelsBelow) {
-        await tester.scrollUntilVisible(find.text(label), 500.0);
-        expect(find.text(label), findsOneWidget,
-            reason: 'Expected "$label" to be present after ambient toggle');
-      }
+        // All other toggles should still render fine
+        // Note: scrollUntilVisible only scrolls forward (down). After toggling
+        // ambient, the list position is near "Day/Night Ambiance". We verify
+        // each tile by scrolling forward through the remaining labels.
+        final labelsBelow = [
+          'Day/Night Ambiance',
+          'Reduce Motion',
+          'Haptic Feedback',
+          'Task Reminders',
+        ];
+        for (final label in labelsBelow) {
+          await tester.scrollUntilVisible(find.text(label), 500.0);
+          expect(
+            find.text(label),
+            findsOneWidget,
+            reason: 'Expected "$label" to be present after ambient toggle',
+          );
+        }
 
-      // "Light/Dark Mode" is above — verify it's still in the widget tree
-      // by scrolling back up with a drag, then checking.
-      await tester.drag(find.byType(ListView), const Offset(0, 3000));
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Light/Dark Mode'), 500.0);
-      expect(find.text('Light/Dark Mode'), findsOneWidget,
-          reason: 'Expected "Light/Dark Mode" to be present after ambient toggle');
-    });
+        // "Light/Dark Mode" is above — verify it's still in the widget tree
+        // by scrolling back up with a drag, then checking.
+        await tester.drag(find.byType(ListView), const Offset(0, 3000));
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(find.text('Light/Dark Mode'), 500.0);
+        expect(
+          find.text('Light/Dark Mode'),
+          findsOneWidget,
+          reason:
+              'Expected "Light/Dark Mode" to be present after ambient toggle',
+        );
+      },
+    );
   });
 }

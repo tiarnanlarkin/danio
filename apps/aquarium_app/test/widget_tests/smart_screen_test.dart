@@ -98,5 +98,55 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('locked AI cards open Smart setup guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(
+        find.text('Fish & Plant ID'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Fish & Plant ID'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Set up Smart Hub'), findsOneWidget);
+      expect(find.text('Open Preferences'), findsWidgets);
+    });
+
+    testWidgets('locked AI cards expose setup action to semantics', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.scrollUntilVisible(
+          find.text('Fish & Plant ID'),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+
+        final cardSemantics = find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics &&
+              (widget.properties.label?.contains('Fish & Plant ID') ?? false),
+        );
+        expect(cardSemantics, findsOneWidget);
+
+        final widget = tester.widget<Semantics>(cardSemantics);
+        expect(widget.properties.label, contains('Fish & Plant ID'));
+        expect(widget.properties.label, contains('Requires AI setup'));
+        expect(widget.properties.label, contains('Open Preferences'));
+        expect(widget.properties.button, isTrue);
+        expect(widget.properties.enabled, isTrue);
+      } finally {
+        semantics.dispose();
+      }
+    });
   });
 }

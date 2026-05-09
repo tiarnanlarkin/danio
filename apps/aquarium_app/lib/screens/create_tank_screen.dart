@@ -27,10 +27,12 @@ class CreateTankScreen extends ConsumerStatefulWidget {
   /// expert single-form flow. Defaults to [SetupMode.guided] so existing
   /// entry points (tank log board, "add tank" buttons) stay unchanged.
   final SetupMode mode;
+  final String initialName;
 
   const CreateTankScreen({
     super.key,
     this.mode = SetupMode.guided,
+    this.initialName = '',
   });
 
   @override
@@ -47,6 +49,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   int _currentPage = 0;
   bool _isCreating = false;
+  bool _discardConfirmed = false;
 
   // Form values
   String _name = '';
@@ -62,6 +65,12 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   bool get _isExpert => widget.mode == SetupMode.expert;
 
   @override
+  void initState() {
+    super.initState();
+    _name = widget.initialName;
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     _expertVolumeController.dispose();
@@ -74,37 +83,40 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !_hasUnsavedData || _isCreating,
+      canPop: _discardConfirmed || !_hasUnsavedData || _isCreating,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         final shouldPop = await showAppDestructiveDialog(
           context: context,
           title: 'Discard new tank?',
-          message: 'You have unsaved changes. Are you sure you want to go back?',
+          message:
+              'You have unsaved changes. Are you sure you want to go back?',
           destructiveLabel: 'Discard',
         );
         if (shouldPop == true && context.mounted) {
-          Navigator.maybePop(context);
+          setState(() => _discardConfirmed = true);
+          Navigator.of(context).pop();
         }
       },
-      child: GestureDetector(
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(_isExpert ? 'Quick setup' : 'New Tank'),
-            leading: Semantics(
-              label: A11yLabels.closeButton('new tank form'),
-              button: true,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: 'Close and discard new tank',
-                onPressed: () {
-                  Navigator.maybePop(context);
-                },
-              ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_isExpert ? 'Quick setup' : 'New Tank'),
+          leading: Semantics(
+            label: A11yLabels.closeButton('new tank form'),
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.close),
+              tooltip: 'Close and discard new tank',
+              onPressed: () {
+                Navigator.maybePop(context);
+              },
             ),
           ),
-          body: FocusTraversalGroup(
+        ),
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: FocusTraversalGroup(
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _formKey,
@@ -124,17 +136,11 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       children: [
         // Progress indicator
         Semantics(
-          label: A11yLabels.progress(
-            _currentPage + 1,
-            3,
-            'Tank creation',
-          ),
+          label: A11yLabels.progress(_currentPage + 1, 3, 'Tank creation'),
           child: LinearProgressIndicator(
             value: (_currentPage + 1) / 3,
             backgroundColor: context.surfaceVariant,
-            valueColor: const AlwaysStoppedAnimation(
-              AppColors.primary,
-            ),
+            valueColor: const AlwaysStoppedAnimation(AppColors.primary),
           ),
         ),
 
@@ -143,8 +149,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           child: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            onPageChanged: (page) =>
-                setState(() => _currentPage = page),
+            onPageChanged: (page) => setState(() => _currentPage = page),
             children: [
               BasicInfoPage(
                 name: _name,
@@ -157,8 +162,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 lengthCm: _lengthCm,
                 widthCm: _widthCm,
                 heightCm: _heightCm,
-                onVolumeChanged: (v) =>
-                    setState(() => _volumeLitres = v),
+                onVolumeChanged: (v) => setState(() => _volumeLitres = v),
                 onLengthChanged: (v) => setState(() => _lengthCm = v),
                 onWidthChanged: (v) => setState(() => _widthCm = v),
                 onHeightChanged: (v) => setState(() => _heightCm = v),
@@ -174,8 +178,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                         : WaterTargets.freshwaterColdwater();
                   });
                 },
-                onStartDateChanged: (v) =>
-                    setState(() => _startDate = v),
+                onStartDateChanged: (v) => setState(() => _startDate = v),
               ),
             ],
           ),
@@ -204,9 +207,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                     onPressed: _canProceed() ? _nextPage : null,
                     variant: AppButtonVariant.primary,
                     trailingIcon: Icons.arrow_forward,
-                    semanticsLabel: A11yLabels.button(
-                      'Continue to next step',
-                    ),
+                    semanticsLabel: A11yLabels.button('Continue to next step'),
                   )
                 else
                   AppButton(
@@ -258,8 +259,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(1.0),
                   child: Semantics(
-                    label:
-                        A11yLabels.textField('Tank name', required: true),
+                    label: A11yLabels.textField('Tank name', required: true),
                     textField: true,
                     child: TextFormField(
                       initialValue: _name,
@@ -347,10 +347,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 // Water type toggle
                 Semantics(
                   header: true,
-                  child: Text(
-                    'Water type',
-                    style: AppTypography.titleMedium,
-                  ),
+                  child: Text('Water type', style: AppTypography.titleMedium),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 FocusTraversalOrder(
@@ -392,7 +389,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: AppButton(
               label: 'Create Tank',
-              onPressed: _canCreateExpert() && !_isCreating ? _createTank : null,
+              onPressed: _canCreateExpert() && !_isCreating
+                  ? _createTank
+                  : null,
               variant: AppButtonVariant.primary,
               isFullWidth: true,
               size: AppButtonSize.large,
@@ -409,8 +408,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     );
   }
 
-  bool _canCreateExpert() =>
-      _name.trim().isNotEmpty && _volumeLitres >= 1;
+  bool _canCreateExpert() => _name.trim().isNotEmpty && _volumeLitres >= 1;
 
   bool _canProceed() {
     switch (_currentPage) {
@@ -433,7 +431,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       } catch (e) {
         appLog('CreateTankScreen: unfocus failed: $e', tag: 'CreateTankScreen');
       }
-      AppHaptics.light(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
+      AppHaptics.light(
+        enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
+      );
       _pageController.nextPage(
         duration: AppDurations.medium4,
         curve: AppCurves.standard,
@@ -444,7 +444,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   void _previousPage() {
     if (_currentPage > 0) {
       FocusManager.instance.primaryFocus?.unfocus();
-      AppHaptics.light(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
+      AppHaptics.light(
+        enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
+      );
       _pageController.previousPage(
         duration: AppDurations.medium4,
         curve: AppCurves.standard,
@@ -456,7 +458,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     if (!_canProceed()) return;
     if (!_formKey.currentState!.validate()) return;
 
-    AppHaptics.medium(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
+    AppHaptics.medium(
+      enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
+    );
     setState(() => _isCreating = true);
 
     try {
@@ -501,12 +505,18 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           );
           await achievementChecker.checkAllAchievements(stats: stats);
         } catch (e, st) {
-          logError('CreateTankScreen: achievement check failed: $e', stackTrace: st, tag: 'CreateTankScreen');
+          logError(
+            'CreateTankScreen: achievement check failed: $e',
+            stackTrace: st,
+            tag: 'CreateTankScreen',
+          );
         }
       }
 
       if (mounted) {
-        AppHaptics.success(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
+        AppHaptics.success(
+          enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
+        );
         final nav = Navigator.of(context);
         final tankName = _name.trim();
         AppFeedback.showSuccess(
@@ -530,15 +540,20 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
               .read(celebrationProvider.notifier)
               .achievement(
                 'Multi-Tank Aquarist! \u{1F30A}',
-                subtitle:
-                    'You now have multiple tanks to manage!',
+                subtitle: 'You now have multiple tanks to manage!',
               );
         }
       }
     } catch (e, st) {
-      logError('CreateTankScreen: tank creation failed: $e', stackTrace: st, tag: 'CreateTankScreen');
+      logError(
+        'CreateTankScreen: tank creation failed: $e',
+        stackTrace: st,
+        tag: 'CreateTankScreen',
+      );
       if (mounted) {
-        AppHaptics.error(enabled: ref.read(settingsProvider).hapticFeedbackEnabled);
+        AppHaptics.error(
+          enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
+        );
         AppFeedback.showError(
           context,
           'Couldn\'t create your tank right now. Give it another go!',

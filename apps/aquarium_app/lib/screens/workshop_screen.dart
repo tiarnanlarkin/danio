@@ -63,7 +63,11 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     }
 
     if (tankId == null || !mounted) return;
-    NavigationThrottle.push(context, CyclingAssistantScreen(tankId: tankId));
+    NavigationThrottle.push(
+      context,
+      CyclingAssistantScreen(tankId: tankId),
+      rootNavigator: true,
+    );
   }
 
   @override
@@ -133,6 +137,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const WaterChangeCalculatorScreen(),
+                        rootNavigator: true,
                       ),
                     ),
                     _ToolCard(
@@ -143,6 +148,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const StockingCalculatorScreen(),
+                        rootNavigator: true,
                       ),
                     ),
                     _ToolCard(
@@ -153,6 +159,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const Co2CalculatorScreen(),
+                        rootNavigator: true,
                       ),
                     ),
                     _ToolCard(
@@ -163,6 +170,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const DosingCalculatorScreen(),
+                        rootNavigator: true,
                       ),
                     ),
                     _ToolCard(
@@ -173,6 +181,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const UnitConverterScreen(),
+                        rootNavigator: true,
                       ),
                     ),
                     _ToolCard(
@@ -183,6 +192,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const TankVolumeCalculatorScreen(),
+                        rootNavigator: true,
                       ),
                     ),
                     _ToolCard(
@@ -193,6 +203,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const LightingScheduleScreen(),
+                        rootNavigator: true,
                       ),
                     ),
 
@@ -204,6 +215,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const CompatibilityCheckerScreen(),
+                        rootNavigator: true,
                       ),
                     ),
 
@@ -243,6 +255,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       onTap: () => NavigationThrottle.push(
                         context,
                         const CostTrackerScreen(),
+                        rootNavigator: true,
                       ),
                     ),
                   ),

@@ -2,8 +2,11 @@
 //
 // Run: flutter test test/widget_tests/consent_screen_test.dart
 
+import 'dart:ui' show CheckedState;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,6 +83,61 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.byIcon(Icons.privacy_tip_outlined), findsOneWidget);
+    });
+
+    testWidgets('consent controls expose direct semantic tap actions', (
+      tester,
+    ) async {
+      final semanticsHandle = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        final ageNode = tester.getSemantics(
+          find.bySemanticsLabel('Age confirmation checkbox'),
+        );
+        final tosNode = tester.getSemantics(
+          find.bySemanticsLabel(
+            'Terms of Service and Privacy Policy acceptance checkbox',
+          ),
+        );
+        expect(
+          ageNode.getSemanticsData().flagsCollection.isChecked,
+          isNot(CheckedState.none),
+        );
+        expect(ageNode.getSemanticsData().flagsCollection.isButton, isTrue);
+        expect(
+          ageNode.getSemanticsData().hasAction(SemanticsAction.tap),
+          isTrue,
+        );
+        expect(
+          tosNode.getSemanticsData().flagsCollection.isChecked,
+          isNot(CheckedState.none),
+        );
+        expect(tosNode.getSemanticsData().flagsCollection.isButton, isTrue);
+        expect(
+          tosNode.getSemanticsData().hasAction(SemanticsAction.tap),
+          isTrue,
+        );
+
+        await tester.tap(find.byType(Checkbox).at(0));
+        await tester.tap(find.byType(Checkbox).at(1));
+        await tester.pump();
+
+        final noThanksNode = tester.getSemantics(
+          find.bySemanticsLabel('No Thanks'),
+        );
+        expect(
+          noThanksNode.getSemanticsData().flagsCollection.isButton,
+          isTrue,
+        );
+        expect(
+          noThanksNode.getSemanticsData().hasAction(SemanticsAction.tap),
+          isTrue,
+        );
+      } finally {
+        semanticsHandle.dispose();
+      }
     });
   });
 }

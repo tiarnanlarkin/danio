@@ -59,7 +59,7 @@
 
 | Test File | Target | Status |
 |-----------|--------|--------|
-| smoke_test_v2.dart | Emulator (no Patrol) | Available — covers app launch, tab navigation, learn content |
+| smoke_test_v2.dart | Emulator (no Patrol) | Available via `flutter drive -d emulator-5554 --driver=test_driver\integration_test.dart --target=integration_test\smoke_test_v2.dart` |
 | smoke_test.dart | Patrol CLI | Available — requires patrol_cli setup |
 
 ## Build Verification

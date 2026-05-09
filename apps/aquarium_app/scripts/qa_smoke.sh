@@ -9,8 +9,31 @@
 
 set -uo pipefail
 
-ADB="/mnt/c/Users/larki/AppData/Local/Android/Sdk/platform-tools/adb.exe"
 DEVICE="${1:-emulator-5554}"
+OUT_DIR="${2:-}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PS_SCRIPT="$SCRIPT_DIR/run_android_blackbox_smoke.ps1"
+
+echo "scripts/qa_smoke.sh is a compatibility wrapper for scripts/run_android_blackbox_smoke.ps1."
+echo "For deterministic release smoke on Windows, run:"
+echo "  powershell -ExecutionPolicy Bypass -File scripts\\run_android_blackbox_smoke.ps1 -DeviceId $DEVICE"
+
+if command -v powershell.exe >/dev/null 2>&1; then
+  PS_SCRIPT_WIN="$(wslpath -w "$PS_SCRIPT" 2>/dev/null || printf '%s' "$PS_SCRIPT")"
+  ARGS=(-NoProfile -ExecutionPolicy Bypass -File "$PS_SCRIPT_WIN" -DeviceId "$DEVICE")
+  if [ -n "$OUT_DIR" ]; then
+    OUT_DIR_WIN="$(wslpath -w "$OUT_DIR" 2>/dev/null || printf '%s' "$OUT_DIR")"
+    ARGS+=(-ArtifactDir "$OUT_DIR_WIN")
+  fi
+  powershell.exe "${ARGS[@]}"
+  exit $?
+fi
+
+echo "powershell.exe was not found, and the legacy coordinate-only Bash flow is intentionally disabled."
+echo "Run scripts/run_android_blackbox_smoke.ps1 from Windows PowerShell instead."
+exit 1
+
+ADB="/mnt/c/Users/larki/AppData/Local/Android/Sdk/platform-tools/adb.exe"
 OUT_DIR="${2:-/tmp/qa_smoke_$(date +%Y%m%d_%H%M%S)}"
 PKG="com.tiarnanlarkin.danio"
 MAIN_ACTIVITY="com.tiarnanlarkin.danio.MainActivity"
