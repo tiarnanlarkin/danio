@@ -200,7 +200,7 @@
             <div class="highlight-title">🤖 OpenAI API — AI-Powered Features (optional, consent-based)</div>
             <p>When you use AI-powered features, the following data may be sent to <strong>OpenAI Inc. (USA)</strong>. You must accept a one-time disclosure before any data is sent to OpenAI:</p>
             <ul>
-                <li><strong>Fish ID:</strong> Photos you submit are sent to OpenAI for species identification.</li>
+                <li><strong>Fish ID:</strong> Photos you submit are stripped of metadata before being sent to OpenAI for species identification.</li>
                 <li><strong>Symptom Triage:</strong> Symptom descriptions and water parameter values you enter are sent to OpenAI for fish health diagnosis.</li>
                 <li><strong>Weekly Planner:</strong> Your tank names, setup details (volume, type), and livestock information (species, counts) are sent to OpenAI to generate a personalised maintenance schedule.</li>
                 <li><strong>Anomaly Detector:</strong> Water parameter data (pH, ammonia, nitrite, nitrate, temperature readings) is sent to OpenAI for anomaly explanation and remediation advice.</li>
@@ -305,8 +305,8 @@
             <li><strong>Local app data:</strong> Stored on your device indefinitely until you delete it or uninstall the app</li>
             <li><strong>Firebase Analytics data:</strong> 26 months (Google's standard retention period)</li>
             <li><strong>Firebase Crashlytics crash logs:</strong> 90 days, then automatically deleted</li>
-            <li><strong>OpenAI AI feature data:</strong> Maximum 30 days on OpenAI's servers, then automatically deleted</li>
-            <li><strong>Cloud sync data (Supabase):</strong> Retained while your account is active; permanently deleted within 30 days of account deletion request</li>
+            <li><strong>OpenAI AI feature data:</strong> Fish ID photos are stripped of metadata before upload; AI feature data is retained for a maximum of 30 days on OpenAI's servers, then automatically deleted</li>
+            <li><strong>Cloud sync data (Supabase):</strong> Retained while your account is active; deleted through the in-app Delete Account action or within 30 days of an email deletion request</li>
         </ul>
     </div>
 
@@ -337,7 +337,8 @@
 
         <h3>How to Exercise Your Rights</h3>
         <ul>
-            <li><strong>In-app (delete):</strong> Settings → Delete My Data</li>
+            <li><strong>In-app (delete local data):</strong> Settings → Delete My Data</li>
+            <li><strong>In-app (delete cloud account):</strong> Settings → Offline Data → Delete Account while signed in. This deletes your Supabase account, synced cloud rows, and cloud backups while preserving local data on the device.</li>
             <li><strong>In-app (export):</strong> Settings → Backup &amp; Restore → Export</li>
             <li><strong>In-app (consent):</strong> Settings → Privacy to manage analytics consent</li>
             <li><strong>By email:</strong> <a href="mailto:larkintiarnanbizz@gmail.com">larkintiarnanbizz@gmail.com</a> — we will respond within 30 days</li>

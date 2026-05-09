@@ -149,7 +149,7 @@ class AchievementDefinitions {
     id: 'streak_14',
     name: 'Two Week Wonder',
     description:
-        'Two solid weeks! They say it takes 14 days to form a habit. You are hooked!',
+        'Two solid weeks! They say it takes 14 days to form a habit. Looks like you are in the flow.',
     icon: '🌟',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
@@ -761,7 +761,10 @@ class AchievementDefinitions {
     try {
       return all.firstWhere((a) => a.id == id);
     } catch (e) {
-      logError('Achievement lookup failed for id "$id": $e', tag: 'Achievements');
+      logError(
+        'Achievement lookup failed for id "$id": $e',
+        tag: 'Achievements',
+      );
       return null;
     }
   }

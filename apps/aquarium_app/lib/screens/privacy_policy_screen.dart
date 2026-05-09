@@ -125,7 +125,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildHighlight(
               'OpenAI API — Fish ID (optional feature)',
-              'When you use the Fish ID feature, the photo you capture is sent to OpenAI Inc. (USA) for species identification. Images are retained by OpenAI for a maximum of 30 days, then automatically deleted. OpenAI does not use your data to train their models.',
+              'When you use the Fish ID feature, the photo you capture is stripped of metadata before being sent to OpenAI Inc. (USA) for species identification. Images are retained by OpenAI for a maximum of 30 days, then automatically deleted. OpenAI does not use your data to train their models.',
               Icons.photo_camera,
             ),
 
@@ -166,7 +166,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _buildBulletList([
               'Analytics data: 26 months (Google\'s default retention period)',
               'Crash logs: 90 days, then automatically deleted',
-              'Fish ID images: Max 30 days on OpenAI\'s servers, then deleted',
+              'Fish ID images: metadata stripped before upload; max 30 days on OpenAI\'s servers, then deleted',
               'Local app data: Stored indefinitely on your device until you delete it',
             ], context),
 
@@ -189,7 +189,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             _buildRightCard(
               'Right to Erasure',
-              'You can request deletion of your personal data. In-app: Settings > Account > Delete Data. Or email larkintiarnanbizz@gmail.com',
+              'You can delete local data in Settings, delete your cloud account from Offline Data when signed in, or email larkintiarnanbizz@gmail.com',
               Icons.delete,
               context,
             ),
@@ -218,6 +218,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildBulletList([
               'In-app: Settings > Account > Delete Data — permanently removes all local data',
+              'In-app: Settings > Offline Data > Delete Account — permanently removes your cloud account, synced cloud rows, and cloud backups while preserving local data',
               'Email request: Contact larkintiarnanbizz@gmail.com and we will delete all data we hold within 30 days',
               'Uninstall: Removing the app deletes all local data from your device',
               'Analytics opt-out: Disabling analytics in Settings stops further data collection',
@@ -311,11 +312,21 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          _buildSummaryItem('Tank, livestock, and log data stored locally on your device'),
-          _buildSummaryItem('Firebase Analytics collects anonymous usage data (opt-in)'),
-          _buildSummaryCardBullet('Firebase Crashlytics collects crash reports (automatic)'),
-          _buildSummaryItem('Fish ID sends photos to OpenAI for identification (opt-in per use)'),
-          _buildSummaryItem('Cloud sync code exists but is not currently active'),
+          _buildSummaryItem(
+            'Tank, livestock, and log data stored locally on your device',
+          ),
+          _buildSummaryItem(
+            'Firebase Analytics collects anonymous usage data (opt-in)',
+          ),
+          _buildSummaryCardBullet(
+            'Firebase Crashlytics collects crash reports (automatic)',
+          ),
+          _buildSummaryItem(
+            'Fish ID sends metadata-stripped photos to OpenAI for identification',
+          ),
+          _buildSummaryItem(
+            'Cloud sync code exists but is not currently active',
+          ),
           _buildSummaryItem('You can delete all data in-app or by emailing us'),
           _buildSummaryItem('Analytics can be toggled off in Settings'),
         ],
@@ -369,7 +380,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
     bool isNegative = false,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.md, bottom: AppSpacing.lg),
+      padding: const EdgeInsets.only(
+        left: AppSpacing.md,
+        bottom: AppSpacing.lg,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: items.map((item) {

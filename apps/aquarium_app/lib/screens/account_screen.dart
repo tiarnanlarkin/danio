@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/auth/auth_provider.dart';
 import '../providers/restore_invalidation.dart';
+import '../services/account_deletion_service.dart';
 import '../services/supabase_service.dart';
 import '../services/cloud_backup_service.dart';
 // import '../services/cloud_sync_service.dart'; // FB-H1: hidden with sync UI
@@ -30,6 +31,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isSignUp = false;
   bool _obscurePassword = true;
+  bool _isDeletingAccount = false;
 
   @override
   void dispose() {
@@ -339,6 +341,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           foregroundColor: theme.colorScheme.error,
         ),
       ),
+      const SizedBox(height: AppSpacing.xl),
+      AccountDangerZone(
+        onDeleteAccount: _isDeletingAccount
+            ? null
+            : () => _deleteAccount(context),
+        isDeleting: _isDeletingAccount,
+      ),
     ];
 
     return ListView.builder(
@@ -453,6 +462,103 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           'You can sign back in anytime to resume syncing.',
       confirmLabel: 'Sign Out',
       onConfirm: () => ref.read(authProvider.notifier).signOut(),
+    );
+  }
+
+  Future<void> _deleteAccount(BuildContext context) async {
+    final confirmed = await showAppDestructiveDialog(
+      context: context,
+      title: 'Delete Cloud Account?',
+      message:
+          'This permanently deletes your Danio cloud account, synced cloud data, and cloud backups. '
+          'Your local tanks, progress, and photos stay on this device. This cannot be undone.',
+      destructiveLabel: 'Delete Account',
+      cancelLabel: 'Keep Account',
+      barrierDismissible: false,
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    setState(() => _isDeletingAccount = true);
+
+    try {
+      await AccountDeletionService.instance.deleteCloudAccount();
+      if (!context.mounted) return;
+      DanioSnackBar.success(
+        context,
+        'Cloud account deleted. Local data stayed on this device.',
+      );
+    } on AccountDeletionException catch (e, st) {
+      logError(
+        'AccountScreen: account deletion failed: $e',
+        stackTrace: st,
+        tag: 'AccountScreen',
+      );
+      if (context.mounted) {
+        DanioSnackBar.error(context, e.message);
+      }
+    } catch (e, st) {
+      logError(
+        'AccountScreen: account deletion failed: $e',
+        stackTrace: st,
+        tag: 'AccountScreen',
+      );
+      if (context.mounted) {
+        DanioSnackBar.error(
+          context,
+          'Your account could not be deleted. Please try again.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isDeletingAccount = false);
+    }
+  }
+}
+
+class AccountDangerZone extends StatelessWidget {
+  const AccountDangerZone({
+    super.key,
+    required this.onDeleteAccount,
+    this.isDeleting = false,
+  });
+
+  final VoidCallback? onDeleteAccount;
+  final bool isDeleting;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Divider(),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          'Danger Zone',
+          style: theme.textTheme.titleSmall?.copyWith(
+            color: theme.colorScheme.error,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Delete your cloud account and synced cloud data. Local data on this device is preserved.',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        AppButton(
+          label: 'Delete Account',
+          onPressed: onDeleteAccount,
+          leadingIcon: Icons.delete_forever,
+          isLoading: isDeleting,
+          isFullWidth: true,
+          variant: AppButtonVariant.destructive,
+          semanticsLabel: 'Delete cloud account',
+        ),
+      ],
     );
   }
 }

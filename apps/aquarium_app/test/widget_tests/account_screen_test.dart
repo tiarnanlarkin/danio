@@ -75,5 +75,19 @@ void main() {
       await _advance(tester);
       expect(find.byIcon(Icons.cloud_off), findsOneWidget);
     });
+
+    testWidgets('account danger zone exposes cloud account deletion action', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: AccountDangerZone(onDeleteAccount: () {})),
+        ),
+      );
+
+      expect(find.text('Danger Zone'), findsOneWidget);
+      expect(find.text('Delete Account'), findsOneWidget);
+      expect(find.byIcon(Icons.delete_forever), findsOneWidget);
+    });
   });
 }

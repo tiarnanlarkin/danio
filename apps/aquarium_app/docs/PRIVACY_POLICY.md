@@ -60,7 +60,7 @@ When you use AI-powered features, the following data is sent to our AI provider 
 
 | Feature | Data sent to OpenAI |
 |---|---|
-| **Fish ID** | Photos you submit for species identification |
+| **Fish ID** | Photos you submit for species identification; photo metadata is stripped before upload |
 | **Symptom Triage** | Symptom descriptions you enter + water parameter values |
 | **Weekly Planner** | Tank names, setup details (volume, type), and livestock information (species, counts) |
 | **Anomaly Detector** | Water parameter data (pH, ammonia, nitrite, nitrate, temperature readings) |
@@ -180,7 +180,8 @@ Under the UK GDPR and Data Protection Act 2018, you have the following rights:
 
 ### How to Exercise Your Rights
 
-- **In-app (delete):** Go to **Settings → Delete My Data**
+- **In-app (delete local data):** Go to **Settings → Delete My Data**
+- **In-app (delete cloud account):** Go to **Settings → Offline Data → Delete Account** while signed in. This deletes your Supabase account, synced cloud rows, and cloud backups while preserving local data on the device.
 - **In-app (export):** Go to **Settings → Backup & Restore → Export**
 - **By email:** Contact us at [larkintiarnanbizz@gmail.com](mailto:larkintiarnanbizz@gmail.com)
 

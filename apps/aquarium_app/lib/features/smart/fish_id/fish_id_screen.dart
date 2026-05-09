@@ -13,6 +13,7 @@ import '../../../screens/livestock/livestock_add_dialog.dart';
 import '../../../widgets/app_bottom_sheet.dart';
 
 import '../../../services/api_rate_limiter.dart';
+import '../../../services/fish_id_image_sanitizer.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/core/app_button.dart';
@@ -89,7 +90,11 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
       await _identify();
     } catch (e, st) {
-      logError('FishIdScreen: image pick failed: $e', stackTrace: st, tag: 'FishIdScreen');
+      logError(
+        'FishIdScreen: image pick failed: $e',
+        stackTrace: st,
+        tag: 'FishIdScreen',
+      );
       if (!mounted) return;
       setState(() => _error = 'Couldn\'t grab that image. Try again?');
     }
@@ -162,7 +167,8 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     try {
       final image = _selectedImage;
       if (image == null) return;
-      final bytes = await image.readAsBytes();
+      final rawBytes = await image.readAsBytes();
+      final bytes = sanitizeFishIdImageBytes(rawBytes);
       final base64 = base64Encode(bytes);
 
       final result = await openai.chatCompletion(
@@ -224,8 +230,23 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         _error = e.message;
         _loading = false;
       });
+    } on ImageSanitizationException catch (e, st) {
+      logError(
+        'FishIdScreen: image sanitization failed: $e',
+        stackTrace: st,
+        tag: 'FishIdScreen',
+      );
+      if (!mounted) return;
+      setState(() {
+        _error = 'Couldn\'t prepare that photo safely. Try another image.';
+        _loading = false;
+      });
     } catch (e, st) {
-      logError('FishIdScreen: identification failed: $e', stackTrace: st, tag: 'FishIdScreen');
+      logError(
+        'FishIdScreen: identification failed: $e',
+        stackTrace: st,
+        tag: 'FishIdScreen',
+      );
       if (!mounted) return;
       setState(() {
         _error = 'Couldn\'t identify that fish. Try a clearer photo!';
@@ -243,7 +264,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     if (tanks.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add a tank first before adding livestock.')),
+        const SnackBar(
+          content: Text('Add a tank first before adding livestock.'),
+        ),
       );
       return;
     }
@@ -616,7 +639,11 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.auto_awesome, size: 12, color: AppColors.primary),
+                const Icon(
+                  Icons.auto_awesome,
+                  size: 12,
+                  color: AppColors.primary,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   'AI-generated identification · Results may not be 100% accurate',

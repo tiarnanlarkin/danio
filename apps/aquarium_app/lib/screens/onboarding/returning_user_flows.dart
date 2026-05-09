@@ -34,7 +34,6 @@ class Day2StreakPrompt extends StatefulWidget {
 
 class _Day2StreakPromptState extends State<Day2StreakPrompt>
     with SingleTickerProviderStateMixin {
-
   late final AnimationController _flickerController;
   late final CurvedAnimation _flickerCurve;
   late final Animation<double> _flickerScale;
@@ -43,9 +42,11 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
   void initState() {
     super.initState();
 
-    final disableAnimations =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
-            .disableAnimations;
+    final disableAnimations = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .disableAnimations;
 
     _flickerController = AnimationController(
       vsync: this,
@@ -80,7 +81,12 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
     return Semantics(
       label: 'Day 2 streak prompt',
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.xl),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.xl,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -109,18 +115,18 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
             // Headline
             Text(
               'Day 2 🔥 Your streak is alive. Keep it going.',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: AppColors.textPrimary),
               textAlign: TextAlign.center,
             ),
             if (widget.fishName != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
                 "Today's lesson is about ${widget.fishName}.",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -165,10 +171,7 @@ class _Day2StreakPromptState extends State<Day2StreakPrompt>
 class Day7MilestoneCard extends StatefulWidget {
   final VoidCallback? onFeatureTap;
 
-  const Day7MilestoneCard({
-    super.key,
-    this.onFeatureTap,
-  });
+  const Day7MilestoneCard({super.key, this.onFeatureTap});
 
   @override
   State<Day7MilestoneCard> createState() => _Day7MilestoneCardState();
@@ -176,7 +179,6 @@ class Day7MilestoneCard extends StatefulWidget {
 
 class _Day7MilestoneCardState extends State<Day7MilestoneCard>
     with SingleTickerProviderStateMixin {
-
   late final AnimationController _xpController;
   late final CurvedAnimation _xpCurve;
   late final Animation<double> _xpScale;
@@ -185,18 +187,17 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
   void initState() {
     super.initState();
 
-    final disableAnimations =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
-            .disableAnimations;
+    final disableAnimations = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .disableAnimations;
 
     _xpController = AnimationController(
       vsync: this,
       duration: AppDurations.long2,
     );
-    _xpCurve = CurvedAnimation(
-      parent: _xpController,
-      curve: Curves.easeOut,
-    );
+    _xpCurve = CurvedAnimation(parent: _xpController, curve: Curves.easeOut);
     _xpScale = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.15), weight: 60),
       TweenSequenceItem(tween: Tween(begin: 1.15, end: 1.0), weight: 40),
@@ -222,7 +223,8 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: '7 day milestone, you earned Apprentice Fishkeeper, plus 50 XP bonus',
+      label:
+          '7 day milestone, you earned Apprentice Fishkeeper, plus 50 XP bonus',
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.lg2),
@@ -261,13 +263,13 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
             AnimatedBuilder(
               animation: _xpScale,
               builder: (context, child) {
-                return Transform.scale(
-                  scale: _xpScale.value,
-                  child: child,
-                );
+                return Transform.scale(scale: _xpScale.value, child: child);
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.xs2),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm4,
+                  vertical: AppSpacing.xs2,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.whiteAlpha20,
                   borderRadius: AppRadius.pillRadius,
@@ -307,9 +309,8 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
                         Expanded(
                           child: Text(
                             'Have you tried the tank compatibility checker?',
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: AppColors.onPrimary,
-                            ),
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(color: AppColors.onPrimary),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
@@ -370,14 +371,18 @@ class Day30CommittedCard extends StatelessWidget {
           children: [
             // Headline
             Text(
-              '30 days of Danio 🎣',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              '30 days of Danio',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: AppColors.textPrimary),
             ),
             const SizedBox(height: AppSpacing.md),
             // Usage summary
-            _buildStatRow(context, Icons.menu_book_rounded, '$lessonsCompleted lessons completed'),
+            _buildStatRow(
+              context,
+              Icons.menu_book_rounded,
+              '$lessonsCompleted lessons completed',
+            ),
             const SizedBox(height: AppSpacing.sm3),
             _buildStatRow(context, Icons.star_rounded, '$xpEarned XP earned'),
             // FB-B4: Only show the upgrade CTA when a real destination is wired up.
