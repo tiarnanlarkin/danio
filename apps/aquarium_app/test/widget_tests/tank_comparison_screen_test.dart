@@ -18,23 +18,97 @@ import 'package:danio/models/models.dart';
 // ---------------------------------------------------------------------------
 
 Tank _tank(String id, String name) => Tank(
-      id: id,
-      name: name,
-      type: TankType.freshwater,
-      volumeLitres: 100,
-      startDate: DateTime(2024),
-      targets: const WaterTargets(),
-      createdAt: DateTime(2024),
-      updatedAt: DateTime(2024),
-    );
+  id: id,
+  name: name,
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: DateTime.now().subtract(const Duration(days: 120)),
+  targets: const WaterTargets(),
+  createdAt: DateTime(2024),
+  updatedAt: DateTime(2024),
+);
 
-Widget _wrap({List<Tank>? tanks}) {
+LogEntry _waterTest(String id, String tankId, {double nitrate = 10}) {
+  final now = DateTime.now();
+  return LogEntry(
+    id: id,
+    tankId: tankId,
+    type: LogType.waterTest,
+    timestamp: now.subtract(const Duration(days: 1)),
+    waterTest: WaterTestResults(
+      ammonia: 0,
+      nitrite: 0,
+      nitrate: nitrate,
+      ph: 7,
+    ),
+    createdAt: now.subtract(const Duration(days: 1)),
+  );
+}
+
+LogEntry _waterChange(String id, String tankId, {int daysAgo = 3}) {
+  final timestamp = DateTime.now().subtract(Duration(days: daysAgo));
+  return LogEntry(
+    id: id,
+    tankId: tankId,
+    type: LogType.waterChange,
+    timestamp: timestamp,
+    waterChangePercent: 30,
+    createdAt: timestamp,
+  );
+}
+
+Task _task(String id, String tankId, String title, DateTime dueDate) => Task(
+  id: id,
+  tankId: tankId,
+  title: title,
+  recurrence: RecurrenceType.weekly,
+  dueDate: dueDate,
+  createdAt: dueDate.subtract(const Duration(days: 7)),
+  updatedAt: dueDate.subtract(const Duration(days: 7)),
+);
+
+Livestock _livestock(String id, String tankId, int count) => Livestock(
+  id: id,
+  tankId: tankId,
+  commonName: 'Neon Tetra',
+  count: count,
+  dateAdded: DateTime(2024),
+  createdAt: DateTime(2024),
+  updatedAt: DateTime(2024),
+);
+
+Equipment _equipment(String id, String tankId) => Equipment(
+  id: id,
+  tankId: tankId,
+  type: EquipmentType.filter,
+  name: 'Filter',
+  createdAt: DateTime(2024),
+  updatedAt: DateTime(2024),
+);
+
+Widget _wrap({
+  List<Tank>? tanks,
+  Map<String, List<LogEntry>> logs = const {},
+  Map<String, List<Task>> tasks = const {},
+  Map<String, List<Livestock>> livestock = const {},
+  Map<String, List<Equipment>> equipment = const {},
+}) {
   final memStorage = InMemoryStorageService();
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
-      tanksProvider.overrideWith(
-        (ref) async => tanks ?? [],
+      tanksProvider.overrideWith((ref) async => tanks ?? []),
+      allLogsProvider.overrideWith(
+        (ref, tankId) async => logs[tankId] ?? const [],
+      ),
+      tasksProvider.overrideWith(
+        (ref, tankId) async => tasks[tankId] ?? const [],
+      ),
+      livestockProvider.overrideWith(
+        (ref, tankId) async => livestock[tankId] ?? const [],
+      ),
+      equipmentProvider.overrideWith(
+        (ref, tankId) async => equipment[tankId] ?? const [],
       ),
     ],
     child: const MaterialApp(home: TankComparisonScreen()),
@@ -78,8 +152,9 @@ void main() {
       expect(find.text('Compare Tanks'), findsOneWidget);
     });
 
-    testWidgets('shows "Need at Least 2 Tanks" when fewer than 2 tanks exist',
-        (tester) async {
+    testWidgets('shows "Need at Least 2 Tanks" when fewer than 2 tanks exist', (
+      tester,
+    ) async {
       suppressErrors();
       await tester.pumpWidget(_wrap(tanks: [_tank('t1', 'Tank A')]));
       await tester.pump();
@@ -87,15 +162,99 @@ void main() {
       expect(find.text('Need at Least 2 Tanks'), findsOneWidget);
     });
 
-    testWidgets('shows comparison layout with 2+ tanks', (tester) async {
+    testWidgets('shows insight-led comparison layout with 2+ tanks', (
+      tester,
+    ) async {
       suppressErrors();
-      await tester.pumpWidget(_wrap(
-        tanks: [_tank('t1', 'Tank A'), _tank('t2', 'Tank B')],
-      ));
+      final tankA = _tank('t1', 'Tank A');
+      final tankB = _tank('t2', 'Tank B');
+      final now = DateTime.now();
+      await tester.pumpWidget(
+        _wrap(
+          tanks: [tankA, tankB],
+          logs: {
+            tankA.id: [
+              _waterChange('wc-a', tankA.id),
+              _waterTest('wt-a', tankA.id, nitrate: 10),
+            ],
+            tankB.id: [
+              _waterChange('wc-b', tankB.id, daysAgo: 18),
+              _waterTest('wt-b', tankB.id, nitrate: 80),
+            ],
+          },
+          tasks: {
+            tankB.id: [
+              _task(
+                'task-b',
+                tankB.id,
+                'Water change',
+                now.subtract(const Duration(days: 2)),
+              ),
+            ],
+          },
+          livestock: {
+            tankA.id: [_livestock('fish-a', tankA.id, 6)],
+            tankB.id: [_livestock('fish-b', tankB.id, 1)],
+          },
+          equipment: {
+            tankA.id: [_equipment('filter-a', tankA.id)],
+            tankB.id: [_equipment('filter-b', tankB.id)],
+          },
+        ),
+      );
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
-      // Comparison dropdowns should appear
-      expect(find.byType(DropdownButton<String>), findsWidgets);
+      expect(find.text('Needs attention first'), findsOneWidget);
+      expect(find.text('Tank B'), findsWidgets);
+      expect(find.byType(DropdownButtonFormField<String>), findsWidgets);
+      await tester.scrollUntilVisible(
+        find.text('Water'),
+        250,
+        scrollable: find.byType(Scrollable),
+      );
+      expect(find.text('Water'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Care rhythm'),
+        250,
+        scrollable: find.byType(Scrollable),
+      );
+      expect(find.text('Care rhythm'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Livestock & stocking'),
+        250,
+        scrollable: find.byType(Scrollable),
+      );
+      expect(find.text('Livestock & stocking'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Equipment'),
+        250,
+        scrollable: find.byType(Scrollable),
+      );
+      expect(find.text('Equipment'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Activity'),
+        250,
+        scrollable: find.byType(Scrollable),
+      );
+      expect(find.text('Activity'), findsOneWidget);
+    });
+
+    testWidgets('shows honest sparse-data states without inventing metrics', (
+      tester,
+    ) async {
+      suppressErrors();
+      await tester.pumpWidget(
+        _wrap(tanks: [_tank('t1', 'Tank A'), _tank('t2', 'Tank B')]),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('No water tests'), findsWidgets);
+      await tester.scrollUntilVisible(
+        find.text('Livestock & stocking'),
+        250,
+        scrollable: find.byType(Scrollable),
+      );
+      expect(find.textContaining('No livestock yet'), findsWidgets);
     });
 
     testWidgets('shows empty state message with no tanks', (tester) async {

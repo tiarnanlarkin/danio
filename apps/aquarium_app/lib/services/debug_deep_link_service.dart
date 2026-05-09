@@ -19,6 +19,7 @@ import '../screens/achievements_screen.dart';
 import '../screens/debug_menu_screen.dart';
 import '../screens/species_browser_screen.dart';
 import '../screens/plant_browser_screen.dart';
+import '../screens/tank_comparison_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/glossary_screen.dart';
 import '../screens/faq_screen.dart';
@@ -45,13 +46,16 @@ class DebugDeepLinkService {
     _initialized = true;
 
     // 1. Check if the app was cold-started by an intent.
-    _kQaChannel.invokeMethod<String>('getInitialUri').then((uri) {
-      if (uri != null && uri.isNotEmpty && context.mounted) {
-        _handleUri(uri, context, ref);
-      }
-    }).catchError((Object e) {
-      debugPrint('[QA] getInitialUri error: $e');
-    });
+    _kQaChannel
+        .invokeMethod<String>('getInitialUri')
+        .then((uri) {
+          if (uri != null && uri.isNotEmpty && context.mounted) {
+            _handleUri(uri, context, ref);
+          }
+        })
+        .catchError((Object e) {
+          debugPrint('[QA] getInitialUri error: $e');
+        });
 
     // 2. Listen for subsequent intents while the app is running.
     _kQaChannel.setMethodCallHandler((call) async {
@@ -72,7 +76,8 @@ class DebugDeepLinkService {
 
     debugPrint('[QA] Deep link: $rawUri');
 
-    final segments = uri.pathSegments; // e.g. ['learn'] or ['lesson', 'first_fish']
+    final segments =
+        uri.pathSegments; // e.g. ['learn'] or ['lesson', 'first_fish']
     if (segments.isEmpty) return;
 
     final route = segments[0];
@@ -102,10 +107,17 @@ class DebugDeepLinkService {
         nav.push(MaterialPageRoute(builder: (_) => const AchievementsScreen()));
 
       case 'species':
-        nav.push(MaterialPageRoute(builder: (_) => const SpeciesBrowserScreen()));
+        nav.push(
+          MaterialPageRoute(builder: (_) => const SpeciesBrowserScreen()),
+        );
 
       case 'plants':
         nav.push(MaterialPageRoute(builder: (_) => const PlantBrowserScreen()));
+
+      case 'compare':
+        nav.push(
+          MaterialPageRoute(builder: (_) => const TankComparisonScreen()),
+        );
 
       case 'workshop':
         nav.push(MaterialPageRoute(builder: (_) => const WorkshopScreen()));
