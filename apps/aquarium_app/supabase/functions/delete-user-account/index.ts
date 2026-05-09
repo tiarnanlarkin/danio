@@ -27,6 +27,8 @@ const cloudTables = [
   "user_tanks",
 ];
 
+type SupabaseAdminClient = ReturnType<typeof createClient<any, "public", any>>;
+
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -86,7 +88,7 @@ serve(async (req: Request) => {
   }
 });
 
-async function deleteBackupObjects(admin: ReturnType<typeof createClient>, userId: string) {
+async function deleteBackupObjects(admin: SupabaseAdminClient, userId: string) {
   const bucket = admin.storage.from(BACKUP_BUCKET);
   const { data, error } = await bucket.list(userId, { limit: 1000 });
 
@@ -115,7 +117,7 @@ async function deleteBackupObjects(admin: ReturnType<typeof createClient>, userI
   return paths.length;
 }
 
-async function deleteCloudRows(admin: ReturnType<typeof createClient>, userId: string) {
+async function deleteCloudRows(admin: SupabaseAdminClient, userId: string) {
   for (const table of cloudTables) {
     const { error } = await admin.from(table).delete().eq("user_id", userId);
     if (error) {
