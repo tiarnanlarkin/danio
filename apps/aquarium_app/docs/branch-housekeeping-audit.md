@@ -11,8 +11,8 @@ creating this report.
 
 ## Current Source Of Truth
 
-- Local `main`: `3bd519f6` (`fix: type-check Supabase edge functions`)
-- Remote `origin/main`: `3bd519f6` (`fix: type-check Supabase edge functions`)
+- Local `main`: `761ac0a8` (`docs: record branch cleanup state`)
+- Remote `origin/main`: `761ac0a8` (`docs: record branch cleanup state`)
 - Current primary worktree: `C:\Users\larki\Documents\Danio Aquarium App Project\repo`
 - Current primary worktree branch: `main`
 - Current release source of truth: `main`
@@ -24,7 +24,7 @@ represented by `main` plus the follow-up Supabase Edge Function type-check fix.
 
 Before any branch cleanup, branch tips were archived in:
 
-`C:\Users\larki\Documents\Danio Aquarium App Project\branch-archives\danio-branch-archive-20260509-012150.bundle`
+`C:\Users\larki\Documents\Danio Aquarium App Project\branch-archives\danio-branch-archive-20260509-013529.bundle`
 
 The bundle was verified successfully with `git bundle verify`. It contains the
 local and remote branch refs, tags, and complete history needed to recover old
@@ -32,7 +32,7 @@ branch tips if a branch is later deleted from the local repo or remote.
 
 Associated manifest:
 
-`C:\Users\larki\Documents\Danio Aquarium App Project\branch-archives\danio-branch-archive-20260509-012150-manifest.txt`
+`C:\Users\larki\Documents\Danio Aquarium App Project\branch-archives\danio-branch-archive-20260509-013529-manifest.txt`
 
 ## Branch Counts Before Cleanup
 
@@ -100,7 +100,7 @@ base for new work now that `main` is current.
 
 | Path | State |
 | --- | --- |
-| `C:\Users\larki\Documents\Danio Aquarium App Project\repo` | `main` at `3bd519f6` |
+| `C:\Users\larki\Documents\Danio Aquarium App Project\repo` | `main` at `761ac0a8` |
 | `C:\Users\larki\Documents\Danio Aquarium App Project\worktrees\conservative-ui-polish` | `fix/android-polish-followup` at `3bd519f6` |
 | `C:\Users\larki\Documents\Danio Aquarium App Project\worktrees\audit-main-5e451577` | detached `HEAD` at `5e451577` |
 
@@ -121,4 +121,3 @@ After this report is committed to `main` and pushed:
 
 This leaves `main` as the single working source of truth locally and on GitHub,
 while preserving recoverability through the verified bundle.
-
