@@ -112,14 +112,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildHighlight(
-              'Firebase Analytics (consent-based)',
-              'When you consent, we collect anonymous usage data including 6 event types: page views, feature usage patterns, and screen navigation. This helps us improve the app. Data is shared with Google LLC (USA) for processing.',
-              Icons.bar_chart,
-            ),
-
-            _buildHighlight(
-              'Firebase Crashlytics (legitimate interest)',
-              'Crash reports are collected automatically when the app encounters an error. These reports contain device OS version, app version, and error stack traces. No personal data is included in crash logs. Retained for 90 days.',
+              'Firebase Crashlytics (consent-based)',
+              'When you consent, crash reports help us fix bugs and keep Danio stable. These reports contain device OS version, app version, and error stack traces. No tank records, photos, or learning progress are included. Retained for 90 days.',
               Icons.bug_report,
             ),
 
@@ -141,8 +135,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'Analytics data: Art. 6(1)(a) — Your explicit consent, given on first launch and manageable in Settings',
-              'Crash reports: Art. 6(1)(f) — Legitimate interest in maintaining app stability',
+              'Crash reports: Art. 6(1)(a) — Your explicit consent, given on first launch and manageable in Settings',
               'Fish ID images: Art. 6(1)(a) — Your consent each time you use the feature',
               'Local app data: Not subject to GDPR as it does not leave your device',
             ], context),
@@ -153,7 +146,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'Google LLC (USA) — Firebase Analytics and Crashlytics data, covered by the EU-US Data Privacy Framework and Google\'s Data Processing Agreement',
+              'Google LLC (USA) — Firebase Crashlytics data, covered by the EU-US Data Privacy Framework and Google\'s Data Processing Agreement',
               'OpenAI Inc. (USA) — Fish ID image data, covered by OpenAI\'s Data Processing Agreement and standard contractual clauses',
               'Appropriate safeguards are in place for all transfers in compliance with UK GDPR Chapter V',
             ], context),
@@ -164,7 +157,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'Analytics data: 26 months (Google\'s default retention period)',
               'Crash logs: 90 days, then automatically deleted',
               'Fish ID images: metadata stripped before upload; max 30 days on OpenAI\'s servers, then deleted',
               'Local app data: Stored indefinitely on your device until you delete it',
@@ -201,14 +193,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             _buildRightCard(
               'Right to Object',
-              'You can withdraw analytics consent at any time in Settings',
+              'You can withdraw crash reporting consent at any time in Settings',
               Icons.block,
               context,
             ),
 
             _buildSection(
-              '8. Opting Out of Analytics',
-              'You can opt out of Firebase Analytics at any time:\n\n1. Open Settings\n2. Navigate to Privacy\n3. Toggle "Analytics" off\n\nWhen disabled, no usage events are sent to Google. Crashlytics operates independently of this setting.',
+              '8. Opting Out of Crash Reports',
+              'You can opt out of crash reporting at any time:\n\n1. Open Settings\n2. Navigate to Privacy\n3. Toggle "Crash Reports" off\n\nWhen disabled, crash reports are not sent to Google.',
             ),
 
             _buildSection(
@@ -221,7 +213,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'In-app: Settings > Offline Data > Delete Account — permanently removes your cloud account, synced cloud rows, and cloud backups while preserving local data',
               'Email request: Contact larkintiarnanbizz@gmail.com and we will delete all data we hold within 30 days',
               'Uninstall: Removing the app deletes all local data from your device',
-              'Analytics opt-out: Disabling analytics in Settings stops further data collection',
+              'Crash report opt-out: Disabling Crash Reports in Settings stops further crash diagnostic collection',
             ], context),
 
             _buildSection(
@@ -238,7 +230,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildSection(
               '11. Children\'s Privacy (COPPA)',
-              'Danio is designed for general audiences, including users of all ages. We do not knowingly collect personal information from children under 13 years of age without verifiable parental consent.\n\nAll data collection (Firebase Analytics) is opt-in and requires explicit consent on first launch. If you believe a child under 13 has provided us with personal data without parental consent, please contact us immediately at larkintiarnanbizz@gmail.com and we will delete it promptly.\n\nParents and guardians may contact us to review, delete, or restrict the collection of their child\'s data at any time. The app contains no advertising directed at children and does not share children\'s data with third parties for commercial purposes.',
+              'Danio is designed for general audiences, including users of all ages. We do not knowingly collect personal information from children under 13 years of age without verifiable parental consent.\n\nCrash reporting is opt-in and requires explicit consent on first launch. If you believe a child under 13 has provided us with personal data without parental consent, please contact us immediately at larkintiarnanbizz@gmail.com and we will delete it promptly.\n\nParents and guardians may contact us to review, delete, or restrict the collection of their child\'s data at any time. The app contains no advertising directed at children and does not share children\'s data with third parties for commercial purposes.',
             ),
 
             _buildSection(
@@ -315,11 +307,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
           _buildSummaryItem(
             'Tank, livestock, and log data stored locally on your device',
           ),
-          _buildSummaryItem(
-            'Firebase Analytics collects anonymous usage data (opt-in)',
-          ),
           _buildSummaryCardBullet(
-            'Firebase Crashlytics collects crash reports (automatic)',
+            'Firebase Crashlytics collects crash reports only when you opt in',
           ),
           _buildSummaryItem(
             'Fish ID sends metadata-stripped photos to OpenAI for identification',
@@ -328,7 +317,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             'Cloud sync code exists but is not currently active',
           ),
           _buildSummaryItem('You can delete all data in-app or by emailing us'),
-          _buildSummaryItem('Analytics can be toggled off in Settings'),
+          _buildSummaryItem('Crash reports can be toggled off in Settings'),
         ],
       ),
     );

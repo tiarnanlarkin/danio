@@ -76,7 +76,7 @@ Social features (leaderboards, friends, leagues) and the associated Supabase clo
 ## 3. Data We Do NOT Collect
 
 - **No advertising identifiers** — we do not use any advertising SDKs or ad networks
-- **No behavioural advertising** — analytics data (collected with consent via Firebase Analytics) is used solely to improve the app, never for advertising profiling
+- **No behavioural advertising** — Danio does not include Firebase Analytics, advertising SDKs, or ad-network tracking
 - **No location data** — we do not access your GPS or location
 - **No contacts or call logs** — we do not access your address book or phone data
 - **No behavioural profiling for ads** — we do not build profiles for advertising purposes
@@ -88,30 +88,22 @@ Social features (leaderboards, friends, leagues) and the associated Supabase clo
 
 The App uses the following third-party services, only when you opt in to features that require them:
 
-### 4.1 Firebase Analytics (Google LLC)
-
-- **Purpose:** Anonymous app usage analytics to improve the app (with consent)
-- **Data processed:** Anonymous usage events, Firebase Installation ID, device/OS info
-- **Legal basis:** Consent — Art. 6(1)(a)
-- **Location:** Google LLC (USA), covered by EU–US Data Privacy Framework
-- **Privacy policy:** [https://policies.google.com/privacy](https://policies.google.com/privacy)
-
-### 4.2 Firebase Crashlytics (Google LLC)
+### 4.1 Firebase Crashlytics (Google LLC)
 
 - **Purpose:** Crash reporting and app stability monitoring (with consent)
-- **Data processed:** Device OS version, app version, crash stack traces (no personal data)
+- **Data processed:** Device OS version, app version, Firebase Installation ID, and crash stack traces (no tank data, photos, or learning progress)
 - **Legal basis:** Consent — Art. 6(1)(a); disabled if consent is declined or withdrawn
 - **Retention:** 90 days, then deleted
 - **Location:** Google LLC (USA)
 - **Privacy policy:** [https://policies.google.com/privacy](https://policies.google.com/privacy)
 
-### 4.3 Supabase (Planned — Not Yet Active)
+### 4.2 Supabase (Planned — Not Yet Active)
 
 - **Purpose:** Cloud sync, authentication, encrypted backup storage (planned for a future release)
 - **Status:** Not currently active. We will update this policy and request explicit consent before activation.
 - **Privacy policy:** [https://supabase.com/privacy](https://supabase.com/privacy)
 
-### 4.4 OpenAI
+### 4.3 OpenAI
 
 - **Purpose:** AI-powered fish identification, symptom triage, weekly maintenance planning, and water parameter anomaly detection
 - **Data processed:**
@@ -123,7 +115,7 @@ The App uses the following third-party services, only when you opt in to feature
 - **Retention:** OpenAI retains API inputs for up to 30 days for abuse monitoring, then deletes them. API data is not used for model training.
 - **Privacy policy:** [https://openai.com/policies/api-data-usage-policies](https://openai.com/policies/api-data-usage-policies)
 
-### 4.5 Google OAuth
+### 4.4 Google OAuth
 
 - **Purpose:** Optional sign-in method
 - **Data processed:** Basic profile info (email, name) provided by Google during authentication
@@ -138,7 +130,6 @@ Where we process your personal data, we rely on the following legal bases under 
 | Purpose | Legal Basis |
 |---|---|
 | Account creation and authentication | Performance of a contract (providing the service you requested) |
-| Firebase Analytics | Your explicit consent — Art. 6(1)(a) (opt-in on first launch) |
 | Firebase Crashlytics | Your explicit consent — Art. 6(1)(a) (consent-based; disabled when consent is declined) |
 | Cloud sync and backup | Your explicit consent — Art. 6(1)(a) (opt-in) |
 | AI feature processing (Fish ID photos, Symptom Triage text/parameters, Weekly Planner tank/livestock data, Anomaly Detector water parameters sent to OpenAI) | Your explicit consent — Art. 6(1)(a) (one-time disclosure before first use of any AI feature) |

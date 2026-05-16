@@ -39,7 +39,7 @@ void main() {
         'Tap-Visible "Terms of Service and Privacy Policy acceptance checkbox" 10',
       ),
     );
-    expect(source, contains('Try-Tap-Visible "No Thanks|Accept Analytics"'));
+    expect(source, contains('Try-Tap-Visible "No Thanks|Share Crash Reports"'));
     expect(source, contains('Try-WaitFirstVisibleAppState 2'));
     expect(source, contains("android.widget.CheckBox"));
     expect(source, contains(r'$tapNode = $checkboxChild'));

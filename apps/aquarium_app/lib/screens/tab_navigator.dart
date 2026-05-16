@@ -39,6 +39,26 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
     with SingleTickerProviderStateMixin {
   static const double _bottomNavHeight = 78;
 
+  static IconThemeData _navigationIconTheme(Set<WidgetState> states) {
+    final color = states.contains(WidgetState.disabled)
+        ? AppColors.textHint
+        : states.contains(WidgetState.selected)
+        ? AppColors.textPrimary
+        : AppColors.textSecondary;
+
+    return IconThemeData(color: color, size: 24);
+  }
+
+  static TextStyle _navigationLabelStyle(Set<WidgetState> states) {
+    final color = states.contains(WidgetState.disabled)
+        ? AppColors.textHint
+        : states.contains(WidgetState.selected)
+        ? AppColors.textPrimary
+        : AppColors.textSecondary;
+
+    return AppTypography.labelSmall.copyWith(color: color);
+  }
+
   // Track last back button press for double-tap-to-exit
   DateTime? _lastBackPress;
 
@@ -250,79 +270,93 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
             ),
 
             // === Bottom Navigation Bar ===
-            bottomNavigationBar: NavigationBar(
-              height: _bottomNavHeight,
-              elevation: 0,
-              backgroundColor: const Color(0xFFFDF8EF),
-              indicatorColor: const Color(0xFFE7F0EA),
-              indicatorShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(22),
+            bottomNavigationBar: NavigationBarTheme(
+              data: NavigationBarThemeData(
+                iconTheme: WidgetStateProperty.resolveWith(
+                  _navigationIconTheme,
+                ),
+                labelTextStyle: WidgetStateProperty.resolveWith(
+                  _navigationLabelStyle,
+                ),
               ),
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-              animationDuration: AppDurations.medium2,
-              selectedIndex: currentTab,
-              onDestinationSelected: (index) {
-                if (index == currentTab) {
-                  // Tapped current tab - scroll to top if possible
-                  final navigator = _navigatorKeys[index].currentState;
-                  if (navigator != null && navigator.canPop()) {
-                    // Pop to root of this tab
-                    navigator.popUntil((route) => route.isFirst);
+              child: NavigationBar(
+                height: _bottomNavHeight,
+                elevation: 0,
+                backgroundColor: const Color(0xFFFDF8EF),
+                indicatorColor: const Color(0xFFE7F0EA),
+                indicatorShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                animationDuration: AppDurations.medium2,
+                selectedIndex: currentTab,
+                onDestinationSelected: (index) {
+                  if (index == currentTab) {
+                    // Tapped current tab - scroll to top if possible
+                    final navigator = _navigatorKeys[index].currentState;
+                    if (navigator != null && navigator.canPop()) {
+                      // Pop to root of this tab
+                      navigator.popUntil((route) => route.isFirst);
+                    }
+                  } else {
+                    // Animate tab transition
+                    _onTabChanged(index, currentTab);
                   }
-                } else {
-                  // Animate tab transition
-                  _onTabChanged(index, currentTab);
-                }
-                // Switch tabs
-                ref.read(currentTabProvider.notifier).state = index;
-                // Haptic feedback
-                HapticFeedback.selectionClick();
-              },
-              destinations: [
-                // Learn tab
-                const NavigationDestination(
-                  icon: Icon(Icons.auto_stories_outlined),
-                  selectedIcon: Icon(Icons.auto_stories),
-                  label: 'Learn',
-                  tooltip: 'Learn tab',
-                ),
-                // Quiz tab with badge for due cards
-                NavigationDestination(
-                  icon: Badge(
-                    isLabelVisible: dueCardsCount > 0,
-                    label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                    child: const Icon(Icons.quiz_outlined),
+                  // Switch tabs
+                  ref.read(currentTabProvider.notifier).state = index;
+                  // Haptic feedback
+                  HapticFeedback.selectionClick();
+                },
+                destinations: [
+                  // Learn tab
+                  const NavigationDestination(
+                    icon: Icon(Icons.auto_stories_outlined),
+                    selectedIcon: Icon(Icons.auto_stories),
+                    label: 'Learn',
+                    tooltip: 'Learn tab',
                   ),
-                  selectedIcon: Badge(
-                    isLabelVisible: dueCardsCount > 0,
-                    label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                    child: const Icon(Icons.quiz),
+                  // Quiz tab with badge for due cards
+                  NavigationDestination(
+                    icon: Badge(
+                      isLabelVisible: dueCardsCount > 0,
+                      label: Text(
+                        dueCardsCount > 99 ? '99+' : '$dueCardsCount',
+                      ),
+                      child: const Icon(Icons.quiz_outlined),
+                    ),
+                    selectedIcon: Badge(
+                      isLabelVisible: dueCardsCount > 0,
+                      label: Text(
+                        dueCardsCount > 99 ? '99+' : '$dueCardsCount',
+                      ),
+                      child: const Icon(Icons.quiz),
+                    ),
+                    label: 'Practice',
+                    tooltip: 'Practice tab',
                   ),
-                  label: 'Practice',
-                  tooltip: 'Practice tab',
-                ),
-                // Tank tab
-                const NavigationDestination(
-                  icon: Icon(Icons.water_outlined),
-                  selectedIcon: Icon(Icons.water),
-                  label: 'Tank',
-                  tooltip: 'Tank tab',
-                ),
-                // Smart tab
-                const NavigationDestination(
-                  icon: Icon(Icons.psychology_outlined),
-                  selectedIcon: Icon(Icons.psychology),
-                  label: 'Smart',
-                  tooltip: 'Smart tab',
-                ),
-                // More tab (profile, shop, tools, settings, about)
-                const NavigationDestination(
-                  icon: Icon(Icons.grid_view_outlined),
-                  selectedIcon: Icon(Icons.grid_view),
-                  label: 'More',
-                  tooltip: 'More tab',
-                ),
-              ],
+                  // Tank tab
+                  const NavigationDestination(
+                    icon: Icon(Icons.water_outlined),
+                    selectedIcon: Icon(Icons.water),
+                    label: 'Tank',
+                    tooltip: 'Tank tab',
+                  ),
+                  // Smart tab
+                  const NavigationDestination(
+                    icon: Icon(Icons.psychology_outlined),
+                    selectedIcon: Icon(Icons.psychology),
+                    label: 'Smart',
+                    tooltip: 'Smart tab',
+                  ),
+                  // More tab (profile, shop, tools, settings, about)
+                  const NavigationDestination(
+                    icon: Icon(Icons.grid_view_outlined),
+                    selectedIcon: Icon(Icons.grid_view),
+                    label: 'More',
+                    tooltip: 'More tab',
+                  ),
+                ],
+              ),
             ),
           ),
         ),

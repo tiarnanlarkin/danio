@@ -25,9 +25,7 @@
 
 | # | Item | Detail | Source |
 |---|------|--------|--------|
-| CB-1 | **Build Android App Bundle (AAB)** | Play Store has required AAB (not APK) for all new submissions since Aug 2021. Run: `flutter build appbundle --release`. Verify signing works. | Play Store Audit |
 | CB-2 | **Commit or stash 8 modified files** | 8 files have uncommitted changes on `openclaw/stage-system`. Must be committed before release tag. Files: `empty_room_scene.dart`, `tank_switcher.dart`, `today_board.dart`, `livestock_last_fed.dart`, `onboarding_screen.dart`, `settings_screen.dart`, `ambient_tip_overlay.dart`, `bottom_sheet_panel.dart` | Pre-Build Verification |
-| CB-3 | **Verify/remove orphaned `firebase_analytics` dependency** | `firebase_analytics_service.dart` has been deleted but `firebase_analytics: ^10.7.4` remains in `pubspec.yaml`. Confirm if still used; remove if not (reduces bundle size and avoids confusion). | Pre-Build Verification |
 | CB-4 | **Do NOT embed `OPENAI_API_KEY` in production build** | If `--dart-define=OPENAI_API_KEY=sk-...` is used at build time, the key is embedded in the compiled APK and extractable via decompilation. Either deploy the Supabase proxy (see Legal section) or omit the key entirely to enable graceful degradation. | Security Audit |
 
 ### 🟡 SHOULD FIX
@@ -61,6 +59,8 @@
 | CB-✅-14 | ABI splits enabled — smaller per-architecture download |
 | CB-✅-15 | All declared assets verified present and loadable |
 | CB-✅-16 | `flutter pub get` resolves cleanly |
+| CB-✅-17 | `firebase_analytics` remains absent from `pubspec.yaml`; no `logEvent` call sites exist |
+| CB-✅-18 | Release AAB build verified with `.\scripts\flutterw.ps1 build appbundle --release` |
 
 ---
 
@@ -70,7 +70,6 @@
 
 | # | Item | Detail | Source |
 |---|------|--------|--------|
-| LC-1 | **Fix COPPA under-13 block — currently bypassable** | The "I'm under 13" dialog is informational only. After dismissal, the user can immediately tick the age checkbox and proceed into the app. Under COPPA §312.5(b) this is non-compliant. **Required fix:** Navigate the under-13 path to a dead-end "ask a parent" screen with no route back into the app, AND set a persistent `under_13_blocked` flag in SharedPreferences checked on every launch. | Legal Verification Report (Check 1) |
 | LC-2 | **Deploy Supabase AI proxy before any production build using OpenAI key** | Without `SUPABASE_AI_PROXY_URL` in the production build, the OpenAI key would be embedded in the compiled APK. See `docs/ai-proxy-setup.md`. If launching without AI features, ensure no key is in the build config. | Security Audit (R1) |
 
 ### 🟡 SHOULD FIX
@@ -80,10 +79,10 @@
 | LC-3 | **Set Play Store target audience to 13+ explicitly** | Declare target audience as "13 and above" in Play Console to match the in-app age gate and avoid triggering Google Play's Children & Families policy requirements |
 | LC-4 | **Set content rating to Teen (13+)** | Aligns with age gate; substantially reduces COPPA exposure. See `docs/CONTENT_RATING_ANSWERS.md` for IARC questionnaire answers. |
 | LC-5 | **Add postal address to privacy policy** | UK GDPR — data controller record should include a physical address. Can be addressed as "available on request" for a sole trader. |
-| LC-6 | **Consider "Use Without Analytics" wording** | "No Thanks" button doesn't communicate that the user still gets the full app. Clearer label reduces confusion and support queries. |
+| LC-6 | **Consider "Use Without Crash Reports" wording** | "No Thanks" is functional, but a more explicit decline label could clarify that users still get the full app without crash diagnostics. |
 | LC-7 | **Consider custom domain privacy email** | `larkintiarnanbizz@gmail.com` is functional but `privacy@danio.app` would be more professional on the store listing. Not a compliance requirement. |
 | LC-8 | **Future: implement Verifiable Parental Consent (VPC)** | If under-13 users are expected to access the app with parental consent, a VPC mechanism (parental email confirmation) is required by COPPA. Not required at launch if app is rated 13+. |
-| LC-9 | **Add Firebase Analytics data deletion note to privacy policy COPPA section** | If app reaches US users, a brief COPPA-specific section noting the 13+ requirement strengthens the policy. |
+| LC-9 | **Keep COPPA/privacy copy aligned with crash diagnostics only** | If app reaches US users, the privacy policy should continue to describe the 13+ requirement and consent-gated Crash Reports accurately. |
 
 ### 🟢 DONE
 
@@ -93,19 +92,20 @@
 | LC-✅-2 | Terms of Service exists (`docs/terms-of-service.html`) — last updated 27 March 2026 |
 | LC-✅-3 | Privacy policy linked in-app at `https://tiarnanlarkin.github.io/danio/privacy-policy.html` |
 | LC-✅-4 | ToS linked in-app at `https://tiarnanlarkin.github.io/danio/terms-of-service.html` |
-| LC-✅-5 | GDPR consent flow: opt-in, gated on both age + ToS, analytics truly optional |
-| LC-✅-6 | Firebase Analytics/Crashlytics disabled by default in `AndroidManifest.xml` |
-| LC-✅-7 | Analytics consent persisted to `gdpr_analytics_consent` SharedPreferences key |
-| LC-✅-8 | In-app "Delete My Data" flow: clears all SharedPreferences + local files |
-| LC-✅-9 | Firebase Analytics deletion note added to Delete My Data dialog (26-month retention, contact email) |
-| LC-✅-10 | JSON data export (Right to Portability) available in analytics screen |
-| LC-✅-11 | Analytics toggle in Settings correctly calls `setAnalyticsCollectionEnabled(false)` + `setCrashlyticsCollectionEnabled(false)` |
-| LC-✅-12 | No PII collected — anonymous events only (lesson_complete, tank_created, quiz_passed, fish_id_used, achievement_unlocked, onboarding_complete) |
-| LC-✅-13 | OpenAI disclosure gate (`openai_disclosure_accepted` key) before any AI features |
-| LC-✅-14 | No real-money IAP — zero in-app purchase declarations needed |
-| LC-✅-15 | All legal bases documented: consent (analytics), legitimate interest (crashlytics), contract (AI proxy) |
-| LC-✅-16 | `SCHEDULE_EXACT_ALARM` justification drafted in `docs/PLAY_CONSOLE_DECLARATIONS.md` |
-| LC-✅-17 | Data Safety declarations documented in `docs/PLAY_CONSOLE_DECLARATIONS.md` (see also `docs/DATA_SAFETY_FORM.md`) |
+| LC-✅-5 | GDPR consent flow: opt-in, gated on both age + ToS, Crash Reports truly optional |
+| LC-✅-6 | Firebase Crashlytics disabled by default in `AndroidManifest.xml`; Firebase Analytics dependency absent |
+| LC-✅-7 | Crash Reports consent persisted to legacy `gdpr_analytics_consent` SharedPreferences key |
+| LC-✅-8 | Under-13 path hard-blocks access: `under_13_blocked` is persisted and routed to `AgeBlockedScreen` on launch |
+| LC-✅-9 | In-app "Delete My Data" flow: clears all SharedPreferences + local files |
+| LC-✅-10 | Crashlytics deletion note added to Delete My Data dialog (90-day retention, contact email) |
+| LC-✅-11 | JSON data export (Right to Portability) available in analytics screen |
+| LC-✅-12 | Crash Reports toggle in Settings correctly calls `applyAnalyticsConsent(false)` and disables Crashlytics collection |
+| LC-✅-13 | No Firebase Analytics events collected; Crashlytics crash diagnostics are consent-gated and do not include tank data, photos, or learning progress |
+| LC-✅-14 | OpenAI disclosure gate (`openai_disclosure_accepted` key) before any AI features |
+| LC-✅-15 | No real-money IAP — zero in-app purchase declarations needed |
+| LC-✅-16 | Legal bases documented for Crash Reports consent, OpenAI feature consent, local data, and dormant Supabase sync |
+| LC-✅-17 | `SCHEDULE_EXACT_ALARM` justification drafted in `docs/PLAY_CONSOLE_DECLARATIONS.md` |
+| LC-✅-18 | Data Safety declarations documented in `docs/PLAY_CONSOLE_DECLARATIONS.md` (see also `docs/DATA_SAFETY_FORM.md`) |
 
 ---
 
@@ -191,7 +191,7 @@
 
 | # | Item | Detail | Source |
 |---|------|--------|--------|
-| TE-1 | **Add consent persistence test** | A GDPR compliance requirement: verify that accepting/declining analytics consent correctly sets `gdpr_analytics_consent` in SharedPreferences and persists across app restart. Tests exist for the UI but not the persistence outcome. | Test Coverage Audit (Risk #4) |
+| TE-1 | **Add consent persistence test** | A GDPR compliance requirement: verify that accepting/declining Crash Reports consent correctly sets the legacy `gdpr_analytics_consent` key in SharedPreferences and persists across app restart. Tests exist for the UI but not the restart outcome. | Test Coverage Audit (Risk #4) |
 
 ### 🟡 SHOULD FIX
 
@@ -249,7 +249,7 @@
 | IN-✅-7 | All core features work fully offline |
 | IN-✅-8 | `OfflineIndicator` banner shown app-wide |
 | IN-✅-9 | AI features check `isOnlineProvider` before calling OpenAI |
-| IN-✅-10 | Firebase Analytics/Crashlytics disabled by default; enabled only after explicit consent |
+| IN-✅-10 | Firebase Crashlytics disabled by default; enabled only after explicit Crash Reports consent |
 
 ---
 

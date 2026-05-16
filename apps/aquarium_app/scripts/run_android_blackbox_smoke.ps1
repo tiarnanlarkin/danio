@@ -583,7 +583,7 @@ if ((-not $KeepState) -and $firstState -match "Your Privacy Matters") {
       }
     }
 
-    if (Try-Tap-Visible "No Thanks|Accept Analytics" 1) {
+    if (Try-Tap-Visible "No Thanks|Share Crash Reports" 1) {
       Start-Sleep -Seconds 2
       $firstState = Wait-FirstVisibleAppState
       break

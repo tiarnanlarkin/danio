@@ -14,16 +14,17 @@ import '../../utils/logger.dart';
 import '../../widgets/core/app_button.dart';
 import 'age_blocked_screen.dart';
 
-/// Key used in SharedPreferences to persist the user's GDPR analytics consent.
+/// Key used in SharedPreferences to persist the user's diagnostics consent.
+/// The stored key name is kept for backward compatibility with existing installs.
 const String kGdprAnalyticsConsentKey = 'gdpr_analytics_consent';
 
-/// Applies the user's analytics consent choice to Firebase services.
+/// Applies the user's diagnostics consent choice to Firebase services.
 ///
 /// Call this after reading the persisted consent value or after the user
 /// makes a choice on the consent screen.
 Future<void> applyAnalyticsConsent(bool accepted) async {
-  // firebase_analytics removed — no-op; crash reporting toggled below.
-  appLog('ConsentScreen: analytics consent=$accepted', tag: 'ConsentScreen');
+  // firebase_analytics removed; Crashlytics reporting is toggled below.
+  appLog('ConsentScreen: diagnostics consent=$accepted', tag: 'ConsentScreen');
   try {
     if (accepted && Firebase.apps.isEmpty) {
       await Firebase.initializeApp();
@@ -42,7 +43,7 @@ Future<void> applyAnalyticsConsent(bool accepted) async {
 }
 
 /// A clean Material Design screen that explains what data Danio collects and
-/// lets the user accept or decline analytics/crashlytics.
+/// lets the user accept or decline crash diagnostics.
 ///
 /// Also collects age confirmation (REQUIRED R3) and ToS acceptance (REQUIRED
 /// R6) before allowing the user to proceed.
@@ -119,9 +120,9 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
-                'We only use anonymous analytics to understand how people '
-                'use Danio, and crash reports to fix bugs — we never sell '
-                'your data. You can change your mind anytime in Settings.',
+                'Crash reports help us fix bugs and keep Danio stable. '
+                'They do not include your tank records, photos, or learning '
+                'progress. You can change your mind anytime in Settings.',
                 style: theme.textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
@@ -273,7 +274,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
               const Spacer(flex: 2),
 
               AppButton(
-                label: 'Accept Analytics',
+                label: 'Share Crash Reports',
                 onPressed: canProceed ? () => _respond(true) : null,
                 variant: AppButtonVariant.primary,
                 isFullWidth: true,

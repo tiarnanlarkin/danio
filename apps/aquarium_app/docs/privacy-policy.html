@@ -85,13 +85,8 @@
         </div>
 
         <div class="highlight">
-            <div class="highlight-title">📊 Firebase Analytics (consent-based, opt-in)</div>
-            <p>When you give your consent on first launch, we collect anonymous usage data including screen views and navigation events via Firebase Analytics. Custom events are defined in code but not yet active. This helps us understand how the app is used and improve it. Data is shared with <strong>Google LLC (USA)</strong> for processing via Firebase Analytics. You can withdraw consent at any time in Settings → Privacy.</p>
-        </div>
-
-        <div class="highlight">
             <div class="highlight-title">🐛 Firebase Crashlytics (consent-based)</div>
-            <p>When you consent, crash reports are collected automatically when the app encounters an error. These reports contain device OS version, app version, and error stack traces. <strong>No personal data is included in crash logs.</strong> Crash reports are retained for 90 days, then deleted. Data is processed by <strong>Google LLC (USA)</strong> via Firebase Crashlytics. Crashlytics is disabled if you decline consent on the consent screen.</p>
+            <p>When you consent, crash reports help us fix bugs and keep Danio stable. These reports contain device OS version, app version, Firebase Installation ID, and error stack traces. <strong>No tank records, photos, or learning progress are included in crash logs.</strong> Crash reports are retained for 90 days, then deleted. Data is processed by <strong>Google LLC (USA)</strong> via Firebase Crashlytics. Crashlytics is disabled if you decline consent on the consent screen or turn off Crash Reports in Settings.</p>
         </div>
 
         <div class="highlight">
@@ -121,11 +116,6 @@
                 <th>Processing Activity</th>
                 <th>Legal Basis</th>
                 <th>Details</th>
-            </tr>
-            <tr>
-                <td>Firebase Analytics</td>
-                <td>Consent — Art. 6(1)(a)</td>
-                <td>Explicit consent given on first launch; withdrawable in Settings → Privacy</td>
             </tr>
             <tr>
                 <td>Firebase Crashlytics</td>
@@ -180,8 +170,7 @@
         <h3>5.2 Third-Party Services</h3>
         <p>We use the following third-party services. All are strictly opt-in where applicable:</p>
         <ul>
-            <li><strong>Google LLC / Firebase Analytics:</strong> Anonymous usage data (with consent). <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a></li>
-            <li><strong>Google LLC / Firebase Crashlytics:</strong> Crash reports (with consent). <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a></li>
+            <li><strong>Google LLC / Firebase Crashlytics:</strong> Crash reports and Firebase Installation ID (with consent). <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a></li>
             <li><strong>OpenAI Inc.:</strong> Data for AI-powered features (optional, consent-based, one-time disclosure): Fish ID (photos), Symptom Triage (symptom text + water parameters), Weekly Planner (tank names, setup, livestock), Anomaly Detector (water parameter data). <a href="https://openai.com/policies/api-data-usage-policies" target="_blank">API Data Usage Policy</a></li>
             <li><strong>Supabase:</strong> Cloud sync and authentication (optional, currently dormant). <a href="https://supabase.com/privacy" target="_blank">Privacy Policy</a></li>
         </ul>
@@ -191,7 +180,7 @@
         <h2>6. International Data Transfers</h2>
         <p>Some data is transferred outside the UK when you use certain features:</p>
         <ul>
-            <li><strong>Google LLC (USA)</strong> — Firebase Analytics and Crashlytics, covered by the EU–US Data Privacy Framework and Google's Data Processing Agreement</li>
+            <li><strong>Google LLC (USA)</strong> — Firebase Crashlytics, covered by the EU–US Data Privacy Framework and Google's Data Processing Agreement</li>
             <li><strong>OpenAI Inc. (USA)</strong> — Fish ID images, Symptom Triage text and water parameters, Weekly Planner tank/livestock data, and Anomaly Detector water parameters; covered by OpenAI's Data Processing Agreement and Standard Contractual Clauses</li>
             <li><strong>Supabase (EU region)</strong> — Cloud sync data when active; covered by Supabase's Data Processing Agreement</li>
         </ul>
@@ -202,7 +191,6 @@
         <h2>7. Data Retention</h2>
         <ul>
             <li><strong>Local app data:</strong> Stored on your device indefinitely until you delete it or uninstall the app</li>
-            <li><strong>Firebase Analytics data:</strong> 26 months (Google's standard retention period)</li>
             <li><strong>Firebase Crashlytics crash logs:</strong> 90 days, then automatically deleted</li>
             <li><strong>OpenAI AI feature data</strong> (Fish ID photos with metadata stripped before upload, Symptom Triage text/parameters, Weekly Planner tank/livestock data, Anomaly Detector water parameters): Maximum 30 days on OpenAI's servers, then automatically deleted</li>
             <li><strong>Cloud sync data (Supabase):</strong> Retained while your account is active; deleted through the in-app Delete Account action or within 30 days of an email deletion request</li>
@@ -239,25 +227,25 @@
             <li><strong>In-app (delete local data):</strong> Settings → Delete My Data</li>
             <li><strong>In-app (delete cloud account):</strong> Settings → Offline Data → Delete Account while signed in. This deletes your Supabase account, synced cloud rows, and cloud backups while preserving local data on the device.</li>
             <li><strong>In-app (export):</strong> Settings → Backup &amp; Restore → Export</li>
-            <li><strong>In-app (consent):</strong> Settings → Privacy to manage analytics consent</li>
+            <li><strong>In-app (consent):</strong> Settings → Privacy to manage crash reporting consent</li>
             <li><strong>By email:</strong> <a href="mailto:larkintiarnanbizz@gmail.com">larkintiarnanbizz@gmail.com</a> — we will respond within 30 days</li>
         </ul>
     </div>
 
     <div class="section">
-        <h2>10. Opting Out of Analytics &amp; Crashlytics</h2>
+        <h2>10. Opting Out of Crash Reports</h2>
         <p>You can manage your consent at any time:</p>
         <ol>
             <li>Open the app and go to <strong>Settings</strong></li>
             <li>Navigate to <strong>Privacy</strong></li>
-            <li>Toggle the combined <strong>Analytics &amp; Crash Reports</strong> setting off</li>
+            <li>Toggle the <strong>Crash Reports</strong> setting off</li>
         </ol>
-        <p>When analytics is disabled, no usage events are sent to Google. When crash reporting is disabled, no crash data is sent to Firebase Crashlytics.</p>
+        <p>When crash reporting is disabled, no crash data is sent to Firebase Crashlytics.</p>
     </div>
 
     <div class="section">
         <h2>11. Children's Privacy</h2>
-        <p>Danio is not directed at children under the age of 13. We do not knowingly collect personal data from children under 13. Analytics and crash reporting consent is obtained before any data collection begins.</p>
+        <p>Danio is not directed at children under the age of 13. We do not knowingly collect personal data from children under 13. Crash reporting is opt-in and requires explicit consent before crash diagnostic data is collected.</p>
         <p>If you are a parent or guardian and believe your child has provided us with personal data, please contact us at <a href="mailto:larkintiarnanbizz@gmail.com">larkintiarnanbizz@gmail.com</a> and we will delete it promptly.</p>
     </div>
 

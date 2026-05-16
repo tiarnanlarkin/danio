@@ -41,15 +41,15 @@ Complete each sub-section as follows:
 ### 2a. Device or Other IDs
 
 **Data type:** Device or other IDs  
-**Specific type:** Device or other IDs (Firebase Installation ID — a randomly generated, non-persistent identifier assigned by Firebase SDK)
+**Specific type:** Device or other IDs (Firebase Installation ID used by Crashlytics crash diagnostics)
 
 | Play Console Question | Answer |
 |----------------------|--------|
 | Is this data collected, shared, or both? | **Collected and shared** |
 | Is this data processed ephemerally (not stored outside the app)? | **No** |
 | Is this data required, or can users choose whether it's collected? | **Optional** — requires explicit user consent at first launch |
-| Why is this data collected? | ✅ Analytics |
-| Is this data shared with third parties? | **Yes — Google (Firebase Analytics)** |
+| Why is this data collected? | App diagnostics |
+| Is this data shared with third parties? | **Yes — Google (Firebase Crashlytics)** |
 | Is this data encrypted in transit? | **Yes** |
 | Can users request that this data be deleted? | **Yes** |
 
@@ -57,20 +57,8 @@ Complete each sub-section as follows:
 
 ### 2b. App Activity
 
-**Data type:** App activity  
-**Specific type:** App interactions (in-app actions taken during lesson and quiz flows; screen navigation events via Firebase automatic screen tracking)
-
-| Play Console Question | Answer |
-|----------------------|--------|
-| Is this data collected, shared, or both? | **Collected and shared** |
-| Is this data processed ephemerally? | **No** |
-| Is this data required, or can users choose? | **Optional** — requires explicit user consent at first launch |
-| Why is this data collected? | ✅ Analytics |
-| Is this data shared with third parties? | **Yes — Google (Firebase Analytics)** |
-| Is this data encrypted in transit? | **Yes** |
-| Can users request that this data be deleted? | **Yes** |
-
-**Detail for reviewer:** Danio logs exactly 6 custom event types: `lesson_complete`, `tank_created`, `quiz_passed`, `fish_id_used`, `achievement_unlocked`, `onboarding_complete`. No `setUserId` or `setUserProperty` calls exist. No PII is associated with any event. All events are anonymous.
+**Do not declare App Activity for the current v1.0 build.** Danio does not
+include the `firebase_analytics` dependency and has no `logEvent` call sites.
 
 ---
 
@@ -83,13 +71,13 @@ Complete each sub-section as follows:
 |----------------------|--------|
 | Is this data collected, shared, or both? | **Collected and shared** |
 | Is this data processed ephemerally? | **No** |
-| Is this data required, or can users choose? | **Optional** — requires explicit user consent at first launch (same toggle as Analytics) |
+| Is this data required, or can users choose? | **Optional** — requires explicit user consent at first launch (same toggle as Crash Reports) |
 | Why is this data collected? | ✅ App diagnostics |
 | Is this data shared with third parties? | **Yes — Google (Firebase Crashlytics)** |
 | Is this data encrypted in transit? | **Yes** |
 | Can users request that this data be deleted? | **Yes** |
 
-**Detail:** Crashlytics data is retained by Google for 90 days. Users can opt out via Settings → Analytics & Data toggle. Early deletion requests can be made via larkintiarnanbizz@gmail.com.
+**Detail:** Crashlytics data is retained by Google for 90 days. Users can opt out via Settings → Crash Reports toggle. Early deletion requests can be made via larkintiarnanbizz@gmail.com.
 
 ---
 
@@ -156,8 +144,7 @@ The following data categories are explicitly **not collected or shared** and sho
 
 | Third Party | Data Shared | Purpose | User Control |
 |------------|-------------|---------|-------------|
-| **Google LLC (Firebase Analytics)** | Firebase Installation ID, app interaction events | Analytics | Opt-out toggle in Settings; consent required at first launch |
-| **Google LLC (Firebase Crashlytics)** | Crash logs (stack trace, device/OS info, no PII) | App diagnostics / crash debugging | Opt-out toggle in Settings (same as above) |
+| **Google LLC (Firebase Crashlytics)** | Crash logs and Firebase Installation ID (stack trace, device/OS info, no tank data or photos) | App diagnostics / crash debugging | Opt-out toggle in Settings; consent required at first launch |
 | **OpenAI Inc.** | Photos (Fish ID only), text prompts (AI features) | App functionality | Per-feature consent; one-time OpenAI disclosure acceptance |
 | **Supabase Inc.** | None at launch *(cloud sync is dormant in v1.0 — credentials not provided in production build)* | N/A | N/A |
 
@@ -179,7 +166,7 @@ Play Console may display an "Independent security review" advisory. For v1.0, th
 
 | SharedPreferences Key | Controls |
 |----------------------|---------|
-| `gdpr_analytics_consent` | Firebase Analytics + Crashlytics. `true` = both enabled. `false` or absent = both disabled. Set at first launch via consent screen. Changeable in Settings. |
+| `gdpr_analytics_consent` | Legacy key name. Controls Firebase Crashlytics crash reporting. `true` = crash reports enabled. `false` or absent = disabled. Set at first launch via consent screen. Changeable in Settings. |
 | `openai_disclosure_accepted` | One-time OpenAI data disclosure. `true` = user has accepted. Covers all 4 AI features: Fish ID, Symptom Triage, Weekly Planner, Anomaly Detector. |
 
 ---
@@ -190,7 +177,7 @@ Play Console may display an "Independent security review" advisory. For v1.0, th
 
 > Users can delete all locally stored data at any time by navigating to **Settings → Delete My Data**. This immediately clears all tank records, livestock data, water logs, learning progress, gamification data, and app settings from the device.
 >
-> For analytics data held by Google (Firebase Analytics, retained up to 26 months; Crashlytics, retained up to 90 days), users can request earlier deletion by emailing **larkintiarnanbizz@gmail.com**. Analytics collection can also be permanently disabled at any time via the Settings toggle.
+> For crash report data held by Google Crashlytics, users can request earlier deletion by emailing **larkintiarnanbizz@gmail.com**. Crash report collection can also be permanently disabled at any time via the Settings toggle. Crashlytics retains crash data for up to 90 days.
 >
 > For photos submitted to OpenAI via the Fish ID feature, OpenAI may retain data for up to 30 days. Deletion requests can be submitted via larkintiarnanbizz@gmail.com.
 

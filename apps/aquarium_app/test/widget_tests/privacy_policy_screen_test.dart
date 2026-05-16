@@ -12,9 +12,7 @@ import 'package:danio/screens/privacy_policy_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const MaterialApp(
-    home: PrivacyPolicyScreen(),
-  );
+  return const MaterialApp(home: PrivacyPolicyScreen());
 }
 
 // ---------------------------------------------------------------------------
@@ -50,10 +48,7 @@ void main() {
     testWidgets('shows transparency subtitle', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.textContaining('Transparency'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('Transparency'), findsOneWidget);
     });
 
     testWidgets('shows Summary section', (tester) async {
@@ -77,13 +72,10 @@ void main() {
       expect(find.text('1. Introduction'), findsOneWidget);
     });
 
-    testWidgets('mentions Firebase Analytics', (tester) async {
+    testWidgets('mentions Firebase Crashlytics', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.textContaining('Firebase Analytics'),
-        findsWidgets,
-      );
+      expect(find.textContaining('Firebase Crashlytics'), findsWidgets);
     });
   });
 }

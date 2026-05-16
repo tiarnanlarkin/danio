@@ -73,10 +73,15 @@ Future<void> exportData(BuildContext context) async {
       return;
     }
 
-    await Share.shareXFiles([XFile(dataFile.path)],
-        subject: 'Danio Data Export');
+    await Share.shareXFiles([
+      XFile(dataFile.path),
+    ], subject: 'Danio Data Export');
   } catch (e, st) {
-    logError('SettingsDataSection: export failed: $e', stackTrace: st, tag: 'SettingsDataSection');
+    logError(
+      'SettingsDataSection: export failed: $e',
+      stackTrace: st,
+      tag: 'SettingsDataSection',
+    );
     if (context.mounted) {
       AppFeedback.dismiss(context);
       dismissLoadingInFinally = false;
@@ -167,7 +172,11 @@ Future<void> importData(BuildContext context) async {
       );
     }
   } catch (e, st) {
-    logError('SettingsDataSection: import failed: $e', stackTrace: st, tag: 'SettingsDataSection');
+    logError(
+      'SettingsDataSection: import failed: $e',
+      stackTrace: st,
+      tag: 'SettingsDataSection',
+    );
     if (context.mounted) {
       AppFeedback.dismiss(context);
       dismissLoadingInFinally = false;
@@ -263,7 +272,11 @@ Future<void> confirmClearData(BuildContext context, WidgetRef ref) async {
       ).popUntil((route) => route.isFirst);
     }
   } catch (e, st) {
-    logError('SettingsDataSection: clear data failed: $e', stackTrace: st, tag: 'SettingsDataSection');
+    logError(
+      'SettingsDataSection: clear data failed: $e',
+      stackTrace: st,
+      tag: 'SettingsDataSection',
+    );
     if (context.mounted) {
       AppFeedback.showError(context, 'Couldn\'t clear data. Try again!');
     }
@@ -271,10 +284,7 @@ Future<void> confirmClearData(BuildContext context, WidgetRef ref) async {
 }
 
 /// GDPR "Delete My Data" — clears all local data and navigates to onboarding.
-Future<void> confirmDeleteMyData(
-  BuildContext context,
-  WidgetRef ref,
-) async {
+Future<void> confirmDeleteMyData(BuildContext context, WidgetRef ref) async {
   final confirmed = await showAppDialog<bool>(
     context: context,
     title: 'Delete My Data',
@@ -294,7 +304,7 @@ Future<void> confirmDeleteMyData(
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Analytics data held by Google will expire after 26 months. '
+          'Crash reports held by Google expire after 90 days. '
           'To request earlier deletion, contact larkintiarnanbizz@gmail.com.',
           style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
         ),
@@ -342,7 +352,11 @@ Future<void> confirmDeleteMyData(
       ).popUntil((route) => route.isFirst);
     }
   } catch (e, st) {
-    logError('SettingsDataSection: delete data failed: $e', stackTrace: st, tag: 'SettingsDataSection');
+    logError(
+      'SettingsDataSection: delete data failed: $e',
+      stackTrace: st,
+      tag: 'SettingsDataSection',
+    );
     if (context.mounted) {
       AppFeedback.showError(context, 'Couldn\'t delete data. Try again!');
     }

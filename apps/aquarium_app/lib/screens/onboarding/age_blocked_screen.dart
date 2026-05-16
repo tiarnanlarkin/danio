@@ -43,7 +43,7 @@ class AgeBlockedScreen extends StatelessWidget {
                   onPressed: () async {
                     await launchUrl(
                       Uri.parse(
-                        'https://tiarnanlarkin.github.io/danio-legal/privacy/',
+                        'https://tiarnanlarkin.github.io/danio/privacy-policy.html',
                       ),
                       mode: LaunchMode.externalApplication,
                     );

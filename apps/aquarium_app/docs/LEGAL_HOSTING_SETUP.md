@@ -32,9 +32,9 @@ ready for GitHub Pages hosting.
 
 ---
 
-## Option B: Separate dedicated repo (cleanest URLs)
+## Option B: Separate dedicated repo (alternate only)
 
-1. Create a new GitHub repo: `tiarnanlarkin/danio-legal`
+1. Create a new GitHub repo for legal documents, if you decide not to use the app repo's canonical GitHub Pages URL.
 2. Copy the contents of `docs/legal/` into the root of that repo:
    ```
    index.html
@@ -43,17 +43,16 @@ ready for GitHub Pages hosting.
    ```
 3. Go to **Settings → Pages**, set Source: `main` branch, folder: `/` (root)
 4. URLs will be:
-   - **Landing page:** `https://tiarnanlarkin.github.io/danio-legal/`
-   - **Privacy policy:** `https://tiarnanlarkin.github.io/danio-legal/privacy.html`
-   - **Terms of service:** `https://tiarnanlarkin.github.io/danio-legal/terms.html`
+   - **Landing page:** `https://tiarnanlarkin.github.io/<legal-repo>/`
+   - **Privacy policy:** `https://tiarnanlarkin.github.io/<legal-repo>/privacy.html`
+   - **Terms of service:** `https://tiarnanlarkin.github.io/<legal-repo>/terms.html`
 
 ---
 
 ## Play Store Submission
 
 Enter these URLs in the Play Store Console:
-- **Privacy Policy URL:** `https://tiarnanlarkin.github.io/<repo>/legal/privacy.html`
-  *(or `danio-legal/privacy.html` if using Option B)*
+- **Privacy Policy URL:** `https://tiarnanlarkin.github.io/danio/privacy-policy.html`
 
 The Terms of Service link is optional for Play Store but good to have.
 
@@ -66,3 +65,8 @@ The source-of-truth HTML files live at:
 - `docs/terms-of-service.html` — terms of service
 
 When those are updated, copy the content across to `docs/legal/privacy.html` and `docs/legal/terms.html` (the amber-branded versions) and redeploy.
+
+The app itself links to `https://tiarnanlarkin.github.io/danio/privacy-policy.html`
+and `https://tiarnanlarkin.github.io/danio/terms-of-service.html`. Keep those
+canonical URLs live before Play review; the `/legal/` pages are an alternate
+static bundle, not the in-app URL target.

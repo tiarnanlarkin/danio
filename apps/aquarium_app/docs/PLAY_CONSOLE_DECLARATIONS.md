@@ -26,12 +26,12 @@
 
 | Question | Answer |
 |----------|--------|
-| **Data type** | Device or other IDs (Firebase Installation ID) |
+| **Data type** | Device or other IDs (Firebase Installation ID used by Crashlytics) |
 | **Is this data collected, shared, or both?** | Collected and shared |
 | **Is this data processed ephemerally?** | No |
 | **Is this data required or can users choose?** | Optional (requires consent) |
-| **Why is this data collected?** | Analytics |
-| **Is this data shared with third parties?** | Yes — Google (Firebase Analytics) |
+| **Why is this data collected?** | App diagnostics |
+| **Is this data shared with third parties?** | Yes — Google (Firebase Crashlytics) |
 | **Is this data encrypted in transit?** | Yes (HTTPS/TLS) |
 | **Can users request deletion?** | Yes (in-app "Delete My Data" + email larkintiarnanbizz@gmail.com) |
 
@@ -39,16 +39,8 @@
 
 ### App activity
 
-| Question | Answer |
-|----------|--------|
-| **Data type** | App interactions (screen views and navigation via Firebase screen tracking; custom analytics events are defined in code but not yet active — zero call sites) |
-| **Is this data collected, shared, or both?** | Collected and shared |
-| **Is this data processed ephemerally?** | No |
-| **Is this data required or can users choose?** | Optional (requires consent) |
-| **Why is this data collected?** | Analytics |
-| **Is this data shared with third parties?** | Yes — Google (Firebase Analytics) |
-| **Is this data encrypted in transit?** | Yes (HTTPS/TLS) |
-| **Can users request deletion?** | Yes |
+Do not declare App activity for the current v1.0 build. The app does not include
+the `firebase_analytics` dependency and has no `logEvent` call sites.
 
 ---
 
@@ -103,7 +95,7 @@
 
 | Key | Purpose |
 |-----|---------|
-| `gdpr_analytics_consent` | Stores whether the user has consented to Firebase Analytics and Crashlytics on first launch. `true` = consent given; `false` or absent = consent declined/not yet given. Controls whether Firebase Analytics and Crashlytics are active. |
+| `gdpr_analytics_consent` | Legacy key name. Stores whether the user has consented to Firebase Crashlytics crash reporting on first launch. `true` = consent given; `false` or absent = consent declined/not yet given. |
 | `openai_disclosure_accepted` | Stores whether the user has accepted the one-time OpenAI data disclosure. `true` = accepted (covers all AI features: Fish ID, Symptom Triage, Weekly Planner, Anomaly Detector). Not set = user has not yet seen the disclosure. |
 
 ---

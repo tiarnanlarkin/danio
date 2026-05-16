@@ -67,10 +67,10 @@ void main() {
       );
     });
 
-    testWidgets('shows Accept Analytics button', (tester) async {
+    testWidgets('shows Share Crash Reports button', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('Accept Analytics'), findsOneWidget);
+      expect(find.text('Share Crash Reports'), findsOneWidget);
     });
 
     testWidgets('shows No Thanks button', (tester) async {

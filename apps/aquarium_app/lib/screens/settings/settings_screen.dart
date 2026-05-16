@@ -931,9 +931,9 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
   Widget build(BuildContext context) {
     if (!_loaded) return const SizedBox.shrink();
     return SwitchListTile(
-      secondary: const Icon(Icons.analytics_outlined),
-      title: const Text('Analytics & Crash Reports'),
-      subtitle: const Text('Send anonymous usage data to help improve Danio'),
+      secondary: const Icon(Icons.bug_report_outlined),
+      title: const Text('Crash Reports'),
+      subtitle: const Text('Share crash diagnostics to help fix bugs'),
       value: _enabled,
       onChanged: _toggle,
     );

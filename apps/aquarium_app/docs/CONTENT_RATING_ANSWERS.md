@@ -108,7 +108,7 @@
 
 | Question | Answer | Reason |
 |----------|--------|--------|
-| Does the app collect personal data from users? | **No** | No PII collected; only anonymous analytics events (consent-gated) |
+| Does the app collect personal data from users? | **Yes** | Optional crash diagnostics can include a Firebase Installation ID and device/app crash details after explicit consent. No contact, payment, location, advertising, or user-entered profile data is collected for tracking. |
 | Is the app specifically directed at children under 13? | **No** | App requires age 13+ confirmation at first launch |
 | Does the app include content specifically designed for children? | **No** | General audience educational app for beginner fish-keepers |
 
@@ -179,7 +179,7 @@ User interaction:   No / No / No / No / No / No
 Commerce:           No / No / No / No
 Location:           No / No / No
 Advertising:        No / No
-Data (minors):      No / No / No
+Data (minors):      Yes / No / No
 
 Expected: Everyone / PEGI 3
 RECOMMENDED: Select Teen (13+) to align with age gate
