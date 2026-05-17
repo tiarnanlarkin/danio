@@ -9,6 +9,7 @@ import '../utils/navigation_throttle.dart';
 import '../widgets/common/common_widgets.dart';
 import '../widgets/first_visit_tooltip.dart';
 import '../widgets/xp_progress_bar.dart';
+import '../widgets/danio_bottom_dock.dart';
 import 'about_screen.dart';
 import 'achievements_screen.dart';
 import 'analytics_screen.dart';
@@ -99,7 +100,8 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           AppSpacing.md,
           AppSpacing.md,
           AppSpacing.md,
-          MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+          MediaQuery.of(context).viewPadding.bottom +
+              DanioBottomDock.contentClearance,
         ),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],

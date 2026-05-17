@@ -10,6 +10,7 @@ import '../widgets/hearts_widgets.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/first_visit_tooltip.dart';
 import '../widgets/themed_tab_header.dart';
+import '../widgets/danio_bottom_dock.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'tab_navigator.dart';
 import '../utils/navigation_throttle.dart';
@@ -109,6 +110,13 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                   profile,
                 ),
               ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height:
+                  MediaQuery.of(context).viewPadding.bottom +
+                  DanioBottomDock.contentClearance,
             ),
           ),
         ],

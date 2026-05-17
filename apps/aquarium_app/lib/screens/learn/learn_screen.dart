@@ -17,6 +17,7 @@ import '../onboarding_screen.dart';
 import '../../widgets/themed_tab_header.dart';
 import '../../widgets/learning_streak_badge.dart';
 import '../../widgets/placement_challenge_card.dart';
+import '../../widgets/danio_bottom_dock.dart';
 import '../../navigation/app_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../widgets/first_visit_tooltip.dart';
@@ -697,8 +698,8 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         SliverToBoxAdapter(
                           child: SizedBox(
                             height:
-                                MediaQuery.of(context).padding.bottom +
-                                AppSpacing.xxxl,
+                                MediaQuery.of(context).viewPadding.bottom +
+                                DanioBottomDock.contentClearance,
                           ),
                         ),
                       ],

@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/tab_navigator_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/tab_navigator.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/widgets/danio_bottom_dock.dart';
 
 // ---------------------------------------------------------------------------
 // No-op platform implementation for FlutterLocalNotifications
@@ -53,25 +56,47 @@ void _registerMockNotifications() {
   FlutterLocalNotificationsPlatform.instance = _MockNotificationsPlatform();
 }
 
-Widget _wrap() {
+Widget _wrap({int dueCards = 0}) {
+  SharedPreferences.setMockInitialValues({
+    if (dueCards > 0)
+      'spaced_repetition_cards': jsonEncode(
+        _dueReviewCards(dueCards).map((card) => card.toJson()).toList(),
+      ),
+  });
+
   return ProviderScope(
     overrides: [
       spacedRepetitionProvider.overrideWith(
-        (ref) => _FrozenSpacedRepetitionNotifier(ref),
+        (ref) => _FrozenSpacedRepetitionNotifier(ref, dueCards: dueCards),
       ),
     ],
     child: const MaterialApp(home: TabNavigator()),
   );
 }
 
+List<ReviewCard> _dueReviewCards(int count) {
+  final now = DateTime.now();
+  return List.generate(
+    count,
+    (index) => ReviewCard(
+      id: 'due-card-$index',
+      conceptId: 'concept-$index',
+      conceptType: ConceptType.lesson,
+      strength: 0.2,
+      lastReviewed: now.subtract(const Duration(days: 2)),
+      nextReview: now.subtract(const Duration(days: 1)),
+    ),
+  );
+}
+
 /// Subclass that uses the real Ref but resets to empty state after init.
 class _FrozenSpacedRepetitionNotifier extends SpacedRepetitionNotifier {
-  _FrozenSpacedRepetitionNotifier(super.ref) {
+  _FrozenSpacedRepetitionNotifier(super.ref, {required int dueCards}) {
     state = SpacedRepetitionState(
       cards: const [],
       stats: ReviewStats(
-        totalCards: 0,
-        dueCards: 0,
+        totalCards: dueCards,
+        dueCards: dueCards,
         weakCards: 0,
         masteredCards: 0,
         averageStrength: 0.0,
@@ -109,73 +134,126 @@ void main() {
       expect(find.byType(TabNavigator), findsOneWidget);
     });
 
-    testWidgets('shows bottom NavigationBar', (tester) async {
+    testWidgets('shows custom bottom dock instead of Material NavigationBar', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byKey(const ValueKey('danio-bottom-dock')), findsOneWidget);
     });
 
-    testWidgets('uses the conservative Danio dock styling contract', (
+    testWidgets('exposes semantic tabs without visible dock labels', (
       tester,
     ) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
 
-      final navBar = tester.widget<NavigationBar>(find.byType(NavigationBar));
-      expect(navBar.height, 78);
-      expect(navBar.elevation, 0);
-      expect(navBar.backgroundColor, const Color(0xFFFDF8EF));
-      expect(navBar.indicatorColor, const Color(0xFFE7F0EA));
+      final dock = find.byKey(const ValueKey('danio-bottom-dock'));
       expect(
-        navBar.labelBehavior,
-        NavigationDestinationLabelBehavior.alwaysShow,
+        find.descendant(of: dock, matching: find.byType(Semantics)),
+        findsAtLeastNWidgets(5),
       );
-    });
-
-    testWidgets('shows 5 navigation destinations', (tester) async {
-      await tester.pumpWidget(_wrap());
-      await _advance(tester);
-      expect(find.byType(NavigationDestination), findsNWidgets(5));
-    });
-
-    testWidgets('shows Learn tab label', (tester) async {
-      await tester.pumpWidget(_wrap());
-      await _advance(tester);
-      expect(find.text('Learn'), findsWidgets);
-    });
-
-    testWidgets('shows Practice tab label', (tester) async {
-      await tester.pumpWidget(_wrap());
-      await _advance(tester);
-      expect(find.text('Practice'), findsWidgets);
-    });
-
-    testWidgets('shows Tank tab label', (tester) async {
-      await tester.pumpWidget(_wrap());
-      await _advance(tester);
-      expect(find.text('Tank'), findsWidgets);
-    });
-
-    testWidgets('shows More tab label', (tester) async {
-      await tester.pumpWidget(_wrap());
-      await _advance(tester);
-      expect(find.text('More'), findsWidgets);
+      expect(
+        find.descendant(of: dock, matching: find.text('Learn')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: dock, matching: find.text('Practice')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: dock, matching: find.text('Tank')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: dock, matching: find.text('Smart')),
+        findsNothing,
+      );
+      expect(
+        find.descendant(of: dock, matching: find.text('More')),
+        findsNothing,
+      );
     });
 
     testWidgets('tab 0 is selected by default', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      final navBar = tester.widget<NavigationBar>(find.byType(NavigationBar));
-      expect(navBar.selectedIndex, 0);
+      expect(
+        find.byKey(const ValueKey('danio-bottom-dock-item-learn-selected')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('danio-bottom-dock-item-learn-glow')),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('tapping Practice tab switches selectedIndex', (tester) async {
+    testWidgets('uses floating rail without globally shrinking tab content', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      await tester.tap(find.text('Practice').first);
+
+      expect(
+        find.byKey(const ValueKey('danio-bottom-dock-floating-rail')),
+        findsOneWidget,
+      );
+
+      final indexedStack = find.byType(IndexedStack);
+      final globalPadding = find.ancestor(
+        of: indexedStack,
+        matching: find.byWidgetPredicate((widget) {
+          return widget is Padding &&
+              widget.padding is EdgeInsets &&
+              (widget.padding as EdgeInsets).bottom == DanioBottomDock.height;
+        }),
+      );
+      expect(globalPadding, findsNothing);
+    });
+
+    testWidgets('tapping Practice tab switches selected item', (tester) async {
+      await tester.pumpWidget(_wrap());
       await _advance(tester);
-      final navBar = tester.widget<NavigationBar>(find.byType(NavigationBar));
-      expect(navBar.selectedIndex, 1);
+      await tester.tap(
+        find.byKey(const ValueKey('danio-bottom-dock-item-practice')),
+      );
+      await _advance(tester);
+      expect(
+        find.byKey(const ValueKey('danio-bottom-dock-item-practice-selected')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Tank tab uses attached dock mode without extra bridge', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(
+        find.byKey(const ValueKey('danio-bottom-dock-item-tank')),
+      );
+      await _advance(tester);
+
+      expect(
+        find.byKey(const ValueKey('danio-bottom-dock-attached')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('danio-bottom-dock-attached-bridge')),
+        findsNothing,
+      );
+    });
+
+    testWidgets('Practice tab preserves due-card badge', (tester) async {
+      await tester.pumpWidget(_wrap(dueCards: 3));
+      await _advance(tester);
+
+      expect(
+        find.byKey(const ValueKey('danio-bottom-dock-badge-practice')),
+        findsOneWidget,
+      );
     });
   });
 }

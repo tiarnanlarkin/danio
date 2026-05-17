@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/danio_bottom_dock.dart';
 import '../../../widgets/speed_dial_fab.dart';
 
 /// Speed Dial FAB for quick actions from the home screen.
@@ -25,7 +26,10 @@ class RoomControlFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 130 + MediaQuery.of(context).padding.bottom,
+      bottom:
+          MediaQuery.of(context).viewPadding.bottom +
+          DanioBottomDock.height +
+          AppSpacing.lg,
       right: AppSpacing.md,
       child: IgnorePointer(
         ignoring: isHidden,

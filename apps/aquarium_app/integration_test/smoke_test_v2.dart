@@ -12,6 +12,15 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:danio/main.dart' as app;
 
+const _dockKey = ValueKey('danio-bottom-dock');
+const _tabIds = ['learn', 'practice', 'tank', 'smart', 'more'];
+
+Finder _dockFinder() => find.byKey(_dockKey);
+
+Finder _tabFinder(String tabId) {
+  return find.byKey(ValueKey('danio-bottom-dock-item-$tabId'));
+}
+
 Future<void> _launchApp(WidgetTester tester) async {
   app.main();
   await tester.pump();
@@ -44,20 +53,16 @@ void main() {
   ) async {
     await _launchApp(tester);
 
-    // Check if we're on the main screen (has NavigationBar)
-    final navBar = find.byType(NavigationBar);
-    if (navBar.evaluate().isNotEmpty) {
-      // Tap each NavigationDestination
-      final destinations = find.byType(NavigationDestination);
-      final count = destinations.evaluate().length;
-
-      for (int i = 0; i < count; i++) {
-        await tester.tap(destinations.at(i));
+    // Check if we're on the main screen (has Danio bottom dock)
+    final dock = _dockFinder();
+    if (dock.evaluate().isNotEmpty) {
+      for (final tabId in _tabIds) {
+        await tester.tap(_tabFinder(tabId));
         await _pumpAfterInput(tester);
         expect(
           find.byType(Scaffold),
           findsWidgets,
-          reason: 'Tab $i should display without crash',
+          reason: 'Tab $tabId should display without crash',
         );
       }
     } else {
@@ -72,10 +77,9 @@ void main() {
   testWidgets('Learn tab displays content without crash', (tester) async {
     await _launchApp(tester);
 
-    final navBar = find.byType(NavigationBar);
-    if (navBar.evaluate().isNotEmpty) {
-      // Learn tab = index 0
-      await tester.tap(find.byType(NavigationDestination).at(0));
+    final dock = _dockFinder();
+    if (dock.evaluate().isNotEmpty) {
+      await tester.tap(_tabFinder('learn'));
       await _pumpAfterInput(tester);
       expect(find.byType(Scaffold), findsWidgets);
     }
@@ -87,10 +91,9 @@ void main() {
   testWidgets('Tank tab loads without crash', (tester) async {
     await _launchApp(tester);
 
-    final navBar = find.byType(NavigationBar);
-    if (navBar.evaluate().isNotEmpty) {
-      // Tank = index 2
-      await tester.tap(find.byType(NavigationDestination).at(2));
+    final dock = _dockFinder();
+    if (dock.evaluate().isNotEmpty) {
+      await tester.tap(_tabFinder('tank'));
       await _pumpAfterInput(tester);
       expect(find.byType(Scaffold), findsWidgets);
     }
@@ -102,10 +105,9 @@ void main() {
   testWidgets('Settings (More) tab loads without crash', (tester) async {
     await _launchApp(tester);
 
-    final navBar = find.byType(NavigationBar);
-    if (navBar.evaluate().isNotEmpty) {
-      // More/Settings = index 4
-      await tester.tap(find.byType(NavigationDestination).at(4));
+    final dock = _dockFinder();
+    if (dock.evaluate().isNotEmpty) {
+      await tester.tap(_tabFinder('more'));
       await _pumpAfterInput(tester);
       expect(find.byType(Scaffold), findsWidgets);
     }

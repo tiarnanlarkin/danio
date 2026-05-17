@@ -10,6 +10,7 @@ import '../../screens/water_change_calculator_screen.dart';
 import '../../screens/stocking_calculator_screen.dart';
 import '../../screens/compatibility_checker_screen.dart';
 import '../../screens/co2_calculator_screen.dart';
+import '../danio_bottom_dock.dart';
 import 'stage_handle.dart';
 import 'stage_sheet_controller.dart';
 
@@ -49,12 +50,20 @@ class BottomSheetPanel extends ConsumerStatefulWidget {
 
   /// Content for the Today tab.
   final Widget todayContent;
+  final double? sheetWidth;
+  final double? closedNibWidth;
+  final double closedNibHeight;
+  final DanioDockGlassStyle? dockGlassStyle;
 
   const BottomSheetPanel({
     super.key,
     required this.progressContent,
     required this.tanksContent,
     required this.todayContent,
+    this.sheetWidth,
+    this.closedNibWidth,
+    this.closedNibHeight = DanioBottomDock.stageSheetNibHeight,
+    this.dockGlassStyle,
   });
 
   @override
@@ -68,6 +77,7 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
       DraggableScrollableController();
 
   int _currentTab = 0;
+  double _sheetExtent = BottomSheetPanel.kSnapClosed;
 
   // First-use hint state
   bool _showSheetHint = false;
@@ -136,114 +146,156 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
       _handleSheetRequest(next);
     });
     final reducedMotion = MediaQuery.of(context).disableAnimations;
+    final isClosed = _sheetExtent <= BottomSheetPanel.kSnapClosed + 0.003;
+    final dockGlassStyle =
+        widget.dockGlassStyle ??
+        DanioBottomDock.glassStyleFor(context, attached: true);
+    final fallbackWidth = MediaQuery.sizeOf(context).width;
+    final sheetWidth = widget.sheetWidth ?? fallbackWidth;
+    final closedNibWidth =
+        widget.closedNibWidth ??
+        DanioBottomDock.stageSheetNibWidthFor(fallbackWidth);
 
-    return DraggableScrollableSheet(
-      controller: _sheetController,
-      initialChildSize: BottomSheetPanel.kSnapClosed,
-      minChildSize: BottomSheetPanel.kSnapClosed,
-      maxChildSize: BottomSheetPanel.kSnapFull,
-      snapSizes: BottomSheetPanel.kSnapSizes,
-      snap: true,
-      shouldCloseOnMinExtent: false,
-      builder: (context, scrollController) {
-        return RepaintBoundary(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: AppColors.whiteAlpha20, width: 1),
-                ),
-              ),
-              child: Stack(
-                children: [
-                  // Glassmorphism backdrop — opacity 0.28 so the panel is
-                  // visible against the room background at the peek snap point.
-                  Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                      child: Container(color: AppColors.blackAlpha20),
-                    ),
+    return NotificationListener<DraggableScrollableNotification>(
+      onNotification: (notification) {
+        if ((notification.extent - _sheetExtent).abs() > 0.001) {
+          setState(() => _sheetExtent = notification.extent);
+        }
+        return false;
+      },
+      child: DraggableScrollableSheet(
+        controller: _sheetController,
+        initialChildSize: BottomSheetPanel.kSnapClosed,
+        minChildSize: BottomSheetPanel.kSnapClosed,
+        maxChildSize: BottomSheetPanel.kSnapFull,
+        snapSizes: BottomSheetPanel.kSnapSizes,
+        snap: true,
+        shouldCloseOnMinExtent: false,
+        builder: (context, scrollController) {
+          return RepaintBoundary(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                key: const ValueKey('danio-stage-sheet-shell'),
+                width: sheetWidth,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
                   ),
+                  child: DecoratedBox(
+                    decoration: isClosed
+                        ? const BoxDecoration()
+                        : BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: AppColors.whiteAlpha20,
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                    child: Stack(
+                      children: [
+                        // Glassmorphism backdrop — opacity 0.28 so the panel is
+                        // visible against the room background at the peek snap point.
+                        if (!isClosed)
+                          Positioned.fill(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                              child: Container(color: AppColors.blackAlpha20),
+                            ),
+                          ),
 
-                  // Sheet content — entire surface is scrollable so dragging
-                  // the handle, tabs, or content all expand/collapse the sheet.
-                  Column(
-                    children: [
-                      // First-use hint: bouncing chevron above the drag handle
-                      if (_showSheetHint)
-                        AnimatedOpacity(
-                          opacity: _hintOpacity,
-                          duration: const Duration(milliseconds: 600),
-                          child: _BouncingChevronHint(),
-                        ),
-
-                      Expanded(
-                        child: SingleChildScrollView(
-                          controller: scrollController,
-                          physics: const ClampingScrollPhysics(),
-                          // No bottom padding here. The TabNavigator parent already
-                          // wraps this screen in `Padding(bottom: padding.bottom)`
-                          // (tab_navigator.dart) so the sheet's parent stops at
-                          // the navigation bar top. Adding padding.bottom inside
-                          // the sheet content double-counts that inset and creates
-                          // a visible gap above the bottom navigation bar.
-                          padding: EdgeInsets.zero,
-                          child: Column(
-                            children: [
-                              // Drag handle + tabs header
-                              _SheetHeader(
-                                tabController: _tabController,
-                                onSnapPeek: () =>
-                                    _snapTo(BottomSheetPanel.kSnapPeek),
-                                onSnapHalf: () =>
-                                    _snapTo(BottomSheetPanel.kSnapHalf),
-                                onSnapFull: () =>
-                                    _snapTo(BottomSheetPanel.kSnapFull),
+                        // Sheet content — entire surface is scrollable so dragging
+                        // the handle, tabs, or content all expand/collapse the sheet.
+                        Column(
+                          children: [
+                            // First-use hint: bouncing chevron above the drag handle
+                            if (_showSheetHint && !isClosed)
+                              AnimatedOpacity(
+                                opacity: _hintOpacity,
+                                duration: const Duration(milliseconds: 600),
+                                child: _BouncingChevronHint(),
                               ),
 
-                              // Tab content
-                              () {
-                                final contents = [
-                                  widget.progressContent,
-                                  widget.tanksContent,
-                                  widget.todayContent,
-                                  const _WorkshopToolsContent(),
-                                ];
-                                return reducedMotion
-                                    ? KeyedSubtree(
-                                        key: ValueKey(_currentTab),
-                                        child: contents[_currentTab],
-                                      )
-                                    : _AnimatedTabContent(
-                                        currentTab: _currentTab,
-                                        contents: contents,
-                                      );
-                              }(),
-                            ],
-                          ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                controller: scrollController,
+                                physics: const ClampingScrollPhysics(),
+                                // No bottom padding here. HomeScreen constrains the
+                                // sheet container above the floating dock; adding
+                                // internal padding would create a visible gap.
+                                padding: EdgeInsets.zero,
+                                child: Column(
+                                  children: [
+                                    // Drag handle + tabs header
+                                    _SheetHeader(
+                                      isClosed: isClosed,
+                                      closedNibWidth: closedNibWidth,
+                                      closedNibHeight: widget.closedNibHeight,
+                                      dockGlassStyle: dockGlassStyle,
+                                      tabController: _tabController,
+                                      onSnapPeek: () =>
+                                          _snapTo(BottomSheetPanel.kSnapPeek),
+                                      onSnapHalf: () =>
+                                          _snapTo(BottomSheetPanel.kSnapHalf),
+                                      onSnapFull: () =>
+                                          _snapTo(BottomSheetPanel.kSnapFull),
+                                    ),
+
+                                    // Tab content
+                                    if (!isClosed)
+                                      () {
+                                        final contents = [
+                                          widget.progressContent,
+                                          widget.tanksContent,
+                                          widget.todayContent,
+                                          const _WorkshopToolsContent(),
+                                        ];
+                                        return reducedMotion
+                                            ? KeyedSubtree(
+                                                key: ValueKey(_currentTab),
+                                                child: contents[_currentTab],
+                                              )
+                                            : _AnimatedTabContent(
+                                                currentTab: _currentTab,
+                                                contents: contents,
+                                              );
+                                      }(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
 
 /// The drag handle pill + TabBar header area.
 class _SheetHeader extends StatelessWidget {
+  final bool isClosed;
+  final double closedNibWidth;
+  final double closedNibHeight;
+  final DanioDockGlassStyle dockGlassStyle;
   final TabController tabController;
   final VoidCallback onSnapPeek;
   final VoidCallback onSnapHalf;
   final VoidCallback onSnapFull;
 
   const _SheetHeader({
+    required this.isClosed,
+    required this.closedNibWidth,
+    required this.closedNibHeight,
+    required this.dockGlassStyle,
     required this.tabController,
     required this.onSnapPeek,
     required this.onSnapHalf,
@@ -252,14 +304,23 @@ class _SheetHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isClosed) {
+      return StageSheetNib(
+        width: closedNibWidth,
+        height: closedNibHeight,
+        glassStyle: dockGlassStyle,
+      );
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         // Drag handle — StageHandle replaces old pill Container
-        const StageHandle(),
+        StageHandle(glassStyle: dockGlassStyle),
 
         // Horizontal tab bar
         TabBar(
+          key: const ValueKey('danio-stage-sheet-tab-row'),
           controller: tabController,
           indicatorColor: Colors.transparent,
           dividerColor: Colors.transparent,

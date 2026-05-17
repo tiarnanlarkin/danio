@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
+import '../danio_bottom_dock.dart';
 
 /// Redesigned drag handle for the bottom sheet stage panel.
 ///
@@ -12,12 +16,14 @@ class StageHandle extends StatelessWidget {
   /// Optional accent colour blended into the glass background.
   /// Defaults to fully transparent (plain frosted glass).
   final Color? accentColor;
+  final DanioDockGlassStyle? glassStyle;
 
-  const StageHandle({super.key, this.accentColor});
+  const StageHandle({super.key, this.accentColor, this.glassStyle});
 
   @override
   Widget build(BuildContext context) {
-    final tint = accentColor?.withValues(alpha: 0.15) ??
+    final tint =
+        accentColor?.withValues(alpha: 0.15) ??
         Colors.white.withValues(alpha: 0.18);
 
     return Semantics(
@@ -26,11 +32,18 @@ class StageHandle extends StatelessWidget {
         width: double.infinity,
         height: 48,
         decoration: BoxDecoration(
-          color: tint,
+          color: glassStyle == null ? tint : null,
+          gradient: glassStyle == null
+              ? null
+              : LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: glassStyle!.gradient,
+                ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           border: Border(
             top: BorderSide(
-              color: Colors.white.withValues(alpha: 0.20),
+              color: glassStyle?.border ?? Colors.white.withValues(alpha: 0.20),
               width: 0.5,
             ),
           ),
@@ -81,6 +94,87 @@ class StageHandle extends StatelessWidget {
               }),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class StageSheetNib extends StatelessWidget {
+  final double width;
+  final double height;
+  final DanioDockGlassStyle glassStyle;
+
+  const StageSheetNib({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.glassStyle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Drag to resize panel',
+      child: SizedBox(
+        key: const ValueKey('danio-stage-sheet-nib-hit-target'),
+        height: DanioBottomDock.stageSheetNibTouchHeight,
+        width: double.infinity,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(18),
+              bottom: Radius.circular(9),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: DecoratedBox(
+                key: const ValueKey('danio-stage-sheet-nib'),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: glassStyle.gradient,
+                  ),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(18),
+                    bottom: Radius.circular(9),
+                  ),
+                  border: Border.all(color: glassStyle.border, width: 0.8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: glassStyle.shadow,
+                      blurRadius: 14,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: Center(
+                    child: Container(
+                      key: const ValueKey('danio-stage-sheet-nib-grip'),
+                      width: 48,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(3),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.24),
+                            blurRadius: 8,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -17,6 +17,7 @@ import '../../widgets/stage/temp_panel_content.dart';
 import '../../widgets/stage/water_panel_content.dart';
 import '../../widgets/stage/ambient_tip_overlay.dart';
 import '../../widgets/stage/lighting_pulse.dart';
+import '../../widgets/danio_bottom_dock.dart';
 import '../../navigation/app_routes.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
@@ -673,19 +674,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             // Bottom sheet panel (single DraggableScrollableSheet with 4 tabs)
             //
-            // MediaQuery.removePadding(removeBottom) prevents
-            // DraggableScrollableSheet from internally subtracting the bottom
-            // padding when sizing itself. The TabNavigator parent already
-            // excludes the nav bar area via Padding(bottom: systemInset + 80),
-            // so the sheet should fill the available space without any extra
-            // bottom inset.
-            Positioned.fill(
+            // Constrain only the pull-up sheet near the floating dock, with
+            // the lower part tucked behind the oval so the handle visually
+            // emerges from the rail while remaining draggable.
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom:
+                  MediaQuery.of(context).viewPadding.bottom +
+                  DanioBottomDock.height +
+                  DanioBottomDock.sheetOverlap,
               child: MediaQuery.removePadding(
                 context: context,
                 removeBottom: true,
                 child: Semantics(
                   label: 'Activity panel — Progress, Tanks, Today',
                   child: BottomSheetPanel(
+                    sheetWidth: DanioBottomDock.straightSheetWidthFor(
+                      MediaQuery.sizeOf(context).width,
+                    ),
+                    closedNibWidth: DanioBottomDock.stageSheetNibWidthFor(
+                      MediaQuery.sizeOf(context).width,
+                    ),
+                    closedNibHeight: DanioBottomDock.stageSheetNibHeight,
+                    dockGlassStyle: DanioBottomDock.glassStyleFor(
+                      context,
+                      attached: true,
+                    ),
                     progressContent: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
@@ -869,7 +885,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               !_showTankTooltip &&
               !_showHeartsTooltip)
             Positioned(
-              bottom: 160,
+              bottom:
+                  MediaQuery.of(context).viewPadding.bottom +
+                  DanioBottomDock.height +
+                  AppSpacing.lg,
               left: 0,
               right: 0,
               child: FirstVisitTooltip(

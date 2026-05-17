@@ -21,6 +21,7 @@ import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/themed_tab_header.dart';
+import '../widgets/danio_bottom_dock.dart';
 import '../utils/logger.dart';
 import 'settings_screen.dart';
 
@@ -418,7 +419,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 AppSpacing.md,
                 AppSpacing.md,
                 AppSpacing.md,
-                MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+                MediaQuery.of(context).viewPadding.bottom +
+                    DanioBottomDock.contentClearance,
               ),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(

@@ -1,4 +1,5 @@
 import 'package:danio/theme/room_themes.dart';
+import 'package:danio/widgets/danio_bottom_dock.dart';
 import 'package:danio/widgets/stage/bottom_sheet_panel.dart';
 import 'package:danio/widgets/stage/stage_provider.dart';
 import 'package:danio/widgets/stage/swiss_army_panel.dart';
@@ -149,6 +150,104 @@ void main() {
       expect(sheet.initialChildSize, BottomSheetPanel.kSnapClosed);
       expect(sheet.minChildSize, BottomSheetPanel.kSnapClosed);
       expect(sheet.snapSizes, BottomSheetPanel.kSnapSizes);
+    });
+
+    testWidgets('constrains Tank sheet shell to dock straight width', (
+      tester,
+    ) async {
+      const screenWidth = 430.0;
+      final expectedWidth = DanioBottomDock.straightSheetWidthFor(screenWidth);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: MediaQuery(
+              data: const MediaQueryData(size: Size(screenWidth, 932)),
+              child: Scaffold(
+                body: Stack(
+                  children: [
+                    BottomSheetPanel(
+                      sheetWidth: expectedWidth,
+                      closedNibWidth: DanioBottomDock.stageSheetNibWidthFor(
+                        screenWidth,
+                      ),
+                      progressContent: const SizedBox(),
+                      tanksContent: const SizedBox(),
+                      todayContent: const SizedBox(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final shell = find.byKey(const ValueKey('danio-stage-sheet-shell'));
+      expect(shell, findsOneWidget);
+      expect(tester.getSize(shell).width, closeTo(expectedWidth, 0.1));
+    });
+
+    testWidgets('closed Tank sheet exposes compact nib without tab row', (
+      tester,
+    ) async {
+      const screenWidth = 430.0;
+      final nibWidth = DanioBottomDock.stageSheetNibWidthFor(screenWidth);
+      expect(nibWidth, closeTo(176, 0.1));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: MediaQuery(
+              data: const MediaQueryData(size: Size(screenWidth, 932)),
+              child: Scaffold(
+                body: Stack(
+                  children: [
+                    BottomSheetPanel(
+                      sheetWidth: DanioBottomDock.straightSheetWidthFor(
+                        screenWidth,
+                      ),
+                      closedNibWidth: nibWidth,
+                      closedNibHeight: DanioBottomDock.stageSheetNibHeight,
+                      progressContent: const SizedBox(),
+                      tanksContent: const SizedBox(),
+                      todayContent: const SizedBox(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final nib = find.byKey(const ValueKey('danio-stage-sheet-nib'));
+      expect(nib, findsOneWidget);
+      expect(tester.getSize(nib).width, closeTo(nibWidth, 0.1));
+      expect(
+        tester.getSize(nib).height,
+        closeTo(DanioBottomDock.stageSheetNibHeight, 0.1),
+      );
+      final hitTarget = find.byKey(
+        const ValueKey('danio-stage-sheet-nib-hit-target'),
+      );
+      final grip = find.byKey(const ValueKey('danio-stage-sheet-nib-grip'));
+      expect(hitTarget, findsOneWidget);
+      expect(grip, findsOneWidget);
+      expect(
+        tester.getTopLeft(nib).dy,
+        closeTo(tester.getTopLeft(hitTarget).dy, 0.1),
+      );
+      expect(
+        tester.getTopLeft(grip).dy,
+        lessThanOrEqualTo(tester.getTopLeft(hitTarget).dy + 12),
+      );
+      expect(
+        find.byKey(const ValueKey('danio-stage-sheet-tab-row')),
+        findsNothing,
+      );
     });
   });
 }

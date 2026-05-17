@@ -9,6 +9,7 @@ import '../widgets/offline_indicator.dart';
 import '../widgets/sync_indicator.dart';
 import '../widgets/celebrations/level_up_listener.dart';
 import '../widgets/celebrations/streak_milestone_listener.dart';
+import '../widgets/danio_bottom_dock.dart';
 import 'home/home_screen.dart';
 import 'learn_screen.dart';
 import 'practice_hub_screen.dart';
@@ -37,28 +38,6 @@ class TabNavigator extends ConsumerStatefulWidget {
 
 class _TabNavigatorState extends ConsumerState<TabNavigator>
     with SingleTickerProviderStateMixin {
-  static const double _bottomNavHeight = 78;
-
-  static IconThemeData _navigationIconTheme(Set<WidgetState> states) {
-    final color = states.contains(WidgetState.disabled)
-        ? AppColors.textHint
-        : states.contains(WidgetState.selected)
-        ? AppColors.textPrimary
-        : AppColors.textSecondary;
-
-    return IconThemeData(color: color, size: 24);
-  }
-
-  static TextStyle _navigationLabelStyle(Set<WidgetState> states) {
-    final color = states.contains(WidgetState.disabled)
-        ? AppColors.textHint
-        : states.contains(WidgetState.selected)
-        ? AppColors.textPrimary
-        : AppColors.textSecondary;
-
-    return AppTypography.labelSmall.copyWith(color: color);
-  }
-
   // Track last back button press for double-tap-to-exit
   DateTime? _lastBackPress;
 
@@ -110,6 +89,21 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
     // Quick fade out then in for smooth tab transition
     _fadeController.value = 0.0;
     _fadeController.forward();
+  }
+
+  void _handleDestinationSelected(int index, int currentTab) {
+    if (index == currentTab) {
+      // Tapped current tab - return to this tab's root route if possible.
+      final navigator = _navigatorKeys[index].currentState;
+      if (navigator != null && navigator.canPop()) {
+        navigator.popUntil((route) => route.isFirst);
+      }
+    } else {
+      _onTabChanged(index, currentTab);
+    }
+
+    ref.read(currentTabProvider.notifier).state = index;
+    HapticFeedback.selectionClick();
   }
 
   @override
@@ -165,88 +159,77 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                 // === Main Tab Content ===
                 // Each tab has its own Navigator to preserve state
                 // Wrapped in FadeTransition for smooth tab switching
-                // Bottom padding ensures content doesn't hide behind NavigationBar.
-                // With extendBody:true, Scaffold does NOT add the NavigationBar height
-                // to MediaQuery.padding.bottom, so we must add it explicitly.
-                // Conservative Danio dock height = 78dp.
                 FadeTransition(
                   opacity: _fadeAnimation,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      bottom:
-                          MediaQuery.of(context).padding.bottom +
-                          _bottomNavHeight,
-                    ),
-                    child: IndexedStack(
-                      index: currentTab,
-                      children: [
-                        // Tab 0: Learn
-                        TickerMode(
-                          enabled: currentTab == 0,
-                          child: Navigator(
-                            key: _navigatorKeys[0],
-                            onGenerateRoute: (settings) {
-                              return MaterialPageRoute(
-                                builder: (context) => const LearnScreen(),
-                                settings: settings,
-                              );
-                            },
-                          ),
+                  child: IndexedStack(
+                    index: currentTab,
+                    children: [
+                      // Tab 0: Learn
+                      TickerMode(
+                        enabled: currentTab == 0,
+                        child: Navigator(
+                          key: _navigatorKeys[0],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const LearnScreen(),
+                              settings: settings,
+                            );
+                          },
                         ),
-                        // Tab 1: Quiz/Practice
-                        TickerMode(
-                          enabled: currentTab == 1,
-                          child: Navigator(
-                            key: _navigatorKeys[1],
-                            onGenerateRoute: (settings) {
-                              return MaterialPageRoute(
-                                builder: (context) => const PracticeHubScreen(),
-                                settings: settings,
-                              );
-                            },
-                          ),
+                      ),
+                      // Tab 1: Quiz/Practice
+                      TickerMode(
+                        enabled: currentTab == 1,
+                        child: Navigator(
+                          key: _navigatorKeys[1],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const PracticeHubScreen(),
+                              settings: settings,
+                            );
+                          },
                         ),
-                        // Tab 2: Tank
-                        TickerMode(
-                          enabled: currentTab == 2,
-                          child: Navigator(
-                            key: _navigatorKeys[2],
-                            onGenerateRoute: (settings) {
-                              return MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                                settings: settings,
-                              );
-                            },
-                          ),
+                      ),
+                      // Tab 2: Tank
+                      TickerMode(
+                        enabled: currentTab == 2,
+                        child: Navigator(
+                          key: _navigatorKeys[2],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                              settings: settings,
+                            );
+                          },
                         ),
-                        // Tab 3: Smart
-                        TickerMode(
-                          enabled: currentTab == 3,
-                          child: Navigator(
-                            key: _navigatorKeys[3],
-                            onGenerateRoute: (settings) {
-                              return MaterialPageRoute(
-                                builder: (context) => const SmartScreen(),
-                                settings: settings,
-                              );
-                            },
-                          ),
+                      ),
+                      // Tab 3: Smart
+                      TickerMode(
+                        enabled: currentTab == 3,
+                        child: Navigator(
+                          key: _navigatorKeys[3],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const SmartScreen(),
+                              settings: settings,
+                            );
+                          },
                         ),
-                        // Tab 4: Settings
-                        TickerMode(
-                          enabled: currentTab == 4,
-                          child: Navigator(
-                            key: _navigatorKeys[4],
-                            onGenerateRoute: (settings) {
-                              return MaterialPageRoute(
-                                builder: (context) => const SettingsHubScreen(),
-                                settings: settings,
-                              );
-                            },
-                          ),
+                      ),
+                      // Tab 4: Settings
+                      TickerMode(
+                        enabled: currentTab == 4,
+                        child: Navigator(
+                          key: _navigatorKeys[4],
+                          onGenerateRoute: (settings) {
+                            return MaterialPageRoute(
+                              builder: (context) => const SettingsHubScreen(),
+                              settings: settings,
+                            );
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -269,94 +252,14 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
               ],
             ),
 
-            // === Bottom Navigation Bar ===
-            bottomNavigationBar: NavigationBarTheme(
-              data: NavigationBarThemeData(
-                iconTheme: WidgetStateProperty.resolveWith(
-                  _navigationIconTheme,
-                ),
-                labelTextStyle: WidgetStateProperty.resolveWith(
-                  _navigationLabelStyle,
-                ),
-              ),
-              child: NavigationBar(
-                height: _bottomNavHeight,
-                elevation: 0,
-                backgroundColor: const Color(0xFFFDF8EF),
-                indicatorColor: const Color(0xFFE7F0EA),
-                indicatorShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
-                ),
-                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-                animationDuration: AppDurations.medium2,
-                selectedIndex: currentTab,
-                onDestinationSelected: (index) {
-                  if (index == currentTab) {
-                    // Tapped current tab - scroll to top if possible
-                    final navigator = _navigatorKeys[index].currentState;
-                    if (navigator != null && navigator.canPop()) {
-                      // Pop to root of this tab
-                      navigator.popUntil((route) => route.isFirst);
-                    }
-                  } else {
-                    // Animate tab transition
-                    _onTabChanged(index, currentTab);
-                  }
-                  // Switch tabs
-                  ref.read(currentTabProvider.notifier).state = index;
-                  // Haptic feedback
-                  HapticFeedback.selectionClick();
-                },
-                destinations: [
-                  // Learn tab
-                  const NavigationDestination(
-                    icon: Icon(Icons.auto_stories_outlined),
-                    selectedIcon: Icon(Icons.auto_stories),
-                    label: 'Learn',
-                    tooltip: 'Learn tab',
-                  ),
-                  // Quiz tab with badge for due cards
-                  NavigationDestination(
-                    icon: Badge(
-                      isLabelVisible: dueCardsCount > 0,
-                      label: Text(
-                        dueCardsCount > 99 ? '99+' : '$dueCardsCount',
-                      ),
-                      child: const Icon(Icons.quiz_outlined),
-                    ),
-                    selectedIcon: Badge(
-                      isLabelVisible: dueCardsCount > 0,
-                      label: Text(
-                        dueCardsCount > 99 ? '99+' : '$dueCardsCount',
-                      ),
-                      child: const Icon(Icons.quiz),
-                    ),
-                    label: 'Practice',
-                    tooltip: 'Practice tab',
-                  ),
-                  // Tank tab
-                  const NavigationDestination(
-                    icon: Icon(Icons.water_outlined),
-                    selectedIcon: Icon(Icons.water),
-                    label: 'Tank',
-                    tooltip: 'Tank tab',
-                  ),
-                  // Smart tab
-                  const NavigationDestination(
-                    icon: Icon(Icons.psychology_outlined),
-                    selectedIcon: Icon(Icons.psychology),
-                    label: 'Smart',
-                    tooltip: 'Smart tab',
-                  ),
-                  // More tab (profile, shop, tools, settings, about)
-                  const NavigationDestination(
-                    icon: Icon(Icons.grid_view_outlined),
-                    selectedIcon: Icon(Icons.grid_view),
-                    label: 'More',
-                    tooltip: 'More tab',
-                  ),
-                ],
-              ),
+            // === Bottom Dock ===
+            bottomNavigationBar: DanioBottomDock(
+              selectedIndex: currentTab,
+              dueCardsCount: dueCardsCount,
+              attachedToStageSheet: currentTab == 2,
+              onDestinationSelected: (index) {
+                _handleDestinationSelected(index, currentTab);
+              },
             ),
           ),
         ),
