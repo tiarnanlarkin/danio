@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/settings_provider.dart';
+import '../../services/notification_scheduler.dart';
 import '../../services/notification_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/logger.dart';
@@ -21,8 +22,8 @@ class SettingsNotificationsSection extends ConsumerWidget {
       children: [
         NavListTile(
           icon: Icons.notifications_active,
-          title: 'Streak Reminders',
-          subtitle: 'Daily notifications to maintain your streak',
+          title: 'Reminder Settings',
+          subtitle: 'Choose review and streak reminders',
           onTap: () => NavigationThrottle.push(
             context,
             const NotificationSettingsScreen(),
@@ -86,6 +87,12 @@ Future<void> _toggleNotifications(
   }
 
   await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
+
+  if (!enable) {
+    final service = ref.read(notificationServiceProvider);
+    await service.cancelReviewReminder();
+    await service.cancelStreakNotifications();
+  }
 
   if (context.mounted) {
     if (enable) {

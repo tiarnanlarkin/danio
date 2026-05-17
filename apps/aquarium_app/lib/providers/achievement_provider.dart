@@ -19,6 +19,7 @@ import '../widgets/core/app_dialog.dart';
 import '../main.dart'; // For navigatorKey
 import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
+import 'settings_provider.dart';
 import '../utils/logger.dart';
 
 /// Import sharedPreferencesProvider for shared access
@@ -391,20 +392,22 @@ class AchievementChecker {
             }
           }
 
-          // Send notifications (non-blocking — fire and forget)
-          for (final result in newlyUnlocked) {
-            final gemReward = _getGemReward(result.achievement.rarity);
-            try {
-              await NotificationService().sendAchievementNotification(
-                achievement: result.achievement,
-                xpAwarded: result.xpAwarded,
-                gemsAwarded: gemReward,
-              );
-            } catch (e) {
-              logError(
-                'Warning: Failed to send achievement notification: $e',
-                tag: 'AchievementProvider',
-              );
+          // Phone notifications are opt-in; in-app celebration remains event based.
+          if (ref.read(settingsProvider).notificationsEnabled) {
+            for (final result in newlyUnlocked) {
+              final gemReward = _getGemReward(result.achievement.rarity);
+              try {
+                await NotificationService().sendAchievementNotification(
+                  achievement: result.achievement,
+                  xpAwarded: result.xpAwarded,
+                  gemsAwarded: gemReward,
+                );
+              } catch (e) {
+                logError(
+                  'Warning: Failed to send achievement notification: $e',
+                  tag: 'AchievementProvider',
+                );
+              }
             }
           }
         }

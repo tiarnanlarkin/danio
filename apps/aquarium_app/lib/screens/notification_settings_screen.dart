@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../providers/settings_provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/notification_scheduler.dart';
 import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
-import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_states.dart';
+import '../widgets/core/bubble_loader.dart';
 
-/// Screen for configuring streak reminder notifications
+/// Screen for configuring explicit opt-in reminder notifications.
 class NotificationSettingsScreen extends ConsumerWidget {
   const NotificationSettingsScreen({super.key});
 
@@ -29,285 +32,248 @@ class NotificationSettingsScreen extends ConsumerWidget {
             return const Center(child: Text('No profile found'));
           }
 
-          // Build item list based on whether reminders are enabled
-          final baseItems = 3; // Header, divider, main toggle
-          final additionalItems = profile.streakRemindersEnabled
-              ? 10
-              : 0; // Divider, section header, 3 time settings, divider, info, test button, spacing
-          final totalItems = baseItems + additionalItems;
-
-          return ListView.builder(
-            itemCount: totalItems,
-            itemBuilder: (context, index) {
-              // Header
-              if (index == 0) {
-                return Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.notifications_active,
-                        size: AppIconSizes.xl,
-                        color: AppColors.primary,
+          return ListView(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewPadding.bottom + AppSpacing.lg,
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.notifications_active,
+                      size: AppIconSizes.xl,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text('Reminders', style: AppTypography.headlineMedium),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Danio only schedules phone reminders you turn on here.',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: context.textSecondary,
                       ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Streak Reminders',
-                        style: AppTypography.headlineMedium,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Get daily notifications to help maintain your learning streak.',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              SwitchListTile(
+                secondary: const Icon(Icons.repeat_rounded),
+                title: const Text('Review Reminders'),
+                subtitle: Text(
+                  profile.reviewRemindersEnabled
+                      ? 'Enabled - reminders when cards are due'
+                      : 'Disabled - no review reminders',
+                ),
+                value: profile.reviewRemindersEnabled,
+                onChanged: (value) => _setReviewReminders(context, ref, value),
+              ),
+              SwitchListTile(
+                secondary: const Icon(Icons.local_fire_department_outlined),
+                title: const Text('Streak Reminders'),
+                subtitle: Text(
+                  profile.streakRemindersEnabled
+                      ? 'Enabled - daily streak reminders'
+                      : 'Disabled - no streak reminders',
+                ),
+                value: profile.streakRemindersEnabled,
+                onChanged: (value) => _setStreakReminders(context, ref, value),
+              ),
+              if (profile.streakRemindersEnabled) ...[
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.sm,
                   ),
-                );
-              }
-
-              // Divider
-              if (index == 1) {
-                return const Divider();
-              }
-
-              // Main toggle
-              if (index == 2) {
-                return SwitchListTile(
-                  secondary: const Icon(Icons.notifications),
-                  title: const Text('Streak Reminders'),
-                  subtitle: Text(
-                    profile.streakRemindersEnabled
-                        ? 'Enabled — You\'ll get daily reminders'
-                        : 'Disabled — No streak reminders',
-                  ),
-                  value: profile.streakRemindersEnabled,
-                  onChanged: (value) async {
-                    if (value) {
-                      // Request permission when enabling
-                      final service = NotificationService();
-                      await service.initialize();
-                      final granted = await service.requestPermissions();
-
-                      if (!granted) {
-                        if (context.mounted) {
-                          AppFeedback.showWarning(
-                            context,
-                            'Notification permission denied. Please enable in settings.',
-                          );
-                        }
-                        return;
-                      }
-                    }
-
-                    await ref
-                        .read(userProfileProvider.notifier)
-                        .updateProfile(streakRemindersEnabled: value);
-
-                    // Reschedule notifications
-                    await _updateNotifications(ref);
-
-                    if (context.mounted) {
-                      if (value) {
-                        AppFeedback.showSuccess(
-                          context,
-                          'Streak reminders enabled!',
-                        );
-                      } else {
-                        AppFeedback.showInfo(
-                          context,
-                          'Streak reminders disabled',
-                        );
-                      }
-                    }
-                  },
-                );
-              }
-
-              // If reminders disabled, we're done
-              if (!profile.streakRemindersEnabled) {
-                return const SizedBox.shrink();
-              }
-
-              // Additional items when enabled
-              final enabledIndex = index - baseItems;
-
-              // Divider
-              if (enabledIndex == 0) {
-                return const Divider();
-              }
-
-              // Notification times section header
-              if (enabledIndex == 1) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm),
                   child: Text(
                     'Reminder Times',
                     style: AppTypography.labelLarge.copyWith(
                       color: context.textSecondary,
                     ),
                   ),
-                );
-              }
-
-              // Morning notification
-              if (enabledIndex == 2) {
-                return ListTile(
-                  leading: const Icon(Icons.wb_sunny),
-                  title: const Text('Morning Reminder'),
-                  subtitle: Text(
-                    '${profile.morningReminderTime} — Start your day with a lesson',
-                  ),
-                  trailing: const Icon(Icons.access_time),
-                  onTap: () => _selectTime(
-                    context,
-                    ref,
-                    'Morning Reminder',
-                    profile.morningReminderTime ?? '09:00',
-                    'morningReminderTime',
-                  ),
-                );
-              }
-
-              // Evening notification
-              if (enabledIndex == 3) {
-                return ListTile(
-                  leading: const Icon(Icons.wb_twilight),
-                  title: const Text('Evening Reminder'),
-                  subtitle: Text(
-                    '${profile.eveningReminderTime} - Only if you haven\'t met your goal',
-                  ),
-                  trailing: const Icon(Icons.access_time),
-                  onTap: () => _selectTime(
-                    context,
-                    ref,
-                    'Evening Reminder',
-                    profile.eveningReminderTime ?? '19:00',
-                    'eveningReminderTime',
-                  ),
-                );
-              }
-
-              // Night notification
-              if (enabledIndex == 4) {
-                return ListTile(
-                  leading: const Icon(Icons.nightlight),
-                  title: const Text('Late Night Reminder'),
-                  subtitle: Text(
-                    '${profile.nightReminderTime} — Last chance to save your streak',
-                  ),
-                  trailing: const Icon(Icons.access_time),
-                  onTap: () => _selectTime(
-                    context,
-                    ref,
-                    'Late Night Reminder',
-                    profile.nightReminderTime ?? '23:00',
-                    'nightReminderTime',
-                  ),
-                );
-              }
-
-              // Divider
-              if (enabledIndex == 5) {
-                return const Divider();
-              }
-
-              // Info section
-              if (enabledIndex == 6) {
-                return Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppOverlays.primary10,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.info_outline, color: AppColors.primary),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              'How it works',
-                              style: AppTypography.labelLarge.copyWith(
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.sm2),
-                        _buildInfoRow(
-                          '🌅',
-                          'Morning reminder goes out every day',
-                        ),
-                        _buildInfoRow(
-                          '🌆',
-                          'Evening reminder only if goal not met',
-                        ),
-                        _buildInfoRow(
-                          '🌙',
-                          'Night reminder only if goal not met',
-                        ),
-                        _buildInfoRow(
-                          '✅',
-                          'Notifications auto-cancel when you complete your goal',
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              // Test notification button
-              if (enabledIndex == 7) {
-                return Padding(
+                ),
+                _timeTile(
+                  context,
+                  ref,
+                  icon: Icons.wb_sunny,
+                  title: 'Morning Reminder',
+                  subtitle:
+                      '${profile.morningReminderTime ?? '09:00'} - Start your day with a lesson',
+                  currentTime: profile.morningReminderTime ?? '09:00',
+                  fieldName: 'morningReminderTime',
+                ),
+                _timeTile(
+                  context,
+                  ref,
+                  icon: Icons.wb_twilight,
+                  title: 'Evening Reminder',
+                  subtitle:
+                      '${profile.eveningReminderTime ?? '19:00'} - Only if you haven\'t met your goal',
+                  currentTime: profile.eveningReminderTime ?? '19:00',
+                  fieldName: 'eveningReminderTime',
+                ),
+                _timeTile(
+                  context,
+                  ref,
+                  icon: Icons.nightlight,
+                  title: 'Late Night Reminder',
+                  subtitle:
+                      '${profile.nightReminderTime ?? '23:00'} - Last chance to save your streak',
+                  currentTime: profile.nightReminderTime ?? '23:00',
+                  fieldName: 'nightReminderTime',
+                ),
+                const Divider(),
+                _infoPanel(context),
+                Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                   ),
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.send),
                     label: const Text('Send Test Notification'),
-                    onPressed: () async {
-                      final service = NotificationService();
-                      await service.initialize();
-                      await service.showTestNotification();
-
-                      if (context.mounted) {
-                        AppFeedback.showSuccess(
-                          context,
-                          'Test notification sent!',
-                        );
-                      }
-                    },
+                    onPressed: () => _sendTestNotification(context),
                   ),
-                );
-              }
-
-              // Final spacing
-              return const SizedBox(height: AppSpacing.md);
-            },
+                ),
+              ],
+            ],
           );
         },
       ),
     );
   }
 
-  Widget _buildInfoRow(String emoji, String text) {
+  Widget _timeTile(
+    BuildContext context,
+    WidgetRef ref, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String currentTime,
+    required String fieldName,
+  }) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      subtitle: Text(subtitle),
+      trailing: const Icon(Icons.access_time),
+      onTap: () => _selectTime(context, ref, title, currentTime, fieldName),
+    );
+  }
+
+  Widget _infoPanel(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: AppOverlays.primary10,
+          borderRadius: AppRadius.mediumRadius,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.info_outline, color: AppColors.primary),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'How it works',
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm2),
+            _buildInfoRow('Morning reminder goes out every day'),
+            _buildInfoRow('Evening reminder only if your goal is not met'),
+            _buildInfoRow('Night reminder only if your goal is not met'),
+            _buildInfoRow('Disabling a reminder cancels its scheduled alerts'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 16)),
+          const Icon(Icons.check_circle_outline, size: 16),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
       ),
     );
+  }
+
+  Future<void> _setReviewReminders(
+    BuildContext context,
+    WidgetRef ref,
+    bool value,
+  ) async {
+    if (value && !await _ensureNotificationsEnabled(context, ref)) return;
+
+    await ref
+        .read(userProfileProvider.notifier)
+        .updateProfile(reviewRemindersEnabled: value);
+    await NotificationScheduler.instance.scheduleReviewNotifications(ref);
+
+    if (!context.mounted) return;
+    AppFeedback.showInfo(
+      context,
+      value ? 'Review reminders enabled' : 'Review reminders disabled',
+    );
+  }
+
+  Future<void> _setStreakReminders(
+    BuildContext context,
+    WidgetRef ref,
+    bool value,
+  ) async {
+    if (value && !await _ensureNotificationsEnabled(context, ref)) return;
+
+    await ref
+        .read(userProfileProvider.notifier)
+        .updateProfile(streakRemindersEnabled: value);
+    await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+
+    if (!context.mounted) return;
+    AppFeedback.showInfo(
+      context,
+      value ? 'Streak reminders enabled' : 'Streak reminders disabled',
+    );
+  }
+
+  Future<bool> _ensureNotificationsEnabled(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    if (ref.read(settingsProvider).notificationsEnabled) return true;
+
+    final service = NotificationService();
+    await service.initialize();
+    final granted = await service.requestPermissions();
+    if (!granted) {
+      if (context.mounted) {
+        AppFeedback.showWarning(
+          context,
+          'Notification permission denied. Please enable it in settings.',
+        );
+      }
+      return false;
+    }
+
+    await ref.read(settingsProvider.notifier).setNotificationsEnabled(true);
+    return true;
   }
 
   Future<void> _selectTime(
@@ -344,7 +310,6 @@ class NotificationSettingsScreen extends ConsumerWidget {
     final timeString =
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
-    // Update the appropriate field
     await ref
         .read(userProfileProvider.notifier)
         .updateProfile(
@@ -359,61 +324,20 @@ class NotificationSettingsScreen extends ConsumerWidget {
               : null,
         );
 
-    // Reschedule notifications
-    await _updateNotifications(ref);
+    await NotificationScheduler.instance.scheduleStreakNotifications(ref);
 
     if (context.mounted) {
       AppFeedback.showInfo(context, '$title updated to $timeString');
     }
   }
 
-  Future<void> _updateNotifications(WidgetRef ref) async {
-    final profile = ref.read(userProfileProvider).value;
-    if (profile == null) return;
-
+  Future<void> _sendTestNotification(BuildContext context) async {
     final service = NotificationService();
     await service.initialize();
+    await service.showTestNotification();
 
-    if (!profile.streakRemindersEnabled) {
-      // Cancel all streak notifications
-      await service.cancelStreakNotifications();
-      return;
+    if (context.mounted) {
+      AppFeedback.showSuccess(context, 'Test notification sent!');
     }
-
-    // Parse times
-    final morningParts = (profile.morningReminderTime ?? '09:00').split(':');
-    final eveningParts = (profile.eveningReminderTime ?? '19:00').split(':');
-    final nightParts = (profile.nightReminderTime ?? '23:00').split(':');
-
-    final morningTime = TimeOfDay(
-      hour: (int.tryParse(morningParts[0]) ?? 9).clamp(0, 23),
-      minute:
-          (int.tryParse(morningParts.length > 1 ? morningParts[1] : '') ?? 0)
-              .clamp(0, 59),
-    );
-    final eveningTime = TimeOfDay(
-      hour: (int.tryParse(eveningParts[0]) ?? 19).clamp(0, 23),
-      minute:
-          (int.tryParse(eveningParts.length > 1 ? eveningParts[1] : '') ?? 0)
-              .clamp(0, 59),
-    );
-    final nightTime = TimeOfDay(
-      hour: (int.tryParse(nightParts[0]) ?? 23).clamp(0, 23),
-      minute: (int.tryParse(nightParts.length > 1 ? nightParts[1] : '') ?? 0)
-          .clamp(0, 59),
-    );
-
-    // Get today's XP
-    final todayXp = ref.read(userProfileProvider.notifier).getTodayXp();
-
-    // Schedule notifications
-    await service.scheduleAllStreakNotifications(
-      currentStreak: profile.currentStreak,
-      dailyXpGoal: profile.dailyXpGoal,
-      todayXp: todayXp,
-      morningTime: morningTime,
-      eveningTime: eveningTime,
-      nightTime: nightTime,
-    );
   }
 }

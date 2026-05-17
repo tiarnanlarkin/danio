@@ -18,13 +18,17 @@ import 'package:danio/models/user_profile.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-UserProfile _fakeProfile({bool remindersEnabled = false}) => UserProfile(
-      id: 'u1',
-      name: 'Test User',
-      streakRemindersEnabled: remindersEnabled,
-      createdAt: DateTime(2024),
-      updatedAt: DateTime(2024),
-    );
+UserProfile _fakeProfile({
+  bool streakRemindersEnabled = false,
+  bool reviewRemindersEnabled = false,
+}) => UserProfile(
+  id: 'u1',
+  name: 'Test User',
+  streakRemindersEnabled: streakRemindersEnabled,
+  reviewRemindersEnabled: reviewRemindersEnabled,
+  createdAt: DateTime(2024),
+  updatedAt: DateTime(2024),
+);
 
 Widget _wrap({UserProfile? profile}) {
   final memStorage = InMemoryStorageService();
@@ -33,9 +37,7 @@ Widget _wrap({UserProfile? profile}) {
     'user_profile': jsonEncode((profile ?? _fakeProfile()).toJson()),
   });
   return ProviderScope(
-    overrides: [
-      storageServiceProvider.overrideWithValue(memStorage),
-    ],
+    overrides: [storageServiceProvider.overrideWithValue(memStorage)],
     child: const MaterialApp(home: NotificationSettingsScreen()),
   );
 }
@@ -66,11 +68,12 @@ void main() {
       expect(find.text('Notification Settings'), findsOneWidget);
     });
 
-    testWidgets('shows Streak Reminders header', (tester) async {
+    testWidgets('shows reminder toggles', (tester) async {
       SharedPreferences.setMockInitialValues({});
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.text('Streak Reminders'), findsWidgets);
+      expect(find.text('Review Reminders'), findsOneWidget);
     });
 
     testWidgets('shows a SwitchListTile for reminders toggle', (tester) async {
@@ -82,9 +85,17 @@ void main() {
 
     testWidgets('renders with reminders enabled profile', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      await tester.pumpWidget(_wrap(profile: _fakeProfile(remindersEnabled: true)));
+      await tester.pumpWidget(
+        _wrap(
+          profile: _fakeProfile(
+            streakRemindersEnabled: true,
+            reviewRemindersEnabled: true,
+          ),
+        ),
+      );
       await _advance(tester);
       expect(find.byType(NotificationSettingsScreen), findsOneWidget);
+      expect(find.text('Reminder Times'), findsOneWidget);
     });
   });
 }

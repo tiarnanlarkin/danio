@@ -8,13 +8,13 @@ import 'dart:convert';
 import '../models/spaced_repetition.dart';
 import '../models/learning.dart';
 import '../services/review_queue_service.dart';
-import '../services/notification_service.dart';
+import '../services/notification_scheduler.dart';
 import 'achievement_provider.dart';
-import 'package:flutter/material.dart';
 import '../models/resolved_question.dart';
 import '../services/question_resolver.dart';
 import '../utils/logger.dart';
 import 'lesson_provider.dart';
+import 'settings_provider.dart';
 
 // Provider for spaced repetition state
 final spacedRepetitionProvider =
@@ -846,17 +846,19 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   /// Schedule notifications for due reviews
   Future<void> _scheduleNotifications() async {
     try {
-      final notificationService = NotificationService();
-      await notificationService.initialize();
-
-      // Schedule review reminder if cards are due
       final dueCount = getDueCount();
-      if (dueCount > 0) {
-        await notificationService.scheduleReviewReminder(
-          dueCardsCount: dueCount,
-          time: const TimeOfDay(hour: 9, minute: 0), // 9 AM
-        );
-      }
+      final profile = _ref.read(userProfileProvider).value;
+      final notificationsEnabled = _ref
+          .read(settingsProvider)
+          .notificationsEnabled;
+      final service = _ref.read(notificationServiceProvider);
+
+      await NotificationScheduler.instance.scheduleReviewNotificationsForState(
+        service: service,
+        notificationsEnabled: notificationsEnabled,
+        reviewRemindersEnabled: profile?.reviewRemindersEnabled ?? false,
+        dueCardsCount: dueCount,
+      );
     } catch (e, stackTrace) {
       // Don't break flow on notification scheduling failure
       state = state.copyWith(

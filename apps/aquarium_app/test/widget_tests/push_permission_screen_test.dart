@@ -8,10 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/onboarding/push_permission_screen.dart';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 Widget _wrap({VoidCallback? onAllow, VoidCallback? onSkip}) {
   return MaterialApp(
     home: PushPermissionScreen(
@@ -26,10 +22,6 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 500));
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
-
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
@@ -42,35 +34,37 @@ void main() {
       expect(find.byType(PushPermissionScreen), findsOneWidget);
     });
 
-    testWidgets('shows allow button', (tester) async {
+    testWidgets('shows quiet opt-in copy and continue button', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('Yes, keep me informed →'), findsOneWidget);
+      expect(find.text('Reminders are optional.'), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+      expect(find.textContaining('Yes, keep me informed'), findsNothing);
     });
 
-    testWidgets('shows skip button', (tester) async {
+    testWidgets('shows set up later button', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('Not right now'), findsOneWidget);
+      expect(find.text('Set up later'), findsOneWidget);
     });
 
     testWidgets('calls onAllow when primary button tapped', (tester) async {
-      bool allowed = false;
+      var allowed = false;
       await tester.pumpWidget(_wrap(onAllow: () => allowed = true));
       await _advance(tester);
 
-      await tester.tap(find.text('Yes, keep me informed →'));
+      await tester.tap(find.text('Continue'));
       await tester.pump();
 
       expect(allowed, isTrue);
     });
 
     testWidgets('calls onSkip when skip button tapped', (tester) async {
-      bool skipped = false;
+      var skipped = false;
       await tester.pumpWidget(_wrap(onSkip: () => skipped = true));
       await _advance(tester);
 
-      await tester.tap(find.text('Not right now'));
+      await tester.tap(find.text('Set up later'));
       await tester.pump();
 
       expect(skipped, isTrue);

@@ -7,7 +7,9 @@ import '../../models/user_profile.dart';
 import '../../models/learning.dart';
 import '../../providers/learning_catalog_provider.dart';
 import '../../providers/lesson_provider.dart';
+import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../services/guidance_service.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/learning_visuals.dart';
 import '../../widgets/core/app_button.dart';
@@ -49,8 +51,12 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   }
 
   Future<void> _checkFirstVisitTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_learn', ref);
-    if (mounted) setState(() => _showTooltip = !seen);
+    final service = await ref.read(guidanceServiceProvider.future);
+    final decision = await service.shouldShow(
+      GuidancePromptId.learnFirstVisit,
+      const GuidanceContext(surface: GuidanceSurface.learn),
+    );
+    if (mounted) setState(() => _showTooltip = decision.shouldShow);
   }
 
   @override
@@ -263,7 +269,9 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             child: SafeArea(
               bottom: false,
               child: FirstVisitTooltip(
-                prefsKey: 'tooltip_seen_learn',
+                prefsKey: GuidanceService.storageKey(
+                  GuidancePromptId.learnFirstVisit,
+                ),
                 icon: Icons.menu_book_rounded,
                 iconColor: AppColors.primary,
                 iconBackgroundColor: AppColors.primaryAlpha10,

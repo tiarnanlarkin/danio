@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/spaced_repetition.dart';
+import '../providers/guidance_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/guidance_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/learning_visuals.dart';
 import '../utils/logger.dart';
@@ -25,18 +27,41 @@ class PracticeHubScreen extends ConsumerStatefulWidget {
 }
 
 class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
-  bool _showTooltip = true;
+  bool _showTooltip = false;
+  bool _guidanceCheckQueued = false;
+  int? _lastGuidanceCardCount;
   SpacedRepetitionState? _latestSrState;
 
   @override
   void initState() {
     super.initState();
-    _checkTooltip();
   }
 
-  Future<void> _checkTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_practice', ref);
-    if (mounted) setState(() => _showTooltip = !seen);
+  void _queueGuidanceCheck(int totalCards) {
+    if (totalCards <= 0 || _guidanceCheckQueued) return;
+    if (_lastGuidanceCardCount == totalCards) return;
+
+    _guidanceCheckQueued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _checkTooltip(totalCards);
+    });
+  }
+
+  Future<void> _checkTooltip(int totalCards) async {
+    final service = await ref.read(guidanceServiceProvider.future);
+    final decision = await service.shouldShow(
+      GuidancePromptId.practiceFirstUsefulVisit,
+      GuidanceContext(
+        surface: GuidanceSurface.practice,
+        practiceCardCount: totalCards,
+      ),
+    );
+    if (!mounted) return;
+    setState(() {
+      _showTooltip = decision.shouldShow;
+      _lastGuidanceCardCount = totalCards;
+      _guidanceCheckQueued = false;
+    });
   }
 
   @override
@@ -48,6 +73,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     final dueCards = srState.stats.dueCards;
     final totalCards = srState.stats.totalCards;
     _latestSrState = srState;
+    _queueGuidanceCheck(totalCards);
 
     final body = Scaffold(
       body: CustomScrollView(
@@ -123,7 +149,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
       ),
     );
 
-    if (_showTooltip) {
+    if (_showTooltip && totalCards > 0) {
       return Stack(
         children: [
           body,
@@ -134,7 +160,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             child: SafeArea(
               bottom: false,
               child: FirstVisitTooltip(
-                prefsKey: 'tooltip_seen_practice',
+                prefsKey: GuidanceService.storageKey(
+                  GuidancePromptId.practiceFirstUsefulVisit,
+                ),
                 icon: Icons.repeat_rounded,
                 iconColor: AppColors.primary,
                 iconBackgroundColor: AppColors.primaryAlpha10,

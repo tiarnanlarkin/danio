@@ -83,9 +83,14 @@ void main() {
       expect(profile.dailyTipsEnabled, isTrue);
     });
 
-    test('default streakRemindersEnabled is true', () {
+    test('default streakRemindersEnabled is false', () {
       final profile = _profile();
-      expect(profile.streakRemindersEnabled, isTrue);
+      expect(profile.streakRemindersEnabled, isFalse);
+    });
+
+    test('default reviewRemindersEnabled is false', () {
+      final profile = _profile();
+      expect(profile.reviewRemindersEnabled, isFalse);
     });
 
     test('default hasSeenTutorial is false', () {
@@ -178,10 +183,7 @@ void main() {
 
     test('isStreakActive is true when lastActivityDate was yesterday', () {
       final yesterday = DateTime.now().subtract(const Duration(days: 1));
-      final profile = _profile(
-        currentStreak: 3,
-        lastActivityDate: yesterday,
-      );
+      final profile = _profile(currentStreak: 3, lastActivityDate: yesterday);
       expect(profile.isStreakActive, isTrue);
     });
 
@@ -201,11 +203,14 @@ void main() {
       expect(profile.dailyXpHistory, isEmpty);
     });
 
-    test('shouldResetStreakFreeze returns true for profile with no grantedDate', () {
-      final profile = _profile();
-      // No streakFreezeGrantedDate triggers a reset (first-time grant)
-      expect(profile.shouldResetStreakFreeze, isTrue);
-    });
+    test(
+      'shouldResetStreakFreeze returns true for profile with no grantedDate',
+      () {
+        final profile = _profile();
+        // No streakFreezeGrantedDate triggers a reset (first-time grant)
+        expect(profile.shouldResetStreakFreeze, isTrue);
+      },
+    );
 
     test('completedLessons count matches input', () {
       final profile = _profile(

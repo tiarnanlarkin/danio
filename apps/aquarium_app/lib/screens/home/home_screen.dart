@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/room_theme_provider.dart';
+import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../services/guidance_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/hearts_widgets.dart';
@@ -15,7 +17,6 @@ import '../../widgets/stage/swiss_army_panel.dart';
 import '../../widgets/stage/bottom_sheet_panel.dart';
 import '../../widgets/stage/temp_panel_content.dart';
 import '../../widgets/stage/water_panel_content.dart';
-import '../../widgets/stage/ambient_tip_overlay.dart';
 import '../../widgets/stage/lighting_pulse.dart';
 import '../../widgets/danio_bottom_dock.dart';
 import '../../navigation/app_routes.dart';
@@ -37,8 +38,6 @@ import 'widgets/empty_room_scene.dart';
 import 'widgets/today_board.dart';
 import 'widgets/welcome_banner.dart';
 import 'widgets/comeback_banner.dart';
-import 'widgets/daily_nudge.dart';
-import 'widgets/streak_hearts_overlay.dart';
 import 'widgets/room_control_fab.dart';
 import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
@@ -57,23 +56,16 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Vertical offset (in dp) added to `MediaQuery.padding.top` to anchor
-  /// in-room notification banners (demo tank, daily nudge) into the slot
-  /// between the top bar (Tank Toolbox / Tank Settings IconButtons) and the
-  /// top of the tank scene. Per QA brief 2026-04, banners should sit in this
-  /// dedicated slot rather than each computing their own offset.
+  /// the demo tank banner into the slot between the top bar and the tank scene.
   static const double _notificationSlotTopOffset = 100;
 
   int _currentTankIndex = 0;
-  bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
   bool _isNavigatingToCreate = false;
   bool _showWelcomeBanner = false;
   bool _showComebackBanner = false;
   bool _demoModeDismissed = false;
-  bool _showTankTooltip = true;
-  bool _showHeartsTooltip = true;
-  bool _showStageHandleTooltip = true;
-  bool _showRoomMetaphorTooltip = true;
+  bool _showStageHandleTooltip = false;
   String? _cachedUserName;
   String? _cachedFishSpeciesName;
   final Set<String> _selectedTankIds = {};
@@ -84,27 +76,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _checkWelcomeBanner();
     _checkComebackBanner();
     _checkReturningUserFlow();
-    _checkTooltipFlags();
+    _checkGuidancePrompt();
   }
 
   // ── Lifecycle checks ──────────────────────────────────────────────────
 
-  Future<void> _checkTooltipFlags() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    final seenTank = prefs.getBool('tooltip_seen_tank') ?? false;
-    final seenHearts = prefs.getBool('tooltip_seen_hearts') ?? false;
-    final seenStageHandles =
-        prefs.getBool('tooltip_seen_stage_handles') ?? false;
-    final seenRoomMetaphor =
-        prefs.getBool('tooltip_seen_room_metaphor') ?? false;
-    if (mounted) {
-      setState(() {
-        _showTankTooltip = !seenTank;
-        _showHeartsTooltip = !seenHearts;
-        _showStageHandleTooltip = !seenStageHandles;
-        _showRoomMetaphorTooltip = !seenRoomMetaphor;
-      });
-    }
+  Future<void> _checkGuidancePrompt() async {
+    final service = await ref.read(guidanceServiceProvider.future);
+    final hasOpenPanels = ref.read(stageProvider).openPanels.isNotEmpty;
+    final decision = await service.shouldShow(
+      GuidancePromptId.tankStageHandles,
+      GuidanceContext(
+        surface: GuidanceSurface.tank,
+        hasOpenPanels: hasOpenPanels,
+      ),
+    );
+    if (mounted) setState(() => _showStageHandleTooltip = decision.shouldShow);
   }
 
   /// Waits for the user profile to load from the provider.
@@ -516,8 +503,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 },
               ),
             ),
-            AmbientTipOverlay(theme: theme),
-
             // Stage handle strips
             //
             // Note: previously had subtle 3px translucent accent strips on each
@@ -607,9 +592,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
-
-            const StreakHeartsOverlay(),
-
             // Demo tank banner (Fix 2: has dismiss × button)
             if (currentTank.isDemoTank && !_demoModeDismissed)
               Positioned(
@@ -794,18 +776,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onQuickTest: () => showQuickLogSheet(context, ref, currentTank),
               onAddTank: () => _navigateToCreateTank(context),
             ),
-
-            if (!_dailyNudgeDismissed &&
-                !_showWelcomeBanner &&
-                !_showComebackBanner &&
-                !_showTankTooltip &&
-                !_showHeartsTooltip &&
-                !_showStageHandleTooltip &&
-                !_showRoomMetaphorTooltip)
-              DailyNudgeBanner(
-                topOffset: _notificationSlotTopOffset,
-                onDismiss: () => setState(() => _dailyNudgeDismissed = true),
-              ),
           ],
         );
       },
@@ -844,46 +814,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               fishSpeciesName: _cachedFishSpeciesName,
               onDismiss: () => setState(() => _showComebackBanner = false),
             ),
-          if (_showTankTooltip && !showWelcome && !showComeback)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                bottom: false,
-                child: FirstVisitTooltip(
-                  prefsKey: 'tooltip_seen_tank',
-                  icon: Icons.water_rounded,
-                  iconColor: AppColors.primary,
-                  message:
-                      'This is your Living Room — manage your aquariums here.',
-                  onDismissed: () => setState(() => _showTankTooltip = false),
-                ),
-              ),
-            ),
-          if (_showHeartsTooltip &&
-              !showWelcome &&
-              !showComeback &&
-              !_showTankTooltip)
-            Positioned(
-              top: 56,
-              left: 0,
-              right: 0,
-              child: FirstVisitTooltip(
-                prefsKey: 'tooltip_seen_hearts',
-                icon: Icons.favorite_rounded,
-                iconColor: AppColors.error,
-                message:
-                    'Hearts track progress. Wrong quiz answers cost one, and they reset daily.',
-                autoDismissDuration: const Duration(seconds: 6),
-                onDismissed: () => setState(() => _showHeartsTooltip = false),
-              ),
-            ),
-          if (_showStageHandleTooltip &&
-              !showWelcome &&
-              !showComeback &&
-              !_showTankTooltip &&
-              !_showHeartsTooltip)
+          if (_showStageHandleTooltip && !showWelcome && !showComeback)
             Positioned(
               bottom:
                   MediaQuery.of(context).viewPadding.bottom +
@@ -892,37 +823,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               left: 0,
               right: 0,
               child: FirstVisitTooltip(
-                prefsKey: 'tooltip_seen_stage_handles',
+                prefsKey: GuidanceService.storageKey(
+                  GuidancePromptId.tankStageHandles,
+                ),
                 icon: Icons.swipe_rounded,
                 iconColor: AppColors.primary,
                 message: 'Tap the side handles for water and feeding details.',
                 autoDismissDuration: const Duration(seconds: 5),
                 onDismissed: () =>
                     setState(() => _showStageHandleTooltip = false),
-              ),
-            ),
-          if (_showRoomMetaphorTooltip &&
-              !showWelcome &&
-              !showComeback &&
-              !_showTankTooltip &&
-              !_showHeartsTooltip &&
-              !_showStageHandleTooltip)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                bottom: false,
-                child: FirstVisitTooltip(
-                  prefsKey: 'tooltip_seen_room_metaphor',
-                  icon: Icons.chair_rounded,
-                  iconColor: AppColors.primary,
-                  message:
-                      'Your tank lives in the centre. Use side panels for care details.',
-                  autoDismissDuration: const Duration(seconds: 6),
-                  onDismissed: () =>
-                      setState(() => _showRoomMetaphorTooltip = false),
-                ),
               ),
             ),
         ],

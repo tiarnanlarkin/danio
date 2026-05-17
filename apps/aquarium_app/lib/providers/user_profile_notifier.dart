@@ -29,10 +29,9 @@ import '../utils/logger.dart';
 /// Shared provider for SharedPreferences. All providers and services should
 /// use this instead of calling SharedPreferences.getInstance() directly, so
 /// the singleton is initialised once and reused across the app.
-final sharedPreferencesProvider =
-    FutureProvider<SharedPreferences>((ref) {
-      return SharedPreferences.getInstance();
-    });
+final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) {
+  return SharedPreferences.getInstance();
+});
 
 const _uuid = Uuid();
 
@@ -78,7 +77,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     try {
       prefs.setString(_key, jsonEncode(toSave.toJson()));
     } catch (e, st) {
-      logError('UserProfileProvider: profile save failed on lifecycle pause: $e', stackTrace: st, tag: 'UserProfileProvider');
+      logError(
+        'UserProfileProvider: profile save failed on lifecycle pause: $e',
+        stackTrace: st,
+        tag: 'UserProfileProvider',
+      );
     }
   }
 
@@ -94,7 +97,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         state = const AsyncValue.data(null);
       }
     } catch (e, st) {
-      logError('UserProfileProvider: _load failed: $e', stackTrace: st, tag: 'UserProfileProvider');
+      logError(
+        'UserProfileProvider: _load failed: $e',
+        stackTrace: st,
+        tag: 'UserProfileProvider',
+      );
       state = AsyncValue.error(e, st);
     }
   }
@@ -183,6 +190,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     String? firstFishSpeciesId,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
+    bool? reviewRemindersEnabled,
     bool? hasSeenTutorial,
     String? morningReminderTime,
     String? eveningReminderTime,
@@ -204,6 +212,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       dailyTipsEnabled: dailyTipsEnabled ?? current.dailyTipsEnabled,
       streakRemindersEnabled:
           streakRemindersEnabled ?? current.streakRemindersEnabled,
+      reviewRemindersEnabled:
+          reviewRemindersEnabled ?? current.reviewRemindersEnabled,
       hasSeenTutorial: hasSeenTutorial ?? current.hasSeenTutorial,
       morningReminderTime: morningReminderTime ?? current.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? current.eveningReminderTime,
@@ -435,7 +445,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             }
           } catch (e, st) {
             // Gem awarding failed — log but don't break XP recording.
-            logError('UserProfileProvider: gem award failed in recordActivity: $e', stackTrace: st, tag: 'UserProfileProvider');
+            logError(
+              'UserProfileProvider: gem award failed in recordActivity: $e',
+              stackTrace: st,
+              tag: 'UserProfileProvider',
+            );
           }
         },
       );
@@ -671,7 +685,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           );
     } catch (e) {
       // Don't fail lesson completion if card creation fails
-      logError('Warning: Failed to create review cards for lesson $lessonId: $e', tag: 'UserProfileProvider');
+      logError(
+        'Warning: Failed to create review cards for lesson $lessonId: $e',
+        tag: 'UserProfileProvider',
+      );
     }
   }
 

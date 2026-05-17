@@ -75,6 +75,7 @@ UserProfile _testProfile() {
     firstFishSpeciesId: 'betta_splendens',
     dailyTipsEnabled: false,
     streakRemindersEnabled: false,
+    reviewRemindersEnabled: false,
     hasSeenTutorial: true,
     morningReminderTime: '08:00',
     eveningReminderTime: '20:00',
@@ -296,6 +297,10 @@ void main() {
           restored.streakRemindersEnabled,
           original.streakRemindersEnabled,
         );
+        expect(
+          restored.reviewRemindersEnabled,
+          original.reviewRemindersEnabled,
+        );
         expect(restored.hasSeenTutorial, original.hasSeenTutorial);
         expect(restored.morningReminderTime, original.morningReminderTime);
         expect(restored.eveningReminderTime, original.eveningReminderTime);
@@ -382,6 +387,10 @@ void main() {
         expect(modified.league, original.league);
         expect(modified.hearts, original.hearts);
         expect(modified.dailyTipsEnabled, original.dailyTipsEnabled);
+        expect(
+          modified.reviewRemindersEnabled,
+          original.reviewRemindersEnabled,
+        );
         expect(modified.hasSeenTutorial, original.hasSeenTutorial);
         expect(modified.perfectScoreCount, original.perfectScoreCount);
         expect(modified.inventory.length, original.inventory.length);
@@ -469,7 +478,8 @@ void main() {
         expect(profile.tankStatus, isNull);
         expect(profile.firstFishSpeciesId, isNull);
         expect(profile.dailyTipsEnabled, true);
-        expect(profile.streakRemindersEnabled, true);
+        expect(profile.streakRemindersEnabled, false);
+        expect(profile.reviewRemindersEnabled, false);
         expect(profile.hasSeenTutorial, false);
         expect(profile.morningReminderTime, '09:00');
         expect(profile.eveningReminderTime, '19:00');

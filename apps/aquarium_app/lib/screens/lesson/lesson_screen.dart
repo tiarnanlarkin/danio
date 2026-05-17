@@ -7,7 +7,7 @@ import '../../providers/user_profile_provider.dart';
 import '../../providers/spaced_repetition_provider.dart';
 import '../../providers/achievement_provider.dart';
 import '../../services/hearts_service.dart';
-import '../../services/notification_service.dart';
+import '../../services/notification_scheduler.dart';
 import '../../widgets/hearts_widgets.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
@@ -448,36 +448,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         logError('Spaced repetition seeding failed: $e', tag: 'LessonScreen');
       }
 
-      // Schedule review notifications (non-critical)
+      // Refresh review notifications if the user has opted into reminders.
       try {
-        final srState = ref.read(spacedRepetitionProvider);
-        final dueCount = srState.stats.dueCards;
-        if (dueCount > 0) {
-          final notificationService = NotificationService();
-          await notificationService.scheduleReviewReminder(
-            dueCardsCount: dueCount,
-            time: const TimeOfDay(hour: 9, minute: 0),
-          );
-        }
+        await NotificationScheduler.instance.scheduleReviewNotifications(ref);
       } catch (e) {
         logError('Notification scheduling failed: $e', tag: 'LessonScreen');
-      }
-
-      // Dionysus Day 3: onboarding achievement at 3rd lesson
-      try {
-        final currentProfile = ref.read(userProfileProvider).value;
-        if (currentProfile != null) {
-          final totalCompleted = currentProfile.completedLessons.length + 1;
-          if (totalCompleted == 3) {
-            final notificationService = NotificationService();
-            await notificationService.showOnboardingAchievement();
-          }
-        }
-      } catch (e) {
-        logError(
-          'Onboarding achievement notification failed: $e',
-          tag: 'LessonScreen',
-        );
       }
 
       // Check for achievements (fire-and-forget — see comment in original)

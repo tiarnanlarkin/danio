@@ -11,7 +11,6 @@ import '../providers/onboarding_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/onboarding_service.dart';
-import '../services/notification_service.dart';
 import 'onboarding/welcome_screen.dart';
 import 'onboarding/experience_level_screen.dart';
 import 'onboarding/tank_status_screen.dart';
@@ -106,14 +105,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
   }
 
-  // ── Notification permission handler ──────────────────────────────────
+  // ── Optional reminders step ───────────────────────────────────────────
   Future<void> _handleNotificationAllow() async {
-    try {
-      final notificationService = NotificationService();
-      await notificationService.requestPermissions();
-    } catch (e) {
-      logError('Onboarding: notification permission request failed: $e', tag: 'OnboardingScreen');
-    }
     if (!mounted) return;
     _nextPage();
   }
@@ -136,22 +129,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       final level = _experienceLevel ?? ExperienceLevel.beginner;
 
       if (existingProfile == null) {
-        await ref.read(userProfileProvider.notifier).createProfile(
-          experienceLevel: level,
-          primaryTankType: TankType.freshwater,
-          goals: [_deriveGoal()],
-          name: _userName,
-          tankStatus: _tankStatus,
-          firstFishSpeciesId: _selectedFish?.commonName,
-        );
+        await ref
+            .read(userProfileProvider.notifier)
+            .createProfile(
+              experienceLevel: level,
+              primaryTankType: TankType.freshwater,
+              goals: [_deriveGoal()],
+              name: _userName,
+              tankStatus: _tankStatus,
+              firstFishSpeciesId: _selectedFish?.commonName,
+            );
       } else {
-        await ref.read(userProfileProvider.notifier).updateProfile(
-          experienceLevel: level,
-          goals: [_deriveGoal()],
-          tankStatus: _tankStatus,
-          firstFishSpeciesId: _selectedFish?.commonName,
-          name: _userName,
-        );
+        await ref
+            .read(userProfileProvider.notifier)
+            .updateProfile(
+              experienceLevel: level,
+              goals: [_deriveGoal()],
+              tankStatus: _tankStatus,
+              firstFishSpeciesId: _selectedFish?.commonName,
+              name: _userName,
+            );
       }
 
       // 1b. Unlock the selected fish species
@@ -161,9 +158,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               .toLowerCase()
               .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
               .replaceAll(RegExp(r'^_|_\$'), '');
-          await ref.read(speciesUnlockProvider.notifier).unlockSpecies(speciesId);
+          await ref
+              .read(speciesUnlockProvider.notifier)
+              .unlockSpecies(speciesId);
         } catch (e) {
-          logError('Onboarding: failed to unlock selected fish species: \$e', tag: 'OnboardingScreen');
+          logError(
+            'Onboarding: failed to unlock selected fish species: \$e',
+            tag: 'OnboardingScreen',
+          );
         }
       }
 
@@ -172,7 +174,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         try {
           await ref.read(userProfileProvider.notifier).addXp(10);
         } catch (e) {
-          logError('Onboarding: failed to award welcome XP: $e', tag: 'OnboardingScreen');
+          logError(
+            'Onboarding: failed to award welcome XP: $e',
+            tag: 'OnboardingScreen',
+          );
         }
       }
 
@@ -196,15 +201,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               'Discus': 'Display',
               'Axolotl': 'Lagoon',
             };
-            final suffix =
-                nameSuffixes[_selectedFish!.commonName] ?? 'Tank';
+            final suffix = nameSuffixes[_selectedFish!.commonName] ?? 'Tank';
             tankName = '${_selectedFish!.commonName} $suffix';
           } else {
             tankName = _tankStatus == 'cycling'
                 ? 'Cycling Tank'
                 : _tankStatus == 'active'
-                    ? 'My Tank'
-                    : 'New Tank';
+                ? 'My Tank'
+                : 'New Tank';
           }
 
           // Derive volume from species minimum tank size, with sensible clamp.
@@ -220,7 +224,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ? 'Started with ${_selectedFish!.commonName}'
                 : null,
           );
-          appLog('[Onboarding] Created tank: ${tank.name} (${volumeLitres}L, id=${tank.id})', tag: 'OnboardingScreen');
+          appLog(
+            '[Onboarding] Created tank: ${tank.name} (${volumeLitres}L, id=${tank.id})',
+            tag: 'OnboardingScreen',
+          );
 
           // Pre-populate tank with the fish the user selected.
           if (_selectedFish != null) {
@@ -242,28 +249,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 notes: 'Added during setup',
               );
               await tankNotifier.addLivestock(livestock);
-              appLog('[Onboarding] Added ${livestock.commonName} x${livestock.count} to ${tank.name}', tag: 'OnboardingScreen');
+              appLog(
+                '[Onboarding] Added ${livestock.commonName} x${livestock.count} to ${tank.name}',
+                tag: 'OnboardingScreen',
+              );
             } catch (e) {
-              logError('[Onboarding] Livestock pre-population failed: $e', tag: 'OnboardingScreen');
+              logError(
+                '[Onboarding] Livestock pre-population failed: $e',
+                tag: 'OnboardingScreen',
+              );
               // Non-fatal — tank was created; fish can be added manually.
             }
           }
         } catch (e) {
-          logError('[Onboarding] Tank creation failed: $e', tag: 'OnboardingScreen');
+          logError(
+            '[Onboarding] Tank creation failed: $e',
+            tag: 'OnboardingScreen',
+          );
         }
       }
 
-      // 3. Schedule onboarding notifications
-      if (mounted) {
-        try {
-          final notificationService = NotificationService();
-          await notificationService.scheduleOnboardingSequence();
-        } catch (e) {
-          logError('Onboarding: failed to schedule onboarding notifications: $e', tag: 'OnboardingScreen');
-        }
-      }
-
-      // 4. Complete onboarding via service + invalidate provider
+      // 3. Complete onboarding via service + invalidate provider
       // _AppRouter watches onboardingCompletedProvider and will reactively
       // swap from OnboardingScreen to TabNavigator on the next frame.
       // Do NOT call Navigator.popUntil here — it races with the reactive
@@ -275,9 +281,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (!mounted) return;
       ref.invalidate(onboardingCompletedProvider);
     } catch (e, st) {
-      logError('OnboardingScreen: onboarding completion failed: $e', stackTrace: st, tag: 'OnboardingScreen');
+      logError(
+        'OnboardingScreen: onboarding completion failed: $e',
+        stackTrace: st,
+        tag: 'OnboardingScreen',
+      );
       if (mounted) {
-        DanioSnackBar.error(context, 'Couldn\'t save your setup. Give it another go!');
+        DanioSnackBar.error(
+          context,
+          'Couldn\'t save your setup. Give it another go!',
+        );
       }
     }
   }
@@ -287,11 +300,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _quickStart() async {
     try {
       HapticFeedback.mediumImpact();
-      await ref.read(userProfileProvider.notifier).createProfile(
-        experienceLevel: ExperienceLevel.beginner,
-        primaryTankType: TankType.freshwater,
-        goals: [UserGoal.keepFishAlive],
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: ExperienceLevel.beginner,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive],
+          );
       // Create a default 60L starter tank for the quick-start user
       if (mounted) {
         try {
@@ -302,7 +317,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             volumeLitres: 60,
           );
         } catch (e) {
-          logError('[QuickStart] Tank creation failed: $e', tag: 'OnboardingScreen');
+          logError(
+            '[QuickStart] Tank creation failed: $e',
+            tag: 'OnboardingScreen',
+          );
         }
       }
       // Same as _completeOnboarding: let the reactive router handle
@@ -314,13 +332,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Show a disclosure about the default tank after navigation settles
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          DanioSnackBar.info(context, "We've set up a 60L starter tank for you — you can change this in Settings");
+          DanioSnackBar.info(
+            context,
+            "We've set up a 60L starter tank for you — you can change this in Settings",
+          );
         }
       });
     } catch (e, st) {
-      logError('OnboardingScreen: quick start failed: $e', stackTrace: st, tag: 'OnboardingScreen');
+      logError(
+        'OnboardingScreen: quick start failed: $e',
+        stackTrace: st,
+        tag: 'OnboardingScreen',
+      );
       if (mounted) {
-        DanioSnackBar.error(context, "Couldn't get started. Give it another go!");
+        DanioSnackBar.error(
+          context,
+          "Couldn't get started. Give it another go!",
+        );
       }
     }
   }
@@ -351,106 +379,116 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           body: Stack(
             children: [
               PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            // Page 0: Welcome
-            WelcomeScreen(
-              onNext: _nextPage,
-              onLogin: _quickStart,
-            ),
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  // Page 0: Welcome
+                  WelcomeScreen(onNext: _nextPage, onLogin: _quickStart),
 
-            // Page 1: Experience Level
-            ExperienceLevelScreen(
-              onSelected: (level) {
-                setState(() => _experienceLevel = level);
-                _nextPage();
-              },
-              onSkip: _quickStart,
-            ),
+                  // Page 1: Experience Level
+                  ExperienceLevelScreen(
+                    onSelected: (level) {
+                      setState(() => _experienceLevel = level);
+                      _nextPage();
+                    },
+                    onSkip: _quickStart,
+                  ),
 
-            // Page 2: Tank Status
-            TankStatusScreen(
-              onSelected: (status) {
-                setState(() => _tankStatus = status);
-                _nextPage();
-              },
-            ),
+                  // Page 2: Tank Status
+                  TankStatusScreen(
+                    onSelected: (status) {
+                      setState(() => _tankStatus = status);
+                      _nextPage();
+                    },
+                  ),
 
-            // Page 3: Micro Lesson
-            // experienceLevel may be null if user somehow reaches here without
-            // selecting — default to beginner.
-            MicroLessonScreen(
-              experienceLevel: _experienceLevel ?? ExperienceLevel.beginner,
-              onComplete: _nextPage,
-            ),
+                  // Page 3: Micro Lesson
+                  // experienceLevel may be null if user somehow reaches here without
+                  // selecting — default to beginner.
+                  MicroLessonScreen(
+                    experienceLevel:
+                        _experienceLevel ?? ExperienceLevel.beginner,
+                    onComplete: _nextPage,
+                  ),
 
-            // Page 4: XP Celebration
-            XpCelebrationScreen(onNext: _nextPage),
+                  // Page 4: XP Celebration
+                  XpCelebrationScreen(onNext: _nextPage),
 
-            // Page 5: Fish Select
-            FishSelectScreen(
-              tankStatus: _tankStatus ?? 'planning',
-              onFishSelected: (fish) {
-                setState(() => _selectedFish = fish);
-                _nextPage();
-              },
-            ),
+                  // Page 5: Fish Select
+                  FishSelectScreen(
+                    tankStatus: _tankStatus ?? 'planning',
+                    onFishSelected: (fish) {
+                      setState(() => _selectedFish = fish);
+                      _nextPage();
+                    },
+                  ),
 
-            // Page 6: Aha Moment
-            // Uses a Builder to defer construction until state is available.
-            Builder(builder: (context) {
-              if (_selectedFish == null ||
-                  _experienceLevel == null ||
-                  _tankStatus == null) {
-                return _OnboardingFallback(onGoBack: () => _goToStep(5));
-              }
-              return AhaMomentScreen(
-                selectedFish: _selectedFish!,
-                experienceLevel: _experienceLevel!,
-                tankStatus: _tankStatus!,
-                onComplete: _nextPage,
-              );
-            }),
+                  // Page 6: Aha Moment
+                  // Uses a Builder to defer construction until state is available.
+                  Builder(
+                    builder: (context) {
+                      if (_selectedFish == null ||
+                          _experienceLevel == null ||
+                          _tankStatus == null) {
+                        return _OnboardingFallback(
+                          onGoBack: () => _goToStep(5),
+                        );
+                      }
+                      return AhaMomentScreen(
+                        selectedFish: _selectedFish!,
+                        experienceLevel: _experienceLevel!,
+                        tankStatus: _tankStatus!,
+                        onComplete: _nextPage,
+                      );
+                    },
+                  ),
 
-            // Page 7: Paywall Stub
-            Builder(builder: (context) {
-              if (_selectedFish == null) {
-                return _OnboardingFallback(onGoBack: () => _goToStep(5));
-              }
-              return FeatureSummaryScreen(
-                selectedFish: _selectedFish!,
-                onComplete: _nextPage,
-                onSkip: _nextPage,
-              );
-            }),
+                  // Page 7: Paywall Stub
+                  Builder(
+                    builder: (context) {
+                      if (_selectedFish == null) {
+                        return _OnboardingFallback(
+                          onGoBack: () => _goToStep(5),
+                        );
+                      }
+                      return FeatureSummaryScreen(
+                        selectedFish: _selectedFish!,
+                        onComplete: _nextPage,
+                        onSkip: _nextPage,
+                      );
+                    },
+                  ),
 
-            // Page 8: Push Permission
-            PushPermissionScreen(
-              onAllow: _handleNotificationAllow,
-              onSkip: _nextPage,
-            ),
+                  // Page 8: Push Permission
+                  PushPermissionScreen(
+                    onAllow: _handleNotificationAllow,
+                    onSkip: _nextPage,
+                  ),
 
-            // Page 9: Warm Entry
-            Builder(builder: (context) {
-              if (_selectedFish == null ||
-                  _experienceLevel == null ||
-                  _tankStatus == null) {
-                return _OnboardingFallback(onGoBack: () => _goToStep(5));
-              }
-              return WarmEntryScreen(
-                selectedFish: _selectedFish!,
-                experienceLevel: _experienceLevel!,
-                tankStatus: _tankStatus!,
-                userName: _userName,
-                onNameChanged: (name) {
-                  setState(() => _userName = name);
-                },
-                onReady: _completeOnboarding,
-              );
-            }),
-          ],
-        ),
+                  // Page 9: Warm Entry
+                  Builder(
+                    builder: (context) {
+                      if (_selectedFish == null ||
+                          _experienceLevel == null ||
+                          _tankStatus == null) {
+                        return _OnboardingFallback(
+                          onGoBack: () => _goToStep(5),
+                        );
+                      }
+                      return WarmEntryScreen(
+                        selectedFish: _selectedFish!,
+                        experienceLevel: _experienceLevel!,
+                        tankStatus: _tankStatus!,
+                        userName: _userName,
+                        onNameChanged: (name) {
+                          setState(() => _userName = name);
+                        },
+                        onReady: _completeOnboarding,
+                      );
+                    },
+                  ),
+                ],
+              ),
               // Step progress dots
               Positioned(
                 bottom: MediaQuery.of(context).padding.bottom + 12,
@@ -485,7 +523,11 @@ class _OnboardingFallback extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.textHint),
+              const Icon(
+                Icons.error_outline,
+                size: 64,
+                color: AppColors.textHint,
+              ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'We hit a snag — let\'s go back',
@@ -511,10 +553,7 @@ class _OnboardingDots extends StatelessWidget {
   final int totalPages;
   final int currentPage;
 
-  const _OnboardingDots({
-    required this.totalPages,
-    required this.currentPage,
-  });
+  const _OnboardingDots({required this.totalPages, required this.currentPage});
 
   @override
   Widget build(BuildContext context) {

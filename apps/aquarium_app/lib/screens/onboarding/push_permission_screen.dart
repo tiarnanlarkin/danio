@@ -4,10 +4,9 @@ import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
 
-/// Screen 9 — Push Notification Pre-Prompt
+/// Screen 9 — Optional Reminder Setup
 ///
-/// Shown BEFORE the OS dialog to explain the value of notifications.
-/// The caller handles the actual permission request via [onAllow].
+/// Explains that reminders are opt-in and can be enabled later in Settings.
 class PushPermissionScreen extends StatefulWidget {
   final VoidCallback onAllow;
   final VoidCallback onSkip;
@@ -24,7 +23,6 @@ class PushPermissionScreen extends StatefulWidget {
 
 class _PushPermissionScreenState extends State<PushPermissionScreen>
     with TickerProviderStateMixin {
-
   late final AnimationController _fadeController;
   late final CurvedAnimation _fadeCurve;
   late final Animation<double> _fadeAnim;
@@ -37,19 +35,18 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
   void initState() {
     super.initState();
 
-    final disableAnimations =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
-            .disableAnimations;
+    final disableAnimations = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .disableAnimations;
 
     // Screen entry fade (200ms)
     _fadeController = AnimationController(
       vsync: this,
       duration: AppDurations.medium2,
     );
-    _fadeCurve = CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeIn,
-    );
+    _fadeCurve = CurvedAnimation(parent: _fadeController, curve: Curves.easeIn);
     _fadeAnim = _fadeCurve;
 
     // Bell float animation: translateY -6 to 0, 1.5s ease-in-out loop
@@ -95,7 +92,9 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -104,18 +103,17 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                       const SizedBox(height: AppSpacing.xl2),
                       // Headline
                       Text(
-                        "We'll tap you when something matters.",
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
+                        'Reminders are optional.',
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(color: AppColors.textPrimary),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: AppSpacing.md),
                       // Body
                       Text(
-                        "Danio can alert you when your fish's water conditions "
-                        "need attention — before small problems become big ones. "
-                        "We'll never spam you.",
+                        'Danio stays quiet until you choose reminders in Settings. '
+                        'You can turn on care, review, and streak reminders whenever '
+                        'they become useful.',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.textSecondary,
                           height: 1.6,
@@ -128,13 +126,18 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
               ),
               // Bottom buttons
               Padding(
-                padding: EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, bottomPadding + AppSpacing.lg),
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  0,
+                  AppSpacing.lg,
+                  bottomPadding + AppSpacing.lg,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Primary button
                     AppButton(
-                      label: 'Yes, keep me informed →',
+                      label: 'Continue',
                       onPressed: () {
                         HapticFeedback.mediumImpact();
                         widget.onAllow();
@@ -142,19 +145,19 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                       variant: AppButtonVariant.primary,
                       isFullWidth: true,
                       size: AppButtonSize.large,
-                      semanticsLabel: 'Yes, keep me informed',
+                      semanticsLabel: 'Continue without enabling reminders',
                     ),
                     const SizedBox(height: AppSpacing.sm4),
                     // Secondary link
                     AppButton(
-                      label: 'Not right now',
+                      label: 'Set up later',
                       onPressed: () {
                         HapticFeedback.lightImpact();
                         widget.onSkip();
                       },
                       variant: AppButtonVariant.text,
                       isFullWidth: true,
-                      semanticsLabel: 'Not right now, skip notifications',
+                      semanticsLabel: 'Set up reminders later',
                     ),
                   ],
                 ),

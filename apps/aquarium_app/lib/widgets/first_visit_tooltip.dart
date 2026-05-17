@@ -19,7 +19,7 @@ import '../theme/app_theme.dart';
 
 /// A tooltip that appears as a floating card with a subtle shadow.
 class FirstVisitTooltip extends ConsumerStatefulWidget {
-  /// Unique SharedPreferences key (e.g. `tooltip_seen_tank`).
+  /// Unique SharedPreferences key used to persist dismissal.
   final String prefsKey;
 
   /// Tooltip text (1–2 sentences max).

@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/guidance_provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/guidance_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/danio_surface_visuals.dart';
 import '../utils/app_constants.dart';
@@ -49,8 +51,12 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
   }
 
   Future<void> _checkTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_more', ref);
-    if (mounted) setState(() => _showTooltip = !seen);
+    final service = await ref.read(guidanceServiceProvider.future);
+    final decision = await service.shouldShow(
+      GuidancePromptId.moreFirstVisit,
+      const GuidanceContext(surface: GuidanceSurface.more),
+    );
+    if (mounted) setState(() => _showTooltip = decision.shouldShow);
   }
 
   void _handleVersionTap() {
@@ -119,7 +125,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     return [
       if (_showTooltip)
         FirstVisitTooltip(
-          prefsKey: 'tooltip_seen_more',
+          prefsKey: GuidanceService.storageKey(GuidancePromptId.moreFirstVisit),
           icon: Icons.dashboard_customize_outlined,
           iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.workshop).color,
           message: 'More keeps your tools, settings, rewards, and app details.',

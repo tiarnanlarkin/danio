@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/smart/models/smart_models.dart';
 import '../features/smart/smart_providers.dart';
 import '../navigation/app_routes.dart';
+import '../providers/guidance_provider.dart';
 import '../services/api_rate_limiter.dart';
+import '../services/guidance_service.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/danio_surface_visuals.dart';
@@ -54,8 +56,12 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
   }
 
   Future<void> _checkTooltip() async {
-    final seen = await hasSeenTooltip('tooltip_seen_smart', ref);
-    if (mounted) setState(() => _showTooltip = !seen);
+    final service = await ref.read(guidanceServiceProvider.future);
+    final decision = await service.shouldShow(
+      GuidancePromptId.smartFirstVisit,
+      const GuidanceContext(surface: GuidanceSurface.smart),
+    );
+    if (mounted) setState(() => _showTooltip = decision.shouldShow);
   }
 
   @override
@@ -160,7 +166,9 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       // First-visit tooltip
       if (_showTooltip)
         FirstVisitTooltip(
-          prefsKey: 'tooltip_seen_smart',
+          prefsKey: GuidanceService.storageKey(
+            GuidancePromptId.smartFirstVisit,
+          ),
           icon: danioSurfaceVisual(DanioSurfaceVisualKey.smart).icon,
           iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.smart).color,
           message: 'Smart Hub — AI tools to help you care for your fish!',
