@@ -128,14 +128,14 @@ git commit -m "test: repair phone smoke qa gate"
 - Modify: `apps/aquarium_app/test/widget_tests/practice_hub_screen_test.dart`
 - Update: `apps/aquarium_app/docs/qa/whole-app-map-2026-05-18.md`
 
-- [ ] **Step 1: Add failing Practice state tests**
+- [x] **Step 1: Add failing Practice state tests**
 
 Add tests for:
 - `dueCards == 0`, `totalCards > 0`, `weakCards > 0`: text says weak spots are available, not only `All caught up`.
 - `dueCards == 0`, `totalCards > 0`, `weakCards == 0`: all-caught-up copy remains valid.
 - `totalCards == 0`: Learn-to-Practice empty deck copy remains valid.
 
-- [ ] **Step 2: Run the focused Practice test**
+- [x] **Step 2: Run the focused Practice test**
 
 Run:
 
@@ -145,11 +145,11 @@ flutter test test/widget_tests/practice_hub_screen_test.dart
 
 Expected before implementation: the weak-spots copy test fails.
 
-- [ ] **Step 3: Implement the copy rule**
+- [x] **Step 3: Implement the copy rule**
 
 In `practice_hub_screen.dart`, branch the no-due card copy by weak-card availability.
 
-- [ ] **Step 4: Verify and phone review**
+- [x] **Step 4: Verify and phone review**
 
 Run:
 
@@ -160,7 +160,7 @@ flutter analyze --no-pub
 
 Phone review: open Practice with seeded QA review cards and capture screenshots for no-due/weak-available state.
 
-- [ ] **Step 5: Commit checkpoint**
+- [x] **Step 5: Commit checkpoint**
 
 Run:
 

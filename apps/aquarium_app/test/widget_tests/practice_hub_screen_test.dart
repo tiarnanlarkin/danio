@@ -16,41 +16,34 @@ import 'package:danio/models/spaced_repetition.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-// ignore: unused_element
-final _emptyStats = ReviewStats(
-  totalCards: 0,
-  dueCards: 0,
-  weakCards: 0,
-  masteredCards: 0,
-  averageStrength: 0.0,
-  cardsByMastery: const {},
-  reviewsToday: 0,
-  currentStreak: 0,
-);
-
-// ignore: unused_element
-final _emptySrState = SpacedRepetitionState(
-  cards: const [],
-  stats: ReviewStats(
-    totalCards: 0,
-    dueCards: 0,
-    weakCards: 0,
-    masteredCards: 0,
+ReviewStats _stats({
+  int totalCards = 0,
+  int dueCards = 0,
+  int weakCards = 0,
+  int masteredCards = 0,
+}) {
+  return ReviewStats(
+    totalCards: totalCards,
+    dueCards: dueCards,
+    weakCards: weakCards,
+    masteredCards: masteredCards,
     averageStrength: 0.0,
     cardsByMastery: const {},
     reviewsToday: 0,
     currentStreak: 0,
-  ),
-);
+  );
+}
 
-Widget _wrap() {
+Widget _wrap({ReviewStats? stats}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWith((ref) async {
         return SharedPreferences.getInstance();
       }),
-      spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier()),
+      spacedRepetitionProvider.overrideWith(
+        (ref) => _FakeSrNotifier(stats ?? _stats()),
+      ),
     ],
     child: const MaterialApp(home: PracticeHubScreen()),
   );
@@ -58,22 +51,8 @@ Widget _wrap() {
 
 class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
-  _FakeSrNotifier()
-    : super(
-        SpacedRepetitionState(
-          cards: const [],
-          stats: ReviewStats(
-            totalCards: 0,
-            dueCards: 0,
-            weakCards: 0,
-            masteredCards: 0,
-            averageStrength: 0.0,
-            cardsByMastery: const {},
-            reviewsToday: 0,
-            currentStreak: 0,
-          ),
-        ),
-      );
+  _FakeSrNotifier(ReviewStats stats)
+    : super(SpacedRepetitionState(cards: const [], stats: stats));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -125,6 +104,42 @@ void main() {
       expect(find.text('Mastery'), findsOneWidget);
       expect(find.text('Review Sessions'), findsNothing);
       expect(find.text('Standard Review'), findsNothing);
+    });
+
+    testWidgets('empty deck keeps Learn-to-Practice copy', (tester) async {
+      await tester.pumpWidget(_wrap(stats: _stats(totalCards: 0)));
+      await _advance(tester);
+
+      expect(find.text('Build your review deck'), findsOneWidget);
+      expect(
+        find.text('Finish one Learn lesson to create Practice cards.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('no due cards with no weak cards stays all caught up', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(stats: _stats(totalCards: 12, dueCards: 0, weakCards: 0)),
+      );
+      await _advance(tester);
+
+      expect(find.text('All caught up'), findsOneWidget);
+      expect(find.text('Learn Next'), findsOneWidget);
+    });
+
+    testWidgets('no due cards with weak cards points to weak spots', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(stats: _stats(totalCards: 12, dueCards: 0, weakCards: 3)),
+      );
+      await _advance(tester);
+
+      expect(find.text('All caught up'), findsNothing);
+      expect(find.text('Weak spots available'), findsOneWidget);
+      expect(find.text('Practice Weak Spots'), findsOneWidget);
     });
   });
 }

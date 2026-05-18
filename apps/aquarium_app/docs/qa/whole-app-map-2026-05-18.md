@@ -108,7 +108,7 @@ flowchart TD
 | Learn home | Bottom tab | Preferences learning card | Profile progress, lesson catalog | [00](screenshots/whole-app-map-2026-05-18/00-launch.png) | Pass |
 | Lesson flow | Learn today card | Debug QA deep link for review | Lesson catalog | [42](screenshots/whole-app-map-2026-05-18/42-learn-lesson-flow.png) | Pass |
 | Lesson quiz | Lesson flow | Debug QA quiz route | Lesson catalog | [43](screenshots/whole-app-map-2026-05-18/43-learn-quiz-flow.png) | Pass |
-| Practice home | Bottom tab | Learn review handoff | Spaced repetition deck | [14](screenshots/whole-app-map-2026-05-18/14-practice-home.png) | P2: copy conflict |
+| Practice home | Bottom tab | Learn review handoff | Spaced repetition deck | [14](screenshots/whole-app-map-2026-05-18/14-practice-home.png), [post-fix weak state](screenshots/whole-app-map-2026-05-18/post-fix/practice-weak-spots-available.png) | Fixed post-map: weak state copy clarified |
 | Practice weak session | Practice > Weak Spots | Debug QA practice route | Existing cards | [44](screenshots/whole-app-map-2026-05-18/44-practice-weak-session.png) | Pass |
 | Tank room | Bottom tab | Debug tab route | Tank exists | [02](screenshots/whole-app-map-2026-05-18/02-tank-main.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/tank-main-before-detail.png) | Fixed post-map: aquarium opens detail |
 | Tank bottom panel | Tank drag handle | None obvious | Tank/profile data | [03](screenshots/whole-app-map-2026-05-18/03-tank-bottom-panel.png) | Pass |
@@ -174,7 +174,7 @@ flowchart TD
 - The app launches normally from a debug APK on the phone. The original hung integration smoke test has now been repaired and passes on `RFCY8022D5R`.
 - The main five tabs are present and reachable: Learn, Practice, Tank, Smart, More.
 - Learn home, lesson flow, and quiz flow loaded.
-- Practice loaded with `0 Due Today`, `19 Total Cards`, and `Weak Spots` available. This creates a confusing state: “All caught up” appears while a review action is still available.
+- Original map finding: Practice loaded with `0 Due Today`, `19 Total Cards`, and `Weak Spots` available while showing “All caught up.” Post-map fix verification confirms the no-due/weak-card state now points to Weak Spots instead.
 - Tank root loaded with no old XP nudge, no ambient tip overlay, and no obvious stacked Tank tutorial banners.
 - Tank bottom activity panel requires a real upward drag from the handle; a tap does not open it.
 - Original map finding: Tank detail was not reachable from the room tank because tapping empty tank water opened a fish fact dialog. Post-map fix verification confirms aquarium taps now open Tank detail.
@@ -215,6 +215,20 @@ flowchart TD
   - `flutter test` passed with 1075 tests after the smoke-gate changes.
   - Post-run logcat scan found no app `FATAL EXCEPTION`, `FlutterError`, `Unhandled Exception`, or `Exception caught by widgets`; the only `AndroidRuntime` matches were `uiautomator` process startup/shutdown lines.
 
+## Practice State Fix Verification
+
+- Branch: `qa/whole-app-map`
+- Root cause: the Practice hero branch checked only `dueCards` and `totalCards`, so `dueCards == 0` and `weakCards > 0` was treated as genuinely caught up.
+- Implementation:
+  - `practice_hub_screen.dart` now gives the no-due/weak-card state its own hero: `Weak spots available`, `No due reviews right now. Reinforce your weak cards.`, and `Practice Weak Spots`.
+  - `practice_hub_screen_test.dart` covers empty deck, no-due/no-weak, and no-due/weak-card states.
+- Verification:
+  - `flutter test test/widget_tests/practice_hub_screen_test.dart` passed with 7 tests.
+  - `flutter analyze --no-pub` passed.
+  - `flutter build apk --debug --target lib/main.dart` passed, then the APK installed and launched on `RFCY8022D5R`.
+  - Phone QA used a minimal seeded state with 3 weak cards scheduled for tomorrow and 0 due cards. Screenshot: [practice weak state](screenshots/whole-app-map-2026-05-18/post-fix/practice-weak-spots-available.png).
+  - App-specific logcat scan for the Danio process found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` matches. A broader device scan did show unrelated AndroidRuntime lines from the system/Samsung/other-app processes and `uiautomator`.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
@@ -222,20 +236,20 @@ flowchart TD
 | Fixed | Tank detail route was blocked by the fish fact interaction on phone. | [12](screenshots/whole-app-map-2026-05-18/12-tank-fish-fact-popup.png), [13](screenshots/whole-app-map-2026-05-18/13-tank-detail-blocked-by-fish-fact.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/tank-detail-after-aquarium-tap.png) | Full-tank fish fact overlay removed from `ThemedAquarium`; aquarium taps now open Tank detail. |
 | Fixed | Phone smoke integration test hung before completing the launch assertion. | Baseline notes; smoke gate fix verification | The smoke gate now awaits app bootstrap, uses condition-based readiness, and passes on `RFCY8022D5R`. |
 | Fixed | Workshop card grid overflowed on phone, showing yellow/black debug overflow stripes. | [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png), [31](screenshots/whole-app-map-2026-05-18/31-workshop-lower.png), [post-fix top](screenshots/whole-app-map-2026-05-18/post-fix/workshop-top-no-overflow.png), [post-fix lower](screenshots/whole-app-map-2026-05-18/post-fix/workshop-lower-no-overflow.png) | Grid cards now use a stable main-axis extent, the compact card is taller, and quick-reference rows flex instead of overflowing. |
-| P2 | Practice “All caught up” conflicts with available Weak Spots action. | [14](screenshots/whole-app-map-2026-05-18/14-practice-home.png), [44](screenshots/whole-app-map-2026-05-18/44-practice-weak-session.png) | The state model may be technically correct, but the copy reads contradictory. |
+| Fixed | Practice “All caught up” conflicted with available Weak Spots action. | [14](screenshots/whole-app-map-2026-05-18/14-practice-home.png), [44](screenshots/whole-app-map-2026-05-18/44-practice-weak-session.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/practice-weak-spots-available.png) | No-due/weak-card state now points to Weak Spots instead of Learn Next. |
 | P2 | More and Preferences duplicate navigation hubs. | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png), [20](screenshots/whole-app-map-2026-05-18/20-preferences-top.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png) | Preferences contains settings plus Explore, Tools, Guides, Shop, Learn, and Data. |
 | P2 | Tool lists are inconsistent across Workshop, Preferences, Smart, and Tank. | [06](screenshots/whole-app-map-2026-05-18/06-tank-panel-tools.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png), [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png) | Users can reach similar but not identical lists depending where they start. |
 | P3 | Android 16/Fold screenshot capture needs explicit display id. | QA note | Fixed for this dossier by using display `4630946872173396372`. |
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1, 2, and 7 were completed in this branch. The remaining immediate priorities are clarifying Practice copy, consolidating duplicated tool hubs, and then covering calculator validation.
+Post-map update: recommendations 1, 2, 6, and 7 were completed in this branch. The remaining immediate priorities are consolidating duplicated tool hubs and then covering calculator validation.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.
 3. Make Workshop the primary home for calculators. Keep Tank bottom Tools as contextual shortcuts only, and remove the separate calculator list from Preferences or rename it to “Shortcuts”.
 4. Split More and Preferences responsibilities. More should be destinations and progress; Preferences should be settings, notifications, backup/data, legal, and account.
 5. Keep Smart as AI/offline assistance. Put Compatibility there only if it is framed as “smart advice”; otherwise link to the Workshop calculator.
-6. Clarify Practice states. If due count is zero but Weak Spots are available, replace “All caught up” with “No due reviews; weak spots available.”
+6. Keep Practice state copy aligned with available actions. The no-due/weak-card state now points to Weak Spots instead of saying “All caught up.”
 7. Keep `integration_test/smoke_test_v2.dart` as the phone QA launch gate and extend it only when a mapped flow is stable enough to automate.
 8. In the next pass, add calculator-specific input validation checks for every tool after the Workshop overflow is fixed, because the overflow currently obscures some card text and route confidence.

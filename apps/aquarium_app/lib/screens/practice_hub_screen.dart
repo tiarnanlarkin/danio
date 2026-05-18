@@ -434,6 +434,18 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             actionLabel: 'Start Review',
             onTap: () => _startReviewSession(ReviewSessionMode.standard),
           );
+        } else if (dueCards == 0 &&
+            totalCards > 0 &&
+            srState.stats.weakCards > 0) {
+          return _buildHeroCard(
+            context,
+            title: 'Weak spots available',
+            subtitle: 'No due reviews right now. Reinforce your weak cards.',
+            icon: Icons.trending_down,
+            color: AppColors.warning,
+            actionLabel: 'Practice Weak Spots',
+            onTap: () => _startReviewSession(ReviewSessionMode.intensive),
+          );
         } else if (dueCards == 0 && totalCards > 0) {
           // Has cards but none are due — genuinely all caught up
           return _buildHeroCard(
