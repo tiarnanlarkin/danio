@@ -15,7 +15,7 @@ State: returning seeded QA user with one demo tank, lesson progress, cards, XP, 
 | `flutter test integration_test/smoke_test_v2.dart -d RFCY8022D5R` | Blocked | Hung at `App launches and displays initial screen`; app process was foregrounded and no fatal logcat entries were found. |
 | `flutter build apk --debug --target lib/main.dart` | Pass | Debug APK built successfully. |
 | `adb -s RFCY8022D5R install -r build/app/outputs/flutter-apk/app-debug.apk` | Pass | Normal app installed and launched. |
-| Final logcat scan | Pass for crashes | `FATAL EXCEPTION`, `FlutterError`, `Unhandled Exception`, and `Exception caught by widgets` all returned 0. Log saved at [final-logcat.txt](screenshots/whole-app-map-2026-05-18/final-logcat.txt). |
+| Final logcat scan | Pass for crashes | `FATAL EXCEPTION`, `FlutterError`, `Unhandled Exception`, and `Exception caught by widgets` all returned 0. Raw log was not committed because of size; summary retained here. |
 
 ## Final Verification
 
@@ -25,7 +25,7 @@ State: returning seeded QA user with one demo tank, lesson progress, cards, XP, 
 | `flutter test` | Pass | 1071 tests passed. |
 | `flutter build apk --debug --target lib/main.dart` | Pass | Built `build/app/outputs/flutter-apk/app-debug.apk`. |
 | Phone install/launch | Pass | `adb install -r` succeeded; launch returned `Status: ok`, `LaunchState: COLD`, `TotalTime: 1725`; focused activity was `com.tiarnanlarkin.danio/.MainActivity`. |
-| Phone smoke integration test | Not rerun | Already failed by hanging during baseline on this branch; recorded as a QA-harness blocker. |
+| Phone smoke integration test | Pass after smoke-gate fix | `flutter test integration_test/smoke_test_v2.dart -d RFCY8022D5R` completed with 5 passing tests on the phone. |
 
 ## Source Map
 
@@ -171,7 +171,7 @@ flowchart TD
 
 ## Manual QA Notes
 
-- The app launches normally from a debug APK on the phone after the hung integration smoke test.
+- The app launches normally from a debug APK on the phone. The original hung integration smoke test has now been repaired and passes on `RFCY8022D5R`.
 - The main five tabs are present and reachable: Learn, Practice, Tank, Smart, More.
 - Learn home, lesson flow, and quiz flow loaded.
 - Practice loaded with `0 Due Today`, `19 Total Cards`, and `Weak Spots` available. This creates a confusing state: “All caught up” appears while a review action is still available.
@@ -200,12 +200,27 @@ flowchart TD
   - Workshop lower screen after layout fix: [workshop lower](screenshots/whole-app-map-2026-05-18/post-fix/workshop-lower-no-overflow.png).
 - Logcat scan after the phone pass showed no `FATAL EXCEPTION`, `FlutterError`, `Unhandled Exception`, or `Exception caught by widgets` entries from the app. The only `AndroidRuntime` lines were from `uiautomator` commands used for UI dumps.
 
+## Smoke Gate Fix Verification
+
+- Branch: `qa/whole-app-map`
+- Root cause: `integration_test/smoke_test_v2.dart` called the app's async startup through a `void main()` entrypoint, then used fixed sleeps instead of waiting for a rendered app shell. On device this made the QA gate stale/flaky even though the product app launched normally.
+- Implementation:
+  - `lib/main.dart` now exposes `Future<void> main()` so integration tests can await app bootstrap before pumping.
+  - `integration_test/smoke_test_harness.dart` centralizes the bottom dock key, tab keys, and a condition-based `waitForSmokeReady` helper.
+  - `integration_test/smoke_test_v2.dart` uses the shared harness and waits for an initial `Scaffold` instead of relying on a fixed 5-second delay.
+  - `test/integration_smoke_contract_test.dart` verifies the smoke selectors still match the production five-tab dock.
+- Verification:
+  - `flutter test test/integration_smoke_contract_test.dart` passed with 2 tests.
+  - `flutter test integration_test/smoke_test_v2.dart -d RFCY8022D5R` passed with 5 tests.
+  - `flutter test` passed with 1075 tests after the smoke-gate changes.
+  - Post-run logcat scan found no app `FATAL EXCEPTION`, `FlutterError`, `Unhandled Exception`, or `Exception caught by widgets`; the only `AndroidRuntime` matches were `uiautomator` process startup/shutdown lines.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
 | --- | --- | --- | --- |
 | Fixed | Tank detail route was blocked by the fish fact interaction on phone. | [12](screenshots/whole-app-map-2026-05-18/12-tank-fish-fact-popup.png), [13](screenshots/whole-app-map-2026-05-18/13-tank-detail-blocked-by-fish-fact.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/tank-detail-after-aquarium-tap.png) | Full-tank fish fact overlay removed from `ThemedAquarium`; aquarium taps now open Tank detail. |
-| P1 | Phone smoke integration test hangs before completing the launch assertion. | Baseline notes | Product app launch works, but the automated phone gate is stale/flaky and blocks reliable regression QA. |
+| Fixed | Phone smoke integration test hung before completing the launch assertion. | Baseline notes; smoke gate fix verification | The smoke gate now awaits app bootstrap, uses condition-based readiness, and passes on `RFCY8022D5R`. |
 | Fixed | Workshop card grid overflowed on phone, showing yellow/black debug overflow stripes. | [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png), [31](screenshots/whole-app-map-2026-05-18/31-workshop-lower.png), [post-fix top](screenshots/whole-app-map-2026-05-18/post-fix/workshop-top-no-overflow.png), [post-fix lower](screenshots/whole-app-map-2026-05-18/post-fix/workshop-lower-no-overflow.png) | Grid cards now use a stable main-axis extent, the compact card is taller, and quick-reference rows flex instead of overflowing. |
 | P2 | Practice “All caught up” conflicts with available Weak Spots action. | [14](screenshots/whole-app-map-2026-05-18/14-practice-home.png), [44](screenshots/whole-app-map-2026-05-18/44-practice-weak-session.png) | The state model may be technically correct, but the copy reads contradictory. |
 | P2 | More and Preferences duplicate navigation hubs. | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png), [20](screenshots/whole-app-map-2026-05-18/20-preferences-top.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png) | Preferences contains settings plus Explore, Tools, Guides, Shop, Learn, and Data. |
@@ -214,7 +229,7 @@ flowchart TD
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1 and 2 were completed in this branch. The remaining immediate priority is repairing the phone smoke test, then clarifying Practice copy and consolidating duplicated tool hubs.
+Post-map update: recommendations 1, 2, and 7 were completed in this branch. The remaining immediate priorities are clarifying Practice copy, consolidating duplicated tool hubs, and then covering calculator validation.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.
@@ -222,5 +237,5 @@ Post-map update: recommendations 1 and 2 were completed in this branch. The rema
 4. Split More and Preferences responsibilities. More should be destinations and progress; Preferences should be settings, notifications, backup/data, legal, and account.
 5. Keep Smart as AI/offline assistance. Put Compatibility there only if it is framed as “smart advice”; otherwise link to the Workshop calculator.
 6. Clarify Practice states. If due count is zero but Weak Spots are available, replace “All caught up” with “No due reviews; weak spots available.”
-7. Repair or replace `integration_test/smoke_test_v2.dart` so phone QA has a trustworthy launch gate before the next review phase.
+7. Keep `integration_test/smoke_test_v2.dart` as the phone QA launch gate and extend it only when a mapped flow is stable enough to automate.
 8. In the next pass, add calculator-specific input validation checks for every tool after the Workshop overflow is fixed, because the overflow currently obscures some card text and route confidence.

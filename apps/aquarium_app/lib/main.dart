@@ -1,4 +1,4 @@
-import 'dart:async' show unawaited;
+import 'dart:async' show Future, unawaited;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide PerformanceOverlay;
 import 'package:flutter/services.dart';
@@ -53,7 +53,7 @@ const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 /// Flushed once Firebase is ready in the post-frame callback.
 final List<Object> _preFirebaseErrors = [];
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Enable edge-to-edge display (transparent status/nav bars)

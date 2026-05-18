@@ -61,7 +61,7 @@ $adb = "C:\Users\larki\AppData\Local\Android\sdk\platform-tools\adb.exe"
 
 Expected: app launches; aquarium tap opens Tank detail; Workshop top and lower views show no overflow stripes; logcat has no app crash signatures.
 
-- [ ] **Step 3: Commit checkpoint**
+- [x] **Step 3: Commit checkpoint**
 
 Run:
 
@@ -80,11 +80,11 @@ git commit -m "fix: resolve whole-app map P1 UI blockers"
 - Create: `apps/aquarium_app/test/integration_smoke_contract_test.dart`
 - Update: `apps/aquarium_app/docs/qa/whole-app-map-2026-05-18.md`
 
-- [ ] **Step 1: Write a host-side contract test for smoke selectors**
+- [x] **Step 1: Write a host-side contract test for smoke selectors**
 
 Create `apps/aquarium_app/test/integration_smoke_contract_test.dart` with checks that the bottom dock key and tab keys used by `smoke_test_v2.dart` match the production keys in `TabNavigator`.
 
-- [ ] **Step 2: Run the new test and confirm it fails if selectors are stale**
+- [x] **Step 2: Run the new test and confirm it fails if selectors are stale**
 
 Run:
 
@@ -95,11 +95,11 @@ flutter test test/integration_smoke_contract_test.dart
 
 Expected before fixing if selectors/setup are stale: failure identifying the mismatch or missing contract.
 
-- [ ] **Step 3: Update the integration smoke launch flow**
+- [x] **Step 3: Update the integration smoke launch flow**
 
 Keep `app.main()` but replace fixed sleeps with a condition wait that accepts either onboarding or main shell. The smoke test should not hang waiting for `pumpAndSettle` on ongoing animations.
 
-- [ ] **Step 4: Run focused and phone verification**
+- [x] **Step 4: Run focused and phone verification**
 
 Run:
 
@@ -110,12 +110,12 @@ flutter test integration_test/smoke_test_v2.dart -d RFCY8022D5R
 
 Expected: both commands complete without hanging.
 
-- [ ] **Step 5: Commit checkpoint**
+- [x] **Step 5: Commit checkpoint**
 
 Run:
 
 ```powershell
-git add integration_test/smoke_test_v2.dart test/integration_smoke_contract_test.dart docs/qa/whole-app-map-2026-05-18.md
+git add lib/main.dart integration_test/smoke_test_v2.dart integration_test/smoke_test_harness.dart test/integration_smoke_contract_test.dart docs/qa/whole-app-map-2026-05-18.md ..\..\docs\superpowers\plans\2026-05-18-whole-app-map-remediation.md
 git commit -m "test: repair phone smoke qa gate"
 ```
 

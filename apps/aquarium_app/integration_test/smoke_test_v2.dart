@@ -12,19 +12,11 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:danio/main.dart' as app;
 
-const _dockKey = ValueKey('danio-bottom-dock');
-const _tabIds = ['learn', 'practice', 'tank', 'smart', 'more'];
-
-Finder _dockFinder() => find.byKey(_dockKey);
-
-Finder _tabFinder(String tabId) {
-  return find.byKey(ValueKey('danio-bottom-dock-item-$tabId'));
-}
+import 'smoke_test_harness.dart';
 
 Future<void> _launchApp(WidgetTester tester) async {
-  app.main();
-  await tester.pump();
-  await tester.pump(const Duration(seconds: 5));
+  await app.main();
+  await waitForSmokeReady(tester);
 }
 
 Future<void> _pumpAfterInput(WidgetTester tester) async {
@@ -54,10 +46,10 @@ void main() {
     await _launchApp(tester);
 
     // Check if we're on the main screen (has Danio bottom dock)
-    final dock = _dockFinder();
+    final dock = smokeDockFinder();
     if (dock.evaluate().isNotEmpty) {
-      for (final tabId in _tabIds) {
-        await tester.tap(_tabFinder(tabId));
+      for (final tabId in smokeTabIds) {
+        await tester.tap(smokeTabFinder(tabId));
         await _pumpAfterInput(tester);
         expect(
           find.byType(Scaffold),
@@ -77,9 +69,9 @@ void main() {
   testWidgets('Learn tab displays content without crash', (tester) async {
     await _launchApp(tester);
 
-    final dock = _dockFinder();
+    final dock = smokeDockFinder();
     if (dock.evaluate().isNotEmpty) {
-      await tester.tap(_tabFinder('learn'));
+      await tester.tap(smokeTabFinder('learn'));
       await _pumpAfterInput(tester);
       expect(find.byType(Scaffold), findsWidgets);
     }
@@ -91,9 +83,9 @@ void main() {
   testWidgets('Tank tab loads without crash', (tester) async {
     await _launchApp(tester);
 
-    final dock = _dockFinder();
+    final dock = smokeDockFinder();
     if (dock.evaluate().isNotEmpty) {
-      await tester.tap(_tabFinder('tank'));
+      await tester.tap(smokeTabFinder('tank'));
       await _pumpAfterInput(tester);
       expect(find.byType(Scaffold), findsWidgets);
     }
@@ -105,9 +97,9 @@ void main() {
   testWidgets('Settings (More) tab loads without crash', (tester) async {
     await _launchApp(tester);
 
-    final dock = _dockFinder();
+    final dock = smokeDockFinder();
     if (dock.evaluate().isNotEmpty) {
-      await tester.tap(_tabFinder('more'));
+      await tester.tap(smokeTabFinder('more'));
       await _pumpAfterInput(tester);
       expect(find.byType(Scaffold), findsWidgets);
     }
