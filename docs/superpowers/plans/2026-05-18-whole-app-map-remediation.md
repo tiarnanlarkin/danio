@@ -181,14 +181,14 @@ git commit -m "fix: clarify practice review states"
 - Modify: `apps/aquarium_app/test/widget_tests/workshop_screen_test.dart`
 - Update: `apps/aquarium_app/docs/qa/whole-app-map-2026-05-18.md`
 
-- [ ] **Step 1: Add structure tests for primary destinations**
+- [x] **Step 1: Add structure tests for primary destinations**
 
 Tests should assert:
 - Workshop remains the primary calculators hub.
 - More exposes Workshop, Analytics, Shop Street, Gem Shop, Achievements, Preferences.
 - Preferences no longer presents a second full calculator hub; it may show settings, notifications, backup/data, legal, and account.
 
-- [ ] **Step 2: Run structure tests and confirm current duplication fails**
+- [x] **Step 2: Run structure tests and confirm current duplication fails**
 
 Run:
 
@@ -198,11 +198,11 @@ flutter test test/widget_tests/settings_hub_screen_test.dart test/widget_tests/w
 
 Expected before implementation: Preferences duplication assertion fails.
 
-- [ ] **Step 3: Demote Preferences tools to settings-context shortcuts**
+- [x] **Step 3: Demote Preferences tools to settings-context shortcuts**
 
 Remove or relabel calculator duplicates in `ToolsSection`. Keep notification/reminder settings in Preferences. Keep Workshop and contextual Tank shortcuts as entry points to tools.
 
-- [ ] **Step 4: Verify and phone review**
+- [x] **Step 4: Verify and phone review**
 
 Run:
 
@@ -214,7 +214,7 @@ flutter test
 
 Phone review: More -> Workshop, More -> Preferences, and Preferences lower sections.
 
-- [ ] **Step 5: Commit checkpoint**
+- [x] **Step 5: Commit checkpoint**
 
 Run:
 

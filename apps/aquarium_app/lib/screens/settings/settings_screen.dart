@@ -10,7 +10,6 @@ import '../backup_restore_screen.dart';
 import '../difficulty_settings_screen.dart';
 import '../learn_screen.dart';
 import '../onboarding/consent_screen.dart';
-import '../shop_street_screen.dart';
 import '../../navigation/app_routes.dart';
 import '../../models/adaptive_difficulty.dart';
 import '../../providers/onboarding_provider.dart';
@@ -27,14 +26,12 @@ import '../../utils/app_feedback.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../widgets/core/app_list_tile.dart';
-import '../../widgets/room_navigation.dart';
 import '../home/home_sheets_theme.dart';
 import 'settings_account_section.dart';
 import 'settings_data_section.dart';
 import 'settings_debug_section.dart';
 import 'settings_notifications_section.dart';
 import 'widgets/guides_section.dart';
-import 'widgets/tools_section.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/bubble_loader.dart';
@@ -85,13 +82,7 @@ class SettingsScreen extends ConsumerWidget {
 
       (_) => const Divider(),
 
-      // ── GROUP 3: Explore (House Navigation / Rooms) ───────────────────
-      (_) => const _SectionHeader(title: 'Explore'),
-      (_) => const RoomNavigation(),
-
-      (_) => const Divider(),
-
-      // ── GROUP 4: App Settings (appearance, accessibility, notifications) ──
+      // GROUP 3: App Settings (appearance, accessibility, notifications)
       (_) => const _SectionHeader(title: 'App Settings'),
       (_) => const _ThemeModeTile(),
       (_) => const _RoomThemeTile(),
@@ -122,25 +113,13 @@ class SettingsScreen extends ConsumerWidget {
 
       (_) => const Divider(),
 
-      // Tools section
-      (_) => const _SectionHeader(title: 'Tools & Shop'),
-      (_) => const ToolsSection(),
-      (_) => NavListTile(
-        icon: Icons.storefront,
-        title: 'Shop Street',
-        subtitle: 'Find aquarium supplies online',
-        onTap: () => NavigationThrottle.push(context, const ShopStreetScreen()),
-      ),
-
-      (_) => const Divider(),
-
-      // ── GROUP 5: Guides & Education ───────────────────────────────────
+      // GROUP 4: Guides & Education
       (_) => const _SectionHeader(title: 'Guides & Education'),
       (_) => const GuidesSection(),
 
       (_) => const Divider(),
 
-      // ── GROUP 6: About & Privacy ──────────────────────────────────────
+      // GROUP 5: About & Privacy
       (_) => const _SectionHeader(title: 'About & Privacy'),
       (_) => AppListTile(
         leading: const Icon(Icons.water_drop),

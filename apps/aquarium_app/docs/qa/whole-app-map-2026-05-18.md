@@ -39,7 +39,7 @@ Primary navigation and feature hubs were verified against:
 | Tank | `lib/screens/home/home_screen.dart`, `lib/screens/home/home_sheets_tank.dart`, `lib/screens/home/home_sheets_care.dart`, `lib/screens/home/home_sheets_stats.dart`, `lib/widgets/room/living_room_scene.dart` |
 | Smart | `lib/screens/smart_screen.dart` |
 | More | `lib/screens/settings_hub_screen.dart` |
-| Preferences | `lib/screens/settings/settings_screen.dart`, `lib/screens/settings/widgets/tools_section.dart`, `lib/screens/settings/widgets/guides_section.dart`, `lib/screens/settings/settings_notifications_section.dart` |
+| Preferences | `lib/screens/settings/settings_screen.dart`, `lib/screens/settings/widgets/guides_section.dart`, `lib/screens/settings/settings_notifications_section.dart` |
 | Workshop | `lib/screens/workshop_screen.dart` |
 | Notifications | `lib/screens/notification_settings_screen.dart`, `lib/services/notification_scheduler.dart`, `lib/models/user_profile.dart` |
 
@@ -95,7 +95,6 @@ flowchart TD
   More --> About["About / legal"]
 
   Workshop --> Calculators["Calculator/tool screens"]
-  Preferences --> PrefTools["Tools & Shop duplicates"]
   Preferences --> Guides["Guides & Education"]
   Preferences --> Notifications["Notification settings"]
   Preferences --> Data["Data / danger zone"]
@@ -128,10 +127,10 @@ flowchart TD
 | Tank stats | Quick menu > Stats | Tank toolbox analytics | Tank logs | [55](screenshots/whole-app-map-2026-05-18/55-stats-sheet.png) | Pass |
 | Smart home | Bottom tab | Preferences AI setup CTA | AI key setting | [15](screenshots/whole-app-map-2026-05-18/15-smart-home.png) | Pass |
 | Smart lower/offline tools | Smart scroll | Workshop compatibility | Species/tank data | [18](screenshots/whole-app-map-2026-05-18/18-smart-lower.png) | Pass |
-| Smart compatibility | Smart > Compatibility | Workshop, Preferences | Species/tank data | [19](screenshots/whole-app-map-2026-05-18/19-smart-compatibility-attempt.png) | Pass |
+| Smart compatibility | Smart > Compatibility | Workshop, Tank tools | Species/tank data | [19](screenshots/whole-app-map-2026-05-18/19-smart-compatibility-attempt.png) | Pass |
 | More top | Bottom tab | None | Profile | [16](screenshots/whole-app-map-2026-05-18/16-more-top.png) | Pass |
 | More lower | More scroll | None | Profile | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png) | Pass |
-| Shop Street | More | Preferences Explore, Preferences Tools | Optional wishlist/cost data | [45](screenshots/whole-app-map-2026-05-18/45-shop-street.png) | Pass |
+| Shop Street | More | None | Optional wishlist/cost data | [45](screenshots/whole-app-map-2026-05-18/45-shop-street.png), [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png) | Pass |
 | Gem Shop | More | Profile/gem economy | Gems | [46](screenshots/whole-app-map-2026-05-18/46-gem-shop.png) | Pass |
 | Achievements | More | Debug route | Achievements/profile | [47](screenshots/whole-app-map-2026-05-18/47-achievements.png) | Pass |
 | Analytics | More | Tank toolbox, stats | Logs/profile | [48](screenshots/whole-app-map-2026-05-18/48-analytics.png) | Pass |
@@ -140,33 +139,33 @@ flowchart TD
 | Preferences top | More > Preferences | Smart AI CTA | Profile/settings | [20](screenshots/whole-app-map-2026-05-18/20-preferences-top.png) | Pass |
 | Preferences theme/motion | Preferences scroll | None | Settings | [21](screenshots/whole-app-map-2026-05-18/21-preferences-mid.png), [22](screenshots/whole-app-map-2026-05-18/22-preferences-lower.png) | Pass |
 | Notification settings | Preferences > Reminder Settings | Debug route | Profile reminder flags | [23](screenshots/whole-app-map-2026-05-18/23-notification-settings.png) | Pass |
-| Preferences tools | Preferences | Workshop, Tank tools | Varies | [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png), [26](screenshots/whole-app-map-2026-05-18/26-preferences-data-danger.png) | P2: duplicate hub |
+| Preferences settings/reminders | More > Preferences | None | Profile/settings | [post-fix top](screenshots/whole-app-map-2026-05-18/post-fix/preferences-no-tool-hub.png), [post-fix lower](screenshots/whole-app-map-2026-05-18/post-fix/preferences-lower-no-tool-hub.png) | Fixed post-map: duplicate tool hub removed |
 | Guides & education | Preferences | Learn/Workshop adjacent | Static guides | [25](screenshots/whole-app-map-2026-05-18/25-preferences-guides-data.png), [27](screenshots/whole-app-map-2026-05-18/27-preferences-guides-reference.png) | Pass |
 | Data / danger zone | Preferences lower | More backup | Local data | [28](screenshots/whole-app-map-2026-05-18/28-preferences-data-danger.png), [29](screenshots/whole-app-map-2026-05-18/29-preferences-danger-zone.png) | Pass |
-| Workshop main | More > Workshop | Preferences Explore / Tank tools | None | [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/workshop-top-no-overflow.png) | Fixed post-map |
+| Workshop main | More > Workshop | Tank tools | None | [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png) | Fixed post-map |
 | Workshop lower | Workshop scroll | None | None | [31](screenshots/whole-app-map-2026-05-18/31-workshop-lower.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/workshop-lower-no-overflow.png) | Fixed post-map |
-| Water Change Calculator | Workshop | Preferences Tools | Inputs | [32](screenshots/whole-app-map-2026-05-18/32-tool-water-change.png) | Pass screen load |
-| Stocking Calculator | Workshop | Preferences Tools | Tank/species inputs | [33](screenshots/whole-app-map-2026-05-18/33-tool-stocking.png) | Pass screen load |
+| Water Change Calculator | Workshop | Tank tools | Inputs | [32](screenshots/whole-app-map-2026-05-18/32-tool-water-change.png) | Pass screen load |
+| Stocking Calculator | Workshop | Tank tools | Tank/species inputs | [33](screenshots/whole-app-map-2026-05-18/33-tool-stocking.png) | Pass screen load |
 | CO2 Calculator | Workshop | Debug route | pH/KH inputs | [34](screenshots/whole-app-map-2026-05-18/34-tool-co2.png) | Pass screen load |
-| Dosing Calculator | Workshop | Preferences Tools | Dosing inputs | [35](screenshots/whole-app-map-2026-05-18/35-tool-dosing.png) | Pass screen load |
-| Unit Converter | Workshop | Preferences Tools | Inputs | [36](screenshots/whole-app-map-2026-05-18/36-tool-unit-converter.png) | Pass screen load |
-| Tank Volume Calculator | Workshop | Preferences Tools | Dimensions | [37](screenshots/whole-app-map-2026-05-18/37-tool-tank-volume.png) | Pass screen load |
-| Lighting Schedule | Workshop | Preferences Tools | Lighting inputs | [38](screenshots/whole-app-map-2026-05-18/38-tool-lighting.png) | Pass screen load |
-| Compatibility Checker | Workshop | Smart, Preferences Tools | Species/tank data | [39](screenshots/whole-app-map-2026-05-18/39-tool-compatibility.png) | Pass screen load |
+| Dosing Calculator | Workshop | Tank tools | Dosing inputs | [35](screenshots/whole-app-map-2026-05-18/35-tool-dosing.png) | Pass screen load |
+| Unit Converter | Workshop | Tank tools | Inputs | [36](screenshots/whole-app-map-2026-05-18/36-tool-unit-converter.png) | Pass screen load |
+| Tank Volume Calculator | Workshop | Tank tools | Dimensions | [37](screenshots/whole-app-map-2026-05-18/37-tool-tank-volume.png) | Pass screen load |
+| Lighting Schedule | Workshop | Tank tools | Lighting inputs | [38](screenshots/whole-app-map-2026-05-18/38-tool-lighting.png) | Pass screen load |
+| Compatibility Checker | Workshop | Smart, Tank tools | Species/tank data | [39](screenshots/whole-app-map-2026-05-18/39-tool-compatibility.png) | Pass screen load |
 | Nitrogen Cycle Assistant | Workshop | Guides/learning adjacent | Tank/water values | [40](screenshots/whole-app-map-2026-05-18/40-tool-cycling-assistant.png) | Pass screen load |
-| Cost Tracker | Workshop | Shop Street/Preferences | Cost entries | [41](screenshots/whole-app-map-2026-05-18/41-tool-cost-tracker.png) | Pass screen load |
+| Cost Tracker | Workshop | Shop Street planning context | Cost entries | [41](screenshots/whole-app-map-2026-05-18/41-tool-cost-tracker.png) | Pass screen load |
 
 ## Duplicate Entry Analysis
 
 | Feature | Entry points found | Assessment |
 | --- | --- | --- |
-| Calculators/tools | Workshop, Preferences Tools, Tank bottom Tools, some debug routes | Useful as contextual shortcuts, but confusing because the lists are not identical. Workshop has CO2, Cycling, and Cost Tracker; Preferences has Fish Wishlist, Compare Tanks, Reminders, and Shop Street. |
-| Compatibility checker | Smart, Workshop, Preferences Tools, Tank bottom Tools | Redundant. Smart presents it as an offline AI-adjacent feature, while Workshop/Preferences present it as a calculator. Pick one primary home and keep only contextual shortcuts. |
+| Calculators/tools | Workshop, Tank bottom Tools, some debug routes | Improved post-map. Workshop is now the primary calculator hub; Preferences no longer presents a second full calculator/shop list. Tank bottom Tools remains a contextual daily-care shortcut surface. |
+| Compatibility checker | Smart, Workshop, Tank bottom Tools | Still mildly redundant. Smart presents it as an offline AI-adjacent feature, while Workshop/Tank present it as a practical tool. Keep Workshop as the primary calculator home and Smart only for advice framing. |
 | Water testing | Tank right panel, Quick menu, Add Log paths, Tank detail code | Useful workflow duplication, but it needs one canonical “log water test” route with shortcuts feeding into it. |
 | Feeding/water change | Quick menu, Today board, room objects, Add Log paths | Useful for daily care. Keep these in Tank, but avoid also surfacing them as unrelated calculator-like actions. |
 | Analytics/progress | More Analytics, Tank toolbox Analytics, Tank stats sheet, Tank bottom Progress, More profile | Too many progress surfaces. Keep summary progress in Tank/Learn and make More Analytics the full detail screen. |
 | Reminders/notifications | Preferences > Reminder Settings, Notification Settings, Tank Toolbox Reminders, task reminders | Conceptually split between phone reminder permission, learning reminders, streak reminders, and tank task reminders. Needs one settings page with contextual “manage tank reminder” links. |
-| Shop/cost | More Shop Street, More Gem Shop, Preferences Explore Shop Street, Workshop Cost Tracker, Preferences Tools Fish Wishlist | Shop/cost features are scattered. Shop Street and Gem Shop belong in More; Cost Tracker/Fish Wishlist belong in Workshop or a “Planning” area. |
+| Shop/cost | More Shop Street, More Gem Shop, Workshop Cost Tracker | Improved post-map. Shop Street and Gem Shop now belong to More; Cost Tracker remains in Workshop as the practical planning tool. |
 | Guides/learning | Learn lessons, Preferences Guides, Workshop Cycling Assistant, Smart help copy | Learning content is split between course-style Learn and reference-style Preferences. That split is workable if the labels are explicit: “Lessons” vs “Reference Guides”. |
 
 ## Manual QA Notes
@@ -181,9 +180,10 @@ flowchart TD
 - Tank quick care sheets for quick test, feeding, water change, stats, and create tank all opened.
 - Smart shows AI-gated tools correctly locked when AI is not configured, with compatibility/anomaly available as offline tools.
 - More top/lower hubs loaded and link to Shop Street, Gem Shop, Achievements, Workshop, Analytics, Preferences, Backup & Restore, and About.
-- Preferences is broad: profile/progress, explore rooms, theme, room theme, difficulty, ambiance, reduced motion, haptics, notifications, AI, tools, guides, data, legal, and destructive actions.
+- Preferences is still broad, but now settings-focused: account, progress shortcut, theme, room theme, difficulty, ambiance, reduced motion, haptics, notifications, AI, guides, data, legal, and destructive actions.
 - Notification Settings shows Review Reminders and Streak Reminders as explicit toggles, matching the quiet-reminders policy.
 - Original map finding: Workshop tool screens loaded, but the Workshop grid itself had visible yellow/black Flutter overflow banners on the phone. Post-map fix verification confirms the top and lower Workshop views no longer show overflow stripes.
+- Original map finding: Preferences duplicated More and Workshop as a second navigation/tool hub. Post-map fix verification confirms More owns primary destinations, Workshop owns calculators, and Preferences no longer shows the full calculator/shop list.
 - Final logcat did not show crash signatures. The original visual overflow was visible in screenshots but was not emitted as a logcat `RenderFlex overflowed` line during the map pass.
 
 ## Post-Map Fix Verification
@@ -229,6 +229,24 @@ flowchart TD
   - Phone QA used a minimal seeded state with 3 weak cards scheduled for tomorrow and 0 due cards. Screenshot: [practice weak state](screenshots/whole-app-map-2026-05-18/post-fix/practice-weak-spots-available.png).
   - App-specific logcat scan for the Danio process found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` matches. A broader device scan did show unrelated AndroidRuntime lines from the system/Samsung/other-app processes and `uiautomator`.
 
+## Tool Hub Consolidation Verification
+
+- Branch: `qa/whole-app-map`
+- Root cause: Preferences had become a second broad destination/tool hub, duplicating More and Workshop with a different calculator/shop mix.
+- Implementation:
+  - Removed the Preferences Explore and Tools/Shop sections.
+  - Removed the duplicated `ToolsSection` widget from Preferences.
+  - Kept More as the primary destination hub for Shop Street, Gem Shop, Achievements, Workshop, Analytics, and Preferences.
+  - Kept Workshop as the primary calculator/tool hub.
+- Verification:
+  - `flutter test test/widget_tests/settings_hub_screen_test.dart test/widget_tests/workshop_screen_test.dart` passed with 18 tests.
+  - `flutter analyze --no-pub` passed.
+  - `flutter test` passed with 1081 tests.
+  - `flutter build apk --debug --target lib/main.dart` passed, then the APK installed and launched on `RFCY8022D5R`.
+  - Phone QA confirmed More primary destinations, Workshop as the calculator hub, and Preferences lower settings/reminder sections without the duplicate calculator grid. Screenshots: [More destinations](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png), [Workshop hub](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png), [Preferences top](screenshots/whole-app-map-2026-05-18/post-fix/preferences-no-tool-hub.png), [Preferences lower](screenshots/whole-app-map-2026-05-18/post-fix/preferences-lower-no-tool-hub.png).
+  - App-specific logcat scan for the Danio process found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` matches.
+  - P3 note: the Gem Shop subtitle truncates on this phone/font state. It is a polish issue and not part of the navigation consolidation fix.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
@@ -237,19 +255,20 @@ flowchart TD
 | Fixed | Phone smoke integration test hung before completing the launch assertion. | Baseline notes; smoke gate fix verification | The smoke gate now awaits app bootstrap, uses condition-based readiness, and passes on `RFCY8022D5R`. |
 | Fixed | Workshop card grid overflowed on phone, showing yellow/black debug overflow stripes. | [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png), [31](screenshots/whole-app-map-2026-05-18/31-workshop-lower.png), [post-fix top](screenshots/whole-app-map-2026-05-18/post-fix/workshop-top-no-overflow.png), [post-fix lower](screenshots/whole-app-map-2026-05-18/post-fix/workshop-lower-no-overflow.png) | Grid cards now use a stable main-axis extent, the compact card is taller, and quick-reference rows flex instead of overflowing. |
 | Fixed | Practice “All caught up” conflicted with available Weak Spots action. | [14](screenshots/whole-app-map-2026-05-18/14-practice-home.png), [44](screenshots/whole-app-map-2026-05-18/44-practice-weak-session.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/practice-weak-spots-available.png) | No-due/weak-card state now points to Weak Spots instead of Learn Next. |
-| P2 | More and Preferences duplicate navigation hubs. | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png), [20](screenshots/whole-app-map-2026-05-18/20-preferences-top.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png) | Preferences contains settings plus Explore, Tools, Guides, Shop, Learn, and Data. |
-| P2 | Tool lists are inconsistent across Workshop, Preferences, Smart, and Tank. | [06](screenshots/whole-app-map-2026-05-18/06-tank-panel-tools.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png), [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png) | Users can reach similar but not identical lists depending where they start. |
+| Fixed | More and Preferences duplicated navigation hub responsibilities. | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png), [20](screenshots/whole-app-map-2026-05-18/20-preferences-top.png), [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png), [post-fix Preferences](screenshots/whole-app-map-2026-05-18/post-fix/preferences-no-tool-hub.png) | More now owns primary destinations; Preferences no longer contains Explore or the duplicate Tools/Shop section. |
+| Fixed | Tool lists were inconsistent across Workshop, Preferences, Smart, and Tank. | [06](screenshots/whole-app-map-2026-05-18/06-tank-panel-tools.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png), [post-fix Workshop](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png) | Workshop is the primary calculator/tool hub; Tank keeps contextual shortcuts; Preferences no longer has the separate calculator list. |
+| P3 | Gem Shop subtitle truncates in More on the phone/font state used for QA. | [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png) | Polish issue; primary navigation remains clear. |
 | P3 | Android 16/Fold screenshot capture needs explicit display id. | QA note | Fixed for this dossier by using display `4630946872173396372`. |
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1, 2, 6, and 7 were completed in this branch. The remaining immediate priorities are consolidating duplicated tool hubs and then covering calculator validation.
+Post-map update: recommendations 1, 2, 3, 4, 6, and 7 were completed in this branch. The remaining immediate priority is calculator-level validation coverage, followed by a clearer Smart/compatibility ownership pass if it still feels duplicated after calculator testing.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.
-3. Make Workshop the primary home for calculators. Keep Tank bottom Tools as contextual shortcuts only, and remove the separate calculator list from Preferences or rename it to “Shortcuts”.
-4. Split More and Preferences responsibilities. More should be destinations and progress; Preferences should be settings, notifications, backup/data, legal, and account.
+3. Make Workshop the primary home for calculators. Completed post-map: Preferences no longer has the separate calculator/shop list, while Tank bottom Tools stays contextual.
+4. Split More and Preferences responsibilities. Completed post-map: More is the destination hub; Preferences is now settings, notifications, guides/data, legal, and account.
 5. Keep Smart as AI/offline assistance. Put Compatibility there only if it is framed as “smart advice”; otherwise link to the Workshop calculator.
 6. Keep Practice state copy aligned with available actions. The no-due/weak-card state now points to Weak Spots instead of saying “All caught up.”
 7. Keep `integration_test/smoke_test_v2.dart` as the phone QA launch gate and extend it only when a mapped flow is stable enough to automate.
-8. In the next pass, add calculator-specific input validation checks for every tool after the Workshop overflow is fixed, because the overflow currently obscures some card text and route confidence.
+8. In the next pass, add calculator-specific input validation checks for every tool now that Workshop layout and hub ownership are stable.

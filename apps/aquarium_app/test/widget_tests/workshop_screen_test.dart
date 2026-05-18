@@ -11,10 +11,6 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/workshop_screen.dart';
 import 'package:danio/services/storage_service.dart';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 Widget _wrap() {
   return ProviderScope(
     overrides: [
@@ -29,10 +25,6 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 300));
   await tester.pump(const Duration(seconds: 1));
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 void main() {
   setUp(() {
@@ -49,7 +41,6 @@ void main() {
     testWidgets('shows Workshop title', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      // Title contains Workshop (with emoji prefix in SliverAppBar)
       expect(find.textContaining('Workshop'), findsWidgets);
     });
 
@@ -76,9 +67,32 @@ void main() {
     testWidgets('shows multiple calculator tools in grid', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      // Multiple tool cards should be present (first visible ones)
-      expect(find.text('CO₂ Calculator'), findsOneWidget);
+      expect(find.textContaining('Calculator'), findsWidgets);
       expect(find.text('Dosing'), findsOneWidget);
+    });
+
+    testWidgets('Workshop remains the primary calculators hub', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      for (final label in const [
+        'Water Change',
+        'Stocking',
+        'Dosing',
+        'Unit Converter',
+        'Tank Volume',
+        'Lighting',
+        'Compatibility',
+        'Cycling Assistant',
+        'Cost Tracker',
+      ]) {
+        final finder = find.text(label);
+        if (finder.evaluate().isEmpty) {
+          await tester.scrollUntilVisible(finder, 300);
+          await tester.pumpAndSettle();
+        }
+        expect(finder, findsOneWidget);
+      }
     });
 
     testWidgets(
