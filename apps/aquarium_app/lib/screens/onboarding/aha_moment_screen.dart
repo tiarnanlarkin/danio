@@ -35,6 +35,8 @@ class AhaMomentScreen extends StatefulWidget {
 
 class _AhaMomentScreenState extends State<AhaMomentScreen>
     with TickerProviderStateMixin {
+  final ScrollController _scrollController = ScrollController();
+
   // ── Colours ──────────────────────────────────────────────────────
   // Onboarding colours consolidated into AppColors
 
@@ -67,8 +69,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
   late final CurvedAnimation _inviteFadeCurve;
   late final Animation<double> _inviteFade;
 
-  bool get _reduceMotion =>
-      MediaQuery.of(context).disableAnimations;
+  bool get _reduceMotion => MediaQuery.of(context).disableAnimations;
 
   @override
   void initState() {
@@ -86,28 +87,37 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
     _fishScale = _fishScaleCurve;
 
     // Phase 1 — animated dots loop
-    _dotsCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    )..addListener(() {
-        final newCount = ((_dotsCtrl.value * 3).floor() % 3) + 1;
-        if (newCount != _dotCount) {
-          setState(() => _dotCount = newCount);
-        }
-      });
+    _dotsCtrl =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 1200),
+        )..addListener(() {
+          final newCount = ((_dotsCtrl.value * 3).floor() % 3) + 1;
+          if (newCount != _dotCount) {
+            setState(() => _dotCount = newCount);
+          }
+        });
 
     // Phase 1→2 transition (400 ms)
     _transitionCtrl = AnimationController(
       vsync: this,
       duration: AppDurations.long1,
     );
-    _transitionCurve = CurvedAnimation(parent: _transitionCtrl, curve: Curves.easeOut);
-    _overlayOpacity = Tween<double>(begin: 0.8, end: 0.0).animate(_transitionCurve);
+    _transitionCurve = CurvedAnimation(
+      parent: _transitionCtrl,
+      curve: Curves.easeOut,
+    );
+    _overlayOpacity = Tween<double>(
+      begin: 0.8,
+      end: 0.0,
+    ).animate(_transitionCurve);
 
     // Phase 2 — 3 cards, staggered
     _cardsCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1150), // 250ms × 3 + 300ms × 2 gap ≈ 1150
+      duration: const Duration(
+        milliseconds: 1150,
+      ), // 250ms × 3 + 300ms × 2 gap ≈ 1150
     );
 
     _cardFadeCurves = List.generate(3, (i) {
@@ -144,7 +154,10 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       vsync: this,
       duration: AppDurations.medium4,
     );
-    _inviteFadeCurve = CurvedAnimation(parent: _inviteCtrl, curve: Curves.easeIn);
+    _inviteFadeCurve = CurvedAnimation(
+      parent: _inviteCtrl,
+      curve: Curves.easeIn,
+    );
     _inviteFade = _inviteFadeCurve;
 
     // Start the sequence
@@ -159,6 +172,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       _transitionCtrl.value = 1;
       _cardsCtrl.value = 1;
       _inviteCtrl.value = 1;
+      _scrollToInvite(reduceMotion: true);
       return;
     }
 
@@ -178,7 +192,8 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
     // Phase 3
     await Future<void>.delayed(const Duration(milliseconds: 300));
     setState(() => _phase = 3);
-    _inviteCtrl.forward();
+    await _inviteCtrl.forward();
+    _scrollToInvite(reduceMotion: false);
   }
 
   void _onCtaTap() {
@@ -192,13 +207,18 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _fishScaleCurve.dispose();
     _fishScaleCtrl.dispose();
     _dotsCtrl.dispose();
     _transitionCurve.dispose();
     _transitionCtrl.dispose();
-    for (final c in _cardFadeCurves) { c.dispose(); }
-    for (final c in _cardSlideCurves) { c.dispose(); }
+    for (final c in _cardFadeCurves) {
+      c.dispose();
+    }
+    for (final c in _cardSlideCurves) {
+      c.dispose();
+    }
     _cardsCtrl.dispose();
     _inviteFadeCurve.dispose();
     _inviteCtrl.dispose();
@@ -209,13 +229,27 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
   // BUILD
   // ═══════════════════════════════════════════════════════════════════
 
+  void _scrollToInvite({required bool reduceMotion}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      final target = _scrollController.position.maxScrollExtent;
+      if (reduceMotion) {
+        _scrollController.jumpTo(target);
+        return;
+      }
+      _scrollController.animateTo(
+        target,
+        duration: AppDurations.medium4,
+        curve: AppCurves.standardDecelerate,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.onboardingWarmCream,
-      body: SafeArea(
-        child: _phase == 1 ? _buildPhase1() : _buildPhase2And3(),
-      ),
+      body: SafeArea(child: _phase == 1 ? _buildPhase1() : _buildPhase2And3()),
     );
   }
 
@@ -229,7 +263,11 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       animation: _overlayOpacity,
       builder: (context, child) {
         return Container(
-          color: Color.lerp(AppColors.onboardingWarmCream, const Color(0xFFE8DFD3), _overlayOpacity.value),
+          color: Color.lerp(
+            AppColors.onboardingWarmCream,
+            const Color(0xFFE8DFD3),
+            _overlayOpacity.value,
+          ),
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -243,7 +281,10 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppColors.onboardingWarmCream,
-                    border: Border.all(color: AppColors.onboardingAmber, width: 3),
+                    border: Border.all(
+                      color: AppColors.onboardingAmber,
+                      width: 3,
+                    ),
                   ),
                   alignment: Alignment.center,
                   child: spritePath != null
@@ -298,6 +339,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       animation: Listenable.merge([_transitionCtrl, _cardsCtrl, _inviteCtrl]),
       builder: (context, _) {
         return SingleChildScrollView(
+          controller: _scrollController,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.lg,
@@ -468,10 +510,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       builder: (context, child) {
         return Transform.translate(
           offset: _cardSlides[index].value,
-          child: Opacity(
-            opacity: _cardFades[index].value,
-            child: child,
-          ),
+          child: Opacity(opacity: _cardFades[index].value, child: child),
         );
       },
       child: Semantics(

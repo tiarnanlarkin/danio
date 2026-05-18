@@ -209,10 +209,17 @@ void main() {
 
     test('consecutive weekly changes → streak counts correctly', () {
       final now = DateTime.now();
-      // Create logs for the last 3 Mondays (one change per week)
+      final todayStart = DateTime(now.year, now.month, now.day);
+      final currentMonday = todayStart.subtract(
+        Duration(days: todayStart.weekday - 1),
+      );
+
+      // Create logs for the current Monday and two previous Mondays.
       final logs = <LogEntry>[];
       for (int week = 0; week < 3; week++) {
-        final ts = now.subtract(Duration(days: week * 7 + 1));
+        final ts = currentMonday
+            .subtract(Duration(days: week * 7))
+            .add(const Duration(hours: 12));
         logs.add(
           LogEntry(
             id: 'wc-week-$week',

@@ -173,13 +173,13 @@ void main() {
   });
 
   group('_NotificationsToggle', () {
-    testWidgets('Task Reminders starts disabled', (tester) async {
+    testWidgets('Phone Notifications starts disabled', (tester) async {
       await tester.pumpWidget(_wrap(const SettingsScreen()));
       await tester.pump();
 
-      await tester.scrollUntilVisible(find.text('Task Reminders'), 500.0);
+      await tester.scrollUntilVisible(find.text('Phone Notifications'), 500.0);
       final switchFinder = find.ancestor(
-        of: find.text('Task Reminders'),
+        of: find.text('Phone Notifications'),
         matching: find.byType(SwitchListTile),
       );
       expect(tester.widget<SwitchListTile>(switchFinder).value, isFalse);
@@ -190,11 +190,14 @@ void main() {
       (tester) async {
         await tester.pumpWidget(_wrap(const SettingsScreen()));
         await tester.pump();
-        await tester.scrollUntilVisible(find.text('Task Reminders'), 500.0);
+        await tester.scrollUntilVisible(
+          find.text('Phone Notifications'),
+          500.0,
+        );
 
         expect(find.text('Test Notification'), findsOneWidget);
         expect(
-          find.text('Enable Task Reminders to send a test notification'),
+          find.text('Enable Phone Notifications to send a test notification'),
           findsOneWidget,
         );
 
@@ -288,7 +291,7 @@ void main() {
           'Day/Night Ambiance',
           'Reduce Motion',
           'Haptic Feedback',
-          'Task Reminders',
+          'Phone Notifications',
         ];
         for (final label in labelsBelow) {
           await tester.scrollUntilVisible(find.text(label), 500.0);

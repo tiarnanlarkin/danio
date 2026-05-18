@@ -21,6 +21,7 @@ import 'onboarding/aha_moment_screen.dart';
 import 'onboarding/feature_summary_screen.dart';
 import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
+import 'tab_navigator.dart';
 import '../utils/logger.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../providers/species_unlock_provider.dart';
@@ -126,147 +127,140 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       // 1. Create or update profile with all collected data atomically
       final existingProfile = ref.read(userProfileProvider).value;
+      final profileNotifier = ref.read(userProfileProvider.notifier);
+      final speciesUnlockNotifier = ref.read(speciesUnlockProvider.notifier);
+      final tankNotifier = ref.read(tankActionsProvider);
+      final currentTabNotifier = ref.read(currentTabProvider.notifier);
+      final service = await OnboardingService.getInstance();
       final level = _experienceLevel ?? ExperienceLevel.beginner;
 
       if (existingProfile == null) {
-        await ref
-            .read(userProfileProvider.notifier)
-            .createProfile(
-              experienceLevel: level,
-              primaryTankType: TankType.freshwater,
-              goals: [_deriveGoal()],
-              name: _userName,
-              tankStatus: _tankStatus,
-              firstFishSpeciesId: _selectedFish?.commonName,
-            );
+        await profileNotifier.createProfile(
+          experienceLevel: level,
+          primaryTankType: TankType.freshwater,
+          goals: [_deriveGoal()],
+          name: _userName,
+          tankStatus: _tankStatus,
+          firstFishSpeciesId: _selectedFish?.commonName,
+        );
       } else {
-        await ref
-            .read(userProfileProvider.notifier)
-            .updateProfile(
-              experienceLevel: level,
-              goals: [_deriveGoal()],
-              tankStatus: _tankStatus,
-              firstFishSpeciesId: _selectedFish?.commonName,
-              name: _userName,
-            );
+        await profileNotifier.updateProfile(
+          experienceLevel: level,
+          goals: [_deriveGoal()],
+          tankStatus: _tankStatus,
+          firstFishSpeciesId: _selectedFish?.commonName,
+          name: _userName,
+        );
       }
 
       // 1b. Unlock the selected fish species
-      if (mounted && _selectedFish != null) {
+      if (_selectedFish != null) {
         try {
           final speciesId = _selectedFish!.commonName
               .toLowerCase()
               .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
               .replaceAll(RegExp(r'^_|_\$'), '');
-          await ref
-              .read(speciesUnlockProvider.notifier)
-              .unlockSpecies(speciesId);
+          await speciesUnlockNotifier.unlockSpecies(speciesId);
         } catch (e) {
           logError(
-            'Onboarding: failed to unlock selected fish species: \$e',
+            'Onboarding: failed to unlock selected fish species: $e',
             tag: 'OnboardingScreen',
           );
         }
       }
 
       // 2. Add 10 XP from micro-lesson
-      if (mounted) {
-        try {
-          await ref.read(userProfileProvider.notifier).addXp(10);
-        } catch (e) {
-          logError(
-            'Onboarding: failed to award welcome XP: $e',
-            tag: 'OnboardingScreen',
-          );
-        }
+      try {
+        await profileNotifier.addXp(10);
+      } catch (e) {
+        logError(
+          'Onboarding: failed to award welcome XP: $e',
+          tag: 'OnboardingScreen',
+        );
       }
 
       // 2b. Create a personalised tank based on the user's selections.
       //     — Name:   derived from selected fish (e.g. "Betta Paradise")
       //     — Volume: minTankLitres from species data, clamped to 20–500 L
       //     — Fish:   pre-populated as the first livestock entry
-      if (mounted) {
-        try {
-          final tankNotifier = ref.read(tankActionsProvider);
-
-          // Derive a friendly tank name from the fish selection.
-          String tankName;
-          if (_selectedFish != null) {
-            const nameSuffixes = {
-              'Betta': 'Paradise',
-              'Goldfish': 'Bowl',
-              'Guppy': 'Garden',
-              'Neon Tetra': 'Shoal',
-              'Angelfish': 'Reef',
-              'Discus': 'Display',
-              'Axolotl': 'Lagoon',
-            };
-            final suffix = nameSuffixes[_selectedFish!.commonName] ?? 'Tank';
-            tankName = '${_selectedFish!.commonName} $suffix';
-          } else {
-            tankName = _tankStatus == 'cycling'
-                ? 'Cycling Tank'
-                : _tankStatus == 'active'
-                ? 'My Tank'
-                : 'New Tank';
-          }
-
-          // Derive volume from species minimum tank size, with sensible clamp.
-          final volumeLitres = _selectedFish != null
-              ? _selectedFish!.minTankLitres.clamp(20.0, 500.0)
-              : 60.0;
-
-          final tank = await tankNotifier.createTank(
-            name: tankName,
-            type: TankType.freshwater,
-            volumeLitres: volumeLitres,
-            notes: _selectedFish != null
-                ? 'Started with ${_selectedFish!.commonName}'
-                : null,
-          );
-          appLog(
-            '[Onboarding] Created tank: ${tank.name} (${volumeLitres}L, id=${tank.id})',
-            tag: 'OnboardingScreen',
-          );
-
-          // Pre-populate tank with the fish the user selected.
-          if (_selectedFish != null) {
-            try {
-              const uuid = Uuid();
-              final now = DateTime.now();
-              final livestock = Livestock(
-                id: uuid.v4(),
-                tankId: tank.id,
-                commonName: _selectedFish!.commonName,
-                scientificName: _selectedFish!.scientificName,
-                count: _selectedFish!.minSchoolSize > 1
-                    ? _selectedFish!.minSchoolSize
-                    : 1,
-                maxSizeCm: _selectedFish!.adultSizeCm,
-                dateAdded: now,
-                createdAt: now,
-                updatedAt: now,
-                notes: 'Added during setup',
-              );
-              await tankNotifier.addLivestock(livestock);
-              appLog(
-                '[Onboarding] Added ${livestock.commonName} x${livestock.count} to ${tank.name}',
-                tag: 'OnboardingScreen',
-              );
-            } catch (e) {
-              logError(
-                '[Onboarding] Livestock pre-population failed: $e',
-                tag: 'OnboardingScreen',
-              );
-              // Non-fatal — tank was created; fish can be added manually.
-            }
-          }
-        } catch (e) {
-          logError(
-            '[Onboarding] Tank creation failed: $e',
-            tag: 'OnboardingScreen',
-          );
+      try {
+        // Derive a friendly tank name from the fish selection.
+        String tankName;
+        if (_selectedFish != null) {
+          const nameSuffixes = {
+            'Betta': 'Paradise',
+            'Goldfish': 'Bowl',
+            'Guppy': 'Garden',
+            'Neon Tetra': 'Shoal',
+            'Angelfish': 'Reef',
+            'Discus': 'Display',
+            'Axolotl': 'Lagoon',
+          };
+          final suffix = nameSuffixes[_selectedFish!.commonName] ?? 'Tank';
+          tankName = '${_selectedFish!.commonName} $suffix';
+        } else {
+          tankName = _tankStatus == 'cycling'
+              ? 'Cycling Tank'
+              : _tankStatus == 'active'
+              ? 'My Tank'
+              : 'New Tank';
         }
+
+        // Derive volume from species minimum tank size, with sensible clamp.
+        final volumeLitres = _selectedFish != null
+            ? _selectedFish!.minTankLitres.clamp(20.0, 500.0)
+            : 60.0;
+
+        final tank = await tankNotifier.createTank(
+          name: tankName,
+          type: TankType.freshwater,
+          volumeLitres: volumeLitres,
+          notes: _selectedFish != null
+              ? 'Started with ${_selectedFish!.commonName}'
+              : null,
+        );
+        appLog(
+          '[Onboarding] Created tank: ${tank.name} (${volumeLitres}L, id=${tank.id})',
+          tag: 'OnboardingScreen',
+        );
+
+        // Pre-populate tank with the fish the user selected.
+        if (_selectedFish != null) {
+          try {
+            const uuid = Uuid();
+            final now = DateTime.now();
+            final livestock = Livestock(
+              id: uuid.v4(),
+              tankId: tank.id,
+              commonName: _selectedFish!.commonName,
+              scientificName: _selectedFish!.scientificName,
+              count: _selectedFish!.minSchoolSize > 1
+                  ? _selectedFish!.minSchoolSize
+                  : 1,
+              maxSizeCm: _selectedFish!.adultSizeCm,
+              dateAdded: now,
+              createdAt: now,
+              updatedAt: now,
+              notes: 'Added during setup',
+            );
+            await tankNotifier.addLivestock(livestock);
+            appLog(
+              '[Onboarding] Added ${livestock.commonName} x${livestock.count} to ${tank.name}',
+              tag: 'OnboardingScreen',
+            );
+          } catch (e) {
+            logError(
+              '[Onboarding] Livestock pre-population failed: $e',
+              tag: 'OnboardingScreen',
+            );
+            // Non-fatal — tank was created; fish can be added manually.
+          }
+        }
+      } catch (e) {
+        logError(
+          '[Onboarding] Tank creation failed: $e',
+          tag: 'OnboardingScreen',
+        );
       }
 
       // 3. Complete onboarding via service + invalidate provider
@@ -275,11 +269,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Do NOT call Navigator.popUntil here — it races with the reactive
       // rebuild and can trigger provider lifecycle/disposal errors because
       // the OnboardingScreen is being disposed by the router simultaneously.
-      if (!mounted) return;
-      final service = await OnboardingService.getInstance();
+      currentTabNotifier.state = 2;
       await service.completeOnboarding();
-      if (!mounted) return;
-      ref.invalidate(onboardingCompletedProvider);
+      if (mounted) {
+        ref.invalidate(onboardingCompletedProvider);
+      }
     } catch (e, st) {
       logError(
         'OnboardingScreen: onboarding completion failed: $e',
@@ -453,8 +447,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       }
                       return FeatureSummaryScreen(
                         selectedFish: _selectedFish!,
-                        onComplete: _nextPage,
-                        onSkip: _nextPage,
+                        onComplete: () => _goToStep(8),
+                        onSkip: () => _goToStep(8),
                       );
                     },
                   ),

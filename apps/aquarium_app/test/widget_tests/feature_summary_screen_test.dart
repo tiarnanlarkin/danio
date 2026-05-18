@@ -55,46 +55,31 @@ void main() {
     testWidgets('shows main headline', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.text('Everything you need, right here.'),
-        findsOneWidget,
-      );
+      expect(find.text('Everything you need, right here.'), findsOneWidget);
     });
 
     testWidgets('shows free-to-use subtitle', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.textContaining('free to use'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('free to use'), findsOneWidget);
     });
 
     testWidgets('shows fish care guide reference text', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.textContaining('Neon Tetra'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('Neon Tetra'), findsOneWidget);
     });
 
     testWidgets('shows species care guides feature highlight', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.textContaining('species care guides'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('species care guides'), findsOneWidget);
     });
 
     testWidgets('shows water parameter tracking highlight', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.textContaining('Water parameter tracking'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('Water parameter tracking'), findsOneWidget);
     });
 
     testWidgets('shows CTA button', (tester) async {
@@ -106,14 +91,27 @@ void main() {
 
   group('FeatureSummaryScreen — interaction', () {
     testWidgets('tapping CTA fires onComplete callback', (tester) async {
-      bool completed = false;
-      await tester.pumpWidget(_wrap(onComplete: () => completed = true));
+      var completions = 0;
+      await tester.pumpWidget(_wrap(onComplete: () => completions++));
       await tester.pump();
 
       await tester.tap(find.textContaining("Let's go"));
       await tester.pumpAndSettle();
 
-      expect(completed, isTrue);
+      expect(completions, 1);
+    });
+
+    testWidgets('tapping summary body is a guarded fallback', (tester) async {
+      var completions = 0;
+      await tester.pumpWidget(_wrap(onComplete: () => completions++));
+      await tester.pump();
+
+      await tester.tap(find.text('Everything you need, right here.'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Everything you need, right here.'));
+      await tester.pumpAndSettle();
+
+      expect(completions, 1);
     });
   });
 }

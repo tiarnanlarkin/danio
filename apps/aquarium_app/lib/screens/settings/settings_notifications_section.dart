@@ -49,8 +49,12 @@ class _NotificationsToggle extends ConsumerWidget {
       children: [
         SwitchListTile(
           secondary: const Icon(Icons.notifications_outlined),
-          title: const Text('Task Reminders'),
-          subtitle: const Text('Get notified when tasks are due'),
+          title: const Text('Phone Notifications'),
+          subtitle: Text(
+            notificationsEnabled
+                ? 'Allowed for reminders you turn on'
+                : 'Allow notification permission for reminders',
+          ),
           value: notificationsEnabled,
           onChanged: (value) => _toggleNotifications(context, ref, value),
         ),
@@ -59,7 +63,7 @@ class _NotificationsToggle extends ConsumerWidget {
           title: 'Test Notification',
           subtitle: notificationsEnabled
               ? 'Send a test notification'
-              : 'Enable Task Reminders to send a test notification',
+              : 'Enable Phone Notifications to send a test notification',
           isDisabled: !notificationsEnabled,
           onTap: notificationsEnabled ? () => _testNotification(context) : null,
         ),
@@ -96,9 +100,9 @@ Future<void> _toggleNotifications(
 
   if (context.mounted) {
     if (enable) {
-      AppFeedback.showSuccess(context, 'Notifications enabled!');
+      AppFeedback.showSuccess(context, 'Phone notifications enabled');
     } else {
-      AppFeedback.showInfo(context, 'Notifications disabled');
+      AppFeedback.showInfo(context, 'Phone notifications disabled');
     }
   }
 }

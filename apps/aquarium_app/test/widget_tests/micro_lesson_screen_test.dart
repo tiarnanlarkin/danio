@@ -66,6 +66,28 @@ void main() {
       // Progress dots row should be in the layout
       expect(find.byType(Row), findsWidgets);
     });
+
+    testWidgets('reveals Got it action after answering', (tester) async {
+      tester.view.physicalSize = const Size(411, 960);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap(level: ExperienceLevel.beginner));
+      await _advance(tester);
+
+      await tester.ensureVisible(find.text('Uncycled water'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Uncycled water'));
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pumpAndSettle();
+
+      final gotIt = find.textContaining('Got it');
+      expect(gotIt, findsOneWidget);
+      final gotItCenter = tester.getCenter(gotIt);
+      expect(gotItCenter.dy, greaterThan(0));
+      expect(gotItCenter.dy, lessThan(960));
+    });
   });
 
   group('MicroLessonScreen — expert', () {

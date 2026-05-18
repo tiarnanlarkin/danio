@@ -69,102 +69,98 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
       animation: _controller,
       builder: (context, child) {
         final t = _controller.value;
-        // fit: passthrough avoids the Stack assertion that requires bounded
-        // constraints (StackFit.expand).  When SpeedDialFAB is placed inside
-        // IgnorePointer > Opacity inside a Positioned that returns from a
-        // build() method, parent data timing can leave the Stack with
-        // unconstrained max dimensions on the very first frame.  passthrough
-        // computes size identically (constraints.biggest) but skips the check.
-        return Stack(
-          fit: StackFit.passthrough,
-          children: [
-            // ── Anchor: zero-size non-positioned child prevents the
-            //    size.isFinite assertion when the dial is closed (t==0)
-            //    and all other children are Positioned (no non-positioned
-            //    child to drive Stack sizing).  SizedBox.shrink() is 0×0
-            //    so it has no visual impact.
-            const SizedBox.shrink(),
-
-            // ── Blur scrim ──────────────────────────────────────────
-            if (t > 0)
-              Positioned.fill(
-                child: Semantics(
-                  label: 'Close menu',
-                  button: true,
-                  child: GestureDetector(
-                    onTap: _close,
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 8 * t, sigmaY: 8 * t),
-                      child: Container(
-                        color: Color.fromARGB((140 * t).round(), 20, 20, 30),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-            // ── Warm orange vignette from bottom-right ───────────────
-            if (t > 0)
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: IgnorePointer(
-                  child: Container(
-                    width: 350,
-                    height: 350,
-                    decoration: BoxDecoration(
-                      gradient: RadialGradient(
-                        colors: [
-                          Color.fromARGB((100 * t).round(), 240, 120, 32),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-            // ── Action pills ─────────────────────────────────────────
-            ..._buildActionPills(t),
-
-            // ── FAB pair ─────────────────────────────────────────────
-            Positioned(
-              bottom: 16,
-              right: 16,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // + FAB (primary)
-                  _OrangeFAB(
-                    icon: Icons.add,
-                    size: 64,
-                    color: const Color(0xFFF07820),
-                    onPressed: _toggle,
-                    isOpen: _isOpen,
-                    animation: _controller,
-                  ),
-                  if (t > 0) ...[
-                    const SizedBox(width: AppSpacing.sm),
-                    // × FAB (close)
-                    Transform.scale(
-                      scale: t,
-                      child: Opacity(
-                        opacity: t,
-                        child: _OrangeFAB(
-                          icon: Icons.close,
-                          size: 56,
-                          color: const Color(0xFFE8631A),
-                          onPressed: _close,
-                          isOpen: true,
-                          animation: _controller,
+        return SizedBox(
+          width: 360,
+          height: 560,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // ── Anchor: zero-size non-positioned child prevents the
+              //    size.isFinite assertion when the dial is closed (t==0)
+              //    and all other children are Positioned (no non-positioned
+              //    child to drive Stack sizing).  SizedBox.shrink() is 0×0
+              //    so it has no visual impact.
+              // ── Blur scrim ──────────────────────────────────────────
+              if (t > 0)
+                Positioned.fill(
+                  child: Semantics(
+                    label: 'Close menu',
+                    button: true,
+                    child: GestureDetector(
+                      onTap: _close,
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 8 * t, sigmaY: 8 * t),
+                        child: Container(
+                          color: Color.fromARGB((140 * t).round(), 20, 20, 30),
                         ),
                       ),
                     ),
+                  ),
+                ),
+
+              // ── Warm orange vignette from bottom-right ───────────────
+              if (t > 0)
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: 350,
+                      height: 350,
+                      decoration: BoxDecoration(
+                        gradient: RadialGradient(
+                          colors: [
+                            Color.fromARGB((100 * t).round(), 240, 120, 32),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+              // ── Action pills ─────────────────────────────────────────
+              ..._buildActionPills(t),
+
+              // ── FAB pair ─────────────────────────────────────────────
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // + FAB (primary)
+                    _OrangeFAB(
+                      icon: Icons.add,
+                      size: 64,
+                      color: const Color(0xFFF07820),
+                      onPressed: _toggle,
+                      isOpen: _isOpen,
+                      animation: _controller,
+                    ),
+                    if (t > 0) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      // × FAB (close)
+                      Transform.scale(
+                        scale: t,
+                        child: Opacity(
+                          opacity: t,
+                          child: _OrangeFAB(
+                            icon: Icons.close,
+                            size: 56,
+                            color: const Color(0xFFE8631A),
+                            onPressed: _close,
+                            isOpen: true,
+                            animation: _controller,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

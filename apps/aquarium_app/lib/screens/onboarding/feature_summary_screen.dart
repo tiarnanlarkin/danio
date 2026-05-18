@@ -30,6 +30,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
   late final AnimationController _fishBounceController;
   late final CurvedAnimation _fishBounceCurve;
   late final Animation<double> _fishBounceAnim;
+  bool _ctaTapped = false;
 
   @override
   void initState() {
@@ -69,6 +70,8 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
   }
 
   void _onCtaTapped() {
+    if (_ctaTapped) return;
+    _ctaTapped = true;
     HapticFeedback.mediumImpact();
     widget.onComplete();
   }
@@ -79,46 +82,52 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
 
     return Scaffold(
       backgroundColor: AppColors.onboardingWarmCream,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Column(
-                  children: [
-                    const SizedBox(height: AppSpacing.lg2),
-                    // Fish reference header
-                    _buildFishHeader(),
-                    const SizedBox(height: AppSpacing.md),
-                    // Title
-                    Text(
-                      'Everything you need, right here.',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(color: AppColors.textPrimary),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Danio is free to use — no subscription needed.',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _onCtaTapped,
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: AppSpacing.lg2),
+                      // Fish reference header
+                      _buildFishHeader(),
+                      const SizedBox(height: AppSpacing.md),
+                      // Title
+                      Text(
+                        'Everything you need, right here.',
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(color: AppColors.textPrimary),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpacing.lg2),
-                    // Feature list
-                    _buildFeatureList(),
-                    const SizedBox(height: AppSpacing.md),
-                  ],
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Danio is free to use — no subscription needed.',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.lg2),
+                      // Feature list
+                      _buildFeatureList(),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            // Bottom section: CTA
-            _buildBottomSection(bottomPadding),
-          ],
+              // Bottom section: CTA
+              _buildBottomSection(bottomPadding),
+            ],
+          ),
         ),
       ),
     );

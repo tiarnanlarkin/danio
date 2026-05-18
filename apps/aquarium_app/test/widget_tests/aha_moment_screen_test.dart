@@ -42,6 +42,14 @@ Widget _wrap({VoidCallback? onComplete}) {
   );
 }
 
+Future<void> _finishReveal(WidgetTester tester) async {
+  await tester.pump(const Duration(milliseconds: 1800));
+  await tester.pump(const Duration(milliseconds: 450));
+  await tester.pump(const Duration(milliseconds: 1200));
+  await tester.pump(const Duration(milliseconds: 350));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
@@ -69,6 +77,22 @@ void main() {
       await tester.pump(const Duration(seconds: 5));
       // Fish name should be visible in phase 2 or 3
       expect(find.text('Neon Tetra'), findsOneWidget);
+    });
+
+    testWidgets('brings final CTA into view after reveal', (tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap());
+      await _finishReveal(tester);
+
+      final cta = find.textContaining('Start your journey');
+      expect(cta, findsOneWidget);
+      final ctaCenter = tester.getCenter(cta);
+      expect(ctaCenter.dy, greaterThan(0));
+      expect(ctaCenter.dy, lessThan(844));
     });
   });
 }

@@ -212,7 +212,10 @@ class _AppButtonState extends State<AppButton>
                     ),
                     const SizedBox(width: AppSpacing.sm),
                   ],
-                  Text(widget.label, style: _getTextStyle(isDark)),
+                  if (_shouldConstrainLabel)
+                    Flexible(child: _buildLabel(isDark, constrain: true))
+                  else
+                    _buildLabel(isDark),
                   if (widget.trailingIcon != null && !widget.isLoading) ...[
                     const SizedBox(width: AppSpacing.sm),
                     Icon(
@@ -227,6 +230,24 @@ class _AppButtonState extends State<AppButton>
           ),
         ),
       ),
+    );
+  }
+
+  bool get _shouldConstrainLabel {
+    if (!widget.isFullWidth) return false;
+    return widget.label.length > 14 ||
+        widget.leadingIcon != null ||
+        widget.trailingIcon != null ||
+        widget.isLoading;
+  }
+
+  Widget _buildLabel(bool isDark, {bool constrain = false}) {
+    return Text(
+      widget.label,
+      style: _getTextStyle(isDark),
+      maxLines: constrain ? 1 : null,
+      overflow: constrain ? TextOverflow.ellipsis : null,
+      textAlign: TextAlign.center,
     );
   }
 

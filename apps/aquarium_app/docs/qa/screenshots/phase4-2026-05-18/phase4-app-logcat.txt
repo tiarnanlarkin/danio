@@ -1,0 +1,301 @@
+--------- beginning of main
+05-18 00:21:19.743  5198  5198 I nanlarkin.danio: Late-enabling -Xcheck:jni
+05-18 00:21:19.754  5198  5198 I nanlarkin.danio: Using CollectorTypeCMC GC.
+05-18 00:21:19.758  5198  5198 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+05-18 00:21:19.760  5198  5198 D ActivityThread: setConscryptValidator
+05-18 00:21:19.761  5198  5198 D ActivityThread: setConscryptValidator - put
+05-18 00:21:19.769  5198  5198 D nativeloader: Load libstats_jni.so using APEX ns com_android_os_statsd for caller /apex/com.android.os.statsd/javalib/framework-statsd.jar: ok
+05-18 00:21:19.776  5198  5198 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+05-18 00:21:19.776  5198  5198 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+05-18 00:21:19.906  5198  5198 D nativeloader: Configuring clns-9 for other apk /data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/lib/arm64:/data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.tiarnanlarkin.danio
+05-18 00:21:19.909  5198  5198 V GraphicsEnvironment: Currently set values for:
+05-18 00:21:19.909  5198  5198 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+05-18 00:21:19.909  5198  5198 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+05-18 00:21:19.909  5198  5198 V GraphicsEnvironment: com.tiarnanlarkin.danio is not listed in per-application setting
+05-18 00:21:19.909  5198  5198 V GraphicsEnvironment: ANGLE allowlist from config:
+05-18 00:21:19.909  5198  5198 V GraphicsEnvironment: com.tiarnanlarkin.danio is not listed in ANGLE allowlist or settings, returning default
+05-18 00:21:19.909  5198  5198 V GraphicsEnvironment: App is not on the allowlist for updatable production driver.
+--------- beginning of system
+05-18 00:21:19.924  5198  5198 D ActivityThread: com.tiarnanlarkin.danio will use render engine as VK
+05-18 00:21:19.924  5198  5198 D HWUI    : HWUI - treat SMPTE_170M as sRGB
+05-18 00:21:19.924  5198  5217 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+05-18 00:21:19.925  5198  5217 D HWUI    : CacheManager constructor. deviceInfo=(1080, 1920)
+05-18 00:21:19.925  5198  5217 D vulkan  : searching for layers in '/data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/lib/arm64'
+05-18 00:21:19.925  5198  5217 D vulkan  : searching for layers in '/data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/base.apk!/lib/arm64-v8a'
+05-18 00:21:19.927  5198  5198 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+05-18 00:21:19.928  5198  5217 D vulkan  : added global layer 'VK_LAYER_KHRONOS_validation' from library '/data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/base.apk!/lib/arm64-v8a/libVkLayer_khronos_validation.so'
+05-18 00:21:19.931  5198  5219 D FlutterJNI: Beginning load of flutter...
+05-18 00:21:19.932  5198  5220 I ResourceExtractor: Found extracted resources res_timestamp-1-1779058271060
+05-18 00:21:19.932  5198  5220 I ResourceExtractor: Resource version mismatch res_timestamp-1-1779060070552
+05-18 00:21:19.939  5198  5217 E Adreno-AppProfiles: QSPM AIDL service doesn't exist
+05-18 00:21:19.939  5198  5217 I AdrenoVK-0: ===== BEGIN DUMP OF OVERRIDDEN SETTINGS =====
+05-18 00:21:19.939  5198  5217 I AdrenoVK-0: ===== END DUMP OF OVERRIDDEN SETTINGS =====
+05-18 00:21:19.941  5198  5217 D qdgralloc: Fetching IMapper5 from QtiMapper5
+05-18 00:21:19.945  5198  5219 D nativeloader: Load /data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/base.apk!/lib/arm64-v8a/libflutter.so using class loader ns clns-9 (caller=/data/app/~~YRrcPZ105SVUQxkVvNtkhA==/com.tiarnanlarkin.danio-wJ7bIsnLZTU4G_l-nRQ3Cw==/base.apk): ok
+05-18 00:21:19.946  5198  5219 D FlutterJNI: flutter (null) was loaded normally!
+05-18 00:21:19.946  5198  5217 I SnapAlloc: Graphics lib is available
+05-18 00:21:19.950  5198  5217 I Adreno-UNKNOWN: Using previously loaded IMapper library.
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: QUALCOMM build          : 4316f069ec, I2417731fa9
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Build Date              : 04/25/25
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Shader Compiler Version : E031.47.18.30
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Local Branch            :
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.15.4.0.11.00.00.1088.677
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Remote Branch           : NONE
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Reconstruct Branch      : NOTHING
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Build Config            : S P 18.0.0 AArch64
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Driver Version          : 0800.39
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: PFP                     : 0x01500077
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: ME                      : 0x01500014
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Application Name    : android framework
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Application Version : 0x00000000
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Engine Name         : android framework
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Engine Version      : 0x00000000
+05-18 00:21:19.951  5198  5217 I AdrenoVK-0: Api Version         : 0x00401000
+05-18 00:21:20.192  5198  5220 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/kernel_blob.bin
+05-18 00:21:20.192  5198  5220 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/vm_snapshot_data
+05-18 00:21:20.222  5198  5220 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/isolate_snapshot_data
+05-18 00:21:20.232  5198  5222 I Adreno-UNKNOWN: Using previously loaded IMapper library.
+05-18 00:21:20.233  5198  5222 I Adreno-UNKNOWN: Using previously loaded IMapper library.
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: QUALCOMM build          : 4316f069ec, I2417731fa9
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Build Date              : 04/25/25
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Shader Compiler Version : E031.47.18.30
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Local Branch            :
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.15.4.0.11.00.00.1088.677
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Remote Branch           : NONE
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Reconstruct Branch      : NOTHING
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Build Config            : S P 18.0.0 AArch64
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Driver Version          : 0800.39
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: PFP                     : 0x01500077
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: ME                      : 0x01500014
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Application Name    : Impeller
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Application Version : 0x00800000
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Engine Name         : Impeller
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Engine Version      : 0x00400000
+05-18 00:21:20.234  5198  5222 I AdrenoVK-0: Api Version         : 0x00401000
+05-18 00:21:20.234  5198  5198 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+05-18 00:21:20.244  5198  5222 I flutter : [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+05-18 00:21:20.261  5198  5236 I flutter : The Dart VM service is listening on http://127.0.0.1:39461/-Klp-dIy_ZE=/
+05-18 00:21:20.386  5198  5198 D com.llfbandit.app_links: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.tiarnanlarkin.danio/.MainActivity }
+05-18 00:21:20.403  5198  5198 I nanlarkin.danio: hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported,test-api) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+05-18 00:21:20.403  5198  5198 I nanlarkin.danio: hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+05-18 00:21:20.403  5198  5198 I nanlarkin.danio: hiddenapi: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+05-18 00:21:20.403  5198  5198 I nanlarkin.danio: hiddenapi: Accessing hidden method Landroid/util/LongArray;->get(I)J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+05-18 00:21:20.406  5198  5198 D FlutterRenderer: Width is zero. 0,0
+05-18 00:21:20.410  5198  5198 D CompatChangeReporter: Compat change id reported: 377864165; UID 10621; state: ENABLED
+05-18 00:21:20.411  5198  5198 I DecorView: setWindowBackground: isPopOver=false color=ffffffff d=android.graphics.drawable.ColorDrawable@c91a1ad
+05-18 00:21:20.421  5198  5198 D ViewRootImpl: desktopMode is false
+05-18 00:21:20.421  5198  5198 I ViewRootImpl: dVRR is disabled
+05-18 00:21:20.421  5198  5198 D HardwareRenderer: onDisplayChanged. displayId=0 current wxh=1080x2520 mLargest wxh=0x0
+05-18 00:21:20.421  5198  5198 D HardwareRenderer: Set largestWidth and largestHeight as logical resolution. (1080x2520)
+05-18 00:21:20.421  5198  5217 D HWUI    : setMaxSurfaceArea requested wxh=(1080,2520) requestedSurfaceArea(2721600) mMaxSurfaceArea(2073600)
+05-18 00:21:20.422  5198  5217 D NativeCustomFrequencyManager: [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+05-18 00:21:20.429  5198  5198 D InputTransport: Input channel constructed: '5b89254', fd=137
+05-18 00:21:20.430  5198  5198 I InsetsController: onStateChanged: host=com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity, from=android.view.ViewRootImpl.onInsetsStateChanged:3011, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1080, 2520), mDisplayCutout=DisplayCutout{insets=Rect(0, 110 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(510, 0 - 570, 110), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2520 physicalDisplayWidth=1080 physicalDisplayHeight=2520 density={2.625} cutoutSpec={M 0,0 H -11.42857142857143 V 41.9047619047619 H 11.42857142857143 V 0 H 0 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=13, center=Point(13, 13)}, RoundedCorner{position=TopRight, radius=13, center=Point(1067, 13)}, RoundedCorner{position=BottomRight, radius=13, center=Point(1067, 2507)}, RoundedCorner{position=BottomLeft, radius=13, center=Point(13, 2507)}]}  mRoundedCornerFrame=Rect(0, 0 - 1080, 2520), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(964, 0 - 1080, 110) rotation=0}, mDisplayShape=DisplayShape{ spec=-311912193 displayWidth=1080 displayHeight=2520 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}, mSources= { InsetsSource: {3 mType=ime mFrame=[0,0][0,0] mVisible=false mFlags= mSideHint=NONE mBoundingRects=null}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1080,110] mVisible=true mFlags= mSideHint=TOP mBoundingRects=null}, InsetsSource: {a340001 mType=navigationBars mFrame=[0,2394][1080,2520] mVisible=true mFlags= mSideHint=BOTTOM mBoundingRects=null}, InsetsSource: {a340004 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags= mSideHint=NONE mBoundingRects=null}, InsetsSource: {a340005 mType=mandatorySystemGestures mFrame=[0,2394][1080,2520] mVisible=true mFlags= mSideHint=BOTTOM mBoundingRects=null}, InsetsSource: {a340006 mType=tappableElement mFrame=[0,2394][1080,2520] mVisible=true mFlags= mSideHint=BOTTOM mBoundingRects=null}, InsetsSource: {a340024 mType=systemGestures mFrame=[0,0][0,0] mVisible=true mFlags= mSideHint=NONE mBoundingRects=null}, InsetsSource: {68bc0000 mType=statusBars mFrame=[0,0][1080,110] mVisible=true mFlags= mSideHint=TOP mBoundingRects=null}, InsetsSource: {68bc0005 mType=mandatorySystemGestures mFrame=[0,0][1080,142] mVisible=true mFlags= mSideHint=TOP mBoundingRects=null}, InsetsSource: {68bc0006 mType=tappableElement mFrame=[0,0][1080,110] mVisible=true mFlags= mSideHint=TOP mBoundingRects=null} }
+05-18 00:21:20.430  5198  5198 I VRI[MainActivity]@12b063a: synced displayState. AttachInfo displayState=2
+05-18 00:21:20.430  5198  5198 I VRI[MainActivity]@12b063a: setView = com.android.internal.policy.DecorView@3b34c06 IsHRR=false mFlingFrameRateChange=0 TM=true
+05-18 00:21:20.430  5198  5198 I IDS_TAG : Clearing training data of android.app.Application@df4fed1
+05-18 00:21:20.431  5198  5198 I IDS_TAG : Starting IDS observe window
+05-18 00:21:20.431  5198  5198 I IDS_TAG : Getting Shared Preference for android.app.Application@df4fed1 uid = 10621
+05-18 00:21:20.431  5198  5198 I IDS_TAG : App android.app.Application@df4fed1 has not finished training
+05-18 00:21:20.490  5198  5198 I IDS_TAG : Closing IDS observe window
+05-18 00:21:20.490  5198  5198 I IDS_TAG : Getting Shared Preference for android.app.Application@df4fed1 uid = 10621
+05-18 00:21:20.490  5198  5198 I IDS_TAG : IDS count updated to 1 for android.app.Application@df4fed1
+05-18 00:21:20.503  5198  5198 I WindowExtensionsImpl: Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+05-18 00:21:20.507  5198  5205 I nanlarkin.danio: Compiler allocated 5066KB to compile void android.view.ViewRootImpl.performTraversals()
+05-18 00:21:20.513  5198  5198 I SV[20613268 MainActivity]: onWindowVisibilityChanged(0) true io.flutter.embedding.android.FlutterSurfaceView{13a8894 V.E...... ......I. 0,0-0,0} of VRI[MainActivity]@12b063a
+05-18 00:21:20.513  5198  5198 D SurfaceView: 20613268 updateSurface: has no frame
+05-18 00:21:20.513  5198  5198 D FlutterRenderer: Width is zero. 0,0
+05-18 00:21:20.516  5198  5198 E nanlarkin.danio: Unable to open libpenguin.so: dlopen failed: library "libpenguin.so" not found.
+05-18 00:21:20.516  5198  5198 W libc    : Access denied finding property "vendor.gpp.create_frc_extension"
+05-18 00:21:20.516  5198  5198 I BufferQueueProducer: [](id:144e00000000,api:0,p:-1,c:5198) setDequeueTimeout:2077252342
+05-18 00:21:20.516  5198  5198 I BLASTBufferQueue_Java: new BLASTBufferQueue, mName= VRI[MainActivity]@12b063a mNativeObject= 0xb400007b352a2520 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3570 android.view.ViewRootImpl.relayoutWindow:11614 android.view.ViewRootImpl.performTraversals:4755 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901 android.view.Choreographer$CallbackRecord.run:1910 android.view.Choreographer.doCallbacks:1367 android.view.Choreographer.doFrame:1292 android.view.Choreographer$FrameDisplayEventReceiver.run:1870
+05-18 00:21:20.516  5198  5198 I BLASTBufferQueue_Java: update, w= 1080 h= 2520 mName = VRI[MainActivity]@12b063a mNativeObject= 0xb400007b352a2520 sc.mNativeObject= 0xb400007a65250e90 format= -3 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3575 android.view.ViewRootImpl.relayoutWindow:11614 android.view.ViewRootImpl.performTraversals:4755 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901
+05-18 00:21:20.517  5198  5198 W libc    : Access denied finding property "vendor.gpp.create_frc_extension"
+05-18 00:21:20.517  5198  5198 I VRI[MainActivity]@12b063a: Relayout returned: old=(0,0,1080,2520) new=(0,0,1080,2520) relayoutAsync=false req=(1080,2520)0 dur=2 res=0x3 s={true 0xb400007b95279720} ch=true seqId=0
+05-18 00:21:20.517  5198  5198 I VRI[MainActivity]@12b063a: performConfigurationChange setNightDimText nightDimLevel=0
+05-18 00:21:20.517  5198  5198 D VRI[MainActivity]@12b063a: mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007b95279720} hwInitialized=true
+05-18 00:21:20.517  5198  5198 D FlutterJNI: Sending viewport metrics to the engine.
+05-18 00:21:20.518  5198  5198 D SurfaceView: 20613268 updateSurface: has no frame
+05-18 00:21:20.518  5198  5198 I SV[20613268 MainActivity]: windowStopped(false) true io.flutter.embedding.android.FlutterSurfaceView{13a8894 V.E...... ......ID 0,0-1080,2520} of VRI[MainActivity]@12b063a
+05-18 00:21:20.518  5198  5198 D SurfaceView: 20613268 updateSurface: has no frame
+05-18 00:21:20.518  5198  5198 D VRI[MainActivity]@12b063a: reportNextDraw android.view.ViewRootImpl.performTraversals:5394 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901 android.view.Choreographer$CallbackRecord.run:1910
+05-18 00:21:20.518  5198  5198 I SurfaceView: 20613268 Changes: creating=true format=true size=true visible=true alpha=false hint=false left=true top=true z=false attached=true lifecycleStrategy=false
+05-18 00:21:20.520  5198  5198 W libc    : Access denied finding property "vendor.gpp.create_frc_extension"
+05-18 00:21:20.520  5198  5198 I BufferQueueProducer: [](id:144e00000001,api:0,p:0,c:5198) setDequeueTimeout:2077252342
+05-18 00:21:20.520  5198  5198 I BLASTBufferQueue_Java: new BLASTBufferQueue, mName= 13a8894 SurfaceView[com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity]@0 mNativeObject= 0xb400007b352b0600 caller= android.view.SurfaceView.createBlastSurfaceControls:1781 android.view.SurfaceView.updateSurface:1450 android.view.SurfaceView.lambda$new$0:280 android.view.SurfaceView.$r8$lambda$NfZyM_TG8F8lqzaOVZ7noREFjzU:0 android.view.SurfaceView$$ExternalSyntheticLambda1.onPreDraw:0 android.view.ViewTreeObserver.dispatchOnPreDraw:1229 android.view.ViewRootImpl.performTraversals:5399 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901
+05-18 00:21:20.520  5198  5198 I BLASTBufferQueue_Java: update, w= 1080 h= 2520 mName = 13a8894 SurfaceView[com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity]@0 mNativeObject= 0xb400007b352b0600 sc.mNativeObject= 0xb400007a65251790 format= 4 caller= android.view.SurfaceView.createBlastSurfaceControls:1782 android.view.SurfaceView.updateSurface:1450 android.view.SurfaceView.lambda$new$0:280 android.view.SurfaceView.$r8$lambda$NfZyM_TG8F8lqzaOVZ7noREFjzU:0 android.view.SurfaceView$$ExternalSyntheticLambda1.onPreDraw:0 android.view.ViewTreeObserver.dispatchOnPreDraw:1229
+05-18 00:21:20.520  5198  5198 I SurfaceView: 20613268 Cur surface: Surface(name=null mNativeObject=0)/@0x8f9cff9
+05-18 00:21:20.520  5198  5198 D SurfaceComposerClient: setCornerRadius ## 13a8894 SurfaceView[com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity]@0#43498 cornerRadius=0.000000
+05-18 00:21:20.520  5198  5198 I SV[20613268 MainActivity]: pST: sr = Rect(0, 0 - 1080, 2520) sw = 1080 sh = 2520
+05-18 00:21:20.520  5198  5198 D SurfaceView: 20613268 performSurfaceTransaction RenderWorker position = [0, 0, 1080, 2520] surfaceSize = 1080x2520
+05-18 00:21:20.520  5198  5198 W libc    : Access denied finding property "vendor.gpp.create_frc_extension"
+05-18 00:21:20.520  5198  5198 I SV[20613268 MainActivity]: updateSurface: mVisible = true mSurface.isValid() = true
+05-18 00:21:20.520  5198  5198 I SV[20613268 MainActivity]: updateSurface: mSurfaceCreated = false surfaceChanged = true visibleChanged = true
+05-18 00:21:20.520  5198  5198 I SurfaceView: 20613268 visibleChanged -- surfaceCreated
+05-18 00:21:20.520  5198  5198 I SV[20613268 MainActivity]: surfaceCreated 1 #8 io.flutter.embedding.android.FlutterSurfaceView{13a8894 V.E...... ......ID 0,0-1080,2520}
+05-18 00:21:20.521  5198  5222 I AdrenoUtils: <ReadGpuID:366>: Reading chip ID through GSL
+05-18 00:21:20.523  5198  5198 I SurfaceView: 20613268 surfaceChanged -- format=4 w=1080 h=2520
+05-18 00:21:20.523  5198  5198 I SV[20613268 MainActivity]: surfaceChanged (1080,2520) 1 #8 io.flutter.embedding.android.FlutterSurfaceView{13a8894 V.E...... ......ID 0,0-1080,2520}
+05-18 00:21:20.524  5198  5198 I SurfaceView: 20613268 surfaceRedrawNeeded
+05-18 00:21:20.524  5198  5198 V SurfaceView: Layout: x=0 y=0 w=1080 h=2520, frame=Rect(0, 0 - 1080, 2520)
+05-18 00:21:20.524  5198  5198 D VRI[MainActivity]@12b063a: Canceling draw. cancelDueToPreDrawListener=true cancelDueToSync=false
+05-18 00:21:20.525  5198  5217 D HWUI    : HWUI - treat SMPTE_170M as sRGB
+05-18 00:21:20.529  5198  5198 D PhoneWindow: forceLight changed to false [com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity] from com.android.internal.policy.PhoneWindow.updateForceLightNavigationBar:4584 com.android.internal.policy.PhoneWindow.setNavigationBarColor:4275 io.flutter.plugin.platform.PlatformPlugin.setSystemChromeSystemUIOverlayStyle:514 io.flutter.plugin.platform.PlatformPlugin.access$700:36 io.flutter.plugin.platform.PlatformPlugin$1.setSystemUiOverlayStyle:123
+05-18 00:21:20.536  5198  5198 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=statusBars, host=com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity
+05-18 00:21:20.536  5198  5198 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=navigationBars, host=com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity
+05-18 00:21:20.536  5198  5198 I BLASTBufferQueue_Java: update, w= 1080 h= 2520 mName = VRI[MainActivity]@12b063a mNativeObject= 0xb400007b352a2520 sc.mNativeObject= 0xb400007a65251250 format= -3 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3559 android.view.ViewRootImpl.relayoutWindow:11614 android.view.ViewRootImpl.performTraversals:4755 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901
+05-18 00:21:20.536  5198  5198 I VRI[MainActivity]@12b063a: Relayout returned: old=(0,0,1080,2520) new=(0,0,1080,2520) relayoutAsync=false req=(1080,2520)0 dur=1 res=0x1 s={true 0xb400007b95279720} ch=false seqId=0
+05-18 00:21:20.536  5198  5198 D FlutterJNI: Sending viewport metrics to the engine.
+05-18 00:21:20.536  5198  5198 I VRI[MainActivity]@12b063a: updateBoundsLayer: t=android.view.SurfaceControl$Transaction@2482d4a sc=Surface(name=Bounds for - com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity@0)/@0x7c404bb frame=1
+05-18 00:21:20.537  5198  5198 D VRI[MainActivity]@12b063a: reportNextDraw android.view.ViewRootImpl.performTraversals:5394 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901 android.view.Choreographer$CallbackRecord.run:1910
+05-18 00:21:20.864  5198  5198 I flutter : [Main] Firebase initialisation skipped until analytics consent is accepted
+05-18 00:21:20.864  5198  5222 I BLASTBufferQueue: [13a8894 SurfaceView[com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity]@0#1](f:0,a:0,s:0) onFrameAvailable the first frame is available
+05-18 00:21:20.864  5198  5222 I SurfaceComposerClient: apply transaction with the first frame. layerId: 43499, bufferData(ID: 22325240004618, frameNumber: 1)
+05-18 00:21:20.864  5198  5198 I flutter : [SupabaseService] [SupabaseService] Placeholder credentials detected - running in offline-only mode.
+05-18 00:21:20.918  5198  5198 I Choreographer: Skipped 47 frames!  The application may be doing too much work on its main thread.
+05-18 00:21:20.928  5198  5198 I SurfaceView: 20613268 finishedDrawing
+05-18 00:21:20.936  5198  5198 D WindowLayoutComponentImpl: Register WindowLayoutInfoListener on Context=com.tiarnanlarkin.danio.MainActivity@70ad043, of which baseContext=android.app.ContextImpl@763d416
+05-18 00:21:21.221  5198  5198 I Choreographer: Skipped 81 frames!  The application may be doing too much work on its main thread.
+05-18 00:21:21.221  5198  5198 D VRI[MainActivity]@12b063a: Setup new sync=wmsSync-VRI[MainActivity]@12b063a#1
+05-18 00:21:21.221  5198  5198 I VRI[MainActivity]@12b063a: Creating new active sync group VRI[MainActivity]@12b063a#2
+05-18 00:21:21.221  5198  5198 D VRI[MainActivity]@12b063a: Draw frame after cancel
+05-18 00:21:21.221  5198  5198 D VRI[MainActivity]@12b063a: registerCallbacksForSync syncBuffer=false
+05-18 00:21:21.222  5198  5217 D SurfaceView: 20613268 updateSurfacePosition RenderWorker, frameNr = 1, position = [0, 0, 1080, 2520] surfaceSize = 1080x2520
+05-18 00:21:21.222  5198  5217 I SV[20613268 MainActivity]: uSP: rtp = Rect(0, 0 - 1080, 2520) rtsw = 1080 rtsh = 2520
+05-18 00:21:21.222  5198  5217 I SV[20613268 MainActivity]: onSSPAndSRT: pl = 0 pt = 0 sx = 1.0 sy = 1.0
+05-18 00:21:21.222  5198  5217 I SV[20613268 MainActivity]: aOrMT: VRI[MainActivity]@12b063a t = android.view.SurfaceControl$Transaction@6c11ba2 fN = 1 android.view.SurfaceView.-$$Nest$mapplyOrMergeTransaction:0 android.view.SurfaceView$SurfaceViewPositionUpdateListener.positionChanged:1932 android.graphics.RenderNode$CompositePositionUpdateListener.positionChanged:401
+05-18 00:21:21.222  5198  5217 I VRI[MainActivity]@12b063a: mWNT: t=0xb400007a75270c90 mBlastBufferQueue=0xb400007b352a2520 fn= 1 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.SurfaceView.applyOrMergeTransaction:1863 android.view.SurfaceView.-$$Nest$mapplyOrMergeTransaction:0 android.view.SurfaceView$SurfaceViewPositionUpdateListener.positionChanged:1932
+05-18 00:21:21.222  5198  5241 D VRI[MainActivity]@12b063a: Received frameDrawingCallback syncResult=0 frameNum=1.
+05-18 00:21:21.222  5198  5241 I VRI[MainActivity]@12b063a: mWNT: t=0xb400007a752a0090 mBlastBufferQueue=0xb400007b352a2520 fn= 1 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$12.onFrameDraw:15352 android.view.ThreadedRenderer$1.onFrameDraw:718 <bottom of call stack>
+05-18 00:21:21.222  5198  5241 I VRI[MainActivity]@12b063a: Setting up sync and frameCommitCallback
+05-18 00:21:21.225  5198  5217 I BLASTBufferQueue: [VRI[MainActivity]@12b063a#0](f:0,a:0,s:0) onFrameAvailable the first frame is available
+05-18 00:21:21.225  5198  5217 I SurfaceComposerClient: apply transaction with the first frame. layerId: 43494, bufferData(ID: 22325240004623, frameNumber: 1)
+05-18 00:21:21.225  5198  5217 I VRI[MainActivity]@12b063a: Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+05-18 00:21:21.225  5198  5217 D HWUI    : CFMS:: SetUp Pid : 5198    Tid : 5217
+05-18 00:21:21.225  5198  5198 D VRI[MainActivity]@12b063a: reportDrawFinished seqId=0
+05-18 00:21:21.331  5198  5198 I flutter : [LocalJsonStorageService] ? Storage loaded successfully: 1 tanks, 1 livestock, 0 equipment
+05-18 00:21:21.378  5198  5198 D FlutterJNI: Sending viewport metrics to the engine.
+05-18 00:21:21.379  5198  5198 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=io.flutter.embedding.android.FlutterActivity$1@55bc8f
+05-18 00:21:21.400  5198  5198 D VRI[MainActivity]@12b063a: mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400007b95279720}
+05-18 00:21:21.400  5198  5198 D InputMethodManagerUtils: startInputInner - Id : 0
+05-18 00:21:21.400  5198  5198 I InputMethodManager: startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+05-18 00:21:21.401  5198  5198 I BLASTBufferQueue_Java: update, w= 1080 h= 2520 mName = VRI[MainActivity]@12b063a mNativeObject= 0xb400007b352a2520 sc.mNativeObject= 0xb400007a65251250 format= -3 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3559 android.view.ViewRootImpl.relayoutWindow:11614 android.view.ViewRootImpl.performTraversals:4755 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901
+05-18 00:21:21.401  5198  5198 I VRI[MainActivity]@12b063a: Relayout returned: old=(0,0,1080,2520) new=(0,0,1080,2520) relayoutAsync=true req=(1080,2520)0 dur=0 res=0x0 s={true 0xb400007b95279720} ch=false seqId=0
+05-18 00:21:21.401  5198  5198 D FlutterJNI: Sending viewport metrics to the engine.
+05-18 00:21:21.401  5198  5198 I VRI[MainActivity]@12b063a: updateBoundsLayer: t=android.view.SurfaceControl$Transaction@2482d4a sc=Surface(name=Bounds for - com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity@0)/@0x7c404bb frame=2
+05-18 00:21:21.401  5198  5198 I VRI[MainActivity]@12b063a: registerCallbackForPendingTransactions
+05-18 00:21:21.402  5198  5242 I VRI[MainActivity]@12b063a: mWNT: t=0xb400007a752995d0 mBlastBufferQueue=0xb400007b352a2520 fn= 2 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$10.onFrameDraw:6487 android.view.ViewRootImpl$4.onFrameDraw:2474 android.view.ThreadedRenderer$1.onFrameDraw:718
+05-18 00:21:21.404  5198  5268 D InputTransport: Input channel constructed: 'ClientS', fd=195
+05-18 00:21:21.414  5198  5198 D ConnectivityManager: StackLog: [android.net.ConnectivityManager.sendRequestForNetwork(ConnectivityManager.java:4740)] [android.net.ConnectivityManager.registerDefaultNetworkCallbackForUid(ConnectivityManager.java:5465)] [android.net.ConnectivityManager.registerDefaultNetworkCallback(ConnectivityManager.java:5432)] [android.net.ConnectivityManager.registerDefaultNetworkCallback(ConnectivityManager.java:5406)] [dev.fluttercommunity.plus.connectivity.ConnectivityBroadcastReceiver.onListen(ConnectivityBroadcastReceiver.java:77)] [io.flutter.plugin.common.EventChannel$IncomingStreamRequestHandler.onListen(EventChannel.java:218)] [io.flutter.plugin.common.EventChannel$IncomingStreamRequestHandler.onMessage(EventChannel.java:197)] [io.flutter.embedding.engine.dart.DartMessenger.invokeHandler(DartMessenger.java:286)] [io.flutter.embedding.engine.dart.DartMessenger.lambda$dispatchMessageToQueue$0$io-flutter-embedding-engine-dart-DartMessenger(DartMessenger.java:313)] [io.flutter.embedding.engine.dart.DartMessenger$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)]
+05-18 00:21:21.415  5198  5198 I InputMethodManager: handleMessage: setImeVisibility visible=false
+05-18 00:21:21.415  5198  5198 D InsetsController: hide(ime(), fromIme=false)
+05-18 00:21:21.415  5198  5198 I ImeTracker: com.tiarnanlarkin.danio:1b503d6: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+05-18 00:21:26.412  5198  5306 D ProfileInstaller: Installing profile for com.tiarnanlarkin.danio
+05-18 00:21:30.678  5198  5206 W nanlarkin.danio: userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+05-18 00:21:44.536  5198  5198 D com.llfbandit.app_links: Intent { act=android.intent.action.VIEW dat=danio://qa/... flg=0x10000000 xflg=0x4 cmp=com.tiarnanlarkin.danio/.MainActivity }
+05-18 00:21:44.536  5198  5198 D com.llfbandit.app_links: Handled intent: action: android.intent.action.VIEW / data: danio://qa/smart
+05-18 00:21:44.539  5198  5198 I flutter : [QA] Deep link: danio://qa/smart
+05-18 00:21:44.570  5198  5198 I BLASTBufferQueue_Java: update, w= 1080 h= 2520 mName = VRI[MainActivity]@12b063a mNativeObject= 0xb400007b352a2520 sc.mNativeObject= 0xb400007a65251250 format= -3 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3559 android.view.ViewRootImpl.relayoutWindow:11614 android.view.ViewRootImpl.performTraversals:4755 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901
+05-18 00:21:44.570  5198  5198 I VRI[MainActivity]@12b063a: Relayout returned: old=(0,0,1080,2520) new=(0,0,1080,2520) relayoutAsync=true req=(1080,2520)0 dur=0 res=0x0 s={true 0xb400007b95279720} ch=false seqId=0
+05-18 00:21:44.570  5198  5198 I VRI[MainActivity]@12b063a: updateBoundsLayer: t=android.view.SurfaceControl$Transaction@2482d4a sc=Surface(name=Bounds for - com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity@0)/@0x7c404bb frame=5
+05-18 00:21:44.571  5198  5198 I VRI[MainActivity]@12b063a: registerCallbackForPendingTransactions
+05-18 00:21:44.571  5198  5241 I VRI[MainActivity]@12b063a: mWNT: t=0xb400007a752db190 mBlastBufferQueue=0xb400007b352a2520 fn= 5 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$10.onFrameDraw:6487 android.view.ViewRootImpl$4.onFrameDraw:2474 android.view.ThreadedRenderer$1.onFrameDraw:718
+05-18 00:22:06.607  5198  5198 D com.llfbandit.app_links: Intent { act=android.intent.action.VIEW dat=danio://qa/... flg=0x10000000 xflg=0x4 cmp=com.tiarnanlarkin.danio/.MainActivity }
+05-18 00:22:06.607  5198  5198 D com.llfbandit.app_links: Handled intent: action: android.intent.action.VIEW / data: danio://qa/more
+05-18 00:22:06.608  5198  5198 I flutter : [QA] Deep link: danio://qa/more
+05-18 00:22:28.307  5198  5198 D com.llfbandit.app_links: Intent { act=android.intent.action.VIEW dat=danio://qa/... flg=0x10000000 xflg=0x4 cmp=com.tiarnanlarkin.danio/.MainActivity }
+05-18 00:22:28.307  5198  5198 D com.llfbandit.app_links: Handled intent: action: android.intent.action.VIEW / data: danio://qa/settings
+05-18 00:22:28.307  5198  5198 I flutter : [QA] Deep link: danio://qa/settings
+05-18 00:22:59.758  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:22:59.759  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:23:00.267  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:23:03.267  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:23:17.391  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:23:17.391  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:23:17.890  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:23:20.891  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:23:43.606  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:23:43.606  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:23:43.609  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:23:46.611  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:24:46.094  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:24:46.094  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:24:46.097  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:24:46.120  5198  5198 I ImeFocusController: onPreWindowFocus: skipped hasWindowFocus=false mHasImeFocus=true
+05-18 00:24:46.121  5198  5198 I ImeFocusController: onPostWindowFocus: skipped hasWindowFocus=false mHasImeFocus=true
+05-18 00:24:46.238  5198  5198 D InputTransport: Input channel destroyed: 'ClientS', fd=195
+05-18 00:24:49.097  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:25:18.494  5198  5198 I BLASTBufferQueue_Java: update, w= 1080 h= 2520 mName = VRI[MainActivity]@12b063a mNativeObject= 0xb400007b352a2520 sc.mNativeObject= 0xb400007a65251250 format= -3 caller= android.view.ViewRootImpl.updateBlastSurfaceIfNeeded:3559 android.view.ViewRootImpl.relayoutWindow:11614 android.view.ViewRootImpl.performTraversals:4755 android.view.ViewRootImpl.doTraversal:3904 android.view.ViewRootImpl$TraversalRunnable.run:12819 android.view.Choreographer$CallbackRecord.run:1901
+05-18 00:25:18.494  5198  5198 I VRI[MainActivity]@12b063a: Relayout returned: old=(0,0,1080,2520) new=(0,0,1080,2520) relayoutAsync=true req=(1080,2520)0 dur=1 res=0x0 s={true 0xb400007b95279720} ch=false seqId=0
+05-18 00:25:18.494  5198  5198 I VRI[MainActivity]@12b063a: updateBoundsLayer: t=android.view.SurfaceControl$Transaction@2482d4a sc=Surface(name=Bounds for - com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity@0)/@0x7c404bb frame=20
+05-18 00:25:18.494  5198  5198 I VRI[MainActivity]@12b063a: registerCallbackForPendingTransactions
+05-18 00:25:18.495  5198  5242 I VRI[MainActivity]@12b063a: mWNT: t=0xb400007a752effd0 mBlastBufferQueue=0xb400007b352a2520 fn= 20 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$10.onFrameDraw:6487 android.view.ViewRootImpl$4.onFrameDraw:2474 android.view.ThreadedRenderer$1.onFrameDraw:718
+05-18 00:25:18.503  5198  5198 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=statusBars, host=com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity
+05-18 00:25:18.503  5198  5198 I InsetsSourceConsumer: applyRequestedVisibilityToControl: visible=true, type=navigationBars, host=com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity
+05-18 00:25:18.506  5198  5198 D VRI[MainActivity]@12b063a: mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400007b95279720}
+05-18 00:25:18.506  5198  5198 D InputMethodManagerUtils: startInputInner - Id : 0
+05-18 00:25:18.506  5198  5198 I InputMethodManager: startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+05-18 00:25:18.507  5198  5198 I InputMethodManager: handleMessage: setImeVisibility visible=false
+05-18 00:25:18.507  5198  5198 D InsetsController: hide(ime(), fromIme=false)
+05-18 00:25:18.507  5198  5198 I ImeTracker: com.tiarnanlarkin.danio:99561fb4: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+05-18 00:25:18.508  5198  5210 D InputTransport: Input channel constructed: 'ClientS', fd=184
+05-18 00:25:46.231  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:25:46.231  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:25:46.233  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:25:49.233  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:26:14.294  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:26:14.294  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:26:14.296  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:26:15.234  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:26:15.235  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:26:18.236  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:26:53.986  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme key 0
+05-18 00:26:53.987  5198  5198 D Activity: onKeyDown(KEYCODE_BACK), activity=com.tiarnanlarkin.danio.MainActivity@70ad043
+05-18 00:26:53.992  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme key 1
+05-18 00:26:53.993  5198  5198 D Activity: onKeyUp(KEYCODE_BACK) isTracking()=true isCanceled()=true hasCallback=true
+05-18 00:26:54.833  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:26:54.833  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:26:55.333  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:26:58.333  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:27:22.186  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:27:22.186  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:27:22.686  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:27:25.687  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:27:41.799  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:27:41.799  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:27:42.211  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:27:45.211  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:28:20.942  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:28:20.942  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:28:21.342  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:28:24.344  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:29:08.111  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:29:08.111  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:29:08.112  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:29:11.114  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:29:39.895  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme key 0
+05-18 00:29:39.896  5198  5198 D Activity: onKeyDown(KEYCODE_BACK), activity=com.tiarnanlarkin.danio.MainActivity@70ad043
+05-18 00:29:39.898  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme key 1
+05-18 00:29:39.898  5198  5198 D Activity: onKeyUp(KEYCODE_BACK) isTracking()=true isCanceled()=true hasCallback=true
+05-18 00:29:40.742  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:29:40.742  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:29:40.743  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:29:43.743  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:30:10.256  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:30:10.256  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:30:10.755  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:30:13.755  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:30:34.159  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:30:34.159  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:30:34.162  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:30:37.162  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a
+05-18 00:31:06.039  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme key 0
+05-18 00:31:06.039  5198  5198 D Activity: onKeyDown(KEYCODE_BACK), activity=com.tiarnanlarkin.danio.MainActivity@70ad043
+05-18 00:31:06.041  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme key 1
+05-18 00:31:06.041  5198  5198 D Activity: onKeyUp(KEYCODE_BACK) isTracking()=true isCanceled()=true hasCallback=true
+05-18 00:31:06.880  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 0
+05-18 00:31:06.880  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=high hint, reason=touch, vri=VRI[MainActivity]@12b063a
+05-18 00:31:06.881  5198  5198 I VRI[MainActivity]@12b063a: ViewPostIme pointer 1
+05-18 00:31:09.882  5198  5198 I VRI[MainActivity]@12b063a: call setFrameRateCategory for touch hint category=no preference, reason=boost timeout, vri=VRI[MainActivity]@12b063a

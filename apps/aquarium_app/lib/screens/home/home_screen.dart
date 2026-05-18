@@ -36,8 +36,6 @@ import 'widgets/tank_switcher.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
 import 'widgets/today_board.dart';
-import 'widgets/welcome_banner.dart';
-import 'widgets/comeback_banner.dart';
 import 'widgets/room_control_fab.dart';
 import 'widgets/skeleton_room.dart';
 import 'widgets/tank_list_tile.dart';
@@ -62,19 +60,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentTankIndex = 0;
   bool _isSelectMode = false;
   bool _isNavigatingToCreate = false;
-  bool _showWelcomeBanner = false;
-  bool _showComebackBanner = false;
   bool _demoModeDismissed = false;
   bool _showStageHandleTooltip = false;
-  String? _cachedUserName;
-  String? _cachedFishSpeciesName;
   final Set<String> _selectedTankIds = {};
 
   @override
   void initState() {
     super.initState();
-    _checkWelcomeBanner();
-    _checkComebackBanner();
     _checkReturningUserFlow();
     _checkGuidancePrompt();
   }
@@ -118,53 +110,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
     } finally {
       sub.close();
-    }
-  }
-
-  Future<void> _checkWelcomeBanner() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    final hasSeen = prefs.getBool('has_seen_welcome_banner') ?? false;
-    if (!hasSeen && mounted) {
-      final profile = await _waitForProfile();
-      if (profile != null) {
-        _cachedUserName = profile.name;
-      }
-      setState(() => _showWelcomeBanner = true);
-      await prefs.setBool('has_seen_welcome_banner', true);
-      Future.delayed(const Duration(seconds: 4), () {
-        if (mounted) setState(() => _showWelcomeBanner = false);
-      });
-    }
-  }
-
-  Future<void> _checkComebackBanner() async {
-    try {
-      final profile = await _waitForProfile();
-      if (profile == null || !mounted) return;
-
-      final hadStreak = profile.currentStreak;
-      final lastActivity = profile.lastActivityDate;
-      _cachedFishSpeciesName = profile.firstFishSpeciesId;
-      _cachedUserName ??= profile.name;
-      if (hadStreak <= 0 || lastActivity == null) return;
-
-      final today = DateTime.now();
-      final todayStr = today.toIso8601String().substring(0, 10);
-      final yesterdayStr = today
-          .subtract(const Duration(days: 1))
-          .toIso8601String()
-          .substring(0, 10);
-      final lastStr = lastActivity.toIso8601String().substring(0, 10);
-
-      if (lastStr != todayStr && lastStr != yesterdayStr && mounted) {
-        setState(() => _showComebackBanner = true);
-      }
-    } catch (e, st) {
-      logError(
-        'HomeScreen: comeback banner check failed: $e',
-        stackTrace: st,
-        tag: 'HomeScreen',
-      );
     }
   }
 
@@ -784,9 +729,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final showWelcome = _showWelcomeBanner;
-    final showComeback = _showComebackBanner && !showWelcome;
-
     // FQ-E2: Streak loss acknowledgement
     ref.listen<int>(streakResetProvider, (prev, next) {
       if (next > 0 && mounted) {
@@ -802,19 +744,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Stack(
         children: [
           Positioned.fill(child: _buildLivingRoomScreen()),
-          if (showWelcome)
-            WelcomeBanner(
-              userName: _cachedUserName,
-              visible: _showWelcomeBanner,
-              onDismiss: () => setState(() => _showWelcomeBanner = false),
-            ),
-          if (showComeback)
-            ComebackBanner(
-              userName: _cachedUserName,
-              fishSpeciesName: _cachedFishSpeciesName,
-              onDismiss: () => setState(() => _showComebackBanner = false),
-            ),
-          if (_showStageHandleTooltip && !showWelcome && !showComeback)
+          if (_showStageHandleTooltip)
             Positioned(
               bottom:
                   MediaQuery.of(context).viewPadding.bottom +

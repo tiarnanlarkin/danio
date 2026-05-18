@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../widgets/app_bottom_sheet.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/danio_bottom_dock.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/app_feedback.dart';
+import '../../utils/logger.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../analytics_screen.dart';
@@ -90,19 +93,102 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
 }
 
 /// Quick water test log bottom sheet.
-void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
-  final phC = TextEditingController();
-  final tempC = TextEditingController();
-  final ammoniaC = TextEditingController();
-
+void showQuickLogSheet(BuildContext context, WidgetRef _, Tank tank) {
+  final messenger = ScaffoldMessenger.of(context);
   showAppDragSheet(
     context: context,
-    builder: (ctx) => Padding(
+    builder: (ctx) => _QuickWaterTestSheet(tank: tank, messenger: messenger),
+  );
+}
+
+class _QuickWaterTestSheet extends ConsumerStatefulWidget {
+  final Tank tank;
+  final ScaffoldMessengerState messenger;
+
+  const _QuickWaterTestSheet({required this.tank, required this.messenger});
+
+  @override
+  ConsumerState<_QuickWaterTestSheet> createState() =>
+      _QuickWaterTestSheetState();
+}
+
+class _QuickWaterTestSheetState extends ConsumerState<_QuickWaterTestSheet> {
+  final TextEditingController _phC = TextEditingController();
+  final TextEditingController _tempC = TextEditingController();
+  final TextEditingController _ammoniaC = TextEditingController();
+
+  @override
+  void dispose() {
+    _phC.dispose();
+    _tempC.dispose();
+    _ammoniaC.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final ph = double.tryParse(_phC.text);
+    final temp = double.tryParse(_tempC.text);
+    final ammonia = double.tryParse(_ammoniaC.text);
+    if (ph == null && temp == null && ammonia == null) {
+      AppFeedback.showWarning(context, 'Enter at least one test value.');
+      return;
+    }
+
+    try {
+      final now = DateTime.now();
+      final log = LogEntry(
+        id: now.microsecondsSinceEpoch.toString(),
+        tankId: widget.tank.id,
+        type: LogType.waterTest,
+        timestamp: now,
+        createdAt: now,
+        title: 'Quick test',
+        waterTest: WaterTestResults(
+          ph: ph,
+          temperature: temp,
+          ammonia: ammonia,
+        ),
+      );
+      final storage = ref.read(storageServiceProvider);
+      await storage.saveLog(log);
+      ref.invalidate(logsProvider(widget.tank.id));
+      ref.invalidate(allLogsProvider(widget.tank.id));
+      await ref.read(userProfileProvider.notifier).addXp(10);
+      if (!mounted) return;
+      FocusManager.instance.primaryFocus?.unfocus();
+      Navigator.maybePop(context);
+      await Future<void>.delayed(AppDurations.medium4);
+      AppFeedback.showSuccessViaMessenger(
+        widget.messenger,
+        'Water test logged! +10 XP',
+      );
+    } catch (e, st) {
+      logError(
+        'HomeScreen: quick water test save failed: $e',
+        stackTrace: st,
+        tag: 'HomeScreen',
+      );
+      if (mounted) {
+        AppFeedback.showError(
+          context,
+          'Couldn\'t save that water test. Try again.',
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
       padding: EdgeInsets.only(
         left: AppSpacing.lg2,
         right: AppSpacing.lg2,
         top: AppSpacing.md,
-        bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
+        bottom:
+            MediaQuery.of(context).viewInsets.bottom +
+            MediaQuery.of(context).viewPadding.bottom +
+            DanioBottomDock.contentClearance +
+            AppSpacing.lg,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -116,7 +202,7 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
             children: [
               Expanded(
                 child: TextField(
-                  controller: phC,
+                  controller: _phC,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
@@ -126,7 +212,7 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: TextField(
-                  controller: tempC,
+                  controller: _tempC,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
@@ -136,7 +222,7 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: TextField(
-                  controller: ammoniaC,
+                  controller: _ammoniaC,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
@@ -150,39 +236,10 @@ void showQuickLogSheet(BuildContext context, WidgetRef ref, Tank tank) {
             label: 'Save & Earn 10 XP',
             leadingIcon: Icons.save,
             isFullWidth: true,
-            onPressed: () async {
-              final ph = double.tryParse(phC.text);
-              final temp = double.tryParse(tempC.text);
-              final ammonia = double.tryParse(ammoniaC.text);
-              if (ph == null && temp == null && ammonia == null) return;
-              Navigator.maybePop(ctx);
-              final now = DateTime.now();
-              final log = LogEntry(
-                id: now.microsecondsSinceEpoch.toString(),
-                tankId: tank.id,
-                type: LogType.waterTest,
-                timestamp: now,
-                createdAt: now,
-                title: 'Quick test',
-                waterTest: WaterTestResults(
-                  ph: ph,
-                  temperature: temp,
-                  ammonia: ammonia,
-                ),
-              );
-              final storage = ref.read(storageServiceProvider);
-              await storage.saveLog(log);
-              ref.invalidate(logsProvider(tank.id));
-              ref.invalidate(allLogsProvider(tank.id));
-              await ref.read(userProfileProvider.notifier).addXp(10);
-            },
+            onPressed: _save,
           ),
         ],
       ),
-    ),
-  ).whenComplete(() {
-    phC.dispose();
-    tempC.dispose();
-    ammoniaC.dispose();
-  });
+    );
+  }
 }

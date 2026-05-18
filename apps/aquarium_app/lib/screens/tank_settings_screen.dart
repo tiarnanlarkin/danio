@@ -149,14 +149,18 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       const SizedBox(height: AppSpacing.sm2),
       DropdownButtonFormField<TankType>(
         initialValue: _type,
+        isExpanded: true,
         items: const [
           DropdownMenuItem(
             value: TankType.freshwater,
-            child: Text('Freshwater'),
+            child: Text('Freshwater', overflow: TextOverflow.ellipsis),
           ),
           DropdownMenuItem(
             value: TankType.marine,
-            child: Text('Marine (not available in this version)'),
+            child: Text(
+              'Marine (not available in this version)',
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
         onChanged: (v) {

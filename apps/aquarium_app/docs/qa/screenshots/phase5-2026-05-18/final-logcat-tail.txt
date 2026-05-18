@@ -1,0 +1,528 @@
+--------- beginning of main
+05-18 01:22:58.357 10570 10570 I MediaSearch.ServiceUtils: JobService was previously registered.
+05-18 01:22:58.380 22446 22922 I SemWifiServiceDetector: Service det. suspended: T / T / 14636
+05-18 01:22:58.467 23031 23167 D SatelliteController: isInCarrierRoamingNbIotNtn: satellite is disabled
+05-18 01:22:58.468 23031 23167 V SatelliteController: getWwanIsInService: return true
+05-18 01:22:58.523  2382  2382 I CNSS    : /sys/wifi/max_chipset_log_size doesn't exist
+05-18 01:22:58.567 22446 22988 D NetdEventListenerService: DNS Requested by 171, 10431(com.tplink.tpm5), SUCCESS, 64ms
+05-18 01:22:58.617 22113 22557 I thermal_core: pivot(AP) : 392, skin : 389
+05-18 01:22:58.617 22113 22557 I vendor.samsung.hardware.thermal-service: index = 3.800000
+05-18 01:22:58.617 22113 22557 I vendor.samsung.hardware.thermal-service: 2 / 2
+05-18 01:22:58.662 22092 22102 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:22:58.662 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:22:58.662 22092 22102 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_rcv: 0
+05-18 01:22:58.662 22092 22102 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:22:58.663 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:22:58.663 22092 22102 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_spk: 0
+--------- beginning of system
+05-18 01:22:58.664 24930 26001 I SDHMS:x : SIOP:: AP:392 BAT:359 USB:354 CHG:393 PA:388 CP:388 WIFI:393 CF:392 BLK:0 SUBBAT:361 LRPTHM:377 SKIN:383 SKINF:388 SKINB:389 LRP:383 LRF:388 LRB:389 APT:388 APR:389 RCV:324 SPK:324 CAPR:383 CRCV:325 CSPK:334 CAMT:390 UPSPK:360 DNSPK:360 VAP02:396 VAP05:394 AMB2:311 HIGH:0 AVGCUR:724 AVGSYS:394 POWER:2890
+05-18 01:22:58.664 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_spk=33
+05-18 01:22:58.665 22086 28572 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_spk=33
+05-18 01:22:58.665 22092 22102 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:22:58.666 22092 22102 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:22:58.666 22092 22102 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_spk
+05-18 01:22:58.666 22092 22102 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:22:58.666 22092 22102 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_spk: 33
+05-18 01:22:58.666 22092 22102 I PAL: API: pal_set_param: 1377: Enter: param id 3002
+05-18 01:22:58.666 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:22:58.666 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:22:58.666 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:22:58.667 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_rcv=33
+05-18 01:22:58.667 22086 28572 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_rcv=33
+05-18 01:22:58.667 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:22:58.667 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:22:58.667 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_rcv
+05-18 01:22:58.667 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:22:58.667 22092 24232 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_rcv: 33
+05-18 01:22:58.667 22092 24232 I PAL: API: pal_set_param: 1377: Enter: param id 3001
+05-18 01:22:58.667 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:22:58.668 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:22:58.668 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:22:58.965  1297  1297 W keymint_tee: [WRN]begin req PARAMS: A32, BM32, PD1,
+05-18 01:22:58.969  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (km_add_tag:528) skip: non repetable tag already exists with different value: 268435458
+05-18 01:22:58.969  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_begin() returns 0
+05-18 01:22:58.969  1297  1297 D android.hardware.security.keymint-service: begin: ret 0
+05-18 01:22:58.970  1291 12338 I keystore2: system/security/keystore2/src/security_level.rs:466 - In create_operation. Success to create IKeystoreOperation. 10430, None
+05-18 01:22:58.971  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_update() returns 0
+05-18 01:22:58.971  1297  1297 D android.hardware.security.keymint-service: update: ret 0
+05-18 01:22:58.971  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_finish() returns 0
+05-18 01:22:58.972  1297  1297 D android.hardware.security.keymint-service: finish: ret 0
+05-18 01:22:58.973  1297  1297 W keymint_tee: [WRN]begin req PARAMS: A32, BM32, PD1,
+05-18 01:22:58.976  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (km_add_tag:528) skip: non repetable tag already exists with different value: 268435458
+05-18 01:22:58.976  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_begin() returns 0
+05-18 01:22:58.976  1297  1297 D android.hardware.security.keymint-service: begin: ret 0
+05-18 01:22:58.976  1291 12338 I keystore2: system/security/keystore2/src/security_level.rs:466 - In create_operation. Success to create IKeystoreOperation. 10430, None
+05-18 01:22:58.978  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_update() returns 0
+05-18 01:22:58.978  1297  1297 D android.hardware.security.keymint-service: update: ret 0
+05-18 01:22:58.979  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_finish() returns 0
+05-18 01:22:58.979  1297  1297 D android.hardware.security.keymint-service: finish: ret 0
+05-18 01:22:58.980  1297  1297 W keymint_tee: [WRN]begin req PARAMS: A32, BM32, PD1,
+05-18 01:22:58.982  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (km_add_tag:528) skip: non repetable tag already exists with different value: 268435458
+05-18 01:22:58.982  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_begin() returns 0
+05-18 01:22:58.982  1297  1297 D android.hardware.security.keymint-service: begin: ret 0
+05-18 01:22:58.982  1291 12338 I keystore2: system/security/keystore2/src/security_level.rs:466 - In create_operation. Success to create IKeystoreOperation. 10430, None
+05-18 01:22:58.983  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_update() returns 0
+05-18 01:22:58.983  1297  1297 D android.hardware.security.keymint-service: update: ret 0
+05-18 01:22:58.986  1297  1297 D keymint_swd: keymint_swd keymint [WRN] (swd_run_cb:263) swd_finish() returns 0
+05-18 01:22:58.986  1297  1297 D android.hardware.security.keymint-service: finish: ret 0
+05-18 01:22:58.987 22446 22988 D NetdEventListenerService: DNS Requested by 171, 10430(com.nordvpn.android), 4(FAIL), isBlocked=true, 0ms
+05-18 01:22:59.023 22446 22799 E WifiStaIfaceAidlImpl: getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+05-18 01:22:59.027 22446 27495 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 30448, isSameBssidAndFreq true
+05-18 01:22:59.031 22446 22925 D InsDataManager: onOutageCountUpdate() - Outage Data: 0, LQ : N. Outage Triggered: false
+05-18 01:22:59.032 22446 22925 D SemInsManager: {"bssid": "fe7926386295","rssi": -39.0,"latency": 0.0,"outage_count": 0,"lq_callback_triggered": false,"outage_log": "Unreliable statistics: -39.0 / 10 / 357 / 33 / 0 || fe7926386295: 0.000 / 0.000 / @ || N N / 0 0 / N 2.0 / N X 2 / 119473427 0 || 2026-05-18 01:22:58  / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0""Magnetic Sensor Events size": "0""Pressure Sensor Events size": "0"}
+05-18 01:22:59.036 22446 22942 D SGM:GameManager: identifyGamePackage. com.tiarnanlarkin.danio, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:105)
+05-18 01:22:59.036 22446 22942 D SGM:SemGameManager: isGamePackage(), pkgName=com.tiarnanlarkin.danio, ret=false
+05-18 01:22:59.346 24310 24378 I RequestManager_FLP: onOpChanged, op=0 / packageName=com.tplink.tpm5
+05-18 01:22:59.425  7746 12541 D CursorWindow: CursorWindow::CursorWindow initialSize:1048576 growBySize:1048576 maxSize:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Created CursorWindow with new MemoryDealer: mFreeOffset = 524, mSize = 1048576, mInitialSize = 1048576, mGrowthPaddingSize = 1048576, mMaxSize = 0, mData = 0xb40000785af41000
+05-18 01:22:59.425  7746 12541 D CursorWindow: native_init_empty: window = 0xb400007b2528ba00
+05-18 01:22:59.425  7746 12541 D CursorWindow: Not binding to startPos 0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Window: numRows = 0, size = 1048576, freeSpace = 1048052
+05-18 01:22:59.425  7746 12541 D CursorWindow: Stepped statement 0xb400007a5532bb28 to row 0
+05-18 01:22:59.425  7746 12541 D CursorWindow: allocRowSlot entered: Allocating row slot, mHeader->numRows is 0, chunkNum is 0, chunkPos is 0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Allocated row 0, rowSlot is at offset 8, fieldDir is 54 bytes at offset 524
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: 0,0 is TEXT with 64 bytes
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: 0,1 is TEXT with 22 bytes
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: 0,2 is TEXT with 26 bytes
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: 0,3 is TEXT with 6254 bytes
+05-18 01:22:59.425  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:4
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: 0,4 is NULL
+05-18 01:22:59.425  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:5
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: 0,5 is NULL
+05-18 01:22:59.425  7746 12541 D CursorWindow: Processed all rows
+05-18 01:22:59.425  7746 12541 D CursorWindow: Resetting statement 0xb400007a5532bb28 after fetching 1 rows in 6944 bytes
+05-18 01:22:59.425  7746 12541 D CursorWindow:
+05-18 01:22:59.425  7746 12541 D CursorWindow:
+05-18 01:22:59.425  7746 12541 D CursorWindow:
+05-18 01:22:59.425  7746 12541 D CursorWindow: Checking for NULL at 0,0 from 0xb400007b2528ba00
+05-18 01:22:59.425  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Getting string for 0,0 from 0xb400007b2528ba00
+05-18 01:22:59.425  7746 12541 D CursorWindow: read_field_slot entered: row:0, column:0, slotOut:0x7865fdc9f8
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Found field directory for 0,0 at rowSlot 8, offset 524
+05-18 01:22:59.425  7746 12541 D CursorWindow: Read field_slot_t 0,0: offset = 578, size = 64, type = 3
+05-18 01:22:59.425  7746 12541 D CursorWindow: Checking for NULL at 0,1 from 0xb400007b2528ba00
+05-18 01:22:59.425  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Getting string for 0,1 from 0xb400007b2528ba00
+05-18 01:22:59.425  7746 12541 D CursorWindow: read_field_slot entered: row:0, column:1, slotOut:0x7865fdc9f8
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Found field directory for 0,1 at rowSlot 8, offset 524
+05-18 01:22:59.425  7746 12541 D CursorWindow: Read field_slot_t 0,1: offset = 642, size = 22, type = 3
+05-18 01:22:59.425  7746 12541 D CursorWindow: Checking for NULL at 0,2 from 0xb400007b2528ba00
+05-18 01:22:59.425  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:2
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.425  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.425  7746 12541 D CursorWindow: Getting string for 0,2 from 0xb400007b2528ba00
+05-18 01:22:59.426  7746 12541 D CursorWindow: read_field_slot entered: row:0, column:2, slotOut:0x7865fdc9f8
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.426  7746 12541 D CursorWindow: Found field directory for 0,2 at rowSlot 8, offset 524
+05-18 01:22:59.426  7746 12541 D CursorWindow: Read field_slot_t 0,2: offset = 664, size = 26, type = 3
+05-18 01:22:59.426  7746 12541 D CursorWindow: Checking for NULL at 0,3 from 0xb400007b2528ba00
+05-18 01:22:59.426  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:3
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.426  7746 12541 D CursorWindow: Getting string for 0,3 from 0xb400007b2528ba00
+05-18 01:22:59.426  7746 12541 D CursorWindow: read_field_slot entered: row:0, column:3, slotOut:0x7865fdc9f8
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.426  7746 12541 D CursorWindow: Found field directory for 0,3 at rowSlot 8, offset 524
+05-18 01:22:59.426  7746 12541 D CursorWindow: Read field_slot_t 0,3: offset = 690, size = 6254, type = 3
+05-18 01:22:59.426  7746 12541 D CursorWindow: Checking for NULL at 0,4 from 0xb400007b2528ba00
+05-18 01:22:59.426  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:4
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.426  7746 12541 D CursorWindow: Checking for NULL at 0,5 from 0xb400007b2528ba00
+05-18 01:22:59.426  7746 12541 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:5
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:22:59.426  7746 12541 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:22:59.426  7746 12541 D CursorWindow: Closing window 0xb400007b2528ba00
+05-18 01:22:59.558  1083  1083 D io_stats: !@   8,0 r 30080997 844087748 w 7355861 138156840 d 1142144 242777332 f 118886 410849 iot 2520484 0 th 0 0 0 pt 0 inp 0 0 119473.958
+05-18 01:22:59.558  1083  1083 D io_stats: !@ Read_top(KB): ung.mediasearch:low(10570) 104 sung.mfcontents:high(10432) 92 kworker/2:15H:/(16828) 4
+05-18 01:22:59.558  1083  1083 D io_stats: !@ Write_top(KB): kworker/u17:2:/(9802) 1820 nordvpn.android:low(30259) 144 kworker/2:2:/(13665) 116
+05-18 01:22:59.558  1083  1083 D io_stats: !@ fuse-log: WORST (10446 1 0 4 0) TOTAL_LATENCY (10446 0 1 0 4) TOTAL_CNT (10446 4 1 4)
+05-18 01:22:59.667 22113 22557 I thermal_core: pivot(AP) : 393, skin : 389
+05-18 01:22:59.667 22113 22557 I vendor.samsung.hardware.thermal-service: index = 3.800000
+05-18 01:22:59.667 22113 22557 I vendor.samsung.hardware.thermal-service: 1 / 2
+05-18 01:22:59.741 22446 22589 D BatteryExternalStatsWorker: update stats : procstate-change (10)
+05-18 01:22:59.741 22446 22589 D BatteryExternalStatsWorker: Fetch WiFi data
+05-18 01:22:59.741 22446 22589 D BatteryExternalStatsWorker: Update Rail Energy data
+05-18 01:22:59.748 22446 22799 E WifiStaIfaceAidlImpl: getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+05-18 01:22:59.749 22446 22589 D BatteryExternalStatsWorker: mStats lock released
+05-18 01:22:59.756 22446 22589 D BatteryExternalStatsWorker: Update wifi state
+05-18 01:22:59.756 22446 22589 D BatteryExternalStatsWorker: done updateExternalStatsLocked
+05-18 01:22:59.758  1803  1832 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+05-18 01:22:59.759  1803  1832 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired
+05-18 01:22:59.759  1803  1832 I vendor.qti.bluetooth@1.0-ibs_handler: DeviceWakeUp: Writing IBS_WAKE_IND
+05-18 01:22:59.764  1803 25152 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_ACK: 0xFC
+05-18 01:22:59.764  1803 25152 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Signal wack_cond_
+05-18 01:22:59.764  1803  1832 D vendor.qti.bluetooth@1.0-ibs_handler: DeviceWakeUp: Unblocked from waiting for FC, pthread_cond_timedwait ret = 0
+05-18 01:22:59.764  1803 25152 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+05-18 01:22:59.764  1803 25152 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+05-18 01:22:59.815  1803 25152 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+05-18 01:23:00.005 22446 22446 I EyeComfortSolutionService: action  :  android.intent.action.TIME_TICK
+05-18 01:23:00.005 23268 23957 I DateTimeView: updateAll - getTimeFormat
+05-18 01:23:00.006 23268 23268 D ClockFaceEvents: onTimeTick. callers : com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.refreshTime:19
+05-18 01:23:00.006 23268 23268 D ClockFaceEvents: com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.onTimeChanged:1
+05-18 01:23:00.006 23268 23268 D ClockFaceEvents: com.android.keyguard.KeyguardUpdateMonitor$16.handleMessage:732
+05-18 01:23:00.006 23268 23957 D QSClockBellTower: onReceive(android.intent.action.TIME_TICK) mTimeZoneString:Europe/London
+05-18 01:23:00.006 23268 23268 D ClockFaceEvents: onTimeTick. callers : com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.refreshTime:38
+05-18 01:23:00.006 23268 23268 D ClockFaceEvents: com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.onTimeChanged:1
+05-18 01:23:00.006 23268 23268 D ClockFaceEvents: com.android.keyguard.KeyguardUpdateMonitor$16.handleMessage:732
+05-18 01:23:00.006 23268 23268 D FaceWidgetPagesController: onTimeChanged()
+05-18 01:23:00.007 23268 23957 I DateTimeView: updateAll - getTimeFormat
+05-18 01:23:00.008 22446 22446 I EyeComfortSolutionService: action  :  android.intent.action.TIME_TICK
+05-18 01:23:00.008 23268 23957 D QSClockBellTower: onReceive(android.intent.action.TIME_TICK) mTimeZoneString:Europe/London
+05-18 01:23:00.009 23268 23268 D QSClockBellTower: He is ready to ring the bell. (((QSClockBellSound - TimeText:01:23, TimeContentDescription:01:23, DateText:Mon 18 May, ShortDateText:Mon 18 May, Demo:false)))
+05-18 01:23:00.010 23268 23268 D QSClock : StatusBar clock=01:23 notifyTimeChanged(QSClockBellSound - TimeText:01:23, TimeContentDescription:01:23, DateText:Mon 18 May, ShortDateText:Mon 18 May, Demo:false) clockVisibleByPolicy=true, clockVisibleByUser=true, visible=true, parent=android.widget.LinearLayout{74f45ca V.E...... ......ID 0,0-98,63 #7f0a0697 app:id/left_clock_container} caller=com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.animateShow:52 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.updateStatusBarVisibilitiesInner:227 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.updateStatusBarVisibilities:65 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.disable:71 com.android.systemui.statusbar.CommandQueue$H.handleMessage:2997
+05-18 01:23:00.010 23268 23268 D QSClockBellTower: Everyone heard the bell. run(currentTime:1779063780009, getTime():Mon May 18 01:23:00 GMT+01:00 2026, getTimeZone():libcore.util.ZoneInfo[mDstSavings=3600000,mUseDst=true,mDelegate=[id="Europe/London",mRawOffset=0,mEarliestRawOffset=-75000,transitions=366]])
+05-18 01:23:00.012 23268 23268 D QSClockBellTower: He is ready to ring the bell. (((QSClockBellSound - TimeText:01:23, TimeContentDescription:01:23, DateText:Mon 18 May, ShortDateText:Mon 18 May, Demo:false)))
+05-18 01:23:00.012 23268 23268 D QSClock : StatusBar clock=01:23 notifyTimeChanged(QSClockBellSound - TimeText:01:23, TimeContentDescription:01:23, DateText:Mon 18 May, ShortDateText:Mon 18 May, Demo:false) clockVisibleByPolicy=true, clockVisibleByUser=true, visible=true, parent=android.widget.LinearLayout{74f45ca V.E...... ......ID 0,0-98,63 #7f0a0697 app:id/left_clock_container} caller=com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.animateShow:52 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.updateStatusBarVisibilitiesInner:227 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.updateStatusBarVisibilities:65 com.android.systemui.statusbar.phone.fragment.CollapsedStatusBarFragment.disable:71 com.android.systemui.statusbar.CommandQueue$H.handleMessage:2997
+05-18 01:23:00.012 23268 23268 D QSClockBellTower: Everyone heard the bell. run(currentTime:1779063780012, getTime():Mon May 18 01:23:00 GMT+01:00 2026, getTimeZone():libcore.util.ZoneInfo[mDstSavings=3600000,mUseDst=true,mDelegate=[id="Europe/London",mRawOffset=0,mEarliestRawOffset=-75000,transitions=366]])
+05-18 01:23:00.014 23268 23268 W RefactorFlag: New code path expects SceneContainerFlag to be enabled.
+05-18 01:23:00.014  1803 25164 I vendor.qti.bluetooth@1.0-ibs_handler: DeviceSleep: TX Awake, Sending SLEEP_IND
+05-18 01:23:00.014  1803 25164 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+05-18 01:23:00.015 23268 23268 D ClockFaceEvents: onTimeTick. callers : com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.refreshTime:19
+05-18 01:23:00.015 23268 23268 D ClockFaceEvents: com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.onTimeChanged:1
+05-18 01:23:00.015 23268 23268 D ClockFaceEvents: com.android.keyguard.KeyguardUpdateMonitor$16.handleMessage:732
+05-18 01:23:00.015 23268 23268 D ClockFaceEvents: onTimeTick. callers : com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.refreshTime:38
+05-18 01:23:00.015 23268 23268 D ClockFaceEvents: com.android.keyguard.ClockEventController$keyguardUpdateMonitorCallback$1.onTimeChanged:1
+05-18 01:23:00.015 23268 23268 D ClockFaceEvents: com.android.keyguard.KeyguardUpdateMonitor$16.handleMessage:732
+05-18 01:23:00.015 23268 23268 D FaceWidgetPagesController: onTimeChanged()
+05-18 01:23:00.164  1803 23885 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released
+05-18 01:23:00.453  7746 28632 V Cursor  : Prepared statement 0xb400007a553290f8 on 0xb4000079c53cbfb8
+05-18 01:23:00.453  7746 28632 D CursorWindow: CursorWindow::CursorWindow initialSize:1048576 growBySize:1048576 maxSize:0
+05-18 01:23:00.453  7746 28632 D CursorWindow: Created CursorWindow with new MemoryDealer: mFreeOffset = 524, mSize = 1048576, mInitialSize = 1048576, mGrowthPaddingSize = 1048576, mMaxSize = 0, mData = 0xb40000785af41000
+05-18 01:23:00.453  7746 28632 D CursorWindow: native_init_empty: window = 0xb400007b2528f1b0
+05-18 01:23:00.453  7746 28632 D CursorWindow: Not binding to startPos 0
+05-18 01:23:00.453  7746 28632 D CursorWindow: Window: numRows = 0, size = 1048576, freeSpace = 1048052
+05-18 01:23:00.453  7746 28632 D CursorWindow: Stepped statement 0xb400007a553290f8 to row 0
+05-18 01:23:00.453  7746 28632 D CursorWindow: allocRowSlot entered: Allocating row slot, mHeader->numRows is 0, chunkNum is 0, chunkPos is 0
+05-18 01:23:00.453  7746 28632 D CursorWindow: Allocated row 0, rowSlot is at offset 8, fieldDir is 9 bytes at offset 524
+05-18 01:23:00.453  7746 28632 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.453  7746 28632 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.453  7746 28632 D CursorWindow: 0,0 is TEXT with 6 bytes
+05-18 01:23:00.453  7746 28632 D CursorWindow: Processed all rows
+05-18 01:23:00.453  7746 28632 D CursorWindow: Resetting statement 0xb400007a553290f8 after fetching 1 rows in 539 bytes
+05-18 01:23:00.453  7746 28632 D CursorWindow:
+05-18 01:23:00.453  7746 28632 D CursorWindow:
+05-18 01:23:00.453  7746 28632 D CursorWindow:
+05-18 01:23:00.453  7746 28632 D CursorWindow: Getting string for 0,0 from 0xb400007b2528f1b0
+05-18 01:23:00.453  7746 28632 D CursorWindow: read_field_slot entered: row:0, column:0, slotOut:0x7878796fa8
+05-18 01:23:00.453  7746 28632 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.453  7746 28632 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.453  7746 28632 D CursorWindow: Found field directory for 0,0 at rowSlot 8, offset 524
+05-18 01:23:00.453  7746 28632 D CursorWindow: Read field_slot_t 0,0: offset = 533, size = 6, type = 3
+05-18 01:23:00.453  7746 28632 D CursorWindow: Closing window 0xb400007b2528f1b0
+05-18 01:23:00.453  7746 28632 V Database: Success on 0xb4000079c53cbfb8 when executing 'BEGIN IMMEDIATE;'
+05-18 01:23:00.457  7746 28632 V Database: Success on 0xb4000079c53cbfb8 when executing 'COMMIT;'
+05-18 01:23:00.457  7746 28633 V Cursor  : Prepared statement 0xb400007a553290f8 on 0xb4000079c53cbfb8
+05-18 01:23:00.457  7746  7810 V Database: Success on 0xb4000079c53cbfb8 when executing 'BEGIN IMMEDIATE;'
+05-18 01:23:00.457  7746  7810 D CursorWindow: CursorWindow::CursorWindow initialSize:1048576 growBySize:1048576 maxSize:0
+05-18 01:23:00.457  7746  7810 D CursorWindow: Created CursorWindow with new MemoryDealer: mFreeOffset = 524, mSize = 1048576, mInitialSize = 1048576, mGrowthPaddingSize = 1048576, mMaxSize = 0, mData = 0xb40000785af41000
+05-18 01:23:00.457  7746  7810 D CursorWindow: native_init_empty: window = 0xb400007b25289b10
+05-18 01:23:00.457  7746  7810 D CursorWindow: Not binding to startPos 0
+05-18 01:23:00.457  7746  7810 D CursorWindow: Window: numRows = 0, size = 1048576, freeSpace = 1048052
+05-18 01:23:00.457  7746  7810 D CursorWindow: Processed all rows
+05-18 01:23:00.457  7746  7810 D CursorWindow: Resetting statement 0xb400007a5532f818 after fetching 0 rows in 524 bytes
+05-18 01:23:00.457  7746  7810 D CursorWindow:
+05-18 01:23:00.457  7746  7810 D CursorWindow:
+05-18 01:23:00.457  7746  7810 D CursorWindow:
+05-18 01:23:00.457  7746  7810 D CursorWindow: Closing window 0xb400007b25289b10
+05-18 01:23:00.457  7746  7810 V Database: Success on 0xb4000079c53cbfb8 when executing 'COMMIT;'
+05-18 01:23:00.457  7746 28633 D CursorWindow: CursorWindow::CursorWindow initialSize:1048576 growBySize:1048576 maxSize:0
+05-18 01:23:00.457  7746 28633 D CursorWindow: Created CursorWindow with new MemoryDealer: mFreeOffset = 524, mSize = 1048576, mInitialSize = 1048576, mGrowthPaddingSize = 1048576, mMaxSize = 0, mData = 0xb40000785af41000
+05-18 01:23:00.457  7746 28633 D CursorWindow: native_init_empty: window = 0xb400007b2528e280
+05-18 01:23:00.457  7746 28633 D CursorWindow: Not binding to startPos 0
+05-18 01:23:00.457  7746 28633 D CursorWindow: Window: numRows = 0, size = 1048576, freeSpace = 1048052
+05-18 01:23:00.457  7746 28633 D CursorWindow: Stepped statement 0xb400007a553290f8 to row 0
+05-18 01:23:00.457  7746 28633 D CursorWindow: allocRowSlot entered: Allocating row slot, mHeader->numRows is 0, chunkNum is 0, chunkPos is 0
+05-18 01:23:00.457  7746 28633 D CursorWindow: Allocated row 0, rowSlot is at offset 8, fieldDir is 9 bytes at offset 524
+05-18 01:23:00.457  7746 28633 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.457  7746 28633 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.457  7746 28633 D CursorWindow: 0,0 is TEXT with 6 bytes
+05-18 01:23:00.457  7746 28633 D CursorWindow: Processed all rows
+05-18 01:23:00.457  7746 28633 D CursorWindow: Resetting statement 0xb400007a553290f8 after fetching 1 rows in 539 bytes
+05-18 01:23:00.457  7746 28633 D CursorWindow:
+05-18 01:23:00.457  7746 28633 D CursorWindow:
+05-18 01:23:00.457  7746 28633 D CursorWindow:
+05-18 01:23:00.457  7746 28633 D CursorWindow: Getting string for 0,0 from 0xb400007b2528e280
+05-18 01:23:00.457  7746 28633 D CursorWindow: read_field_slot entered: row:0, column:0, slotOut:0x7878386bc8
+05-18 01:23:00.458  7746 28633 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 28633 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: CursorWindow::CursorWindow initialSize:1048576 growBySize:1048576 maxSize:0
+05-18 01:23:00.458  7746 28633 D CursorWindow: Found field directory for 0,0 at rowSlot 8, offset 524
+05-18 01:23:00.458  7746 28633 D CursorWindow: Read field_slot_t 0,0: offset = 533, size = 6, type = 3
+05-18 01:23:00.458  7746 12539 D CursorWindow: Created CursorWindow with new MemoryDealer: mFreeOffset = 524, mSize = 1048576, mInitialSize = 1048576, mGrowthPaddingSize = 1048576, mMaxSize = 0, mData = 0xb40000785c454000
+05-18 01:23:00.458  7746 12539 D CursorWindow: native_init_empty: window = 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: Not binding to startPos 0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Window: numRows = 0, size = 1048576, freeSpace = 1048052
+05-18 01:23:00.458  7746 28633 D CursorWindow: Closing window 0xb400007b2528e280
+05-18 01:23:00.458  7746 12539 D CursorWindow: Stepped statement 0xb400007a5532bb28 to row 0
+05-18 01:23:00.458  7746 12539 D CursorWindow: allocRowSlot entered: Allocating row slot, mHeader->numRows is 0, chunkNum is 0, chunkPos is 0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Allocated row 0, rowSlot is at offset 8, fieldDir is 54 bytes at offset 524
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: 0,0 is TEXT with 64 bytes
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: 0,1 is TEXT with 22 bytes
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: 0,2 is TEXT with 26 bytes
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: 0,3 is TEXT with 6254 bytes
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:4
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: 0,4 is NULL
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:5
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: 0,5 is NULL
+05-18 01:23:00.458  7746 12539 D CursorWindow: Processed all rows
+05-18 01:23:00.458  7746 12539 D CursorWindow: Resetting statement 0xb400007a5532bb28 after fetching 1 rows in 6944 bytes
+05-18 01:23:00.458  7746 12539 D CursorWindow:
+05-18 01:23:00.458  7746 12539 D CursorWindow:
+05-18 01:23:00.458  7746 12539 D CursorWindow:
+05-18 01:23:00.458  7746 12539 D CursorWindow: Checking for NULL at 0,0 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Getting string for 0,0 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: read_field_slot entered: row:0, column:0, slotOut:0x7877ba79f8
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 28633 V Database: Success on 0xb4000079c53cbfb8 when executing 'BEGIN IMMEDIATE;'
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Found field directory for 0,0 at rowSlot 8, offset 524
+05-18 01:23:00.458  7746 12539 D CursorWindow: Read field_slot_t 0,0: offset = 578, size = 64, type = 3
+05-18 01:23:00.458  7746 12539 D CursorWindow: Checking for NULL at 0,1 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Getting string for 0,1 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: read_field_slot entered: row:0, column:1, slotOut:0x7877ba79f8
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Found field directory for 0,1 at rowSlot 8, offset 524
+05-18 01:23:00.458  7746 12539 D CursorWindow: Read field_slot_t 0,1: offset = 642, size = 22, type = 3
+05-18 01:23:00.458  7746 12539 D CursorWindow: Checking for NULL at 0,2 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:2
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Getting string for 0,2 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: read_field_slot entered: row:0, column:2, slotOut:0x7877ba79f8
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Found field directory for 0,2 at rowSlot 8, offset 524
+05-18 01:23:00.458  7746 12539 D CursorWindow: Read field_slot_t 0,2: offset = 664, size = 26, type = 3
+05-18 01:23:00.458  7746 12539 D CursorWindow: Checking for NULL at 0,3 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:3
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Getting string for 0,3 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: read_field_slot entered: row:0, column:3, slotOut:0x7877ba79f8
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Found field directory for 0,3 at rowSlot 8, offset 524
+05-18 01:23:00.458  7746 12539 D CursorWindow: Read field_slot_t 0,3: offset = 690, size = 6254, type = 3
+05-18 01:23:00.458  7746 12539 D CursorWindow: Checking for NULL at 0,4 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:4
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Checking for NULL at 0,5 from 0xb400007b2528d110
+05-18 01:23:00.458  7746 12539 D CursorWindow: getFieldSlotWithCheck entered: row:0 column:5
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot entered: requesting row:0, current row num:1
+05-18 01:23:00.458  7746 12539 D CursorWindow: getRowSlot walking list 0 times to find rowslot for row:0
+05-18 01:23:00.458  7746 12539 D CursorWindow: Closing window 0xb400007b2528d110
+05-18 01:23:00.459  7746 28633 V Database: Success on 0xb4000079c53cbfb8 when executing 'COMMIT;'
+05-18 01:23:00.460  7746  7813 V Database: Success on 0xb4000079c53cbfb8 when executing 'BEGIN IMMEDIATE;'
+05-18 01:23:00.460  7746  7813 D CursorWindow: CursorWindow::CursorWindow initialSize:1048576 growBySize:1048576 maxSize:0
+05-18 01:23:00.460  7746  7813 D CursorWindow: Created CursorWindow with new MemoryDealer: mFreeOffset = 524, mSize = 1048576, mInitialSize = 1048576, mGrowthPaddingSize = 1048576, mMaxSize = 0, mData = 0xb40000785c454000
+05-18 01:23:00.460  7746  7813 D CursorWindow: native_init_empty: window = 0xb400007b25289b10
+05-18 01:23:00.460  7746  7813 D CursorWindow: Not binding to startPos 0
+05-18 01:23:00.460  7746  7813 D CursorWindow: Window: numRows = 0, size = 1048576, freeSpace = 1048052
+05-18 01:23:00.460  7746  7813 D CursorWindow: Processed all rows
+05-18 01:23:00.460  7746  7813 D CursorWindow: Resetting statement 0xb400007a5532f818 after fetching 0 rows in 524 bytes
+05-18 01:23:00.460  7746  7813 D CursorWindow:
+05-18 01:23:00.460  7746  7813 D CursorWindow:
+05-18 01:23:00.460  7746  7813 D CursorWindow:
+05-18 01:23:00.460  7746  7813 D CursorWindow: Closing window 0xb400007b25289b10
+05-18 01:23:00.460  7746  7813 V Database: Success on 0xb4000079c53cbfb8 when executing 'COMMIT;'
+05-18 01:23:00.489 22446 22844 D NetdEventListenerService: CSC Feature value: true
+05-18 01:23:00.489 22446 22844 D NetdEventListenerService: CSC Feature value: true
+05-18 01:23:00.490 22446 22988 D NetdEventListenerService: DNS Requested by 171, 10431(com.tplink.tpm5), SUCCESS, 25ms
+05-18 01:23:00.569  1812 12252 I sensors-hal: handle_sns_std_sensor_event:90, light_cct: ts = 181564024286473 ns; value = [9, 9, 127, 153, 0, 408, 235, 2, 27616, 15, 1]
+05-18 01:23:00.670 22113 22557 I thermal_core: pivot(AP) : 394, skin : 389
+05-18 01:23:00.670 22113 22557 I vendor.samsung.hardware.thermal-service: index = 4.000000
+05-18 01:23:00.670 22113 22557 I vendor.samsung.hardware.thermal-service: 2 / 2
+05-18 01:23:00.713 22092 22102 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:23:00.713 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:00.713 22092 22102 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_rcv: 0
+05-18 01:23:00.713 22092 24232 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:23:00.713 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:00.713 22092 24232 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_spk: 0
+05-18 01:23:00.715 24930 26001 I SDHMS:x : SIOP:: AP:394 BAT:359 USB:354 CHG:393 PA:388 CP:388 WIFI:403 CF:393 BLK:0 SUBBAT:361 LRPTHM:377 SKIN:383 SKINF:388 SKINB:389 LRP:383 LRF:388 LRB:389 APT:388 APR:389 RCV:324 SPK:324 CAPR:383 CRCV:325 CSPK:334 CAMT:390 UPSPK:360 DNSPK:360 VAP02:396 VAP05:394 AMB2:311 HIGH:0 AVGCUR:724 AVGSYS:394 POWER:2890
+05-18 01:23:00.715 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_spk=33
+05-18 01:23:00.718 22086 28572 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_spk=33
+05-18 01:23:00.718 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:23:00.718 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:23:00.718 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_spk
+05-18 01:23:00.719 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:23:00.719 22092 24232 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_spk: 33
+05-18 01:23:00.719 22092 24232 I PAL: API: pal_set_param: 1377: Enter: param id 3002
+05-18 01:23:00.719 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:00.719 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:00.719 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:00.720 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_rcv=33
+05-18 01:23:00.720 22086 28572 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_rcv=33
+05-18 01:23:00.720 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:23:00.720 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:23:00.721 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_rcv
+05-18 01:23:00.721 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:23:00.721 22092 24232 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_rcv: 33
+05-18 01:23:00.721 22092 24232 I PAL: API: pal_set_param: 1377: Enter: param id 3001
+05-18 01:23:00.721 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:00.721 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:00.721 22086 28572 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:01.028 23031 23167 D SatelliteController: isInCarrierRoamingNbIotNtn: satellite is disabled
+05-18 01:23:01.029 23031 23167 V SatelliteController: getWwanIsInService: return true
+05-18 01:23:01.382 22446 22922 I SemWifiServiceDetector: Service det. resumed: T / T / 14636
+05-18 01:23:01.384 22446 24301 I NSLocationMonitor: getGPSUsingApps() called
+05-18 01:23:01.385 24310  2497 I NSLocationManager_FLP: getGPSUsingApps, No change
+05-18 01:23:01.390 22446 24301 D FreecessHandler: freeze com.microsoft.office.outlook(10354) result : 9
+05-18 01:23:01.559  1083  1083 D io_stats: !@   8,0 r 30081009 844087796 w 7355916 138157208 d 1142144 242777332 f 118887 410852 iot 2520496 0 th 0 0 0 pt 0 inp 0 0 119475.959
+05-18 01:23:01.716 22113 22557 I thermal_core: pivot(AP) : 395, skin : 389
+05-18 01:23:01.716 22113 22557 I vendor.samsung.hardware.thermal-service: index = 4.400000
+05-18 01:23:01.716 22113 22557 I vendor.samsung.hardware.thermal-service: 1 / 2
+05-18 01:23:01.849  1812 23009 I sensors-hal: handle_sns_std_sensor_event:127, [SSC_LIGHT] A: 7(7),c:157,b:408,m:37,cl:235,l:9,s:0,l0:27616,l1:32,s0:500,s1:0,acl:3,opr:0.60,f(r):124,u(bl):100,if:124,wi:15,si:0,0(N:1)
+05-18 01:23:01.857  1812 23009 I sensors-hal: handle_sns_client_event:208, auto_rotation_debug_2 mode,255,last,0, type,3,0 main,0.019,9.308,2.685 sub,-0.024,9.356,-2.871, ar,0, h_ic,1, s,3, ver,12, pedo,1,e,1,i,3
+05-18 01:23:02.038 22446 22799 E WifiStaIfaceAidlImpl: getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+05-18 01:23:02.041 22446 27495 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 30449, isSameBssidAndFreq true
+05-18 01:23:02.044 22446 22924 I SemWifiLinkQualityMonitor: Link stat: 1065 / 37 / 1.26 (24) / 5187 / -41.0 || 100.0 : 5187.00 / 0.5 : 0.79 / 0.55 : 0.03 / G (G) || fe7926386295: 0.076 / 105.078 / N || N N / 0 0 / N 2.0 / N X 2 / 119476441 0 || 2026-05-18 01:23:01  / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0
+05-18 01:23:02.045 22446 22925 D InsDataManager: onOutageCountUpdate() - Outage Data: 0, LQ : N. Outage Triggered: false
+05-18 01:23:02.045 22446 22925 D SemInsManager: {"bssid": "fe7926386295","rssi": -41.0,"latency": 0.07613375702050697,"outage_count": 0,"lq_callback_triggered": false,"outage_log": "Link stat: 1065 / 37 / 1.26 (24) / 5187 / -41.0 || 100.0 : 5187.00 / 0.5 : 0.79 / 0.55 : 0.03 / G (G) || fe7926386295: 0.076 / 105.078 / N || N N / 0 0 / N 2.0 / N X 2 / 119476441 0 || 2026-05-18 01:23:01  / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0""Magnetic Sensor Events size": "0""Pressure Sensor Events size": "0"}
+05-18 01:23:02.046 22446 22942 D SGM:GameManager: identifyGamePackage. com.tiarnanlarkin.danio, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:105)
+05-18 01:23:02.046 22446 22942 D SGM:SemGameManager: isGamePackage(), pkgName=com.tiarnanlarkin.danio, ret=false
+05-18 01:23:02.166 14101 14101 I wpa_supplicant: Heartbeat 966
+05-18 01:23:02.307 23031 23167 D SatelliteController: isInCarrierRoamingNbIotNtn: satellite is disabled
+05-18 01:23:02.309 23031 23167 V SatelliteController: getWwanIsInService: return true
+05-18 01:23:02.718 22113 22557 I thermal_core: pivot(AP) : 395, skin : 389
+05-18 01:23:02.718 22113 22557 I vendor.samsung.hardware.thermal-service: index = 4.800000
+05-18 01:23:02.718 22113 22557 I vendor.samsung.hardware.thermal-service: 2 / 2
+05-18 01:23:02.764 22092 24232 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:23:02.764 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:02.764 22092 24232 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_rcv: 0
+05-18 01:23:02.765 22092 22102 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:23:02.765 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:02.765 22092 22102 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_spk: 0
+05-18 01:23:02.766 24930 26001 I SDHMS:x : SIOP:: AP:395 BAT:359 USB:354 CHG:393 PA:388 CP:388 WIFI:399 CF:394 BLK:0 SUBBAT:360 LRPTHM:377 SKIN:383 SKINF:388 SKINB:389 LRP:383 LRF:388 LRB:389 APT:388 APR:389 RCV:325 SPK:325 CAPR:383 CRCV:324 CSPK:334 CAMT:390 UPSPK:360 DNSPK:360 VAP02:396 VAP05:394 AMB2:311 HIGH:0 AVGCUR:724 AVGSYS:394 POWER:2890
+05-18 01:23:02.766 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_spk=33
+05-18 01:23:02.767 22086 22850 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_spk=33
+05-18 01:23:02.767 22092 22102 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:23:02.768 22092 22102 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:23:02.768 22092 22102 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_spk
+05-18 01:23:02.768 22092 22102 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:23:02.768 22092 22102 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_spk: 33
+05-18 01:23:02.768 22092 22102 I PAL: API: pal_set_param: 1377: Enter: param id 3002
+05-18 01:23:02.768 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:02.769 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:02.769 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:02.769 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_rcv=32
+05-18 01:23:02.770 22086 22850 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_rcv=32
+05-18 01:23:02.770 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:23:02.770 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:23:02.770 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_rcv
+05-18 01:23:02.770 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:23:02.770 22092 24232 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_rcv: 32
+05-18 01:23:02.770 22092 24232 I PAL: API: pal_set_param: 1377: Enter: param id 3001
+05-18 01:23:02.770 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:02.772 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:02.772 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:03.129  1812 12252 I sensors-hal: handle_sns_std_sensor_event:90, light_cct: ts = 181566584288661 ns; value = [9, 9, 127, 153, 0, 408, 235, 2, 27648, 15, 1]
+05-18 01:23:03.351 22446 22819 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+05-18 01:23:03.356 22446 22819 D InetDiagMessage: Destroyed 2 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+05-18 01:23:03.356 22446 22819 D InetDiagMessage: Destroyed live tcp sockets for uids={10431} in 9ms
+05-18 01:23:03.358 22446 22819 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+05-18 01:23:03.362 22446 22819 D InetDiagMessage: Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+05-18 01:23:03.362 22446 22819 D InetDiagMessage: Destroyed live tcp sockets for uids={20431} in 6ms
+05-18 01:23:03.561  1083  1083 D io_stats: !@   8,0 r 30081009 844087796 w 7356003 138157752 d 1142144 242777332 f 118889 410859 iot 2520508 0 th 0 0 0 pt 0 inp 0 0 119477.961
+05-18 01:23:03.561  1083  1083 D io_stats: !@ Read_top(KB): com.tplink.tpm5:low(7746) 48
+05-18 01:23:03.561  1083  1083 D io_stats: !@ Write_top(KB): nordvpn.android:low(30259) 288 f2fs_ckpt-254:6:/(1411) 184 kworker/u17:4:/(21308) 140
+05-18 01:23:03.588 23031 23167 D SatelliteController: isInCarrierRoamingNbIotNtn: satellite is disabled
+05-18 01:23:03.589 23031 23167 V SatelliteController: getWwanIsInService: return true
+05-18 01:23:03.767 22113 22557 I thermal_core: pivot(AP) : 394, skin : 389
+05-18 01:23:03.767 22113 22557 I vendor.samsung.hardware.thermal-service: index = 5.200000
+05-18 01:23:03.767 22113 22557 I vendor.samsung.hardware.thermal-service: 1 / 2
+05-18 01:23:03.781  1871  1954 E BatteryDump: !@new_battery_dump : 3983,520,1100,1800,58,359,354,393,359,0,389,393,360,Charging,NO_CHARGING,Normal,Good,PDIC,0,Normal,0,0,10287,0x8000,0x10010000,0x0,0,0,411,v0004,0,1/1-5000-0-3000,0000,0000,00000000,3983,4014,0,305,215,0,233,0,576,990,0,
+05-18 01:23:03.783 22113 22113 I seh_thermal_service: getTemperaturesWithType SehTemperatureType: 3
+05-18 01:23:03.783  1871  1871 I sehhealth-service: updateLrpSysfs: write: 389
+05-18 01:23:03.783 22446 29032 V [SS]SleepChargingTimeController: [isActivated]mSleepChargingStatus isNowSessionTime False => false
+05-18 01:23:04.390 22446 22922 I SemWifiServiceDetector: Service det. suspended: T / T / 14636
+05-18 01:23:04.583 22446 22988 D NetdEventListenerService: DNS Requested by 171, 10366(com.spotify.music), 4(FAIL), isBlocked=true, 0ms
+05-18 01:23:04.770 22113 22557 I thermal_core: pivot(AP) : 394, skin : 389
+05-18 01:23:04.770 22113 22557 I vendor.samsung.hardware.thermal-service: index = 5.400000
+05-18 01:23:04.770 22113 22557 I vendor.samsung.hardware.thermal-service: 2 / 2
+05-18 01:23:04.815 22092 24232 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:23:04.815 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:04.815 22092 24232 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_rcv: 0
+05-18 01:23:04.815 22092 22102 D AHAL_ModulePrimary_QTI: getVendorParameters: id count: 1
+05-18 01:23:04.815 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:04.815 22092 22102 D AHAL_SecModulePrimary: onGetSECGenericParameters get temperature for g_hw_speaker_amp_temp_spk: 0
+05-18 01:23:04.817 24930 26001 I SDHMS:x : SIOP:: AP:394 BAT:359 USB:354 CHG:393 PA:388 CP:388 WIFI:395 CF:393 BLK:0 SUBBAT:360 LRPTHM:377 SKIN:383 SKINF:388 SKINB:389 LRP:383 LRF:388 LRB:389 APT:388 APR:389 RCV:325 SPK:325 CAPR:383 CRCV:324 CSPK:334 CAMT:390 UPSPK:360 DNSPK:360 VAP02:396 VAP05:394 AMB2:311 HIGH:0 AVGCUR:724 AVGSYS:394 POWER:2890
+05-18 01:23:04.817 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_spk=33
+05-18 01:23:04.818 22086 22850 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_spk=33
+05-18 01:23:04.818 22092 22102 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:23:04.818 22092 22102 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:23:04.819 22092 22102 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_spk
+05-18 01:23:04.819 22092 22102 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:23:04.819 22092 22102 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_spk: 33
+05-18 01:23:04.819 22092 22102 I PAL: API: pal_set_param: 1377: Enter: param id 3002
+05-18 01:23:04.819 22092 22102 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:04.820 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:04.820 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:04.821 24930 26001 I AudioManager: setParameters keyValuePairs = g_hw_speaker_amp_temp_rcv=32
+05-18 01:23:04.821 22086 22850 D AudioFlinger: setParameters: filtered dev setParameters keyvalue g_hw_speaker_amp_temp_rcv=32
+05-18 01:23:04.822 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters enter
+05-18 01:23:04.822 22092 24232 D AHAL_HFP_QTI: hfp_set_parameters Exit
+05-18 01:23:04.822 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: configured g_hw_speaker_amp_temp_rcv
+05-18 01:23:04.822 22092 24232 D AHAL_SecModulePrimary: processSetVendorParameters: handler set on Feature:0
+05-18 01:23:04.822 22092 24232 D AHAL_SecModulePrimary: onSetSECGenericParameters set temperature for g_hw_speaker_amp_temp_rcv: 32
+05-18 01:23:04.822 22092 24232 I PAL: API: pal_set_param: 1377: Enter: param id 3001
+05-18 01:23:04.822 22092 24232 I PAL: ResourceManager: getActiveStream_l: 6569: no active streams found for device 3 ret -2
+05-18 01:23:04.823 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:04.823 22086 22850 E ConversionHelperAidl: Function: parseAndSetVendorParameters Line: 94 Failed
+05-18 01:23:04.971 22446 22954 D WifiConnectivityMonitor.NetworkStatsAnalyzer: Backhaul result - RSSI:-41, CE:7, PE:7, TI:12, PTI:12, TW:0, PTW:0, Tx:49, Rx:56, TxS:43, RxS:32, RESULT:true, IC:0, ICT:5, WC:0, WCT:5, R:4, RC:0, IE:0, EC:0
+05-18 01:23:05.069 22446 22799 E WifiStaIfaceAidlImpl: getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+05-18 01:23:05.071 22446 27495 D SemWifiUsabilityStatsMonitor: onWifiUsabilityStats - seqNum 30450, isSameBssidAndFreq true
+05-18 01:23:05.072 22446 22924 I SemWifiLinkQualityMonitor: Link stat: 257 / 21 / 1.50 (3) / 5187 / -44.0 || 100.0 : 5187.00 / 0.5 : 0.67 / 0.55 : 0.08 / G (G) || fe7926386295: 0.238 / 33.570 / N || N N / 0 0 / N 2.0 / N X 2 / 119479471 0 || 2026-05-18 01:23:04  / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0
+05-18 01:23:05.072 22446 22925 D InsDataManager: onOutageCountUpdate() - Outage Data: 0, LQ : N. Outage Triggered: false
+05-18 01:23:05.073 22446 22925 D SemInsManager: {"bssid": "fe7926386295","rssi": -44.0,"latency": 0.23830497364663283,"outage_count": 0,"lq_callback_triggered": false,"outage_log": "Link stat: 257 / 21 / 1.50 (3) / 5187 / -44.0 || 100.0 : 5187.00 / 0.5 : 0.67 / 0.55 : 0.08 / G (G) || fe7926386295: 0.238 / 33.570 / N || N N / 0 0 / N 2.0 / N X 2 / 119479471 0 || 2026-05-18 01:23:04  / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0 / 0: 0 0 0 0 0 0""Magnetic Sensor Events size": "0""Pressure Sensor Events size": "0"}
+05-18 01:23:05.073 22446 22942 D SGM:GameManager: identifyGamePackage. com.tiarnanlarkin.danio, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:105)
+05-18 01:23:05.073 22446 22942 D SGM:SemGameManager: isGamePackage(), pkgName=com.tiarnanlarkin.danio, ret=false
+05-18 01:23:05.482 22446 22547 I system_server: Background concurrent mark compact GC freed 45MB AllocSpace bytes, 181(3828KB) LOS objects, 22% free, 166MB/214MB, paused 1.824ms,7.409ms total 511.281ms
+05-18 01:23:05.495 22446 22548 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+05-18 01:23:05.561  1083  1083 D io_stats: !@   8,0 r 30081010 844087860 w 7356005 138157760 d 1142144 242777332 f 118889 410859 iot 2520512 0 th 0 0 0 pt 0 inp 0 0 119479.961
+05-18 01:23:05.690  1812 12252 I sensors-hal: handle_sns_std_sensor_event:90, light_cct: ts = 181569144287463 ns; value = [9, 9, 127, 153, 0, 408, 235, 2, 27616, 0, 1]
+05-18 01:23:05.818 22113 22557 I thermal_core: pivot(AP) : 396, skin : 389
+05-18 01:23:05.818 22113 22557 I vendor.samsung.hardware.thermal-service: index = 5.800000
+05-18 01:23:05.818 22113 22557 I vendor.samsung.hardware.thermal-service: 1 / 2

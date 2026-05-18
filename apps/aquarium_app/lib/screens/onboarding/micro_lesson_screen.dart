@@ -27,6 +27,7 @@ class MicroLessonScreen extends StatefulWidget {
 
 class _MicroLessonScreenState extends State<MicroLessonScreen>
     with TickerProviderStateMixin {
+  final ScrollController _scrollController = ScrollController();
   int? _selectedAnswer;
   bool _answered = false;
 
@@ -77,11 +78,15 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
       parent: _correctBounceController!,
       curve: Curves.easeOutBack,
     );
-    _correctBounceScale = Tween<double>(begin: 1.0, end: 1.1).animate(_correctBounceCurve!);
+    _correctBounceScale = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(_correctBounceCurve!);
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _gotItOpacityCurve.dispose();
     _gotItSlideCurve.dispose();
     _gotItController.dispose();
@@ -107,7 +112,9 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
     }
 
     // Show "Got it" button after a short delay
-    final delay = reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
+    final delay = reduceMotion
+        ? Duration.zero
+        : const Duration(milliseconds: 200);
     Future.delayed(delay, () {
       if (mounted) {
         if (reduceMotion) {
@@ -115,7 +122,24 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
         } else {
           _gotItController.forward();
         }
+        _scrollToFeedback(reduceMotion: reduceMotion);
       }
+    });
+  }
+
+  void _scrollToFeedback({required bool reduceMotion}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      final target = _scrollController.position.maxScrollExtent;
+      if (reduceMotion) {
+        _scrollController.jumpTo(target);
+        return;
+      }
+      _scrollController.animateTo(
+        target,
+        duration: AppDurations.medium3,
+        curve: AppCurves.standardDecelerate,
+      );
     });
   }
 
@@ -125,6 +149,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
       backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -171,16 +196,18 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
               const SizedBox(height: AppSpacing.lg),
 
               // Body paragraphs
-              ..._content.bodyParagraphs.map((p) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
-                    child: Text(
-                      p,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: AppColors.textPrimary,
-                        height: 1.6,
-                      ),
+              ..._content.bodyParagraphs.map(
+                (p) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
+                  child: Text(
+                    p,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppColors.textPrimary,
+                      height: 1.6,
                     ),
-                  )),
+                  ),
+                ),
+              ),
 
               const SizedBox(height: AppSpacing.lg),
 
@@ -265,12 +292,18 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
     } else if (isCorrect) {
       bgColor = AppColors.successAlpha10;
       borderColor = AppColors.success;
-      trailing = const Text('✓', style: TextStyle(fontSize: 20, color: AppColors.success));
+      trailing = const Text(
+        '✓',
+        style: TextStyle(fontSize: 20, color: AppColors.success),
+      );
     } else if (isSelected && !isCorrect) {
       bgColor = AppColors.surfaceVariant;
       borderColor = AppColors.border;
       textColor = AppColors.textSecondary;
-      trailing = const Text('✗', style: TextStyle(fontSize: 20, color: AppColors.error));
+      trailing = const Text(
+        '✗',
+        style: TextStyle(fontSize: 20, color: AppColors.error),
+      );
     } else {
       bgColor = AppColors.surfaceVariant;
       borderColor = AppColors.border;
@@ -297,10 +330,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
           child: Row(
             children: [
               ExcludeSemantics(
-                child: Text(
-                  answer.emoji,
-                  style: const TextStyle(fontSize: 20),
-                ),
+                child: Text(answer.emoji, style: const TextStyle(fontSize: 20)),
               ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
@@ -321,10 +351,7 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
 
     // Bounce animation on the correct answer when revealed
     if (_answered && isCorrect && _correctBounceScale != null) {
-      tile = ScaleTransition(
-        scale: _correctBounceScale!,
-        child: tile,
-      );
+      tile = ScaleTransition(scale: _correctBounceScale!, child: tile);
     }
 
     return tile;
@@ -386,7 +413,8 @@ const _advancedContent = _LessonContent(
     "Aggression, water parameter overlap, and bioload all interact in ways that aren't obvious from individual species cards.",
     'Danio builds a compatibility map for your specific tank.',
   ],
-  question: "What's the most underestimated cause of aggression in community tanks?",
+  question:
+      "What's the most underestimated cause of aggression in community tanks?",
   answers: [
     _AnswerOption(emoji: '🐠', label: 'Species mismatch'),
     _AnswerOption(emoji: '🏠', label: 'Tank size'),
@@ -397,5 +425,3 @@ const _advancedContent = _LessonContent(
   wrongFeedback:
       'Tank size matters, but species mismatch — including same-species aggression and incompatible temperaments — is the most common root cause.',
 );
-
-

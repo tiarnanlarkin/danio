@@ -20,15 +20,15 @@ import 'package:danio/models/tank.dart';
 const _fakeTankId = 'tank-settings-001';
 
 Tank _fakeTank() => Tank(
-      id: _fakeTankId,
-      name: 'My Test Tank',
-      type: TankType.freshwater,
-      volumeLitres: 100,
-      startDate: DateTime(2024),
-      targets: const WaterTargets(),
-      createdAt: DateTime(2024),
-      updatedAt: DateTime(2024),
-    );
+  id: _fakeTankId,
+  name: 'My Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: DateTime(2024),
+  targets: const WaterTargets(),
+  createdAt: DateTime(2024),
+  updatedAt: DateTime(2024),
+);
 
 Widget _wrap() {
   final memStorage = InMemoryStorageService();
@@ -37,9 +37,7 @@ Widget _wrap() {
       storageServiceProvider.overrideWithValue(memStorage),
       tankProvider.overrideWith((ref, tankId) async => _fakeTank()),
     ],
-    child: MaterialApp(
-      home: TankSettingsScreen(tankId: _fakeTankId),
-    ),
+    child: MaterialApp(home: TankSettingsScreen(tankId: _fakeTankId)),
   );
 }
 
@@ -50,9 +48,7 @@ Widget _wrapNotFound() {
       storageServiceProvider.overrideWithValue(memStorage),
       tankProvider.overrideWith((ref, tankId) async => null),
     ],
-    child: MaterialApp(
-      home: TankSettingsScreen(tankId: _fakeTankId),
-    ),
+    child: MaterialApp(home: TankSettingsScreen(tankId: _fakeTankId)),
   );
 }
 
@@ -94,6 +90,21 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.text('My Test Tank'), findsOneWidget);
+    });
+
+    testWidgets('does not overflow the tank type selector on a phone width', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2520);
+      tester.view.devicePixelRatio = 2.75;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Freshwater'), findsOneWidget);
     });
 
     testWidgets('shows not found message when tank is null', (tester) async {
