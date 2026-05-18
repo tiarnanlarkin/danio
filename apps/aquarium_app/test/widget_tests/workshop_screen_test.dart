@@ -95,5 +95,29 @@ void main() {
         expect(find.byIcon(Icons.lock_outline), findsWidgets);
       },
     );
+
+    testWidgets('tool cards fit a phone-sized screen without render overflow', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Cost Tracker'), 300);
+      await tester.pumpAndSettle();
+
+      FlutterError.onError = originalOnError;
+
+      final overflowErrors = flutterErrors.where(
+        (details) => details.exceptionAsString().contains('overflowed'),
+      );
+      expect(overflowErrors, isEmpty);
+    });
   });
 }

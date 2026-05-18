@@ -126,7 +126,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: 1.22,
+                    mainAxisExtent: 184,
                   ),
                   delegate: SliverChildListDelegate([
                     _ToolCard(
@@ -245,7 +245,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                 ),
                 sliver: SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 80,
+                    height: 104,
                     child: _ToolCard(
                       icon: Icons.attach_money,
                       title: 'Cost Tracker',
@@ -537,20 +537,31 @@ class _ConversionRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs2),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            left,
-            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle())
-                .copyWith(color: DanioColors.workshopTextSecondary),
+          Expanded(
+            child: Text(
+              left,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style:
+                  (Theme.of(context).textTheme.bodyLarge ?? const TextStyle())
+                      .copyWith(color: DanioColors.workshopTextSecondary),
+            ),
           ),
-          Text(
-            right,
-            style: (Theme.of(context).textTheme.bodyLarge ?? const TextStyle())
-                .copyWith(
-                  color: DanioColors.studyGold,
-                  fontWeight: FontWeight.w500,
-                ),
+          const SizedBox(width: AppSpacing.md),
+          Flexible(
+            child: Text(
+              right,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
+              style:
+                  (Theme.of(context).textTheme.bodyLarge ?? const TextStyle())
+                      .copyWith(
+                        color: DanioColors.studyGold,
+                        fontWeight: FontWeight.w500,
+                      ),
+            ),
           ),
         ],
       ),
