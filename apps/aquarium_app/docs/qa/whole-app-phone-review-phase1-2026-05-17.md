@@ -43,7 +43,7 @@ No Danio crash was seen in the crash buffer. `scheduled_notifications.xml` conta
 | P1-05 | P2 | Fixed | Fish profile reveal CTA was below the fold. The reveal now scrolls to the invite/CTA after the final phase appears. |
 | P1-06 | P2 | Fixed | Full-width buttons could overflow on narrow layouts. `AppButton` now flexes and ellipsizes long full-width labels while preserving short-button rendering. |
 | P1-07 | P2 | Fixed | Fish picker card titles could truncate on phone (`Bronze Co...`, `Dwarf Gou...`, etc.). Popular fish names now wrap to two lines before the scientific name. |
-| P1-08 | P2 | Open | First Tank landing still shows a dismissible welcome banner. It is not stacked with the old XP nudge or ambient tips, but it should be reviewed in Phase 2 against the quiet-guidance policy. |
+| P1-08 | P2 | Fixed in Phase 2 | First Tank landing still showed a dismissible welcome banner during Phase 1. Phase 2 P2-01 removed the automatic welcome/comeback Tank banners; `home_guidance_contract_test.dart` keeps `WelcomeBanner` and `ComebackBanner` out of `HomeScreen`. |
 | P1-09 | P3 | Not app | The pink left-edge handle seen in screenshots is the phone OS edge panel, not Danio UI. |
 
 ## Quiet Guidance Checks
@@ -51,7 +51,7 @@ No Danio crash was seen in the crash buffer. `scheduled_notifications.xml` conta
 - Optional reminders copy was reached and confirmed as opt-in copy: no enablement from onboarding copy path.
 - Phone storage confirmed `scheduled_notifications` was `[]`, with `streakRemindersEnabled: false` and `reviewRemindersEnabled: false` in the saved user profile.
 - Tank first landing showed no removed XP floating nudge, no automatic ambient tip, and no setup selector after onboarding completion.
-- Tank still showed a small first-entry welcome banner; carry this into Phase 2 Tank quiet-guidance review.
+- Tank still showed a small first-entry welcome banner during this Phase 1 run; this was carried into Phase 2 and fixed under P2-01.
 - Learn first-visit guidance appeared as a compact top hint.
 
 ## Automated Verification
@@ -116,4 +116,4 @@ Completed on `SM F966B` after app-data reset:
 7. Confirm feature summary advances to optional reminders. Pass.
 8. Choose `Set up reminders later`. Pass.
 9. Skip optional name. Pass.
-10. Confirm first main screen is Tank with the created tank and no removed floating XP nudge/tutorial stack. Pass, with open note P1-08 for the remaining welcome banner.
+10. Confirm first main screen is Tank with the created tank and no removed floating XP nudge/tutorial stack. Pass during Phase 1, with the remaining welcome banner later fixed under Phase 2 P2-01.
