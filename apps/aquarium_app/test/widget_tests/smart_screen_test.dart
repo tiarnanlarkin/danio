@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/smart_screen.dart';
+import 'package:danio/screens/workshop_screen.dart';
 import 'package:danio/features/smart/smart_providers.dart';
 import 'package:danio/services/openai_service.dart';
 import 'package:danio/widgets/offline_indicator.dart';
@@ -147,6 +148,58 @@ void main() {
       } finally {
         semantics.dispose();
       }
+    });
+
+    testWidgets(
+      'offline compatibility entry points to Workshop instead of duplicating the checker',
+      (tester) async {
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(
+          find.text('Compatibility Checker', skipOffstage: false),
+          findsNothing,
+        );
+        expect(
+          find.text('Compatibility Advice', skipOffstage: false),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Use the Workshop checker with local species data',
+            skipOffstage: false,
+          ),
+          findsOneWidget,
+        );
+
+        await tester.scrollUntilVisible(
+          find.text('Compatibility Advice'),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(find.text('Compatibility Advice'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(WorkshopScreen), findsOneWidget);
+      },
+    );
+
+    testWidgets('configured Smart labels AI compatibility as advice', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(aiConfigured: true));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(
+        find.text('Compatibility Checker', skipOffstage: false),
+        findsNothing,
+      );
+      expect(
+        find.text('AI Compatibility Advice', skipOffstage: false),
+        findsOneWidget,
+      );
     });
   });
 }

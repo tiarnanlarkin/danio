@@ -82,7 +82,8 @@ flowchart TD
   Tank --> TankSettings["Tank settings"]
 
   Smart["Smart tab"] --> AiLocked["AI setup / locked cards"]
-  Smart --> SmartCompat["Compatibility Checker"]
+  Smart --> SmartCompat["Compatibility Advice"]
+  SmartCompat --> Workshop
   Smart --> Anomaly["Anomaly History"]
 
   More["More tab"] --> Shop["Shop Street"]
@@ -126,8 +127,8 @@ flowchart TD
 | Water change | Quick menu > Water Change | Today board / workshop calculator | Tank logs | [54](screenshots/whole-app-map-2026-05-18/54-water-change-sheet.png) | Pass |
 | Tank stats | Quick menu > Stats | Tank toolbox analytics | Tank logs | [55](screenshots/whole-app-map-2026-05-18/55-stats-sheet.png) | Pass |
 | Smart home | Bottom tab | Preferences AI setup CTA | AI key setting | [15](screenshots/whole-app-map-2026-05-18/15-smart-home.png) | Pass |
-| Smart lower/offline tools | Smart scroll | Workshop compatibility | Species/tank data | [18](screenshots/whole-app-map-2026-05-18/18-smart-lower.png) | Pass |
-| Smart compatibility | Smart > Compatibility | Workshop, Tank tools | Species/tank data | [19](screenshots/whole-app-map-2026-05-18/19-smart-compatibility-attempt.png) | Pass |
+| Smart lower/offline tools | Smart scroll | Workshop compatibility | Species/tank data | [18](screenshots/whole-app-map-2026-05-18/18-smart-lower.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-advice-scrolled.png) | Fixed post-map: compatibility framed as advice |
+| Smart compatibility advice | Smart > Compatibility Advice | Workshop | Species/tank data | [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-opens-workshop.png) | Fixed post-map: opens Workshop |
 | More top | Bottom tab | None | Profile | [16](screenshots/whole-app-map-2026-05-18/16-more-top.png) | Pass |
 | More lower | More scroll | None | Profile | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png) | Pass |
 | Shop Street | More | None | Optional wishlist/cost data | [45](screenshots/whole-app-map-2026-05-18/45-shop-street.png), [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png) | Pass |
@@ -160,7 +161,7 @@ flowchart TD
 | Feature | Entry points found | Assessment |
 | --- | --- | --- |
 | Calculators/tools | Workshop, Tank bottom Tools, some debug routes | Improved post-map. Workshop is now the primary calculator hub; Preferences no longer presents a second full calculator/shop list. Tank bottom Tools remains a contextual daily-care shortcut surface. |
-| Compatibility checker | Smart, Workshop, Tank bottom Tools | Still mildly redundant. Smart presents it as an offline AI-adjacent feature, while Workshop/Tank present it as a practical tool. Keep Workshop as the primary calculator home and Smart only for advice framing. |
+| Compatibility checker | Workshop, Tank bottom Tools, Smart advice link | Improved post-map. Workshop remains the calculator owner; Tank keeps contextual shortcuts; Smart now frames compatibility as advice and routes the offline path to Workshop instead of presenting a second full checker. |
 | Water testing | Tank right panel, Quick menu, Add Log paths, Tank detail code | Useful workflow duplication, but it needs one canonical “log water test” route with shortcuts feeding into it. |
 | Feeding/water change | Quick menu, Today board, room objects, Add Log paths | Useful for daily care. Keep these in Tank, but avoid also surfacing them as unrelated calculator-like actions. |
 | Analytics/progress | More Analytics, Tank toolbox Analytics, Tank stats sheet, Tank bottom Progress, More profile | Too many progress surfaces. Keep summary progress in Tank/Learn and make More Analytics the full detail screen. |
@@ -178,7 +179,7 @@ flowchart TD
 - Tank bottom activity panel requires a real upward drag from the handle; a tap does not open it.
 - Original map finding: Tank detail was not reachable from the room tank because tapping empty tank water opened a fish fact dialog. Post-map fix verification confirms aquarium taps now open Tank detail.
 - Tank quick care sheets for quick test, feeding, water change, stats, and create tank all opened.
-- Smart shows AI-gated tools correctly locked when AI is not configured, with compatibility/anomaly available as offline tools.
+- Smart shows AI-gated tools correctly locked when AI is not configured. Compatibility is now framed as Smart advice that opens Workshop; Anomaly History remains available offline.
 - More top/lower hubs loaded and link to Shop Street, Gem Shop, Achievements, Workshop, Analytics, Preferences, Backup & Restore, and About.
 - Preferences is still broad, but now settings-focused: account, progress shortcut, theme, room theme, difficulty, ambiance, reduced motion, haptics, notifications, AI, guides, data, legal, and destructive actions.
 - Notification Settings shows Review Reminders and Streak Reminders as explicit toggles, matching the quiet-reminders policy.
@@ -268,6 +269,25 @@ flowchart TD
   - Manual screenshots captured the Workshop entry and invalid input states: [Workshop entry](screenshots/whole-app-map-2026-05-18/post-fix/workshop-calculator-validation-entry.png), [Stocking zero volume](screenshots/whole-app-map-2026-05-18/post-fix/stocking-zero-volume-validation.png), [Dosing zero volume](screenshots/whole-app-map-2026-05-18/post-fix/dosing-zero-volume-validation.png), [Tank Volume zero dimension](screenshots/whole-app-map-2026-05-18/post-fix/tank-volume-zero-dimension-validation.png), [Cost zero amount](screenshots/whole-app-map-2026-05-18/post-fix/cost-zero-amount-validation.png).
   - App-specific logcat scans after calculator review and after final emulator launch found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` entries. The only match-like output was a benign HWUI format warning.
 
+## Smart Compatibility Ownership Verification
+
+- Branch: `qa/whole-app-map`
+- Root cause: the map still showed Compatibility as a duplicate feature in Smart and Workshop. Workshop should own calculators; Smart should provide AI/offline assistance framing.
+- Implementation:
+  - Unconfigured Smart now shows `Compatibility Advice` with the subtitle `Use the Workshop checker with local species data`.
+  - Tapping the Smart compatibility advice card opens Workshop, not a second direct checker surface.
+  - Configured Smart labels the tank-specific AI version as `AI Compatibility Advice`.
+  - The Smart setup banner now names Workshop compatibility checks as the offline route.
+- Verification:
+  - Red/green Smart ownership tests were added in `test/widget_tests/smart_screen_test.dart`.
+  - `flutter test test/widget_tests/smart_screen_test.dart test/widget_tests/workshop_screen_test.dart test/widget_tests/compatibility_checker_test.dart` passed with 30 tests.
+  - `flutter analyze --no-pub` passed.
+  - `flutter test` passed with 1102 tests.
+  - `flutter build apk --debug --target lib/main.dart` passed.
+  - Physical phone `RFCY8022D5R` was unavailable, so emulator review used `emulator-5554`. The storage-constrained emulator could not install the 225 MB debug APK, so visual QA used an x64 profile APK after the normal debug build gate passed.
+  - Emulator screenshots: [Smart advice card](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-advice-scrolled.png), [Smart opens Workshop](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-opens-workshop.png).
+  - App-specific logcat scan found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` entries. The only output was the benign HWUI format warning seen in earlier emulator passes.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
@@ -279,18 +299,19 @@ flowchart TD
 | Fixed | More and Preferences duplicated navigation hub responsibilities. | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png), [20](screenshots/whole-app-map-2026-05-18/20-preferences-top.png), [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png), [post-fix Preferences](screenshots/whole-app-map-2026-05-18/post-fix/preferences-no-tool-hub.png) | More now owns primary destinations; Preferences no longer contains Explore or the duplicate Tools/Shop section. |
 | Fixed | Tool lists were inconsistent across Workshop, Preferences, Smart, and Tank. | [06](screenshots/whole-app-map-2026-05-18/06-tank-panel-tools.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png), [post-fix Workshop](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png) | Workshop is the primary calculator/tool hub; Tank keeps contextual shortcuts; Preferences no longer has the separate calculator list. |
 | Fixed | Calculator validation was inconsistent across Workshop tools. | Focused calculator suite, [Stocking](screenshots/whole-app-map-2026-05-18/post-fix/stocking-zero-volume-validation.png), [Dosing](screenshots/whole-app-map-2026-05-18/post-fix/dosing-zero-volume-validation.png), [Tank Volume](screenshots/whole-app-map-2026-05-18/post-fix/tank-volume-zero-dimension-validation.png), [Cost Tracker](screenshots/whole-app-map-2026-05-18/post-fix/cost-zero-amount-validation.png) | Added valid/invalid coverage for every input tool and runtime validation for Stocking, Dosing, Tank Volume, and Cost Tracker. |
+| Fixed | Smart duplicated the Workshop compatibility checker ownership. | [Smart advice](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-advice-scrolled.png), [Workshop route](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-opens-workshop.png) | Smart now frames compatibility as advice; the offline path routes to Workshop, and the AI path is labeled `AI Compatibility Advice`. |
 | P3 | Gem Shop subtitle truncates in More on the phone/font state used for QA. | [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png) | Polish issue; primary navigation remains clear. |
 | P3 | Android 16/Fold screenshot capture needs explicit display id. | QA note | Fixed for this dossier by using display `4630946872173396372`. |
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1, 2, 3, 4, 6, 7, and 8 were completed in this branch. The remaining immediate priority is a clearer Smart/compatibility ownership pass if it still feels duplicated after calculator testing.
+Post-map update: recommendations 1, 2, 3, 4, 5, 6, 7, and 8 were completed in this branch. The remaining immediate priority is the final release regression gate.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.
 3. Make Workshop the primary home for calculators. Completed post-map: Preferences no longer has the separate calculator/shop list, while Tank bottom Tools stays contextual.
 4. Split More and Preferences responsibilities. Completed post-map: More is the destination hub; Preferences is now settings, notifications, guides/data, legal, and account.
-5. Keep Smart as AI/offline assistance. Put Compatibility there only if it is framed as “smart advice”; otherwise link to the Workshop calculator.
+5. Keep Smart as AI/offline assistance. Completed post-map: Smart now frames compatibility as advice, routes the offline path to Workshop, and labels the AI-specific path as `AI Compatibility Advice`.
 6. Keep Practice state copy aligned with available actions. The no-due/weak-card state now points to Weak Spots instead of saying “All caught up.”
 7. Keep `integration_test/smoke_test_v2.dart` as the phone QA launch gate and extend it only when a mapped flow is stable enough to automate.
 8. Add calculator-specific input validation checks for every tool now that Workshop layout and hub ownership are stable. Completed post-map: every Workshop input tool now has focused valid/invalid coverage, and the missing runtime validation gaps are fixed.

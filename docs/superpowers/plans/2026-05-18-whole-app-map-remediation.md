@@ -273,6 +273,58 @@ git commit -m "test: cover calculator validation flows"
 
 ---
 
+### Task 5: Smart And Compatibility Ownership Pass
+
+**Files:**
+- Modify: `apps/aquarium_app/lib/screens/smart_screen.dart`
+- Modify: `apps/aquarium_app/lib/widgets/compatibility_checker_widget.dart`
+- Modify: `apps/aquarium_app/test/widget_tests/smart_screen_test.dart`
+- Update: `apps/aquarium_app/docs/qa/whole-app-map-2026-05-18.md`
+
+- [x] **Step 1: Add Smart ownership tests**
+
+Cover the duplicate compatibility entry finding:
+- Unconfigured Smart should present Compatibility as advice that points to Workshop, not as a second full `Compatibility Checker`.
+- Configured Smart should label the AI tank-specific version as advice, not the Workshop checker.
+
+- [x] **Step 2: Run focused Smart tests and confirm current duplication fails**
+
+Run:
+
+```powershell
+flutter test test/widget_tests/smart_screen_test.dart
+```
+
+Expected before implementation: the new ownership tests fail because Smart still shows `Compatibility Checker`.
+
+- [x] **Step 3: Implement minimal Smart copy/navigation changes**
+
+Keep Workshop as the calculator owner. Smart may still provide AI compatibility advice when configured and an offline guidance card when unconfigured, but the unconfigured card should route to Workshop.
+
+- [x] **Step 4: Verify and emulator review**
+
+Run:
+
+```powershell
+flutter test test/widget_tests/smart_screen_test.dart test/widget_tests/workshop_screen_test.dart test/widget_tests/compatibility_checker_test.dart
+flutter analyze --no-pub
+flutter test
+flutter build apk --debug --target lib/main.dart
+```
+
+Device review: use the available Android emulator if the phone is unavailable. Verify Smart unconfigured copy, Smart-to-Workshop navigation, and configured Smart AI advice title where practical.
+
+- [x] **Step 5: Commit checkpoint**
+
+Run:
+
+```powershell
+git add lib/screens/smart_screen.dart lib/widgets/compatibility_checker_widget.dart test/widget_tests/smart_screen_test.dart docs/qa/whole-app-map-2026-05-18.md docs/qa/screenshots/whole-app-map-2026-05-18 ..\..\docs\superpowers\plans\2026-05-18-whole-app-map-remediation.md
+git commit -m "refactor: clarify smart compatibility ownership"
+```
+
+---
+
 ## Final Release Gate
 
 - [ ] Run:

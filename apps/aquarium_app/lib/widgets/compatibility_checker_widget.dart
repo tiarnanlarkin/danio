@@ -116,7 +116,11 @@ class _CompatibilityCheckerWidgetState
       if (!mounted) return;
       setState(() => _result = e.message);
     } catch (e, st) {
-      logError('CompatibilityCheckerWidget: check failed: $e', stackTrace: st, tag: 'CompatibilityCheckerWidget');
+      logError(
+        'CompatibilityCheckerWidget: check failed: $e',
+        stackTrace: st,
+        tag: 'CompatibilityCheckerWidget',
+      );
       if (!mounted) return;
       setState(
         () => _result =
@@ -144,7 +148,7 @@ class _CompatibilityCheckerWidgetState
                 Icon(Icons.compare_arrows, color: AppColors.primary, size: 20),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
-                  'Compatibility Checker',
+                  'AI Compatibility Advice',
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),

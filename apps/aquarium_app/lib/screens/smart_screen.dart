@@ -18,7 +18,6 @@ import '../widgets/compatibility_checker_widget.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/first_visit_tooltip.dart';
-import 'compatibility_checker_screen.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
@@ -255,19 +254,15 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         const CompatibilityCheckerWidget(),
       ],
 
-      // Offline Compatibility Checker — always available (uses local species data)
+      // Offline compatibility advice links to the Workshop-owned checker.
       if (!aiConfigured) ...[
         const SizedBox(height: AppSpacing.sm),
         _FeatureCard(
           icon: Icons.compare_arrows,
-          title: 'Compatibility Checker',
-          subtitle: 'Check if your fish are compatible — works offline!',
+          title: 'Compatibility Advice',
+          subtitle: 'Use the Workshop checker with local species data',
           color: AppColors.success,
-          onTap: () => NavigationThrottle.push(
-            context,
-            const CompatibilityCheckerScreen(),
-            rootNavigator: true,
-          ),
+          onTap: () => AppRoutes.toWorkshop(context),
         ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
       ],
 
@@ -685,7 +680,7 @@ class _AiSetupBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Compatibility Checker and Anomaly History work offline now.',
+            'Workshop compatibility checks and Anomaly History work offline now.',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w500,
