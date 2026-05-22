@@ -18,6 +18,22 @@ Widget _wrap() {
   return const ProviderScope(child: MaterialApp(home: SettingsHubScreen()));
 }
 
+Widget _wrapWithTextScale(double textScale) {
+  return ProviderScope(
+    child: MaterialApp(
+      home: const SettingsHubScreen(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
+          child: child!,
+        );
+      },
+    ),
+  );
+}
+
 Widget _wrapPreferences() {
   return const ProviderScope(child: MaterialApp(home: SettingsScreen()));
 }
@@ -80,6 +96,23 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.text('More'), findsOneWidget);
+    });
+
+    testWidgets('profile card fits phone width with larger text', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrapWithTextScale(1.3));
+      await _advance(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('0-day streak'), findsOneWidget);
     });
 
     testWidgets('shows Shop Street category', (tester) async {

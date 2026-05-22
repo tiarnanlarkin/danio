@@ -326,6 +326,24 @@ flowchart TD
   - Emulator screenshot: [Gem Shop subtitle wrap](screenshots/whole-app-map-2026-05-18/post-fix/more-gem-shop-subtitle-wrap.png).
   - App-specific logcat scan found no crash or Flutter error entries; only the known benign HWUI format warning was present.
 
+## More Profile Large Text Verification
+
+- Branch: `fix/more-profile-large-text`
+- Root cause: the More profile card streak row used intrinsic row sizing, so `0-day streak` could overflow the card at phone width with larger system text.
+- Implementation:
+  - The streak row now uses available width instead of intrinsic width.
+  - The streak label is constrained with `Flexible`, one line, and ellipsis fallback.
+- Verification:
+  - Red test failed on the old layout with a `RenderFlex overflowed by 54 pixels on the right` error: `flutter test test/widget_tests/settings_hub_screen_test.dart --plain-name "profile card fits phone width with larger text"`.
+  - Focused test passed after the fix.
+  - `flutter test test/widget_tests/settings_hub_screen_test.dart` passed with 11 tests.
+  - `flutter analyze --no-pub` passed.
+  - `flutter test` passed with 1104 tests.
+  - `flutter build apk --debug --target-platform android-x64 --target lib/main.dart` passed, then the APK installed and launched on `emulator-5580`.
+  - `flutter build apk --debug --target-platform android-arm64 --target lib/main.dart` passed.
+  - Emulator QA used `font_scale=1.3`, opened More from a first-run skip path, and confirmed the profile card stayed within bounds. Screenshot: [More profile large text](screenshots/whole-app-map-2026-05-18/post-fix/more-profile-large-text.png).
+  - App-specific logcat scan found no crash or Flutter error entries; only the known benign HWUI format warning was present.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
@@ -339,12 +357,13 @@ flowchart TD
 | Fixed | Calculator validation was inconsistent across Workshop tools. | Focused calculator suite, [Stocking](screenshots/whole-app-map-2026-05-18/post-fix/stocking-zero-volume-validation.png), [Dosing](screenshots/whole-app-map-2026-05-18/post-fix/dosing-zero-volume-validation.png), [Tank Volume](screenshots/whole-app-map-2026-05-18/post-fix/tank-volume-zero-dimension-validation.png), [Cost Tracker](screenshots/whole-app-map-2026-05-18/post-fix/cost-zero-amount-validation.png) | Added valid/invalid coverage for every input tool and runtime validation for Stocking, Dosing, Tank Volume, and Cost Tracker. |
 | Fixed | Smart duplicated the Workshop compatibility checker ownership. | [Smart advice](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-advice-scrolled.png), [Workshop route](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-opens-workshop.png) | Smart now frames compatibility as advice; the offline path routes to Workshop, and the AI path is labeled `AI Compatibility Advice`. |
 | Fixed | Gem Shop subtitle truncated in More on the phone/font state used for QA. | [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png), [subtitle wrap](screenshots/whole-app-map-2026-05-18/post-fix/more-gem-shop-subtitle-wrap.png) | `PrimaryActionTile` subtitles now allow two lines before ellipsizing. |
+| Fixed | More profile card streak text overflowed at phone width with larger system text. | [large-text profile](screenshots/whole-app-map-2026-05-18/post-fix/more-profile-large-text.png) | The streak row now constrains the label with `Flexible` and ellipsis fallback. |
 | P3 | Android 16/Fold screenshot capture needs explicit display id. | QA note | Fixed for this dossier by using display `4630946872173396372`. |
 | P3 | Physical-phone final release signoff is pending. | Final release gate note | Final automated smoke and manual visual review used emulators because `RFCY8022D5R` was unavailable. Re-run final install and exploratory pass on the phone when connected. |
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1, 2, 3, 4, 5, 6, 7, and 8 were completed, and the Gem Shop subtitle polish issue is fixed. The automated/emulator final release gate is complete; the remaining release signoff is the physical-phone install and exploratory pass on `RFCY8022D5R` when connected.
+Post-map update: recommendations 1, 2, 3, 4, 5, 6, 7, and 8 were completed. The Gem Shop subtitle and More profile large-text polish issues are fixed. The automated/emulator final release gate is complete; the remaining release signoff is the physical-phone install and exploratory pass on `RFCY8022D5R` when connected.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.

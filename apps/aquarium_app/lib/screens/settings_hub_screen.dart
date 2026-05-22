@@ -454,7 +454,6 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       if (streak > 0) ...[
                         Icon(
@@ -464,13 +463,17 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                         ),
                         const SizedBox(width: AppSpacing.xs),
                       ],
-                      Text(
-                        '$streak-day streak',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: streak > 0
-                              ? AppColors.warning
-                              : context.textSecondary,
-                          fontWeight: FontWeight.w600,
+                      Flexible(
+                        child: Text(
+                          '$streak-day streak',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: streak > 0
+                                ? AppColors.warning
+                                : context.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
