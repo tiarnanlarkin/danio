@@ -14,11 +14,7 @@ import 'package:danio/screens/cost_tracker_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(
-      home: CostTrackerScreen(),
-    ),
-  );
+  return const ProviderScope(child: MaterialApp(home: CostTrackerScreen()));
 }
 
 // ---------------------------------------------------------------------------
@@ -137,12 +133,47 @@ void main() {
       // Expense should now appear in the list
       expect(find.text('Neon Tetras x6'), findsOneWidget);
     });
+
+    testWidgets('empty expense form shows validation guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Add First Expense'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Save Expense'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Please fill in all fields'), findsWidgets);
+    });
+
+    testWidgets('zero amount is rejected', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Add First Expense'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Description'),
+        'Free sample',
+      );
+      await tester.enterText(find.widgetWithText(TextField, 'Amount'), '0');
+      await tester.tap(find.text('Save Expense'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Enter an amount greater than 0'), findsWidgets);
+      expect(find.text('Save Expense'), findsOneWidget);
+    });
   });
 
   group('CostTrackerScreen — with saved data', () {
     testWidgets('shows expense list when data exists', (tester) async {
       SharedPreferences.setMockInitialValues({
-        'cost_tracker_expenses': '[{"id":"1","description":"Filter","amount":35.0,"category":"Equipment","date":"2025-01-15T12:00:00.000"}]',
+        'cost_tracker_expenses':
+            '[{"id":"1","description":"Filter","amount":35.0,"category":"Equipment","date":"2025-01-15T12:00:00.000"}]',
         'cost_tracker_currency': '£',
       });
 
@@ -157,7 +188,8 @@ void main() {
 
     testWidgets('shows summary cards', (tester) async {
       SharedPreferences.setMockInitialValues({
-        'cost_tracker_expenses': '[{"id":"1","description":"Fish Food","amount":12.0,"category":"Food","date":"${DateTime.now().toIso8601String()}"}]',
+        'cost_tracker_expenses':
+            '[{"id":"1","description":"Fish Food","amount":12.0,"category":"Food","date":"${DateTime.now().toIso8601String()}"}]',
         'cost_tracker_currency': '£',
       });
 

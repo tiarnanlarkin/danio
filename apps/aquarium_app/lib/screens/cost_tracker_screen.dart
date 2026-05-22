@@ -24,7 +24,10 @@ String _localeCurrencySymbol() {
     final format = NumberFormat.simpleCurrency(locale: locale);
     return format.currencySymbol;
   } catch (e) {
-    appLog('CostTrackerScreen: locale currency lookup failed, using £: $e', tag: 'CostTrackerScreen');
+    appLog(
+      'CostTrackerScreen: locale currency lookup failed, using £: $e',
+      tag: 'CostTrackerScreen',
+    );
     return '£';
   }
 }
@@ -49,7 +52,8 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   Future<void> _loadExpenses() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = prefs.getString('cost_tracker_expenses');
-    final currency = prefs.getString('cost_tracker_currency') ?? _localeCurrencySymbol();
+    final currency =
+        prefs.getString('cost_tracker_currency') ?? _localeCurrencySymbol();
 
     if (!mounted) return;
     if (json != null) {
@@ -291,9 +295,14 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
             title: const Text('Currency'),
             trailing: DropdownButton<String>(
               value: _currency,
-              items: ['£', '\$', '€', '¥', 'A\$', 'C\$']
-                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                  .toList(),
+              items: [
+                '£',
+                '\$',
+                '€',
+                '¥',
+                'A\$',
+                'C\$',
+              ].map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
               onChanged: (v) {
                 setState(() => _currency = v ?? _localeCurrencySymbol());
                 _saveExpenses();
@@ -591,6 +600,7 @@ class _AddExpenseSheet extends StatefulWidget {
 class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   final _descController = TextEditingController();
   final _amountController = TextEditingController();
+  String? _formValidationMessage;
   String _category = 'Fish';
   DateTime _date = DateTime.now();
 
@@ -613,6 +623,25 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
     'Other',
   ];
 
+  String? get _validationMessage {
+    if (_formValidationMessage != null) {
+      return _formValidationMessage;
+    }
+
+    final amountText = _amountController.text.trim();
+    final amount = double.tryParse(amountText);
+    if (amountText.isNotEmpty && amount != null && amount <= 0) {
+      return 'Enter an amount greater than 0';
+    }
+    return null;
+  }
+
+  void _clearSubmitValidation() {
+    if (_formValidationMessage != null) {
+      setState(() => _formValidationMessage = null);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -620,7 +649,11 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
         AppSpacing.md,
         AppSpacing.md,
         AppSpacing.md,
-        AppSpacing.md + max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom),
+        AppSpacing.md +
+            max(
+              MediaQuery.of(context).viewInsets.bottom,
+              MediaQuery.of(context).viewPadding.bottom,
+            ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -636,6 +669,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               border: OutlineInputBorder(),
             ),
             autofocus: true,
+            onChanged: (_) => _clearSubmitValidation(),
           ),
           const SizedBox(height: AppSpacing.sm2),
           TextField(
@@ -649,7 +683,20 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
             ],
+            onChanged: (_) {
+              if (_formValidationMessage != null) {
+                _formValidationMessage = null;
+              }
+              setState(() {});
+            },
           ),
+          if (_validationMessage != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              _validationMessage!,
+              style: AppTypography.bodySmall.copyWith(color: AppColors.error),
+            ),
+          ],
           const SizedBox(height: AppSpacing.sm2),
           DropdownButtonFormField<String>(
             initialValue: _category,
@@ -684,16 +731,31 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
           AppButton(
             label: 'Save Expense',
             onPressed: () {
+              final description = _descController.text.trim();
               final amount = double.tryParse(_amountController.text);
-              if (_descController.text.isEmpty || amount == null) {
+              if (description.isEmpty || amount == null) {
+                setState(
+                  () => _formValidationMessage = 'Please fill in all fields',
+                );
                 AppFeedback.showWarning(context, 'Please fill in all fields');
+                return;
+              }
+              if (amount <= 0) {
+                setState(
+                  () =>
+                      _formValidationMessage = 'Enter an amount greater than 0',
+                );
+                AppFeedback.showWarning(
+                  context,
+                  'Enter an amount greater than 0',
+                );
                 return;
               }
 
               widget.onSave(
                 _Expense(
                   id: DateTime.now().millisecondsSinceEpoch.toString(),
-                  description: _descController.text,
+                  description: description,
                   amount: amount,
                   category: _category,
                   date: _date,

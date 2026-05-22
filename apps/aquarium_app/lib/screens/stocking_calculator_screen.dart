@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../data/species_database.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_text_field.dart';
+
 class StockingCalculatorScreen extends StatefulWidget {
   const StockingCalculatorScreen({super.key});
 
@@ -91,6 +92,16 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   double get _stockingPercent =>
       _capacity > 0 ? (_bioload / _capacity) * 100 : 0;
 
+  String? get _setupValidationMessage {
+    if (_tankVolume <= 0) {
+      return 'Enter a tank volume greater than 0';
+    }
+    if (_filterRating <= 0) {
+      return 'Enter a filter rating greater than 0';
+    }
+    return null;
+  }
+
   String get _stockingLevel {
     if (_stockingPercent < 50) return 'Lightly Stocked';
     if (_stockingPercent < 75) return 'Moderately Stocked';
@@ -152,8 +163,12 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                   child: AppTextField(
                     controller: _tankVolumeController,
                     label: 'Tank (L)',
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                    ],
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
@@ -186,6 +201,20 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
               ],
             ),
           ),
+
+          if (_setupValidationMessage != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                0,
+                AppSpacing.md,
+                AppSpacing.sm,
+              ),
+              child: Text(
+                _setupValidationMessage!,
+                style: AppTypography.bodySmall.copyWith(color: AppColors.error),
+              ),
+            ),
 
           // Stocking meter
           Padding(
@@ -254,7 +283,10 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
           // Search results
           if (_searchResults.isNotEmpty)
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              margin: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: AppRadius.mediumRadius,

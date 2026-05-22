@@ -36,10 +36,26 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
   double? get _tankVolume => double.tryParse(_volumeController.text);
   double? get _dosePer => double.tryParse(_dosePerController.text);
 
+  String? get _validationMessage {
+    final volumeText = _volumeController.text.trim();
+    final doseText = _dosePerController.text.trim();
+    final volume = _tankVolume;
+    final dosePer = _dosePer;
+
+    if (volumeText.isNotEmpty && (volume == null || volume <= 0)) {
+      return 'Enter a tank volume greater than 0';
+    }
+    if (doseText.isNotEmpty && (dosePer == null || dosePer <= 0)) {
+      return 'Enter a dose amount greater than 0';
+    }
+    return null;
+  }
+
   double? get _totalDose {
     final volume = _tankVolume;
     final dosePer = _dosePer;
     if (volume == null || dosePer == null) return null;
+    if (volume <= 0 || dosePer <= 0) return null;
     return (volume / _dosePerLitres) * dosePer;
   }
 
@@ -61,7 +77,10 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF3CD),
                   borderRadius: AppRadius.mediumRadius,
-                  border: Border.all(color: const Color(0xFFFFCA28), width: 1.5),
+                  border: Border.all(
+                    color: const Color(0xFFFFCA28),
+                    width: 1.5,
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +152,10 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                       initialValue: _dosePerLitres,
                       decoration: const InputDecoration(
                         suffixText: 'L',
-                        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.sm),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.sm,
+                        ),
                       ),
                       items: [5, 10, 20, 25, 40, 50, 100].map((v) {
                         return DropdownMenuItem(
@@ -151,7 +173,29 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
               const SizedBox(height: AppSpacing.xl),
 
               // Result
-              if (_tankVolume == null || _totalDose == null) ...[
+              if (_validationMessage != null) ...[
+                AppCard(
+                  backgroundColor: AppOverlays.error10,
+                  padding: AppCardPadding.spacious,
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: AppColors.error,
+                        size: AppIconSizes.lg,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        _validationMessage!,
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.error,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ] else if (_tankVolume == null || _totalDose == null) ...[
                 AppCard(
                   backgroundColor: AppOverlays.info10,
                   padding: AppCardPadding.spacious,

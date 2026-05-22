@@ -41,4 +41,38 @@ void main() {
       expect(find.text('Schedule'), findsOneWidget);
     });
   });
+
+  group('LightingScheduleScreen - interactive recommendations', () {
+    testWidgets('default schedule shows valid total light duration', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('10 hours'), 300);
+      await tester.pump();
+
+      expect(find.text('10 hours'), findsOneWidget);
+      expect(find.text('Recommendation'), findsOneWidget);
+    });
+
+    testWidgets('algae toggle changes recommendation guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.widgetWithText(SwitchListTile, 'Algae Issues'));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(
+        find.textContaining('consider reducing to 6 hours'),
+        300,
+      );
+      await tester.pump();
+
+      expect(
+        find.textContaining('consider reducing to 6 hours'),
+        findsOneWidget,
+      );
+    });
+  });
 }

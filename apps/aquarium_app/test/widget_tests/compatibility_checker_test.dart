@@ -242,4 +242,18 @@ void main() {
       expect(find.text('Common Goldfish'), findsWidgets);
     });
   });
+
+  group('CompatibilityCheckerScreen - validation coverage', () {
+    testWidgets('empty selection keeps guidance and no verdict', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
+      await tester.pump();
+
+      expect(find.text('Add Fish to Check'), findsOneWidget);
+      expect(find.text('Good Match!'), findsNothing);
+      expect(find.text('Proceed with Caution'), findsNothing);
+      expect(find.text('Not Recommended'), findsNothing);
+    });
+  });
 }

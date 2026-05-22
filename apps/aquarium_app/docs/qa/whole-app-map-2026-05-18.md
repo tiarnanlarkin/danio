@@ -144,16 +144,16 @@ flowchart TD
 | Data / danger zone | Preferences lower | More backup | Local data | [28](screenshots/whole-app-map-2026-05-18/28-preferences-data-danger.png), [29](screenshots/whole-app-map-2026-05-18/29-preferences-danger-zone.png) | Pass |
 | Workshop main | More > Workshop | Tank tools | None | [30](screenshots/whole-app-map-2026-05-18/30-workshop-main.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png) | Fixed post-map |
 | Workshop lower | Workshop scroll | None | None | [31](screenshots/whole-app-map-2026-05-18/31-workshop-lower.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/workshop-lower-no-overflow.png) | Fixed post-map |
-| Water Change Calculator | Workshop | Tank tools | Inputs | [32](screenshots/whole-app-map-2026-05-18/32-tool-water-change.png) | Pass screen load |
-| Stocking Calculator | Workshop | Tank tools | Tank/species inputs | [33](screenshots/whole-app-map-2026-05-18/33-tool-stocking.png) | Pass screen load |
-| CO2 Calculator | Workshop | Debug route | pH/KH inputs | [34](screenshots/whole-app-map-2026-05-18/34-tool-co2.png) | Pass screen load |
-| Dosing Calculator | Workshop | Tank tools | Dosing inputs | [35](screenshots/whole-app-map-2026-05-18/35-tool-dosing.png) | Pass screen load |
-| Unit Converter | Workshop | Tank tools | Inputs | [36](screenshots/whole-app-map-2026-05-18/36-tool-unit-converter.png) | Pass screen load |
-| Tank Volume Calculator | Workshop | Tank tools | Dimensions | [37](screenshots/whole-app-map-2026-05-18/37-tool-tank-volume.png) | Pass screen load |
-| Lighting Schedule | Workshop | Tank tools | Lighting inputs | [38](screenshots/whole-app-map-2026-05-18/38-tool-lighting.png) | Pass screen load |
-| Compatibility Checker | Workshop | Smart, Tank tools | Species/tank data | [39](screenshots/whole-app-map-2026-05-18/39-tool-compatibility.png) | Pass screen load |
-| Nitrogen Cycle Assistant | Workshop | Guides/learning adjacent | Tank/water values | [40](screenshots/whole-app-map-2026-05-18/40-tool-cycling-assistant.png) | Pass screen load |
-| Cost Tracker | Workshop | Shop Street planning context | Cost entries | [41](screenshots/whole-app-map-2026-05-18/41-tool-cost-tracker.png) | Pass screen load |
+| Water Change Calculator | Workshop | Tank tools | Inputs | [32](screenshots/whole-app-map-2026-05-18/32-tool-water-change.png) | Validation covered |
+| Stocking Calculator | Workshop | Tank tools | Tank/species inputs | [33](screenshots/whole-app-map-2026-05-18/33-tool-stocking.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/stocking-zero-volume-validation.png) | Fixed post-map: validation covered |
+| CO2 Calculator | Workshop | Debug route | pH/KH inputs | [34](screenshots/whole-app-map-2026-05-18/34-tool-co2.png) | Validation covered |
+| Dosing Calculator | Workshop | Tank tools | Dosing inputs | [35](screenshots/whole-app-map-2026-05-18/35-tool-dosing.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/dosing-zero-volume-validation.png) | Fixed post-map: validation covered |
+| Unit Converter | Workshop | Tank tools | Inputs | [36](screenshots/whole-app-map-2026-05-18/36-tool-unit-converter.png) | Validation covered |
+| Tank Volume Calculator | Workshop | Tank tools | Dimensions | [37](screenshots/whole-app-map-2026-05-18/37-tool-tank-volume.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/tank-volume-zero-dimension-validation.png) | Fixed post-map: validation covered |
+| Lighting Schedule | Workshop | Tank tools | Lighting inputs | [38](screenshots/whole-app-map-2026-05-18/38-tool-lighting.png) | Validation covered |
+| Compatibility Checker | Workshop | Smart, Tank tools | Species/tank data | [39](screenshots/whole-app-map-2026-05-18/39-tool-compatibility.png) | Validation covered |
+| Nitrogen Cycle Assistant | Workshop | Guides/learning adjacent | Tank/water values | [40](screenshots/whole-app-map-2026-05-18/40-tool-cycling-assistant.png) | Validation covered |
+| Cost Tracker | Workshop | Shop Street planning context | Cost entries | [41](screenshots/whole-app-map-2026-05-18/41-tool-cost-tracker.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/cost-zero-amount-validation.png) | Fixed post-map: validation covered |
 
 ## Duplicate Entry Analysis
 
@@ -247,6 +247,27 @@ flowchart TD
   - App-specific logcat scan for the Danio process found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` matches.
   - P3 note: the Gem Shop subtitle truncates on this phone/font state. It is a polish issue and not part of the navigation consolidation fix.
 
+## Calculator Validation Verification
+
+- Branch: `qa/whole-app-map`
+- Root cause: the first map pass confirmed the Workshop tools were reachable, but most entries were only screen-load checked. Calculator inputs needed explicit valid and invalid coverage before the tools could be treated as stable user workflows.
+- Implementation:
+  - Added focused widget coverage for Water Change, Stocking, CO2, Dosing, Unit Converter, Tank Volume, Lighting, Compatibility, Cycling Assistant, and Cost Tracker.
+  - Added missing runtime validation for Stocking setup values, Dosing tank volume/dose values, Tank Volume non-positive dimensions, and Cost Tracker zero/negative amounts.
+  - Kept the existing calculator layouts and feedback patterns; this pass did not redesign the tools.
+- Automated verification:
+  - Focused calculator suite passed with 92 tests:
+    `flutter test test/widget_tests/water_change_calculator_screen_test.dart test/widget_tests/stocking_calculator_screen_test.dart test/widget_tests/co2_calculator_test.dart test/widget_tests/dosing_calculator_screen_test.dart test/widget_tests/unit_converter_screen_test.dart test/widget_tests/tank_volume_calculator_screen_test.dart test/widget_tests/lighting_schedule_screen_test.dart test/widget_tests/compatibility_checker_test.dart test/widget_tests/cycling_assistant_screen_test.dart test/widget_tests/cost_tracker_test.dart`.
+  - `flutter analyze --no-pub` passed.
+  - `flutter test` passed with 1100 tests.
+  - `flutter build apk --debug --target lib/main.dart` passed.
+- Device verification:
+  - Physical phone `RFCY8022D5R` was unavailable for the resumed pass on 2026-05-22, so manual review used the available Android emulator `emulator-5554` (`x86_64`).
+  - The normal all-ABI debug APK was too large for the storage-constrained emulator install session, so the emulator install used `flutter build apk --debug --target-platform android-x64 --target lib/main.dart` after the normal build gate passed.
+  - Emulator install and launch passed with the x86_64 debug APK.
+  - Manual screenshots captured the Workshop entry and invalid input states: [Workshop entry](screenshots/whole-app-map-2026-05-18/post-fix/workshop-calculator-validation-entry.png), [Stocking zero volume](screenshots/whole-app-map-2026-05-18/post-fix/stocking-zero-volume-validation.png), [Dosing zero volume](screenshots/whole-app-map-2026-05-18/post-fix/dosing-zero-volume-validation.png), [Tank Volume zero dimension](screenshots/whole-app-map-2026-05-18/post-fix/tank-volume-zero-dimension-validation.png), [Cost zero amount](screenshots/whole-app-map-2026-05-18/post-fix/cost-zero-amount-validation.png).
+  - App-specific logcat scans after calculator review and after final emulator launch found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` entries. The only match-like output was a benign HWUI format warning.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
@@ -257,12 +278,13 @@ flowchart TD
 | Fixed | Practice “All caught up” conflicted with available Weak Spots action. | [14](screenshots/whole-app-map-2026-05-18/14-practice-home.png), [44](screenshots/whole-app-map-2026-05-18/44-practice-weak-session.png), [post-fix](screenshots/whole-app-map-2026-05-18/post-fix/practice-weak-spots-available.png) | No-due/weak-card state now points to Weak Spots instead of Learn Next. |
 | Fixed | More and Preferences duplicated navigation hub responsibilities. | [17](screenshots/whole-app-map-2026-05-18/17-more-lower.png), [20](screenshots/whole-app-map-2026-05-18/20-preferences-top.png), [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png), [post-fix Preferences](screenshots/whole-app-map-2026-05-18/post-fix/preferences-no-tool-hub.png) | More now owns primary destinations; Preferences no longer contains Explore or the duplicate Tools/Shop section. |
 | Fixed | Tool lists were inconsistent across Workshop, Preferences, Smart, and Tank. | [06](screenshots/whole-app-map-2026-05-18/06-tank-panel-tools.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png), [post-fix Workshop](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png) | Workshop is the primary calculator/tool hub; Tank keeps contextual shortcuts; Preferences no longer has the separate calculator list. |
+| Fixed | Calculator validation was inconsistent across Workshop tools. | Focused calculator suite, [Stocking](screenshots/whole-app-map-2026-05-18/post-fix/stocking-zero-volume-validation.png), [Dosing](screenshots/whole-app-map-2026-05-18/post-fix/dosing-zero-volume-validation.png), [Tank Volume](screenshots/whole-app-map-2026-05-18/post-fix/tank-volume-zero-dimension-validation.png), [Cost Tracker](screenshots/whole-app-map-2026-05-18/post-fix/cost-zero-amount-validation.png) | Added valid/invalid coverage for every input tool and runtime validation for Stocking, Dosing, Tank Volume, and Cost Tracker. |
 | P3 | Gem Shop subtitle truncates in More on the phone/font state used for QA. | [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png) | Polish issue; primary navigation remains clear. |
 | P3 | Android 16/Fold screenshot capture needs explicit display id. | QA note | Fixed for this dossier by using display `4630946872173396372`. |
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1, 2, 3, 4, 6, and 7 were completed in this branch. The remaining immediate priority is calculator-level validation coverage, followed by a clearer Smart/compatibility ownership pass if it still feels duplicated after calculator testing.
+Post-map update: recommendations 1, 2, 3, 4, 6, 7, and 8 were completed in this branch. The remaining immediate priority is a clearer Smart/compatibility ownership pass if it still feels duplicated after calculator testing.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.
@@ -271,4 +293,4 @@ Post-map update: recommendations 1, 2, 3, 4, 6, and 7 were completed in this bra
 5. Keep Smart as AI/offline assistance. Put Compatibility there only if it is framed as “smart advice”; otherwise link to the Workshop calculator.
 6. Keep Practice state copy aligned with available actions. The no-due/weak-card state now points to Weak Spots instead of saying “All caught up.”
 7. Keep `integration_test/smoke_test_v2.dart` as the phone QA launch gate and extend it only when a mapped flow is stable enough to automate.
-8. In the next pass, add calculator-specific input validation checks for every tool now that Workshop layout and hub ownership are stable.
+8. Add calculator-specific input validation checks for every tool now that Workshop layout and hub ownership are stable. Completed post-map: every Workshop input tool now has focused valid/invalid coverage, and the missing runtime validation gaps are fixed.

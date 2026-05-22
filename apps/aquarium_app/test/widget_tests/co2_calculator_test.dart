@@ -13,9 +13,7 @@ import 'package:danio/screens/co2_calculator_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const MaterialApp(
-    home: Co2CalculatorScreen(),
-  );
+  return const MaterialApp(home: Co2CalculatorScreen());
 }
 
 // ---------------------------------------------------------------------------
@@ -120,6 +118,19 @@ void main() {
 
       expect(find.text('Too Low'), findsWidgets);
     });
+
+    testWidgets('empty pH input clears result without crashing', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.enterText(find.widgetWithText(TextField, '7.0'), '');
+      await tester.pump();
+
+      expect(find.text('-'), findsOneWidget);
+      expect(find.text('Enter values'), findsOneWidget);
+    });
   });
 
   group('Co2CalculatorScreen — edge cases', () {
@@ -136,12 +147,25 @@ void main() {
       expect(find.text('Dangerous'), findsWidgets);
     });
 
+    testWidgets('out of range pH shows validation guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.enterText(find.widgetWithText(TextField, '7.0'), '15');
+      await tester.pump();
+
+      expect(find.text('pH must be between 0.1 and 14.0'), findsOneWidget);
+      expect(find.text('Enter values'), findsOneWidget);
+    });
+
     testWidgets('shows info card about the calculator', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
 
       expect(
-        find.textContaining('Calculate dissolved CO2 from your pH and KH readings'),
+        find.textContaining(
+          'Calculate dissolved CO2 from your pH and KH readings',
+        ),
         findsOneWidget,
       );
     });

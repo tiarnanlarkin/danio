@@ -12,9 +12,7 @@ import 'package:danio/screens/stocking_calculator_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const MaterialApp(
-    home: StockingCalculatorScreen(),
-  );
+  return const MaterialApp(home: StockingCalculatorScreen());
 }
 
 // ---------------------------------------------------------------------------
@@ -52,6 +50,37 @@ void main() {
       await tester.pump();
       // Search field for adding species
       expect(find.byType(TextField), findsWidgets);
+    });
+  });
+
+  group('StockingCalculatorScreen - validation and calculation', () {
+    testWidgets('valid setup and species search can add a fish', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.enterText(find.byType(TextField).last, 'Neon');
+      await tester.pump(const Duration(milliseconds: 350));
+
+      expect(find.textContaining('Neon'), findsWidgets);
+
+      final addTarget = find.textContaining('Neon').last;
+      await tester.tap(addTarget);
+      await tester.pump();
+
+      expect(find.byIcon(Icons.remove_circle_outline), findsOneWidget);
+      expect(find.byIcon(Icons.add_circle_outline), findsOneWidget);
+    });
+
+    testWidgets('zero tank volume shows validation guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.enterText(find.widgetWithText(TextField, '100'), '0');
+      await tester.pump();
+
+      expect(find.text('Enter a tank volume greater than 0'), findsOneWidget);
     });
   });
 }

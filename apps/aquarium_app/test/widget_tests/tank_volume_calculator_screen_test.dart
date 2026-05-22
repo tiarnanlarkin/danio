@@ -12,9 +12,7 @@ import 'package:danio/screens/tank_volume_calculator_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const MaterialApp(
-    home: TankVolumeCalculatorScreen(),
-  );
+  return const MaterialApp(home: TankVolumeCalculatorScreen());
 }
 
 // ---------------------------------------------------------------------------
@@ -54,6 +52,40 @@ void main() {
       await tester.pump();
       // Metric toggle text
       expect(find.text('cm'), findsWidgets);
+    });
+  });
+
+  group('TankVolumeCalculatorScreen - validation and calculation', () {
+    testWidgets('valid rectangular dimensions show calculated volume', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '60');
+      await tester.enterText(fields.at(1), '30');
+      await tester.enterText(fields.at(2), '30');
+      await tester.pump();
+
+      expect(find.text('Estimated Volume'), findsOneWidget);
+      expect(find.text('54.0 L'), findsOneWidget);
+    });
+
+    testWidgets('zero dimension keeps the empty guidance state', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '0');
+      await tester.enterText(fields.at(1), '30');
+      await tester.enterText(fields.at(2), '30');
+      await tester.pump();
+
+      expect(find.text('Estimated Volume'), findsNothing);
+      expect(find.text('Enter dimensions above to calculate'), findsOneWidget);
     });
   });
 }

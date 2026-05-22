@@ -232,11 +232,11 @@ git commit -m "refactor: consolidate tool hub navigation"
 - Modify calculator tests under `apps/aquarium_app/test/widget_tests/*calculator*_test.dart`
 - Update: `apps/aquarium_app/docs/qa/whole-app-map-2026-05-18.md`
 
-- [ ] **Step 1: Add one valid and one invalid/empty input test per calculator**
+- [x] **Step 1: Add one valid and one invalid/empty input test per calculator**
 
 Cover Water Change, Stocking, CO2, Dosing, Unit Converter, Tank Volume, Lighting, Compatibility, Cycling Assistant, and Cost Tracker where each screen has inputs.
 
-- [ ] **Step 2: Run focused calculator tests**
+- [x] **Step 2: Run focused calculator tests**
 
 Run:
 
@@ -246,11 +246,11 @@ flutter test test/widget_tests/water_change_calculator_screen_test.dart test/wid
 
 Expected before implementation: missing validation tests fail where behavior is unclear or absent.
 
-- [ ] **Step 3: Implement minimal validation and feedback fixes**
+- [x] **Step 3: Implement minimal validation and feedback fixes**
 
 Use existing app snackbar/dialog/input-error patterns. Do not redesign calculator screens in this pass.
 
-- [ ] **Step 4: Verify and phone review**
+- [x] **Step 4: Verify and phone review**
 
 Run:
 
@@ -260,9 +260,9 @@ flutter test
 flutter build apk --debug --target lib/main.dart
 ```
 
-Phone review: one valid and one invalid input on each calculator.
+Device review: one valid and one invalid input on each calculator. Physical phone was unavailable for the resumed pass, so review used Android emulator `emulator-5554`; screenshots and logcat notes are recorded in the QA dossier.
 
-- [ ] **Step 5: Commit checkpoint**
+- [x] **Step 5: Commit checkpoint**
 
 Run:
 

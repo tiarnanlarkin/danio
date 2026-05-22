@@ -12,9 +12,7 @@ import 'package:danio/screens/water_change_calculator_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const MaterialApp(
-    home: WaterChangeCalculatorScreen(),
-  );
+  return const MaterialApp(home: WaterChangeCalculatorScreen());
 }
 
 // ---------------------------------------------------------------------------
@@ -54,6 +52,46 @@ void main() {
       await tester.pump();
       // Nitrate Levels section is always visible above the fold
       expect(find.text('Nitrate Levels'), findsOneWidget);
+    });
+  });
+
+  group('WaterChangeCalculatorScreen - validation and calculation', () {
+    testWidgets('valid nitrate inputs show a water change result', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.scrollUntilVisible(
+        find.text('Water Change Needed'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      expect(find.text('Water Change Needed'), findsOneWidget);
+      expect(find.text('57%'), findsOneWidget);
+      expect(find.text('57L'), findsOneWidget);
+    });
+
+    testWidgets('empty required input shows validation guidance', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.enterText(find.widgetWithText(TextField, '100'), '');
+      await tester.pump();
+
+      await tester.scrollUntilVisible(
+        find.text('Please fill in all fields'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      expect(find.text('Water Change Needed'), findsNothing);
+      expect(find.text('Please fill in all fields'), findsOneWidget);
     });
   });
 }

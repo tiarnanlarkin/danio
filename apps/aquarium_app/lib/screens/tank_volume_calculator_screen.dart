@@ -33,10 +33,14 @@ class _TankVolumeCalculatorScreenState
 
   bool _useMetric = true;
 
+  bool _isPositive(double? value) => value != null && value > 0;
+
   double? get _volume {
     switch (_shape) {
       case _TankShape.rectangular:
-        if (_length != null && _width != null && _height != null) {
+        if (_isPositive(_length) &&
+            _isPositive(_width) &&
+            _isPositive(_height)) {
           var l = _length!, w = _width!, h = _height!;
           if (!_useMetric) {
             l *= 2.54;
@@ -47,7 +51,7 @@ class _TankVolumeCalculatorScreenState
         }
         break;
       case _TankShape.cylindrical:
-        if (_diameter != null && _cylinderHeight != null) {
+        if (_isPositive(_diameter) && _isPositive(_cylinderHeight)) {
           var d = _diameter!, h = _cylinderHeight!;
           if (!_useMetric) {
             d *= 2.54;
@@ -57,10 +61,10 @@ class _TankVolumeCalculatorScreenState
         }
         break;
       case _TankShape.bowFront:
-        if (_bowLength != null &&
-            _bowWidth != null &&
-            _bowHeight != null &&
-            _bowDepth != null) {
+        if (_isPositive(_bowLength) &&
+            _isPositive(_bowWidth) &&
+            _isPositive(_bowHeight) &&
+            _isPositive(_bowDepth)) {
           var l = _bowLength!, w = _bowWidth!, h = _bowHeight!, d = _bowDepth!;
           if (!_useMetric) {
             l *= 2.54;
@@ -77,7 +81,7 @@ class _TankVolumeCalculatorScreenState
         }
         break;
       case _TankShape.hexagonal:
-        if (_length != null && _height != null) {
+        if (_isPositive(_length) && _isPositive(_height)) {
           var s = _length!, h = _height!; // s = side length
           if (!_useMetric) {
             s *= 2.54;
@@ -89,7 +93,7 @@ class _TankVolumeCalculatorScreenState
         }
         break;
       case _TankShape.corner:
-        if (_length != null && _height != null) {
+        if (_isPositive(_length) && _isPositive(_height)) {
           var l = _length!, h = _height!;
           if (!_useMetric) {
             l *= 2.54;

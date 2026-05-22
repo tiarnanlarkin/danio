@@ -35,14 +35,18 @@ void main() {
       expect(find.text('Dosing Calculator'), findsOneWidget);
     });
 
-    testWidgets('shows Tank Volume and Recommended Dose sections', (tester) async {
+    testWidgets('shows Tank Volume and Recommended Dose sections', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
       expect(find.text('Tank Volume'), findsOneWidget);
       expect(find.text('Recommended Dose'), findsOneWidget);
     });
 
-    testWidgets('shows placeholder prompt when no volume entered', (tester) async {
+    testWidgets('shows placeholder prompt when no volume entered', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
       expect(
@@ -57,7 +61,10 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
-      final volumeField = find.widgetWithText(TextFormField, 'e.g., 120 litres');
+      final volumeField = find.widgetWithText(
+        TextFormField,
+        'e.g., 120 litres',
+      );
       await tester.enterText(volumeField, '50');
       await tester.pump();
 
@@ -68,7 +75,10 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
-      final volumeField = find.widgetWithText(TextFormField, 'e.g., 120 litres');
+      final volumeField = find.widgetWithText(
+        TextFormField,
+        'e.g., 120 litres',
+      );
       await tester.enterText(volumeField, '100');
       await tester.pump();
 
@@ -80,7 +90,10 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
-      final volumeField = find.widgetWithText(TextFormField, 'e.g., 120 litres');
+      final volumeField = find.widgetWithText(
+        TextFormField,
+        'e.g., 120 litres',
+      );
       await tester.enterText(volumeField, '100');
       await tester.pump();
 
@@ -93,12 +106,48 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
-      final volumeField = find.widgetWithText(TextFormField, 'e.g., 120 litres');
+      final volumeField = find.widgetWithText(
+        TextFormField,
+        'e.g., 120 litres',
+      );
       await tester.enterText(volumeField, '100');
       await tester.pump();
 
       // Both the result headline and 'Dose rate' row show ml
       expect(find.textContaining('ml'), findsWidgets);
+    });
+
+    testWidgets('valid volume and dose show the calculated dose amount', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'e.g., 120 litres'),
+        '100',
+      );
+      await tester.enterText(find.widgetWithText(TextFormField, 'Amount'), '2');
+      await tester.pump();
+
+      expect(find.text('20.00 ml'), findsOneWidget);
+      expect(find.text('Total dose for your tank'), findsOneWidget);
+    });
+
+    testWidgets('zero volume shows validation guidance instead of a dose', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'e.g., 120 litres'),
+        '0',
+      );
+      await tester.pump();
+
+      expect(find.text('20.00 ml'), findsNothing);
+      expect(find.text('Enter a tank volume greater than 0'), findsOneWidget);
     });
   });
 }
