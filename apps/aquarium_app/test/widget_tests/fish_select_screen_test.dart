@@ -60,6 +60,26 @@ void main() {
       // Neon Tetra is always in popular fish list
       expect(find.text('Neon Tetra'), findsWidgets);
     });
+
+    testWidgets('popular fish names can wrap instead of truncating', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump(const Duration(seconds: 1));
+
+      final dwarfGouramiText = tester.widget<Text>(
+        find.text('Dwarf Gourami').first,
+      );
+      expect(dwarfGouramiText.maxLines, greaterThanOrEqualTo(2));
+      expect(dwarfGouramiText.overflow, isNot(TextOverflow.ellipsis));
+    });
   });
 
   group('FishSelectScreen — search', () {

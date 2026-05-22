@@ -483,8 +483,9 @@ class _PopularTile extends StatelessWidget {
               Text(
                 fish.commonName,
                 textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                softWrap: true,
+                overflow: TextOverflow.visible,
                 style: Theme.of(
                   context,
                 ).textTheme.labelMedium?.copyWith(color: AppColors.textPrimary),
@@ -493,7 +494,7 @@ class _PopularTile extends StatelessWidget {
               Text(
                 fish.scientificName,
                 textAlign: TextAlign.center,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontStyle: FontStyle.italic,

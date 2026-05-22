@@ -67,5 +67,20 @@ void main() {
       await _advance(tester);
       expect(find.byType(GestureDetector), findsWidgets);
     });
+
+    testWidgets('selecting a status and tapping Continue calls onSelected', (
+      tester,
+    ) async {
+      String? selected;
+      await tester.pumpWidget(_wrap(onSelected: (value) => selected = value));
+      await _advance(tester);
+
+      await tester.tap(find.text('Already up and running'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Continue'));
+      await tester.pump();
+
+      expect(selected, 'active');
+    });
   });
 }

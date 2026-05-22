@@ -42,7 +42,7 @@ No Danio crash was seen in the crash buffer. `scheduled_notifications.xml` conta
 | P1-04 | P2 | Fixed | Micro-lesson feedback and `Got it` action were below the fold after answering. The lesson now scrolls to feedback/action after answer reveal. |
 | P1-05 | P2 | Fixed | Fish profile reveal CTA was below the fold. The reveal now scrolls to the invite/CTA after the final phase appears. |
 | P1-06 | P2 | Fixed | Full-width buttons could overflow on narrow layouts. `AppButton` now flexes and ellipsizes long full-width labels while preserving short-button rendering. |
-| P1-07 | P2 | Open | Fish picker card titles can truncate on phone (`Bronze Co...`, `Dwarf Gou...`, etc.). This is polish/confidence, not a completion blocker. |
+| P1-07 | P2 | Fixed | Fish picker card titles could truncate on phone (`Bronze Co...`, `Dwarf Gou...`, etc.). Popular fish names now wrap to two lines before the scientific name. |
 | P1-08 | P2 | Open | First Tank landing still shows a dismissible welcome banner. It is not stacked with the old XP nudge or ambient tips, but it should be reviewed in Phase 2 against the quiet-guidance policy. |
 | P1-09 | P3 | Not app | The pink left-edge handle seen in screenshots is the phone OS edge panel, not Danio UI. |
 
@@ -70,6 +70,23 @@ Full-suite status:
 - `AppButton` was narrowed to constrain only long full-width labels/icons/loading states.
 - The isolated McCard golden now passes.
 - A final full `flutter test` rerun passed: 1,067 tests.
+
+## Post-Phase Fish Picker Polish
+
+- Branch: `fix/fish-picker-title-wrap`
+- Root cause: popular fish tile common names were hard-limited to one line with ellipsis inside the 3-column picker grid.
+- Implementation: common names now wrap to two lines, while scientific names use one line to keep card height stable.
+- Regression coverage:
+  - `flutter test test/widget_tests/fish_select_screen_test.dart --plain-name "popular fish names can wrap instead of truncating"` failed on the old one-line contract, then passed after the fix.
+  - `flutter test test/widget_tests/fish_select_screen_test.dart` passed with 10 tests.
+  - `flutter test test/widget_tests/tank_status_screen_test.dart --plain-name "selecting a status and tapping Continue calls onSelected"` passed, preserving the preceding onboarding step's continue contract.
+  - `flutter test test/widget_tests/fish_select_screen_test.dart test/widget_tests/tank_status_screen_test.dart` passed with 16 tests.
+  - `flutter analyze --no-pub` passed with no issues.
+  - `flutter test` passed with 1,106 tests.
+  - `flutter build apk --debug --target-platform android-x64 --target lib/main.dart` passed and installed on `emulator-5580`.
+  - `flutter build apk --debug --target-platform android-arm64 --target lib/main.dart` passed.
+  - Emulator logcat scan for the running app process found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, unhandled exception, or widget exception markers.
+- Original evidence: [fish picker truncation](screenshots/phase1-2026-05-17/18_betta_picker.png).
 
 ## Screenshot Artifacts
 
