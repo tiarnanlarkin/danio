@@ -144,6 +144,17 @@ void main() {
       // No crash — chip tapped successfully
       expect(find.text('Water Change'), findsWidgets);
     });
+
+    testWidgets('feeding entry opens with Feeding selected', (tester) async {
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+
+      await tester.pumpWidget(_wrap(storage: svc, type: LogType.feeding));
+      await _advance(tester);
+
+      expect(find.text('Log Feeding'), findsOneWidget);
+      expect(find.text('Feeding'), findsOneWidget);
+    });
   });
 
   group('AddLogScreen validation', () {

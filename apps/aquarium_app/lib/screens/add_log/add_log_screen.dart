@@ -381,6 +381,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         return 'Log Water Test';
       case LogType.waterChange:
         return 'Log Water Change';
+      case LogType.feeding:
+        return 'Log Feeding';
       case LogType.observation:
         return 'Add Observation';
       case LogType.medication:

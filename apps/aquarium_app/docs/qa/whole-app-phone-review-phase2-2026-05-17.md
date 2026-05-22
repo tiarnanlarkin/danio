@@ -35,7 +35,7 @@ Returning-user app state had:
 | P2-05 | P2 | Fixed | Tank Settings overflowed on the phone-width layout. The tank type dropdown now expands and truncates long menu labels safely. |
 | P2-06 | P1 | Fixed | The quick-care speed dial had a zero-size hit-test/paint surface, so the action pills could be clipped or invisible. The menu now has a stable 360 x 560 surface and the phone UI tree exposes Quick Test, Feed, Water Change, Stats, and Add Tank. |
 | P2-07 | P1 | Fixed | Filled Quick Water Test initially hit the app error screen. Root cause was local `TextEditingController`s being disposed by the modal future while Flutter was still rebuilding the closing sheet. The quick-test form is now a stateful sheet that owns and disposes its controllers through widget lifecycle. |
-| P2-08 | P3 | Observed | The Feed info sheet opens the Add Log flow correctly, but the horizontal type selector still starts visually at Water Test even when the initial type is Feeding. Save logged feeding successfully; this is a clarity polish item for a later Add Log pass. |
+| P2-08 | P3 | Fixed | The Feed info sheet opened the Add Log flow with `initialType: Feeding`, but the selector did not include a Feeding chip and the title fell back to `Add Log`. Add Log now includes Feeding as a selector option, titles the flow `Log Feeding`, and scrolls the selected chip into view for preselected types. |
 
 ## Quiet Guidance Checks
 
@@ -82,3 +82,17 @@ Not run in this Phase 2 closeout:
 9. Pass: Feeding flow saved and returned to Tank.
 10. Pass: Water Change flow saved and returned to Tank.
 11. Pass: `scheduled_notifications.xml` remained `[]`.
+
+## Post-Phase Add Log Polish
+
+- Branch: `fix/add-log-initial-type-scroll`
+- Root cause: `AddLogScreen` accepted `LogType.feeding`, but `AddLogTypeSelector` only exposed water test, water change, observation, and medication chips. Feeding therefore saved correctly but did not look selected in the header selector.
+- Implementation: the selector now uses a shared option list with Feeding included, scrolls the selected chip into view after layout and selection changes, and `AddLogScreen` now titles feeding entries as `Log Feeding`.
+- Regression coverage:
+  - `flutter test test/widget_tests/add_log_screen_test.dart --plain-name "feeding entry opens with Feeding selected"` failed before the fix because `Log Feeding` was not rendered, then passed after the fix.
+  - `flutter test test/widget_tests/add_log_screen_test.dart` passed with 10 tests.
+  - `flutter analyze --no-pub` passed with no issues.
+  - `flutter test` passed with 1,107 tests.
+  - `flutter build apk --debug --target-platform android-x64 --target lib/main.dart` passed, installed on `emulator-5580`, and launched.
+  - Emulator logcat scan for the running app process found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, unhandled exception, or widget exception markers.
+  - `flutter build apk --debug --target-platform android-arm64 --target lib/main.dart` passed.
