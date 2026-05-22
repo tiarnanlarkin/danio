@@ -246,7 +246,7 @@ flowchart TD
   - `flutter build apk --debug --target lib/main.dart` passed, then the APK installed and launched on `RFCY8022D5R`.
   - Phone QA confirmed More primary destinations, Workshop as the calculator hub, and Preferences lower settings/reminder sections without the duplicate calculator grid. Screenshots: [More destinations](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png), [Workshop hub](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png), [Preferences top](screenshots/whole-app-map-2026-05-18/post-fix/preferences-no-tool-hub.png), [Preferences lower](screenshots/whole-app-map-2026-05-18/post-fix/preferences-lower-no-tool-hub.png).
   - App-specific logcat scan for the Danio process found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` matches.
-  - P3 note: the Gem Shop subtitle truncates on this phone/font state. It is a polish issue and not part of the navigation consolidation fix.
+  - P3 note: the Gem Shop subtitle truncated on this phone/font state. This was fixed in the follow-up More subtitle polish pass.
 
 ## Calculator Validation Verification
 
@@ -309,6 +309,23 @@ flowchart TD
 - Logcat: app-PID scan after the final emulator pass found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` entries.
 - Result: no new P0, P1, or P2 issues were found in the automated or emulator manual final gate. Physical phone final install and signoff should still be run on `RFCY8022D5R` when the device is connected.
 
+## More Subtitle Polish Verification
+
+- Branch: `fix/more-gem-shop-subtitle`
+- Root cause: `PrimaryActionTile` forced subtitles to one line, so the Gem Shop More tile could truncate on phone/font states.
+- Implementation:
+  - Shared action tile subtitles now allow two lines before ellipsizing.
+  - Added a More hub widget regression covering the Gem Shop subtitle wrapping contract.
+- Verification:
+  - Red test failed on the old one-line contract: `flutter test test/widget_tests/settings_hub_screen_test.dart --plain-name "Gem Shop subtitle can wrap in the More hub tile"`.
+  - Focused test passed after the fix.
+  - `flutter test test/widget_tests/settings_hub_screen_test.dart` passed with 10 tests.
+  - `flutter analyze --no-pub` passed.
+  - `flutter test` passed with 1103 tests.
+  - `flutter build apk --debug --target-platform android-x64 --target lib/main.dart` passed, then the APK installed and launched on `emulator-5554`.
+  - Emulator screenshot: [Gem Shop subtitle wrap](screenshots/whole-app-map-2026-05-18/post-fix/more-gem-shop-subtitle-wrap.png).
+  - App-specific logcat scan found no crash or Flutter error entries; only the known benign HWUI format warning was present.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
@@ -321,13 +338,13 @@ flowchart TD
 | Fixed | Tool lists were inconsistent across Workshop, Preferences, Smart, and Tank. | [06](screenshots/whole-app-map-2026-05-18/06-tank-panel-tools.png), [24](screenshots/whole-app-map-2026-05-18/24-preferences-data-tools.png), [post-fix Workshop](screenshots/whole-app-map-2026-05-18/post-fix/workshop-primary-hub.png) | Workshop is the primary calculator/tool hub; Tank keeps contextual shortcuts; Preferences no longer has the separate calculator list. |
 | Fixed | Calculator validation was inconsistent across Workshop tools. | Focused calculator suite, [Stocking](screenshots/whole-app-map-2026-05-18/post-fix/stocking-zero-volume-validation.png), [Dosing](screenshots/whole-app-map-2026-05-18/post-fix/dosing-zero-volume-validation.png), [Tank Volume](screenshots/whole-app-map-2026-05-18/post-fix/tank-volume-zero-dimension-validation.png), [Cost Tracker](screenshots/whole-app-map-2026-05-18/post-fix/cost-zero-amount-validation.png) | Added valid/invalid coverage for every input tool and runtime validation for Stocking, Dosing, Tank Volume, and Cost Tracker. |
 | Fixed | Smart duplicated the Workshop compatibility checker ownership. | [Smart advice](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-advice-scrolled.png), [Workshop route](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-opens-workshop.png) | Smart now frames compatibility as advice; the offline path routes to Workshop, and the AI path is labeled `AI Compatibility Advice`. |
-| P3 | Gem Shop subtitle truncates in More on the phone/font state used for QA. | [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png) | Polish issue; primary navigation remains clear. |
+| Fixed | Gem Shop subtitle truncated in More on the phone/font state used for QA. | [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png), [subtitle wrap](screenshots/whole-app-map-2026-05-18/post-fix/more-gem-shop-subtitle-wrap.png) | `PrimaryActionTile` subtitles now allow two lines before ellipsizing. |
 | P3 | Android 16/Fold screenshot capture needs explicit display id. | QA note | Fixed for this dossier by using display `4630946872173396372`. |
 | P3 | Physical-phone final release signoff is pending. | Final release gate note | Final automated smoke and manual visual review used emulators because `RFCY8022D5R` was unavailable. Re-run final install and exploratory pass on the phone when connected. |
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1, 2, 3, 4, 5, 6, 7, and 8 were completed in this branch. The automated/emulator final release gate is complete; the remaining release signoff is the physical-phone install and exploratory pass on `RFCY8022D5R` when connected.
+Post-map update: recommendations 1, 2, 3, 4, 5, 6, 7, and 8 were completed, and the Gem Shop subtitle polish issue is fixed. The automated/emulator final release gate is complete; the remaining release signoff is the physical-phone install and exploratory pass on `RFCY8022D5R` when connected.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.

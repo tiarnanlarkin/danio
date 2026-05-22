@@ -93,7 +93,7 @@ class PrimaryActionTile extends StatelessWidget {
                         context,
                       ).colorScheme.onSurface.withAlpha(153), // ~60%
                     ),
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],

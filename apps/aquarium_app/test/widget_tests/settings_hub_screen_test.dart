@@ -96,6 +96,17 @@ void main() {
       expect(find.text('Gem Shop'), findsOneWidget);
     });
 
+    testWidgets('Gem Shop subtitle can wrap in the More hub tile', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final subtitle = find.text('Spend gems on rewards and cosmetics');
+      expect(subtitle, findsOneWidget);
+      expect(tester.widget<Text>(subtitle).maxLines, greaterThanOrEqualTo(2));
+    });
+
     testWidgets('shows Achievements category', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
