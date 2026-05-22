@@ -327,20 +327,23 @@ git commit -m "refactor: clarify smart compatibility ownership"
 
 ## Final Release Gate
 
-- [ ] Run:
+- [x] Run automated/emulator release gates:
 
 ```powershell
 cd "C:\Users\larki\Documents\Danio Aquarium App Project\repo\apps\aquarium_app"
 flutter analyze --no-pub
 flutter test
-flutter test integration_test/smoke_test_v2.dart -d RFCY8022D5R
-flutter build apk --debug --target-platform android-arm64
+flutter test integration_test/smoke_test_v2.dart -d emulator-5580
+flutter build apk --debug --target-platform android-arm64 --target lib/main.dart
 ```
 
+Note: physical phone `RFCY8022D5R` was unavailable on 2026-05-22, so the integration smoke gate used `emulator-5580`.
+
 - [ ] Install final APK on `RFCY8022D5R`.
-- [ ] Run a 20-30 minute phone pass across Learn, Practice, Tank, Smart, More, Workshop, and Preferences.
-- [ ] Update the QA dossier with final screenshots, pass/fail notes, and remaining triage.
-- [ ] Commit final QA update.
+- [x] Run emulator visual pass across Learn, Practice, Tank, Smart, More, Workshop, and Preferences.
+- [ ] Run a 20-30 minute phone pass across Learn, Practice, Tank, Smart, More, Workshop, and Preferences when `RFCY8022D5R` is connected.
+- [x] Update the QA dossier with final screenshots, pass/fail notes, and remaining triage.
+- [x] Commit final QA update.
 
 ---
 

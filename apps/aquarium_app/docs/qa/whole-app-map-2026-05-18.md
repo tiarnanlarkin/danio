@@ -288,6 +288,27 @@ flowchart TD
   - Emulator screenshots: [Smart advice card](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-advice-scrolled.png), [Smart opens Workshop](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-opens-workshop.png).
   - App-specific logcat scan found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` entries. The only output was the benign HWUI format warning seen in earlier emulator passes.
 
+## Final Release Gate Verification
+
+- Branch: `qa/whole-app-map`
+- Date: 2026-05-22.
+- Device substitution: physical phone `RFCY8022D5R` was unavailable for this final gate. Automated smoke ran on `emulator-5580`; manual visual review used `emulator-5554` because `emulator-5580` did not retain or resolve the Danio launcher after the integration smoke run.
+- Automated gates:
+  - `flutter analyze --no-pub` passed.
+  - `flutter test` passed with 1102 tests.
+  - `flutter test integration_test/smoke_test_v2.dart -d emulator-5580` passed with 5 integration tests.
+  - `flutter build apk --debug --target-platform android-arm64 --target lib/main.dart` passed and produced the final debug APK.
+- Manual emulator review screenshots:
+  - [Learn](screenshots/whole-app-map-2026-05-18/post-fix/final-release-learn.png)
+  - [Practice](screenshots/whole-app-map-2026-05-18/post-fix/final-release-practice.png)
+  - [Tank](screenshots/whole-app-map-2026-05-18/post-fix/final-release-tank.png)
+  - [Smart](screenshots/whole-app-map-2026-05-18/post-fix/final-release-smart.png)
+  - [More](screenshots/whole-app-map-2026-05-18/post-fix/final-release-more.png)
+  - [Workshop](screenshots/whole-app-map-2026-05-18/post-fix/final-release-workshop.png)
+  - [Preferences](screenshots/whole-app-map-2026-05-18/post-fix/final-release-preferences.png)
+- Logcat: app-PID scan after the final emulator pass found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, `Unhandled Exception`, `Exception caught by widgets`, or `ERROR` entries.
+- Result: no new P0, P1, or P2 issues were found in the automated or emulator manual final gate. Physical phone final install and signoff should still be run on `RFCY8022D5R` when the device is connected.
+
 ## Issue Triage
 
 | Priority | Issue | Evidence | Notes |
@@ -302,10 +323,11 @@ flowchart TD
 | Fixed | Smart duplicated the Workshop compatibility checker ownership. | [Smart advice](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-advice-scrolled.png), [Workshop route](screenshots/whole-app-map-2026-05-18/post-fix/smart-compatibility-opens-workshop.png) | Smart now frames compatibility as advice; the offline path routes to Workshop, and the AI path is labeled `AI Compatibility Advice`. |
 | P3 | Gem Shop subtitle truncates in More on the phone/font state used for QA. | [post-fix More](screenshots/whole-app-map-2026-05-18/post-fix/more-primary-destinations.png) | Polish issue; primary navigation remains clear. |
 | P3 | Android 16/Fold screenshot capture needs explicit display id. | QA note | Fixed for this dossier by using display `4630946872173396372`. |
+| P3 | Physical-phone final release signoff is pending. | Final release gate note | Final automated smoke and manual visual review used emulators because `RFCY8022D5R` was unavailable. Re-run final install and exploratory pass on the phone when connected. |
 
 ## Next-Stage Recommendations
 
-Post-map update: recommendations 1, 2, 3, 4, 5, 6, 7, and 8 were completed in this branch. The remaining immediate priority is the final release regression gate.
+Post-map update: recommendations 1, 2, 3, 4, 5, 6, 7, and 8 were completed in this branch. The automated/emulator final release gate is complete; the remaining release signoff is the physical-phone install and exploratory pass on `RFCY8022D5R` when connected.
 
 1. Fix Tank detail access first. Make the tank canvas open tank detail reliably, and move fish facts to explicit fish taps only or a visible “fish info” affordance.
 2. Fix Workshop card layout before any tool reorganization. The current debug overflow stripes damage trust in the main calculator hub.
