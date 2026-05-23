@@ -82,10 +82,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     _scheduleFirstPathScroll(duration: const Duration(milliseconds: 600));
   }
 
-  void _scheduleFirstPathScroll({
-    required Duration duration,
-    int attempt = 0,
-  }) {
+  void _scheduleFirstPathScroll({required Duration duration, int attempt = 0}) {
     if (attempt == 0) {
       if (_firstPathScrollScheduled) return;
       _firstPathScrollScheduled = true;
@@ -273,15 +270,17 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           const SizedBox(height: AppSpacing.xs),
                           const Text('Description of this learning path'),
                           const SizedBox(height: AppSpacing.sm),
-                          ClipRRect(
-                            borderRadius: AppRadius.xsRadius,
-                            child: LinearProgressIndicator(
-                              value: 0.5,
-                              backgroundColor: context.surfaceVariant,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                AppColors.primary,
+                          ExcludeSemantics(
+                            child: ClipRRect(
+                              borderRadius: AppRadius.xsRadius,
+                              child: LinearProgressIndicator(
+                                value: 0.5,
+                                backgroundColor: context.surfaceVariant,
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                  AppColors.primary,
+                                ),
+                                minHeight: 6,
                               ),
-                              minHeight: 6,
                             ),
                           ),
                         ],
@@ -639,17 +638,19 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                               ),
                                         ),
                                         const SizedBox(height: AppSpacing.xs),
-                                        ClipRRect(
-                                          borderRadius: AppRadius.xsRadius,
-                                          child: LinearProgressIndicator(
-                                            value: progress,
-                                            backgroundColor:
-                                                context.surfaceVariant,
-                                            valueColor:
-                                                const AlwaysStoppedAnimation<
-                                                  Color
-                                                >(AppColors.primary),
-                                            minHeight: 6,
+                                        ExcludeSemantics(
+                                          child: ClipRRect(
+                                            borderRadius: AppRadius.xsRadius,
+                                            child: LinearProgressIndicator(
+                                              value: progress,
+                                              backgroundColor:
+                                                  context.surfaceVariant,
+                                              valueColor:
+                                                  const AlwaysStoppedAnimation<
+                                                    Color
+                                                  >(AppColors.primary),
+                                              minHeight: 6,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -779,17 +780,19 @@ class _NextLearningCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    decoration: BoxDecoration(
-                      color: visual.backgroundColor,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: Icon(
-                      hasLesson ? visual.icon : Icons.verified_rounded,
-                      color: visual.color,
-                      size: AppIconSizes.lg,
+                  ExcludeSemantics(
+                    child: Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: visual.backgroundColor,
+                        borderRadius: AppRadius.mediumRadius,
+                      ),
+                      child: Icon(
+                        hasLesson ? visual.icon : Icons.verified_rounded,
+                        color: visual.color,
+                        size: AppIconSizes.lg,
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -829,15 +832,17 @@ class _NextLearningCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
-              ClipRRect(
-                borderRadius: AppRadius.xsRadius,
-                child: LinearProgressIndicator(
-                  value: progress.clamp(0.0, 1.0),
-                  backgroundColor: context.surfaceVariant,
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    AppColors.primary,
+              ExcludeSemantics(
+                child: ClipRRect(
+                  borderRadius: AppRadius.xsRadius,
+                  child: LinearProgressIndicator(
+                    value: progress.clamp(0.0, 1.0),
+                    backgroundColor: context.surfaceVariant,
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.primary,
+                    ),
+                    minHeight: 6,
                   ),
-                  minHeight: 6,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -931,50 +936,56 @@ class _StoriesSection extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       child: GlassCard(
-        semanticLabel: 'Interactive Stories',
+        semanticLabel:
+            'Interactive Stories, Learn through choose-your-own-adventure scenarios',
         onTap: () => AppRoutes.toStoryBrowser(context),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryLight.withValues(alpha: 0.15),
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.auto_stories_rounded,
-                    color: AppColors.primary,
-                    size: 26,
+        child: ExcludeSemantics(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight.withValues(alpha: 0.15),
+                    borderRadius: AppRadius.mediumRadius,
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.auto_stories_rounded,
+                      color: AppColors.primary,
+                      size: 26,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Interactive Stories',
-                      style: AppTypography.titleSmall.copyWith(
-                        fontWeight: FontWeight.w600,
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Interactive Stories',
+                        style: AppTypography.titleSmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxs),
-                    Text(
-                      'Learn through choose-your-own-adventure scenarios',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        'Learn through choose-your-own-adventure scenarios',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
-            ],
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.textSecondary,
+                ),
+              ],
+            ),
           ),
         ),
       ),

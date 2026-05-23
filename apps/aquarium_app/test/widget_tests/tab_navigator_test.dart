@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
@@ -314,9 +315,10 @@ void main() {
       await _advance(tester);
 
       final context = tester.element(find.byType(TabNavigator));
-      ProviderScope.containerOf(context)
-          .read(_deferredPathMetadataProvider.notifier)
-          .state = LessonProvider.allPathMetadata;
+      ProviderScope.containerOf(
+            context,
+          ).read(_deferredPathMetadataProvider.notifier).state =
+          LessonProvider.allPathMetadata;
       await _advance(tester);
 
       final firstPathFinder = find.text('The Nitrogen Cycle').last;
@@ -360,6 +362,43 @@ void main() {
       expect(learningPathsRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(firstPathRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Learn cards avoid raw icon and duplicate story semantics', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap(profile: _profile()));
+        await _advance(tester);
+
+        expect(
+          find.bySemanticsLabel(RegExp(r'^0,\s*Continue learning')),
+          findsNothing,
+        );
+        expect(find.bySemanticsLabel('0'), findsNothing);
+        expect(
+          find.bySemanticsLabel(RegExp(r'Continue learning[\s\S]*Today')),
+          findsOneWidget,
+        );
+        expect(
+          find.bySemanticsLabel(
+            RegExp(r'^Interactive Stories\s+Interactive Stories'),
+          ),
+          findsNothing,
+        );
+        final storiesNode = tester.getSemantics(
+          find.bySemanticsLabel(
+            'Interactive Stories, Learn through choose-your-own-adventure scenarios',
+          ),
+        );
+        expect(
+          storiesNode.getSemanticsData().hasAction(SemanticsAction.tap),
+          isTrue,
+        );
+      } finally {
+        semantics.dispose();
+      }
     });
 
     testWidgets('tapping Practice tab switches selected item', (tester) async {
