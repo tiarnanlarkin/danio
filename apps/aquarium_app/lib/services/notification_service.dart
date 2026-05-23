@@ -7,6 +7,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/models.dart';
 import '../providers/lesson_provider.dart';
 import '../utils/logger.dart';
+import 'notification_copy.dart';
 
 // Notification IDs for streak reminders
 const int _morningNotificationId = 1000;
@@ -263,8 +264,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       task.id.hashCode,
-      '✅ ${task.title} is due today',
-      task.description ?? 'Tap to mark it done — your tank will thank you!',
+      NotificationCopy.taskReminderTitle(task.title),
+      NotificationCopy.taskReminderBody(task.description),
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -310,10 +311,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       reminderId.hashCode,
-      '🔔 $title',
-      notes != null && notes.isNotEmpty
-          ? notes
-          : "It's time for your aquarium task!",
+      NotificationCopy.userReminderTitle(title),
+      NotificationCopy.userReminderBody(notes),
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -698,8 +697,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _reviewReminderNotificationId,
-      '📚 Review time — keep that knowledge sharp!',
-      'You have $dueCardsCount card${dueCardsCount == 1 ? '' : 's'} ready to review. Takes just a few minutes!',
+      NotificationCopy.reviewReminderTitle(),
+      NotificationCopy.reviewReminderBody(dueCardsCount),
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -773,12 +772,15 @@ class NotificationService {
     final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
 
     final isOverdue = daysSinceLastChange >= reminderThresholdDays;
-    final title = isOverdue
-        ? '💧 Your fish want fresh water!'
-        : '💧 Water change coming up for $tankName';
-    final body = isOverdue
-        ? '$tankName is $daysSinceLastChange days overdue for a water change. A quick refresh makes a big difference!'
-        : 'Staying on top of water changes keeps your fish happy and your tank balanced.';
+    final title = NotificationCopy.waterChangeTitle(
+      tankName: tankName,
+      isOverdue: isOverdue,
+    );
+    final body = NotificationCopy.waterChangeBody(
+      tankName: tankName,
+      daysSinceLastChange: daysSinceLastChange,
+      isOverdue: isOverdue,
+    );
 
     await _plugin.zonedSchedule(
       notificationId,
