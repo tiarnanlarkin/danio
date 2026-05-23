@@ -366,7 +366,7 @@ class _ConfettiParticle {
     DanioColors.topaz, // warm orange
     AppColors.onboardingWarmCream, // cream
     DanioColors.studyGold, // soft gold
-    Color(0xFFFFD54F), // golden yellow — no exact token
+    DanioColors.confettiGold, // golden yellow
   ];
 }
 

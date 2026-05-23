@@ -379,6 +379,7 @@ class DanioMaterials {
 class DanioColors {
   static const Color amberGold = Color(0xFFC8884A); // Decorative amber — not for text
   static const Color amberGoldText = Color(0xFF9A6830); // WCAG AA text on light bg (4.6:1)
+  static const Color confettiGold = Color(0xFFFFD54F); // Celebration confetti only
   static const Color amberText = Color(0xFFB45309); // Text on light (WCAG AA)
   static const Color amberTextDark = Color(
     0xFFFBBF24,
@@ -781,4 +782,3 @@ class AppOverlays {
   static const Color lightBlueGrey80 = Color(0xCCE8F4F8); // 80% - 0xFFE8F4F8
   static const Color lightBlueGrey90 = Color(0xE6E8F4F8); // 90% - 0xFFE8F4F8
 }
-

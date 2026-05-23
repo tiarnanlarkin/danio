@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/xp_celebration_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -84,6 +86,20 @@ void main() {
       } else {
         expect(find.byType(XpCelebrationScreen), findsOneWidget);
       }
+    });
+
+    test('uses a named token for confetti gold', () {
+      final themeSource = File('lib/theme/app_colors.dart').readAsStringSync();
+      final screenSource = File(
+        'lib/screens/onboarding/xp_celebration_screen.dart',
+      ).readAsStringSync();
+
+      expect(
+        themeSource,
+        contains('static const Color confettiGold = Color(0xFFFFD54F)'),
+      );
+      expect(screenSource, contains('DanioColors.confettiGold'));
+      expect(screenSource, isNot(contains('Color(0xFFFFD54F)')));
     });
   });
 }
