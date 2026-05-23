@@ -289,7 +289,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                 crossAxisCount: 3,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
-                childAspectRatio: 0.78,
+                childAspectRatio: 0.72,
               ),
               itemCount: _popularFish.length,
               itemBuilder: (context, index) {
@@ -494,7 +494,8 @@ class _PopularTile extends StatelessWidget {
               Text(
                 fish.scientificName,
                 textAlign: TextAlign.center,
-                maxLines: 1,
+                maxLines: 2,
+                softWrap: true,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontStyle: FontStyle.italic,

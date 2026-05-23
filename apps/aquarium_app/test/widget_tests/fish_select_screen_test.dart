@@ -45,7 +45,10 @@ void main() {
     testWidgets('shows header text for planning tank', (tester) async {
       await tester.pumpWidget(_wrap(tankStatus: 'planning'));
       await tester.pump(const Duration(seconds: 1));
-      expect(find.text('What fish are you thinking of getting?'), findsOneWidget);
+      expect(
+        find.text('What fish are you thinking of getting?'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows search field', (tester) async {
@@ -80,6 +83,27 @@ void main() {
       expect(dwarfGouramiText.maxLines, greaterThanOrEqualTo(2));
       expect(dwarfGouramiText.overflow, isNot(TextOverflow.ellipsis));
     });
+
+    testWidgets('popular fish scientific names can wrap on phone screens', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump(const Duration(seconds: 1));
+      expect(tester.takeException(), isNull);
+
+      final scientificNameText = tester.widget<Text>(
+        find.text('Paracheirodon innesi').first,
+      );
+      expect(scientificNameText.maxLines, greaterThanOrEqualTo(2));
+      expect(scientificNameText.softWrap, isTrue);
+    });
   });
 
   group('FishSelectScreen — search', () {
@@ -103,7 +127,9 @@ void main() {
   });
 
   group('FishSelectScreen — selection', () {
-    testWidgets('tapping a fish shows confirm tray with species name', (tester) async {
+    testWidgets('tapping a fish shows confirm tray with species name', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump(const Duration(seconds: 1));
 
