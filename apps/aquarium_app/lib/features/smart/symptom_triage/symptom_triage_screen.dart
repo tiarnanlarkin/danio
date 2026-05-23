@@ -188,11 +188,11 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                 'consider the most likely diagnoses first, rule out common causes, '
                 'and always factor in water chemistry. '
                 'Format your response with these sections:\n'
-                '## 🔍 Most Likely Diagnosis\n'
-                '## ⚠️ Urgency Level\n'
-                '## 🩺 Immediate Actions\n'
-                '## 💊 Treatment Options\n'
-                '## 🔬 If It Doesn\'t Improve\n'
+                '## Most Likely Diagnosis\n'
+                '## Urgency Level\n'
+                '## Immediate Actions\n'
+                '## Treatment Options\n'
+                '## If It Doesn\'t Improve\n'
                 'Be concise and practical - this is for hobbyists, not academics. '
                 'Always mention if a water change should be done first.',
           ),
@@ -249,14 +249,14 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
       type: LogType.observation,
       timestamp: now,
       createdAt: now,
-      notes: '🩺 Symptom Triage Result\n\n$diagnosisText',
+      notes: 'Symptom Triage Result\n\n$diagnosisText',
     );
 
     try {
       final storage = ref.read(storageServiceProvider);
       await storage.saveLog(entry);
       if (!mounted) return;
-      DanioSnackBar.show(context, 'Diagnosis saved to journal ✅');
+      DanioSnackBar.show(context, 'Diagnosis saved to journal');
       Navigator.of(context).pop();
     } catch (e, st) {
       logError(
