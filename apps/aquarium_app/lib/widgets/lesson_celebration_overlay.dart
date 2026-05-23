@@ -217,7 +217,7 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
           // Semi-transparent scrim
           GestureDetector(
             onTap: widget.onDismiss,
-            child: Container(color: Colors.black.withValues(alpha: 0.45)),
+            child: Container(color: AppColors.blackAlpha45),
           ),
 
           // Bubble particles
@@ -243,7 +243,7 @@ class _LessonCelebrationOverlayState extends State<LessonCelebrationOverlay>
         borderRadius: AppRadius.largeRadius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
+            color: AppColors.blackAlpha18,
             blurRadius: 32,
             offset: const Offset(0, 12),
           ),

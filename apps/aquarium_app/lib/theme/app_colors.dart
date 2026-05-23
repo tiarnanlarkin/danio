@@ -140,12 +140,14 @@ class AppColors {
   static const Color blackAlpha10 = Color(0x1A000000);
   static const Color blackAlpha12 = Color(0x1F000000);
   static const Color blackAlpha15 = Color(0x26000000);
+  static const Color blackAlpha18 = Color(0x2E000000);
   static const Color blackAlpha20 = Color(0x33000000);
   static const Color blackAlpha24 = Color(0x3D000000);
   static const Color blackAlpha25 = Color(0x40000000);
   static const Color blackAlpha30 = Color(0x4D000000);
   static const Color blackAlpha35 = Color(0x59000000);
   static const Color blackAlpha40 = Color(0x66000000);
+  static const Color blackAlpha45 = Color(0x73000000);
   static const Color blackAlpha50 = Color(0x80000000);
   static const Color blackAlpha60 = Color(0x99000000);
   static const Color blackAlpha70 = Color(0xB3000000);
