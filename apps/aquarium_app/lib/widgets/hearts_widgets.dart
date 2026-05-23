@@ -32,17 +32,17 @@ class HeartIndicator extends ConsumerWidget {
     final isEmpty = energy <= 0;
 
     // Compact mode: dark overlay style for use on scene backgrounds
-    // Full mode: standard amber/warning tinted style for energy
+    // Full mode: accessible brand amber style for energy
     final bgColor = compact
         ? const Color(0x55000000)
-        : (isEmpty ? const Color(0x1AFFA000) : const Color(0x26FFA000));
+        : (isEmpty ? AppColors.primaryAlpha10 : AppColors.primaryAlpha15);
     final borderColor = compact
-        ? const Color(0x40FFFFFF)
-        : (isEmpty ? const Color(0xFFFFA000) : const Color(0x4DFFA000));
+        ? AppColors.whiteAlpha25
+        : (isEmpty ? AppColors.primary : AppColors.primaryAlpha30);
     final iconColor = compact
         ? Colors.white
-        : (isEmpty ? const Color(0x80FFA000) : const Color(0xFFFFA000));
-    final textColor = compact ? Colors.white : const Color(0xFFFFA000);
+        : (isEmpty ? AppColors.primaryAlpha50 : AppColors.primary);
+    final textColor = compact ? Colors.white : AppColors.primary;
 
     return Semantics(
       liveRegion: true,
@@ -149,10 +149,10 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0x1AFFA000), Color(0x0DFFA000)],
+          colors: [AppColors.primaryAlpha10, AppColors.primaryAlpha05],
         ),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: const Color(0x33FFA000)),
+        border: Border.all(color: AppColors.primaryAlpha20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,9 +164,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                   padding: const EdgeInsets.only(right: AppSpacing.sm),
                   child: Icon(
                     filled ? Icons.flash_on : Icons.flash_off,
-                    color: filled
-                        ? const Color(0xFFFFA000)
-                        : const Color(0x4DFFA000),
+                    color: filled ? AppColors.primary : AppColors.primaryAlpha30,
                     size: 32,
                   ),
                 ),
@@ -310,9 +308,7 @@ class _HeartAnimationState extends State<HeartAnimation>
                 children: [
                   Icon(
                     widget.gained ? Icons.flash_on : Icons.flash_off,
-                    color: widget.gained
-                        ? AppColors.success
-                        : const Color(0xFFFFA000),
+                    color: widget.gained ? AppColors.success : AppColors.primary,
                     size: AppIconSizes.xxl,
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -321,7 +317,7 @@ class _HeartAnimationState extends State<HeartAnimation>
                     style: AppTypography.headlineLarge.copyWith(
                       color: widget.gained
                           ? AppColors.success
-                          : const Color(0xFFFFA000),
+                          : AppColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -385,13 +381,13 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
               width: 100,
               height: 100,
               decoration: const BoxDecoration(
-                color: Color(0x1AFFA000),
+                color: AppColors.primaryAlpha10,
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Icon(
                   Icons.flash_on_rounded,
-                  color: const Color(0xFFFFA000),
+                  color: AppColors.primary,
                   size: 56,
                 ),
               ),
@@ -557,9 +553,7 @@ class CompactHeartsDisplay extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 4),
               child: Icon(
                 filled ? Icons.flash_on : Icons.flash_off,
-                color: filled
-                    ? const Color(0xFFFFA000)
-                    : const Color(0x4DFFA000),
+                color: filled ? AppColors.primary : AppColors.primaryAlpha30,
                 size: AppIconSizes.sm,
               ),
             ),
