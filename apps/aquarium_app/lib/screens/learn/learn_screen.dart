@@ -364,7 +364,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                   vertical: AppSpacing.xs,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.35),
+                                  color: AppColors.blackAlpha35,
                                   borderRadius: AppRadius.md2Radius,
                                 ),
                                 child: Row(
@@ -402,7 +402,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                     vertical: AppSpacing.xs,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.35),
+                                    color: AppColors.blackAlpha35,
                                     borderRadius: AppRadius.md2Radius,
                                   ),
                                   child: Row(

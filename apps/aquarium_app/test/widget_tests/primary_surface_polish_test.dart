@@ -64,6 +64,24 @@ void main() {
     }
   });
 
+  test('bottom-tab header badge shadows use shared alpha tokens', () {
+    final files = [
+      'lib/screens/learn/learn_screen.dart',
+      'lib/screens/practice_hub_screen.dart',
+      'lib/screens/smart_screen.dart',
+    ];
+
+    for (final path in files) {
+      final source = File(path).readAsStringSync();
+      expect(source, contains('AppColors.blackAlpha35'), reason: path);
+      expect(
+        source,
+        isNot(contains('Colors.black.withValues(alpha: 0.35)')),
+        reason: path,
+      );
+    }
+  });
+
   test('Danio surface visual helper covers shipped shop item types', () {
     final visualNames = DanioSurfaceVisualKey.values
         .map((key) => key.name)

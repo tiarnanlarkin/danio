@@ -95,7 +95,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                       vertical: AppSpacing.xs,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.35),
+                      color: AppColors.blackAlpha35,
                       borderRadius: AppRadius.md2Radius,
                     ),
                     child: Text(
