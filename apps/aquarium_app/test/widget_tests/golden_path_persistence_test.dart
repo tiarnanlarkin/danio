@@ -138,6 +138,21 @@ void main() {
         );
 
         final prefs = await SharedPreferences.getInstance();
+        final persistedGemsJson = prefs.getString('gems_state');
+        expect(
+          persistedGemsJson,
+          isNotNull,
+          reason:
+              'Gem deductions must be persisted before purchaseItem returns',
+        );
+        final persistedGems =
+            jsonDecode(persistedGemsJson!) as Map<String, dynamic>;
+        expect(
+          persistedGems['balance'],
+          equals(balanceAfter),
+          reason: 'Persisted gem balance should match the completed purchase',
+        );
+
         final persistedJson = prefs.getString('shop_inventory');
         expect(
           persistedJson,

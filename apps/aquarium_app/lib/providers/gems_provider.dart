@@ -129,7 +129,11 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
       state = AsyncValue.data(gemsState);
     } catch (e, st) {
-      logError('GemsProvider: _load failed: $e', stackTrace: st, tag: 'GemsProvider');
+      logError(
+        'GemsProvider: _load failed: $e',
+        stackTrace: st,
+        tag: 'GemsProvider',
+      );
       state = AsyncValue.error(e, st);
     }
   }
@@ -149,6 +153,13 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     });
   }
 
+  Future<void> _saveImmediate(GemsState gemsState) async {
+    _saveDebounce?.cancel();
+    _saveDebounce = null;
+    _pendingGemsState = null;
+    await _writeToDisk(gemsState);
+  }
+
   /// Write gems state immediately to disk, bypassing the debounce timer.
   ///
   /// Call this from lifecycle handlers (paused/inactive) to guarantee the
@@ -156,11 +167,11 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   Future<void> flushPendingWrite() async {
     final pending = _pendingGemsState;
     if (pending == null) return; // Nothing queued — already clean.
-    _saveDebounce?.cancel();
-    _saveDebounce = null;
-    _pendingGemsState = null;
-    await _writeToDisk(pending);
-    appLog('GemsProvider: lifecycle flush — balance=${pending.balance}', tag: 'GemsProvider');
+    await _saveImmediate(pending);
+    appLog(
+      'GemsProvider: lifecycle flush — balance=${pending.balance}',
+      tag: 'GemsProvider',
+    );
   }
 
   Future<void> _writeToDisk(GemsState gemsState) async {
@@ -175,7 +186,11 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       await _saveCumulative(prefs);
       _pendingGemsState = null; // Mark as clean after successful write.
     } catch (e, st) {
-      logError('GemsProvider: save failed: $e', stackTrace: st, tag: 'GemsProvider');
+      logError(
+        'GemsProvider: save failed: $e',
+        stackTrace: st,
+        tag: 'GemsProvider',
+      );
       throw Exception('Failed to save gems data: $e');
     }
   }
@@ -305,11 +320,15 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
         // Atomic: save first, then update state
         // If save fails, state won't be updated (rollback)
-        await _save(updatedState);
+        await _saveImmediate(updatedState);
         state = AsyncValue.data(updatedState);
         return true;
       } catch (e, st) {
-        logError('GemsProvider: spend failed, rolling back: $e', stackTrace: st, tag: 'GemsProvider');
+        logError(
+          'GemsProvider: spend failed, rolling back: $e',
+          stackTrace: st,
+          tag: 'GemsProvider',
+        );
         // Rollback: restore original state
         state = AsyncValue.data(originalState);
         rethrow;
