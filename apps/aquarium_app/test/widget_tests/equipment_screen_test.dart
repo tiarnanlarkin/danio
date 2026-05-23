@@ -89,6 +89,19 @@ void main() {
         findsWidgets,
       );
     });
+
+    testWidgets('empty state title uses iconography instead of raw emoji text', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      await tester.pumpWidget(_wrap(storage: svc));
+      await _advance(tester);
+
+      expect(find.byIcon(Icons.settings), findsWidgets);
+      expect(find.text('Time to gear up!'), findsOneWidget);
+      expect(find.textContaining('Time to gear up! ⚙️'), findsNothing);
+    });
   });
 
   group('EquipmentScreen — with equipment', () {

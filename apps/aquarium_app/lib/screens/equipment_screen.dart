@@ -141,7 +141,7 @@ class EquipmentScreen extends ConsumerWidget {
           if (equipment.isEmpty) {
             return EmptyState.withMascot(
               icon: Icons.settings,
-              title: 'Time to gear up! ⚙️',
+              title: 'Time to gear up!',
               message:
                   'Track your filters, heaters, and lights - we\'ll remind you when they need attention',
               mascotContext: MascotContext.noEquipment,
