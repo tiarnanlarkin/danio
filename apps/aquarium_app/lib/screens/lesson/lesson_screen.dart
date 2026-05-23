@@ -99,6 +99,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isXpBoostActive = ref.watch(xpBoostActiveProvider);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
@@ -169,9 +171,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
-                        widget.isPracticeMode
-                            ? '+${widget.lesson.xpReward ~/ 2} XP'
-                            : 'up to +${widget.lesson.xpReward + (widget.lesson.quiz?.bonusXp ?? 0)} XP',
+                        _xpBadgeText(isXpBoostActive),
                         style: AppTypography.labelMedium.copyWith(
                           color: AppColors.accentText,
                         ),
@@ -200,6 +200,19 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         ),
       ),
     );
+  }
+
+  String _xpBadgeText(bool isXpBoostActive) {
+    final baseReward = widget.lesson.xpReward;
+    final maxLessonReward = baseReward + (widget.lesson.quiz?.bonusXp ?? 0);
+
+    if (widget.isPracticeMode) {
+      final reward = (isXpBoostActive ? baseReward * 2 : baseReward) ~/ 2;
+      return isXpBoostActive ? '+$reward XP (2x)' : '+$reward XP';
+    }
+
+    final reward = isXpBoostActive ? maxLessonReward * 2 : maxLessonReward;
+    return isXpBoostActive ? 'up to +$reward XP (2x)' : 'up to +$reward XP';
   }
 
   Widget _buildBody() {

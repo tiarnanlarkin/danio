@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/lesson_screen.dart';
 import 'package:danio/models/learning.dart';
 import 'package:danio/models/user_profile.dart';
+import 'package:danio/providers/inventory_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
@@ -112,7 +113,11 @@ String _profileJson({ExperienceLevel level = ExperienceLevel.beginner}) {
   );
 }
 
-Widget _wrap({Lesson? lesson}) {
+Widget _wrap({
+  Lesson? lesson,
+  bool isPracticeMode = false,
+  List<Override> overrides = const [],
+}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
@@ -120,11 +125,13 @@ Widget _wrap({Lesson? lesson}) {
         return SharedPreferences.getInstance();
       }),
       spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier()),
+      ...overrides,
     ],
     child: MaterialApp(
       home: LessonScreen(
         lesson: lesson ?? _testLesson,
         pathTitle: 'Getting Started',
+        isPracticeMode: isPracticeMode,
       ),
     ),
   );
@@ -185,6 +192,36 @@ void main() {
         find.textContaining('nitrogen cycle is the most important'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('XP badge reflects active boost for lesson rewards', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          lesson: _quizLesson,
+          overrides: [xpBoostActiveProvider.overrideWithValue(true)],
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.text('up to +150 XP (2x)'), findsOneWidget);
+      expect(find.text('up to +75 XP'), findsNothing);
+    });
+
+    testWidgets('XP badge reflects active boost for practice rewards', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          isPracticeMode: true,
+          overrides: [xpBoostActiveProvider.overrideWithValue(true)],
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.text('+50 XP (2x)'), findsOneWidget);
+      expect(find.text('+25 XP'), findsNothing);
     });
 
     testWidgets('renders image sections with asset and caption', (
