@@ -129,7 +129,7 @@ class WqHealthScoreCard extends StatelessWidget {
                   health == WqHealthStatus.noData
                       ? 'Log a water test to get started'
                       : health == WqHealthStatus.excellent
-                      ? 'All parameters in range 🎉'
+                      ? 'All parameters in range'
                       : health == WqHealthStatus.good
                       ? 'Some parameters need watching'
                       : 'Action required — check parameters',

@@ -113,6 +113,36 @@ void main() {
       );
     });
 
+    testWidgets('WqHealthScoreCard uses plain status copy for excellent water',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Builder(
+                  builder: (context) {
+                    final anim = AnimationController(
+                      vsync: const TestVSync(),
+                      duration: Duration.zero,
+                    )..value = 1.0;
+                    return WqHealthScoreCard(
+                      health: WqHealthStatus.excellent,
+                      ringAnim: anim,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('All parameters in range'), findsOneWidget);
+      expect(find.textContaining('🎉'), findsNothing);
+    });
+
     testWidgets('WqParamGrid lays out priority/secondary as 2×3 brass medallions',
         (tester) async {
       final params = [
