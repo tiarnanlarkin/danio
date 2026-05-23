@@ -37,10 +37,21 @@ class _CompatibilityCheckerWidgetState
 
   Future<void> _checkCompatibility() async {
     final species = _speciesController.text.trim();
-    if (species.isEmpty || _selectedTankId == null) return;
+    if (species.isEmpty) {
+      setState(() => _result = 'Enter a species to check first.');
+      return;
+    }
+    if (_selectedTankId == null) {
+      setState(() => _result = 'Add or select a tank before checking.');
+      return;
+    }
 
     final openai = ref.read(openAIServiceProvider);
-    if (!await openai.isConfiguredAsync()) return;
+    if (!await openai.isConfiguredAsync()) {
+      if (!mounted) return;
+      setState(() => _result = OpenAIUserMessages.setupRequired);
+      return;
+    }
 
     // Offline check.
     final isOnline = ref.read(isOnlineProvider);
@@ -59,7 +70,10 @@ class _CompatibilityCheckerWidgetState
     // Get tank details
     final tankAsync = ref.read(tankProvider(_selectedTankId!));
     final tank = tankAsync.value;
-    if (tank == null) return;
+    if (tank == null) {
+      setState(() => _result = 'Could not load that tank. Try again.');
+      return;
+    }
 
     // Get livestock for this tank
     final livestockAsync = ref.read(livestockProvider(_selectedTankId!));
@@ -213,7 +227,7 @@ class _CompatibilityCheckerWidgetState
                         child: BubbleLoader.small(),
                       )
                     : IconButton(
-                        tooltip: 'Remove species',
+                        tooltip: 'Check compatibility',
                         icon: const Icon(Icons.search),
                         onPressed: _checkCompatibility,
                       ),
