@@ -115,7 +115,21 @@ void main() {
       await tester.tap(find.text('Ich (White Spot Disease)'));
       await tester.pumpAndSettle();
 
-      expect(find.text('⚠️ Contagious'), findsOneWidget);
+      expect(find.text('Contagious'), findsOneWidget);
+      expect(find.text('\u26A0\uFE0F Contagious'), findsNothing);
+    });
+
+    testWidgets('expanded card shows non-contagious status without raw symbol', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Fin Rot'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Not contagious'), findsOneWidget);
+      expect(find.text('\u2713 Not contagious'), findsNothing);
     });
   });
 

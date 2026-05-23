@@ -141,7 +141,7 @@ class _DiseaseCard extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      disease.contagious ? '⚠️ Contagious' : '✓ Not contagious',
+                      disease.contagious ? 'Contagious' : 'Not contagious',
                       style: AppTypography.bodySmall,
                     ),
                   ],
