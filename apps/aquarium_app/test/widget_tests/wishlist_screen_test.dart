@@ -47,7 +47,8 @@ void main() {
     testWidgets('shows fish wishlist title', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
-      expect(find.text('🐟 Fish Wishlist'), findsOneWidget);
+      expect(find.text('Fish Wishlist'), findsOneWidget);
+      expect(find.textContaining('🐟'), findsNothing);
     });
 
     testWidgets('shows empty state message', (tester) async {
@@ -67,14 +68,16 @@ void main() {
     testWidgets('shows plant wishlist title for plant category', (tester) async {
       await tester.pumpWidget(_wrap(category: WishlistCategory.plant));
       await _advance(tester);
-      expect(find.text('🌿 Plant Wishlist'), findsOneWidget);
+      expect(find.text('Plant Wishlist'), findsOneWidget);
+      expect(find.textContaining('🌿'), findsNothing);
     });
 
     testWidgets('shows equipment wishlist title for equipment category',
         (tester) async {
       await tester.pumpWidget(_wrap(category: WishlistCategory.equipment));
       await _advance(tester);
-      expect(find.text('🛠️ Equipment Wishlist'), findsOneWidget);
+      expect(find.text('Equipment Wishlist'), findsOneWidget);
+      expect(find.textContaining('🛠️'), findsNothing);
     });
   });
 

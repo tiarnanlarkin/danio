@@ -21,11 +21,11 @@ class WishlistScreen extends ConsumerWidget {
   String get _title {
     switch (category) {
       case WishlistCategory.fish:
-        return '🐟 Fish Wishlist';
+        return 'Fish Wishlist';
       case WishlistCategory.plant:
-        return '🌿 Plant Wishlist';
+        return 'Plant Wishlist';
       case WishlistCategory.equipment:
-        return '🛠️ Equipment Wishlist';
+        return 'Equipment Wishlist';
     }
   }
 
