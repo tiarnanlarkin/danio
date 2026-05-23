@@ -84,6 +84,17 @@ void main() {
       expect(find.text('Add Log Entry'), findsOneWidget);
     });
 
+    testWidgets('empty state title uses iconography instead of raw emoji text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.byIcon(Icons.list_alt), findsWidgets);
+      expect(find.text('Start your tank\'s story!'), findsOneWidget);
+      expect(find.textContaining('Start your tank\'s story! 📖'), findsNothing);
+    });
+
     testWidgets('shows scaffold', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

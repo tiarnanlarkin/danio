@@ -65,7 +65,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               if (logs.isEmpty) {
                 return EmptyState.withMascot(
                   icon: Icons.list_alt,
-                  title: 'Start your tank\'s story! 📖',
+                  title: 'Start your tank\'s story!',
                   message:
                       'Start logging water tests, maintenance, and events to track your tank\'s history',
                   mascotContext: MascotContext.noLogs,
