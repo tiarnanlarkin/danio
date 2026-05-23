@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:danio/models/daily_goal.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/models/task.dart';
@@ -85,6 +87,15 @@ Task _task() {
 }
 
 void main() {
+  test('Today board source keeps visible separators ASCII-safe', () {
+    final source = File(
+      'lib/screens/home/widgets/today_board.dart',
+    ).readAsStringSync();
+
+    expect(source, isNot(contains(String.fromCharCode(0x00b7))));
+    expect(source, isNot(contains(String.fromCharCode(0x2014))));
+  });
+
   testWidgets('daily goal bar uses quiet completion copy', (tester) async {
     await tester.pumpWidget(
       _wrap(dailyGoal: _completedGoal(), tasks: [_task()]),
@@ -117,7 +128,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('No tank tasks today · Browse new lessons'),
+      find.text('No tank tasks today - Browse new lessons'),
       findsOneWidget,
     );
     expect(find.textContaining(String.fromCharCode(0x1F4D6)), findsNothing);
@@ -130,7 +141,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('No tank tasks today · Explore the fish encyclopedia'),
+      find.text('No tank tasks today - Explore the fish encyclopedia'),
       findsOneWidget,
     );
     expect(find.textContaining(String.fromCharCode(0x1F420)), findsNothing);

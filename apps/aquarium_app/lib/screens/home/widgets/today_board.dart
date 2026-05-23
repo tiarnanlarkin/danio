@@ -116,11 +116,11 @@ class TodayBoardCard extends ConsumerWidget {
       icon = Icons.quiz;
     } else if (totalCards > 0) {
       targetTab = 0; // Learn
-      label = 'No tank tasks today · Browse new lessons';
+      label = 'No tank tasks today - Browse new lessons';
       icon = Icons.auto_stories;
     } else {
       targetTab = 0; // Learn
-      label = 'No tank tasks today · Explore the fish encyclopedia';
+      label = 'No tank tasks today - Explore the fish encyclopedia';
       icon = Icons.menu_book;
     }
 
@@ -203,7 +203,7 @@ class _TodayBoardContent extends StatelessWidget {
               Semantics(
                 header: true,
                 child: Text(
-                  hasOverdue ? 'Today board · Needs attention' : 'Today board',
+                  hasOverdue ? 'Today board - Needs attention' : 'Today board',
                   style: AppTypography.labelSmall.copyWith(
                     color: hasOverdue ? AppColors.warning : AppColors.primary,
                     letterSpacing: 0.4,
@@ -397,7 +397,7 @@ class _DailyGoalBar extends ConsumerWidget {
                 child: Text(
                   isComplete
                       ? 'Daily goal complete!'
-                      : 'Daily goal · $earned / $target XP',
+                      : 'Daily goal - $earned / $target XP',
                   style: AppTypography.labelSmall.copyWith(
                     color: isComplete
                         ? AppColors.success
