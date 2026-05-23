@@ -91,7 +91,8 @@ class AppColors {
   //
   // Alpha hex values reference:
   // 0.05 = 0x0D, 0.08 = 0x14, 0.10 = 0x1A, 0.12 = 0x1F, 0.15 = 0x26,
-  // 0.20 = 0x33, 0.25 = 0x40, 0.30 = 0x4D, 0.35 = 0x59, 0.40 = 0x66,
+  // 0.18 = 0x2E, 0.20 = 0x33, 0.24 = 0x3D, 0.25 = 0x40,
+  // 0.30 = 0x4D, 0.35 = 0x59, 0.40 = 0x66, 0.45 = 0x73,
   // 0.50 = 0x80, 0.60 = 0x99, 0.65 = 0xA6, 0.70 = 0xB3, 0.80 = 0xCC, 0.85 = 0xD9,
   // 0.90 = 0xE6, 0.95 = 0xF2
   //
@@ -115,11 +116,13 @@ class AppColors {
   static const Color whiteAlpha10 = Color(0x1AFFFFFF);
   static const Color whiteAlpha12 = Color(0x1FFFFFFF);
   static const Color whiteAlpha15 = Color(0x26FFFFFF);
+  static const Color whiteAlpha18 = Color(0x2EFFFFFF);
   static const Color whiteAlpha20 = Color(0x33FFFFFF);
   static const Color whiteAlpha25 = Color(0x40FFFFFF);
   static const Color whiteAlpha30 = Color(0x4DFFFFFF);
   static const Color whiteAlpha35 = Color(0x59FFFFFF);
   static const Color whiteAlpha40 = Color(0x66FFFFFF);
+  static const Color whiteAlpha45 = Color(0x73FFFFFF);
   static const Color whiteAlpha50 = Color(0x80FFFFFF);
   static const Color whiteAlpha60 = Color(0x99FFFFFF);
   static const Color whiteAlpha65 = Color(0xA6FFFFFF);
@@ -138,6 +141,7 @@ class AppColors {
   static const Color blackAlpha12 = Color(0x1F000000);
   static const Color blackAlpha15 = Color(0x26000000);
   static const Color blackAlpha20 = Color(0x33000000);
+  static const Color blackAlpha24 = Color(0x3D000000);
   static const Color blackAlpha25 = Color(0x40000000);
   static const Color blackAlpha30 = Color(0x4D000000);
   static const Color blackAlpha35 = Color(0x59000000);

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../../theme/app_theme.dart';
 import '../danio_bottom_dock.dart';
 
 /// Redesigned drag handle for the bottom sheet stage panel.
@@ -24,7 +25,7 @@ class StageHandle extends StatelessWidget {
   Widget build(BuildContext context) {
     final tint =
         accentColor?.withValues(alpha: 0.15) ??
-        Colors.white.withValues(alpha: 0.18);
+        AppColors.whiteAlpha18;
 
     return Semantics(
       label: 'Drag to resize panel',
@@ -43,7 +44,7 @@ class StageHandle extends StatelessWidget {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           border: Border(
             top: BorderSide(
-              color: glassStyle?.border ?? Colors.white.withValues(alpha: 0.20),
+              color: glassStyle?.border ?? AppColors.whiteAlpha20,
               width: 0.5,
             ),
           ),
@@ -56,16 +57,16 @@ class StageHandle extends StatelessWidget {
               width: 56,
               height: 6,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.70),
+                color: AppColors.whiteAlpha70,
                 borderRadius: BorderRadius.circular(3),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
+                    color: AppColors.blackAlpha25,
                     blurRadius: 4,
                     offset: const Offset(0, 1),
                   ),
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.10),
+                    color: AppColors.blackAlpha10,
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -86,7 +87,7 @@ class StageHandle extends StatelessWidget {
                     width: 18,
                     height: 1.5,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.45),
+                      color: AppColors.whiteAlpha45,
                       borderRadius: BorderRadius.circular(1),
                     ),
                   ),
@@ -159,11 +160,11 @@ class StageSheetNib extends StatelessWidget {
                       width: 48,
                       height: 5,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: AppColors.whiteAlpha90,
                         borderRadius: BorderRadius.circular(3),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.24),
+                            color: AppColors.blackAlpha24,
                             blurRadius: 8,
                             offset: const Offset(0, 1),
                           ),
