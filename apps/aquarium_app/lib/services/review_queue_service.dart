@@ -254,15 +254,15 @@ class ReviewQueueService {
   /// Generate daily notification message based on due cards
   static String generateNotificationMessage(int dueCount) {
     if (dueCount == 0) {
-      return 'All caught up! 🎉';
+      return 'All caught up!';
     } else if (dueCount == 1) {
-      return '1 card needs review 📚';
+      return '1 card needs review';
     } else if (dueCount <= 5) {
-      return '$dueCount cards need review 📚';
+      return '$dueCount cards need review';
     } else if (dueCount <= 10) {
-      return '$dueCount cards waiting! Keep your knowledge fresh 💪';
+      return '$dueCount cards waiting. Keep your knowledge fresh';
     } else {
-      return '$dueCount cards need attention! Time to practice 🔥';
+      return '$dueCount cards need attention. Time to practice';
     }
   }
 
