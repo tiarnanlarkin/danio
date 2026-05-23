@@ -315,7 +315,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
+          Icon(icon, size: AppIconSizes.xs, color: color),
           const SizedBox(width: AppSpacing.xs),
           Text(
             label,

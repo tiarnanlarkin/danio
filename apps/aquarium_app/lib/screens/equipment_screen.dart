@@ -538,7 +538,11 @@ class _EquipmentCard extends StatelessWidget {
               padding: const EdgeInsets.only(left: AppSpacing.xxxl, right: AppSpacing.md, bottom: AppSpacing.sm2),
               child: Row(
                 children: [
-                  Icon(Icons.history, size: 14, color: context.textHint),
+                  Icon(
+                    Icons.history,
+                    size: AppIconSizes.xs,
+                    color: context.textHint,
+                  ),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Last serviced ${DateFormat('d MMM').format(equipment.lastServiced!)}',

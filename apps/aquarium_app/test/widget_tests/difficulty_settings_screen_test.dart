@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/screens/difficulty_settings_screen.dart';
 import 'package:danio/models/adaptive_difficulty.dart';
+import 'package:danio/theme/app_theme.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -29,6 +30,30 @@ UserSkillProfile _profileWithSkills() {
     },
     performanceHistory: {},
     manualOverrides: {},
+  );
+}
+
+UserSkillProfile _profileWithSkillHistory() {
+  final record = PerformanceRecord(
+    timestamp: DateTime(2026, 5, 18),
+    topicId: 'nitrogen_cycle',
+    difficulty: DifficultyLevel.medium,
+    score: 8,
+    maxScore: 10,
+    mistakeCount: 1,
+    timeSpent: const Duration(minutes: 4),
+    completed: true,
+  );
+
+  return UserSkillProfile(
+    skillLevels: const {'nitrogen_cycle': 0.8},
+    performanceHistory: {
+      'nitrogen_cycle': PerformanceHistory(
+        topicId: 'nitrogen_cycle',
+        recentAttempts: [record],
+      ),
+    },
+    manualOverrides: const {},
   );
 }
 
@@ -99,6 +124,15 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       // At least one known topic name should appear
       expect(find.text('Nitrogen Cycle'), findsWidgets);
+    });
+
+    testWidgets('stat chip icons use the minimum legible app size',
+        (tester) async {
+      await tester.pumpWidget(_wrap(profile: _profileWithSkillHistory()));
+      await tester.pump(const Duration(seconds: 1));
+
+      final historyIcon = tester.widget<Icon>(find.byIcon(Icons.history).first);
+      expect(historyIcon.size, greaterThanOrEqualTo(AppIconSizes.xs));
     });
   });
 }

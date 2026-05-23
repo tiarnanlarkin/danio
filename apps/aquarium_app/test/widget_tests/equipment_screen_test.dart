@@ -11,6 +11,7 @@ import 'package:danio/screens/equipment_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/theme/app_theme.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -106,6 +107,27 @@ void main() {
       await tester.pumpWidget(_wrap(storage: svc));
       await _advance(tester);
       expect(find.text('Fluval 307'), findsOneWidget);
+    });
+
+    testWidgets('last-serviced history icon uses the minimum legible app size',
+        (tester) async {
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      final equip = Equipment(
+        id: 'equip-1',
+        tankId: 'tank-1',
+        type: EquipmentType.filter,
+        name: 'Fluval 307',
+        lastServiced: _now,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveEquipment(equip);
+      await tester.pumpWidget(_wrap(storage: svc));
+      await _advance(tester);
+
+      final historyIcon = tester.widget<Icon>(find.byIcon(Icons.history));
+      expect(historyIcon.size, greaterThanOrEqualTo(AppIconSizes.xs));
     });
 
     testWidgets('scaffold renders without crash', (tester) async {

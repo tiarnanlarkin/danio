@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/screens/acclimation_guide_screen.dart';
+import 'package:danio/theme/app_theme.dart';
 
 Widget _wrap() => const MaterialApp(home: AcclimationGuideScreen());
 
@@ -39,6 +40,15 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       expect(find.text('Float the bag'), findsOneWidget);
+    });
+
+    testWidgets('duration icons use the minimum legible app size',
+        (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final timerIcon = tester.widget<Icon>(find.byIcon(Icons.timer).first);
+      expect(timerIcon.size, greaterThanOrEqualTo(AppIconSizes.xs));
     });
   });
 }
