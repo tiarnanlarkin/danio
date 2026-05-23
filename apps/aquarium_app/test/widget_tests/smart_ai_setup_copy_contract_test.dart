@@ -31,6 +31,8 @@ void main() {
         isNot(contains('working on bringing it to you')),
         reason: path,
       );
+      expect(source, isNot(contains('Use emoji')), reason: path);
+      expect(source, isNot(contains('emoji sparingly')), reason: path);
     }
   });
 }

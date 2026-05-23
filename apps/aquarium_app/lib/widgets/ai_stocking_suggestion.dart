@@ -123,7 +123,7 @@ class _AiStockingSuggestionSheetState
             content:
                 'You are Danio, a friendly aquarium expert. '
                 'Give practical, specific fish stocking advice. '
-                'Use emoji sparingly. Be concise but helpful.',
+                'Use plain text without emoji. Be concise but helpful.',
           ),
           ChatMessage(role: 'user', content: prompt),
         ],
