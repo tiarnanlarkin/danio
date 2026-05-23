@@ -58,15 +58,15 @@ class OpenAIUserMessages {
   static const setupRequired =
       'Set up Smart Hub in Preferences before using this AI feature.';
   static const rateLimited =
-      "You've used your AI assists for this hour — try again in a bit! 🐟";
+      "You've used your Smart assists for this hour. Try again later.";
   static const timeout =
-      'That took a bit too long. Check your connection and give it another go!';
+      'The request took too long. Check your connection and try again.';
   static const offline =
       'This feature needs an internet connection. '
-      'Your fish data is safe offline! 🐠';
+      'Your aquarium data stays on this device while offline.';
   static const serverError =
-      'Our AI service is taking a quick break. Try again in a moment!';
-  static const unexpectedError = 'Oops! We hit a snag. Give it another try.';
+      'The AI service is unavailable right now. Try again in a moment.';
+  static const unexpectedError = 'Something went wrong. Try again.';
 }
 
 /// Thin wrapper around the OpenAI HTTP API.

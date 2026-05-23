@@ -8,6 +8,47 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/services/openai_service.dart';
 
 void main() {
+  group('OpenAIUserMessages', () {
+    test('uses calm plain text fallback copy', () {
+      expect(
+        OpenAIUserMessages.rateLimited,
+        "You've used your Smart assists for this hour. Try again later.",
+      );
+      expect(
+        OpenAIUserMessages.timeout,
+        'The request took too long. Check your connection and try again.',
+      );
+      expect(
+        OpenAIUserMessages.offline,
+        'This feature needs an internet connection. '
+        'Your aquarium data stays on this device while offline.',
+      );
+      expect(
+        OpenAIUserMessages.serverError,
+        'The AI service is unavailable right now. Try again in a moment.',
+      );
+      expect(
+        OpenAIUserMessages.unexpectedError,
+        'Something went wrong. Try again.',
+      );
+
+      final messages = [
+        OpenAIUserMessages.rateLimited,
+        OpenAIUserMessages.timeout,
+        OpenAIUserMessages.offline,
+        OpenAIUserMessages.serverError,
+        OpenAIUserMessages.unexpectedError,
+      ];
+
+      for (final message in messages) {
+        expect(message, isNot(contains('!')));
+        expect(message, isNot(contains('Oops')));
+        expect(message, isNot(contains(String.fromCharCode(0x1F41F))));
+        expect(message, isNot(contains(String.fromCharCode(0x1F420))));
+      }
+    });
+  });
+
   group('OpenAIService routing', () {
     setUp(() {
       SharedPreferences.setMockInitialValues({});
