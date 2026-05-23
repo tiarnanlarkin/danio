@@ -110,7 +110,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           if (livestock.isEmpty) {
             return EmptyState.withMascot(
               icon: Icons.set_meal,
-              title: 'Your tank awaits its first residents! 🐠',
+              title: 'Your tank awaits its first residents!',
               message:
                   "Add your fish, shrimp, or snails -- we'll help you keep them happy and healthy",
               mascotContext: MascotContext.noLivestock,
