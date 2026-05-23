@@ -425,81 +425,97 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     int xp,
     int streak,
   ) {
-    return Semantics(
-      label: '$name, Level $level, $xp XP, $streak-day streak',
-      child: CozyCard(
-        child: Row(
-          children: [
-            // Avatar
-            CircleAvatar(
-              radius: kAvatarSizeMd,
-              backgroundColor: AppColors.primaryAlpha05,
-              child: name.isNotEmpty
-                  ? Text(
-                      name[0].toUpperCase(),
-                      style: Theme.of(context).textTheme.headlineMedium!
-                          .copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                    )
-                  : const Icon(
-                      Icons.person,
-                      size: AppIconSizes.lg,
-                      color: AppColors.primary,
+    return CozyCard(
+      child: Row(
+        children: [
+          Expanded(
+            child: Semantics(
+              container: true,
+              label: '$name, Level $level, $xp XP, $streak-day streak',
+              child: ExcludeSemantics(
+                child: Row(
+                  children: [
+                    // Avatar
+                    CircleAvatar(
+                      radius: kAvatarSizeMd,
+                      backgroundColor: AppColors.primaryAlpha05,
+                      child: name.isNotEmpty
+                          ? Text(
+                              name[0].toUpperCase(),
+                              style: Theme.of(context).textTheme.headlineMedium!
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                  ),
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: AppIconSizes.lg,
+                              color: AppColors.primary,
+                            ),
                     ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            // Profile Info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name, style: AppTypography.titleLarge),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Level $level • $xp XP',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: context.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  const XpProgressBar(
-                    height: 8,
-                    showLabels: false,
-                    showLevel: false,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Row(
-                    children: [
-                      if (streak > 0) ...[
-                        Icon(
-                          danioSurfaceVisual(DanioSurfaceVisualKey.streak).icon,
-                          size: 14,
-                          color: AppColors.warning,
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                      ],
-                      Flexible(
-                        child: Text(
-                          '$streak-day streak',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.bodySmall.copyWith(
-                            color: streak > 0
-                                ? AppColors.warning
-                                : context.textSecondary,
-                            fontWeight: FontWeight.w600,
+                    const SizedBox(width: AppSpacing.md),
+                    // Profile Info
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(name, style: AppTypography.titleLarge),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'Level $level • $xp XP',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: context.textSecondary,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: AppSpacing.sm),
+                          const XpProgressBar(
+                            height: 8,
+                            showLabels: false,
+                            showLevel: false,
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Row(
+                            children: [
+                              if (streak > 0) ...[
+                                Icon(
+                                  danioSurfaceVisual(
+                                    DanioSurfaceVisualKey.streak,
+                                  ).icon,
+                                  size: 14,
+                                  color: AppColors.warning,
+                                ),
+                                const SizedBox(width: AppSpacing.xs),
+                              ],
+                              Flexible(
+                                child: Text(
+                                  '$streak-day streak',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: streak > 0
+                                        ? AppColors.warning
+                                        : context.textSecondary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
-            // Edit button
-            IconButton(
+          ),
+          Semantics(
+            container: true,
+            button: true,
+            excludeSemantics: true,
+            label: 'Settings',
+            child: IconButton(
               tooltip: 'Settings',
               icon: const Icon(Icons.edit),
               onPressed: () {
@@ -510,8 +526,8 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
                 );
               },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

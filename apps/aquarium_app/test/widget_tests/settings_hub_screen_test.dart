@@ -115,6 +115,26 @@ void main() {
       expect(find.text('0-day streak'), findsOneWidget);
     });
 
+    testWidgets('profile card exposes one summary semantics node', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        expect(
+          find.bySemanticsLabel('Aquarist, Level 1, 0 XP, 0-day streak'),
+          findsOneWidget,
+        );
+        expect(find.bySemanticsLabel('A'), findsNothing);
+        expect(find.bySemanticsLabel('Aquarist'), findsNothing);
+        expect(find.bySemanticsLabel('Settings'), findsOneWidget);
+      } finally {
+        semantics.dispose();
+      }
+    });
+
     testWidgets('shows Shop Street category', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
