@@ -251,7 +251,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         lastUpdated: now,
       );
 
-      await _save(updatedState);
+      await _saveImmediate(updatedState);
       state = AsyncValue.data(updatedState);
       return true;
     } catch (e, st) {

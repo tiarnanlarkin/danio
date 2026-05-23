@@ -175,58 +175,71 @@ void main() {
 
   // ── Test 2: Lesson complete ───────────────────────────────────────────────
   group('Persistence: lesson complete', () {
-    test(
-      'XP awarded and lesson marked complete after completeLesson',
-      () async {
-        final container = _makeContainer();
-        addTearDown(container.dispose);
+    test('XP awarded and lesson marked complete after completeLesson', () async {
+      final container = _makeContainer();
+      addTearDown(container.dispose);
 
-        // Trigger the notifier so _load() starts, then settle so the async
-        // chain (SharedPreferences.future → _load → setState) completes.
-        final profileNotifier = container.read(userProfileProvider.notifier);
-        await _settle(container);
+      // Trigger the notifier so _load() starts, then settle so the async
+      // chain (SharedPreferences.future → _load → setState) completes.
+      final profileNotifier = container.read(userProfileProvider.notifier);
+      await _settle(container);
 
-        // Create a profile (empty SharedPreferences has no profile, so
-        // completeLesson would be a no-op without this).
-        await profileNotifier.createProfile(
-          experienceLevel: ExperienceLevel.beginner,
-          goals: [UserGoal.keepFishAlive],
-        );
-        await _settle(container);
+      // Create a profile (empty SharedPreferences has no profile, so
+      // completeLesson would be a no-op without this).
+      await profileNotifier.createProfile(
+        experienceLevel: ExperienceLevel.beginner,
+        goals: [UserGoal.keepFishAlive],
+      );
+      await _settle(container);
 
-        const lessonId = 'nitrogen_cycle_1';
-        const xpReward = 20;
+      const lessonId = 'nitrogen_cycle_1';
+      const xpReward = 20;
 
-        final profileBefore = container.read(userProfileProvider).valueOrNull;
-        expect(profileBefore, isNotNull, reason: 'Profile should be loaded');
-        final xpBefore = profileBefore!.totalXp;
-        expect(
-          profileBefore.completedLessons.contains(lessonId),
-          isFalse,
-          reason: 'Lesson should not be complete yet',
-        );
+      final profileBefore = container.read(userProfileProvider).valueOrNull;
+      expect(profileBefore, isNotNull, reason: 'Profile should be loaded');
+      final xpBefore = profileBefore!.totalXp;
+      expect(
+        profileBefore.completedLessons.contains(lessonId),
+        isFalse,
+        reason: 'Lesson should not be complete yet',
+      );
 
-        // Complete the lesson.
-        await container
-            .read(userProfileProvider.notifier)
-            .completeLesson(lessonId, xpReward);
-        await _settle(container);
+      // Complete the lesson.
+      await container
+          .read(userProfileProvider.notifier)
+          .completeLesson(lessonId, xpReward);
+      await _settle(container);
 
-        final profileAfter = container.read(userProfileProvider).valueOrNull;
+      final profileAfter = container.read(userProfileProvider).valueOrNull;
 
-        expect(
-          profileAfter?.completedLessons.contains(lessonId),
-          isTrue,
-          reason: 'Lesson should now be in completedLessons',
-        );
+      expect(
+        profileAfter?.completedLessons.contains(lessonId),
+        isTrue,
+        reason: 'Lesson should now be in completedLessons',
+      );
 
-        expect(
-          profileAfter?.totalXp,
-          greaterThanOrEqualTo(xpBefore + xpReward),
-          reason: 'Total XP should increase by at least the lesson reward',
-        );
-      },
-    );
+      expect(
+        profileAfter?.totalXp,
+        greaterThanOrEqualTo(xpBefore + xpReward),
+        reason: 'Total XP should increase by at least the lesson reward',
+      );
+
+      final prefs = await SharedPreferences.getInstance();
+      final persistedGemsJson = prefs.getString('gems_state');
+      expect(
+        persistedGemsJson,
+        isNotNull,
+        reason:
+            'Lesson gem rewards must be persisted before completeLesson returns',
+      );
+      final persistedGems =
+          jsonDecode(persistedGemsJson!) as Map<String, dynamic>;
+      expect(
+        persistedGems['balance'],
+        greaterThan(0),
+        reason: 'Persisted gem balance should include lesson rewards',
+      );
+    });
   });
 
   // ── Test 3: Tank create ───────────────────────────────────────────────────
