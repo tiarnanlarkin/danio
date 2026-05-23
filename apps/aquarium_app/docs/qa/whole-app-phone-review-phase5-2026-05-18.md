@@ -81,3 +81,14 @@ No matching crash or Flutter framework exception was found.
 ## Final State
 
 Phase 5 release regression is pass after the two small fixes above. The release AAB was built successfully, the post-release phone smoke passed, and the final installed debug candidate is in a quiet default state: phone notification permission denied, Phone Notifications off, review reminders off, streak reminders off, and no current scheduled notifications for the active install.
+
+## 2026-05-23 Emulator Follow-Up
+
+- Current commit tested: `3065b2f4` on `main`.
+- Physical phone `RFCY8022D5R` was not connected; available devices were `emulator-5554` and `emulator-5580`.
+- `flutter analyze --no-pub` passed with no issues.
+- `flutter test integration_test/smoke_test_v2.dart -d emulator-5580` passed with 5 smoke tests.
+- `flutter build apk --debug --target-platform android-arm64 --target lib/main.dart` passed for the physical-phone target APK.
+- `flutter build apk --debug --target-platform android-x64 --target lib/main.dart` passed, installed on `emulator-5580`, and launched via the resolved package activity.
+- App-PID logcat scan after launch found no `FATAL EXCEPTION`, `AndroidRuntime`, `FlutterError`, unhandled exception, or widget exception markers. The only matching output was the known benign HWUI format warning: `Failed to initialize 101010-2 format`.
+- QA issue scan found no remaining open/observed rows in `docs/qa`. Physical-phone signoff on `RFCY8022D5R` remains the only environment-dependent follow-up when the phone is connected.
