@@ -86,6 +86,14 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
     return '${normalize(title)}, ${normalize(subtitle)}';
   }
 
+  void _openSettingsScreen(BuildContext context) {
+    NavigationThrottle.push(
+      context,
+      const SettingsScreen(),
+      rootNavigator: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final profile = ref.watch(
@@ -515,16 +523,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
             button: true,
             excludeSemantics: true,
             label: 'Settings',
+            onTap: () => _openSettingsScreen(context),
             child: IconButton(
               tooltip: 'Settings',
               icon: const Icon(Icons.edit),
-              onPressed: () {
-                NavigationThrottle.push(
-                  context,
-                  const SettingsScreen(),
-                  rootNavigator: true,
-                );
-              },
+              onPressed: () => _openSettingsScreen(context),
             ),
           ),
         ],

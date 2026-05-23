@@ -3,6 +3,7 @@
 // Run: flutter test test/widget_tests/settings_hub_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -129,7 +130,13 @@ void main() {
         );
         expect(find.bySemanticsLabel('A'), findsNothing);
         expect(find.bySemanticsLabel('Aquarist'), findsNothing);
-        expect(find.bySemanticsLabel('Settings'), findsOneWidget);
+        final settingsNode = tester.getSemantics(
+          find.bySemanticsLabel('Settings'),
+        );
+        expect(
+          settingsNode.getSemanticsData().hasAction(SemanticsAction.tap),
+          isTrue,
+        );
       } finally {
         semantics.dispose();
       }
