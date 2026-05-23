@@ -91,7 +91,7 @@ class PrimaryActionTile extends StatelessWidget {
                     style: AppTypography.bodySmall.copyWith(
                       color: Theme.of(
                         context,
-                      ).colorScheme.onSurface.withAlpha(153), // ~60%
+                      ).colorScheme.onSurface.withAlpha(178), // ~70%
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
