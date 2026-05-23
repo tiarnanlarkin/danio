@@ -165,7 +165,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           ),
                           const SizedBox(height: AppSpacing.md),
                           Text(
-                            widget.gained ? '+1 ⚡ Energy' : '-1 ⚡ Energy',
+                            widget.gained ? '+1 Energy' : '-1 Energy',
                             style: Theme.of(context).textTheme.headlineMedium!
                                 .copyWith(
                                   fontWeight: FontWeight.bold,
@@ -174,7 +174,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           Text(
-                            widget.gained ? 'Great job! 🎉' : 'Keep going! 💪',
+                            widget.gained ? 'Great job!' : 'Keep going!',
                             style: Theme.of(context).textTheme.titleMedium!
                                 .copyWith(color: AppColors.whiteAlpha70),
                           ),
@@ -270,7 +270,7 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                       builder: (_, __, ___) {
                         final now = heartsService.getTimeUntilNextRefill(profile);
                         return Text(
-                          'Next ⚡ in ${heartsService.formatTimeRemaining(now ?? timeUntilRefill)}',
+                          'Next energy in ${heartsService.formatTimeRemaining(now ?? timeUntilRefill)}',
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -324,9 +324,9 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   Future<String?> showOutOfHeartsDialog() async {
     return showAppDialog<String>(
       context: context,
-      title: '⚡ Energy Depleted',
+      title: 'Energy Depleted',
       icon: Icons.flash_off,
-      iconColor: const Color(0xFFFFA000),
+      iconColor: AppColors.primary,
       barrierDismissible: true,
       child: const Text(
         'Your energy is out, but you can keep learning! Bonus XP is paused until energy refills. It restores 1 charge every 30 minutes.',

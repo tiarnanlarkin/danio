@@ -63,24 +63,66 @@ void main() {
   });
 
   group('HeartIndicator', () {
-    test('energy widgets use accessible brand amber tokens', () {
-      final source = File('lib/widgets/hearts_widgets.dart').readAsStringSync();
+    test('energy surfaces use accessible brand amber tokens', () {
+      final sources = [
+        File('lib/widgets/hearts_widgets.dart'),
+        File('lib/widgets/gamification_dashboard.dart'),
+        File('lib/widgets/hearts_overlay.dart'),
+      ].map((file) => MapEntry(file.path, file.readAsStringSync()));
 
-      expect(source, contains('AppColors.primary'));
-      expect(source, contains('AppColors.primaryAlpha05'));
-      expect(source, contains('AppColors.primaryAlpha10'));
-      expect(source, contains('AppColors.primaryAlpha15'));
-      expect(source, contains('AppColors.primaryAlpha20'));
-      expect(source, contains('AppColors.primaryAlpha30'));
-      expect(source, contains('AppColors.primaryAlpha50'));
+      for (final source in sources) {
+        expect(source.value, contains('AppColors.primary'), reason: source.key);
+        expect(
+          source.value,
+          isNot(contains('0xFFFFA000')),
+          reason: source.key,
+        );
+        expect(
+          source.value,
+          isNot(contains('0x80FFA000')),
+          reason: source.key,
+        );
+        expect(
+          source.value,
+          isNot(contains('0x4DFFA000')),
+          reason: source.key,
+        );
+        expect(
+          source.value,
+          isNot(contains('0x33FFA000')),
+          reason: source.key,
+        );
+        expect(
+          source.value,
+          isNot(contains('0x26FFA000')),
+          reason: source.key,
+        );
+        expect(
+          source.value,
+          isNot(contains('0x1AFFA000')),
+          reason: source.key,
+        );
+        expect(
+          source.value,
+          isNot(contains('0x0DFFA000')),
+          reason: source.key,
+        );
+        expect(source.value, isNot(contains('âš¡')), reason: source.key);
+        expect(source.value, isNot(contains('ðŸ')), reason: source.key);
+        expect(source.value, isNot(contains('⚡')), reason: source.key);
+        expect(source.value, isNot(contains('🎉')), reason: source.key);
+        expect(source.value, isNot(contains('💪')), reason: source.key);
+      }
 
-      expect(source, isNot(contains('0xFFFFA000')));
-      expect(source, isNot(contains('0x80FFA000')));
-      expect(source, isNot(contains('0x4DFFA000')));
-      expect(source, isNot(contains('0x33FFA000')));
-      expect(source, isNot(contains('0x26FFA000')));
-      expect(source, isNot(contains('0x1AFFA000')));
-      expect(source, isNot(contains('0x0DFFA000')));
+      final heartsSource = sources
+          .singleWhere((source) => source.key.endsWith('hearts_widgets.dart'))
+          .value;
+      expect(heartsSource, contains('AppColors.primaryAlpha05'));
+      expect(heartsSource, contains('AppColors.primaryAlpha10'));
+      expect(heartsSource, contains('AppColors.primaryAlpha15'));
+      expect(heartsSource, contains('AppColors.primaryAlpha20'));
+      expect(heartsSource, contains('AppColors.primaryAlpha30'));
+      expect(heartsSource, contains('AppColors.primaryAlpha50'));
     });
 
     testWidgets('renders in normal mode without throwing', (tester) async {

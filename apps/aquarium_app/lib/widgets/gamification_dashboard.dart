@@ -313,7 +313,7 @@ class _HeartsDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = current > 0 ? const Color(0xFFFFA000) : context.textHint;
+    final color = current > 0 ? AppColors.primary : context.textHint;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
