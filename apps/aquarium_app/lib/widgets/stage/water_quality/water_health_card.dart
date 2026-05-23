@@ -172,7 +172,7 @@ class WqPerfectBadge extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('🐟', style: TextStyle(fontSize: 22)),
+          const Icon(Icons.set_meal, color: Colors.white, size: 22),
           const SizedBox(width: AppSpacing.sm),
           Text(
             'Perfect!',
@@ -183,7 +183,7 @@ class WqPerfectBadge extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          const Text('✨', style: TextStyle(fontSize: 18)),
+          const Icon(Icons.auto_awesome, color: Colors.white, size: 18),
         ],
       ),
     );
