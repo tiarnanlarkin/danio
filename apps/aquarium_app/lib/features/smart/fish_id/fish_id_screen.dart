@@ -644,7 +644,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             ),
             const SizedBox(height: AppSpacing.md),
 
-            // Add to tank button — shows tank picker, then opens pre-filled
+            // Add to tank button shows tank picker, then opens pre-filled
             // LivestockAddDialog so the user never has to retype species data.
             AppButton(
               label: 'Add to My Tank',
@@ -665,7 +665,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  'AI-generated identification · Results may not be 100% accurate',
+                  'AI-generated identification - Results may not be 100% accurate',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: context.textSecondary,
                     fontStyle: FontStyle.italic,

@@ -237,7 +237,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     final tanksAsync = await ref.read(tanksProvider.future);
     if (tanksAsync.isEmpty) {
       if (!mounted) return;
-      DanioSnackBar.warning(context, 'No tanks found — add a tank first.');
+      DanioSnackBar.warning(context, 'No tanks found - add a tank first.');
       return;
     }
     final tankId = tanksAsync.first.id;
@@ -550,7 +550,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
-                  'AI-generated diagnosis · Not a substitute for veterinary advice',
+                  'AI-generated diagnosis - Not a substitute for veterinary advice',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: context.textSecondary,
                     fontStyle: FontStyle.italic,

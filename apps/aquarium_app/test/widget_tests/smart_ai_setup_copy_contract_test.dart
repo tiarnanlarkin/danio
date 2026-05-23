@@ -33,6 +33,16 @@ void main() {
       );
       expect(source, isNot(contains('Use emoji')), reason: path);
       expect(source, isNot(contains('emoji sparingly')), reason: path);
+      expect(
+        source,
+        isNot(contains(String.fromCharCode(0x2014))),
+        reason: '$path contains an em dash',
+      );
+      expect(
+        source,
+        isNot(contains(String.fromCharCode(0x00b7))),
+        reason: '$path contains a middle dot',
+      );
     }
   });
 }

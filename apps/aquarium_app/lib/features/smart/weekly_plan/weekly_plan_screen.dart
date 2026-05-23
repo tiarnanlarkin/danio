@@ -329,7 +329,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
               Icon(Icons.auto_awesome, size: 12, color: context.textSecondary),
               const SizedBox(width: 4),
               Text(
-                'AI-generated plan · Always verify with your tank\'s specific needs',
+                'AI-generated plan - Always verify with your tank\'s specific needs',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: context.textSecondary,
                   fontStyle: FontStyle.italic,
@@ -389,7 +389,7 @@ class _DayCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          '${day.tasks.length} task${day.tasks.length == 1 ? "" : "s"} · '
+          '${day.tasks.length} task${day.tasks.length == 1 ? "" : "s"} - '
           '${day.tasks.fold<int>(0, (sum, t) => sum + t.durationMins)} min',
           style: theme.textTheme.bodySmall?.copyWith(
             color: context.textSecondary,
