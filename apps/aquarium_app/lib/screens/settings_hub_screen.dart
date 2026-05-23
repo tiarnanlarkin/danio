@@ -522,10 +522,10 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
             container: true,
             button: true,
             excludeSemantics: true,
-            label: 'Settings',
+            label: 'Edit profile settings',
             onTap: () => _openSettingsScreen(context),
             child: IconButton(
-              tooltip: 'Settings',
+              tooltip: 'Edit profile settings',
               icon: const Icon(Icons.edit),
               onPressed: () => _openSettingsScreen(context),
             ),

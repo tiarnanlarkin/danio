@@ -131,7 +131,7 @@ void main() {
         expect(find.bySemanticsLabel('A'), findsNothing);
         expect(find.bySemanticsLabel('Aquarist'), findsNothing);
         final settingsNode = tester.getSemantics(
-          find.bySemanticsLabel('Settings'),
+          find.bySemanticsLabel('Edit profile settings'),
         );
         expect(
           settingsNode.getSemanticsData().hasAction(SemanticsAction.tap),
