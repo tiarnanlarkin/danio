@@ -96,13 +96,13 @@ class ParameterField extends StatelessWidget {
     if (value != null) {
       if (dangerThreshold != null && value! >= dangerThreshold!) {
         statusColor = AppColors.paramDanger;
-        statusText = '✕ Danger';
+        statusText = 'Danger';
       } else if (warningThreshold != null && value! >= warningThreshold!) {
         statusColor = AppColors.paramWarning;
-        statusText = '⚠ Warning';
+        statusText = 'Warning';
       } else if (warningThreshold != null || dangerThreshold != null) {
         statusColor = AppColors.paramSafe;
-        statusText = '✓ Safe';
+        statusText = 'Safe';
       }
     }
 
@@ -194,13 +194,13 @@ class CompactParamField extends StatelessWidget {
     if (value != null) {
       if (dangerThreshold != null && value! >= dangerThreshold!) {
         statusColor = AppColors.paramDanger;
-        statusText = '✕ Danger';
+        statusText = 'Danger';
       } else if (warningThreshold != null && value! >= warningThreshold!) {
         statusColor = AppColors.paramWarning;
-        statusText = '⚠ Warning';
+        statusText = 'Warning';
       } else if (warningThreshold != null || dangerThreshold != null) {
         statusColor = AppColors.paramSafe;
-        statusText = '✓ Safe';
+        statusText = 'Safe';
       }
     }
 
