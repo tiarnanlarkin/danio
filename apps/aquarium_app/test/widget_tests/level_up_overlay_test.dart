@@ -1,9 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/widgets/celebrations/level_up_overlay.dart';
 
 void main() {
+  test('level up sparkle palette uses shared celebration tokens', () {
+    final source = File(
+      'lib/widgets/celebrations/level_up_overlay.dart',
+    ).readAsStringSync();
+
+    expect(source, contains('DanioColors.confettiLightGold'));
+    expect(source, isNot(contains('Color(\n        0xFFFFE082')));
+    expect(source, isNot(contains('no shared token')));
+  });
+
   testWidgets('level up overlay dismisses from Continue', (tester) async {
     await tester.pumpWidget(
       MaterialApp(

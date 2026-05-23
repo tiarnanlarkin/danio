@@ -199,9 +199,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     const colors = [
       DanioColors.topaz, // Gold
       AppColors.primaryLight, // Amber
-      Color(
-        0xFFFFE082,
-      ), // Light gold — intentionally decorative sparkle, no shared token
+      DanioColors.confettiLightGold, // Light gold
       Colors.white, // White sparkle
       AppColors.primary, // Deep gold
     ];
