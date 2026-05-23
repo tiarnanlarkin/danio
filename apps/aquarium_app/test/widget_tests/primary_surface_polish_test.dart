@@ -14,6 +14,7 @@ void main() {
       'lib/screens/gem_shop_screen.dart',
       'lib/screens/inventory_screen.dart',
       'lib/screens/achievements_screen.dart',
+      'lib/screens/livestock_detail_screen.dart',
       'lib/screens/workshop_screen.dart',
       'lib/screens/compatibility_checker_screen.dart',
       'lib/screens/tank_settings_screen.dart',
@@ -92,10 +93,7 @@ void main() {
     expect(source, contains('AppColors.whiteAlpha85'));
     expect(source, isNot(contains('Colors.white70')));
     expect(source, isNot(contains('Colors.white60')));
-    expect(
-      source,
-      isNot(contains('Colors.white.withValues(alpha: 0.85)')),
-    );
+    expect(source, isNot(contains('Colors.white.withValues(alpha: 0.85)')));
   });
 
   test('Danio surface visual helper covers shipped shop item types', () {

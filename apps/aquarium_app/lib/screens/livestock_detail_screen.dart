@@ -395,11 +395,24 @@ class _IssueRow extends StatelessWidget {
                     Text(issue.description, style: AppTypography.bodySmall),
                     if (issue.suggestion != null) ...[
                       const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        '💡 ${issue.suggestion}',
-                        style: AppTypography.bodySmall.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.lightbulb_outline,
+                            size: 14,
+                            color: context.textSecondary,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Expanded(
+                            child: Text(
+                              issue.suggestion!,
+                              style: AppTypography.bodySmall.copyWith(
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ],
@@ -684,7 +697,9 @@ class _CompanionChip extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: Color((color.toARGB32() & 0x00FFFFFF) | 0x19000000), // 10% opacity
+        color: Color(
+          (color.toARGB32() & 0x00FFFFFF) | 0x19000000,
+        ), // 10% opacity
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
           color: Color((color.toARGB32() & 0x00FFFFFF) | 0x4D000000),

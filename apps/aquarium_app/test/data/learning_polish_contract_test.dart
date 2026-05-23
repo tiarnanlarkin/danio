@@ -34,6 +34,7 @@ void main() {
         File('lib/screens/home/home_screen.dart'),
         File('lib/screens/home/home_sheets_tank.dart'),
         File('lib/screens/practice_hub_screen.dart'),
+        File('lib/providers/spaced_repetition_provider.dart'),
         File('lib/providers/achievement_provider.dart'),
         File('lib/widgets/first_visit_tooltip.dart'),
         File('lib/widgets/learning_streak_badge.dart'),

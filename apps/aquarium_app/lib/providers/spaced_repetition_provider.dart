@@ -437,7 +437,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   }) {
     if (content == null || content.isEmpty) return null;
 
-    // Trim to a reasonable length — first sentence, capped at 200 chars.
+    // Trim to a reasonable length: first sentence, capped at 200 chars.
     String trimmed = content.trim();
     // Try to find sentence boundary within the first 200 chars.
     final endIdx = trimmed.length > 200 ? 200 : trimmed.length;
@@ -457,13 +457,13 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
     // Add a type-appropriate prefix so the card context is clear.
     if (sectionType.contains('warning')) {
-      return '⚠️ $questionBody';
+      return 'Warning: $questionBody';
     } else if (sectionType.contains('tip')) {
-      return '💡 $questionBody';
+      return 'Tip: $questionBody';
     } else if (sectionType.contains('funFact')) {
-      return '🐟 $questionBody';
+      return 'Fact: $questionBody';
     }
-    // keyPoint — use as-is.
+    // keyPoint: use as-is.
     return questionBody;
   }
 
