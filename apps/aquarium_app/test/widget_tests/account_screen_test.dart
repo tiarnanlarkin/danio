@@ -5,6 +5,8 @@
 // When SupabaseService is not initialised (test environment default),
 // AccountScreen shows the offline-only message view.
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -88,6 +90,13 @@ void main() {
       expect(find.text('Danger Zone'), findsOneWidget);
       expect(find.text('Delete Account'), findsOneWidget);
       expect(find.byIcon(Icons.delete_forever), findsOneWidget);
+    });
+
+    test('Google sign-in does not use the generic g_mobiledata icon', () {
+      final source = File('lib/screens/account_screen.dart').readAsStringSync();
+
+      expect(source, isNot(contains('Icons.g_mobiledata')));
+      expect(source, contains('GoogleSignInMark'));
     });
   });
 }

@@ -256,7 +256,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             // Google sign-in
             OutlinedButton.icon(
               onPressed: auth.isLoading ? null : _signInWithGoogle,
-              icon: const Icon(Icons.g_mobiledata, size: AppIconSizes.md),
+              icon: const GoogleSignInMark(size: AppIconSizes.md),
               label: const Text('Continue with Google'),
             ),
           ],
@@ -513,6 +513,41 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     } finally {
       if (mounted) setState(() => _isDeletingAccount = false);
     }
+  }
+}
+
+class GoogleSignInMark extends StatelessWidget {
+  const GoogleSignInMark({super.key, this.size = AppIconSizes.md});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ExcludeSemantics(
+      child: SizedBox.square(
+        dimension: size,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: theme.colorScheme.surface,
+            border: Border.all(color: theme.colorScheme.outlineVariant),
+          ),
+          child: Center(
+            child: Text(
+              'G',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w800,
+                fontSize: size * 0.58,
+                height: 1,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
