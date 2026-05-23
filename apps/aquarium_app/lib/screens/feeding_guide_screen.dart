@@ -286,7 +286,12 @@ class _FoodTypeCard extends StatelessWidget {
         subtitle: Text(suitableFor, style: AppTypography.bodySmall),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -298,7 +303,7 @@ class _FoodTypeCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '✓ Pros',
+                            'Pros',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.success,
                             ),
@@ -315,7 +320,7 @@ class _FoodTypeCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '✗ Cons',
+                            'Cons',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.error,
                             ),

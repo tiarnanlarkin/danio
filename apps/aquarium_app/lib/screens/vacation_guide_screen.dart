@@ -7,274 +7,248 @@ class VacationGuideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final items = <Widget>[
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.standard,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.flight,
-                  size: AppIconSizes.lg,
-                  color: context.textSecondary,
-                ),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Text(
-                    'Planning ahead ensures your fish stay healthy while you\'re away. Most tanks can handle 1-2 weeks without intervention.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ),
-              ],
+    final items = <Widget>[
+      AppCard(
+        backgroundColor: AppOverlays.info10,
+        padding: AppCardPadding.standard,
+        child: Row(
+          children: [
+            Icon(
+              Icons.flight,
+              size: AppIconSizes.lg,
+              color: context.textSecondary,
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text(
-            'How Long Can Fish Go Without Food?',
-            style: AppTypography.headlineMedium,
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              children: [
-                _DurationRow(
-                  fish: 'Adult tropical fish',
-                  duration: '1-2 weeks',
-                  notes: 'Healthy adults handle fasting well',
-                ),
-                const Divider(),
-                _DurationRow(
-                  fish: 'Goldfish',
-                  duration: '2 weeks+',
-                  notes: 'Very resilient, slow metabolism',
-                ),
-                const Divider(),
-                _DurationRow(
-                  fish: 'Bettas',
-                  duration: '1-2 weeks',
-                  notes: 'Often overfed anyway',
-                ),
-                const Divider(),
-                _DurationRow(
-                  fish: 'Fry/juveniles',
-                  duration: '2-3 days max',
-                  notes: 'Need frequent feeding',
-                ),
-                const Divider(),
-                _DurationRow(
-                  fish: 'Shrimp',
-                  duration: '2+ weeks',
-                  notes: 'Graze on biofilm, algae',
-                ),
-                const Divider(),
-                _DurationRow(
-                  fish: 'Plecos',
-                  duration: '1-2 weeks',
-                  notes: 'Add driftwood, algae wafers before leaving',
-                ),
-              ],
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                'Planning ahead ensures your fish stay healthy while you\'re away. Most tanks can handle 1-2 weeks without intervention.',
+                style: AppTypography.bodyMedium,
+              ),
             ),
-          ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          Text('Before You Leave', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      Text(
+        'How Long Can Fish Go Without Food?',
+        style: AppTypography.headlineMedium,
+      ),
+      const SizedBox(height: AppSpacing.md),
 
-          _ChecklistSection(
-            title: '1 Week Before',
-            items: [
-              'Do a large water change (30-50%)',
-              'Clean filter media (in tank water)',
-              'Trim plants if needed',
-              'Test water parameters - address any issues',
-              'Check all equipment is working properly',
-            ],
-          ),
-
-          _ChecklistSection(
-            title: '1-2 Days Before',
-            items: [
-              'Another 20-25% water change',
-              'Clean glass',
-              'Remove any dead plant matter',
-              'Check heater setting',
-              'Top off water level',
-              'Feed normally (don\'t overfeed "to stock up")',
-            ],
-          ),
-
-          _ChecklistSection(
-            title: 'Day of Departure',
-            items: [
-              'Final feeding (normal amount)',
-              'Check temperature',
-              'Ensure filter is running',
-              'Set light timer (6-8 hours)',
-              'Close blinds if direct sunlight is an issue',
-              'Unplug any unnecessary equipment',
-            ],
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('Feeding Options', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
-
-          _OptionCard(
-            title: 'No Feeding (Short Trips)',
-            duration: '3-7 days',
-            pros: [
-              'Safest option',
-              'No overfeeding risk',
-              'No water quality issues',
-            ],
-            cons: ['Fish may be hungry when you return'],
-            tip: 'Healthy adult fish can easily go a week without food.',
-          ),
-
-          _OptionCard(
-            title: 'Automatic Feeder',
-            duration: '1-3 weeks',
-            pros: [
-              'Consistent feeding',
-              'Set and forget',
-              'Adjustable portions',
-            ],
-            cons: [
-              'Can malfunction',
-              'May dump food',
-              'Needs testing before trip',
-            ],
-            tip:
-                'Test for at least a week before relying on it. Use less food than normal.',
-          ),
-
-          _OptionCard(
-            title: 'Vacation Feeder Blocks',
-            duration: 'Not recommended',
-            pros: ['Cheap', 'Easy to use'],
-            cons: [
-              'Cloud water badly',
-              'Can cause ammonia spikes',
-              'Fish often ignore them',
-            ],
-            tip: 'Avoid these - they cause more problems than they solve.',
-          ),
-
-          _OptionCard(
-            title: 'Fish Sitter',
-            duration: '1+ weeks',
-            pros: [
-              'Can handle emergencies',
-              'Check equipment',
-              'Proper feeding',
-            ],
-            cons: ['Risk of overfeeding', 'Must be trained', 'Availability'],
-            tip:
-                'Pre-portion food in daily containers. Less is more - they WILL overfeed.',
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('If Using a Fish Sitter', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _BulletPoint(
-                  text: 'Pre-portion ALL food in labeled daily containers',
-                ),
-                _BulletPoint(
-                  text:
-                      'Write clear instructions - feeding only, no maintenance',
-                ),
-                _BulletPoint(text: 'Show them where NOT to stick their hands'),
-                _BulletPoint(text: 'Leave your contact info'),
-                _BulletPoint(
-                  text: 'Leave emergency contact (local fish store, etc.)',
-                ),
-                _BulletPoint(
-                  text: '"If in doubt, skip feeding" as golden rule',
-                ),
-                _BulletPoint(
-                  text: 'Tell them what normal fish behaviour looks like',
-                ),
-                _BulletPoint(text: 'DO NOT ask them to do water changes'),
-              ],
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          children: [
+            _DurationRow(
+              fish: 'Adult tropical fish',
+              duration: '1-2 weeks',
+              notes: 'Healthy adults handle fasting well',
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text(
-            'Extended Absences (2+ Weeks)',
-            style: AppTypography.headlineMedium,
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          AppCard(
-            backgroundColor: AppOverlays.warning10,
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Additional Precautions:',
-                  style: AppTypography.labelLarge,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _BulletPoint(text: 'Have someone check tank every few days'),
-                _BulletPoint(text: 'Automatic feeder + fish sitter combo'),
-                _BulletPoint(
-                  text: 'Consider reducing light period to slow algae',
-                ),
-                _BulletPoint(text: 'Add extra plants (floating plants good)'),
-                _BulletPoint(text: 'Set up camera to check remotely'),
-                _BulletPoint(text: 'Have backup equipment available'),
-                _BulletPoint(
-                  text: 'Leave water change supplies ready (just in case)',
-                ),
-              ],
+            const Divider(),
+            _DurationRow(
+              fish: 'Goldfish',
+              duration: '2 weeks+',
+              notes: 'Very resilient, slow metabolism',
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('When You Return', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _NumberedStep(
-                  num: 1,
-                  text: 'Check all fish are present and healthy',
-                ),
-                _NumberedStep(num: 2, text: 'Check temperature'),
-                _NumberedStep(num: 3, text: 'Test water parameters'),
-                _NumberedStep(num: 4, text: 'Do a water change (25-30%)'),
-                _NumberedStep(num: 5, text: 'Resume normal feeding gradually'),
-                _NumberedStep(num: 6, text: 'Check equipment is working'),
-                _NumberedStep(
-                  num: 7,
-                  text: 'Clean glass, trim plants if needed',
-                ),
-              ],
+            const Divider(),
+            _DurationRow(
+              fish: 'Bettas',
+              duration: '1-2 weeks',
+              notes: 'Often overfed anyway',
             ),
-          ),
+            const Divider(),
+            _DurationRow(
+              fish: 'Fry/juveniles',
+              duration: '2-3 days max',
+              notes: 'Need frequent feeding',
+            ),
+            const Divider(),
+            _DurationRow(
+              fish: 'Shrimp',
+              duration: '2+ weeks',
+              notes: 'Graze on biofilm, algae',
+            ),
+            const Divider(),
+            _DurationRow(
+              fish: 'Plecos',
+              duration: '1-2 weeks',
+              notes: 'Add driftwood, algae wafers before leaving',
+            ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.xxl),
-      ];
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Before You Leave', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
+
+      _ChecklistSection(
+        title: '1 Week Before',
+        items: [
+          'Do a large water change (30-50%)',
+          'Clean filter media (in tank water)',
+          'Trim plants if needed',
+          'Test water parameters - address any issues',
+          'Check all equipment is working properly',
+        ],
+      ),
+
+      _ChecklistSection(
+        title: '1-2 Days Before',
+        items: [
+          'Another 20-25% water change',
+          'Clean glass',
+          'Remove any dead plant matter',
+          'Check heater setting',
+          'Top off water level',
+          'Feed normally (don\'t overfeed "to stock up")',
+        ],
+      ),
+
+      _ChecklistSection(
+        title: 'Day of Departure',
+        items: [
+          'Final feeding (normal amount)',
+          'Check temperature',
+          'Ensure filter is running',
+          'Set light timer (6-8 hours)',
+          'Close blinds if direct sunlight is an issue',
+          'Unplug any unnecessary equipment',
+        ],
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Feeding Options', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
+
+      _OptionCard(
+        title: 'No Feeding (Short Trips)',
+        duration: '3-7 days',
+        pros: [
+          'Safest option',
+          'No overfeeding risk',
+          'No water quality issues',
+        ],
+        cons: ['Fish may be hungry when you return'],
+        tip: 'Healthy adult fish can easily go a week without food.',
+      ),
+
+      _OptionCard(
+        title: 'Automatic Feeder',
+        duration: '1-3 weeks',
+        pros: ['Consistent feeding', 'Set and forget', 'Adjustable portions'],
+        cons: ['Can malfunction', 'May dump food', 'Needs testing before trip'],
+        tip:
+            'Test for at least a week before relying on it. Use less food than normal.',
+      ),
+
+      _OptionCard(
+        title: 'Vacation Feeder Blocks',
+        duration: 'Not recommended',
+        pros: ['Cheap', 'Easy to use'],
+        cons: [
+          'Cloud water badly',
+          'Can cause ammonia spikes',
+          'Fish often ignore them',
+        ],
+        tip: 'Avoid these - they cause more problems than they solve.',
+      ),
+
+      _OptionCard(
+        title: 'Fish Sitter',
+        duration: '1+ weeks',
+        pros: ['Can handle emergencies', 'Check equipment', 'Proper feeding'],
+        cons: ['Risk of overfeeding', 'Must be trained', 'Availability'],
+        tip:
+            'Pre-portion food in daily containers. Less is more - they WILL overfeed.',
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('If Using a Fish Sitter', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _BulletPoint(
+              text: 'Pre-portion ALL food in labeled daily containers',
+            ),
+            _BulletPoint(
+              text: 'Write clear instructions - feeding only, no maintenance',
+            ),
+            _BulletPoint(text: 'Show them where NOT to stick their hands'),
+            _BulletPoint(text: 'Leave your contact info'),
+            _BulletPoint(
+              text: 'Leave emergency contact (local fish store, etc.)',
+            ),
+            _BulletPoint(text: '"If in doubt, skip feeding" as golden rule'),
+            _BulletPoint(
+              text: 'Tell them what normal fish behaviour looks like',
+            ),
+            _BulletPoint(text: 'DO NOT ask them to do water changes'),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Extended Absences (2+ Weeks)', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
+
+      AppCard(
+        backgroundColor: AppOverlays.warning10,
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Additional Precautions:', style: AppTypography.labelLarge),
+            const SizedBox(height: AppSpacing.sm),
+            _BulletPoint(text: 'Have someone check tank every few days'),
+            _BulletPoint(text: 'Automatic feeder + fish sitter combo'),
+            _BulletPoint(text: 'Consider reducing light period to slow algae'),
+            _BulletPoint(text: 'Add extra plants (floating plants good)'),
+            _BulletPoint(text: 'Set up camera to check remotely'),
+            _BulletPoint(text: 'Have backup equipment available'),
+            _BulletPoint(
+              text: 'Leave water change supplies ready (just in case)',
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('When You Return', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _NumberedStep(
+              num: 1,
+              text: 'Check all fish are present and healthy',
+            ),
+            _NumberedStep(num: 2, text: 'Check temperature'),
+            _NumberedStep(num: 3, text: 'Test water parameters'),
+            _NumberedStep(num: 4, text: 'Do a water change (25-30%)'),
+            _NumberedStep(num: 5, text: 'Resume normal feeding gradually'),
+            _NumberedStep(num: 6, text: 'Check equipment is working'),
+            _NumberedStep(num: 7, text: 'Clean glass, trim plants if needed'),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.xxl),
+    ];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Vacation Planning')),
@@ -414,7 +388,7 @@ class _OptionCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '✓ Pros',
+                        'Pros',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.success,
                         ),
@@ -431,7 +405,7 @@ class _OptionCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '✗ Cons',
+                        'Cons',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.error,
                         ),
@@ -522,4 +496,3 @@ class _NumberedStep extends StatelessWidget {
     );
   }
 }
-

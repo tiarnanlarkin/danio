@@ -332,7 +332,12 @@ class _EquipmentCard extends StatelessWidget {
         subtitle: Text(item.description, style: AppTypography.bodySmall),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -344,7 +349,7 @@ class _EquipmentCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '✓ Pros',
+                            'Pros',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.success,
                             ),
@@ -361,7 +366,7 @@ class _EquipmentCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '✗ Cons',
+                            'Cons',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.error,
                             ),

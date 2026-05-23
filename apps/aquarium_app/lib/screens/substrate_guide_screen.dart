@@ -7,303 +7,291 @@ class SubstrateGuideScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final items = <Widget>[
-          // Intro
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    final items = <Widget>[
+      // Intro
+      AppCard(
+        backgroundColor: AppOverlays.info10,
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.layers, color: context.textSecondary),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Why Substrate Matters',
-                      style: AppTypography.headlineSmall,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm2),
+                Icon(Icons.layers, color: context.textSecondary),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
-                  'Substrate affects water chemistry, plant growth, fish behaviour, and aesthetics. '
-                  'Choose based on your tank inhabitants and goals.',
-                  style: AppTypography.bodyMedium,
+                  'Why Substrate Matters',
+                  style: AppTypography.headlineSmall,
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: AppSpacing.sm2),
+            Text(
+              'Substrate affects water chemistry, plant growth, fish behaviour, and aesthetics. '
+              'Choose based on your tank inhabitants and goals.',
+              style: AppTypography.bodyMedium,
+            ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // Substrate types
-          Text('Substrate Types', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // Substrate types
+      Text('Substrate Types', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          _SubstrateCard(
-            name: 'Gravel',
-            description:
-                'Classic aquarium substrate. Inert, doesn\'t affect water chemistry.',
-            pros: [
-              'Cheap',
-              'Easy to clean',
-              'Many colours',
-              'Won\'t cloud water',
-            ],
-            cons: [
-              'No nutrients for plants',
-              'Food can get trapped',
-              'Too large for some bottom dwellers',
-            ],
-            bestFor: 'Fish-only tanks, beginners, easy maintenance',
-            size: '3-5mm typical',
-            depth: '5-8cm (2-3 inches)',
-          ),
-          _SubstrateCard(
-            name: 'Sand',
-            description:
-                'Fine particles, natural look. Popular for planted tanks and bottom dwellers.',
-            pros: [
-              'Natural look',
-              'Great for corys/loaches',
-              'Easy for plants to root',
-              'No food trapping',
-            ],
-            cons: [
-              'Can compact',
-              'May cause dead spots',
-              'Some types cloud water',
-              'Harder to vacuum',
-            ],
-            bestFor: 'Corydoras, loaches, planted tanks, natural biotopes',
-            size: '0.5-2mm',
-            depth: '3-5cm (1-2 inches), or 5-8cm for plants',
-          ),
-          _SubstrateCard(
-            name: 'Aquasoil (Active Substrate)',
-            description:
-                'Nutrient-rich, lowers pH. Designed for planted tanks.',
-            pros: [
-              'Nutrients for plants',
-              'Lowers pH/KH',
-              'Excellent plant growth',
-              'Promotes root development',
-            ],
-            cons: [
-              'Expensive',
-              'Leaches ammonia initially',
-              'Breaks down over 1-2 years',
-              'Clouds if disturbed',
-            ],
-            bestFor: 'High-tech planted tanks, soft water fish, aquascaping',
-            size: '1-4mm granules',
-            depth: '5-10cm (2-4 inches)',
-            brands:
-                'ADA Amazonia, Tropica Aquarium Soil, Fluval Stratum, UNS Controsoil',
-          ),
-          _SubstrateCard(
-            name: 'Flourite',
-            description: 'Clay-based planted tank substrate. Inert but porous.',
-            pros: [
-              'Long-lasting',
-              'Doesn\'t break down',
-              'No ammonia spike',
-              'Holds nutrients',
-            ],
-            cons: [
-              'Very dusty - rinse thoroughly',
-              'No initial nutrients',
-              'Heavy',
-            ],
-            bestFor: 'Low-tech planted tanks, long-term setups',
-            size: '2-5mm',
-            depth: '5-8cm (2-3 inches)',
-          ),
-          _SubstrateCard(
-            name: 'Crushed Coral',
-            description: 'Calcium carbite. Raises pH and hardness.',
-            pros: [
-              'Buffers to high pH',
-              'Adds calcium',
-              'Good for hard water fish',
-            ],
-            cons: [
-              'Not for soft water fish',
-              'Not for most plants',
-              'Sharp edges',
-            ],
-            bestFor: 'African cichlids, livebearers, marine tanks',
-            size: '2-5mm',
-            depth: '5-8cm (2-3 inches)',
-          ),
-          _SubstrateCard(
-            name: 'Bare Bottom',
-            description: 'No substrate at all. Easy maintenance.',
-            pros: [
-              'Easiest to clean',
-              'No detritus buildup',
-              'See waste immediately',
-            ],
-            cons: [
-              'Unnatural look',
-              'No beneficial bacteria surface',
-              'No plants without pots',
-              'Fish may be stressed',
-            ],
-            bestFor: 'Hospital tanks, quarantine, breeding tanks, fry tanks',
-            size: 'N/A',
-            depth: 'N/A',
-          ),
+      _SubstrateCard(
+        name: 'Gravel',
+        description:
+            'Classic aquarium substrate. Inert, doesn\'t affect water chemistry.',
+        pros: ['Cheap', 'Easy to clean', 'Many colours', 'Won\'t cloud water'],
+        cons: [
+          'No nutrients for plants',
+          'Food can get trapped',
+          'Too large for some bottom dwellers',
+        ],
+        bestFor: 'Fish-only tanks, beginners, easy maintenance',
+        size: '3-5mm typical',
+        depth: '5-8cm (2-3 inches)',
+      ),
+      _SubstrateCard(
+        name: 'Sand',
+        description:
+            'Fine particles, natural look. Popular for planted tanks and bottom dwellers.',
+        pros: [
+          'Natural look',
+          'Great for corys/loaches',
+          'Easy for plants to root',
+          'No food trapping',
+        ],
+        cons: [
+          'Can compact',
+          'May cause dead spots',
+          'Some types cloud water',
+          'Harder to vacuum',
+        ],
+        bestFor: 'Corydoras, loaches, planted tanks, natural biotopes',
+        size: '0.5-2mm',
+        depth: '3-5cm (1-2 inches), or 5-8cm for plants',
+      ),
+      _SubstrateCard(
+        name: 'Aquasoil (Active Substrate)',
+        description: 'Nutrient-rich, lowers pH. Designed for planted tanks.',
+        pros: [
+          'Nutrients for plants',
+          'Lowers pH/KH',
+          'Excellent plant growth',
+          'Promotes root development',
+        ],
+        cons: [
+          'Expensive',
+          'Leaches ammonia initially',
+          'Breaks down over 1-2 years',
+          'Clouds if disturbed',
+        ],
+        bestFor: 'High-tech planted tanks, soft water fish, aquascaping',
+        size: '1-4mm granules',
+        depth: '5-10cm (2-4 inches)',
+        brands:
+            'ADA Amazonia, Tropica Aquarium Soil, Fluval Stratum, UNS Controsoil',
+      ),
+      _SubstrateCard(
+        name: 'Flourite',
+        description: 'Clay-based planted tank substrate. Inert but porous.',
+        pros: [
+          'Long-lasting',
+          'Doesn\'t break down',
+          'No ammonia spike',
+          'Holds nutrients',
+        ],
+        cons: [
+          'Very dusty - rinse thoroughly',
+          'No initial nutrients',
+          'Heavy',
+        ],
+        bestFor: 'Low-tech planted tanks, long-term setups',
+        size: '2-5mm',
+        depth: '5-8cm (2-3 inches)',
+      ),
+      _SubstrateCard(
+        name: 'Crushed Coral',
+        description: 'Calcium carbite. Raises pH and hardness.',
+        pros: [
+          'Buffers to high pH',
+          'Adds calcium',
+          'Good for hard water fish',
+        ],
+        cons: ['Not for soft water fish', 'Not for most plants', 'Sharp edges'],
+        bestFor: 'African cichlids, livebearers, marine tanks',
+        size: '2-5mm',
+        depth: '5-8cm (2-3 inches)',
+      ),
+      _SubstrateCard(
+        name: 'Bare Bottom',
+        description: 'No substrate at all. Easy maintenance.',
+        pros: [
+          'Easiest to clean',
+          'No detritus buildup',
+          'See waste immediately',
+        ],
+        cons: [
+          'Unnatural look',
+          'No beneficial bacteria surface',
+          'No plants without pots',
+          'Fish may be stressed',
+        ],
+        bestFor: 'Hospital tanks, quarantine, breeding tanks, fry tanks',
+        size: 'N/A',
+        depth: 'N/A',
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // By tank type
-          Text('Recommended by Tank Type', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // By tank type
+      Text('Recommended by Tank Type', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          _TankTypeCard(
-            tankType: 'High-Tech Planted',
-            substrate: 'Aquasoil + root tabs',
-            notes:
-                'Nutrient-rich soil is essential. Cap with sand for aesthetic if desired.',
-          ),
-          _TankTypeCard(
-            tankType: 'Low-Tech Planted',
-            substrate: 'Sand or Flourite + root tabs',
-            notes:
-                'Inert substrate with root tabs works well. Dirted tanks also popular.',
-          ),
-          _TankTypeCard(
-            tankType: 'Fish Only (Community)',
-            substrate: 'Gravel or sand',
-            notes: 'Choose based on fish needs. Corys need sand.',
-          ),
-          _TankTypeCard(
-            tankType: 'African Cichlid',
-            substrate: 'Sand + crushed coral or aragonite',
-            notes: 'Buffer pH high. Cichlids love digging in sand.',
-          ),
-          _TankTypeCard(
-            tankType: 'Shrimp',
-            substrate: 'Aquasoil (for Caridina) or inert (for Neocaridina)',
-            notes:
-                'Caridina need low pH - use buffering soil. Neocaridina adaptable.',
-          ),
-          _TankTypeCard(
-            tankType: 'Biotope',
-            substrate: 'Match the natural habitat',
-            notes:
-                'Amazon: sand + leaves. Asian: fine gravel. African stream: rocks.',
-          ),
-          _TankTypeCard(
-            tankType: 'Breeding',
-            substrate: 'Bare bottom or marbles',
-            notes:
-                'Easy to see/collect eggs. Marbles protect eggs from being eaten.',
-          ),
+      _TankTypeCard(
+        tankType: 'High-Tech Planted',
+        substrate: 'Aquasoil + root tabs',
+        notes:
+            'Nutrient-rich soil is essential. Cap with sand for aesthetic if desired.',
+      ),
+      _TankTypeCard(
+        tankType: 'Low-Tech Planted',
+        substrate: 'Sand or Flourite + root tabs',
+        notes:
+            'Inert substrate with root tabs works well. Dirted tanks also popular.',
+      ),
+      _TankTypeCard(
+        tankType: 'Fish Only (Community)',
+        substrate: 'Gravel or sand',
+        notes: 'Choose based on fish needs. Corys need sand.',
+      ),
+      _TankTypeCard(
+        tankType: 'African Cichlid',
+        substrate: 'Sand + crushed coral or aragonite',
+        notes: 'Buffer pH high. Cichlids love digging in sand.',
+      ),
+      _TankTypeCard(
+        tankType: 'Shrimp',
+        substrate: 'Aquasoil (for Caridina) or inert (for Neocaridina)',
+        notes:
+            'Caridina need low pH - use buffering soil. Neocaridina adaptable.',
+      ),
+      _TankTypeCard(
+        tankType: 'Biotope',
+        substrate: 'Match the natural habitat',
+        notes:
+            'Amazon: sand + leaves. Asian: fine gravel. African stream: rocks.',
+      ),
+      _TankTypeCard(
+        tankType: 'Breeding',
+        substrate: 'Bare bottom or marbles',
+        notes:
+            'Easy to see/collect eggs. Marbles protect eggs from being eaten.',
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // Layering
-          Text('Layering Substrates', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // Layering
+      Text('Layering Substrates', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Dirted Tank (Walstad Method)',
+              style: AppTypography.labelLarge,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            _LayerRow(
+              layer: 'Top',
+              material: 'Sand or fine gravel cap (3-5cm)',
+              color: DanioColors.substrateSand,
+            ),
+            _LayerRow(
+              layer: 'Bottom',
+              material: 'Organic potting soil (2-3cm)',
+              color: DanioColors.substrateSoil,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Low-tech method. Soil provides nutrients, cap prevents clouding. '
+              'No CO2 or fertilizers needed for easy plants.',
+              style: AppTypography.bodySmall,
+            ),
+
+            const SizedBox(height: AppSpacing.lg2),
+
+            Text('High-Tech Planted', style: AppTypography.labelLarge),
+            const SizedBox(height: AppSpacing.sm),
+            _LayerRow(
+              layer: 'Top',
+              material: 'Aquasoil (5-8cm)',
+              color: DanioColors.substrateAquasoil,
+            ),
+            _LayerRow(
+              layer: 'Middle',
+              material: 'Power Sand / Pumice (optional, 1-2cm)',
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+            _LayerRow(
+              layer: 'Bottom',
+              material: 'Substrate fertilizer (optional)',
+              color: DanioColors.substrateBase,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'For maximum plant growth. Power sand adds drainage and bacterial surface area.',
+              style: AppTypography.bodySmall,
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Tips
+      AppCard(
+        backgroundColor: AppOverlays.warning10,
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Text(
-                  'Dirted Tank (Walstad Method)',
-                  style: AppTypography.labelLarge,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _LayerRow(
-                  layer: 'Top',
-                  material: 'Sand or fine gravel cap (3-5cm)',
-                  color: DanioColors.substrateSand,
-                ),
-                _LayerRow(
-                  layer: 'Bottom',
-                  material: 'Organic potting soil (2-3cm)',
-                  color: DanioColors.substrateSoil,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Low-tech method. Soil provides nutrients, cap prevents clouding. '
-                  'No CO2 or fertilizers needed for easy plants.',
-                  style: AppTypography.bodySmall,
-                ),
-
-                const SizedBox(height: AppSpacing.lg2),
-
-                Text('High-Tech Planted', style: AppTypography.labelLarge),
-                const SizedBox(height: AppSpacing.sm),
-                _LayerRow(
-                  layer: 'Top',
-                  material: 'Aquasoil (5-8cm)',
-                  color: DanioColors.substrateAquasoil,
-                ),
-                _LayerRow(
-                  layer: 'Middle',
-                  material: 'Power Sand / Pumice (optional, 1-2cm)',
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
-                _LayerRow(
-                  layer: 'Bottom',
-                  material: 'Substrate fertilizer (optional)',
-                  color: DanioColors.substrateBase,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'For maximum plant growth. Power sand adds drainage and bacterial surface area.',
-                  style: AppTypography.bodySmall,
-                ),
+                Icon(Icons.lightbulb, color: AppColors.warning),
+                const SizedBox(width: AppSpacing.sm),
+                Text('Pro Tips', style: AppTypography.headlineSmall),
               ],
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Tips
-          AppCard(
-            backgroundColor: AppOverlays.warning10,
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.lightbulb, color: AppColors.warning),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text('Pro Tips', style: AppTypography.headlineSmall),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                _TipItem(
-                  text: 'Rinse all substrate before use - even "pre-washed"',
-                ),
-                _TipItem(
-                  text: 'Slope substrate higher in back for depth illusion',
-                ),
-                _TipItem(text: 'Use substrate dividers to create zones'),
-                _TipItem(
-                  text: 'Never vacuum planted areas deeply - disturbs roots',
-                ),
-                _TipItem(text: 'Dark substrate makes fish colours pop'),
-                _TipItem(
-                  text:
-                      'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
-                ),
-              ],
+            const SizedBox(height: AppSpacing.sm2),
+            _TipItem(
+              text: 'Rinse all substrate before use - even "pre-washed"',
             ),
-          ),
+            _TipItem(text: 'Slope substrate higher in back for depth illusion'),
+            _TipItem(text: 'Use substrate dividers to create zones'),
+            _TipItem(
+              text: 'Never vacuum planted areas deeply - disturbs roots',
+            ),
+            _TipItem(text: 'Dark substrate makes fish colours pop'),
+            _TipItem(
+              text:
+                  'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
+            ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.xxl),
-      ];
+      const SizedBox(height: AppSpacing.xxl),
+    ];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Substrate Guide')),
@@ -359,7 +347,12 @@ class _SubstrateCard extends StatelessWidget {
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -371,7 +364,7 @@ class _SubstrateCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '✓ Pros',
+                            'Pros',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.success,
                             ),
@@ -388,7 +381,7 @@ class _SubstrateCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '✗ Cons',
+                            'Cons',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.error,
                             ),
@@ -534,4 +527,3 @@ class _TipItem extends StatelessWidget {
     );
   }
 }
-

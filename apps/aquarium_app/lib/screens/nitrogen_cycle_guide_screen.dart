@@ -339,7 +339,7 @@ class _MethodCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '✓ Pros',
+                        'Pros',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.success,
                         ),
@@ -355,7 +355,7 @@ class _MethodCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '✗ Cons',
+                        'Cons',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.error,
                         ),
