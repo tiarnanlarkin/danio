@@ -1,4 +1,6 @@
 // test/widgets/stage/temp_panel_content_test.dart
+import 'dart:io';
+
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/theme/room_themes.dart';
@@ -69,6 +71,18 @@ void main() {
         ),
       );
       expect(find.text('Heater OFF'), findsOneWidget);
+    });
+
+    test('HeaterStatusPill uses shared alpha tokens', () {
+      final source = File(
+        'lib/widgets/stage/temperature/heater_status.dart',
+      ).readAsStringSync();
+
+      expect(source, contains('AppColors.whiteAlpha50'));
+      expect(
+        source,
+        isNot(contains('Colors.white.withValues(alpha: 0.5)')),
+      );
     });
 
     testWidgets('TempTrendSection has no card wrapper decoration',

@@ -125,7 +125,7 @@ class HeaterStatusPill extends StatelessWidget {
         vertical: AppSpacing.xs2,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.5),
+        color: AppColors.whiteAlpha50,
         borderRadius: AppRadius.pillRadius,
         border: Border.all(color: dotColor.withValues(alpha: 0.35)),
       ),
