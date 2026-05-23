@@ -134,6 +134,9 @@ class AppBarAction extends StatelessWidget {
     return Semantics(
       label: semanticsLabel ?? tooltip,
       button: true,
+      enabled: onPressed != null,
+      onTap: onPressed,
+      excludeSemantics: true,
       child: button,
     );
   }
@@ -154,13 +157,17 @@ class AppBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final handlePressed = onPressed ?? () => Navigator.of(context).maybePop();
+
     return Semantics(
       label: semanticsLabel ?? 'Go back',
       button: true,
+      onTap: handlePressed,
+      excludeSemantics: true,
       child: IconButton(
         tooltip: semanticsLabel ?? 'Go back',
         icon: Icon(Icons.arrow_back_ios_new, size: AppIconSizes.sm),
-        onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
+        onPressed: handlePressed,
         color: color ?? (context.textPrimary),
         constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
       ),
@@ -183,13 +190,17 @@ class AppCloseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final handlePressed = onPressed ?? () => Navigator.of(context).maybePop();
+
     return Semantics(
       label: semanticsLabel ?? 'Close',
       button: true,
+      onTap: handlePressed,
+      excludeSemantics: true,
       child: IconButton(
         tooltip: semanticsLabel ?? 'Close',
         icon: Icon(Icons.close, size: AppIconSizes.md),
-        onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
+        onPressed: handlePressed,
         color: color ?? (context.textPrimary),
         constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
       ),
@@ -313,6 +324,8 @@ class _NavBarItem extends StatelessWidget {
       label: item.label,
       selected: isSelected,
       button: true,
+      onTap: onTap,
+      excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
         borderRadius: AppRadius.smallRadius,
