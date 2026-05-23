@@ -71,7 +71,10 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
   Future<void> _askDanio() async {
     final question = _askController.text.trim();
-    if (question.isEmpty) return;
+    if (question.isEmpty) {
+      setState(() => _askResponse = 'Ask a fishkeeping question first.');
+      return;
+    }
 
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) return;

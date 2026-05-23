@@ -225,5 +225,21 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('Ask Danio empty submit gives inline feedback', (tester) async {
+      await tester.pumpWidget(_wrap(aiConfigured: true));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(
+        find.text('Ask Danio'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.byTooltip('Send question'));
+      await tester.pump();
+
+      expect(find.text('Ask a fishkeeping question first.'), findsOneWidget);
+    });
   });
 }
