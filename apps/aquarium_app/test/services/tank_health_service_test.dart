@@ -144,6 +144,17 @@ void main() {
       expect(mentionsWaterChange, isTrue);
     });
 
+    test('no logs → regularity factor stays neutral without fish nudge', () {
+      final result = TankHealthService.calculateScore(tank: tank, logs: []);
+
+      expect(result.factors, contains('No activity logged recently'));
+      expect(
+        result.factors.any((f) => f.contains('your fish are waiting')),
+        isFalse,
+      );
+      expect(result.factors.any((f) => f.contains('\u{1F41F}')), isFalse);
+    });
+
     test('no water test → neutral param score, factors note this', () {
       final logs = [_waterChange(daysAgo: 3)];
       final result = TankHealthService.calculateScore(tank: tank, logs: logs);

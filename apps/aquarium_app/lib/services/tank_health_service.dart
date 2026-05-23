@@ -194,7 +194,7 @@ class TankHealthService {
       factors.add('Log a water test this week for better insights');
     } else {
       regularityScore = 0;
-      factors.add('No activity logged recently — your fish are waiting! 🐟');
+      factors.add('No activity logged recently');
     }
 
     // --- Total ---
