@@ -81,6 +81,11 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
   }
   // ── End debug menu tap gate ──────────────────────────────────────────────
 
+  String _tileSemanticLabel(String title, String subtitle) {
+    String normalize(String value) => value.replaceAll('&', 'and');
+    return '${normalize(title)}, ${normalize(subtitle)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final profile = ref.watch(
@@ -144,7 +149,10 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'Shop Street, Discover local aquarium shops',
+        label: _tileSemanticLabel(
+          'Shop Street',
+          'Discover local aquarium shops',
+        ),
         onTap: () {
           NavigationThrottle.push(
             context,
@@ -173,7 +181,10 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'Gem Shop, Spend gems on rewards and cosmetics',
+        label: _tileSemanticLabel(
+          'Gem Shop',
+          'Spend gems on rewards and cosmetics',
+        ),
         onTap: () {
           NavigationThrottle.push(
             context,
@@ -202,7 +213,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'Achievements, Badges and achievements',
+        label: _tileSemanticLabel('Achievements', 'Your badges & milestones'),
         onTap: () {
           NavigationThrottle.push(
             context,
@@ -235,7 +246,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'Workshop, Calculators, guides and planners',
+        label: _tileSemanticLabel('Workshop', 'Calculators, guides & planners'),
         onTap: () {
           NavigationThrottle.push(
             context,
@@ -265,7 +276,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'Analytics, Progress charts and statistics',
+        label: _tileSemanticLabel('Analytics', 'Progress charts & statistics'),
         onTap: () {
           NavigationThrottle.push(
             context,
@@ -298,7 +309,10 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'Preferences, Theme, sounds and notifications',
+        label: _tileSemanticLabel(
+          'Preferences',
+          'Theme, sounds & notifications',
+        ),
         onTap: () {
           NavigationThrottle.push(
             context,
@@ -328,7 +342,10 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'Backup and Restore, Export or sync your aquarium data',
+        label: _tileSemanticLabel(
+          'Backup & Restore',
+          'Export or sync your aquarium data',
+        ),
         onTap: () {
           NavigationThrottle.push(
             context,
@@ -360,7 +377,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       Semantics(
         button: true,
         excludeSemantics: true,
-        label: 'About, Version, privacy and support',
+        label: _tileSemanticLabel('About', 'Version, privacy & support'),
         onTap: () {
           NavigationThrottle.push(
             context,

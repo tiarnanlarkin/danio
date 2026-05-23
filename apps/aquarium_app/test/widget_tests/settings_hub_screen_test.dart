@@ -219,5 +219,22 @@ void main() {
         semantics.dispose();
       }
     });
+
+    testWidgets('More action semantics match visible tile subtitles', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        expect(
+          find.bySemanticsLabel('Achievements, Your badges and milestones'),
+          findsOneWidget,
+        );
+      } finally {
+        semantics.dispose();
+      }
+    });
   });
 }
