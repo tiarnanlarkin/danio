@@ -3,6 +3,7 @@
 // Run: flutter test test/widget_tests/smart_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,6 +146,12 @@ void main() {
         expect(widget.properties.label, contains('Open Preferences'));
         expect(widget.properties.button, isTrue);
         expect(widget.properties.enabled, isTrue);
+        final node = tester.getSemantics(
+          find.bySemanticsLabel(
+            RegExp(r'Fish & Plant ID[\s\S]*Open Preferences'),
+          ),
+        );
+        expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
       } finally {
         semantics.dispose();
       }

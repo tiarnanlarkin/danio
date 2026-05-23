@@ -750,10 +750,10 @@ class _FeatureCard extends StatelessWidget {
         : '$title. $subtitle';
 
     return Semantics(
-      container: true,
       excludeSemantics: true,
       button: onTap != null,
       enabled: onTap != null,
+      onTap: onTap,
       label: semanticLabel,
       child: Opacity(
         opacity: isDisabled ? 0.6 : (isLocked ? 0.75 : 1.0),
