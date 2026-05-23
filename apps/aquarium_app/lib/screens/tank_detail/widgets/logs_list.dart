@@ -21,7 +21,7 @@ class LogsList extends StatelessWidget {
           padding: AppCardPadding.spacious,
           child: CompactEmptyState(
             icon: Icons.history,
-            message: 'No activity yet — start logging to track your journey!',
+            message: 'No activity yet - start logging to track your journey!',
           ),
         ),
       );
