@@ -158,7 +158,7 @@ class CyclingStatusCard extends StatelessWidget {
       case CyclingStatus.almostDone:
         return 'Almost Cycled!';
       case CyclingStatus.cycled:
-        return 'Tank is Cycled ✓';
+        return 'Tank is Cycled';
       case CyclingStatus.unknown:
         return 'Cycling Status Unknown';
     }
