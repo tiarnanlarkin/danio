@@ -118,14 +118,21 @@ class TankHealthCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: health.factors.take(4).map((factor) {
+                        final icon = _factorIcon(factor);
                         return Padding(
                           padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                _factorIcon(factor),
-                                style: theme.textTheme.bodySmall,
+                              ExcludeSemantics(
+                                child: Icon(
+                                  icon,
+                                  size: AppIconSizes.xs,
+                                  color: _factorIconColor(
+                                    factor,
+                                    context.textHint,
+                                  ),
+                                ),
                               ),
                               const SizedBox(width: AppSpacing.xs),
                               Expanded(
@@ -152,20 +159,36 @@ class TankHealthCard extends StatelessWidget {
         .slideY(begin: 0.1, end: 0, duration: 400.ms);
   }
 
-  String _factorIcon(String factor) {
+  IconData _factorIcon(String factor) {
     if (factor.contains('great') || factor.contains('Excellent')) {
-      return '\u2705'; // check
+      return Icons.check_circle_outline;
     }
     if (factor.contains('overdue') ||
         factor.contains('dangerous') ||
         factor.contains('At Risk') ||
         factor.contains('very high')) {
-      return '\u26A0\uFE0F'; // warning
+      return Icons.warning_amber_outlined;
     }
     if (factor.contains('No ')) {
-      return '\u2139\uFE0F'; // info
+      return Icons.info_outline;
     }
-    return '\u2022'; // bullet
+    return Icons.circle;
+  }
+
+  Color _factorIconColor(String factor, Color defaultColor) {
+    if (factor.contains('great') || factor.contains('Excellent')) {
+      return AppColors.success;
+    }
+    if (factor.contains('overdue') ||
+        factor.contains('dangerous') ||
+        factor.contains('At Risk') ||
+        factor.contains('very high')) {
+      return AppColors.warning;
+    }
+    if (factor.contains('No ')) {
+      return AppColors.info;
+    }
+    return defaultColor;
   }
 }
 

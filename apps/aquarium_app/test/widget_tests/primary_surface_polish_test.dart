@@ -18,6 +18,7 @@ void main() {
       'lib/screens/workshop_screen.dart',
       'lib/screens/compatibility_checker_screen.dart',
       'lib/screens/tank_settings_screen.dart',
+      'lib/screens/tank_detail/widgets/tank_health_card.dart',
       'lib/screens/create_tank_screen/widgets/basic_info_page.dart',
       'lib/screens/onboarding/xp_celebration_screen.dart',
       'lib/screens/onboarding/fish_select_screen.dart',
@@ -45,6 +46,21 @@ void main() {
       final source = File(path).readAsStringSync();
       expect(source, isNot(contains('.emoji')), reason: path);
     }
+  });
+
+  test('tank health factors use icons rather than Unicode text markers', () {
+    final source = File(
+      'lib/screens/tank_detail/widgets/tank_health_card.dart',
+    ).readAsStringSync();
+
+    expect(source, isNot(contains(r'\u2705')));
+    expect(source, isNot(contains(r'\u26A0')));
+    expect(source, isNot(contains(r'\u2139')));
+    expect(source, isNot(contains(r'\uFE0F')));
+    expect(source, isNot(contains(r'\u2022')));
+    expect(source, contains('Icons.info_outline'));
+    expect(source, contains('Icons.warning_amber_outlined'));
+    expect(source, contains('Icons.check_circle_outline'));
   });
 
   test('shipped surfaces avoid placeholder availability copy', () {
