@@ -38,7 +38,7 @@ class LivestockLastFedInfo extends ConsumerWidget {
           return Padding(
             padding: const EdgeInsets.only(top: AppSpacing.sm),
             child: Text(
-              'No feedings logged yet — time to feed your fish! 🐟',
+              'No feedings logged yet',
               style: AppTypography.bodySmall.copyWith(
                 color: Theme.of(
                   context,
