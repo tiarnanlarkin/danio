@@ -60,6 +60,14 @@ LogEntry _waterTestLog(WaterTestResults results) {
   );
 }
 
+Finder _filterChipStartingWith(String prefix) {
+  return find.byWidgetPredicate((widget) {
+    if (widget is! FilterChip) return false;
+    final label = widget.label;
+    return label is Text && label.data?.startsWith(prefix) == true;
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -153,6 +161,32 @@ void main() {
 
       expect(find.text('Multi-Parameter Comparison'), findsOneWidget);
       expect(find.text('Compare Parameters'), findsNothing);
+    });
+
+    testWidgets('multi-parameter empty state names missing parameter data', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(logs: [_waterTestLog(WaterTestResults(ammonia: 0.1))]),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Compare'));
+      await tester.pumpAndSettle();
+      expect(find.text('Compare Parameters'), findsOneWidget);
+
+      await tester.tap(_filterChipStartingWith('Nitrite'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Compare').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Multi-Parameter Comparison'), findsOneWidget);
+      expect(
+        find.text('Log a water test for these parameters to see data here'),
+        findsOneWidget,
+      );
+      expect(find.textContaining(String.fromCharCode(0x1F4A7)), findsNothing);
     });
   });
 }

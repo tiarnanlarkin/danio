@@ -616,7 +616,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
     if (bars.isEmpty) {
       return const Center(
-        child: Text('Log your first water test to see data here 💧'),
+        child: Text('Log a water test for these parameters to see data here'),
       );
     }
 
