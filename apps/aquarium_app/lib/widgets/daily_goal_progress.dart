@@ -69,7 +69,7 @@ class DailyGoalProgress extends ConsumerWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             dailyGoal.isCompleted
-                ? 'Goal complete! 🎉'
+                ? 'Goal complete!'
                 : 'Daily goal: ${dailyGoal.targetXp}',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
