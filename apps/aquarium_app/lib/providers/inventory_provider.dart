@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/shop_item.dart';
@@ -6,14 +5,14 @@ import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
 import 'hearts_provider.dart';
 import 'user_profile_provider.dart';
-import '../utils/app_constants.dart';
 import '../utils/logger.dart';
 
 /// Provider for user's shop inventory
 final inventoryProvider =
-    StateNotifierProvider.autoDispose<InventoryNotifier, AsyncValue<List<InventoryItem>>>((
-      ref,
-    ) {
+    StateNotifierProvider.autoDispose<
+      InventoryNotifier,
+      AsyncValue<List<InventoryItem>>
+    >((ref) {
       return InventoryNotifier(ref);
     });
 
@@ -24,13 +23,6 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
   final Ref ref;
   static const _key = 'shop_inventory';
-  Timer? _saveDebounce;
-
-  @override
-  void dispose() {
-    _saveDebounce?.cancel();
-    super.dispose();
-  }
 
   Future<void> _load() async {
     try {
@@ -68,24 +60,28 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         } catch (e) {
           // Migration is best-effort — if profile isn't loaded yet, we'll
           // try again next time inventory loads.
-          logError('InventoryProvider: migration best-effort failed: $e', tag: 'InventoryProvider');
+          logError(
+            'InventoryProvider: migration best-effort failed: $e',
+            tag: 'InventoryProvider',
+          );
         }
       }
 
       state = AsyncValue.data(inventory);
     } catch (e, st) {
-      logError('InventoryProvider: _load failed: $e', stackTrace: st, tag: 'InventoryProvider');
+      logError(
+        'InventoryProvider: _load failed: $e',
+        stackTrace: st,
+        tag: 'InventoryProvider',
+      );
       state = AsyncValue.error(e, st);
     }
   }
 
   Future<void> _save(List<InventoryItem> inventory) async {
-    _saveDebounce?.cancel();
-    _saveDebounce = Timer(kProviderSaveDebounce, () async {
-      final prefs = await ref.read(sharedPreferencesProvider.future);
-      final json = jsonEncode(inventory.map((i) => i.toJson()).toList());
-      await prefs.setString(_key, json);
-    });
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    final json = jsonEncode(inventory.map((i) => i.toJson()).toList());
+    await prefs.setString(_key, json);
   }
 
   /// Purchase an item from the shop.
@@ -176,7 +172,11 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
       return true;
     } catch (e, st) {
-      logError('InventoryProvider: purchase failed, compensating refund: $e', stackTrace: st, tag: 'InventoryProvider');
+      logError(
+        'InventoryProvider: purchase failed, compensating refund: $e',
+        stackTrace: st,
+        tag: 'InventoryProvider',
+      );
       // Compensating refund: inventory save failed, give gems back
       await gemsNotifier.refund(
         amount: item.gemCost,
@@ -401,7 +401,10 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 }
 
 /// Provider to check if user owns a specific item
-final ownsItemProvider = Provider.autoDispose.family<bool, String>((ref, itemId) {
+final ownsItemProvider = Provider.autoDispose.family<bool, String>((
+  ref,
+  itemId,
+) {
   final inventory = ref.watch(inventoryProvider);
   return inventory.when(
     loading: () => false,

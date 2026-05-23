@@ -1,4 +1,6 @@
 // Golden-path persistence tests.
+
+import 'dart:convert';
 //
 // Covers three critical business flows:
 //   1. Gem purchase → gems deducted, item added to inventory
@@ -67,122 +69,149 @@ void main() {
 
   // ── Test 1: Gem purchase ──────────────────────────────────────────────────
   group('Persistence: gem purchase', () {
-    test('gems deducted and item appears in inventory after purchaseItem', () async {
-      final container = _makeContainer();
-      addTearDown(container.dispose);
+    test(
+      'gems deducted and item appears in inventory after purchaseItem',
+      () async {
+        final container = _makeContainer();
+        addTearDown(container.dispose);
 
-      // Trigger provider instantiation and wait for async _load() to complete
-      // before mutating state. Without this, _load() races with addGems().
-      container.read(gemsProvider.notifier);
-      await _settle(container);
+        // Trigger provider instantiation and wait for async _load() to complete
+        // before mutating state. Without this, _load() races with addGems().
+        container.read(gemsProvider.notifier);
+        await _settle(container);
 
-      // Seed the user with 100 gems so the purchase can succeed.
-      await container.read(gemsProvider.notifier).addGems(
-        amount: 100,
-        reason: GemEarnReason.lessonComplete,
-      );
-      await _settle(container);
+        // Seed the user with 100 gems so the purchase can succeed.
+        await container
+            .read(gemsProvider.notifier)
+            .addGems(amount: 100, reason: GemEarnReason.lessonComplete);
+        await _settle(container);
 
-      final balanceBefore =
-          container.read(gemsProvider).valueOrNull?.balance ?? 0;
-      expect(balanceBefore, greaterThanOrEqualTo(100));
+        final balanceBefore =
+            container.read(gemsProvider).valueOrNull?.balance ?? 0;
+        expect(balanceBefore, greaterThanOrEqualTo(100));
 
-      // Build a test ShopItem that costs 25 gems.
-      const testItem = ShopItem(
-        id: 'xp_boost_1h',
-        name: '2x XP Boost',
-        description: 'Test item',
-        emoji: '⚡',
-        category: ShopItemCategory.powerUps,
-        type: ShopItemType.xpBoost,
-        gemCost: 25,
-        isConsumable: true,
-        orderIndex: 0,
-      );
+        // Build a test ShopItem that costs 25 gems.
+        const testItem = ShopItem(
+          id: 'xp_boost_1h',
+          name: '2x XP Boost',
+          description: 'Test item',
+          emoji: '⚡',
+          category: ShopItemCategory.powerUps,
+          type: ShopItemType.xpBoost,
+          gemCost: 25,
+          isConsumable: true,
+          orderIndex: 0,
+        );
 
-      // Keep the autoDispose inventory provider alive for the duration of
-      // the async purchaseItem call by listening to it.
-      final sub = container.listen(inventoryProvider, (_, __) {});
-      addTearDown(sub.close);
-      await _settle(container);
+        // Keep the autoDispose inventory provider alive for the duration of
+        // the async purchaseItem call by listening to it.
+        final sub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(sub.close);
+        await _settle(container);
 
-      // Perform the purchase.
-      final inventoryNotifier = container.read(inventoryProvider.notifier);
-      final success = await inventoryNotifier.purchaseItem(testItem);
-      await _settle(container);
+        // Perform the purchase.
+        final inventoryNotifier = container.read(inventoryProvider.notifier);
+        final success = await inventoryNotifier.purchaseItem(testItem);
+        await _settle(container);
 
-      // Assertions.
-      expect(success, isTrue, reason: 'Purchase should succeed with sufficient gems');
+        // Assertions.
+        expect(
+          success,
+          isTrue,
+          reason: 'Purchase should succeed with sufficient gems',
+        );
 
-      final balanceAfter =
-          container.read(gemsProvider).valueOrNull?.balance ?? balanceBefore;
-      expect(
-        balanceAfter,
-        equals(balanceBefore - 25),
-        reason: 'Gem balance should be reduced by item cost',
-      );
+        final balanceAfter =
+            container.read(gemsProvider).valueOrNull?.balance ?? balanceBefore;
+        expect(
+          balanceAfter,
+          equals(balanceBefore - 25),
+          reason: 'Gem balance should be reduced by item cost',
+        );
 
-      final inventory = container.read(inventoryProvider).valueOrNull ?? [];
-      final purchased = inventory.where((i) => i.itemId == 'xp_boost_1h');
-      expect(
-        purchased.isNotEmpty,
-        isTrue,
-        reason: 'Purchased item should appear in inventory',
-      );
-    });
+        final inventory = container.read(inventoryProvider).valueOrNull ?? [];
+        final purchased = inventory.where((i) => i.itemId == 'xp_boost_1h');
+        expect(
+          purchased.isNotEmpty,
+          isTrue,
+          reason: 'Purchased item should appear in inventory',
+        );
+
+        final prefs = await SharedPreferences.getInstance();
+        final persistedJson = prefs.getString('shop_inventory');
+        expect(
+          persistedJson,
+          isNotNull,
+          reason:
+              'Inventory purchases must be persisted before purchaseItem returns',
+        );
+
+        final persistedInventory = (jsonDecode(persistedJson!) as List<dynamic>)
+            .cast<Map<String, dynamic>>();
+        expect(
+          persistedInventory.any((item) => item['itemId'] == 'xp_boost_1h'),
+          isTrue,
+          reason:
+              'Persisted inventory should include the purchased item immediately',
+        );
+      },
+    );
   });
 
   // ── Test 2: Lesson complete ───────────────────────────────────────────────
   group('Persistence: lesson complete', () {
-    test('XP awarded and lesson marked complete after completeLesson', () async {
-      final container = _makeContainer();
-      addTearDown(container.dispose);
+    test(
+      'XP awarded and lesson marked complete after completeLesson',
+      () async {
+        final container = _makeContainer();
+        addTearDown(container.dispose);
 
-      // Trigger the notifier so _load() starts, then settle so the async
-      // chain (SharedPreferences.future → _load → setState) completes.
-      final profileNotifier = container.read(userProfileProvider.notifier);
-      await _settle(container);
+        // Trigger the notifier so _load() starts, then settle so the async
+        // chain (SharedPreferences.future → _load → setState) completes.
+        final profileNotifier = container.read(userProfileProvider.notifier);
+        await _settle(container);
 
-      // Create a profile (empty SharedPreferences has no profile, so
-      // completeLesson would be a no-op without this).
-      await profileNotifier.createProfile(
-        experienceLevel: ExperienceLevel.beginner,
-        goals: [UserGoal.keepFishAlive],
-      );
-      await _settle(container);
+        // Create a profile (empty SharedPreferences has no profile, so
+        // completeLesson would be a no-op without this).
+        await profileNotifier.createProfile(
+          experienceLevel: ExperienceLevel.beginner,
+          goals: [UserGoal.keepFishAlive],
+        );
+        await _settle(container);
 
-      const lessonId = 'nitrogen_cycle_1';
-      const xpReward = 20;
+        const lessonId = 'nitrogen_cycle_1';
+        const xpReward = 20;
 
-      final profileBefore = container.read(userProfileProvider).valueOrNull;
-      expect(profileBefore, isNotNull, reason: 'Profile should be loaded');
-      final xpBefore = profileBefore!.totalXp;
-      expect(
-        profileBefore.completedLessons.contains(lessonId),
-        isFalse,
-        reason: 'Lesson should not be complete yet',
-      );
+        final profileBefore = container.read(userProfileProvider).valueOrNull;
+        expect(profileBefore, isNotNull, reason: 'Profile should be loaded');
+        final xpBefore = profileBefore!.totalXp;
+        expect(
+          profileBefore.completedLessons.contains(lessonId),
+          isFalse,
+          reason: 'Lesson should not be complete yet',
+        );
 
-      // Complete the lesson.
-      await container
-          .read(userProfileProvider.notifier)
-          .completeLesson(lessonId, xpReward);
-      await _settle(container);
+        // Complete the lesson.
+        await container
+            .read(userProfileProvider.notifier)
+            .completeLesson(lessonId, xpReward);
+        await _settle(container);
 
-      final profileAfter = container.read(userProfileProvider).valueOrNull;
+        final profileAfter = container.read(userProfileProvider).valueOrNull;
 
-      expect(
-        profileAfter?.completedLessons.contains(lessonId),
-        isTrue,
-        reason: 'Lesson should now be in completedLessons',
-      );
+        expect(
+          profileAfter?.completedLessons.contains(lessonId),
+          isTrue,
+          reason: 'Lesson should now be in completedLessons',
+        );
 
-      expect(
-        profileAfter?.totalXp,
-        greaterThanOrEqualTo(xpBefore + xpReward),
-        reason: 'Total XP should increase by at least the lesson reward',
-      );
-    });
+        expect(
+          profileAfter?.totalXp,
+          greaterThanOrEqualTo(xpBefore + xpReward),
+          reason: 'Total XP should increase by at least the lesson reward',
+        );
+      },
+    );
   });
 
   // ── Test 3: Tank create ───────────────────────────────────────────────────
@@ -209,7 +238,11 @@ void main() {
 
       // Verify it can be retrieved.
       final retrieved = await storage.getTank(tank.id);
-      expect(retrieved, isNotNull, reason: 'Tank should be retrievable after save');
+      expect(
+        retrieved,
+        isNotNull,
+        reason: 'Tank should be retrievable after save',
+      );
       expect(retrieved!.id, equals(tank.id));
       expect(retrieved.name, equals('Golden Path Tank'));
 
