@@ -13,9 +13,15 @@ import 'package:danio/models/user_profile.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({ValueChanged<ExperienceLevel>? onSelected}) {
+Widget _wrap({
+  ValueChanged<ExperienceLevel>? onSelected,
+  VoidCallback? onSkip,
+}) {
   return MaterialApp(
-    home: ExperienceLevelScreen(onSelected: onSelected ?? (_) {}),
+    home: ExperienceLevelScreen(
+      onSelected: onSelected ?? (_) {},
+      onSkip: onSkip,
+    ),
   );
 }
 
@@ -75,6 +81,23 @@ void main() {
       await tester.pump();
 
       expect(chosen, ExperienceLevel.beginner);
+    });
+
+    testWidgets('skip setup action has a full button hit target',
+        (tester) async {
+      var skipped = false;
+      await tester.pumpWidget(_wrap(onSkip: () => skipped = true));
+      await _advance(tester);
+
+      final skipButton = find.bySemanticsLabel('Skip setup for now');
+      expect(skipButton, findsOneWidget);
+      expect(find.text('Skip for now'), findsOneWidget);
+      expect(tester.getSize(skipButton).height, greaterThanOrEqualTo(48));
+
+      await tester.tap(skipButton);
+      await tester.pump();
+
+      expect(skipped, isTrue);
     });
   });
 }

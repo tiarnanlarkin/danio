@@ -240,27 +240,12 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
 
               if (widget.onSkip != null) ...[
                 const SizedBox(height: AppSpacing.sm2),
-                Semantics(
-                  button: true,
-                  label: 'Skip setup and use defaults',
-                  child: GestureDetector(
-                    onTap: () {
-                      HapticFeedback.selectionClick();
-                      widget.onSkip?.call();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                      child: Text(
-                        'Skip setup',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: AppColors.textSecondary,
-                          decoration: TextDecoration.underline,
-                          decorationColor: AppColors.textHint,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                AppButton(
+                  label: 'Skip for now',
+                  onPressed: widget.onSkip,
+                  variant: AppButtonVariant.text,
+                  isFullWidth: true,
+                  semanticsLabel: 'Skip setup for now',
                 ),
               ],
 
@@ -369,4 +354,3 @@ class _OptionCard extends StatelessWidget {
     );
   }
 }
-
