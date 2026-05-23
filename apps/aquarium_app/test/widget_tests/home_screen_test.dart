@@ -3,10 +3,12 @@
 // Run: flutter test test/widget_tests/home_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/models.dart';
 import 'package:danio/screens/home/home_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
@@ -27,9 +29,31 @@ Widget _wrap() {
       tanksProvider.overrideWith((ref) async => []),
       currentRoomThemeProvider.overrideWith((ref) => RoomTheme.ocean),
     ],
-    child: const MaterialApp(
-      home: HomeScreen(),
-    ),
+    child: const MaterialApp(home: HomeScreen()),
+  );
+}
+
+Widget _wrapWithTank() {
+  final memStorage = InMemoryStorageService();
+  final now = DateTime(2026, 1, 1);
+  final tank = Tank(
+    id: 'tank-1',
+    name: 'Test Tank',
+    type: TankType.freshwater,
+    volumeLitres: 100,
+    startDate: now,
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
+  );
+
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(memStorage),
+      tanksProvider.overrideWith((ref) async => [tank]),
+      currentRoomThemeProvider.overrideWith((ref) => RoomTheme.ocean),
+    ],
+    child: const MaterialApp(home: HomeScreen()),
   );
 }
 
@@ -83,6 +107,29 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 5));
       expect(find.byType(HomeScreen), findsOneWidget);
+    });
+
+    testWidgets('tank toolbox exposes one tappable semantics node', (
+      tester,
+    ) async {
+      suppressLayoutErrors();
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrapWithTank());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 5));
+
+        expect(find.bySemanticsLabel('Tank Toolbox'), findsOneWidget);
+        final toolboxNode = tester.getSemantics(
+          find.bySemanticsLabel('Tank Toolbox'),
+        );
+        expect(
+          toolboxNode.getSemanticsData().hasAction(SemanticsAction.tap),
+          isTrue,
+        );
+      } finally {
+        semantics.dispose();
+      }
     });
   });
 }

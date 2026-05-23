@@ -512,6 +512,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Semantics(
                       label: 'Tank Toolbox',
                       button: true,
+                      excludeSemantics: true,
+                      onTap: () =>
+                          showTankToolbox(context, ref, currentTank.id),
                       child: IconButton(
                         icon: const Icon(
                           Icons.build_outlined,
