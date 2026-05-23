@@ -199,7 +199,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Fish & Plant ID',
         subtitle: aiConfigured
             ? 'Snap a photo to identify species'
-            : 'Requires AI setup - tap to open Preferences',
+            : 'Set up AI in Preferences',
         color: AppColors.primary,
         isLocked: !aiConfigured,
         onTap: aiConfigured
@@ -218,7 +218,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Symptom Checker',
         subtitle: aiConfigured
             ? 'Describe symptoms, get instant advice'
-            : 'Requires AI setup - tap to open Preferences',
+            : 'Set up AI in Preferences',
         color: AppColors.error,
         isLocked: !aiConfigured,
         onTap: aiConfigured
@@ -237,7 +237,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Weekly Care Plan',
         subtitle: aiConfigured
             ? 'Your personalised maintenance schedule'
-            : 'Requires AI setup - tap to open Preferences',
+            : 'Set up AI in Preferences',
         color: AppColors
             .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
         isLocked: !aiConfigured,
@@ -645,7 +645,7 @@ class _AiSetupBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -659,44 +659,47 @@ class _AiSetupBanner extends StatelessWidget {
         border: Border.all(color: AppColors.primaryAlpha15),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            danioSurfaceVisual(DanioSurfaceVisualKey.aiSetup).icon,
-            color: danioSurfaceVisual(DanioSurfaceVisualKey.aiSetup).color,
-            size: AppIconSizes.xl,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                danioSurfaceVisual(DanioSurfaceVisualKey.aiSetup).icon,
+                color: danioSurfaceVisual(DanioSurfaceVisualKey.aiSetup).color,
+                size: AppIconSizes.lg,
+              ),
+              const SizedBox(width: AppSpacing.sm2),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Smart AI Features',
+                      style: AppTypography.titleSmall.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxs),
+                    Text(
+                      'Set up AI in Preferences to use Fish & Plant ID, '
+                      'Symptom Checker, and Weekly Care Plan. Offline '
+                      'compatibility and Anomaly History are ready now.',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Smart AI Features',
-            style: AppTypography.titleSmall.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Fish & Plant ID, Symptom Checker, and Weekly Care Plan are ready '
-            'once AI is configured in Preferences.',
-            style: AppTypography.bodySmall.copyWith(
-              color: context.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'Workshop compatibility checks and Anomaly History work offline now.',
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.sm2),
           AppButton(
             label: 'Open Preferences',
             leadingIcon: Icons.tune,
             onPressed: onOpenPreferences,
-            isFullWidth: true,
             variant: AppButtonVariant.secondary,
           ),
         ],
@@ -750,7 +753,7 @@ class _FeatureCard extends StatelessWidget {
 
     final isDisabled = onTap == null;
     final semanticLabel = isLocked
-        ? '$title. $subtitle. Locked. Open Preferences to set up AI.'
+        ? '$title. Requires AI setup. Open Preferences to set up AI.'
         : '$title. $subtitle';
 
     return Semantics(
@@ -768,7 +771,10 @@ class _FeatureCard extends StatelessWidget {
             onTap: onTap,
             borderRadius: AppRadius.md2Radius,
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm2,
+              ),
               child: Row(
                 children: [
                   CircleAvatar(

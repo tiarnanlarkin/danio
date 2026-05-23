@@ -79,7 +79,7 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.textContaining('coming soon'), findsNothing);
-      expect(find.textContaining('AI is configured'), findsOneWidget);
+      expect(find.text('Set up AI in Preferences'), findsNWidgets(3));
 
       // When not configured, feature cards are rendered but may be offstage
       // (below the viewport fold in the SliverList). Use skipOffstage: false.

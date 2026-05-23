@@ -63,6 +63,7 @@ Widget _wrap({
   int dueCards = 0,
   UserProfile? profile,
   bool learnGuidanceSeen = true,
+  int initialTab = 0,
 }) {
   SharedPreferences.setMockInitialValues({
     if (profile != null) 'user_profile': jsonEncode(profile.toJson()),
@@ -76,6 +77,7 @@ Widget _wrap({
 
   return ProviderScope(
     overrides: [
+      currentTabProvider.overrideWith((ref) => initialTab),
       spacedRepetitionProvider.overrideWith(
         (ref) => _FrozenSpacedRepetitionNotifier(ref, dueCards: dueCards),
       ),
@@ -298,6 +300,35 @@ void main() {
 
       expect(learningPathsRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(firstPathRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Smart offline cards start clear of the bottom dock', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap(initialTab: 3));
+      await _advance(tester);
+
+      final compatibilityFinder = find.text('Compatibility Advice');
+      final anomalyFinder = find.text('Anomaly History');
+      final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
+      expect(compatibilityFinder, findsOneWidget);
+      expect(anomalyFinder, findsOneWidget);
+      expect(dockFinder, findsOneWidget);
+
+      final compatibilityRect = tester.getRect(compatibilityFinder);
+      final anomalyRect = tester.getRect(anomalyFinder);
+      final dockRect = tester.getRect(dockFinder);
+
+      expect(compatibilityRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(anomalyRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(tester.takeException(), isNull);
     });
 
