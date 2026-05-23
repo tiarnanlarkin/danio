@@ -44,20 +44,20 @@ class AboutScreen extends StatelessWidget {
                     cacheHeight: 200,
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [AppColors.primary, AppColors.secondary],
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [AppColors.primary, AppColors.secondary],
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.water_drop,
+                        size: 48,
+                        color: AppColors.onPrimary,
                       ),
                     ),
-                    child: const Icon(
-                      Icons.water_drop,
-                      size: 48,
-                      color: AppColors.onPrimary,
-                    ),
                   ),
-                ),
                 ),
               ),
             ),
@@ -71,7 +71,7 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
 
             Text(
-              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby — one lesson at a time. 🐟',
+              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby — one lesson at a time.',
               style: AppTypography.bodyLarge,
               textAlign: TextAlign.center,
             ),
@@ -114,9 +114,20 @@ class AboutScreen extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.md),
 
-            Text(
-              'Made with ❤️ for the fishkeeping community',
-              style: AppTypography.bodySmall,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.favorite,
+                  size: AppIconSizes.sm,
+                  color: AppColors.error,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  'Built for the fishkeeping community',
+                  style: AppTypography.bodySmall,
+                ),
+              ],
             ),
 
             const SizedBox(height: AppSpacing.lg),

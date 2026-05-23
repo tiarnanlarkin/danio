@@ -40,5 +40,24 @@ void main() {
       await tester.pump();
       expect(find.textContaining('Duolingo for Fishkeeping'), findsOneWidget);
     });
+
+    testWidgets('uses icons instead of raw emoji in visible copy', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final emoji = RegExp(
+        r'[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]',
+        unicode: true,
+      );
+      final renderedText = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((widget) => widget.data ?? widget.textSpan?.toPlainText() ?? '')
+          .where(emoji.hasMatch)
+          .toList();
+
+      expect(renderedText, isEmpty);
+    });
   });
 }
