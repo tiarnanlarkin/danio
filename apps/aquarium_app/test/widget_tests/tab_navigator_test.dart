@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/user_profile.dart';
 import 'package:danio/screens/tab_navigator.dart';
+import 'package:danio/providers/lesson_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/widgets/danio_bottom_dock.dart';
@@ -71,6 +72,29 @@ Widget _wrap({int dueCards = 0, UserProfile? profile}) {
     overrides: [
       spacedRepetitionProvider.overrideWith(
         (ref) => _FrozenSpacedRepetitionNotifier(ref, dueCards: dueCards),
+      ),
+    ],
+    child: const MaterialApp(home: TabNavigator()),
+  );
+}
+
+final _deferredPathMetadataProvider = StateProvider<List<PathMetadata>>(
+  (ref) => const [],
+);
+
+Widget _wrapWithDeferredLearnPaths({required UserProfile profile}) {
+  SharedPreferences.setMockInitialValues({
+    'user_profile': jsonEncode(profile.toJson()),
+    'guidance_seen_learnFirstVisit': true,
+  });
+
+  return ProviderScope(
+    overrides: [
+      pathMetadataProvider.overrideWith(
+        (ref) => ref.watch(_deferredPathMetadataProvider),
+      ),
+      spacedRepetitionProvider.overrideWith(
+        (ref) => _FrozenSpacedRepetitionNotifier(ref, dueCards: 0),
       ),
     ],
     child: const MaterialApp(home: TabNavigator()),
@@ -242,11 +266,11 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('Learn first path stays clear of bottom dock on phone width', (
+    testWidgets('Learn auto-scroll keeps learning paths above bottom dock', (
       tester,
     ) async {
-      tester.view.physicalSize = const Size(390, 844);
-      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
       addTearDown(() {
         tester.view.resetPhysicalSize();
         tester.view.resetDevicePixelRatio();
@@ -256,9 +280,42 @@ void main() {
       await _advance(tester);
 
       final learningPathsFinder = find.text('Learning Paths');
-      final firstPathFinder = find.text('The Nitrogen Cycle');
+      final firstPathFinder = find.text('The Nitrogen Cycle').last;
       final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
       expect(learningPathsFinder, findsOneWidget);
+      expect(firstPathFinder, findsOneWidget);
+      expect(dockFinder, findsOneWidget);
+
+      final learningPathsRect = tester.getRect(learningPathsFinder);
+      final firstPathRect = tester.getRect(firstPathFinder);
+      final dockRect = tester.getRect(dockFinder);
+
+      expect(learningPathsRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(firstPathRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Learn retries first-path scroll when paths mount later', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrapWithDeferredLearnPaths(profile: _profile()));
+      await _advance(tester);
+
+      final context = tester.element(find.byType(TabNavigator));
+      ProviderScope.containerOf(context)
+          .read(_deferredPathMetadataProvider.notifier)
+          .state = LessonProvider.allPathMetadata;
+      await _advance(tester);
+
+      final firstPathFinder = find.text('The Nitrogen Cycle').last;
+      final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
       expect(firstPathFinder, findsOneWidget);
       expect(dockFinder, findsOneWidget);
 

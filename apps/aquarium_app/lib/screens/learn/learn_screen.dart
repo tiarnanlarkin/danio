@@ -39,8 +39,15 @@ class LearnScreen extends ConsumerStatefulWidget {
 }
 
 class _LearnScreenState extends ConsumerState<LearnScreen> {
+  static const double _firstPathDockMargin = 12;
+  static const int _firstPathScrollMaxAttempts = 8;
+  static const Duration _firstPathScrollRetryDelay = Duration(
+    milliseconds: 120,
+  );
+
   final ScrollController _scrollController = ScrollController();
   bool _hasScrolledToFirstLesson = false;
+  bool _firstPathScrollScheduled = false;
   bool _showTooltip = true;
   final GlobalKey _firstPathKey = GlobalKey();
 
@@ -68,43 +75,93 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   /// Auto-scroll to first lesson module on first visit (no completed lessons).
   void _maybeScrollToFirstLesson(UserProfile? userProfile) {
     if (_hasScrolledToFirstLesson) return;
+    if (_firstPathScrollScheduled) return;
     if (userProfile == null) return;
     if (userProfile.completedLessons.isNotEmpty) return;
 
-    _hasScrolledToFirstLesson = true;
+    _scheduleFirstPathScroll(duration: const Duration(milliseconds: 600));
+  }
+
+  void _scheduleFirstPathScroll({
+    required Duration duration,
+    int attempt = 0,
+  }) {
+    if (attempt == 0) {
+      if (_firstPathScrollScheduled) return;
+      _firstPathScrollScheduled = true;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_scrollController.hasClients) return;
+      if (!mounted) return;
+
       final keyContext = _firstPathKey.currentContext;
-      if (keyContext != null) {
-        Scrollable.ensureVisible(
-          keyContext,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.easeOutCubic,
-        );
-      } else {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted || !_scrollController.hasClients) return;
-          final retryContext = _firstPathKey.currentContext;
-          if (retryContext != null) {
-            Scrollable.ensureVisible(
-              retryContext,
-              duration: const Duration(milliseconds: 600),
-              curve: Curves.easeOutCubic,
-            );
-          }
-        });
+      final settled =
+          keyContext != null &&
+          _scrollFirstPathAboveFloatingDock(keyContext, duration: duration);
+
+      if (settled) {
+        _hasScrolledToFirstLesson = true;
+        _firstPathScrollScheduled = false;
+        return;
       }
+
+      if (attempt >= _firstPathScrollMaxAttempts) {
+        _firstPathScrollScheduled = false;
+        return;
+      }
+
+      Future<void>.delayed(duration + _firstPathScrollRetryDelay, () {
+        if (!mounted) return;
+        _scheduleFirstPathScroll(duration: duration, attempt: attempt + 1);
+      });
     });
   }
 
-  void _scrollToLearningPaths() {
-    final keyContext = _firstPathKey.currentContext;
-    if (keyContext == null) return;
-    Scrollable.ensureVisible(
-      keyContext,
-      duration: const Duration(milliseconds: 500),
+  bool _scrollFirstPathAboveFloatingDock(
+    BuildContext targetContext, {
+    required Duration duration,
+  }) {
+    if (!_scrollController.hasClients) return false;
+    final renderObject = targetContext.findRenderObject();
+    if (renderObject is! RenderBox || !renderObject.hasSize) {
+      return false;
+    }
+
+    final mediaQuery = MediaQuery.maybeOf(context);
+    if (mediaQuery == null) {
+      return false;
+    }
+
+    final targetBottom = renderObject
+        .localToGlobal(Offset(0, renderObject.size.height))
+        .dy;
+    final clearBottom =
+        mediaQuery.size.height -
+        mediaQuery.viewPadding.bottom -
+        DanioBottomDock.contentClearance -
+        _firstPathDockMargin;
+    final overlap = targetBottom - clearBottom;
+    if (overlap <= 0) {
+      return true;
+    }
+
+    final position = _scrollController.position;
+    final targetOffset = (position.pixels + overlap).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
+    if ((targetOffset - position.pixels).abs() < 0.5) return true;
+
+    position.animateTo(
+      targetOffset,
+      duration: duration,
       curve: Curves.easeOutCubic,
     );
+    return false;
+  }
+
+  void _scrollToLearningPaths() {
+    _scheduleFirstPathScroll(duration: const Duration(milliseconds: 500));
   }
 
   ({PathMetadata path, String lessonId})? _nextLessonTarget(
@@ -573,7 +630,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
                         // Learning paths header with overall progress
                         SliverToBoxAdapter(
-                          key: _firstPathKey,
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(
                               AppSpacing.md,
@@ -667,6 +723,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                 index == 0 && completedLessons == 0;
 
                             return Padding(
+                              key: index == 0 ? _firstPathKey : null,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppSpacing.md,
                                 vertical: AppSpacing.sm,

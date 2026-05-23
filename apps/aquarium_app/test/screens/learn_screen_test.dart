@@ -80,5 +80,24 @@ void main() {
       expect(source, isNot(contains('Coming Soon')));
       expect(source, isNot(contains('coming soon')));
     });
+
+    test(
+      'first-visit scroll clears learning paths above the floating dock',
+      () {
+        final source = File(
+          'lib/screens/learn/learn_screen.dart',
+        ).readAsStringSync();
+
+        expect(source, contains('_scrollFirstPathAboveFloatingDock'));
+        expect(source, contains('DanioBottomDock.contentClearance'));
+        expect(source, contains('targetBottom - clearBottom'));
+        expect(source, contains('position.pixels + overlap'));
+        expect(source, contains('position.animateTo'));
+        expect(
+          source,
+          matches(RegExp(r'position\.animateTo\([\s\S]*?\);\s*return false;')),
+        );
+      },
+    );
   });
 }
