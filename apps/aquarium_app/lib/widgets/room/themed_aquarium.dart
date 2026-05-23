@@ -52,7 +52,7 @@ class ThemedAquarium extends StatelessWidget {
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x1A000000), // 10% black — outer shadow
+            color: AppColors.blackAlpha10, // 10% black — outer shadow
             blurRadius: 12,
             offset: Offset(0, 4),
           ),
