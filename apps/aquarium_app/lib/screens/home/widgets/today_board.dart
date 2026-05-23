@@ -107,24 +107,20 @@ class TodayBoardCard extends ConsumerWidget {
 
     // Pick the best next action
     final int targetTab;
-    final String emoji;
     final String label;
     final IconData icon;
 
     if (hasCardsToReview) {
       targetTab = 1; // Practice
-      emoji = '🧠';
-      label = 'Practice due reviews';
+      label = 'Reviews are ready';
       icon = Icons.quiz;
     } else if (totalCards > 0) {
       targetTab = 0; // Learn
-      emoji = '📖';
-      label = 'Browse new lessons';
+      label = 'No tank tasks today · Browse new lessons';
       icon = Icons.auto_stories;
     } else {
       targetTab = 0; // Learn
-      emoji = '🐠';
-      label = 'Explore the fish encyclopedia';
+      label = 'No tank tasks today · Explore the fish encyclopedia';
       icon = Icons.menu_book;
     }
 
@@ -150,9 +146,7 @@ class TodayBoardCard extends ConsumerWidget {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
-                  hasCardsToReview
-                      ? 'Tasks done — $emoji reviews waiting!'
-                      : 'All caught up! $emoji $label',
+                  label,
                   style: AppTypography.labelMedium.copyWith(
                     color: context.textSecondary,
                   ),
