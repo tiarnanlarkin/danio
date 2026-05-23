@@ -83,7 +83,7 @@ class BrassMedallion extends StatelessWidget {
                     color: _ink,
                     fontWeight: FontWeight.w800,
                     fontSize: 20,
-                    letterSpacing: -0.5,
+                    letterSpacing: 0,
                   ),
                 ),
                 if (unit.isNotEmpty)

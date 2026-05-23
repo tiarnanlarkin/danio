@@ -61,8 +61,10 @@ class _BrassGaugeState extends State<BrassGauge>
   double? _targetFraction() {
     final t = widget.temp;
     if (t == null) return null;
-    return ((t - widget.gaugeMin) / (widget.gaugeMax - widget.gaugeMin))
-        .clamp(0.0, 1.0);
+    return ((t - widget.gaugeMin) / (widget.gaugeMax - widget.gaugeMin)).clamp(
+      0.0,
+      1.0,
+    );
   }
 
   @override
@@ -99,7 +101,7 @@ class _BrassGaugeState extends State<BrassGauge>
                 color: const Color(0xFF2D3436),
                 fontWeight: FontWeight.w800,
                 fontSize: 32,
-                letterSpacing: -1.0,
+                letterSpacing: 0,
               ),
             ),
           ],
