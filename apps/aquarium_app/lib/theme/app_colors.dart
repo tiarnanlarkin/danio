@@ -92,7 +92,7 @@ class AppColors {
   // Alpha hex values reference:
   // 0.05 = 0x0D, 0.08 = 0x14, 0.10 = 0x1A, 0.12 = 0x1F, 0.15 = 0x26,
   // 0.20 = 0x33, 0.25 = 0x40, 0.30 = 0x4D, 0.35 = 0x59, 0.40 = 0x66,
-  // 0.50 = 0x80, 0.60 = 0x99, 0.70 = 0xB3, 0.80 = 0xCC, 0.85 = 0xD9,
+  // 0.50 = 0x80, 0.60 = 0x99, 0.65 = 0xA6, 0.70 = 0xB3, 0.80 = 0xCC, 0.85 = 0xD9,
   // 0.90 = 0xE6, 0.95 = 0xF2
   //
   // ============================================================================
@@ -122,6 +122,7 @@ class AppColors {
   static const Color whiteAlpha40 = Color(0x66FFFFFF);
   static const Color whiteAlpha50 = Color(0x80FFFFFF);
   static const Color whiteAlpha60 = Color(0x99FFFFFF);
+  static const Color whiteAlpha65 = Color(0xA6FFFFFF);
   static const Color whiteAlpha70 = Color(0xB3FFFFFF);
   static const Color whiteAlpha80 = Color(0xCCFFFFFF);
   static const Color whiteAlpha85 = Color(0xD9FFFFFF);

@@ -144,15 +144,15 @@ class _EmptyTankOutline extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         // Faint white fill so the glass reads against any background.
-        color: const Color(0x26FFFFFF),
+        color: AppColors.whiteAlpha15,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: const Color(0xB3FFFFFF),
+          color: AppColors.whiteAlpha70,
           width: 3,
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x40000000),
+            color: AppColors.blackAlpha25,
             blurRadius: 20,
             offset: Offset(0, 8),
           ),
@@ -165,13 +165,13 @@ class _EmptyTankOutline extends StatelessWidget {
             Icon(
               Icons.water_drop_outlined,
               size: 52,
-              color: Colors.white.withValues(alpha: 0.65),
+              color: AppColors.whiteAlpha65,
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               'your tank',
               style: AppTypography.bodySmall.copyWith(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: AppColors.whiteAlpha70,
                 letterSpacing: 1.2,
               ),
             ),
@@ -206,7 +206,7 @@ class _ContentPanel extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: Color(0x1A000000),
+            color: AppColors.blackAlpha10,
             blurRadius: 18,
             offset: Offset(0, -4),
           ),
