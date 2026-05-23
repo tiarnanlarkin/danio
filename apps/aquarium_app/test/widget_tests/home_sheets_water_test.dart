@@ -35,5 +35,16 @@ void main() {
       expect(find.text('No test results yet'), findsOneWidget);
       expect(find.textContaining('No test results yet 🧪'), findsNothing);
     });
+
+    testWidgets('support headings use plain text without emoji prefixes', (
+      tester,
+    ) async {
+      await _openSheet(tester);
+
+      expect(find.text('Ideal Ranges (Freshwater)'), findsOneWidget);
+      expect(find.text('What this means for your fish'), findsOneWidget);
+      expect(find.textContaining('✅'), findsNothing);
+      expect(find.textContaining('🐟'), findsNothing);
+    });
   });
 }

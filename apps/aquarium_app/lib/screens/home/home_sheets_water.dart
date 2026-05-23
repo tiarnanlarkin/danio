@@ -32,7 +32,7 @@ void showWaterParams(
         Center(
           child: Column(
             children: [
-              const Text('\u{1F9EA}', style: TextStyle(fontSize: 40)),
+              Icon(Icons.science, size: 40, color: AppColors.accent),
               const SizedBox(height: AppSpacing.sm),
               Semantics(
                 header: true,
@@ -57,7 +57,7 @@ void showWaterParams(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '\u{2705} Ideal Ranges (Freshwater)',
+                'Ideal Ranges (Freshwater)',
                 style: AppTypography.labelMedium.copyWith(
                   color: AppColors.accent,
                   fontWeight: FontWeight.w600,
@@ -128,7 +128,7 @@ void showWaterParams(
         ],
         const SizedBox(height: AppSpacing.md),
         Text(
-          '\u{1F41F} What this means for your fish',
+          'What this means for your fish',
           style: AppTypography.labelMedium.copyWith(
             fontWeight: FontWeight.w600,
           ),
