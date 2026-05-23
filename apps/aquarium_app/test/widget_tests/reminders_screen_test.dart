@@ -75,6 +75,17 @@ void main() {
       );
     });
 
+    testWidgets('empty state title uses iconography instead of raw emoji text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.byIcon(Icons.notifications_none), findsWidgets);
+      expect(find.text('Never miss a thing!'), findsOneWidget);
+      expect(find.textContaining('Never miss a thing! 🔔'), findsNothing);
+    });
+
     testWidgets('shows reminder when data exists in prefs', (tester) async {
       // Use full JSON matching _Reminder.fromJson schema
       SharedPreferences.setMockInitialValues({
