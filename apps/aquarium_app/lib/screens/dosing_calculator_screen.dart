@@ -94,7 +94,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                     const SizedBox(width: AppSpacing.sm),
                     const Expanded(
                       child: Text(
-                        'This calculator is for fertiliser dosing only. Do not use for medications — always follow manufacturer instructions for medication dosing.',
+                        'This calculator is for liquid aquarium products with label directions in ml per volume. Do not use for medications - always follow manufacturer instructions for medication dosing.',
                         style: TextStyle(
                           color: Color(0xFF7B5800),
                           fontWeight: FontWeight.w600,
@@ -267,8 +267,11 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
 
                 const SizedBox(height: AppSpacing.lg),
 
-                // Common products
-                Text('Common Products', style: AppTypography.headlineSmall),
+                // Common liquid products
+                Text(
+                  'Common Liquid Products',
+                  style: AppTypography.headlineSmall,
+                ),
                 const SizedBox(height: AppSpacing.sm2),
                 _ProductPreset(
                   name: 'Seachem Prime',

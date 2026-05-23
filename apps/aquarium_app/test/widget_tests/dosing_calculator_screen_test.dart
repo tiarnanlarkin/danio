@@ -77,6 +77,15 @@ void main() {
 
       expect(renderedText, isEmpty);
     });
+
+    testWidgets('safety copy matches liquid product presets', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('liquid aquarium products'), findsOneWidget);
+      expect(find.textContaining('Do not use for medications'), findsOneWidget);
+      expect(find.textContaining('fertiliser dosing only'), findsNothing);
+    });
   });
 
   group('DosingCalculatorScreen — calculation', () {
@@ -109,7 +118,9 @@ void main() {
       expect(find.text('Dose rate'), findsOneWidget);
     });
 
-    testWidgets('shows common products after volume entered', (tester) async {
+    testWidgets('shows common liquid products after volume entered', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
@@ -120,7 +131,7 @@ void main() {
       await tester.enterText(volumeField, '100');
       await tester.pump();
 
-      expect(find.text('Common Products'), findsOneWidget);
+      expect(find.text('Common Liquid Products'), findsOneWidget);
       expect(find.text('Seachem Prime'), findsOneWidget);
       expect(find.text('Easy Green (Aquarium Co-Op)'), findsOneWidget);
     });
