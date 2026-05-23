@@ -54,6 +54,29 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('safety warning uses an icon instead of raw emoji text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+
+      final emoji = RegExp(
+        r'[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]',
+        unicode: true,
+      );
+      final renderedText = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((widget) {
+            return widget.data ?? widget.textSpan?.toPlainText() ?? '';
+          })
+          .where(emoji.hasMatch)
+          .toList();
+
+      expect(renderedText, isEmpty);
+    });
   });
 
   group('DosingCalculatorScreen — calculation', () {

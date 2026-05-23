@@ -85,7 +85,12 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('⚠️', style: TextStyle(fontSize: 20)),
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      color: Color(0xFF7B5800),
+                      size: 22,
+                      semanticLabel: 'Safety warning',
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     const Expanded(
                       child: Text(
