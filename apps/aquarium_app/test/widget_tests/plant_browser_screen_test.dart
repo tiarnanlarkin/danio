@@ -14,11 +14,7 @@ import 'package:danio/screens/plant_browser_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(
-      home: PlantBrowserScreen(),
-    ),
-  );
+  return const ProviderScope(child: MaterialApp(home: PlantBrowserScreen()));
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -68,6 +64,22 @@ void main() {
       // Difficulty chips: Easy, Medium, Hard — 'Easy' appears in chips and plant cards
       expect(find.text('Easy'), findsWidgets);
       expect(find.text('Medium'), findsWidgets);
+    });
+
+    testWidgets('empty search state explains no matches', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'no_such_plant_zz');
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      expect(find.text('No matches'), findsOneWidget);
+      expect(
+        find.text('Try a different plant name or clear filters'),
+        findsOneWidget,
+      );
+      expect(find.byIcon(Icons.search_off), findsOneWidget);
     });
   });
 }

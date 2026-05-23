@@ -10,6 +10,7 @@ import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
+
 class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});
 
@@ -158,14 +159,37 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
 
           // List
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: plants.length,
-              itemBuilder: (ctx, i) => _PlantCard(
-                plant: plants[i],
-                onTap: () => _showPlantDetail(context, plants[i]),
-              ),
-            ),
+            child: plants.isEmpty && _searchQuery.isNotEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 48,
+                          color: context.textHint,
+                        ),
+                        const SizedBox(height: AppSpacing.sm2),
+                        Text('No matches', style: AppTypography.titleMedium),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Try a different plant name or clear filters',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: context.textHint,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    itemCount: plants.length,
+                    itemBuilder: (ctx, i) => _PlantCard(
+                      plant: plants[i],
+                      onTap: () => _showPlantDetail(context, plants[i]),
+                    ),
+                  ),
           ),
         ],
       ),
