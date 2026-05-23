@@ -228,6 +228,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         }
       },
       child: GestureDetector(
+        excludeFromSemantics: true,
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
           appBar: AppBar(

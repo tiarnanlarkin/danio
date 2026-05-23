@@ -62,6 +62,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      excludeFromSemantics: true,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(title: const Text('Dosing Calculator')),

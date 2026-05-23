@@ -114,6 +114,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           ),
         ),
         body: GestureDetector(
+          excludeFromSemantics: true,
           behavior: HitTestBehavior.translucent,
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: FocusTraversalGroup(

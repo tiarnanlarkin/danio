@@ -42,6 +42,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final tanksAsync = ref.watch(tanksProvider);
 
     return GestureDetector(
+      excludeFromSemantics: true,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(
@@ -54,11 +55,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               filled: false,
             ),
             onChanged: (value) {
-                _debounce?.cancel();
-                _debounce = Timer(kDebounceDuration, () {
-                  setState(() => _query = value.toLowerCase());
-                });
-              },
+              _debounce?.cancel();
+              _debounce = Timer(kDebounceDuration, () {
+                setState(() => _query = value.toLowerCase());
+              });
+            },
           ),
           actions: [
             if (_query.isNotEmpty)
@@ -302,62 +303,60 @@ class _SearchResults extends StatelessWidget {
       minSize: 0.5,
       maxSize: 0.95,
       builder: (_, scrollController) => SingleChildScrollView(
-          controller: scrollController,
-          padding: const EdgeInsets.all(AppSpacing.lg2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: context.textHint,
-                    borderRadius: AppRadius.xxsRadius,
-                  ),
+        controller: scrollController,
+        padding: const EdgeInsets.all(AppSpacing.lg2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: context.textHint,
+                  borderRadius: AppRadius.xxsRadius,
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg2),
-              Text(species.commonName, style: AppTypography.headlineMedium),
-              Text(
-                species.scientificName,
-                style: AppTypography.bodyMedium.copyWith(
-                  fontStyle: FontStyle.italic,
-                ),
+            ),
+            const SizedBox(height: AppSpacing.lg2),
+            Text(species.commonName, style: AppTypography.headlineMedium),
+            Text(
+              species.scientificName,
+              style: AppTypography.bodyMedium.copyWith(
+                fontStyle: FontStyle.italic,
               ),
-              const SizedBox(height: AppSpacing.md),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _InfoChip(label: species.careLevel),
-                  _InfoChip(label: species.temperament),
-                  _InfoChip(
-                    label: '${species.adultSizeCm.toStringAsFixed(0)}cm',
-                  ),
-                  _InfoChip(label: species.family),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(species.description, style: AppTypography.bodyLarge),
-              const SizedBox(height: AppSpacing.md),
-              Text('Parameters', style: AppTypography.headlineSmall),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                'Temperature: ${species.minTempC}-${species.maxTempC}°C\n'
-                'pH: ${species.minPh}-${species.maxPh}\n'
-                'Min tank: ${species.minTankLitres.toStringAsFixed(0)}L\n'
-                'School size: ${species.minSchoolSize}+',
-                style: AppTypography.bodyMedium,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text('Diet', style: AppTypography.headlineSmall),
-              const SizedBox(height: AppSpacing.sm),
-              Text(species.diet, style: AppTypography.bodyMedium),
-              const SizedBox(height: AppSpacing.lg),
-            ],
-          ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _InfoChip(label: species.careLevel),
+                _InfoChip(label: species.temperament),
+                _InfoChip(label: '${species.adultSizeCm.toStringAsFixed(0)}cm'),
+                _InfoChip(label: species.family),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(species.description, style: AppTypography.bodyLarge),
+            const SizedBox(height: AppSpacing.md),
+            Text('Parameters', style: AppTypography.headlineSmall),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Temperature: ${species.minTempC}-${species.maxTempC}°C\n'
+              'pH: ${species.minPh}-${species.maxPh}\n'
+              'Min tank: ${species.minTankLitres.toStringAsFixed(0)}L\n'
+              'School size: ${species.minSchoolSize}+',
+              style: AppTypography.bodyMedium,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text('Diet', style: AppTypography.headlineSmall),
+            const SizedBox(height: AppSpacing.sm),
+            Text(species.diet, style: AppTypography.bodyMedium),
+            const SizedBox(height: AppSpacing.lg),
+          ],
         ),
+      ),
     );
   }
 }

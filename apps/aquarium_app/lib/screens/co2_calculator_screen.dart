@@ -94,6 +94,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      excludeFromSemantics: true,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(title: const Text('CO2 Calculator')),
@@ -141,7 +142,9 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
               controller: _phController,
               label: 'pH',
               hint: '0.1 – 14.0',
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
               ],
@@ -154,7 +157,9 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
               controller: _khController,
               label: 'KH (dKH)',
               hint: '0.1 – 50 dKH',
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
               ],

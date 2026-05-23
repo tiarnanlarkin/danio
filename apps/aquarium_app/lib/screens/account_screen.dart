@@ -46,6 +46,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final theme = Theme.of(context);
 
     return GestureDetector(
+      excludeFromSemantics: true,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: PopScope(
         canPop:

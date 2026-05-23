@@ -134,6 +134,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      excludeFromSemantics: true,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(
