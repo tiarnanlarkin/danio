@@ -324,7 +324,7 @@ class _SheetHeader extends StatelessWidget {
           controller: tabController,
           indicatorColor: Colors.transparent,
           dividerColor: Colors.transparent,
-          labelColor: Colors.white,
+          labelColor: AppColors.whiteAlpha95,
           unselectedLabelColor: AppColors.whiteAlpha70,
           labelStyle: AppTypography.labelMedium.copyWith(
             fontWeight: FontWeight.w600,

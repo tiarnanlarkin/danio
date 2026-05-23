@@ -1,4 +1,5 @@
 import 'package:danio/theme/room_themes.dart';
+import 'package:danio/theme/app_theme.dart';
 import 'package:danio/widgets/danio_bottom_dock.dart';
 import 'package:danio/widgets/stage/bottom_sheet_panel.dart';
 import 'package:danio/widgets/stage/stage_provider.dart';
@@ -6,6 +7,7 @@ import 'package:danio/widgets/stage/swiss_army_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group('SwissArmyPanel glass frame (concept lock 2026-04-07)', () {
@@ -101,6 +103,10 @@ void main() {
   });
 
   group('BottomSheetPanel snap contract', () {
+    setUp(() {
+      SharedPreferences.setMockInitialValues({'hasSeenSheetHint': true});
+    });
+
     test('supports closed, peek, half, and full snap states', () {
       expect(BottomSheetPanel.kSnapClosed, closeTo(0.055, 0.005));
       expect(
@@ -248,6 +254,42 @@ void main() {
         find.byKey(const ValueKey('danio-stage-sheet-tab-row')),
         findsNothing,
       );
+    });
+
+    testWidgets('open Tank sheet tab labels use glass colour tokens', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: Stack(
+                children: [
+                  BottomSheetPanel(
+                    progressContent: SizedBox(),
+                    tanksContent: SizedBox(),
+                    todayContent: SizedBox(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.drag(
+        find.byKey(const ValueKey('danio-stage-sheet-nib-hit-target')),
+        const Offset(0, -500),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
+
+      final tabBar = tester.widget<TabBar>(
+        find.byKey(const ValueKey('danio-stage-sheet-tab-row')),
+      );
+      expect(tabBar.labelColor, AppColors.whiteAlpha95);
+      expect(tabBar.unselectedLabelColor, AppColors.whiteAlpha70);
     });
   });
 }
