@@ -229,7 +229,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
                         child: Text(
                           '+10 XP',
                           style: Theme.of(context).textTheme.headlineLarge
-                              ?.copyWith(color: AppColors.onboardingWarmCream),
+                              ?.copyWith(color: DanioMaterials.espressoBase),
                         ),
                       ),
                     ),

@@ -9,17 +9,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/onboarding/xp_celebration_screen.dart';
+import 'package:danio/theme/app_theme.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 Widget _wrap({VoidCallback? onNext}) {
-  return MaterialApp(
-    home: XpCelebrationScreen(
-      onNext: onNext ?? () {},
-    ),
-  );
+  return MaterialApp(home: XpCelebrationScreen(onNext: onNext ?? () {}));
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -51,6 +48,21 @@ void main() {
       expect(find.textContaining('10'), findsWidgets);
     });
 
+    testWidgets('XP badge text has accessible contrast on amber badge', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final xpText = tester.widget<Text>(find.text('+10 XP'));
+      final textColor = xpText.style?.color;
+      expect(textColor, isNotNull);
+      expect(
+        _contrastRatio(textColor!, AppColors.onboardingAmber),
+        greaterThanOrEqualTo(4.5),
+      );
+    });
+
     testWidgets('displays XP or celebration related text', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
@@ -61,8 +73,9 @@ void main() {
       expect(find.byType(Text), findsWidgets);
     });
 
-    testWidgets('has animation controllers that complete without errors',
-        (tester) async {
+    testWidgets('has animation controllers that complete without errors', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       // Advance through all animation stages
       await tester.pump();
@@ -102,4 +115,16 @@ void main() {
       expect(screenSource, isNot(contains('Color(0xFFFFD54F)')));
     });
   });
+}
+
+double _contrastRatio(Color foreground, Color background) {
+  final foregroundLuminance = foreground.computeLuminance();
+  final backgroundLuminance = background.computeLuminance();
+  final lighter = foregroundLuminance > backgroundLuminance
+      ? foregroundLuminance
+      : backgroundLuminance;
+  final darker = foregroundLuminance > backgroundLuminance
+      ? backgroundLuminance
+      : foregroundLuminance;
+  return (lighter + 0.05) / (darker + 0.05);
 }
