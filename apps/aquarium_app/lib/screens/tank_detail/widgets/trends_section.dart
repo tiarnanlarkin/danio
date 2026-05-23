@@ -34,7 +34,7 @@ class TrendsRow extends StatelessWidget {
               Text('Trends', style: AppTypography.headlineSmall),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'No trends yet — log a few water tests to see patterns!',
+                'No trends yet. Log a few water tests to see patterns.',
                 style: AppTypography.bodyMedium,
               ),
             ],
@@ -65,13 +65,10 @@ class TrendsRow extends StatelessWidget {
               children: [
                 Text('Trends', style: AppTypography.headlineSmall),
                 const Spacer(),
-                Text(
-                  () {
-                    final n = tests.length.clamp(0, 50);
-                    return 'last $n ${n == 1 ? 'test' : 'tests'}';
-                  }(),
-                  style: AppTypography.bodySmall,
-                ),
+                Text(() {
+                  final n = tests.length.clamp(0, 50);
+                  return 'last $n ${n == 1 ? 'test' : 'tests'}';
+                }(), style: AppTypography.bodySmall),
               ],
             ),
             const SizedBox(height: AppSpacing.sm2),
@@ -191,29 +188,29 @@ class SparklineCard extends StatelessWidget {
     return Semantics(
       button: true,
       child: InkWell(
-      onTap: onTap,
-      borderRadius: AppRadius.mediumRadius,
-      child: Container(
-        width: 110,
-        padding: const EdgeInsets.all(AppSpacing.sm2),
-        decoration: BoxDecoration(
-          color: context.surfaceVariant,
-          borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppOverlays.surfaceVariant60),
+        onTap: onTap,
+        borderRadius: AppRadius.mediumRadius,
+        child: Container(
+          width: 110,
+          padding: const EdgeInsets.all(AppSpacing.sm2),
+          decoration: BoxDecoration(
+            color: context.surfaceVariant,
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(color: AppOverlays.surfaceVariant60),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(_label(), style: AppTypography.labelLarge),
+              const SizedBox(height: AppSpacing.sm),
+              Expanded(
+                child: values.length < 2
+                    ? Center(child: Text('-', style: AppTypography.bodySmall))
+                    : MiniSparkline(values: values, color: _color()),
+              ),
+            ],
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(_label(), style: AppTypography.labelLarge),
-            const SizedBox(height: AppSpacing.sm),
-            Expanded(
-              child: values.length < 2
-                  ? Center(child: Text('-', style: AppTypography.bodySmall))
-                  : MiniSparkline(values: values, color: _color()),
-            ),
-          ],
-        ),
-      ),
       ),
     );
   }

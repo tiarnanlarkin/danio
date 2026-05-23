@@ -307,11 +307,11 @@ class TankDetailScreen extends ConsumerWidget {
     navigator.pop();
 
     // Show SnackBar with undo action (5 seconds).
-    // Use the pre-captured `messenger` — `context` belongs to the
+    // Use the pre-captured `messenger`; `context` belongs to the
     // TankDetailScreen route that has already been popped and is deactivated.
     // Calling AppFeedback.showSuccess(context, ...) after pop() would throw
     // "Looking up a deactivated widget's ancestor is unsafe".
-    // Use pre-captured messenger — this route is already popped.
+    // Use pre-captured messenger; this route is already popped.
     AppFeedback.showNeutralViaMessenger(
       messenger,
       '${tank.name} deleted',
@@ -320,7 +320,7 @@ class TankDetailScreen extends ConsumerWidget {
       onAction: () {
         // Restore the tank
         actions.undoDeleteTank(tankId);
-        // Use the ancestor messenger directly — the detail route is gone.
+        // Use the ancestor messenger directly; the detail route is gone.
         AppFeedback.showSuccessViaMessenger(messenger, '${tank.name} restored');
       },
     );
@@ -433,7 +433,10 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.checklist, color: AppColors.onPrimary),
+                      icon: const Icon(
+                        Icons.checklist,
+                        color: AppColors.onPrimary,
+                      ),
                       tooltip: 'Checklist',
                       onPressed: () => NavigationThrottle.push(
                         context,
@@ -466,7 +469,10 @@ class TankDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.show_chart, color: AppColors.onPrimary),
+                      icon: const Icon(
+                        Icons.show_chart,
+                        color: AppColors.onPrimary,
+                      ),
                       tooltip: 'Charts',
                       onPressed: () => NavigationThrottle.push(
                         context,
@@ -474,7 +480,10 @@ class TankDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert, color: AppColors.onPrimary),
+                      icon: const Icon(
+                        Icons.more_vert,
+                        color: AppColors.onPrimary,
+                      ),
                       onSelected: (value) {
                         switch (value) {
                           case 'settings':
@@ -563,35 +572,39 @@ class TankDetailScreen extends ConsumerWidget {
                       label: 'Demo tank banner. Tap to create your own tank',
                       button: true,
                       child: GestureDetector(
-                      onTap: () => AppRoutes.toCreateTank(context),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm2,
-                        ),
-                        color: DanioColors.amberText.withValues(alpha: 0.15),
-                        child: Row(
-                          children: [
-                            const Text('🐠', style: TextStyle(fontSize: 18)),
-                            const SizedBox(width: AppSpacing.sm),
-                            Expanded(
-                              child: Text(
-                                'Demo Tank — Tap here to create your own',
-                                style: AppTypography.labelMedium.copyWith(
-                                  color: DanioColors.amberText,
-                                  fontWeight: FontWeight.w600,
+                        onTap: () => AppRoutes.toCreateTank(context),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm2,
+                          ),
+                          color: DanioColors.amberText.withValues(alpha: 0.15),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 18,
+                                color: DanioColors.amberText,
+                              ),
+                              const SizedBox(width: AppSpacing.sm),
+                              Expanded(
+                                child: Text(
+                                  'Demo tank - tap here to create your own',
+                                  style: AppTypography.labelMedium.copyWith(
+                                    color: DanioColors.amberText,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 14,
-                              color: DanioColors.amberText,
-                            ),
-                          ],
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 14,
+                                color: DanioColors.amberText,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                       ),
                     ),
                   ),
@@ -624,7 +637,7 @@ class TankDetailScreen extends ConsumerWidget {
                           const DashboardLoadingCard(title: 'Health'),
                       error: (e, _) => Center(
                         child: Text(
-                          'Couldn\'t load health data — try refreshing!',
+                          'Couldn\'t load health data. Try refreshing.',
                           style: AppTypography.bodyMedium.copyWith(
                             color: context.textHint,
                           ),
@@ -852,11 +865,11 @@ class TankDetailScreen extends ConsumerWidget {
                         label: 'Cycling status. Tap for cycling assistant',
                         button: true,
                         child: GestureDetector(
-                        onTap: () => NavigationThrottle.push(
-                          context,
-                          CyclingAssistantScreen(tankId: tank.id),
-                        ),
-                        child: CyclingStatusCard(tank: tank, logs: logs),
+                          onTap: () => NavigationThrottle.push(
+                            context,
+                            CyclingAssistantScreen(tankId: tank.id),
+                          ),
+                          child: CyclingStatusCard(tank: tank, logs: logs),
                         ),
                       ),
                     ),
@@ -1156,7 +1169,7 @@ class TankDetailScreen extends ConsumerWidget {
 
     if (context.mounted) {
       AppHaptics.success();
-      AppFeedback.showSuccess(context, 'Feeding logged! 🐟');
+      AppFeedback.showSuccess(context, 'Feeding logged.');
     }
   }
 

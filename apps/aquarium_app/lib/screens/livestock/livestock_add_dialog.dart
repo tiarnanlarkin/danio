@@ -55,7 +55,8 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
       text: widget.existing?.commonName ?? widget.prefillCommonName ?? '',
     );
     _scientificController = TextEditingController(
-      text: widget.existing?.scientificName ?? widget.prefillScientificName ?? '',
+      text:
+          widget.existing?.scientificName ?? widget.prefillScientificName ?? '',
     );
     _countController = TextEditingController(
       text: widget.existing?.count.toString() ?? '1',
@@ -115,7 +116,8 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
           left: AppSpacing.md,
           right: AppSpacing.md,
           top: AppSpacing.md,
-          bottom: max(
+          bottom:
+              max(
                 MediaQuery.of(context).viewInsets.bottom,
                 MediaQuery.of(context).viewPadding.bottom,
               ) +
@@ -203,10 +205,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
                             color: AppColors.primary,
                           ),
                           const SizedBox(width: AppSpacing.xs2),
-                          Text(
-                            'Species Info',
-                            style: AppTypography.labelLarge,
-                          ),
+                          Text('Species Info', style: AppTypography.labelLarge),
                         ],
                       ),
                       const SizedBox(height: AppSpacing.xs2),
@@ -216,7 +215,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
                       ),
                       if (_selectedSpecies!.minSchoolSize > 1)
                         Text(
-                          'Schooling fish — keep ${_selectedSpecies!.minSchoolSize}+ together',
+                          'Schooling fish - keep ${_selectedSpecies!.minSchoolSize}+ together',
                           style: AppTypography.bodySmall.copyWith(
                             color: context.textSecondary,
                           ),
@@ -238,7 +237,8 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
               AppTextField(
                 controller: _countController,
                 label: 'Count *',
-                hint: _selectedSpecies != null &&
+                hint:
+                    _selectedSpecies != null &&
                         _selectedSpecies!.minSchoolSize > 1
                     ? 'Recommended: ${_selectedSpecies!.minSchoolSize}+'
                     : 'How many?',

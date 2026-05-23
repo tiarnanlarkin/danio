@@ -146,8 +146,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                           left: AppSpacing.md,
                           right: AppSpacing.md,
                         ),
-                        sliver:
-                            SliverToBoxAdapter(child: SizedBox.shrink()),
+                        sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
 
                       // Summary card (when not in select mode)
@@ -175,8 +174,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                         children: [
                                           Text(
                                             '$totalCount total',
-                                            style:
-                                                AppTypography.headlineMedium,
+                                            style: AppTypography.headlineMedium,
                                           ),
                                           Text(
                                             '${livestock.length} species',
@@ -195,9 +193,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                     ],
                                   ),
                                   // Last fed info
-                                  LivestockLastFedInfo(
-                                    tankId: widget.tankId,
-                                  ),
+                                  LivestockLastFedInfo(tankId: widget.tankId),
                                 ],
                               ),
                             ),
@@ -206,8 +202,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       if (!_isSelectMode)
                         const SliverPadding(
                           padding: EdgeInsets.only(top: AppSpacing.md),
-                          sliver:
-                              SliverToBoxAdapter(child: SizedBox.shrink()),
+                          sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                         ),
 
                       // Selection info banner (when in select mode)
@@ -267,8 +262,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       if (_isSelectMode)
                         const SliverPadding(
                           padding: EdgeInsets.only(top: AppSpacing.md),
-                          sliver:
-                              SliverToBoxAdapter(child: SizedBox.shrink()),
+                          sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                         ),
 
                       // Livestock list with lazy loading (SliverList.builder)
@@ -290,9 +284,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                               tank: tank,
                               allLivestock: livestock,
                               isSelectMode: _isSelectMode,
-                              isSelected: _selectedLivestockIds.contains(
-                                l.id,
-                              ),
+                              isSelected: _selectedLivestockIds.contains(l.id),
                               onTap: _isSelectMode
                                   ? () => _toggleLivestockSelection(l.id)
                                   : () => NavigationThrottle.push(
@@ -302,10 +294,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                         livestock: l,
                                       ),
                                     ),
-                              onEdit: () =>
-                                  _showEditDialog(context, ref, l),
-                              onDelete: () =>
-                                  _confirmDelete(context, ref, l),
+                              onEdit: () => _showEditDialog(context, ref, l),
+                              onDelete: () => _confirmDelete(context, ref, l),
                             );
                             if (reduceMotion) return card;
                             return card
@@ -327,8 +317,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       // Bottom padding
                       const SliverPadding(
                         padding: EdgeInsets.only(bottom: AppSpacing.md),
-                        sliver:
-                            SliverToBoxAdapter(child: SizedBox.shrink()),
+                        sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
                     ],
                   ),
@@ -352,11 +341,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       children: [
                         Expanded(
                           child: AppButton(
-                            onPressed: () => _bulkMoveLivestock(
-                              context,
-                              ref,
-                              livestock,
-                            ),
+                            onPressed: () =>
+                                _bulkMoveLivestock(context, ref, livestock),
                             label: 'Move to Tank',
                             leadingIcon: Icons.move_down,
                             isFullWidth: true,
@@ -452,7 +438,11 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         );
       }
     } catch (e, st) {
-      logError('LivestockScreen: bulk move failed: $e', stackTrace: st, tag: 'LivestockScreen');
+      logError(
+        'LivestockScreen: bulk move failed: $e',
+        stackTrace: st,
+        tag: 'LivestockScreen',
+      );
       if (context.mounted) {
         AppFeedback.showError(
           context,
@@ -511,7 +501,11 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         );
       }
     } catch (e, st) {
-      logError('LivestockScreen: livestock delete failed: $e', stackTrace: st, tag: 'LivestockScreen');
+      logError(
+        'LivestockScreen: livestock delete failed: $e',
+        stackTrace: st,
+        tag: 'LivestockScreen',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,
@@ -553,10 +547,14 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       if (context.mounted) {
         AppHaptics.success();
         ref.showXpAnimation(effectiveXp);
-        AppFeedback.showSuccess(context, 'Feeding logged! \u{1F41F}');
+        AppFeedback.showSuccess(context, 'Feeding logged.');
       }
     } catch (e, st) {
-      logError('LivestockScreen: quick feed log failed: $e', stackTrace: st, tag: 'LivestockScreen');
+      logError(
+        'LivestockScreen: quick feed log failed: $e',
+        stackTrace: st,
+        tag: 'LivestockScreen',
+      );
       if (context.mounted) {
         AppFeedback.showError(
           context,
@@ -677,7 +675,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       },
     );
 
-    // Use pre-captured messenger — context may be deactivated in callbacks.
+    // Use pre-captured messenger; context may be deactivated in callbacks.
     AppFeedback.showNeutralViaMessenger(
       messenger,
       '${livestock.count}× ${livestock.commonName} removed',
@@ -686,10 +684,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       onAction: () {
         actions.undoDeleteLivestock(livestock.id, widget.tankId);
         if (context.mounted) {
-          AppFeedback.showSuccess(
-            context,
-            '${livestock.commonName} restored',
-          );
+          AppFeedback.showSuccess(context, '${livestock.commonName} restored');
         }
       },
     );
