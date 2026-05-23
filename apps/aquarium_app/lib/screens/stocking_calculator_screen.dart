@@ -147,6 +147,28 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
     });
   }
 
+  Widget _stockingAdvice({
+    required IconData icon,
+    required Color iconColor,
+    required String semanticLabel,
+    required String text,
+    TextStyle? style,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: AppIconSizes.sm,
+          color: iconColor,
+          semanticLabel: semanticLabel,
+        ),
+        const SizedBox(width: AppSpacing.sm2),
+        Expanded(child: Text(text, style: style ?? AppTypography.bodySmall)),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -375,20 +397,30 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_stockingPercent > 100)
-                    Text(
-                      '⚠️ Overstocked: Expect frequent water changes and potential aggression.',
+                    _stockingAdvice(
+                      icon: Icons.warning_amber_rounded,
+                      iconColor: AppColors.error,
+                      semanticLabel: 'Stocking warning',
+                      text:
+                          'Overstocked: Expect frequent water changes and potential aggression.',
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.error,
                       ),
                     )
                   else if (_stockingPercent > 75)
-                    Text(
-                      '💡 Tip: Weekly water changes recommended at this stocking level.',
-                      style: AppTypography.bodySmall,
+                    _stockingAdvice(
+                      icon: Icons.info_outline,
+                      iconColor: AppColors.warning,
+                      semanticLabel: 'Stocking tip',
+                      text:
+                          'Tip: Weekly water changes recommended at this stocking level.',
                     )
                   else
-                    Text(
-                      '✓ Good stocking level with room to grow.',
+                    _stockingAdvice(
+                      icon: Icons.check_circle_outline,
+                      iconColor: AppColors.success,
+                      semanticLabel: 'Stocking level ok',
+                      text: 'Good stocking level with room to grow.',
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.success,
                       ),

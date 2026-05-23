@@ -73,6 +73,35 @@ void main() {
       expect(find.byIcon(Icons.add_circle_outline), findsOneWidget);
     });
 
+    testWidgets('stocking advice uses an icon instead of raw emoji text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.enterText(find.byType(TextField).last, 'Neon');
+      await tester.pump(const Duration(milliseconds: 350));
+
+      await tester.tap(find.textContaining('Neon').last);
+      await tester.pump();
+
+      expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+
+      final emoji = RegExp(
+        r'[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]',
+        unicode: true,
+      );
+      final renderedText = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((widget) {
+            return widget.data ?? widget.textSpan?.toPlainText() ?? '';
+          })
+          .where(emoji.hasMatch)
+          .toList();
+
+      expect(renderedText, isEmpty);
+    });
+
     testWidgets('zero tank volume shows validation guidance', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
