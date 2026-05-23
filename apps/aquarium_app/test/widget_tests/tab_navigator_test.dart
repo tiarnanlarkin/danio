@@ -212,6 +212,26 @@ void main() {
       expect(globalPadding, findsNothing);
     });
 
+    testWidgets('Learn empty-profile unlock list fits phone width', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(
+        find.text('Complete your profile setup to start learning!'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('tapping Practice tab switches selected item', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

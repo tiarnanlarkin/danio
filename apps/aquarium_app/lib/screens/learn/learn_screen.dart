@@ -878,7 +878,6 @@ class _UnlockList extends StatelessWidget {
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.xs),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     item.$1,
@@ -886,10 +885,14 @@ class _UnlockList extends StatelessWidget {
                     color: AppColors.primary,
                   ),
                   const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    item.$2,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: context.textSecondary,
+                  Flexible(
+                    child: Text(
+                      item.$2,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: context.textSecondary,
+                      ),
                     ),
                   ),
                 ],
