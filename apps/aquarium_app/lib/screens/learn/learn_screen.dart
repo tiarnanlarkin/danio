@@ -334,7 +334,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                 iconBackgroundColor: AppColors.primaryAlpha10,
                 message:
                     'Learn builds safe tank habits. Practice brings them back when they need review.',
-                onDismissed: () => setState(() => _showTooltip = false),
+                onDismissed: () {
+                  setState(() => _showTooltip = false);
+                  _scrollToLearningPaths();
+                },
               ),
             ),
           ),
@@ -582,51 +585,6 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
                         // Interactive stories section
                         SliverToBoxAdapter(child: _StoriesSection()),
-
-                        // Cold-start nudge: shown only when user has no completed lessons
-                        if (completedLessons == 0)
-                          SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                AppSpacing.md,
-                                AppSpacing.md,
-                                AppSpacing.md,
-                                0,
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                  vertical: AppSpacing.sm2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryAlpha08,
-                                  borderRadius: AppRadius.mediumRadius,
-                                  border: Border.all(
-                                    color: AppColors.primaryAlpha15,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.water_drop_rounded,
-                                      color: AppColors.primary,
-                                      size: 22,
-                                    ),
-                                    const SizedBox(width: AppSpacing.sm2),
-                                    Expanded(
-                                      child: Text(
-                                        'Start with safe tank habits. Practice will bring the important ideas back tomorrow.',
-                                        style: AppTypography.bodySmall.copyWith(
-                                          color: AppColors.primaryDark,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
 
                         // Learning paths header with overall progress
                         SliverToBoxAdapter(

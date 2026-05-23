@@ -58,10 +58,15 @@ void _registerMockNotifications() {
   FlutterLocalNotificationsPlatform.instance = _MockNotificationsPlatform();
 }
 
-Widget _wrap({int dueCards = 0, UserProfile? profile}) {
+Widget _wrap({
+  int dueCards = 0,
+  UserProfile? profile,
+  bool learnGuidanceSeen = true,
+}) {
   SharedPreferences.setMockInitialValues({
     if (profile != null) 'user_profile': jsonEncode(profile.toJson()),
-    if (profile != null) 'guidance_seen_learnFirstVisit': true,
+    if (profile != null && learnGuidanceSeen)
+      'guidance_seen_learnFirstVisit': true,
     if (dueCards > 0)
       'spaced_repetition_cards': jsonEncode(
         _dueReviewCards(dueCards).map((card) => card.toJson()).toList(),
@@ -322,6 +327,37 @@ void main() {
       final firstPathRect = tester.getRect(firstPathFinder);
       final dockRect = tester.getRect(dockFinder);
 
+      expect(firstPathRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Learn first-run scroll is not blocked by guidance lookup', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        _wrap(profile: _profile(), learnGuidanceSeen: false),
+      );
+      await _advance(tester);
+
+      final learningPathsFinder = find.text('Learning Paths');
+      final firstPathFinder = find.text('The Nitrogen Cycle').last;
+      final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
+      expect(learningPathsFinder, findsOneWidget);
+      expect(firstPathFinder, findsOneWidget);
+      expect(dockFinder, findsOneWidget);
+
+      final learningPathsRect = tester.getRect(learningPathsFinder);
+      final firstPathRect = tester.getRect(firstPathFinder);
+      final dockRect = tester.getRect(dockFinder);
+
+      expect(learningPathsRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(firstPathRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(tester.takeException(), isNull);
     });
