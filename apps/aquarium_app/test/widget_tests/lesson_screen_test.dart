@@ -376,6 +376,40 @@ void main() {
       );
     });
 
+    testWidgets('quiz empty state does not use coming soon copy', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: LessonQuizWidget(
+                lesson: _testLesson,
+                isPracticeMode: false,
+                currentQuizQuestion: 0,
+                correctAnswers: 0,
+                selectedAnswer: null,
+                answered: false,
+                showHint: false,
+                onSelectAnswer: (_) {},
+                onShowHint: () {},
+                onCheckOrAdvance:
+                    ({
+                      required selectedAnswer,
+                      required isCorrect,
+                      required isLastQuestion,
+                    }) async {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('No quiz for this lesson'), findsOneWidget);
+      expect(find.text('Quiz coming soon!'), findsNothing);
+    });
+
     testWidgets('hint chip reveals visible hint panel and announces it', (
       tester,
     ) async {

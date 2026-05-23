@@ -124,10 +124,18 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
               Icon(Icons.quiz_outlined, size: 48, color: context.textHint),
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Quiz coming soon!',
+                'No quiz for this lesson',
                 style: AppTypography.titleMedium.copyWith(
                   color: context.textSecondary,
                 ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'You can complete it when you are ready.',
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textHint,
+                ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
