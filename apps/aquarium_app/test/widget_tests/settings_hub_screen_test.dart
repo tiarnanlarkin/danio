@@ -221,6 +221,24 @@ void main() {
       );
     });
 
+    testWidgets('Configure AI empty save shows inline feedback', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrapPreferences());
+      await _advance(tester);
+
+      await _scrollUntilTextVisible(tester, 'Configure AI');
+      await tester.tap(find.text('Configure AI'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('OpenAI API key'), findsOneWidget);
+
+      await tester.tap(find.text('Save'));
+      await tester.pump();
+
+      expect(find.text('Enter an OpenAI API key first.'), findsOneWidget);
+    });
+
     testWidgets('More action tiles expose one concise semantics node', (
       tester,
     ) async {

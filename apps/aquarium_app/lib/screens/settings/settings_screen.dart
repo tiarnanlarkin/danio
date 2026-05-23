@@ -1028,7 +1028,13 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
     if (_hasProxy) return;
 
     final key = _controller.text.trim();
-    if (key.isEmpty) return;
+    if (key.isEmpty) {
+      setState(() {
+        _statusMessage = 'Enter an OpenAI API key first.';
+        _statusIsError = true;
+      });
+      return;
+    }
     if (!key.startsWith('sk-')) {
       setState(() {
         _statusMessage = 'OpenAI keys start with "sk-". Double-check yours.';
