@@ -171,7 +171,7 @@ class _EmptyGallery extends StatelessWidget {
               color: context.textHint,
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('No photos yet 📸', style: AppTypography.headlineSmall),
+            Text('No photos yet', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Photos attached to log entries will appear here. Document your tank\'s journey!',

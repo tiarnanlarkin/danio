@@ -72,5 +72,14 @@ void main() {
       // Empty gallery widget should be present
       expect(find.byType(Column), findsWidgets);
     });
+
+    testWidgets('empty state title uses iconography instead of raw emoji text', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.byIcon(Icons.photo_library_outlined), findsOneWidget);
+      expect(find.text('No photos yet'), findsOneWidget);
+      expect(find.textContaining('No photos yet 📸'), findsNothing);
+    });
   });
 }
