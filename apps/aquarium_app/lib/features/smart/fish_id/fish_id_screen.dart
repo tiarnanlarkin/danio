@@ -20,6 +20,7 @@ import '../../../theme/app_theme.dart';
 import '../../../widgets/core/app_button.dart';
 import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
+import '../../../widgets/danio_snack_bar.dart';
 import '../../../widgets/optimized_image.dart';
 import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
@@ -282,10 +283,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
     if (tanks.isEmpty) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Add a tank first before adding livestock.'),
-        ),
+      DanioSnackBar.warning(
+        context,
+        'Add a tank first before adding livestock.',
       );
       return;
     }
