@@ -201,7 +201,7 @@ class _CompatibilityCheckerScreenState
               species2: '',
               severity: _Severity.warning,
               reason:
-                  '${species.commonName} requires at least ${species.minTankLitres.toStringAsFixed(0)}ℓ — your tank may be too small',
+                  '${species.commonName} requires at least ${species.minTankLitres.toStringAsFixed(0)} litres - your tank may be too small',
             ),
           );
         }

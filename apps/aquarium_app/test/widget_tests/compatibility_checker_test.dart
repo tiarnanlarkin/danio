@@ -241,6 +241,37 @@ void main() {
       expect(find.text('Common Goldfish +'), findsNothing);
       expect(find.text('Common Goldfish'), findsWidgets);
     });
+
+    testWidgets('tank-size warnings use plain ASCII separator copy', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(overrides: [_smallTankProvider]));
+      await tester.pump();
+
+      for (final query in ['Common Goldfish', 'Neon Tetra']) {
+        await tester.enterText(find.byType(TextField), query);
+        await tester.pump(const Duration(milliseconds: 350));
+        final addBtn = find.byIcon(Icons.add_circle_outline);
+        expect(addBtn, findsWidgets);
+        await tester.tap(addBtn.first);
+        await tester.pump();
+      }
+
+      await tester.drag(find.byType(ListView).last, const Offset(0, -300));
+      await tester.pump();
+
+      final warningTexts = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((widget) => widget.data ?? '')
+          .where((text) => text.contains('requires at least'))
+          .toList();
+
+      expect(warningTexts, isNotEmpty);
+      for (final text in warningTexts) {
+        expect(text, isNot(contains(String.fromCharCode(0x2014))));
+        expect(text, isNot(contains(String.fromCharCode(0x2113))));
+      }
+    });
   });
 
   group('CompatibilityCheckerScreen - validation coverage', () {
