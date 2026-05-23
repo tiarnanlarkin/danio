@@ -16,10 +16,7 @@ import 'package:danio/screens/maintenance_checklist_screen.dart';
 Widget _wrap({String tankId = 'tank-1', String tankName = 'Test Tank'}) {
   return ProviderScope(
     child: MaterialApp(
-      home: MaintenanceChecklistScreen(
-        tankId: tankId,
-        tankName: tankName,
-      ),
+      home: MaintenanceChecklistScreen(tankId: tankId, tankName: tankName),
     ),
   );
 }
@@ -70,6 +67,37 @@ void main() {
       await _advance(tester);
       // Known weekly checklist items
       expect(find.text('Test water parameters'), findsOneWidget);
+    });
+
+    testWidgets('completed section chip avoids raw check mark text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      const weeklyItems = [
+        'Test water parameters',
+        'Water change (20-30%)',
+        'Vacuum substrate',
+        'Clean glass',
+        'Count & observe fish',
+        'Check temperature',
+        'Trim dead plant matter',
+        'Top off evaporated water',
+      ];
+
+      for (final label in weeklyItems) {
+        final item = find.text(label);
+        await tester.ensureVisible(item);
+        await tester.tap(item);
+        await tester.pump();
+      }
+
+      await tester.drag(find.byType(ListView), const Offset(0, 800));
+      await tester.pump();
+
+      expect(find.text('Complete!'), findsOneWidget);
+      expect(find.text('\u2713 Complete!'), findsNothing);
     });
   });
 }

@@ -264,7 +264,7 @@ class _MaintenanceChecklistScreenState
                           borderRadius: AppRadius.mediumRadius,
                         ),
                         child: Text(
-                          '✓ Complete!',
+                          'Complete!',
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.onPrimary,
                           ),
