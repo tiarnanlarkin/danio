@@ -43,7 +43,7 @@ class TasksScreen extends ConsumerWidget {
           if (tasks.isEmpty) {
             return EmptyState.withMascot(
               icon: Icons.task_alt,
-              title: 'Set yourself up for success! ✅',
+              title: 'Set yourself up for success!',
               message:
                   'Add water changes, testing, and maintenance tasks - your fish will thank you',
               mascotContext: MascotContext.encouragement,
@@ -283,9 +283,16 @@ class TasksScreen extends ConsumerWidget {
           await ref.read(storageServiceProvider).deleteTask(task.id);
           ref.invalidate(tasksProvider(tankId));
         } catch (e, st) {
-          logError('TasksScreen: task delete failed: $e', stackTrace: st, tag: 'TasksScreen');
+          logError(
+            'TasksScreen: task delete failed: $e',
+            stackTrace: st,
+            tag: 'TasksScreen',
+          );
           if (context.mounted) {
-            DanioSnackBar.error(context, "Couldn't delete that task. Give it another go!");
+            DanioSnackBar.error(
+              context,
+              "Couldn't delete that task. Give it another go!",
+            );
           }
         }
       },
@@ -354,72 +361,72 @@ class _TaskHistoryContent extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return SizedBox(
-        width: double.maxFinite,
-        child: logsAsync.when(
-          loading: () => const Padding(
-            padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(child: BubbleLoader.small()),
-          ),
-          error: (err, _) => AppErrorState(
-            compact: true,
-            title: 'Couldn\'t load history',
-            message: 'Close this and give it another go!',
-            onRetry: () => ref.invalidate(allLogsProvider(tankId)),
-          ),
-          data: (logs) {
-            final completions =
-                logs.where((l) => l.type == LogType.taskCompleted).where((l) {
-                  // Prefer ID match. Fall back to title match for older entries.
-                  if (l.relatedTaskId != null) {
-                    return l.relatedTaskId == task.id;
-                  }
-                  return (l.title ?? '') == task.title;
-                }).toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-            if (completions.isEmpty) {
-              return Text(
-                'No completions yet.\n\nTip: when you complete a task, it\'ll show up here and in Recent Activity!',
-                style: AppTypography.bodyMedium,
-              );
-            }
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Completed ${task.completionCount} time${task.completionCount == 1 ? '' : 's'}',
-                  style: AppTypography.bodySmall,
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                Flexible(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: completions.length.clamp(0, 25),
-                    separatorBuilder: (_, __) => const Divider(height: 1),
-                    itemBuilder: (context, i) {
-                      final log = completions[i];
-                      return ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(
-                          Icons.check_circle,
-                          color: AppColors.success,
-                          size: 18,
-                        ),
-                        title: Text(
-                          DateFormat('d MMM yyyy').format(log.timestamp),
-                        ),
-                        subtitle: Text(
-                          DateFormat('h:mm a').format(log.timestamp),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
+      width: double.maxFinite,
+      child: logsAsync.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(AppSpacing.sm2),
+          child: Center(child: BubbleLoader.small()),
         ),
+        error: (err, _) => AppErrorState(
+          compact: true,
+          title: 'Couldn\'t load history',
+          message: 'Close this and give it another go!',
+          onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+        ),
+        data: (logs) {
+          final completions =
+              logs.where((l) => l.type == LogType.taskCompleted).where((l) {
+                // Prefer ID match. Fall back to title match for older entries.
+                if (l.relatedTaskId != null) {
+                  return l.relatedTaskId == task.id;
+                }
+                return (l.title ?? '') == task.title;
+              }).toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+          if (completions.isEmpty) {
+            return Text(
+              'No completions yet.\n\nTip: when you complete a task, it\'ll show up here and in Recent Activity!',
+              style: AppTypography.bodyMedium,
+            );
+          }
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Completed ${task.completionCount} time${task.completionCount == 1 ? '' : 's'}',
+                style: AppTypography.bodySmall,
+              ),
+              const SizedBox(height: AppSpacing.sm2),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: completions.length.clamp(0, 25),
+                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  itemBuilder: (context, i) {
+                    final log = completions[i];
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(
+                        Icons.check_circle,
+                        color: AppColors.success,
+                        size: 18,
+                      ),
+                      title: Text(
+                        DateFormat('d MMM yyyy').format(log.timestamp),
+                      ),
+                      subtitle: Text(
+                        DateFormat('h:mm a').format(log.timestamp),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -615,7 +622,12 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         left: AppSpacing.md,
         right: AppSpacing.md,
         top: AppSpacing.md,
-        bottom: max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom) + 16,
+        bottom:
+            max(
+              MediaQuery.of(context).viewInsets.bottom,
+              MediaQuery.of(context).viewPadding.bottom,
+            ) +
+            16,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -772,9 +784,16 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
 
       if (mounted) Navigator.maybePop(context);
     } catch (e, st) {
-      logError('TasksScreen: task save failed: $e', stackTrace: st, tag: 'TasksScreen');
+      logError(
+        'TasksScreen: task save failed: $e',
+        stackTrace: st,
+        tag: 'TasksScreen',
+      );
       if (mounted) {
-        AppFeedback.showError(context, 'Couldn\'t complete that action. Try again!');
+        AppFeedback.showError(
+          context,
+          'Couldn\'t complete that action. Try again!',
+        );
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

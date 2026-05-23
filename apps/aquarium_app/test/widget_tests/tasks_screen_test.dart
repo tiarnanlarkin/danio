@@ -19,25 +19,21 @@ import 'package:danio/models/models.dart';
 final _now = DateTime.now();
 
 Tank _makeTank({String id = 'tank-1'}) => Tank(
-      id: id,
-      name: 'Test Tank',
-      type: TankType.freshwater,
-      volumeLitres: 100,
-      startDate: _now,
-      targets: WaterTargets.freshwaterTropical(),
-      createdAt: _now,
-      updatedAt: _now,
-    );
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
 
 Widget _wrap({InMemoryStorageService? storage}) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
-    overrides: [
-      storageServiceProvider.overrideWithValue(svc),
-    ],
-    child: const MaterialApp(
-      home: TasksScreen(tankId: 'tank-1'),
-    ),
+    overrides: [storageServiceProvider.overrideWithValue(svc)],
+    child: const MaterialApp(home: TasksScreen(tankId: 'tank-1')),
   );
 }
 
@@ -80,14 +76,33 @@ void main() {
       await _advance(tester);
       // Should show empty state or Add Task button
       expect(
-        find.byWidgetPredicate((w) =>
-            w is Text &&
-            (w.data?.contains('Add Task') == true ||
-                w.data?.contains('success') == true ||
-                w.data?.contains('task') == true)),
+        find.byWidgetPredicate(
+          (w) =>
+              w is Text &&
+              (w.data?.contains('Add Task') == true ||
+                  w.data?.contains('success') == true ||
+                  w.data?.contains('task') == true),
+        ),
         findsWidgets,
       );
     });
+
+    testWidgets(
+      'empty state title uses iconography instead of raw emoji text',
+      (tester) async {
+        final svc = InMemoryStorageService();
+        await svc.saveTank(_makeTank());
+        await tester.pumpWidget(_wrap(storage: svc));
+        await _advance(tester);
+
+        expect(find.byIcon(Icons.task_alt), findsWidgets);
+        expect(find.text('Set yourself up for success!'), findsOneWidget);
+        expect(
+          find.textContaining('Set yourself up for success! ✅'),
+          findsNothing,
+        );
+      },
+    );
 
     testWidgets('shows scaffold', (tester) async {
       final svc = InMemoryStorageService();
