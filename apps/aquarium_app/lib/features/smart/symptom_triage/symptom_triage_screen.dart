@@ -123,10 +123,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
   Future<void> _runDiagnosis() async {
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) {
-      setState(
-        () => _error =
-            'Symptom Triage isn\'t available yet — we\'re working on bringing it to you! 🩺',
-      );
+      setState(() => _error = OpenAIUserMessages.setupRequired);
       return;
     }
 
@@ -220,7 +217,11 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
       if (!mounted) return;
       setState(() => _error = e.message);
     } catch (e, st) {
-      logError('SymptomTriageScreen: triage failed: $e', stackTrace: st, tag: 'SymptomTriageScreen');
+      logError(
+        'SymptomTriageScreen: triage failed: $e',
+        stackTrace: st,
+        tag: 'SymptomTriageScreen',
+      );
       if (!mounted) return;
       setState(() => _error = 'We hit a snag. Try again in a moment.');
     } finally {
@@ -258,9 +259,16 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
       DanioSnackBar.show(context, 'Diagnosis saved to journal ✅');
       Navigator.of(context).pop();
     } catch (e, st) {
-      logError('SymptomTriageScreen: saveToJournal failed: $e', stackTrace: st, tag: 'SymptomTriageScreen');
+      logError(
+        'SymptomTriageScreen: saveToJournal failed: $e',
+        stackTrace: st,
+        tag: 'SymptomTriageScreen',
+      );
       if (!mounted) return;
-      DanioSnackBar.warning(context, 'Could not save to journal. Please try again.');
+      DanioSnackBar.warning(
+        context,
+        'Could not save to journal. Please try again.',
+      );
     }
   }
 
@@ -381,7 +389,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   labelText: 'pH',
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),
@@ -393,7 +403,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   labelText: 'Temp (°C)',
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),
@@ -409,7 +421,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   labelText: 'Ammonia (ppm)',
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),
@@ -421,7 +435,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                   labelText: 'Nitrite (ppm)',
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 inputFormatters: [LengthLimitingTextInputFormatter(500)],
               ),
             ),

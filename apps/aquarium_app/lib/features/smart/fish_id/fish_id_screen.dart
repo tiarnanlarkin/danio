@@ -160,10 +160,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) {
-      setState(
-        () => _error =
-            'Fish ID isn\'t available yet — we\'re working on bringing it to you! 🐟',
-      );
+      setState(() => _error = OpenAIUserMessages.setupRequired);
       return;
     }
 

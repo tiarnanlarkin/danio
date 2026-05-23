@@ -55,6 +55,8 @@ class OpenAIException implements Exception {
 
 /// User-facing error messages for common failure modes.
 class OpenAIUserMessages {
+  static const setupRequired =
+      'Set up Smart Hub in Preferences before using this AI feature.';
   static const rateLimited =
       "You've used your AI assists for this hour — try again in a bit! 🐟";
   static const timeout =

@@ -80,10 +80,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
 
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) {
-      setState(
-        () => _error =
-            'Weekly Planner isn\'t available yet — we\'re working on bringing it to you! 📋',
-      );
+      setState(() => _error = OpenAIUserMessages.setupRequired);
       return;
     }
 
@@ -193,7 +190,11 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       if (!mounted) return;
       setState(() => _error = e.message);
     } catch (e, st) {
-      logError('WeeklyPlanScreen: plan generation failed: $e', stackTrace: st, tag: 'WeeklyPlanScreen');
+      logError(
+        'WeeklyPlanScreen: plan generation failed: $e',
+        stackTrace: st,
+        tag: 'WeeklyPlanScreen',
+      );
       if (!mounted) return;
       setState(
         () => _error = 'Couldn\'t generate your plan. Try again in a moment.',
@@ -254,7 +255,11 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             const SizedBox(height: AppSpacing.md),
             Text(_error!, textAlign: TextAlign.center),
             const SizedBox(height: AppSpacing.md),
-            AppButton(label: 'Retry', onPressed: _generate, variant: AppButtonVariant.primary),
+            AppButton(
+              label: 'Retry',
+              onPressed: _generate,
+              variant: AppButtonVariant.primary,
+            ),
           ],
         ),
       ),
@@ -273,7 +278,11 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: AppSpacing.sm),
-          AppButton(label: 'Generate Plan', onPressed: _generate, variant: AppButtonVariant.primary),
+          AppButton(
+            label: 'Generate Plan',
+            onPressed: _generate,
+            variant: AppButtonVariant.primary,
+          ),
         ],
       ),
     );
