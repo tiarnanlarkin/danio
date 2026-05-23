@@ -46,13 +46,17 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
 
     _scale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.05)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.05,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 40,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.05, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween<double>(
+          begin: 1.05,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 60,
       ),
     ]).animate(_bounceController);
@@ -118,6 +122,24 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
       borderColor = AppColors.primary;
     }
 
+    final isPendingSelected = isSelected && !answered;
+    final isCorrectResult = answered && isCorrect;
+    final isIncorrectResult = answered && isSelected && !isCorrect;
+    final badgeBackgroundColor = isPendingSelected
+        ? AppColors.primary
+        : isCorrectResult
+        ? AppColors.successAlpha10
+        : isIncorrectResult
+        ? AppColors.errorAlpha10
+        : context.surfaceVariant;
+    final badgeTextColor = isPendingSelected
+        ? AppColors.onPrimary
+        : isCorrectResult
+        ? AppColors.success
+        : isIncorrectResult
+        ? AppColors.error
+        : context.textSecondary;
+
     Widget cardContent = Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -134,39 +156,14 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isSelected && !answered
-                  ? AppColors.primary
-                  : context.surfaceVariant,
+              color: badgeBackgroundColor,
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: icon != null
-                  ? (answered && isCorrect
-                      ? AnimatedBuilder(
-                          animation: _checkFade,
-                          builder: (context, child) => Opacity(
-                            opacity: _checkFade.value.clamp(0.0, 1.0),
-                            child: child,
-                          ),
-                          child: Icon(
-                            icon,
-                            size: AppIconSizes.sm,
-                            color: AppColors.success,
-                          ),
-                        )
-                      : Icon(
-                          icon,
-                          size: AppIconSizes.sm,
-                          color: AppColors.error,
-                        ))
-                  : Text(
-                      String.fromCharCode(65 + optionIndex),
-                      style: AppTypography.labelLarge.copyWith(
-                        color: isSelected && !answered
-                            ? AppColors.onPrimary
-                            : context.textSecondary,
-                      ),
-                    ),
+              child: Text(
+                String.fromCharCode(65 + optionIndex),
+                style: AppTypography.labelLarge.copyWith(color: badgeTextColor),
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.sm2),
@@ -178,6 +175,23 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
               overflow: TextOverflow.visible,
             ),
           ),
+          if (icon != null) ...[
+            const SizedBox(width: AppSpacing.sm2),
+            answered && isCorrect
+                ? AnimatedBuilder(
+                    animation: _checkFade,
+                    builder: (context, child) => Opacity(
+                      opacity: _checkFade.value.clamp(0.0, 1.0),
+                      child: child,
+                    ),
+                    child: Icon(
+                      icon,
+                      size: AppIconSizes.sm,
+                      color: AppColors.success,
+                    ),
+                  )
+                : Icon(icon, size: AppIconSizes.sm, color: AppColors.error),
+          ],
         ],
       ),
     );
@@ -186,10 +200,8 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
     if (answered && isCorrect) {
       cardContent = AnimatedBuilder(
         animation: _scale,
-        builder: (context, child) => Transform.scale(
-          scale: _scale.value,
-          child: child,
-        ),
+        builder: (context, child) =>
+            Transform.scale(scale: _scale.value, child: child),
         child: cardContent,
       );
     }
@@ -198,7 +210,8 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
       padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: Semantics(
         button: true,
-        label: 'Option ${String.fromCharCode(65 + optionIndex)}: ${widget.option}',
+        label:
+            'Option ${String.fromCharCode(65 + optionIndex)}: ${widget.option}',
         selected: isSelected,
         child: GestureDetector(
           onTap: answered ? null : widget.onTap,

@@ -38,4 +38,21 @@ void main() {
     expect(optionText.maxLines, isNull);
     expect(optionText.overflow, isNot(TextOverflow.ellipsis));
   });
+
+  testWidgets('answered correct option keeps its letter badge', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        const QuizAnswerOption(
+          optionIndex: 1,
+          option: 'Right answer',
+          isSelected: true,
+          isCorrect: true,
+          answered: true,
+        ),
+      ),
+    );
+
+    expect(find.text('B'), findsOneWidget);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
+  });
 }
