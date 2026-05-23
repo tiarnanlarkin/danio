@@ -380,6 +380,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     ];
 
     return GestureDetector(
+      excludeFromSemantics: true,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         body: CustomScrollView(

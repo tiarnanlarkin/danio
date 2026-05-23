@@ -157,6 +157,23 @@ void main() {
       }
     });
 
+    testWidgets('tap-to-dismiss background is hidden from semantics', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final backgroundTapLayer = find.ancestor(
+        of: find.byType(Scaffold),
+        matching: find.byType(GestureDetector),
+      );
+      expect(backgroundTapLayer, findsOneWidget);
+
+      final detector = tester.widget<GestureDetector>(backgroundTapLayer);
+      expect(detector.excludeFromSemantics, isTrue);
+    });
+
     testWidgets(
       'offline compatibility entry points to Workshop instead of duplicating the checker',
       (tester) async {
