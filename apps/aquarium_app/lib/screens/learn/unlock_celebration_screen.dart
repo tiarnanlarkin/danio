@@ -96,7 +96,7 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                     Text(
                       'You unlocked',
                       style: AppTypography.headlineMedium.copyWith(
-                        color: Colors.white70,
+                        color: AppColors.whiteAlpha70,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -149,7 +149,7 @@ class _UnlockCelebrationScreenState extends State<UnlockCelebrationScreen>
                   child: Text(
                     '$_displayName is now swimming in your tank!',
                     style: AppTypography.bodyLarge.copyWith(
-                      color: Colors.white60,
+                      color: AppColors.whiteAlpha60,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -226,7 +226,7 @@ class _FallbackSprite extends StatelessWidget {
       child: Center(
         child: Icon(
           Icons.set_meal_rounded,
-          color: Colors.white.withValues(alpha: 0.85),
+          color: AppColors.whiteAlpha85,
           size: size * 0.42,
         ),
       ),

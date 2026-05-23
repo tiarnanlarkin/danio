@@ -82,6 +82,22 @@ void main() {
     }
   });
 
+  test('unlock celebration uses shared white alpha tokens', () {
+    final source = File(
+      'lib/screens/learn/unlock_celebration_screen.dart',
+    ).readAsStringSync();
+
+    expect(source, contains('AppColors.whiteAlpha70'));
+    expect(source, contains('AppColors.whiteAlpha60'));
+    expect(source, contains('AppColors.whiteAlpha85'));
+    expect(source, isNot(contains('Colors.white70')));
+    expect(source, isNot(contains('Colors.white60')));
+    expect(
+      source,
+      isNot(contains('Colors.white.withValues(alpha: 0.85)')),
+    );
+  });
+
   test('Danio surface visual helper covers shipped shop item types', () {
     final visualNames = DanioSurfaceVisualKey.values
         .map((key) => key.name)
