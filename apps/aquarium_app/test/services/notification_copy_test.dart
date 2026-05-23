@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/services/notification_copy_test.dart
 
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/services/notification_copy.dart';
@@ -35,15 +37,40 @@ void main() {
       );
     });
 
+    test('formats streak reminders without pressure or decorative prefixes', () {
+      expect(NotificationCopy.morningStreakTitle(), 'Learning reminder');
+      expect(
+        NotificationCopy.morningStreakBody(3),
+        'Your 3-day streak is active. A short lesson keeps it going.',
+      );
+      expect(NotificationCopy.eveningStreakTitle(), 'Daily goal reminder');
+      expect(
+        NotificationCopy.eveningStreakBody(xpNeeded: 15),
+        '15 XP left to meet today\'s goal.',
+      );
+      expect(NotificationCopy.nightStreakTitle(), 'Daily goal closes soon');
+      expect(
+        NotificationCopy.nightStreakBody(currentStreak: 7),
+        'Your 7-day streak is active. Complete a short lesson before midnight if you want to keep it going.',
+      );
+    });
+
+    test('streak notifications route through quiet copy helper', () {
+      final source = File(
+        'lib/services/notification_service.dart',
+      ).readAsStringSync();
+
+      expect(source, contains('NotificationCopy.morningStreakTitle'));
+      expect(source, contains('NotificationCopy.eveningStreakTitle'));
+      expect(source, contains('NotificationCopy.nightStreakTitle'));
+      expect(source, isNot(contains('5 minutes to level up')));
+      expect(source, isNot(contains('Don\\\'t lose your streak')));
+      expect(source, isNot(contains('Last call before midnight')));
+    });
+
     test('formats user-created reminders without decorative prefixes', () {
-      expect(
-        NotificationCopy.userReminderTitle('Trim plants'),
-        'Trim plants',
-      );
-      expect(
-        NotificationCopy.userReminderTitle('   '),
-        'Aquarium reminder',
-      );
+      expect(NotificationCopy.userReminderTitle('Trim plants'), 'Trim plants');
+      expect(NotificationCopy.userReminderTitle('   '), 'Aquarium reminder');
       expect(
         NotificationCopy.userReminderBody('Check the inlet sponge'),
         'Check the inlet sponge',
@@ -56,10 +83,7 @@ void main() {
 
     test('formats water-change reminders without hype copy', () {
       expect(
-        NotificationCopy.waterChangeTitle(
-          tankName: 'Rio 180',
-          isOverdue: true,
-        ),
+        NotificationCopy.waterChangeTitle(tankName: 'Rio 180', isOverdue: true),
         'Water change due for Rio 180',
       );
       expect(

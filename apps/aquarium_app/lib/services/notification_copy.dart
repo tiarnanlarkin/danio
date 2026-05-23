@@ -32,6 +32,24 @@ class NotificationCopy {
     return '$dueCardsCount $noun ready to review.';
   }
 
+  static String morningStreakTitle() => 'Learning reminder';
+
+  static String morningStreakBody(int currentStreak) {
+    return 'Your $currentStreak-day streak is active. A short lesson keeps it going.';
+  }
+
+  static String eveningStreakTitle() => 'Daily goal reminder';
+
+  static String eveningStreakBody({required int xpNeeded}) {
+    return '$xpNeeded XP left to meet today\'s goal.';
+  }
+
+  static String nightStreakTitle() => 'Daily goal closes soon';
+
+  static String nightStreakBody({required int currentStreak}) {
+    return 'Your $currentStreak-day streak is active. Complete a short lesson before midnight if you want to keep it going.';
+  }
+
   static String waterChangeTitle({
     required String tankName,
     required bool isOverdue,

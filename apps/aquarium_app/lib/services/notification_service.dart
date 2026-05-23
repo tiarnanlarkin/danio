@@ -481,8 +481,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _morningNotificationId,
-      '🐠 5 minutes to level up your fishkeeping today?',
-      'Your 🔥 $currentStreak-day streak is waiting — let\'s keep it going!',
+      NotificationCopy.morningStreakTitle(),
+      NotificationCopy.morningStreakBody(currentStreak),
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -534,8 +534,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _eveningNotificationId,
-      '🔥 Don\'t lose your streak! Complete a lesson today',
-      'Just $xpNeeded XP away from keeping your 🔥 $currentStreak-day streak alive!',
+      NotificationCopy.eveningStreakTitle(),
+      NotificationCopy.eveningStreakBody(xpNeeded: xpNeeded),
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -586,8 +586,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _nightNotificationId,
-      '⏰ Last call before midnight!',
-      '🔥 Your $currentStreak-day streak ends at midnight. A 5-minute lesson is all it takes — you\'ve got this!',
+      NotificationCopy.nightStreakTitle(),
+      NotificationCopy.nightStreakBody(currentStreak: currentStreak),
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
