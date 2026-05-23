@@ -396,16 +396,12 @@ class SoftCard extends StatelessWidget {
             offset: const Offset(0, 2),
           ),
           BoxShadow(
-            color: isDark
-                ? AppColors.blackAlpha15
-                : const Color(0x08000000), // 0.03
+            color: isDark ? AppColors.blackAlpha15 : AppColors.blackAlpha03,
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: isDark
-                ? AppColors.blackAlpha10
-                : const Color(0x05000000), // 0.02
+            color: isDark ? AppColors.blackAlpha10 : AppColors.blackAlpha02,
             blurRadius: 40,
             offset: const Offset(0, 16),
           ),
