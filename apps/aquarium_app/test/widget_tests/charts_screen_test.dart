@@ -19,13 +19,17 @@ import 'package:danio/models/models.dart';
 
 const _fakeTankId = 'tank-charts-001';
 
-Widget _wrap({String initialParam = 'nitrate'}) {
+Widget _wrap({
+  String initialParam = 'nitrate',
+  List<LogEntry> logs = const [],
+  WaterTargets targets = const WaterTargets(),
+}) {
   final memStorage = InMemoryStorageService();
 
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
-      allLogsProvider.overrideWith((ref, tankId) async => []),
+      allLogsProvider.overrideWith((ref, tankId) async => logs),
       tankProvider.overrideWith(
         (ref, tankId) async => Tank(
           id: tankId,
@@ -33,7 +37,7 @@ Widget _wrap({String initialParam = 'nitrate'}) {
           type: TankType.freshwater,
           volumeLitres: 100,
           startDate: DateTime(2024),
-          targets: const WaterTargets(),
+          targets: targets,
           createdAt: DateTime(2024),
           updatedAt: DateTime(2024),
         ),
@@ -42,6 +46,17 @@ Widget _wrap({String initialParam = 'nitrate'}) {
     child: MaterialApp(
       home: ChartsScreen(tankId: _fakeTankId, initialParam: initialParam),
     ),
+  );
+}
+
+LogEntry _waterTestLog(WaterTestResults results) {
+  return LogEntry(
+    id: 'log-1',
+    tankId: _fakeTankId,
+    type: LogType.waterTest,
+    timestamp: DateTime(2026, 5, 1),
+    waterTest: results,
+    createdAt: DateTime(2026, 5, 1),
   );
 }
 
@@ -82,6 +97,37 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       expect(find.byIcon(Icons.download), findsOneWidget);
+    });
+
+    testWidgets('high ammonia alert avoids raw warning emoji text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(logs: [_waterTestLog(WaterTestResults(ammonia: 1.0))]),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Parameter Alerts'), findsOneWidget);
+      expect(find.text('High ammonia (1.0ppm)'), findsOneWidget);
+      expect(find.textContaining('⚠️ High ammonia'), findsNothing);
+    });
+
+    testWidgets('all-clear alert uses iconography instead of raw check text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(logs: [_waterTestLog(WaterTestResults(ammonia: 0.0))]),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byIcon(Icons.check_circle_outline), findsOneWidget);
+      expect(find.text('All parameters within safe ranges'), findsOneWidget);
+      expect(
+        find.textContaining('All parameters within safe ranges ✓'),
+        findsNothing,
+      );
     });
   });
 }

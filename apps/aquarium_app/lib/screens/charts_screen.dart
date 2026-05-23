@@ -686,26 +686,26 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
     // Check ammonia
     if (latestTest.ammonia != null && latestTest.ammonia! > 0.5) {
-      issues.add('⚠️ High ammonia (${latestTest.ammonia}ppm)');
+      issues.add('High ammonia (${latestTest.ammonia}ppm)');
     }
 
     // Check nitrite
     if (latestTest.nitrite != null && latestTest.nitrite! > 0.5) {
-      issues.add('⚠️ High nitrite (${latestTest.nitrite}ppm)');
+      issues.add('High nitrite (${latestTest.nitrite}ppm)');
     }
 
     // Check nitrate
     if (latestTest.nitrate != null && latestTest.nitrate! > 40) {
-      issues.add('⚠️ High nitrate (${latestTest.nitrate}ppm)');
+      issues.add('High nitrate (${latestTest.nitrate}ppm)');
     }
 
     // Check pH against targets
     final targets = tank.targets;
     if (latestTest.ph != null) {
       if (targets.phMin != null && latestTest.ph! < targets.phMin!) {
-        issues.add('📉 pH below target (${latestTest.ph})');
+        issues.add('pH below target (${latestTest.ph})');
       } else if (targets.phMax != null && latestTest.ph! > targets.phMax!) {
-        issues.add('📈 pH above target (${latestTest.ph})');
+        issues.add('pH above target (${latestTest.ph})');
       }
     }
 
@@ -713,10 +713,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     if (latestTest.temperature != null) {
       if (targets.tempMin != null &&
           latestTest.temperature! < targets.tempMin!) {
-        issues.add('🥶 Temperature too low (${latestTest.temperature}°C)');
+        issues.add('Temperature too low (${latestTest.temperature}°C)');
       } else if (targets.tempMax != null &&
           latestTest.temperature! > targets.tempMax!) {
-        issues.add('🥵 Temperature too high (${latestTest.temperature}°C)');
+        issues.add('Temperature too high (${latestTest.temperature}°C)');
       }
     }
 
@@ -738,7 +738,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
-                'All parameters within safe ranges ✓',
+                'All parameters within safe ranges',
                 style: AppTypography.bodyMedium.copyWith(
                   color: AppColors.success,
                 ),
