@@ -30,7 +30,7 @@ import 'settings_screen.dart';
 void _showOfflineSnackBar(BuildContext context) {
   DanioSnackBar.warning(
     context,
-    "You're offline — AI features require an internet connection.",
+    "You're offline - AI features require an internet connection.",
   );
 }
 
@@ -84,7 +84,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     if (!isOnline) {
       setState(
         () => _askResponse =
-            "You're offline — check your connection and tap send to retry.",
+            "You're offline - check your connection and tap send to retry.",
       );
       return;
     }
@@ -173,7 +173,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           ),
           icon: danioSurfaceVisual(DanioSurfaceVisualKey.smart).icon,
           iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.smart).color,
-          message: 'Smart Hub — AI tools to help you care for your fish!',
+          message: 'Smart Hub - AI tools to help you care for your fish!',
           onDismissed: () => setState(() => _showTooltip = false),
         ),
 
@@ -193,7 +193,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
       const SizedBox(height: AppSpacing.md),
 
-      // Feature cards — gated behind API key (CA-004) + connectivity
+      // Feature cards gated behind API key (CA-004) + connectivity
       _FeatureCard(
         icon: Icons.camera_alt,
         title: 'Fish & Plant ID',
@@ -356,7 +356,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             : Icons.warning_amber,
         title: 'Anomaly History',
         subtitle: activeAnomalies.isEmpty
-            ? 'All clear — no issues detected'
+            ? 'All clear - no issues detected'
             : '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
         color: activeAnomalies.isEmpty ? AppColors.success : AppColors.warning,
         onTap: () => _showAnomalyHistory(context, ref),
@@ -532,7 +532,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'No anomalies detected — looking good.',
+                    'No anomalies detected - looking good.',
                     style: AppTypography.bodyLarge.copyWith(
                       color: ctx.textSecondary,
                     ),
@@ -594,8 +594,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   ),
                   subtitle: Text(
                     a.dismissed
-                        ? '${a.parameter} · ${_formatTime(a.detectedAt)} · Dismissed — will flag again if detected.'
-                        : '${a.parameter} · ${_formatTime(a.detectedAt)}',
+                        ? '${a.parameter} | ${_formatTime(a.detectedAt)} | Dismissed - will flag again if detected.'
+                        : '${a.parameter} | ${_formatTime(a.detectedAt)}',
                   ),
                   dense: true,
                   trailing: a.dismissed
@@ -635,7 +635,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
   }
 }
 
-// ── Subwidgets ──────────────────────────────────────────────────────────
+// Subwidgets
 
 class _AiSetupBanner extends StatelessWidget {
   final VoidCallback onOpenPreferences;

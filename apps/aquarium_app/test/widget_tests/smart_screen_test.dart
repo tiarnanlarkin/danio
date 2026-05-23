@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/smart_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +41,19 @@ Widget _wrap({bool isOnline = true, bool aiConfigured = false}) {
 // ---------------------------------------------------------------------------
 
 void main() {
+  test('SmartScreen source keeps user-facing punctuation ASCII-safe', () {
+    final source = File('lib/screens/smart_screen.dart').readAsStringSync();
+
+    final punctuation = {
+      'em dash': String.fromCharCode(0x2014),
+      'middle dot': String.fromCharCode(0x00b7),
+    };
+
+    for (final entry in punctuation.entries) {
+      expect(source, isNot(contains(entry.value)), reason: entry.key);
+    }
+  });
+
   setUp(() {
     SharedPreferences.setMockInitialValues({});
   });
