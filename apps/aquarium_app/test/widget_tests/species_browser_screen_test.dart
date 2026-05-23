@@ -14,11 +14,7 @@ import 'package:danio/screens/species_browser_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(
-      home: SpeciesBrowserScreen(),
-    ),
-  );
+  return const ProviderScope(child: MaterialApp(home: SpeciesBrowserScreen()));
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -69,5 +65,21 @@ void main() {
       // Species database is static — at least one card should be present
       expect(find.byType(ListView), findsWidgets);
     });
+
+    testWidgets(
+      'empty search state uses iconography instead of raw emoji text',
+      (tester) async {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        await tester.enterText(find.byType(TextField), 'no_such_fish_zz');
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump();
+
+        expect(find.text('No matches'), findsOneWidget);
+        expect(find.byIcon(Icons.search_off), findsOneWidget);
+        expect(find.textContaining(String.fromCharCode(0x1F50D)), findsNothing);
+      },
+    );
   });
 }

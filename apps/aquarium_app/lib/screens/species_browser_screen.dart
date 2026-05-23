@@ -143,7 +143,11 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('🔍', style: TextStyle(fontSize: 48)),
+                        Icon(
+                          Icons.search_off,
+                          size: 48,
+                          color: context.textHint,
+                        ),
                         const SizedBox(height: AppSpacing.sm2),
                         Text('No matches', style: AppTypography.titleMedium),
                         const SizedBox(height: AppSpacing.sm),
@@ -519,10 +523,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
                       borderRadius: AppRadius.mediumRadius,
                       border: Border.all(color: AppOverlays.error10),
                     ),
-                    child: Text(
-                      warning,
-                      style: AppTypography.bodyMedium,
-                    ),
+                    child: Text(warning, style: AppTypography.bodyMedium),
                   ),
                 ),
               ),
