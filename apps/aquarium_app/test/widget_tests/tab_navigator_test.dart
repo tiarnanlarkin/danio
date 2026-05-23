@@ -11,6 +11,7 @@ import 'package:flutter_local_notifications_platform_interface/flutter_local_not
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/user_profile.dart';
 import 'package:danio/screens/tab_navigator.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
@@ -56,8 +57,10 @@ void _registerMockNotifications() {
   FlutterLocalNotificationsPlatform.instance = _MockNotificationsPlatform();
 }
 
-Widget _wrap({int dueCards = 0}) {
+Widget _wrap({int dueCards = 0, UserProfile? profile}) {
   SharedPreferences.setMockInitialValues({
+    if (profile != null) 'user_profile': jsonEncode(profile.toJson()),
+    if (profile != null) 'guidance_seen_learnFirstVisit': true,
     if (dueCards > 0)
       'spaced_repetition_cards': jsonEncode(
         _dueReviewCards(dueCards).map((card) => card.toJson()).toList(),
@@ -73,6 +76,13 @@ Widget _wrap({int dueCards = 0}) {
     child: const MaterialApp(home: TabNavigator()),
   );
 }
+
+UserProfile _profile() => UserProfile(
+  id: 'tab-nav-profile',
+  name: 'Test User',
+  createdAt: DateTime(2024),
+  updatedAt: DateTime(2024),
+);
 
 List<ReviewCard> _dueReviewCards(int count) {
   final now = DateTime.now();
@@ -229,6 +239,33 @@ void main() {
         find.text('Complete your profile setup to start learning!'),
         findsOneWidget,
       );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Learn first path stays clear of bottom dock on phone width', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap(profile: _profile()));
+      await _advance(tester);
+
+      final learningPathsFinder = find.text('Learning Paths');
+      final firstPathFinder = find.text('The Nitrogen Cycle');
+      final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
+      expect(learningPathsFinder, findsOneWidget);
+      expect(firstPathFinder, findsOneWidget);
+      expect(dockFinder, findsOneWidget);
+
+      final firstPathRect = tester.getRect(firstPathFinder);
+      final dockRect = tester.getRect(dockFinder);
+
+      expect(firstPathRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(tester.takeException(), isNull);
     });
 
