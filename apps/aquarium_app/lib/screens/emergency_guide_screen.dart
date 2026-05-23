@@ -47,7 +47,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       const SizedBox(height: AppSpacing.lg),
 
       _EmergencyCard(
-        title: '🚨 Ammonia/Nitrite Spike',
+        title: 'Ammonia/Nitrite Spike',
         urgency: 'CRITICAL',
         symptoms: 'Fish gasping, lethargy, red gills, deaths',
         immediateActions: [
@@ -61,7 +61,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '🌡️ Heater Malfunction (Too Hot)',
+        title: 'Heater Malfunction (Too Hot)',
         urgency: 'CRITICAL',
         symptoms: 'Fish gasping at surface, erratic swimming, temp >32°C',
         immediateActions: [
@@ -75,7 +75,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '❄️ Heater Failure (Too Cold)',
+        title: 'Heater Failure (Too Cold)',
         urgency: 'HIGH',
         symptoms: 'Lethargic fish, not eating, huddling, temp <20°C',
         immediateActions: [
@@ -88,7 +88,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '⚡ Power Outage',
+        title: 'Power Outage',
         urgency: 'MODERATE-HIGH',
         symptoms: 'No filter, heater, or lights',
         immediateActions: [
@@ -103,7 +103,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '🧪 Chemical Contamination',
+        title: 'Chemical Contamination',
         urgency: 'CRITICAL',
         symptoms: 'Sudden deaths, fish acting erratically, unusual smell',
         immediateActions: [
@@ -117,7 +117,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '💧 Tank Leak',
+        title: 'Tank Leak',
         urgency: 'HIGH',
         symptoms: 'Water on floor, dropping water level',
         immediateActions: [
@@ -132,7 +132,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '🦠 Disease Outbreak',
+        title: 'Disease Outbreak',
         urgency: 'HIGH',
         symptoms: 'Multiple fish showing symptoms, rapid spread',
         immediateActions: [
@@ -147,7 +147,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '🐟 Fish Jumped Out',
+        title: 'Fish Jumped Out',
         urgency: 'TIME-SENSITIVE',
         symptoms: 'Fish on floor, possibly still alive',
         immediateActions: [
@@ -161,7 +161,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '🌊 Chlorine Accident',
+        title: 'Chlorine Accident',
         urgency: 'CRITICAL',
         symptoms:
             'Fish gasping, erratic behaviour immediately after water change',
@@ -176,7 +176,7 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
 
       _EmergencyCard(
-        title: '☠️ Mass Fish Death',
+        title: 'Mass Fish Death',
         urgency: 'CRITICAL',
         symptoms: 'Multiple fish dead or dying rapidly',
         immediateActions: [
@@ -253,7 +253,10 @@ class _EmergencyCard extends StatelessWidget {
       child: ExpansionTile(
         initiallyExpanded: false,
         leading: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xs,
+          ),
           decoration: BoxDecoration(
             color: _urgencyColor,
             borderRadius: AppRadius.xsRadius,
@@ -272,7 +275,12 @@ class _EmergencyCard extends StatelessWidget {
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

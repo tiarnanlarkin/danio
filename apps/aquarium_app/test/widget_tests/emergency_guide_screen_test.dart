@@ -12,9 +12,7 @@ import 'package:danio/screens/emergency_guide_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const MaterialApp(
-    home: EmergencyGuideScreen(),
-  );
+  return const MaterialApp(home: EmergencyGuideScreen());
 }
 
 // ---------------------------------------------------------------------------
@@ -38,18 +36,19 @@ void main() {
     testWidgets('shows intro card with quick reference text', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(
-        find.textContaining('large water change'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('large water change'), findsOneWidget);
     });
 
-    testWidgets('shows emergency category titles', (tester) async {
+    testWidgets('shows emergency category titles as plain labels', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       // Ammonia spike card is near top of list
-      expect(find.text('🚨 Ammonia/Nitrite Spike'), findsOneWidget);
-      expect(find.text('🌡️ Heater Malfunction (Too Hot)'), findsOneWidget);
+      expect(find.text('Ammonia/Nitrite Spike'), findsOneWidget);
+      expect(find.text('Heater Malfunction (Too Hot)'), findsOneWidget);
+      expect(find.textContaining(String.fromCharCode(0x1F6A8)), findsNothing);
+      expect(find.textContaining(String.fromCharCode(0x1F321)), findsNothing);
     });
 
     testWidgets('shows urgency badges', (tester) async {
@@ -72,7 +71,7 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pump();
 
-      await tester.tap(find.text('🚨 Ammonia/Nitrite Spike'));
+      await tester.tap(find.text('Ammonia/Nitrite Spike'));
       await tester.pumpAndSettle();
 
       expect(find.text('IMMEDIATE ACTIONS:'), findsOneWidget);
@@ -83,7 +82,7 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pump();
 
-      await tester.tap(find.text('🚨 Ammonia/Nitrite Spike'));
+      await tester.tap(find.text('Ammonia/Nitrite Spike'));
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Follow-up:'), findsOneWidget);
