@@ -39,7 +39,11 @@ void showFeedingInfo(
         Center(
           child: Column(
             children: [
-              const Text('\u{1F3A3}', style: TextStyle(fontSize: 40)),
+              const Icon(
+                Icons.restaurant,
+                size: 40,
+                color: AppColors.secondary,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Semantics(
                 header: true,
@@ -60,12 +64,10 @@ void showFeedingInfo(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '\u{1F4CB} Feeding Guidelines',
-                style: AppTypography.labelMedium.copyWith(
-                  color: AppColors.secondary,
-                  fontWeight: FontWeight.w600,
-                ),
+              const _CareSheetLabel(
+                icon: Icons.checklist,
+                label: 'Feeding Guidelines',
+                color: AppColors.secondary,
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
@@ -91,11 +93,10 @@ void showFeedingInfo(
           '',
         ),
         const SizedBox(height: AppSpacing.md),
-        Text(
-          '\u{1F41F} What this means for your fish',
-          style: AppTypography.labelMedium.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+        _CareSheetLabel(
+          icon: Icons.set_meal,
+          label: 'What this means for your fish',
+          color: context.textPrimary,
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
@@ -139,7 +140,7 @@ void showPlantInfo(BuildContext context) {
         Center(
           child: Column(
             children: [
-              const Text('\u{1FAB4}', style: TextStyle(fontSize: 40)),
+              const Icon(Icons.eco, size: 40, color: DanioColors.emeraldGreen),
               const SizedBox(height: AppSpacing.sm),
               Semantics(
                 header: true,
@@ -160,12 +161,10 @@ void showPlantInfo(BuildContext context) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '\u{2728} Plant Care Tips',
-                style: AppTypography.labelMedium.copyWith(
-                  color: DanioColors.emeraldGreen,
-                  fontWeight: FontWeight.w600,
-                ),
+              const _CareSheetLabel(
+                icon: Icons.eco,
+                label: 'Plant Care Tips',
+                color: DanioColors.emeraldGreen,
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
@@ -178,11 +177,10 @@ void showPlantInfo(BuildContext context) {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        Text(
-          '\u{1F41F} What this means for your fish',
-          style: AppTypography.labelMedium.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+        _CareSheetLabel(
+          icon: Icons.set_meal,
+          label: 'What this means for your fish',
+          color: context.textPrimary,
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
@@ -190,15 +188,60 @@ void showPlantInfo(BuildContext context) {
           style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
         ),
         const SizedBox(height: AppSpacing.md),
-        Text(
-          '\u{1F4A1} Pro tip: Use old tank water to water your houseplants — packed with nutrients!',
-          style: AppTypography.bodySmall.copyWith(
-            color: context.textSecondary,
-            fontStyle: FontStyle.italic,
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.lightbulb_outline,
+              size: AppIconSizes.sm,
+              color: context.textSecondary,
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Expanded(
+              child: Text(
+                'Pro tip: Use old tank water to water your houseplants - packed with nutrients!',
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textSecondary,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacing.sm),
       ],
     ),
   );
+}
+
+class _CareSheetLabel extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _CareSheetLabel({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(icon, size: AppIconSizes.sm, color: color),
+        const SizedBox(width: AppSpacing.xs),
+        Expanded(
+          child: Text(
+            label,
+            style: AppTypography.labelMedium.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
