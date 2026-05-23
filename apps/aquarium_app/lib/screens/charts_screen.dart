@@ -550,7 +550,11 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
       await Share.shareXFiles([XFile(file.path)], subject: 'Water Test Export');
     } catch (e, st) {
-      logError('ChartsScreen: CSV export failed: $e', stackTrace: st, tag: 'ChartsScreen');
+      logError(
+        'ChartsScreen: CSV export failed: $e',
+        stackTrace: st,
+        tag: 'ChartsScreen',
+      );
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
@@ -788,79 +792,92 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   }
 
   void _showMultiParamDialog(BuildContext context, List<LogEntry> logs) {
-    showAppDialog(
+    final draftParams = Set<String>.from(_selectedParams);
+
+    showDialog<void>(
       context: context,
-      title: 'Compare Parameters',
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('Select 2-4 parameters to overlay on the same chart:'),
-          const SizedBox(height: AppSpacing.md),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: ['nitrate', 'nitrite', 'ammonia', 'ph', 'temp'].map((
-              param,
-            ) {
-              final isSelected = _selectedParams.contains(param);
-              return FilterChip(
-                label: Text(_getParamTitle(param)),
-                selected: isSelected,
-                selectedColor: _getParamColor(param).withAlpha(76),
-                onSelected: (selected) {
-                  setState(() {
-                    if (selected) {
-                      if (_selectedParams.length < 4) {
-                        _selectedParams.add(param);
-                      }
-                    } else {
-                      _selectedParams.remove(param);
-                    }
-                  });
-                },
-              );
-            }).toList(),
-          ),
-          if (_selectedParams.length >= 4)
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.sm),
-              child: Text(
-                'Maximum 4 parameters',
-                style: AppTypography.bodySmall.copyWith(
-                  color: context.textSecondary,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AppDialog(
+              title: 'Compare Parameters',
+              actions: [
+                AppButton(
+                  label: 'Cancel',
+                  onPressed: () {
+                    setState(() {
+                      _multiParamMode = false;
+                      _selectedParams.clear();
+                    });
+                    Navigator.maybePop(dialogContext);
+                  },
+                  variant: AppButtonVariant.text,
+                  isFullWidth: true,
                 ),
+                const SizedBox(height: AppSpacing.xs),
+                AppButton(
+                  label: 'Compare',
+                  onPressed: draftParams.length >= 2
+                      ? () {
+                          setState(() {
+                            _selectedParams = Set<String>.from(draftParams);
+                            _multiParamMode = true;
+                          });
+                          Navigator.maybePop(dialogContext);
+                        }
+                      : null,
+                  variant: AppButtonVariant.primary,
+                  isFullWidth: true,
+                ),
+              ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Select 2-4 parameters to overlay on the same chart:',
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: ['nitrate', 'nitrite', 'ammonia', 'ph', 'temp']
+                        .map((param) {
+                          final isSelected = draftParams.contains(param);
+                          return FilterChip(
+                            label: Text(_getParamTitle(param)),
+                            selected: isSelected,
+                            selectedColor: _getParamColor(param).withAlpha(76),
+                            onSelected: (selected) {
+                              setDialogState(() {
+                                if (selected) {
+                                  if (draftParams.length < 4) {
+                                    draftParams.add(param);
+                                  }
+                                } else {
+                                  draftParams.remove(param);
+                                }
+                              });
+                            },
+                          );
+                        })
+                        .toList(),
+                  ),
+                  if (draftParams.length >= 4)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.sm),
+                      child: Text(
+                        'Maximum 4 parameters',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            ),
-        ],
-      ),
-      actions: [
-        AppButton(
-          label: 'Cancel',
-          onPressed: () {
-            setState(() {
-              _multiParamMode = false;
-              _selectedParams.clear();
-            });
-            Navigator.maybePop(context);
+            );
           },
-          variant: AppButtonVariant.text,
-          isFullWidth: true,
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        AppButton(
-          label: 'Compare',
-          onPressed: _selectedParams.length >= 2
-              ? () {
-                  setState(() {
-                    _multiParamMode = true;
-                  });
-                  Navigator.maybePop(context);
-                }
-              : null,
-          variant: AppButtonVariant.primary,
-          isFullWidth: true,
-        ),
-      ],
+        );
+      },
     );
   }
 }
@@ -884,39 +901,39 @@ class _ChartControlChip extends StatelessWidget {
       button: true,
       selected: isActive,
       child: InkWell(
-      onTap: onTap,
-      borderRadius: AppRadius.largeRadius,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm2,
-          vertical: AppSpacing.xs2,
-        ),
-        decoration: BoxDecoration(
-          color: isActive ? AppOverlays.primary10 : context.surfaceVariant,
-          borderRadius: AppRadius.largeRadius,
-          border: isActive
-              ? Border.all(color: AppColors.primary, width: 1.5)
-              : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: AppIconSizes.xs,
-              color: isActive ? AppColors.primary : context.textSecondary,
-            ),
-            const SizedBox(width: AppSpacing.xs2),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        onTap: onTap,
+        borderRadius: AppRadius.largeRadius,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm2,
+            vertical: AppSpacing.xs2,
+          ),
+          decoration: BoxDecoration(
+            color: isActive ? AppOverlays.primary10 : context.surfaceVariant,
+            borderRadius: AppRadius.largeRadius,
+            border: isActive
+                ? Border.all(color: AppColors.primary, width: 1.5)
+                : null,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: AppIconSizes.xs,
                 color: isActive ? AppColors.primary : context.textSecondary,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               ),
-            ),
-          ],
+              const SizedBox(width: AppSpacing.xs2),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: isActive ? AppColors.primary : context.textSecondary,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

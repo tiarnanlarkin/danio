@@ -129,5 +129,30 @@ void main() {
         findsNothing,
       );
     });
+
+    testWidgets('compare dialog enables after selecting a second parameter', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          logs: [_waterTestLog(WaterTestResults(nitrate: 10, nitrite: 0.0))],
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Compare'));
+      await tester.pumpAndSettle();
+      expect(find.text('Compare Parameters'), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(FilterChip, 'Nitrite (NO₂) ppm'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Compare').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Multi-Parameter Comparison'), findsOneWidget);
+      expect(find.text('Compare Parameters'), findsNothing);
+    });
   });
 }
