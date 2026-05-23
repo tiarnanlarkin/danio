@@ -104,6 +104,10 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           leading: Semantics(
             label: A11yLabels.closeButton('new tank form'),
             button: true,
+            onTap: () {
+              Navigator.maybePop(context);
+            },
+            excludeSemantics: true,
             child: IconButton(
               icon: const Icon(Icons.close),
               tooltip: 'Close and discard new tank',

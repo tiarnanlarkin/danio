@@ -118,11 +118,33 @@ void main() {
         await tester.pump();
         await tester.pump(const Duration(seconds: 1));
 
-        expect(
-          find.bySemanticsLabel('Freshwater, selected'),
-          findsOneWidget,
-        );
+        expect(find.bySemanticsLabel('Freshwater, selected'), findsOneWidget);
         expect(_blankTapTargets(tester), isEmpty);
+      } finally {
+        semantics.dispose();
+      }
+    });
+
+    testWidgets('close action exposes one tappable semantics node', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        final closeNode = tester.getSemantics(
+          find.bySemanticsLabel('Close new tank form'),
+        );
+        expect(
+          closeNode.getSemanticsData().hasAction(SemanticsAction.tap),
+          isTrue,
+        );
+        expect(
+          find.bySemanticsLabel('Close and discard new tank'),
+          findsNothing,
+        );
       } finally {
         semantics.dispose();
       }
