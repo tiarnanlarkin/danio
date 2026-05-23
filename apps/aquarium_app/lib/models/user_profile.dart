@@ -434,7 +434,7 @@ class UserProfile {
         (e) => e.name == json['primaryTankType'],
         orElse: () => TankType.freshwater,
       ),
-      goals: (json['goals'] is List?)
+      goals: (json['goals'] is List)
           ? (json['goals'] as List)
                 .whereType<String>()
                 .map(
@@ -451,13 +451,13 @@ class UserProfile {
       lastActivityDate: DateTime.tryParse(
         json['lastActivityDate']?.toString() ?? '',
       ),
-      achievements: (json['achievements'] is List?)
+      achievements: (json['achievements'] is List)
           ? (json['achievements'] as List).whereType<String>().toList()
           : [],
-      completedLessons: (json['completedLessons'] is List?)
+      completedLessons: (json['completedLessons'] is List)
           ? (json['completedLessons'] as List).whereType<String>().toList()
           : [],
-      lessonProgress: (json['lessonProgress'] is Map?)
+      lessonProgress: (json['lessonProgress'] is Map)
           ? (json['lessonProgress'] as Map).cast<String, dynamic>().map((
               key,
               value,
@@ -471,10 +471,10 @@ class UserProfile {
               );
             })
           : {},
-      completedStories: (json['completedStories'] is List?)
+      completedStories: (json['completedStories'] is List)
           ? (json['completedStories'] as List).whereType<String>().toList()
           : [],
-      storyProgress: (json['storyProgress'] is Map?)
+      storyProgress: (json['storyProgress'] is Map)
           ? (json['storyProgress'] as Map).cast<String, dynamic>()
           : {},
       hasCompletedPlacementTest:
@@ -486,7 +486,7 @@ class UserProfile {
         json['placementTestDate']?.toString() ?? '',
       ),
       dailyXpGoal: (json['dailyXpGoal'] as int?) ?? 50,
-      dailyXpHistory: (json['dailyXpHistory'] is Map?)
+      dailyXpHistory: (json['dailyXpHistory'] is Map)
           ? (json['dailyXpHistory'] as Map).cast<String, dynamic>().map(
               (key, value) => MapEntry(key, value is int ? value : 0),
             )
@@ -507,7 +507,7 @@ class UserProfile {
           : League.bronze,
       weeklyXP: (json['weeklyXP'] as int?) ?? 0,
       weekStartDate: DateTime.tryParse(json['weekStartDate']?.toString() ?? ''),
-      inventory: (json['inventory'] is List?)
+      inventory: (json['inventory'] is List)
           ? (json['inventory'] as List)
                 .whereType<Map<String, dynamic>>()
                 .map((e) => InventoryItem.fromJson(e))
@@ -525,10 +525,10 @@ class UserProfile {
       eveningReminderTime: (json['eveningReminderTime'] as String?) ?? '19:00',
       nightReminderTime: (json['nightReminderTime'] as String?) ?? '23:00',
       learningStylePreference: json['learningStylePreference'] as String?,
-      weekendActivityDates: (json['weekendActivityDates'] is List?)
+      weekendActivityDates: (json['weekendActivityDates'] is List)
           ? (json['weekendActivityDates'] as List).whereType<String>().toList()
           : [],
-      fullHeartDates: (json['fullHeartDates'] is List?)
+      fullHeartDates: (json['fullHeartDates'] is List)
           ? (json['fullHeartDates'] as List).whereType<String>().toList()
           : [],
       perfectScoreCount: (json['perfectScoreCount'] as int?) ?? 0,

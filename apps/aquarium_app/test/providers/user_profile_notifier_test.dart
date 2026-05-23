@@ -142,20 +142,8 @@ void main() {
     });
 
     test('handles JSON with sparse fields by using defaults', () async {
-      // Supply the list/map fields that fromJson casts (these trigger type
-      // errors when null), and omit scalars (which use ?? defaults).
       final sparseJson = {
         'id': 'sparse-user',
-        'goals': <String>[],
-        'achievements': <String>[],
-        'completedLessons': <String>[],
-        'lessonProgress': <String, dynamic>{},
-        'completedStories': <String>[],
-        'storyProgress': <String, dynamic>{},
-        'dailyXpHistory': <String, int>{},
-        'inventory': <dynamic>[],
-        'weekendActivityDates': <String>[],
-        'fullHeartDates': <String>[],
         'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),
       };

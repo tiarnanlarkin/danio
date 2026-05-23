@@ -427,15 +427,10 @@ void main() {
     group('fromJson defaults', () {
       test('provides sensible defaults for scalar-only JSON', () {
         final now = DateTime.utc(2025, 1, 1);
-        // Provide empty lists/maps explicitly because fromJson uses
-        // `is List?` guards that match null and then cast, causing a
-        // crash when the key is truly absent. A realistic minimal JSON
-        // always includes these keys (they come from toJson output).
         final minimalJson = <String, dynamic>{
           'id': 'min-user',
           'createdAt': now.toIso8601String(),
           'updatedAt': now.toIso8601String(),
-          // Empty collections to avoid the `null as List` cast issue
           'goals': <String>[],
           'achievements': <String>[],
           'completedLessons': <String>[],
@@ -490,18 +485,21 @@ void main() {
         expect(profile.perfectScoreCount, 0);
       });
 
-      test(
-        'fromJson crashes on truly missing list keys (known limitation)',
-        () {
-          // Documents that fromJson uses `is List?` which matches null,
-          // then casts with `as List` -- so absent keys throw a TypeError.
-          // This is a known defect; if fixed, flip this to expect no throw.
-          expect(
-            () => UserProfile.fromJson(<String, dynamic>{'id': 'x'}),
-            throwsA(isA<TypeError>()),
-          );
-        },
-      );
+      test('fromJson tolerates truly missing collection keys', () {
+        final profile = UserProfile.fromJson(<String, dynamic>{'id': 'x'});
+
+        expect(profile.id, 'x');
+        expect(profile.goals, [UserGoal.keepFishAlive]);
+        expect(profile.achievements, isEmpty);
+        expect(profile.completedLessons, isEmpty);
+        expect(profile.lessonProgress, isEmpty);
+        expect(profile.completedStories, isEmpty);
+        expect(profile.storyProgress, isEmpty);
+        expect(profile.dailyXpHistory, isEmpty);
+        expect(profile.inventory, isEmpty);
+        expect(profile.weekendActivityDates, isEmpty);
+        expect(profile.fullHeartDates, isEmpty);
+      });
     });
   });
 
