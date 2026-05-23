@@ -85,6 +85,15 @@ void main() {
       expect(find.byIcon(Icons.privacy_tip_outlined), findsOneWidget);
     });
 
+    testWidgets('under-13 link keeps a 48dp tap target', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final under13Button = find.widgetWithText(TextButton, "I'm under 13");
+      expect(under13Button, findsOneWidget);
+      expect(tester.getSize(under13Button).height, greaterThanOrEqualTo(48));
+    });
+
     testWidgets('consent controls expose direct semantic tap actions', (
       tester,
     ) async {
