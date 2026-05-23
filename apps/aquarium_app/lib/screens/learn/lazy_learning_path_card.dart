@@ -7,14 +7,10 @@ import '../../theme/app_theme.dart';
 import '../../theme/learning_visuals.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../widgets/core/app_button.dart';
-import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/core/pressable_card.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../lesson_screen.dart';
-
-/// Path IDs with mostly stub/empty content — gated as "Coming Soon".
-const comingSoonPathIds = <String>{};
 
 /// Lazy-loading learning path card.
 /// Shows metadata (title, description, progress) immediately.
@@ -57,7 +53,6 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
         widget.completedLessons == widget.totalLessons &&
         widget.totalLessons > 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isComingSoon = comingSoonPathIds.contains(meta.id);
     final visual = LearningVisuals.forPath(meta.id);
 
     // Cross-path prerequisite locking
@@ -71,7 +66,7 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
     final isLoading = lessonState.isPathLoading(meta.id);
 
     return Opacity(
-      opacity: (isComingSoon || isPathLocked) ? 0.6 : 1.0,
+      opacity: isPathLocked ? 0.6 : 1.0,
       child: Container(
         decoration: BoxDecoration(
           color: context.cardColor,
@@ -96,8 +91,6 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: isPathLocked
               ? _buildPathLockedTile(context, meta)
-              : isComingSoon
-              ? _buildComingSoonTile(context, meta, isDark)
               : ExpansionTile(
                   shape: RoundedRectangleBorder(
                     borderRadius: AppRadius.largeRadius,
@@ -333,92 +326,6 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
         DanioSnackBar.warning(
           context,
           'Complete $prereqNames first to unlock ${meta.title}.',
-        );
-      },
-    );
-  }
-
-  Widget _buildComingSoonTile(
-    BuildContext context,
-    PathMetadata meta,
-    bool isDark,
-  ) {
-    final visual = LearningVisuals.forPath(meta.id);
-
-    return ListTile(
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      leading: Container(
-        width: 52,
-        height: 52,
-        decoration: BoxDecoration(
-          color: visual.backgroundColor,
-          borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: visual.color.withAlpha(42), width: 1),
-        ),
-        child: Icon(visual.icon, color: visual.color, size: AppIconSizes.lg),
-      ),
-      title: Row(
-        children: [
-          Expanded(
-            child: Text(
-              meta.title,
-              style: AppTypography.labelLarge.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: DanioColors.amberGold.withValues(alpha: 0.15),
-              borderRadius: AppRadius.md2Radius,
-              border: Border.all(
-                color: DanioColors.amberGold.withValues(alpha: 0.4),
-              ),
-            ),
-            child: Text(
-              'Coming Soon',
-              style: AppTypography.labelSmall.copyWith(
-                color: DanioColors.amberGoldText,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: AppSpacing.xs),
-        child: Text(
-          meta.description,
-          style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      onTap: () {
-        showAppDialog(
-          context: context,
-          title: 'Coming Soon',
-          child: Text(
-            'The "${meta.title}" path is coming soon — we\'re crafting something great! '
-            'Stay tuned.',
-            style: AppTypography.bodyLarge,
-          ),
-          actions: [
-            AppButton(
-              label: 'Got it!',
-              onPressed: () => Navigator.of(context).pop(),
-              variant: AppButtonVariant.text,
-              isFullWidth: true,
-            ),
-          ],
         );
       },
     );

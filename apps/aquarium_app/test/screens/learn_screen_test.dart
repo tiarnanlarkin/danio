@@ -5,6 +5,8 @@
 //
 // Run: flutter test test/screens/learn_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:danio/providers/lesson_provider.dart';
 
@@ -26,8 +28,9 @@ void main() {
     });
 
     test('advanced_topics has non-empty lessonIds (not a stub)', () {
-      final at = LessonProvider.allPathMetadata
-          .firstWhere((p) => p.id == 'advanced_topics');
+      final at = LessonProvider.allPathMetadata.firstWhere(
+        (p) => p.id == 'advanced_topics',
+      );
       expect(at.lessonIds, isNotEmpty);
     });
 
@@ -62,9 +65,20 @@ void main() {
     });
 
     test('equipment path has content (was once a stub candidate)', () {
-      final eq = LessonProvider.allPathMetadata
-          .firstWhere((p) => p.id == 'equipment');
+      final eq = LessonProvider.allPathMetadata.firstWhere(
+        (p) => p.id == 'equipment',
+      );
       expect(eq.lessonIds.length, greaterThanOrEqualTo(1));
+    });
+
+    test('lazy path cards do not carry a hidden coming-soon gate', () {
+      final source = File(
+        'lib/screens/learn/lazy_learning_path_card.dart',
+      ).readAsStringSync();
+
+      expect(source, isNot(contains('comingSoonPathIds')));
+      expect(source, isNot(contains('Coming Soon')));
+      expect(source, isNot(contains('coming soon')));
     });
   });
 }
