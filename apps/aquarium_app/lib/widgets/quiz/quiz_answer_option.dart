@@ -174,8 +174,8 @@ class _QuizAnswerOptionState extends State<QuizAnswerOption>
             child: Text(
               widget.option,
               style: AppTypography.bodyLarge,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 4,
+              softWrap: true,
+              overflow: TextOverflow.visible,
             ),
           ),
         ],
