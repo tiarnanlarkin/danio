@@ -11,6 +11,7 @@ void main() {
       'lib/features/smart/fish_id/fish_id_screen.dart',
       'lib/features/smart/symptom_triage/symptom_triage_screen.dart',
       'lib/features/smart/weekly_plan/weekly_plan_screen.dart',
+      'lib/widgets/ai_stocking_suggestion.dart',
     ];
 
     expect(serviceSource, contains('setupRequired'));

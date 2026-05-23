@@ -72,10 +72,7 @@ class _AiStockingSuggestionSheetState
   Future<void> _fetchSuggestion() async {
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) {
-      setState(
-        () => _error =
-            'AI stocking suggestions aren\'t available yet — we\'re working on bringing them to you! 🐟',
-      );
+      setState(() => _error = OpenAIUserMessages.setupRequired);
       return;
     }
 
@@ -155,7 +152,11 @@ class _AiStockingSuggestionSheetState
         });
       }
     } catch (e, st) {
-      logError('AiStockingSuggestion: suggestion failed: $e', stackTrace: st, tag: 'AiStockingSuggestion');
+      logError(
+        'AiStockingSuggestion: suggestion failed: $e',
+        stackTrace: st,
+        tag: 'AiStockingSuggestion',
+      );
       if (mounted) {
         setState(() {
           _error = 'Could not get AI suggestion. Check your connection.';
@@ -207,11 +208,7 @@ class _AiStockingSuggestionSheetState
           // Content
           Expanded(
             child: _loading
-                ? Center(
-                    child: BubbleLoader.small(
-                      color: AppColors.accent,
-                    ),
-                  )
+                ? Center(child: BubbleLoader.small(color: AppColors.accent))
                 : _error != null
                 ? Center(
                     child: Column(
