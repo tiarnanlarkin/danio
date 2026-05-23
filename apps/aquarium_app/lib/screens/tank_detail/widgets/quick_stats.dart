@@ -200,7 +200,7 @@ class _WaterChangeIndicator extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.sm),
           Text(
-            isOverdue ? '$label \u26a0\ufe0f' : label,
+            label,
             style: AppTypography.bodySmall.copyWith(
               color: isOverdue ? AppColors.warning : AppColors.success,
               fontWeight: FontWeight.w600,

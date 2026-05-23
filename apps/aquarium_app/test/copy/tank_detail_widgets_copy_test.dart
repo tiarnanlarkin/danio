@@ -28,6 +28,7 @@ void main() {
   test('daily care feedback stays quiet and non-decorative', () {
     final files = [
       'lib/screens/tank_detail/tank_detail_screen.dart',
+      'lib/screens/tank_detail/widgets/quick_stats.dart',
       'lib/screens/livestock/livestock_screen.dart',
       'lib/screens/livestock/livestock_add_dialog.dart',
     ];
@@ -37,6 +38,8 @@ void main() {
       '🐟',
       '🐠',
       r'\u{1F41F}',
+      r'\u26a0',
+      r'\ufe0f',
       'Feeding logged!',
     ];
 
