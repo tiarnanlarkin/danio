@@ -80,10 +80,7 @@ void showWaterParams(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
               child: Column(
                 children: [
-                  Text(
-                    'No test results yet 🧪',
-                    style: AppTypography.bodyMedium,
-                  ),
+                  Text('No test results yet', style: AppTypography.bodyMedium),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Log your first water test to see results here!',
