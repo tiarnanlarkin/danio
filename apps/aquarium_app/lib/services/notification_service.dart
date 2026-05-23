@@ -353,8 +353,8 @@ class NotificationService {
 
     await _plugin.show(
       0,
-      '🐟 Danio',
-      'Notifications are working!',
+      'Danio',
+      'Notifications are working.',
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'test',
@@ -835,8 +835,8 @@ class NotificationService {
     );
     await _plugin.zonedSchedule(
       _onboardingWelcomeId,
-      'Welcome to Danio 🐠',
-      'Your fishkeeping journey starts here. Let\'s meet your fish.',
+      'Welcome to Danio',
+      'Your aquarium setup is ready. Open Danio when you want to continue.',
       welcomeTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -895,8 +895,8 @@ class NotificationService {
     final discoveryTime = tz.TZDateTime.from(tomorrow, tz.local);
     await _plugin.zonedSchedule(
       _onboardingDiscoveryHookId,
-      'Did you know? 🐟',
-      'Most aquarium fish can recognise their owner\'s face. Your fish know you — time to learn about them.',
+      'Aquarium fact',
+      'Some aquarium fish can recognise familiar people. Open Learn when you want to explore more.',
       discoveryTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -926,8 +926,8 @@ class NotificationService {
     final streakNudgeTime = tz.TZDateTime.from(dayAfterTomorrow, tz.local);
     await _plugin.zonedSchedule(
       _onboardingStreakNudgeId,
-      'Day 3 — you\'re building a habit 💪',
-      'Two days in and counting. Today\'s lesson takes just 3 minutes.',
+      'Learning reminder',
+      'A short lesson is ready when you want to continue.',
       streakNudgeTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -973,8 +973,8 @@ class NotificationService {
 
     await _plugin.show(
       _onboardingAchievementId,
-      'Getting Consistent! 🏆',
-      '3 lessons done. You\'re already ahead of most fishkeepers.',
+      'Getting consistent',
+      '3 lessons done. Your learning progress is building.',
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'achievements',
@@ -1053,7 +1053,7 @@ class NotificationService {
         _weeklyTips[DateTime.now().millisecondsSinceEpoch % _weeklyTips.length];
     await _plugin.zonedSchedule(
       _weeklyTipDay7Id,
-      '🐠 Your weekly fishkeeping tip',
+      'Weekly fishkeeping tip',
       tip,
       day7Tz,
       details,
@@ -1068,7 +1068,7 @@ class NotificationService {
     final day14Tz = tz.TZDateTime.from(day14, tz.local);
     await _plugin.zonedSchedule(
       _progressNudgeDay14Id,
-      'Two weeks in — great progress! 📊',
+      'Water test reminder',
       'Have you logged any water tests this week? Regular testing keeps your fish healthy.',
       day14Tz,
       details,
@@ -1087,8 +1087,8 @@ class NotificationService {
     final day21Tz = tz.TZDateTime.from(day21, tz.local);
     await _plugin.zonedSchedule(
       _discoveryHookDay21Id,
-      'Discover something new 🧠',
-      'There are $lessonCount bite-sized lessons waiting for you. Even 3 minutes a day builds expertise!',
+      'Lesson library reminder',
+      'There are $lessonCount bite-sized lessons available when you want to continue.',
       day21Tz,
       details,
       androidScheduleMode: scheduleMode,
@@ -1102,8 +1102,8 @@ class NotificationService {
     final day28Tz = tz.TZDateTime.from(day28, tz.local);
     await _plugin.zonedSchedule(
       _milestoneApproachDay28Id,
-      'Almost a month! 🎉',
-      'Your fish are thriving — and so are you. You\'re becoming a real aquarist!',
+      'Monthly check-in',
+      'Your tank history is building. Check recent care and learning progress when you have time.',
       day28Tz,
       details,
       androidScheduleMode: scheduleMode,

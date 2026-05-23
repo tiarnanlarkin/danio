@@ -68,6 +68,25 @@ void main() {
       expect(source, isNot(contains('Last call before midnight')));
     });
 
+    test('notification service titles avoid decorative emoji', () {
+      final source = File(
+        'lib/services/notification_service.dart',
+      ).readAsStringSync();
+      final decorativeCodePoints = [
+        0x1F41F, // fish
+        0x1F420, // tropical fish
+        0x1F4AA, // flexed biceps
+        0x1F389, // party popper
+        0x1F9E0, // brain
+        0x1F4CA, // bar chart
+        0x1F3C6, // trophy
+      ];
+
+      for (final codePoint in decorativeCodePoints) {
+        expect(source, isNot(contains(String.fromCharCode(codePoint))));
+      }
+    });
+
     test('formats user-created reminders without decorative prefixes', () {
       expect(NotificationCopy.userReminderTitle('Trim plants'), 'Trim plants');
       expect(NotificationCopy.userReminderTitle('   '), 'Aquarium reminder');
