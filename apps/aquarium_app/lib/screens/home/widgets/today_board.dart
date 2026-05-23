@@ -138,37 +138,29 @@ class TodayBoardCard extends ConsumerWidget {
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),
-        decoration: BoxDecoration(
-          color: AppOverlays.white80,
-          borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppOverlays.white50),
-          boxShadow: AppShadows.soft,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: AppIconSizes.sm,
-              color: AppColors.success,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                hasCardsToReview
-                    ? 'Tasks done — $emoji reviews waiting!'
-                    : 'All caught up! $emoji $label',
-                style: AppTypography.labelMedium.copyWith(
-                  color: context.textSecondary,
+          decoration: BoxDecoration(
+            color: AppOverlays.white80,
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(color: AppOverlays.white50),
+            boxShadow: AppShadows.soft,
+          ),
+          child: Row(
+            children: [
+              Icon(icon, size: AppIconSizes.sm, color: AppColors.success),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  hasCardsToReview
+                      ? 'Tasks done — $emoji reviews waiting!'
+                      : 'All caught up! $emoji $label',
+                  style: AppTypography.labelMedium.copyWith(
+                    color: context.textSecondary,
+                  ),
                 ),
               ),
-            ),
-            Icon(
-              Icons.arrow_forward,
-              size: 16,
-              color: context.textSecondary,
-            ),
-          ],
-        ),
+              Icon(Icons.arrow_forward, size: 16, color: context.textSecondary),
+            ],
+          ),
         ),
       ),
     );
@@ -254,10 +246,15 @@ class _TaskRow extends ConsumerWidget {
   /// Returns the tab index that best matches the task, or null for tank detail.
   int? _resolveTab(String title) {
     final lower = title.toLowerCase();
-    if (lower.contains('lesson') || lower.contains('learn') || lower.contains('quiz') || lower.contains('study')) {
+    if (lower.contains('lesson') ||
+        lower.contains('learn') ||
+        lower.contains('quiz') ||
+        lower.contains('study')) {
       return 0; // Learn tab
     }
-    if (lower.contains('review') || lower.contains('practice') || lower.contains('flash')) {
+    if (lower.contains('review') ||
+        lower.contains('practice') ||
+        lower.contains('flash')) {
       return 1; // Practice tab
     }
     // Water-related, feeding, maintenance, filter, glass → Tank tab (home)
@@ -405,10 +402,12 @@ class _DailyGoalBar extends ConsumerWidget {
               Expanded(
                 child: Text(
                   isComplete
-                      ? 'Daily goal complete! 🎉'
+                      ? 'Daily goal complete!'
                       : 'Daily goal · $earned / $target XP',
                   style: AppTypography.labelSmall.copyWith(
-                    color: isComplete ? AppColors.success : context.textSecondary,
+                    color: isComplete
+                        ? AppColors.success
+                        : context.textSecondary,
                     fontWeight: isComplete ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),
