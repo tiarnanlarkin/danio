@@ -98,7 +98,9 @@ class _GlassCardState extends State<GlassCard>
     final newValue = MediaQuery.of(context).disableAnimations;
     if (newValue != _disableMotion) {
       _disableMotion = newValue;
-      _controller.duration = _disableMotion ? Duration.zero : AppDurations.short;
+      _controller.duration = _disableMotion
+          ? Duration.zero
+          : AppDurations.short;
     }
   }
 
@@ -173,15 +175,12 @@ class _GlassCardState extends State<GlassCard>
           onTapUp: _handleTapUp,
           onTapCancel: _handleTapCancel,
           onTap: _handleTap,
-          onLongPress: _handleLongPress,
+          onLongPress: widget.onLongPress == null ? null : _handleLongPress,
           child: card,
         ),
       );
     } else if (widget.semanticLabel != null) {
-      card = Semantics(
-        label: widget.semanticLabel,
-        child: card,
-      );
+      card = Semantics(label: widget.semanticLabel, child: card);
     }
 
     return card;
@@ -276,8 +275,12 @@ class _GlassCardState extends State<GlassCard>
       borderRadius: radius,
       border: Border.all(
         color: isDark
-            ? const Color(0xFF5B9EA6).withAlpha(64) // decorative only — not for text
-            : const Color(0xFF5B9EA6).withAlpha(38), // decorative only — not for text
+            ? const Color(0xFF5B9EA6).withAlpha(
+                64,
+              ) // decorative only — not for text
+            : const Color(
+                0xFF5B9EA6,
+              ).withAlpha(38), // decorative only — not for text
         width: 1,
       ),
       boxShadow: [
