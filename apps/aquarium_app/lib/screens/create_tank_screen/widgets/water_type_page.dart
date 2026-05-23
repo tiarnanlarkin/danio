@@ -68,6 +68,7 @@ class WaterTypePage extends StatelessWidget {
                 'Currently ${startDate.day}/${startDate.month}/${startDate.year}',
               ),
               button: true,
+              excludeSemantics: true,
               child: InkWell(
                 onTap: () async {
                   final picked = await showDatePicker(
@@ -194,6 +195,7 @@ class _WaterTypeOption extends StatelessWidget {
       button: true,
       selected: isSelected,
       onTap: onTap,
+      excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
         borderRadius: AppRadius.mediumRadius,

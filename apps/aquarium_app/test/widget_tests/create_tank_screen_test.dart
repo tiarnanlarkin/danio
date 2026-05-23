@@ -3,6 +3,7 @@
 // Run: flutter test test/widget_tests/create_tank_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -106,6 +107,25 @@ void main() {
         isTrue,
         reason: 'Should have a navigation button to proceed',
       );
+    });
+
+    testWidgets('tank type cards do not expose blank duplicate tap targets', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(
+          find.bySemanticsLabel('Freshwater, selected'),
+          findsOneWidget,
+        );
+        expect(_blankTapTargets(tester), isEmpty);
+      } finally {
+        semantics.dispose();
+      }
     });
 
     testWidgets('tapping continue without name shows validation', (
@@ -235,4 +255,34 @@ void main() {
       expect(find.text('Discard new tank?'), findsNothing);
     });
   });
+}
+
+List<String> _blankTapTargets(WidgetTester tester) {
+  final root =
+      tester.binding.rootPipelineOwner.semanticsOwner?.rootSemanticsNode;
+  if (root == null) return const [];
+
+  final offenders = <String>[];
+
+  void visit(SemanticsNode node) {
+    final data = node.getSemanticsData();
+    final hasAccessibleText = [
+      data.label,
+      data.value,
+      data.hint,
+      data.tooltip,
+    ].any((text) => text.trim().isNotEmpty);
+
+    if (data.hasAction(SemanticsAction.tap) && !hasAccessibleText) {
+      offenders.add('node ${node.id} ${data.rect}');
+    }
+
+    node.visitChildren((child) {
+      visit(child);
+      return true;
+    });
+  }
+
+  visit(root);
+  return offenders;
 }

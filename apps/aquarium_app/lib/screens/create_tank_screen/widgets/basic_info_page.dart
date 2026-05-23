@@ -150,6 +150,7 @@ class _TypeCard extends StatelessWidget {
       enabled: !isDisabled,
       selected: isSelected,
       onTap: onTap,
+      excludeSemantics: true,
       child: Opacity(
         opacity: isDisabled ? 0.6 : 1,
         child: InkWell(

@@ -267,6 +267,7 @@ class _SizePreset extends StatelessWidget {
     return Semantics(
       label: A11yLabels.button('Set volume to $label'),
       button: true,
+      excludeSemantics: true,
       child: ActionChip(label: Text(label), onPressed: onTap),
     );
   }

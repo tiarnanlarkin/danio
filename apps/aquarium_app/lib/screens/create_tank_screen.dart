@@ -330,6 +330,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                     return Semantics(
                       label: A11yLabels.button('Set volume to ${litres}L'),
                       button: true,
+                      excludeSemantics: true,
                       child: ActionChip(
                         label: Text('${litres}L'),
                         onPressed: () {
