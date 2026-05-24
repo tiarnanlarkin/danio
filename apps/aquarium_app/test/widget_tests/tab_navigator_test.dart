@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
@@ -13,6 +14,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/user_profile.dart';
+import 'package:danio/screens/learn/lazy_learning_path_card.dart';
 import 'package:danio/screens/tab_navigator.dart';
 import 'package:danio/providers/lesson_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
@@ -254,6 +256,50 @@ void main() {
       expect(globalPadding, findsNothing);
     });
 
+    testWidgets('bottom dock shields the gesture area from scrolled content', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap(profile: _profile()));
+      await _advance(tester);
+
+      final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
+      final shieldFinder = find.byKey(
+        const ValueKey('danio-bottom-dock-content-shield'),
+      );
+      expect(dockFinder, findsOneWidget);
+      expect(shieldFinder, findsOneWidget);
+
+      final dockRect = tester.getRect(dockFinder);
+      final shieldRect = tester.getRect(shieldFinder);
+
+      expect(shieldRect.bottom, dockRect.bottom);
+      expect(shieldRect.height, greaterThanOrEqualTo(DanioBottomDock.height));
+    });
+
+    testWidgets('bottom dock uses an opaque system navigation bar color', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(profile: _profile()));
+      await _advance(tester);
+
+      final systemUiRegionFinder = find.byKey(
+        const ValueKey('danio-bottom-dock-system-ui'),
+      );
+      expect(systemUiRegionFinder, findsOneWidget);
+
+      final region = tester.widget<AnnotatedRegion<SystemUiOverlayStyle>>(
+        systemUiRegionFinder,
+      );
+      expect(region.value.systemNavigationBarColor?.a, equals(1));
+    });
+
     testWidgets('Learn empty-profile unlock list fits phone width', (
       tester,
     ) async {
@@ -300,6 +346,31 @@ void main() {
 
       expect(learningPathsRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(firstPathRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Learn auto-scroll keeps first path card above bottom dock', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap(profile: _profile()));
+      await _advance(tester);
+
+      final firstPathCardFinder = find.byType(LazyLearningPathCard).first;
+      final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
+      expect(firstPathCardFinder, findsOneWidget);
+      expect(dockFinder, findsOneWidget);
+
+      final firstPathCardRect = tester.getRect(firstPathCardFinder);
+      final dockRect = tester.getRect(dockFinder);
+
+      expect(firstPathCardRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(tester.takeException(), isNull);
     });
 

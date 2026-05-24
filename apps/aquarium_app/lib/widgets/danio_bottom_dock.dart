@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../theme/app_theme.dart';
 
@@ -85,17 +86,42 @@ class DanioBottomDock extends StatelessWidget {
       isDark: isDark,
       attached: attachedToStageSheet,
     );
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
 
     return KeyedSubtree(
       key: const ValueKey('danio-bottom-dock'),
-      child: SafeArea(
-        top: false,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        key: const ValueKey('danio-bottom-dock-system-ui'),
+        value: SystemUiOverlayStyle(
+          systemNavigationBarColor: context.backgroundColor,
+          systemNavigationBarDividerColor: Colors.transparent,
+          systemNavigationBarIconBrightness: isDark
+              ? Brightness.light
+              : Brightness.dark,
+        ),
         child: SizedBox(
-          height: height,
+          height: height + bottomInset,
           child: Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.bottomCenter,
             children: [
+              Positioned.fill(
+                key: const ValueKey('danio-bottom-dock-content-shield'),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        context.backgroundColor.withValues(alpha: 0),
+                        context.backgroundColor.withValues(alpha: 0.96),
+                        context.backgroundColor,
+                      ],
+                      stops: const [0, 0.42, 1],
+                    ),
+                  ),
+                ),
+              ),
               if (attachedToStageSheet)
                 const Positioned.fill(
                   child: KeyedSubtree(
@@ -106,7 +132,7 @@ class DanioBottomDock extends StatelessWidget {
               Positioned(
                 left: _railHorizontalMargin,
                 right: _railHorizontalMargin,
-                bottom: _railBottomMargin,
+                bottom: bottomInset + _railBottomMargin,
                 height: _railHeight,
                 child: Stack(
                   clipBehavior: Clip.none,
