@@ -96,7 +96,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
           ),
         ),
         child: SafeArea(
-          bottom: false,
+          bottom: true,
           child: CustomScrollView(
             slivers: [
               // AppBar with back button

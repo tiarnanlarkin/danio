@@ -133,5 +133,33 @@ void main() {
       );
       expect(overflowErrors, isEmpty);
     });
+
+    testWidgets('keeps tool grid above the Android gesture navigation inset', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+          ],
+          child: const MaterialApp(
+            home: MediaQuery(
+              data: MediaQueryData(
+                padding: EdgeInsets.only(bottom: 34),
+                viewPadding: EdgeInsets.only(bottom: 34),
+              ),
+              child: WorkshopScreen(),
+            ),
+          ),
+        ),
+      );
+      await _advance(tester);
+
+      final scrollViewRect = tester.getRect(find.byType(CustomScrollView));
+      expect(scrollViewRect.bottom, lessThanOrEqualTo(844 - 34));
+    });
   });
 }
