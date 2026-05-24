@@ -42,8 +42,30 @@
   - `flutter test test/navigation/danio_tool_catalog_test.dart test/screens/tool_entry_points_contract_test.dart test/widget_tests/smart_screen_test.dart test/widget_tests/tank_detail_screen_test.dart test/widget/settings_screen_test.dart test/widget_tests/tab_navigator_test.dart test/widgets/stage/swiss_army_panel_test.dart`
   - Result: pass
 - `flutter analyze --no-pub`: pass
+- Full `flutter test`: pass
+- `flutter test integration_test/smoke_test_v2.dart -d emulator-5556`: pass
+  - Note: the first install attempt reported emulator storage pressure, then Flutter recovered by uninstalling/reinstalling the app and the smoke test completed.
+- `flutter build apk --debug --target lib/main.dart`: pass
+- Normal debug APK installed on `emulator-5556`: pass
+
+## Manual Emulator Evidence
+
+- Fresh launch after normal APK install: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/current-launch.png`
+- Consent/onboarding checkpoint: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/after-consent.png`, `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/after-onboarding.png`
+- Smart: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/smart.png`
+  - XML confirms `Workshop Compatibility Checker`.
+- More: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/more.png`
+  - XML confirms `Workshop`, `Analytics`, and `Preferences` remain in the global hub.
+- Preferences: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/settings.png`
+  - Current viewport confirms settings-focused content and no duplicate Backup & Restore tile visible.
+- Workshop: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/workshop.png`
+- Tank tab: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/tank-tab.png`
+- Tank Toolbox: `docs/qa/screenshots/tool-entry-consolidation-2026-05-24/after/tank-toolbox.png`
+  - XML confirms only `Reminders` and `Tank Journal`; no `Analytics` or `Species Search`.
+- Logcat scan after manual pass:
+  - No `FATAL EXCEPTION`, `FlutterError`, `Unhandled Exception`, or widget exception entries found.
+  - `AndroidRuntime` matches were routine `monkey`/`uiautomator` command startup and shutdown lines, not app crashes.
 
 ## Open QA
 
-- Capture post-change screenshots after installing the updated APK and completing or seeding the app into the main tab navigator.
-- Run full `flutter test`, integration smoke, APK build/install, and logcat scan before merging.
+- Phone review can repeat the same changed surfaces once a physical device is available.
