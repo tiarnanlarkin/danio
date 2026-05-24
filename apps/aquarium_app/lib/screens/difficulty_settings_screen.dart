@@ -85,49 +85,65 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Overall Skill Level',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+              Expanded(
+                child: Text(
+                  'Overall Skill Level',
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm2,
-                  vertical: AppSpacing.xs2,
-                ),
-                decoration: BoxDecoration(
-                  color: Color(
-                    _difficultyService.getDifficultyColor(difficulty),
-                  ).withAlpha(51),
-                  borderRadius: AppRadius.largeRadius,
-                  border: Border.all(
-                    color: Color(
-                      _difficultyService.getDifficultyColor(difficulty),
+              const SizedBox(width: AppSpacing.sm),
+              Flexible(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm2,
+                      vertical: AppSpacing.xs2,
                     ),
-                    width: 2,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      difficulty.emoji,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      difficulty.displayName,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                    decoration: BoxDecoration(
+                      color: Color(
+                        _difficultyService.getDifficultyColor(difficulty),
+                      ).withAlpha(51),
+                      borderRadius: AppRadius.largeRadius,
+                      border: Border.all(
                         color: Color(
                           _difficultyService.getDifficultyColor(difficulty),
                         ),
+                        width: 2,
                       ),
                     ),
-                  ],
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _difficultyIcon(difficulty),
+                          size: AppIconSizes.sm,
+                          color: Color(
+                            _difficultyService.getDifficultyColor(difficulty),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Flexible(
+                          child: Text(
+                            difficulty.displayName,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(
+                                _difficultyService.getDifficultyColor(
+                                  difficulty,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -138,7 +154,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           Text(
             '${(overallSkill * 100).toInt()}% Mastery',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
         ],
@@ -297,8 +315,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           AppColors.success,
         ),
         _buildStatChip(
-          '${summary['trend'].emoji} ${summary['trend'].displayName}',
-          Icons.trending_up,
+          (summary['trend'] as PerformanceTrend).displayName,
+          _trendIcon(summary['trend'] as PerformanceTrend),
           _getTrendColor(summary['trend'] as PerformanceTrend),
         ),
       ],
@@ -307,7 +325,10 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
 
   Widget _buildStatChip(String label, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
@@ -370,7 +391,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           child: Text(
             'Complete lessons to see your performance history',
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),
@@ -415,9 +438,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               borderRadius: AppRadius.smallRadius,
             ),
             child: Center(
-              child: Text(
-                record.difficulty.emoji,
-                style: Theme.of(context).textTheme.titleLarge!,
+              child: Icon(
+                _difficultyIcon(record.difficulty),
+                color: Color(
+                  _difficultyService.getDifficultyColor(record.difficulty),
+                ),
+                size: AppIconSizes.md,
               ),
             ),
           ),
@@ -500,7 +526,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         Text(
           'Override automatic difficulty for specific topics',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
         const SizedBox(height: AppSpacing.sm2),
@@ -537,13 +565,29 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 if (currentOverride == null)
-                  Text(
-                    '${recommendation.suggestedLevel.emoji} ${recommendation.suggestedLevel.displayName} (Auto)',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
+                  Row(
+                    children: [
+                      Icon(
+                        _difficultyIcon(recommendation.suggestedLevel),
+                        size: AppIconSizes.xs,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Expanded(
+                        child: Text(
+                          '${recommendation.suggestedLevel.displayName} (Auto)',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall!
+                              .copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
+                        ),
+                      ),
+                    ],
                   ),
               ],
             ),
@@ -557,12 +601,18 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               items: [
                 const DropdownMenuItem<DifficultyLevel?>(
                   value: null,
-                  child: Text('🤖 Auto (Recommended)'),
+                  child: _DifficultyMenuLabel(
+                    icon: Icons.auto_awesome_outlined,
+                    label: 'Auto (Recommended)',
+                  ),
                 ),
                 ...DifficultyLevel.values.map((level) {
                   return DropdownMenuItem<DifficultyLevel>(
                     value: level,
-                    child: Text('${level.emoji} ${level.displayName}'),
+                    child: _DifficultyMenuLabel(
+                      icon: _difficultyIcon(level),
+                      label: level.displayName,
+                    ),
                   );
                 }),
               ],
@@ -640,13 +690,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                       const SizedBox(height: AppSpacing.xs),
                       Text(recommendation.reason),
                       const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        'Suggested: ${recommendation.suggestedLevel.emoji} ${recommendation.suggestedLevel.displayName}',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.7),
-                        ),
+                      _SuggestedDifficultyLabel(
+                        level: recommendation.suggestedLevel,
+                        icon: _difficultyIcon(recommendation.suggestedLevel),
                       ),
                     ],
                   ),
@@ -711,5 +757,77 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     if (skillLevel < 0.6) return AppColors.warning;
     if (skillLevel < 0.8) return AppColors.primary;
     return AppColors.success;
+  }
+}
+
+IconData _difficultyIcon(DifficultyLevel level) {
+  switch (level) {
+    case DifficultyLevel.easy:
+      return Icons.eco_outlined;
+    case DifficultyLevel.medium:
+      return Icons.star_outline;
+    case DifficultyLevel.hard:
+      return Icons.local_fire_department_outlined;
+    case DifficultyLevel.expert:
+      return Icons.diamond_outlined;
+  }
+}
+
+IconData _trendIcon(PerformanceTrend trend) {
+  switch (trend) {
+    case PerformanceTrend.improving:
+      return Icons.trending_up;
+    case PerformanceTrend.stable:
+      return Icons.trending_flat;
+    case PerformanceTrend.declining:
+      return Icons.trending_down;
+  }
+}
+
+class _DifficultyMenuLabel extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _DifficultyMenuLabel({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: AppIconSizes.sm),
+        const SizedBox(width: AppSpacing.xs),
+        Expanded(child: Text(label, overflow: TextOverflow.ellipsis)),
+      ],
+    );
+  }
+}
+
+class _SuggestedDifficultyLabel extends StatelessWidget {
+  final DifficultyLevel level;
+  final IconData icon;
+
+  const _SuggestedDifficultyLabel({required this.level, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.7);
+
+    return Row(
+      children: [
+        Icon(icon, size: AppIconSizes.xs, color: color),
+        const SizedBox(width: AppSpacing.xs),
+        Expanded(
+          child: Text(
+            'Suggested: ${level.displayName}',
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall!.copyWith(color: color),
+          ),
+        ),
+      ],
+    );
   }
 }

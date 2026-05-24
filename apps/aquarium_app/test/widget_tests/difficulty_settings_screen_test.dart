@@ -99,7 +99,9 @@ void main() {
       expect(find.text('Skills by Topic'), findsOneWidget);
     });
 
-    testWidgets('shows mastery percentage when skills populated', (tester) async {
+    testWidgets('shows mastery percentage when skills populated', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(profile: _profileWithSkills()));
       await tester.pump(const Duration(seconds: 1));
       // overallSkillLevel = (0.8 + 0.5 + 0.3) / 3 ≈ 0.53 → 53%
@@ -108,31 +110,69 @@ void main() {
   });
 
   group('DifficultySettingsScreen — empty state', () {
-    testWidgets('shows no-lessons message when profile is empty', (tester) async {
+    testWidgets('shows no-lessons message when profile is empty', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(profile: _emptyProfile()));
       await tester.pump(const Duration(seconds: 1));
       expect(
-        find.text('No lessons completed yet — start learning to see stats here!'),
+        find.text(
+          'No lessons completed yet — start learning to see stats here!',
+        ),
         findsOneWidget,
       );
     });
   });
 
   group('DifficultySettingsScreen — with skills', () {
-    testWidgets('shows topic name cards when skill data exists', (tester) async {
+    testWidgets('shows topic name cards when skill data exists', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(profile: _profileWithSkills()));
       await tester.pump(const Duration(seconds: 1));
       // At least one known topic name should appear
       expect(find.text('Nitrogen Cycle'), findsWidgets);
     });
 
-    testWidgets('stat chip icons use the minimum legible app size',
-        (tester) async {
+    testWidgets('stat chip icons use the minimum legible app size', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(profile: _profileWithSkillHistory()));
       await tester.pump(const Duration(seconds: 1));
 
       final historyIcon = tester.widget<Icon>(find.byIcon(Icons.history).first);
       expect(historyIcon.size, greaterThanOrEqualTo(AppIconSizes.xs));
+    });
+
+    testWidgets('difficulty controls use icons instead of emoji text', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(_wrap(profile: _emptyProfile()));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byIcon(Icons.eco_outlined), findsWidgets);
+      for (final level in DifficultyLevel.values) {
+        expect(find.text(level.emoji), findsNothing);
+      }
+
+      await tester.ensureVisible(
+        find.byType(DropdownButton<DifficultyLevel?>).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DropdownButton<DifficultyLevel?>).first);
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.auto_awesome_outlined), findsWidgets);
+      for (final level in DifficultyLevel.values) {
+        expect(find.text(level.emoji), findsNothing);
+      }
     });
   });
 }
