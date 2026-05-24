@@ -10,7 +10,7 @@
 //
 // Run: flutter test test/widget/settings_screen_test.dart
 
-import 'dart:ui' show Tristate;
+import 'dart:ui' show SemanticsAction, Tristate;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -213,6 +213,33 @@ void main() {
   });
 
   group('Settings semantics', () {
+    testWidgets('Learn card exposes one concise semantics node', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap(const SettingsScreen()));
+        await tester.pump();
+
+        final learnCard = find.bySemanticsLabel(
+          'Learn Fishkeeping. Tap to open lessons',
+        );
+        expect(learnCard, findsOneWidget);
+
+        final node = tester.getSemantics(learnCard);
+        expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
+        expect(node.childrenCount, 0);
+        expect(
+          find.bySemanticsLabel(
+            RegExp(r'Learn Fishkeeping[\s\S]*Learn Fishkeeping'),
+          ),
+          findsNothing,
+        );
+      } finally {
+        semantics.dispose();
+      }
+    });
+
     testWidgets('Backup tile exposes one complete semantics node', (
       tester,
     ) async {

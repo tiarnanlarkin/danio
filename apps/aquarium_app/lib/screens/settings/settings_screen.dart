@@ -524,6 +524,7 @@ class _LearnCard extends ConsumerWidget {
       ),
     );
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    void openLessons() => NavigationThrottle.push(context, const LearnScreen());
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -536,8 +537,10 @@ class _LearnCard extends ConsumerWidget {
         child: Semantics(
           button: true,
           label: 'Learn Fishkeeping. Tap to open lessons',
+          onTap: openLessons,
+          excludeSemantics: true,
           child: InkWell(
-            onTap: () => NavigationThrottle.push(context, const LearnScreen()),
+            onTap: openLessons,
             borderRadius: AppRadius.largeRadius,
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg2),
