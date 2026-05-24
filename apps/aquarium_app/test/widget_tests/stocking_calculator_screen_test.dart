@@ -84,6 +84,10 @@ void main() {
 
       expect(find.byIcon(Icons.remove_circle_outline), findsOneWidget);
       expect(find.byIcon(Icons.add_circle_outline), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField).last).controller?.text,
+        isEmpty,
+      );
     });
 
     testWidgets('stocking advice uses an icon instead of raw emoji text', (

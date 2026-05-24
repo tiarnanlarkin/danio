@@ -17,6 +17,7 @@ class StockingCalculatorScreen extends StatefulWidget {
 class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   final _tankVolumeController = TextEditingController(text: '100');
   final _filterRatingController = TextEditingController(text: '1.0');
+  final _searchController = TextEditingController();
   bool _hasLivePlants = true;
 
   final List<_StockEntry> _stock = [];
@@ -28,6 +29,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
     _debounce?.cancel();
     _tankVolumeController.dispose();
     _filterRatingController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -130,6 +132,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
         _stock.add(_StockEntry(species: species, count: 1));
       }
       _searchQuery = '';
+      _searchController.clear();
     });
   }
 
@@ -296,6 +299,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: AppSearchField(
+                controller: _searchController,
                 hint: 'Search fish to add...',
                 onChanged: (v) {
                   _debounce?.cancel();

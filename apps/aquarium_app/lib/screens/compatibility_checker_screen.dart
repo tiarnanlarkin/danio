@@ -19,12 +19,14 @@ class CompatibilityCheckerScreen extends ConsumerStatefulWidget {
 class _CompatibilityCheckerScreenState
     extends ConsumerState<CompatibilityCheckerScreen> {
   final List<SpeciesInfo> _selectedSpecies = [];
+  final _searchController = TextEditingController();
   String _searchQuery = '';
   Timer? _debounce;
 
   @override
   void dispose() {
     _debounce?.cancel();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -39,6 +41,7 @@ class _CompatibilityCheckerScreenState
     setState(() {
       _selectedSpecies.add(species);
       _searchQuery = '';
+      _searchController.clear();
     });
   }
 
@@ -258,6 +261,7 @@ class _CompatibilityCheckerScreenState
             Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
               child: AppSearchField(
+                controller: _searchController,
                 hint: 'Search fish to add...',
                 onChanged: (v) {
                   _debounce?.cancel();

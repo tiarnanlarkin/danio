@@ -126,6 +126,10 @@ void main() {
 
         // A chip with species name should appear
         expect(find.byType(Chip), findsWidgets);
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).controller?.text,
+          isEmpty,
+        );
       }
     });
   });
