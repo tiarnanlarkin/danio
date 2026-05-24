@@ -244,6 +244,10 @@ class _AppListTileState extends State<AppListTile> {
       enabled: !widget.isDisabled,
       label: widget.title,
       hint: widget.subtitle,
+      onTap: _isInteractive && widget.onTap != null ? _handleTap : null,
+      onLongPress: _isInteractive && widget.onLongPress != null
+          ? _handleLongPress
+          : null,
       child: ExcludeSemantics(child: tile),
     );
 
