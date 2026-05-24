@@ -281,5 +281,29 @@ void main() {
         semantics.dispose();
       }
     });
+
+    testWidgets('version footer is not announced as a tappable control', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        await tester.scrollUntilVisible(
+          find.text('Danio v1.0.0'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+
+        final footer = find.bySemanticsLabel('Danio v1.0.0');
+        expect(footer, findsOneWidget);
+
+        final node = tester.getSemantics(footer);
+        expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isFalse);
+      } finally {
+        semantics.dispose();
+      }
+    });
   });
 }

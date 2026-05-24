@@ -414,6 +414,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
       // === App Version Footer (debug: tap 5x for debug menu) ===
       Center(
         child: GestureDetector(
+          excludeFromSemantics: true,
           onTap: _handleVersionTap,
           child: Text(
             'Danio v$appVersion',
