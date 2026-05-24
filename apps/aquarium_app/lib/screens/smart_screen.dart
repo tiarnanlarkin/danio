@@ -262,8 +262,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         const SizedBox(height: AppSpacing.sm),
         _FeatureCard(
           icon: Icons.compare_arrows,
-          title: 'Compatibility Advice',
-          subtitle: 'Use the Workshop checker with local species data',
+          title: 'Workshop Compatibility Checker',
+          subtitle: 'Check fish matches with local species data',
           color: AppColors.success,
           onTap: () => AppRoutes.toWorkshop(context),
         ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
@@ -788,12 +788,16 @@ class _FeatureCard extends StatelessWidget {
                       children: [
                         Text(
                           title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         Text(
                           subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: context.textSecondary,
                           ),

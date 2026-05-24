@@ -10,7 +10,8 @@
 //
 // Run: flutter test test/widget/settings_screen_test.dart
 
-import 'dart:ui' show SemanticsAction, Tristate;
+import 'dart:io';
+import 'dart:ui' show SemanticsAction;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -240,30 +241,13 @@ void main() {
       }
     });
 
-    testWidgets('Backup tile exposes one complete semantics node', (
-      tester,
-    ) async {
-      final semantics = tester.ensureSemantics();
-      try {
-        await tester.pumpWidget(_wrap(const SettingsScreen()));
-        await tester.pump();
+    test('Preferences does not duplicate the More Backup hub', () {
+      final source = File(
+        'lib/screens/settings/settings_screen.dart',
+      ).readAsStringSync();
 
-        await tester.scrollUntilVisible(find.text('Backup & Restore'), 500.0);
-
-        final tileFinder = find.ancestor(
-          of: find.text('Backup & Restore'),
-          matching: find.byType(AppListTile),
-        );
-        final node = tester.getSemantics(tileFinder);
-
-        expect(node.label, 'Backup & Restore');
-        expect(node.hint, 'Export or import your tank data');
-        expect(node.flagsCollection.isButton, isTrue);
-        expect(node.flagsCollection.isEnabled, Tristate.isTrue);
-        expect(node.childrenCount, 0);
-      } finally {
-        semantics.dispose();
-      }
+      expect(source, isNot(contains('Backup & Restore')));
+      expect(source, isNot(contains('BackupRestoreScreen')));
     });
   });
 

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/app_constants.dart';
 import '../about_screen.dart';
-import '../backup_restore_screen.dart';
 import '../difficulty_settings_screen.dart';
 import '../learn_screen.dart';
 import '../onboarding/consent_screen.dart';
@@ -166,16 +165,6 @@ class SettingsScreen extends ConsumerWidget {
             }
           }
         },
-      ),
-      (_) => NavListTile(
-        icon: Icons.backup,
-        title: 'Backup & Restore',
-        subtitle: 'Export or import your tank data',
-        onTap: () => NavigationThrottle.push(
-          context,
-          const BackupRestoreScreen(),
-          rootNavigator: true,
-        ),
       ),
       (_) => NavListTile(
         icon: Icons.info_outline,
