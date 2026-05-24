@@ -269,9 +269,10 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            '🏆',
-                            style: Theme.of(context).textTheme.bodySmall!,
+                          const Icon(
+                            Icons.emoji_events_outlined,
+                            size: AppIconSizes.xs,
+                            color: AppColors.xp,
                           ),
                           const SizedBox(width: AppSpacing.xs),
                           Text(

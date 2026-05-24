@@ -57,6 +57,33 @@ UserSkillProfile _profileWithSkillHistory() {
   );
 }
 
+UserSkillProfile _profileWithMastery() {
+  final attempts = List.generate(
+    5,
+    (index) => PerformanceRecord(
+      timestamp: DateTime(2026, 5, 18).add(Duration(minutes: index)),
+      topicId: 'nitrogen_cycle',
+      difficulty: DifficultyLevel.hard,
+      score: 9,
+      maxScore: 10,
+      mistakeCount: 1,
+      timeSpent: const Duration(minutes: 4),
+      completed: true,
+    ),
+  );
+
+  return UserSkillProfile(
+    skillLevels: const {'nitrogen_cycle': 0.9},
+    performanceHistory: {
+      'nitrogen_cycle': PerformanceHistory(
+        topicId: 'nitrogen_cycle',
+        recentAttempts: attempts,
+      ),
+    },
+    manualOverrides: const {},
+  );
+}
+
 Widget _wrap({
   required UserSkillProfile profile,
   Function(UserSkillProfile)? onUpdated,
@@ -173,6 +200,17 @@ void main() {
       for (final level in DifficultyLevel.values) {
         expect(find.text(level.emoji), findsNothing);
       }
+    });
+
+    testWidgets('mastery badge uses an icon instead of trophy emoji', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(profile: _profileWithMastery()));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Mastered'), findsOneWidget);
+      expect(find.byIcon(Icons.emoji_events_outlined), findsOneWidget);
+      expect(find.text(String.fromCharCode(0x1f3c6)), findsNothing);
     });
   });
 }
