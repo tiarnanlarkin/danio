@@ -6,10 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../screens/workshop_screen.dart';
-import '../../screens/water_change_calculator_screen.dart';
-import '../../screens/stocking_calculator_screen.dart';
-import '../../screens/compatibility_checker_screen.dart';
-import '../../screens/co2_calculator_screen.dart';
 import '../danio_bottom_dock.dart';
 import 'stage_handle.dart';
 import 'stage_sheet_controller.dart';
@@ -494,8 +490,7 @@ class _BouncingChevronHintState extends State<_BouncingChevronHint>
 
 // ── Workshop Tools Quick-Access ───────────────────────────────────────────────
 
-/// Inline workshop tools for the bottom sheet's Tools tab.
-/// Shows the 4 most discoverable calculators + a "See All" button.
+/// Single Workshop entry for the bottom sheet's Tools tab.
 class _WorkshopToolsContent extends StatelessWidget {
   const _WorkshopToolsContent();
 
@@ -511,91 +506,22 @@ class _WorkshopToolsContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section header
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
             child: Text(
-              'Quick Tools',
+              'Workshop',
               style: AppTypography.labelMedium.copyWith(
                 color: AppColors.whiteAlpha70,
                 letterSpacing: 0.5,
               ),
             ),
           ),
-
-          // 2×2 grid of top tools
-          Row(
-            children: [
-              Expanded(
-                child: _SheetToolCard(
-                  icon: Icons.water_drop,
-                  label: 'Water Change',
-                  color: DanioColors.tealWater,
-                  onTap: () => NavigationThrottle.push(
-                    context,
-                    const WaterChangeCalculatorScreen(),
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _SheetToolCard(
-                  icon: Icons.pool,
-                  label: 'Stocking',
-                  color: DanioColors.wishlistAmber,
-                  onTap: () => NavigationThrottle.push(
-                    context,
-                    const StockingCalculatorScreen(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: _SheetToolCard(
-                  icon: Icons.compare_arrows,
-                  label: 'Compatibility',
-                  color: DanioColors.wishlistAmber,
-                  onTap: () => NavigationThrottle.push(
-                    context,
-                    const CompatibilityCheckerScreen(),
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _SheetToolCard(
-                  icon: Icons.science,
-                  label: 'CO₂',
-                  color: DanioColors.tealWater,
-                  onTap: () => NavigationThrottle.push(
-                    context,
-                    const Co2CalculatorScreen(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: AppSpacing.md),
-
-          // "See All Tools" button
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () =>
-                  NavigationThrottle.push(context, const WorkshopScreen()),
-              icon: const Icon(Icons.build_outlined, size: 16),
-              label: const Text('See All Tools'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.whiteAlpha85,
-                side: BorderSide(color: AppColors.whiteAlpha30),
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm2),
-              ),
-            ),
+          _SheetToolCard(
+            icon: Icons.build_outlined,
+            label: 'Open Workshop',
+            color: DanioColors.tealWater,
+            onTap: () =>
+                NavigationThrottle.push(context, const WorkshopScreen()),
           ),
         ],
       ),

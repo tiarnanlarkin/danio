@@ -197,27 +197,23 @@ void main() {
         await tester.pump(const Duration(seconds: 1));
 
         expect(
-          find.text('Compatibility Checker', skipOffstage: false),
-          findsNothing,
-        );
-        expect(
-          find.text('Compatibility Advice', skipOffstage: false),
+          find.text('Workshop Compatibility Checker', skipOffstage: false),
           findsOneWidget,
         );
         expect(
           find.text(
-            'Use the Workshop checker with local species data',
+            'Check fish matches with local species data',
             skipOffstage: false,
           ),
           findsOneWidget,
         );
 
         await tester.scrollUntilVisible(
-          find.text('Compatibility Advice'),
+          find.text('Workshop Compatibility Checker'),
           500,
           scrollable: find.byType(Scrollable).first,
         );
-        await tester.tap(find.text('Compatibility Advice'));
+        await tester.tap(find.text('Workshop Compatibility Checker'));
         await tester.pumpAndSettle();
 
         expect(find.byType(WorkshopScreen), findsOneWidget);

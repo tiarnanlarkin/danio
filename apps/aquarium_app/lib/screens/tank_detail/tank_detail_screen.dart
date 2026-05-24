@@ -24,7 +24,6 @@ import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/cycling_status_card.dart';
 import '../../widgets/danio_daily_card.dart';
 import '../charts_screen.dart';
-import '../cost_tracker_screen.dart';
 import '../cycling_assistant_screen.dart';
 import '../equipment_screen.dart';
 import '../journal_screen.dart';
@@ -71,7 +70,7 @@ const _uuid = Uuid();
 /// - Recent logs and quick add actions
 /// - Tank analytics and charts
 /// - Cycling status tracking
-/// - Cost tracking and journal access
+/// - Journal access and tank-specific management
 class TankDetailScreen extends ConsumerWidget {
   /// Unique identifier for the tank to display.
   final String tankId;
@@ -496,11 +495,6 @@ class TankDetailScreen extends ConsumerWidget {
                               context,
                               const TankComparisonScreen(),
                             );
-                          case 'costs':
-                            NavigationThrottle.push(
-                              context,
-                              const CostTrackerScreen(),
-                            );
                           case 'value':
                             NavigationThrottle.push(
                               context,
@@ -519,14 +513,6 @@ class TankDetailScreen extends ConsumerWidget {
                           child: ListTile(
                             leading: Icon(Icons.compare_arrows),
                             title: Text('Compare Tanks'),
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                        ),
-                        const PopupMenuItem(
-                          value: 'costs',
-                          child: ListTile(
-                            leading: Icon(Icons.receipt_long),
-                            title: Text('Cost Tracker'),
                             contentPadding: EdgeInsets.zero,
                           ),
                         ),

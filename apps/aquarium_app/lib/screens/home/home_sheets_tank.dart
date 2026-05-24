@@ -12,12 +12,10 @@ import '../../utils/app_feedback.dart';
 import '../../utils/logger.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
-import '../analytics_screen.dart';
 import '../journal_screen.dart';
 import '../reminders_screen.dart';
-import '../search_screen.dart';
 
-/// Tank toolbox bottom sheet with navigation to reminders, journal, analytics, search.
+/// Tank toolbox bottom sheet with navigation to tank-contextual tools.
 void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
   showAppBottomSheet(
     context: context,
@@ -63,26 +61,6 @@ void showTankToolbox(BuildContext context, WidgetRef ref, String tankId) {
               context,
               JournalScreen(tankId: tankId),
               route: RoomSlideRoute(page: JournalScreen(tankId: tankId)),
-            );
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.analytics_outlined),
-          title: const Text('Analytics'),
-          onTap: () {
-            Navigator.maybePop(context);
-            NavigationThrottle.push(context, const AnalyticsScreen());
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.search),
-          title: const Text('Species Search'),
-          onTap: () {
-            Navigator.maybePop(context);
-            NavigationThrottle.push(
-              context,
-              const SearchScreen(),
-              route: RoomSlideRoute(page: const SearchScreen()),
             );
           },
         ),

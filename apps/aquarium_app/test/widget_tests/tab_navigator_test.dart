@@ -387,7 +387,7 @@ void main() {
       await tester.pumpWidget(_wrap(initialTab: 3));
       await _advance(tester);
 
-      final compatibilityFinder = find.text('Compatibility Advice');
+      final compatibilityFinder = find.text('Workshop Compatibility Checker');
       final anomalyFinder = find.text('Anomaly History');
       final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
       expect(compatibilityFinder, findsOneWidget);
