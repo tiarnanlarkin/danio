@@ -361,7 +361,9 @@ class _ToolCard extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: locked ? '$title, $subtitle' : title,
+      label: '$title, $subtitle',
+      onTap: onTap,
+      excludeSemantics: true,
       child: RepaintBoundary(
         child: Material(
           color: Colors.transparent,

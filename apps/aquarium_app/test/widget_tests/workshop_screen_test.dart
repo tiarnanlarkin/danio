@@ -58,6 +58,22 @@ void main() {
       expect(find.text('Water Change'), findsOneWidget);
     });
 
+    testWidgets('tool cards expose one concise screen reader label', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(
+        find.bySemanticsLabel('Water Change, Calculate changes'),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(RegExp(r'Water Change\s+Water Change')),
+        findsNothing,
+      );
+    });
+
     testWidgets('shows Stocking tool', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
