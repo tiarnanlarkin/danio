@@ -339,10 +339,17 @@ class _CompatibilityCheckerScreenState
                       children: _selectedSpecies
                           .map(
                             (s) => Chip(
-                              label: Text(s.commonName),
-                              deleteIcon: const Icon(
+                              backgroundColor: context.surfaceVariant,
+                              label: Text(
+                                s.commonName,
+                                style: AppTypography.labelMedium.copyWith(
+                                  color: context.textPrimary,
+                                ),
+                              ),
+                              deleteIcon: Icon(
                                 Icons.close,
                                 size: AppIconSizes.xs,
+                                color: context.textSecondary,
                               ),
                               onDeleted: () => _removeSpecies(s),
                             ),

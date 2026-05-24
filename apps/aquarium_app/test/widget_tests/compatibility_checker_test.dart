@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/compatibility_checker_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/theme/app_theme.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -126,6 +127,8 @@ void main() {
 
         // A chip with species name should appear
         expect(find.byType(Chip), findsWidgets);
+        final chip = tester.widget<Chip>(find.byType(Chip).first);
+        expect((chip.label as Text).style?.color, AppColors.textPrimary);
         expect(
           tester.widget<TextField>(find.byType(TextField)).controller?.text,
           isEmpty,
