@@ -98,10 +98,13 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(title: const Text('CO2 Calculator')),
-        body: ListView.builder(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          itemCount: _buildItems().length,
-          itemBuilder: (context, index) => _buildItems()[index],
+        body: SafeArea(
+          top: false,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            itemCount: _buildItems().length,
+            itemBuilder: (context, index) => _buildItems()[index],
+          ),
         ),
       ),
     );

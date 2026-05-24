@@ -74,239 +74,239 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-      final items = <Widget>[
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.standard,
-            child: Row(
+    final items = <Widget>[
+      AppCard(
+        backgroundColor: AppOverlays.info10,
+        padding: AppCardPadding.standard,
+        child: Row(
+          children: [
+            Icon(
+              Icons.lightbulb,
+              size: AppIconSizes.lg,
+              color: context.textSecondary,
+            ),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                'Proper lighting duration prevents algae while keeping plants and fish healthy.',
+                style: AppTypography.bodyMedium,
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Tank Setup', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+
+      AppCard(
+        padding: AppCardPadding.none,
+        child: Column(
+          children: [
+            SwitchListTile(
+              title: const Text('Live Plants'),
+              subtitle: const Text('Do you have live aquarium plants?'),
+              value: _hasPlants,
+              onChanged: (v) => setState(() => _hasPlants = v),
+            ),
+            SwitchListTile(
+              title: const Text('CO2 Injection'),
+              subtitle: const Text('Are you dosing CO2?'),
+              value: _hasCO2,
+              onChanged: (v) => setState(() => _hasCO2 = v),
+            ),
+            SwitchListTile(
+              title: const Text('Algae Issues'),
+              subtitle: const Text('Currently fighting algae?'),
+              value: _hasAlgaeIssues,
+              onChanged: (v) => setState(() => _hasAlgaeIssues = v),
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Schedule', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+
+      AppCard(
+        padding: AppCardPadding.none,
+        child: Column(
+          children: [
+            ListTile(
+              leading: Icon(Icons.wb_sunny, color: AppColors.warning),
+              title: const Text('Lights On'),
+              trailing: Text(
+                _formatTime(_lightsOn),
+                style: AppTypography.labelLarge,
+              ),
+              onTap: () => _pickTime(true),
+            ),
+            ListTile(
+              leading: Icon(Icons.nights_stay, color: AppColors.primary),
+              title: const Text('Lights Off'),
+              trailing: Text(
+                _formatTime(_lightsOff),
+                style: AppTypography.labelLarge,
+              ),
+              onTap: () => _pickTime(false),
+            ),
+            const Divider(),
+            SwitchListTile(
+              title: const Text('Siesta Period'),
+              subtitle: const Text('Mid-day break to reduce algae'),
+              value: _useSiesta,
+              onChanged: (v) => setState(() => _useSiesta = v),
+            ),
+            if (_useSiesta) ...[
+              ListTile(
+                leading: const SizedBox(width: AppSpacing.lg),
+                title: const Text('Siesta Start'),
+                trailing: Text(
+                  _formatTime(_siestaStart),
+                  style: AppTypography.bodyMedium,
+                ),
+                onTap: () => _pickSiestaTime(true),
+              ),
+              ListTile(
+                leading: const SizedBox(width: AppSpacing.lg),
+                title: const Text('Siesta End'),
+                trailing: Text(
+                  _formatTime(_siestaEnd),
+                  style: AppTypography.bodyMedium,
+                ),
+                onTap: () => _pickSiestaTime(false),
+              ),
+            ],
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Visual timeline
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Icon(
-                  Icons.lightbulb,
-                  size: AppIconSizes.lg,
-                  color: context.textSecondary,
-                ),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Text(
-                    'Proper lighting duration prevents algae while keeping plants and fish healthy.',
-                    style: AppTypography.bodyMedium,
+                Text('Total Light: ', style: AppTypography.labelLarge),
+                Text(
+                  '$_totalLightHours hours',
+                  style: AppTypography.headlineSmall.copyWith(
+                    color: _totalLightHours > 10
+                        ? AppColors.warning
+                        : AppColors.success,
                   ),
                 ),
               ],
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('Tank Setup', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
-
-          AppCard(
-            padding: AppCardPadding.none,
-            child: Column(
-              children: [
-                SwitchListTile(
-                  title: const Text('Live Plants'),
-                  subtitle: const Text('Do you have live aquarium plants?'),
-                  value: _hasPlants,
-                  onChanged: (v) => setState(() => _hasPlants = v),
-                ),
-                SwitchListTile(
-                  title: const Text('CO2 Injection'),
-                  subtitle: const Text('Are you dosing CO2?'),
-                  value: _hasCO2,
-                  onChanged: (v) => setState(() => _hasCO2 = v),
-                ),
-                SwitchListTile(
-                  title: const Text('Algae Issues'),
-                  subtitle: const Text('Currently fighting algae?'),
-                  value: _hasAlgaeIssues,
-                  onChanged: (v) => setState(() => _hasAlgaeIssues = v),
-                ),
-
-              ],
+            const SizedBox(height: AppSpacing.sm2),
+            _TimelineBar(
+              lightsOn: _lightsOn,
+              lightsOff: _lightsOff,
+              useSiesta: _useSiesta,
+              siestaStart: _siestaStart,
+              siestaEnd: _siestaEnd,
             ),
-          ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.md),
 
-          Text('Schedule', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
-
-          AppCard(
-            padding: AppCardPadding.none,
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.wb_sunny, color: AppColors.warning),
-                  title: const Text('Lights On'),
-                  trailing: Text(
-                    _formatTime(_lightsOn),
-                    style: AppTypography.labelLarge,
-                  ),
-                  onTap: () => _pickTime(true),
-                ),
-                ListTile(
-                  leading: Icon(Icons.nights_stay, color: AppColors.primary),
-                  title: const Text('Lights Off'),
-                  trailing: Text(
-                    _formatTime(_lightsOff),
-                    style: AppTypography.labelLarge,
-                  ),
-                  onTap: () => _pickTime(false),
-                ),
-                const Divider(),
-                SwitchListTile(
-                  title: const Text('Siesta Period'),
-                  subtitle: const Text('Mid-day break to reduce algae'),
-                  value: _useSiesta,
-                  onChanged: (v) => setState(() => _useSiesta = v),
-                ),
-                if (_useSiesta) ...[
-                  ListTile(
-                    leading: const SizedBox(width: AppSpacing.lg),
-                    title: const Text('Siesta Start'),
-                    trailing: Text(
-                      _formatTime(_siestaStart),
-                      style: AppTypography.bodyMedium,
-                    ),
-                    onTap: () => _pickSiestaTime(true),
-                  ),
-                  ListTile(
-                    leading: const SizedBox(width: AppSpacing.lg),
-                    title: const Text('Siesta End'),
-                    trailing: Text(
-                      _formatTime(_siestaEnd),
-                      style: AppTypography.bodyMedium,
-                    ),
-                    onTap: () => _pickSiestaTime(false),
-                  ),
-                ],
-              ],
+      // Recommendation
+      AppCard(
+        backgroundColor: _hasAlgaeIssues
+            ? AppOverlays.warning10
+            : AppOverlays.success10,
+        padding: AppCardPadding.standard,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              _hasAlgaeIssues ? Icons.warning : Icons.check_circle,
+              color: _hasAlgaeIssues ? AppColors.warning : AppColors.success,
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Visual timeline
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text('Total Light: ', style: AppTypography.labelLarge),
-                    Text(
-                      '$_totalLightHours hours',
-                      style: AppTypography.headlineSmall.copyWith(
-                        color: _totalLightHours > 10
-                            ? AppColors.warning
-                            : AppColors.success,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                _TimelineBar(
-                  lightsOn: _lightsOn,
-                  lightsOff: _lightsOff,
-                  useSiesta: _useSiesta,
-                  siestaStart: _siestaStart,
-                  siestaEnd: _siestaEnd,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.md),
-
-          // Recommendation
-          AppCard(
-            backgroundColor: _hasAlgaeIssues
-                ? AppOverlays.warning10
-                : AppOverlays.success10,
-            padding: AppCardPadding.standard,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  _hasAlgaeIssues ? Icons.warning : Icons.check_circle,
-                  color: _hasAlgaeIssues
-                      ? AppColors.warning
-                      : AppColors.success,
-                ),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Recommendation', style: AppTypography.labelLarge),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(_recommendation, style: AppTypography.bodyMedium),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('Quick Guide', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              children: const [
-                _GuideRow(setup: 'Fish only', hours: '6-10 hours'),
-                _GuideRow(setup: 'Low-tech planted', hours: '6-8 hours'),
-                _GuideRow(setup: 'High-tech + CO2', hours: '8-10 hours'),
-                _GuideRow(setup: 'Fighting algae', hours: '4-6 hours'),
-              ],
-            ),
-          ),
-
-          if (_hasCO2) ...[
-            const SizedBox(height: AppSpacing.md),
-            AppCard(
-              backgroundColor: AppOverlays.info10,
-              padding: AppCardPadding.standard,
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('CO2 Timing', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    // FB-B1 fix: clamp/modulo hour to valid 0-23 range to prevent TimeOfDay(hour: -1) crash when lights-on is 00:xx
-                    '• CO2 ON: ${_formatTime(TimeOfDay(hour: (_lightsOn.hour - 1 + 24) % 24, minute: _lightsOn.minute))} (1hr before lights)',
-                    style: AppTypography.bodyMedium,
-                  ),
-                  Text(
-                    // FB-B1 fix: same guard for lights-off hour
-                    '• CO2 OFF: ${_formatTime(TimeOfDay(hour: (_lightsOff.hour - 1 + 24) % 24, minute: _lightsOff.minute))} (1hr before lights off)',
-                    style: AppTypography.bodyMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'This gives CO2 time to dissolve before photosynthesis peaks.',
-                    style: AppTypography.bodySmall,
-                  ),
+                  Text('Recommendation', style: AppTypography.labelLarge),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(_recommendation, style: AppTypography.bodyMedium),
                 ],
               ),
             ),
           ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.xxl),
-      ];
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Quick Guide', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          children: const [
+            _GuideRow(setup: 'Fish only', hours: '6-10 hours'),
+            _GuideRow(setup: 'Low-tech planted', hours: '6-8 hours'),
+            _GuideRow(setup: 'High-tech + CO2', hours: '8-10 hours'),
+            _GuideRow(setup: 'Fighting algae', hours: '4-6 hours'),
+          ],
+        ),
+      ),
+
+      if (_hasCO2) ...[
+        const SizedBox(height: AppSpacing.md),
+        AppCard(
+          backgroundColor: AppOverlays.info10,
+          padding: AppCardPadding.standard,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('CO2 Timing', style: AppTypography.labelLarge),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                // FB-B1 fix: clamp/modulo hour to valid 0-23 range to prevent TimeOfDay(hour: -1) crash when lights-on is 00:xx
+                '• CO2 ON: ${_formatTime(TimeOfDay(hour: (_lightsOn.hour - 1 + 24) % 24, minute: _lightsOn.minute))} (1hr before lights)',
+                style: AppTypography.bodyMedium,
+              ),
+              Text(
+                // FB-B1 fix: same guard for lights-off hour
+                '• CO2 OFF: ${_formatTime(TimeOfDay(hour: (_lightsOff.hour - 1 + 24) % 24, minute: _lightsOff.minute))} (1hr before lights off)',
+                style: AppTypography.bodyMedium,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'This gives CO2 time to dissolve before photosynthesis peaks.',
+                style: AppTypography.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ],
+
+      const SizedBox(height: AppSpacing.xxl),
+    ];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Lighting Schedule')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        itemBuilder: (context, index) => items[index],
-        itemCount: items.length,
+      body: SafeArea(
+        top: false,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          itemBuilder: (context, index) => items[index],
+          itemCount: items.length,
+        ),
       ),
     );
   }
@@ -456,4 +456,3 @@ class _GuideRow extends StatelessWidget {
     );
   }
 }
-

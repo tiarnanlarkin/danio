@@ -359,15 +359,18 @@ class _WaterChangeCalculatorScreenState
 
     return Scaffold(
       appBar: AppBar(title: const Text('Water Change Calculator')),
-      body: ListView.builder(
-        padding: EdgeInsets.fromLTRB(
-          AppSpacing.md,
-          AppSpacing.md,
-          AppSpacing.md,
-          MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+      body: SafeArea(
+        top: false,
+        child: ListView.builder(
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.md,
+            AppSpacing.md,
+            MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
+          ),
+          itemBuilder: (context, index) => items[index],
+          itemCount: items.length,
         ),
-        itemBuilder: (context, index) => items[index],
-        itemCount: items.length,
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/screens/tank_volume_calculator_screen.dart';
+import 'package:danio/theme/app_theme.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -52,6 +53,19 @@ void main() {
       await tester.pump();
       // Metric toggle text
       expect(find.text('cm'), findsWidgets);
+    });
+
+    testWidgets('unselected selector chips use readable label color', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final imperialChip = tester.widget<ChoiceChip>(
+        find.widgetWithText(ChoiceChip, 'Imperial (in)'),
+      );
+
+      expect(imperialChip.labelStyle?.color, AppColors.textPrimary);
     });
   });
 

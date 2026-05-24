@@ -27,13 +27,16 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            _VolumeConverter(),
-            _TemperatureConverter(),
-            _LengthConverter(),
-            _HardnessConverter(),
-          ],
+        body: SafeArea(
+          top: false,
+          child: TabBarView(
+            children: [
+              _VolumeConverter(),
+              _TemperatureConverter(),
+              _LengthConverter(),
+              _HardnessConverter(),
+            ],
+          ),
         ),
       ),
     );
