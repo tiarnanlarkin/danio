@@ -22,6 +22,21 @@ Widget _wrap({List<Override> overrides = const []}) {
   );
 }
 
+Widget _wrapWithGestureInset({List<Override> overrides = const []}) {
+  return ProviderScope(
+    overrides: overrides,
+    child: MaterialApp(
+      home: MediaQuery(
+        data: const MediaQueryData(
+          padding: EdgeInsets.only(bottom: 34),
+          viewPadding: EdgeInsets.only(bottom: 34),
+        ),
+        child: const CompatibilityCheckerScreen(),
+      ),
+    ),
+  );
+}
+
 /// Mock tanks provider that returns no tanks (empty list).
 final _emptyTanksProvider = tanksProvider.overrideWith((ref) async => []);
 
@@ -271,6 +286,29 @@ void main() {
         expect(text, isNot(contains(String.fromCharCode(0x2014))));
         expect(text, isNot(contains(String.fromCharCode(0x2113))));
       }
+    });
+
+    testWidgets('results list stays above gesture navigation', (tester) async {
+      const viewport = Size(390, 844);
+      await tester.binding.setSurfaceSize(viewport);
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _wrapWithGestureInset(overrides: [_emptyTanksProvider]),
+      );
+      await tester.pump();
+
+      for (final query in ['Neon', 'Guppy']) {
+        await tester.enterText(find.byType(TextField), query);
+        await tester.pump(const Duration(milliseconds: 350));
+        final addBtn = find.byIcon(Icons.add_circle_outline);
+        expect(addBtn, findsWidgets);
+        await tester.tap(addBtn.first);
+        await tester.pump();
+      }
+
+      final listViewRect = tester.getRect(find.byType(ListView).last);
+      expect(listViewRect.bottom, lessThanOrEqualTo(viewport.height - 34));
     });
   });
 

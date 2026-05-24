@@ -15,6 +15,19 @@ Widget _wrap() {
   return const MaterialApp(home: StockingCalculatorScreen());
 }
 
+Widget _wrapWithBottomInset() {
+  return MaterialApp(
+    home: MediaQuery(
+      data: const MediaQueryData(
+        size: Size(390, 844),
+        padding: EdgeInsets.only(bottom: 34),
+        viewPadding: EdgeInsets.only(bottom: 34),
+      ),
+      child: const StockingCalculatorScreen(),
+    ),
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -110,6 +123,27 @@ void main() {
       await tester.pump();
 
       expect(find.text('Enter a tank volume greater than 0'), findsOneWidget);
+    });
+
+    testWidgets('stocking advice stays above gesture navigation', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrapWithBottomInset());
+      await tester.pump();
+
+      await tester.enterText(find.byType(TextField).last, 'Neon');
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.tap(find.textContaining('Neon').last);
+      await tester.pump();
+
+      final adviceBox = tester.getRect(
+        find.text('Good stocking level with room to grow.'),
+      );
+
+      expect(adviceBox.bottom, lessThanOrEqualTo(810));
     });
   });
 }
