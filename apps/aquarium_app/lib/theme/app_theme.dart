@@ -318,7 +318,9 @@ class AppTheme {
         backgroundColor: AppColors.surfaceVariant,
         selectedColor: AppColors.primaryLight,
         disabledColor: AppColors.surfaceVariant,
-        labelStyle: AppTypography.labelMedium,
+        labelStyle: AppTypography.labelMedium.copyWith(
+          color: AppColors.textPrimary,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.pillRadius),
         side: BorderSide.none,
