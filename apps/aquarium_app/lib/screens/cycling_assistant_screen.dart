@@ -76,54 +76,54 @@ class _CyclingAssistantBody extends StatelessWidget {
     final tankAgeDays = DateTime.now().difference(tank.startDate).inDays;
 
     final items = <Widget>[
-        // Phase indicator
-        _PhaseHeader(
-          phase: phase,
-          tankAgeDays: tankAgeDays,
-        ).animate().fadeIn(duration: 400.ms),
+      // Phase indicator
+      _PhaseHeader(
+        phase: phase,
+        tankAgeDays: tankAgeDays,
+      ).animate().fadeIn(duration: 400.ms),
 
-        const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-        // Visual cycle diagram
-        _CycleDiagram(
-          phase: phase,
+      // Visual cycle diagram
+      _CycleDiagram(
+        phase: phase,
+        waterTests: waterTests,
+      ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Parameter chart - ammonia, nitrite, nitrate over time
+      if (waterTests.length >= 2)
+        _ParameterTimeline(
           waterTests: waterTests,
-        ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
+        ).animate().fadeIn(delay: 300.ms, duration: 400.ms),
 
-        const SizedBox(height: AppSpacing.lg),
+      if (waterTests.length >= 2) const SizedBox(height: AppSpacing.lg),
 
-        // Parameter chart - ammonia, nitrite, nitrate over time
-        if (waterTests.length >= 2)
-          _ParameterTimeline(
-            waterTests: waterTests,
-          ).animate().fadeIn(delay: 300.ms, duration: 400.ms),
+      // Educational content for current phase
+      _PhaseEducation(
+        phase: phase,
+      ).animate().fadeIn(delay: 400.ms, duration: 400.ms),
 
-        if (waterTests.length >= 2) const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-        // Educational content for current phase
-        _PhaseEducation(
-          phase: phase,
-        ).animate().fadeIn(delay: 400.ms, duration: 400.ms),
+      // Action items
+      _ActionItems(
+        phase: phase,
+        waterTests: waterTests,
+      ).animate().fadeIn(delay: 500.ms, duration: 400.ms),
 
-        const SizedBox(height: AppSpacing.lg),
+      // Celebration for cycled tanks
+      if (phase == _CyclePhase.cycled)
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.lg),
+          child: _CycledCelebration()
+              .animate()
+              .fadeIn(delay: 600.ms, duration: 600.ms)
+              .scale(begin: const Offset(0.8, 0.8), end: const Offset(1, 1)),
+        ),
 
-        // Action items
-        _ActionItems(
-          phase: phase,
-          waterTests: waterTests,
-        ).animate().fadeIn(delay: 500.ms, duration: 400.ms),
-
-        // Celebration for cycled tanks
-        if (phase == _CyclePhase.cycled)
-          Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.lg),
-            child: _CycledCelebration()
-                .animate()
-                .fadeIn(delay: 600.ms, duration: 600.ms)
-                .scale(begin: const Offset(0.8, 0.8), end: const Offset(1, 1)),
-          ),
-
-        const SizedBox(height: AppSpacing.xxl),
+      const SizedBox(height: AppSpacing.xxl),
     ];
 
     return ListView.builder(
@@ -576,8 +576,8 @@ class _PhaseEducation extends StatelessWidget {
         title = 'What is Happening Now';
         content =
             'Ammonia is building up in your tank. This is normal and expected!\n\n'
-            'Nitrospira bacteria are starting to colonise your filter media. '
-            'These bacteria eat ammonia and convert it to nitrite (NO2).\n\n'
+            'Ammonia-oxidising bacteria are starting to colonise your filter media. '
+            'These bacteria convert ammonia to nitrite (NO2).\n\n'
             'DO NOT add fish during this phase - ammonia is toxic to them.';
         icon = Icons.science;
       case _CyclePhase.phase2:
@@ -585,8 +585,8 @@ class _PhaseEducation extends StatelessWidget {
         content =
             'Your ammonia-eating bacteria are working! Ammonia should be dropping '
             'while nitrite rises.\n\n'
-            'Now Nitrospira bacteria are growing - these convert nitrite to '
-            'the much less harmful nitrate (NO3).\n\n'
+            'Nitrite-oxidising bacteria are growing - these convert nitrite to nitrate (NO3), '
+            'which is much less harmful.\n\n'
             'Still DO NOT add fish - nitrite is also toxic.';
         icon = Icons.autorenew;
       case _CyclePhase.phase3:
@@ -830,4 +830,3 @@ class _CycledCelebration extends StatelessWidget {
     );
   }
 }
-

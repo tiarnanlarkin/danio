@@ -3,7 +3,20 @@ import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
 class LightingScheduleScreen extends StatefulWidget {
-  const LightingScheduleScreen({super.key});
+  final TimeOfDay? initialLightsOn;
+  final TimeOfDay? initialLightsOff;
+  final bool initialUseSiesta;
+  final TimeOfDay? initialSiestaStart;
+  final TimeOfDay? initialSiestaEnd;
+
+  const LightingScheduleScreen({
+    super.key,
+    this.initialLightsOn,
+    this.initialLightsOff,
+    this.initialUseSiesta = false,
+    this.initialSiestaStart,
+    this.initialSiestaEnd,
+  });
 
   @override
   State<LightingScheduleScreen> createState() => _LightingScheduleScreenState();
@@ -13,25 +26,46 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
   bool _hasPlants = true;
   bool _hasCO2 = false;
   bool _hasAlgaeIssues = false;
-  TimeOfDay _lightsOn = const TimeOfDay(hour: 10, minute: 0);
-  TimeOfDay _lightsOff = const TimeOfDay(hour: 20, minute: 0);
-  bool _useSiesta = false;
-  TimeOfDay _siestaStart = const TimeOfDay(hour: 14, minute: 0);
-  TimeOfDay _siestaEnd = const TimeOfDay(hour: 16, minute: 0);
+  late TimeOfDay _lightsOn;
+  late TimeOfDay _lightsOff;
+  late bool _useSiesta;
+  late TimeOfDay _siestaStart;
+  late TimeOfDay _siestaEnd;
+
+  @override
+  void initState() {
+    super.initState();
+    _lightsOn = widget.initialLightsOn ?? const TimeOfDay(hour: 10, minute: 0);
+    _lightsOff =
+        widget.initialLightsOff ?? const TimeOfDay(hour: 20, minute: 0);
+    _useSiesta = widget.initialUseSiesta;
+    _siestaStart =
+        widget.initialSiestaStart ?? const TimeOfDay(hour: 14, minute: 0);
+    _siestaEnd =
+        widget.initialSiestaEnd ?? const TimeOfDay(hour: 16, minute: 0);
+  }
 
   int get _totalLightHours {
-    final onMinutes = _lightsOn.hour * 60 + _lightsOn.minute;
-    final offMinutes = _lightsOff.hour * 60 + _lightsOff.minute;
-    var totalMinutes = offMinutes - onMinutes;
-    if (totalMinutes < 0) totalMinutes += 24 * 60;
+    var totalMinutes = _intervalsDuration(
+      _dailyIntervals(
+        _minutesFromTime(_lightsOn),
+        _minutesFromTime(_lightsOff),
+      ),
+    );
 
     if (_useSiesta) {
-      final siestaStartMin = _siestaStart.hour * 60 + _siestaStart.minute;
-      final siestaEndMin = _siestaEnd.hour * 60 + _siestaEnd.minute;
-      totalMinutes -= (siestaEndMin - siestaStartMin);
+      final lightIntervals = _dailyIntervals(
+        _minutesFromTime(_lightsOn),
+        _minutesFromTime(_lightsOff),
+      );
+      final siestaIntervals = _dailyIntervals(
+        _minutesFromTime(_siestaStart),
+        _minutesFromTime(_siestaEnd),
+      );
+      totalMinutes -= _overlapDuration(lightIntervals, siestaIntervals);
     }
 
-    return (totalMinutes / 60).round();
+    return (totalMinutes.clamp(0, _minutesPerDay) / 60).round();
   }
 
   String get _recommendation {
@@ -380,42 +414,41 @@ class _TimelineBar extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final width = constraints.maxWidth;
-              final onPos =
-                  (lightsOn.hour * 60 + lightsOn.minute) / (24 * 60) * width;
-              final offPos =
-                  (lightsOff.hour * 60 + lightsOff.minute) / (24 * 60) * width;
+              final lightIntervals = _dailyIntervals(
+                _minutesFromTime(lightsOn),
+                _minutesFromTime(lightsOff),
+              );
+              final siestaIntervals = _dailyIntervals(
+                _minutesFromTime(siestaStart),
+                _minutesFromTime(siestaEnd),
+              );
 
               return Stack(
                 children: [
                   // Light period
-                  Positioned(
-                    left: onPos,
-                    width: offPos - onPos,
-                    top: 0,
-                    bottom: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.warningAlpha60,
-                        borderRadius: AppRadius.smallRadius,
-                      ),
-                    ),
-                  ),
-                  // Siesta
-                  if (useSiesta)
+                  for (final interval in lightIntervals)
                     Positioned(
-                      left:
-                          (siestaStart.hour * 60 + siestaStart.minute) /
-                          (24 * 60) *
-                          width,
-                      width:
-                          ((siestaEnd.hour * 60 + siestaEnd.minute) -
-                              (siestaStart.hour * 60 + siestaStart.minute)) /
-                          (24 * 60) *
-                          width,
+                      left: interval.start / _minutesPerDay * width,
+                      width: interval.duration / _minutesPerDay * width,
                       top: 0,
                       bottom: 0,
-                      child: Container(color: context.surfaceVariant),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.warningAlpha60,
+                          borderRadius: AppRadius.smallRadius,
+                        ),
+                      ),
                     ),
+                  // Siesta
+                  if (useSiesta)
+                    for (final interval in siestaIntervals)
+                      Positioned(
+                        left: interval.start / _minutesPerDay * width,
+                        width: interval.duration / _minutesPerDay * width,
+                        top: 0,
+                        bottom: 0,
+                        child: Container(color: context.surfaceVariant),
+                      ),
                 ],
               );
             },
@@ -435,6 +468,44 @@ class _TimelineBar extends StatelessWidget {
       ],
     );
   }
+}
+
+const int _minutesPerDay = 24 * 60;
+
+int _minutesFromTime(TimeOfDay time) => time.hour * 60 + time.minute;
+
+List<_MinuteInterval> _dailyIntervals(int start, int end) {
+  if (start == end) return const [];
+  if (end > start) return [_MinuteInterval(start, end)];
+  return [_MinuteInterval(start, _minutesPerDay), _MinuteInterval(0, end)];
+}
+
+int _intervalsDuration(List<_MinuteInterval> intervals) {
+  return intervals.fold<int>(0, (sum, interval) => sum + interval.duration);
+}
+
+int _overlapDuration(
+  List<_MinuteInterval> first,
+  List<_MinuteInterval> second,
+) {
+  var total = 0;
+  for (final a in first) {
+    for (final b in second) {
+      final start = a.start > b.start ? a.start : b.start;
+      final end = a.end < b.end ? a.end : b.end;
+      if (end > start) total += end - start;
+    }
+  }
+  return total;
+}
+
+class _MinuteInterval {
+  final int start;
+  final int end;
+
+  const _MinuteInterval(this.start, this.end);
+
+  int get duration => end - start;
 }
 
 class _GuideRow extends StatelessWidget {

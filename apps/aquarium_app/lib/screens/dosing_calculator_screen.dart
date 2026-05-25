@@ -165,7 +165,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                             vertical: AppSpacing.sm,
                           ),
                         ),
-                        items: [5, 10, 20, 25, 40, 50, 100].map((v) {
+                        items: [5, 10, 20, 25, 38, 40, 50, 100].map((v) {
                           return DropdownMenuItem(
                             value: v.toDouble(),
                             child: Text('$v'),
@@ -297,28 +297,28 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                   _ProductPreset(
                     name: 'API Stress Coat',
                     dose: 5,
-                    per: 40,
+                    per: 38,
                     onTap: () => setState(() {
                       _dosePerController.text = '5';
-                      _dosePerLitres = 40;
+                      _dosePerLitres = 38;
                     }),
                   ),
                   _ProductPreset(
                     name: 'Tropica Specialised',
-                    dose: 1,
-                    per: 25,
+                    dose: 6,
+                    per: 50,
                     onTap: () => setState(() {
-                      _dosePerController.text = '1';
-                      _dosePerLitres = 25;
+                      _dosePerController.text = '6';
+                      _dosePerLitres = 50;
                     }),
                   ),
                   _ProductPreset(
                     name: 'Easy Green (Aquarium Co-Op)',
                     dose: 1,
-                    per: 10,
+                    per: 38,
                     onTap: () => setState(() {
                       _dosePerController.text = '1';
-                      _dosePerLitres = 10;
+                      _dosePerLitres = 38;
                     }),
                   ),
                 ],

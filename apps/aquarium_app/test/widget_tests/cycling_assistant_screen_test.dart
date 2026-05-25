@@ -147,6 +147,46 @@ void main() {
       expect(find.text('Safe to add fish gradually'), findsOneWidget);
     });
 
+    testWidgets('phase 1 education names ammonia conversion correctly', (
+      tester,
+    ) async {
+      final now = DateTime(2026, 5, 18);
+      await tester.pumpWidget(
+        _wrap(
+          logs: [
+            _waterTest(timestamp: now, ammonia: 1, nitrite: 0, nitrate: 0),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.text('Phase 1: Ammonia Spike'), findsOneWidget);
+      expect(find.textContaining('Ammonia-oxidising bacteria'), findsOneWidget);
+      expect(find.textContaining('convert ammonia to nitrite'), findsOneWidget);
+      expect(
+        find.textContaining('Nitrospira bacteria are starting'),
+        findsNothing,
+      );
+    });
+
+    testWidgets('phase 2 education names nitrite conversion correctly', (
+      tester,
+    ) async {
+      final now = DateTime(2026, 5, 18);
+      await tester.pumpWidget(
+        _wrap(
+          logs: [
+            _waterTest(timestamp: now, ammonia: 0.2, nitrite: 1, nitrate: 5),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.text('Phase 2: Nitrite Spike'), findsOneWidget);
+      expect(find.textContaining('Nitrite-oxidising bacteria'), findsOneWidget);
+      expect(find.textContaining('convert nitrite to nitrate'), findsOneWidget);
+    });
+
     testWidgets('missing tank shows a stable error state', (tester) async {
       await tester.pumpWidget(_wrapMissingTank());
       await _advance(tester);

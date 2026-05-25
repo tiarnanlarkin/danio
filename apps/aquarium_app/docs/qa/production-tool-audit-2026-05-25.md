@@ -3,6 +3,7 @@
 Branch: `qa/production-tool-audit-2026-05-25`  
 Base commit: `0d107483`  
 Primary QA target: `emulator-5560`, `Danio_E2E_API_36_1`, Android 16, 1080x2400  
+Phase 2 QA target: `emulator-5564`, Android 16, 1080x2400
 Mode: emulator-only production polish audit
 
 ## Phase 0 Baseline
@@ -32,16 +33,16 @@ Status legend: `Pending`, `Pass`, `Fixed`, `Blocked`, `Documented`.
 
 | Tool / Surface | Canonical home | User path | Valid scenario | Invalid / empty scenario | Integration expectation | Source oracle | Evidence | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Water Change Calculator | Workshop | More -> Workshop -> Water Change | Calculate change volume from tank size, current nitrate, target nitrate, and tap nitrate | Reject impossible target/tap/current combinations | Result can inform Tank water-change logging without auto-writing data | Pending Phase 1 | Pending | Pending |
-| Stocking Calculator | Workshop | More -> Workshop -> Stocking | Estimate stocking load for tank size and selected species | Empty tank/species input shows useful guidance | Estimate remains separate from Tank livestock until user adds stock | Pending Phase 1 | Pending | Pending |
-| CO2 Calculator | Workshop | More -> Workshop -> CO2 Calculator | Estimate CO2 from KH and pH | Reject invalid pH/KH values | Advice copy stays estimate-based and non-prescriptive | Pending Phase 1 | Pending | Pending |
-| Dosing Calculator | Workshop | More -> Workshop -> Dosing | Calculate product dose from product rate and tank volume | Reject missing tank volume/product input | No medication claim beyond current supported products | Pending Phase 1 | Pending | Pending |
-| Unit Converter | Workshop | More -> Workshop -> Unit Converter | Convert volume, temperature, length, and hardness values | Empty/invalid numeric input does not crash | Tool is stateless and returns to Workshop cleanly | Pending Phase 1 | Pending | Pending |
-| Tank Volume Calculator | Workshop | More -> Workshop -> Tank Volume | Calculate common tank shapes with unit conversion | Reject zero/negative dimensions | Can be used before tank creation without requiring a saved tank | Pending Phase 1 | Pending | Pending |
-| Lighting Planner | Workshop | More -> Workshop -> Lighting | Generate light schedule and CO2 timing advice | Handles midnight-spanning schedules and empty input | Advice remains planner-only unless user applies it elsewhere | Pending Phase 1 | Pending | Pending |
-| Workshop Compatibility Checker | Workshop | More -> Workshop -> Compatibility | Local compatibility estimate for selected species | Empty species/tank values show setup guidance | Label stays distinct from Smart AI compatibility advice | Pending Phase 1 | Pending | Pending |
-| Cycling Assistant | Workshop | More -> Workshop -> Cycling Assistant | Show cycling stage guidance for a selected tank | No tank state explains requirement | Tank detail cycling status may deep-link here with context | Pending Phase 1 | Pending | Pending |
-| Cost Tracker | Workshop | More -> Workshop -> Cost Tracker | Add, persist, summarize, delete, and undo an expense | Empty/invalid amount is rejected | Tank-specific value tools remain separate from global cost tracking | Pending Phase 1 | Pending | Pending |
+| Water Change Calculator | Workshop | More -> Workshop -> Water Change | Calculate change volume from tank size, current nitrate, target nitrate, and tap nitrate | Reject impossible target/tap/current combinations | Result can inform Tank water-change logging without auto-writing data | Golden Checks | Workshop focused tests; black-box route pass | Pass |
+| Stocking Calculator | Workshop | More -> Workshop -> Stocking | Estimate stocking load for tank size and selected species | Empty tank/species input shows useful guidance | Estimate remains separate from Tank livestock until user adds stock | Golden Checks | Workshop focused tests; black-box route pass | Pass |
+| CO2 Calculator | Workshop | More -> Workshop -> CO2 Calculator | Estimate CO2 from KH and pH | Reject invalid pH/KH values | Advice copy stays estimate-based and non-prescriptive | Golden Checks | Workshop focused tests; black-box route pass | Pass |
+| Dosing Calculator | Workshop | More -> Workshop -> Dosing | Calculate product dose from product rate and tank volume | Reject missing tank volume/product input | No medication claim beyond current supported products | Golden Checks | [empty](screenshots/production-tool-audit-2026-05-25/phase2-dosing-initial.png), [valid](screenshots/production-tool-audit-2026-05-25/phase2-dosing-valid-default.png), [presets](screenshots/production-tool-audit-2026-05-25/phase2-dosing-presets.png), focused tests | Fixed |
+| Unit Converter | Workshop | More -> Workshop -> Unit Converter | Convert volume, temperature, length, and hardness values | Empty/invalid numeric input does not crash | Tool is stateless and returns to Workshop cleanly | Golden Checks | Workshop focused tests; black-box route pass | Pass |
+| Tank Volume Calculator | Workshop | More -> Workshop -> Tank Volume | Calculate common tank shapes with unit conversion | Reject zero/negative dimensions | Can be used before tank creation without requiring a saved tank | Golden Checks | Workshop focused tests; black-box route pass | Pass |
+| Lighting Planner | Workshop | More -> Workshop -> Lighting | Generate light schedule and CO2 timing advice | Handles midnight-spanning schedules and empty input | Advice remains planner-only unless user applies it elsewhere | Golden Checks | [default](screenshots/production-tool-audit-2026-05-25/phase2-lighting-default.png), midnight widget tests, black-box route pass | Fixed |
+| Workshop Compatibility Checker | Workshop | More -> Workshop -> Compatibility | Local compatibility estimate for selected species | Empty species/tank values show setup guidance | Label stays distinct from Smart AI compatibility advice | Golden Checks | Workshop focused tests; black-box route pass | Pass |
+| Cycling Assistant | Workshop | More -> Workshop -> Cycling Assistant | Show cycling stage guidance for a selected tank | No tank state explains requirement | Tank detail cycling status may deep-link here with context | Golden Checks | Cycling focused tests; Workshop no-tank widget state | Fixed |
+| Cost Tracker | Workshop | More -> Workshop -> Cost Tracker | Add, persist, summarize, delete, and undo an expense | Empty/invalid amount is rejected | Tank-specific value tools remain separate from global cost tracking | Golden Checks | Workshop focused tests; add/invalid/persist widget coverage | Pass |
 | Tank room | Tank | Bottom tab -> Tank | Room scene loads with current tank state | No tank state prompts creation without crash | Tank room reflects saved logs and selected tank | App contract | Pending | Pending |
 | Tank bottom panel | Tank | Tank -> bottom panel tabs | Today/care/status tabs open and scroll safely | No data states are calm and actionable | State updates after care actions | App contract | Pending | Pending |
 | Today board | Tank | Tank -> Today | Daily goal and due care items reflect current state | No tasks/reviews avoids nagging | Care actions update board without stale state | App contract | Pending | Pending |
@@ -133,9 +134,19 @@ Source URLs:
 | --- | --- | --- | --- | --- | --- |
 | QA-001 | P2 | QA harness | Black-box smoke did not recover from Android emulator install storage pressure. | Fixed in harness; focused test added. | `test/scripts/android_blackbox_smoke_script_test.dart`; failed artifacts under phase0-install-failures |
 | QA-002 | P3 | Integration harness | Repeated integration-test launches can log a caught duplicate Firebase initialization while tests still pass. | Documented for watchlist; not seen as a fatal normal-run issue in black-box logcat. | `flutter test integration_test/smoke_test_v2.dart -d emulator-5560` output |
+| QA-003 | P1 | Dosing Calculator | Tropica Specialised and Easy Green presets used too-small per-litre rates versus product guidance; API Stress Coat rounded to 40 L instead of 10 US gal / 38 L. | Fixed; preset tests added. | `test/widget_tests/dosing_calculator_screen_test.dart`; [presets](screenshots/production-tool-audit-2026-05-25/phase2-dosing-presets.png) |
+| QA-004 | P2 | Lighting Planner | Midnight-spanning siesta periods subtracted a negative interval, producing impossible total-light durations; timeline rendering used raw negative widths for wrapped schedules. | Fixed; midnight schedule tests added. | `test/widget_tests/lighting_schedule_screen_test.dart`; [default screenshot](screenshots/production-tool-audit-2026-05-25/phase2-lighting-default.png) |
+| QA-005 | P2 | Cycling Assistant | Phase 1 education copy attributed ammonia-to-nitrite conversion to Nitrospira. | Fixed; phase education tests added. | `test/widget_tests/cycling_assistant_screen_test.dart` |
 
 ## Phase Notes
 
 - Phase 0 is complete once the harness patch, dossier, focused test, analyzer, and passing black-box evidence are committed.
-- Phase 1 must research numeric/care expectations before touching calculator behavior.
-- Each later phase will add valid/invalid screenshots, focused test references, and pass/fix status to the matrix above.
+- Phase 1 completed source-backed golden checks before touching calculator behavior.
+- Phase 2 completed Workshop-focused fixes and evidence:
+  - `flutter test` Workshop subset: 136 tests passed.
+  - `flutter analyze --no-pub`: pass.
+  - `flutter build apk --debug --target lib/main.dart`: pass.
+  - `scripts/run_android_blackbox_smoke.ps1 -IncludeQaDeepLinks`: pass on `emulator-5564`; emulator storage retry/fallback path was exercised successfully.
+  - Manual emulator screenshots/XML captured for Workshop hub, Dosing empty/valid/presets, and Lighting default.
+  - Phase 2 logcat scan: clean for fatal Android, Flutter, widget, render overflow, and negative constraint signatures. See [logcat](screenshots/production-tool-audit-2026-05-25/phase2-workshop-logcat.txt).
+- Later phases will add valid/invalid screenshots, focused test references, and pass/fix status to the matrix above.
