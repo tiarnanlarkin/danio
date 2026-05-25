@@ -829,42 +829,46 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     final enabled = onTap != null;
     final effectiveColor = enabled ? iconColor : context.textHint;
 
-    return Card(
-      surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm2,
-        ),
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: effectiveColor.withAlpha(26),
-            borderRadius: AppRadius.smallRadius,
+    return Semantics(
+      button: enabled,
+      enabled: enabled,
+      child: Card(
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
+        child: ListTile(
+          enabled: enabled,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm2,
           ),
-          child: Icon(icon, color: effectiveColor, size: AppIconSizes.md),
-        ),
-        title: Text(
-          title,
-          style: AppTypography.titleMedium.copyWith(
-            color: enabled ? null : context.textHint,
+          leading: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: effectiveColor.withAlpha(26),
+              borderRadius: AppRadius.smallRadius,
+            ),
+            child: Icon(icon, color: effectiveColor, size: AppIconSizes.md),
           ),
-        ),
-        subtitle: Text(
-          subtitle,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          style: AppTypography.bodyMedium.copyWith(
-            color: enabled ? context.textSecondary : context.textHint,
+          title: Text(
+            title,
+            style: AppTypography.titleMedium.copyWith(
+              color: enabled ? null : context.textHint,
+            ),
           ),
+          subtitle: Text(
+            subtitle,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: AppTypography.bodyMedium.copyWith(
+              color: enabled ? context.textSecondary : context.textHint,
+            ),
+          ),
+          trailing: enabled
+              ? Icon(Icons.chevron_right, color: context.textSecondary)
+              : null,
+          onTap: onTap,
         ),
-        trailing: Icon(
-          Icons.chevron_right,
-          color: enabled ? context.textSecondary : context.textHint,
-        ),
-        onTap: onTap,
       ),
     );
   }

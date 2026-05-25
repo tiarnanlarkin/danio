@@ -141,5 +141,32 @@ void main() {
       expect(find.text('Weak spots available'), findsOneWidget);
       expect(find.text('Practice Weak Spots'), findsOneWidget);
     });
+
+    testWidgets('no due review modes do not draw action chevrons', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(stats: _stats(totalCards: 12, dueCards: 0, weakCards: 3)),
+      );
+      await _advance(tester);
+
+      final standardTile = tester.widget<ListTile>(
+        find.ancestor(
+          of: find.text('Standard Review'),
+          matching: find.byType(ListTile),
+        ),
+      );
+      final quickTile = tester.widget<ListTile>(
+        find.ancestor(
+          of: find.text('Quick Review'),
+          matching: find.byType(ListTile),
+        ),
+      );
+
+      expect(standardTile.onTap, isNull);
+      expect(standardTile.trailing, isNull);
+      expect(quickTile.onTap, isNull);
+      expect(quickTile.trailing, isNull);
+    });
   });
 }

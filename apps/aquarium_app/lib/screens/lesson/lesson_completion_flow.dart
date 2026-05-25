@@ -6,6 +6,7 @@ import '../../providers/lesson_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/danio_bottom_dock.dart';
 import '../../widgets/xp_award_animation.dart';
 
 import '../../navigation/app_routes.dart';
@@ -289,6 +290,12 @@ class _RewardSummaryRow extends StatelessWidget {
   }
 }
 
+double _completionSheetBottomClearance(BuildContext context) {
+  return DanioBottomDock.height +
+      AppSpacing.xxxl +
+      MediaQuery.of(context).viewPadding.bottom;
+}
+
 /// Show XP animation and check for level-up.  Navigation happens inside
 /// [onComplete] so the caller controls what happens after animations.
 void showLessonXpAnimation(
@@ -356,8 +363,13 @@ void showNextLessonOrPop(
     context: context,
     builder: (ctx) {
       final theme = Theme.of(ctx);
-      return Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+      return SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.lg + _completionSheetBottomClearance(ctx),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -461,7 +473,6 @@ void showNextLessonOrPop(
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
           ],
         ),
       );

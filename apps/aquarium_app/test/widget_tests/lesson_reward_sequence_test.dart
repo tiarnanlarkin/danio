@@ -15,4 +15,15 @@ void main() {
     expect(completionFlow, isNot(contains('LevelUpDialog.show(')));
     expect(completionFlow, isNot(contains('showLevelUpCelebration(')));
   });
+
+  test('next lesson reward sheet clears the persistent bottom dock', () {
+    final completionFlow = File(
+      'lib/screens/lesson/lesson_completion_flow.dart',
+    ).readAsStringSync();
+
+    expect(completionFlow, contains('SingleChildScrollView'));
+    expect(completionFlow, contains('DanioBottomDock.height'));
+    expect(completionFlow, contains('viewPadding.bottom'));
+    expect(completionFlow, contains('_completionSheetBottomClearance(ctx)'));
+  });
 }

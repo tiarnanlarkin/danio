@@ -63,6 +63,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
       'Look for keywords in the question - the correct answer often relates directly to the lesson content you just read.';
 
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey _explanationKey = GlobalKey();
 
   @override
   void didUpdateWidget(covariant LessonQuizWidget oldWidget) {
@@ -70,11 +71,14 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
 
     if (!oldWidget.answered && widget.answered) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!_scrollController.hasClients) return;
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
+        final explanationContext = _explanationKey.currentContext;
+        if (explanationContext == null) return;
+        Scrollable.ensureVisible(
+          explanationContext,
           duration: AppDurations.medium4,
           curve: Curves.easeOutCubic,
+          alignment: 1,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
         );
       });
     }
@@ -347,6 +351,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
                 // Explanation content
                 if (index == 4 + question.options.length) {
                   return Semantics(
+                    key: _explanationKey,
                     label: 'Explanation: ${question.explanation!}',
                     liveRegion: true,
                     child: Container(

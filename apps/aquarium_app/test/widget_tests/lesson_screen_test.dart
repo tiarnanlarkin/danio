@@ -6,6 +6,7 @@
 // NotificationService), so we override it with a fake notifier.
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -153,6 +154,24 @@ void main() {
   });
 
   group('LessonScreen', () {
+    test('quiz feedback scroll targets the explanation only', () {
+      final source = File(
+        'lib/screens/lesson/lesson_quiz_widget.dart',
+      ).readAsStringSync();
+
+      expect(source, contains('Scrollable.ensureVisible'));
+      expect(
+        source,
+        isNot(
+          contains(
+            'animateTo(\n          _scrollController.position.maxScrollExtent',
+          ),
+        ),
+        reason:
+            'Max-scroll can clip the question heading when feedback already fits.',
+      );
+    });
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
@@ -372,6 +391,67 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Ammonia should read zero'), findsOneWidget);
+    });
+
+    testWidgets('quiz feedback does not clip the question when it nearly fits', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      int? selected;
+      var answered = false;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: StatefulBuilder(
+                builder: (context, setState) {
+                  return LessonQuizWidget(
+                    lesson: _quizLesson,
+                    isPracticeMode: false,
+                    currentQuizQuestion: 0,
+                    correctAnswers: answered ? 1 : 0,
+                    selectedAnswer: selected,
+                    answered: answered,
+                    showHint: false,
+                    onSelectAnswer: (index) => setState(() {
+                      selected = index;
+                    }),
+                    onShowHint: () {},
+                    onCheckOrAdvance:
+                        ({
+                          required selectedAnswer,
+                          required isCorrect,
+                          required isLastQuestion,
+                        }) async {
+                          setState(() {
+                            answered = true;
+                          });
+                        },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Ammonia'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Check Answer'));
+      await tester.pumpAndSettle();
+
+      final scrollable = tester.state<ScrollableState>(find.byType(Scrollable));
+
+      expect(
+        scrollable.position.pixels,
+        lessThanOrEqualTo(20),
+        reason:
+            'Near-fit feedback should not auto-scroll far enough to clip the question heading.',
+      );
     });
 
     testWidgets('quiz keeps selected correct answer marker after reveal', (

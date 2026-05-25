@@ -1,0 +1,567 @@
+﻿--------- beginning of system
+05-25 04:49:21.157 W/ActivityTaskManager(  755): callingPackage for (uid=2000, pid=19599) has no WPC
+05-25 04:49:21.158 V/WindowManager(  755): DesktopModeLaunchParamsModifier: phase= 0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@179034865 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865 task null, skipping
+05-25 04:49:21.158 V/WindowManager(  755): TaskLaunchParamsModifier:phase=0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@179034865 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865
+--------- beginning of main
+05-25 04:49:21.159 V/GrammaticalInflectionUtils(  755): AttributionSource: android.content.AttributionSource@f3022897 does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+05-25 04:49:21.165 V/WindowManager(  755): DesktopModeLaunchParamsModifier: phase= 0 task=null activity=ActivityRecord{255407463 u0 com.tiarnanlarkin.danio/.MainActivity display-area-from-current-params=null display-area-for-record=DefaultTaskDisplayArea@179034865 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865 task null, skipping
+05-25 04:49:21.165 V/WindowManager(  755): TaskLaunchParamsModifier:phase=0 task=null activity=ActivityRecord{255407463 u0 com.tiarnanlarkin.danio/.MainActivity t-1} display-area-from-current-params=null display-area-for-record=DefaultTaskDisplayArea@179034865 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865
+05-25 04:49:21.165 V/WindowManager(  755): DesktopModeLaunchParamsModifier: phase= 3 task=Task{908b902 #31 type=standard I=com.tiarnanlarkin.danio/.MainActivity} activity=ActivityRecord{255407463 u0 com.tiarnanlarkin.danio/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865 not entering desktop mode, skipping
+05-25 04:49:21.165 V/WindowManager(  755): TaskLaunchParamsModifier:phase=3 task=Task{908b902 #31 type=standard I=com.tiarnanlarkin.danio/.MainActivity} activity=ActivityRecord{255407463 u0 com.tiarnanlarkin.danio/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865 inherit-from-task=fullscreen non-freeform-task-display-area display-area=DefaultTaskDisplayArea@179034865 skip-bounds-fullscreen
+05-25 04:49:21.166 V/WindowManager(  755): DesktopModeLaunchParamsModifier: phase= 3 task=Task{908b902 #31 type=standard I=com.tiarnanlarkin.danio/.MainActivity} activity=ActivityRecord{255407463 u0 com.tiarnanlarkin.danio/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865 not entering desktop mode, skipping
+05-25 04:49:21.166 V/WindowManager(  755): TaskLaunchParamsModifier:phase=3 task=Task{908b902 #31 type=standard I=com.tiarnanlarkin.danio/.MainActivity} activity=ActivityRecord{255407463 u0 com.tiarnanlarkin.danio/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@179034865 inherit-from-task=fullscreen non-freeform-task-display-area display-area=DefaultTaskDisplayArea@179034865 skip-bounds-fullscreen
+05-25 04:49:21.167 D/KeyguardService( 1012): setOccluded(false)
+05-25 04:49:21.167 D/KeyguardViewMediator( 1012): setOccluded(false)
+05-25 04:49:21.167 D/KeyguardViewMediator( 1012): handleSetOccluded(false)
+05-25 04:49:21.167 I/ActivityTaskManager(  755): START u0 {act=android.intent.action.VIEW dat=danio://qa/... flg=0x10000000 xflg=0x4 pkg=com.tiarnanlarkin.danio cmp=com.tiarnanlarkin.danio/.MainActivity} with LAUNCH_SINGLE_TOP from uid 2000 (com.android.shell) (BAL_ALLOW_PERMISSION) result code=3
+05-25 04:49:21.168 D/KeyguardViewMediator( 1012): KeyguardViewMediator queue processing message: SET_OCCLUDED
+05-25 04:49:21.169 I/libbinder.BpBinder(  620): onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+05-25 04:49:21.170 D/WindowManagerShell( 1012): onActivityRestartAttempt: topActivity=ComponentInfo{com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity}, wasVisible=true, displayId=0, pipDisplayLayoutState#displayId=0
+05-25 04:49:21.170 D/SessionLifecycleClient(19466): Sending lifecycle 2 to service
+05-25 04:49:21.174 D/SessionLifecycleService(19466): Activity backgrounding at 10163679
+05-25 04:49:21.178 D/com.llfbandit.app_links(19466): Intent { act=android.intent.action.VIEW dat=danio://qa/... flg=0x10000000 xflg=0x4 pkg=com.tiarnanlarkin.danio cmp=com.tiarnanlarkin.danio/.MainActivity }
+05-25 04:49:21.178 D/com.llfbandit.app_links(19466): Handled intent: action: android.intent.action.VIEW / data: danio://qa/practice-session?mode=due-mc
+05-25 04:49:21.192 I/flutter (19466): [QA] Deep link: danio://qa/practice-session?mode=due-mc
+05-25 04:49:21.202 D/SessionLifecycleClient(19466): Sending lifecycle 1 to service
+05-25 04:49:21.202 D/SessionLifecycleService(19466): Activity foregrounding at 10163710.
+05-25 04:49:21.202 D/SessionLifecycleService(19466): Cold start detected.
+05-25 04:49:21.203 D/SessionLifecycleService(19466): Generated new session 59100d955e1e414fb5734f888048df9a
+05-25 04:49:21.204 D/SessionLifecycleService(19466): Broadcasting new session: SessionDetails(sessionId=59100d955e1e414fb5734f888048df9a, firstSessionId=59100d955e1e414fb5734f888048df9a, sessionIndex=0, sessionStartTimestampUs=1779680961203000)
+05-25 04:49:21.206 D/SessionFirelogPublisher(19466): Data Collection is enabled for at least one Subscriber
+05-25 04:49:21.221 D/EventGDTLogger(19466): Session Event: {"eventType":1,"sessionData":{"sessionId":"59100d955e1e414fb5734f888048df9a","firstSessionId":"59100d955e1e414fb5734f888048df9a","sessionIndex":0,"eventTimestampUs":1779680961203000,"dataCollectionStatus":{"performance":1,"crashlytics":2,"sessionSamplingRate":1.0},"firebaseInstallationId":"fbzNRV3qT1qUp2rLZAn25q","firebaseAuthenticationToken":"eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6IjE6OTk1Mjk1MTYzOTg2OmFuZHJvaWQ6NDQzYzdhNzdkMGRhNTQyNDk2ZDE4YiIsImV4cCI6MTc4MDI3NTY4MywiZmlkIjoiZmJ6TlJWM3FUMXFVcDJyTFpBbjI1cSIsInByb2plY3ROdW1iZXIiOjk5NTI5NTE2Mzk4Nn0.AB2LPV8wRQIgSscxaq-WteKQKGziM8sB2j1PrY7cSanFTeRM0EEF9kECIQCbebV83q3dGCWWUHKmS32XOS_1luWMlA1VaBhmbiM0lQ"},"applicationInfo":{"appId":"1:995295163986:android:443c7a77d0da542496d18b","deviceModel":"sdk_gphone64_x86_64","sessionSdkVersion":"1.2.3","osVersion":"16","logEnvironment":3,"androidAppInfo":{"packageName":"com.tiarnanlarkin.danio","versionName":"1.0.0","appBuildVersion":"1","deviceManufacturer":"Google","currentProcessDetails":{"processName":"com.tiarnanlarkin.danio","pid":19466,"importance":100,"defaultProcess":true},"appProcessDetails":[{"processName":"com.tiarnanlarkin.danio","pid":19466,"importance":100,"defaultProcess":true}]}}}
+05-25 04:49:21.221 D/SessionFirelogPublisher(19466): Successfully logged Session Start event: 59100d955e1e414fb5734f888048df9a
+05-25 04:49:21.295 D/FlutterJNI(19466): Sending viewport metrics to the engine.
+05-25 04:49:21.330 D/SessionLifecycleClient(19466): Session update received: 59100d955e1e414fb5734f888048df9a
+05-25 04:49:21.332 D/WindowOnBackDispatcher(19466): setTopOnBackInvokedCallback (unwrapped): io.flutter.embedding.android.FlutterActivity$1@6f0874a
+05-25 04:49:21.333 D/SessionLifecycleClient(19466): Notified CRASHLYTICS of new session 59100d955e1e414fb5734f888048df9a
+05-25 04:49:21.333 D/CoreBackPreview(  755): Window{f1931fc u0 com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@d19c103, mPriority=0, mIsAnimationCallback=true, mOverrideBehavior=0}
+05-25 04:49:21.345 D/FlutterJNI(19466): Sending viewport metrics to the engine.
+05-25 04:49:21.403 I/AppSearchIcing(  755): icing-search-engine.cc:2327: Persisting data to disk with mode 3
+05-25 04:49:21.410 I/AppSearchIcing(  755): icing-search-engine.cc:2340: PersistToDisk completed.
+05-25 04:49:21.529 D/FlutterJNI(19466): Sending viewport metrics to the engine.
+05-25 04:49:21.764 D/BoundBrokerSvc( 1484): onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS xflg=0x4 pkg=com.google.android.gms }
+05-25 04:49:22.194 I/HalDevMgr(  755): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+05-25 04:49:24.020 D/SatelliteController( 1139): iisInCarrierRoamingNbIotNtn: satellite is disabled
+05-25 04:49:24.020 D/SatelliteController( 1139): getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+05-25 04:49:24.020 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.199 I/HalDevMgr(  755): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+05-25 04:49:25.351 W/libbinder.BackendUnifiedServiceManager(19603): Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: SurfaceFlingerAIDL
+05-25 04:49:25.352 W/libbinder.BpBinder(19603): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+05-25 04:49:25.352 W/libbinder.ProcessState(19603): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+05-25 04:49:25.468 W/MediaProvider( 1529): isAppCloneUserPair for user 0: false
+05-25 04:49:25.609 I/ActivityManager(  755): Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+05-25 04:49:25.610 I/ActivityManager(  755): Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+05-25 04:49:25.612 I/MediaServiceV2( 1529): Creating work for intent Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+05-25 04:49:25.612 I/MediaServiceV2( 1529): Work enqueued for intent: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+05-25 04:49:25.616 I/ActivityManager(  755): Broadcast completed: result=0
+05-25 04:49:25.623 W/JobInfo ( 1529): Requested important-while-foreground flag for job946 is ignored and takes no effect
+05-25 04:49:25.623 D/WM-SystemJobScheduler( 1529): Scheduling work ID d5e6ae13-3e41-4c25-9096-12887aace5ddJob ID 946
+05-25 04:49:25.630 D/WM-SystemJobService( 1529): onStartJob for WorkGenerationalId(workSpecId=d5e6ae13-3e41-4c25-9096-12887aace5dd, generation=0)
+05-25 04:49:25.630 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: fce74054-5d75-49ac-b1fb-61b1c63b64d1}. Requires device idle.
+05-25 04:49:25.630 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: 748d3965-3023-45a6-9a32-baafa7d90ebf}. Requires device idle.
+05-25 04:49:25.630 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: bbc248da-5aec-4565-83d8-ed90ba3a683c}. Requires device idle.
+05-25 04:49:25.630 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: a7b8fc44-3a39-43d5-96b8-cef5bb529d35}. Requires device idle.
+05-25 04:49:25.630 D/WM-GreedyScheduler( 1529): Starting work for d5e6ae13-3e41-4c25-9096-12887aace5dd
+05-25 04:49:25.631 D/WM-Processor( 1529): Processor: processing WorkGenerationalId(workSpecId=d5e6ae13-3e41-4c25-9096-12887aace5dd, generation=0)
+05-25 04:49:25.632 D/WM-Processor( 1529): Work WorkGenerationalId(workSpecId=d5e6ae13-3e41-4c25-9096-12887aace5dd, generation=0) is already enqueued for processing
+05-25 04:49:25.633 D/WM-WorkerWrapper( 1529): Starting work for com.android.providers.media.MediaServiceV2
+05-25 04:49:25.634 I/MediaServiceV2( 1529): Work initiated for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+05-25 04:49:25.640 I/MediaServiceV2( 1529): Work ended for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+05-25 04:49:25.641 I/WM-WorkerWrapper( 1529): Worker result SUCCESS for Work [ id=d5e6ae13-3e41-4c25-9096-12887aace5dd, tags={ com.android.providers.media.MediaServiceV2 } ]
+05-25 04:49:25.641 D/WM-Processor( 1529): Processor d5e6ae13-3e41-4c25-9096-12887aace5dd executed; reschedule = false
+05-25 04:49:25.641 D/WM-SystemJobService( 1529): d5e6ae13-3e41-4c25-9096-12887aace5dd executed on JobScheduler
+05-25 04:49:25.655 D/WM-SystemJobScheduler( 1529): Scheduling work ID b9cb6c5e-8eb2-4073-b10a-40e189416c7cJob ID 947
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: fce74054-5d75-49ac-b1fb-61b1c63b64d1}. Requires device idle.
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: 748d3965-3023-45a6-9a32-baafa7d90ebf}. Requires device idle.
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: bbc248da-5aec-4565-83d8-ed90ba3a683c}. Requires device idle.
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: a7b8fc44-3a39-43d5-96b8-cef5bb529d35}. Requires device idle.
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Cancelling work ID d5e6ae13-3e41-4c25-9096-12887aace5dd
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: fce74054-5d75-49ac-b1fb-61b1c63b64d1}. Requires device idle.
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: 748d3965-3023-45a6-9a32-baafa7d90ebf}. Requires device idle.
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: bbc248da-5aec-4565-83d8-ed90ba3a683c}. Requires device idle.
+05-25 04:49:25.656 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: a7b8fc44-3a39-43d5-96b8-cef5bb529d35}. Requires device idle.
+05-25 04:49:25.816 D/AndroidRuntime(19614): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-25 04:49:25.819 I/AndroidRuntime(19614): Using default boot image
+05-25 04:49:25.820 I/AndroidRuntime(19614): Leaving lock profiling enabled
+05-25 04:49:25.822 I/app_process(19614): Using CollectorTypeCMC GC.
+05-25 04:49:25.882 D/nativeloader(19614): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so
+05-25 04:49:25.890 D/nativeloader(19614): Load libicu_jni.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+05-25 04:49:25.890 D/app_process(19614): u_setTimeZoneFilesDirectory("/apex/com.android.tzdata/etc/tz/versioned/9/icu") succeeded. 
+05-25 04:49:25.890 D/app_process(19614): I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt76l.dat
+05-25 04:49:25.891 D/nativeloader(19614): Load libjavacore.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+05-25 04:49:25.892 D/nativeloader(19614): Load libopenjdk.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+05-25 04:49:25.892 I/app_process(19614): Priority-to-niceness mapping: 19, 16, 13, 10, 0, -2, -4, -5, -6, -8
+05-25 04:49:25.893 W/app_process(19614): Unexpected CPU variant for x86: x86_64.
+05-25 04:49:25.893 W/app_process(19614): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, default
+05-25 04:49:25.895 W/app_process(19614): ClassLoaderContext shared library size mismatch. Expected=2, found=0 (PCL[]{PCL[/system/framework/android.test.base.jar*1653369819]#PCL[/system/framework/android.test.mock.jar*1009639922]} | PCL[])
+05-25 04:49:25.895 W/app_process(19614): ClassLoaderContext classpath size mismatch. expected=0, found=1 (PCL[]{PCL[/system/framework/android.test.runner.jar*3954641918]{PCL[/system/framework/android.test.base.jar*1653369819]#PCL[/system/framework/android.test.mock.jar*1009639922]}#PCL[/system/framework/android.test.base.jar*1653369819]} | PCL[/system/framework/android.test.runner.jar*3954641918])
+05-25 04:49:25.910 D/nativeloader(19614): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+05-25 04:49:25.911 D/AndroidRuntime(19614): Calling main entry com.android.commands.uiautomator.Launcher
+05-25 04:49:25.917 I/AconfigPackage(19614): android.media.swcodec.flags is mapped to com.android.media.swcodec
+05-25 04:49:25.917 I/AconfigPackage(19614): com.android.permission.flags is mapped to com.android.permission
+05-25 04:49:25.917 I/AconfigPackage(19614): com.android.permissioncontroller.flags is mapped to com.android.permission
+05-25 04:49:25.917 I/AconfigPackage(19614): com.android.icu is mapped to com.android.i18n
+05-25 04:49:25.917 I/AconfigPackage(19614): com.android.appsearch.flags is mapped to com.android.appsearch
+05-25 04:49:25.918 I/AconfigPackage(19614): android.uprobestats.mainline.flags is mapped to com.android.uprobestats
+05-25 04:49:25.918 I/AconfigPackage(19614): com.android.crashrecovery.flags is mapped to com.android.crashrecovery
+05-25 04:49:25.918 I/AconfigPackage(19614): android.provider.flags is mapped to com.android.configinfrastructure
+05-25 04:49:25.918 I/AconfigPackage(19614): com.android.server.deviceconfig is mapped to com.android.configinfrastructure
+05-25 04:49:25.918 I/AconfigPackage(19614): com.android.compos.flags is mapped to com.android.compos
+05-25 04:49:25.918 I/AconfigPackage(19614): com.android.art.flags is mapped to com.android.art
+05-25 04:49:25.918 I/AconfigPackage(19614): com.android.art.rw.flags is mapped to com.android.art
+05-25 04:49:25.918 I/AconfigPackage(19614): com.android.libcore is mapped to com.android.art
+05-25 04:49:25.919 I/AconfigPackage(19614): com.android.telephony.flags is mapped to com.android.telephonycore
+05-25 04:49:25.919 I/AconfigPackage(19614): com.android.media.extractor.flags is mapped to com.android.media
+05-25 04:49:25.919 I/AconfigPackage(19614): com.android.media.mainline.flags is mapped to com.android.media
+05-25 04:49:25.919 I/AconfigPackage(19614): com.android.wifi.flags is mapped to com.android.wifi
+05-25 04:49:25.919 I/AconfigPackage(19614): com.android.org.conscrypt.flags is mapped to com.android.conscrypt
+05-25 04:49:25.919 I/AconfigPackage(19614): com.android.org.conscrypt.net.flags is mapped to com.android.conscrypt
+05-25 04:49:25.919 I/AconfigPackage(19614): com.android.healthfitness.flags is mapped to com.android.healthfitness
+05-25 04:49:25.920 I/AconfigPackage(19614): com.android.ipsec.flags is mapped to com.android.ipsec
+05-25 04:49:25.920 I/AconfigPackage(19614): com.android.nfc.module.flags is mapped to com.android.nfcservices
+05-25 04:49:25.920 I/AconfigPackage(19614): com.android.adservices.ondevicepersonalization.flags is mapped to com.android.ondevicepersonalization
+05-25 04:49:25.920 I/AconfigPackage(19614): com.android.adbd.flags is mapped to com.android.adbd
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.bluetooth.flags is mapped to com.android.bt
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.devicelock.flags is mapped to com.android.devicelock
+05-25 04:49:25.921 I/AconfigPackage(19614): android.os.profiling is mapped to com.android.profiling
+05-25 04:49:25.921 I/AconfigPackage(19614): android.os.profiling.anomaly.flags is mapped to com.android.profiling
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.os.statsd.flags is mapped to com.android.os.statsd
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.rkpd.flags is mapped to com.android.rkpd
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.cellbroadcastreceiver.flags is mapped to com.android.cellbroadcast
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.adservices.flags is mapped to com.android.adservices
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.sdksandbox.flags is mapped to com.android.adservices
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.uwb.flags is mapped to com.android.uwb
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.ranging.flags is mapped to com.android.uwb
+05-25 04:49:25.921 I/AconfigPackage(19614): android.graphics.pdf.flags is mapped to com.android.mediaprovider
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.providers.media.flags is mapped to com.android.mediaprovider
+05-25 04:49:25.921 I/AconfigPackage(19614): android.graphics.pdf.flags.readonly is mapped to com.android.mediaprovider
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.tethering.mainline.beta is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): android.net.http is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.tethering.readonly.flags is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): android.net.vcn is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.net.flags is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.tethering.beta.test is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.nearby.flags is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.net.ct.flags is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.net.thread.flags is mapped to com.android.tethering
+05-25 04:49:25.921 I/AconfigPackage(19614): com.android.system.virtualmachine.flags is mapped to com.android.virt
+05-25 04:49:25.922 E/FeatureFlagsImplExport(19614): android.os.flagging.AconfigStorageReadException: ERROR_PACKAGE_NOT_FOUND: package android.xr cannot be found on the device
+05-25 04:49:25.922 D/UiAutomationConnection(19614): Created on user UserHandle{0}
+05-25 04:49:25.922 I/UiAutomation(19614): Initialized for user 0 on display 0
+05-25 04:49:25.922 W/UiAutomation(19614): Created with deprecatead constructor, assumes DEFAULT_DISPLAY
+05-25 04:49:25.923 D/AccessibilityManagerService(  755): changeCurrentUserForTestAutomationIfNeededLocked(0): ignoring because device doesn't support visible background users
+05-25 04:49:25.923 I/UiAutomationManager(  755): Registering UiTestAutomationService (id=com.android.server.accessibility/UiAutomation, flags=0x0) when called by user 0
+05-25 04:49:25.924 V/AccessibilityManagerService(  755): onUserStateChangedLocked for userId: 0, forceUpdate: false
+05-25 04:49:25.924 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_shortcut_target_service, current:{}, new:{}
+05-25 04:49:25.924 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_button_targets, current:{}, new:{}
+05-25 04:49:25.924 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_gesture_targets, current:{}, new:{}
+05-25 04:49:25.924 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_qs_targets, current:{}, new:{}
+05-25 04:49:25.924 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_key_gesture_targets, current:{}, new:{}
+05-25 04:49:25.924 W/MagnificationConnectionManager(  755): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+05-25 04:49:25.924 I/AiAiEcho( 1546): Settings changed for uri: content://settings/secure/accessibility_enabled
+05-25 04:49:25.925 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.925 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:25.925 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:25.925 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:25.925 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:25.925 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:25.925 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:25.925 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:25.925 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:25.925 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:25.925 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:25.925 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+05-25 04:49:25.925 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+05-25 04:49:25.926 W/SsPagerDots( 1012): Total number of pages invalid: 0. Assuming 1 page.
+05-25 04:49:25.927 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.927 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.927 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.927 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.927 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.928 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.928 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.928 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.928 V/AccessibilityManagerService(  755): onUserStateChangedLocked for userId: 0, forceUpdate: false
+05-25 04:49:25.929 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_shortcut_target_service, current:{}, new:{}
+05-25 04:49:25.929 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_button_targets, current:{}, new:{}
+05-25 04:49:25.929 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_gesture_targets, current:{}, new:{}
+05-25 04:49:25.929 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_qs_targets, current:{}, new:{}
+05-25 04:49:25.929 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_key_gesture_targets, current:{}, new:{}
+05-25 04:49:25.929 W/MagnificationConnectionManager(  755): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+05-25 04:49:25.930 I/AiAiEcho( 1546): Settings changed for uri: content://settings/secure/accessibility_enabled
+05-25 04:49:25.930 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:25.930 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:25.930 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:25.930 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:25.931 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:25.931 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:25.931 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:25.931 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:25.931 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:25.931 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:25.932 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+05-25 04:49:25.932 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+05-25 04:49:25.932 W/SsPagerDots( 1012): Total number of pages invalid: 0. Assuming 1 page.
+05-25 04:49:25.932 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.932 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.932 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.932 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.932 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.934 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.934 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.934 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.936 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.936 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.936 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.936 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.936 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.937 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.937 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.937 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.939 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:25.941 D/AccessibilityManagerService(  755): .getAccessibilityShortcutTargets {shortcutType=32, userId=0}
+05-25 04:49:25.941 D/BatterySaverPolicy(  755): accessibility changed to true, updating policy.
+05-25 04:49:26.309 I/NetworkScheduler.Stats( 1334): (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+05-25 04:49:26.317 I/NetworkScheduler.Stats( 1334): (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+05-25 04:49:26.961 W/AccessibilityNodeInfoDumper(19614): Fetch time: 1ms
+05-25 04:49:26.964 V/AccessibilityManagerService(  755): onUserStateChangedLocked for userId: 0, forceUpdate: false
+05-25 04:49:26.965 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_shortcut_target_service, current:{}, new:{}
+05-25 04:49:26.965 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_button_targets, current:{}, new:{}
+05-25 04:49:26.966 I/AiAiEcho( 1546): Settings changed for uri: content://settings/secure/accessibility_enabled
+05-25 04:49:26.966 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_gesture_targets, current:{}, new:{}
+05-25 04:49:26.966 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_qs_targets, current:{}, new:{}
+05-25 04:49:26.966 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_key_gesture_targets, current:{}, new:{}
+05-25 04:49:26.966 W/MagnificationConnectionManager(  755): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+05-25 04:49:26.966 D/AccessibilityManagerService(  755): restoreCurrentUserForTestAutomationIfNeededLocked(): ignoring because device doesn't support visible background users
+05-25 04:49:26.966 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.966 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:26.966 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:26.966 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:26.966 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:26.966 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:26.967 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:26.967 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:26.967 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:26.967 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:26.967 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:26.967 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+05-25 04:49:26.967 D/AndroidRuntime(19614): Shutting down VM
+05-25 04:49:26.967 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+05-25 04:49:26.967 W/SsPagerDots( 1012): Total number of pages invalid: 0. Assuming 1 page.
+05-25 04:49:26.969 W/libbinder.IPCThreadState(19614): call to talkWithDriver in joinThreadPool returned error: -9 (Bad file descriptor), FD: -1
+05-25 04:49:26.969 W/libbinder.IPCThreadState(19614): call to talkWithDriver in joinThreadPool returned error: -9 (Bad file descriptor), FD: -1
+05-25 04:49:26.969 W/libbinder.IPCThreadState(19614): call to talkWithDriver in joinThreadPool returned error: -9 (Bad file descriptor), FD: -1
+05-25 04:49:26.970 W/libbinder.IPCThreadState(19614): call to talkWithDriver in joinThreadPool returned error: -9 (Bad file descriptor), FD: -1
+05-25 04:49:26.970 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.970 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.970 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.970 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.970 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.971 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.971 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.971 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.972 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.972 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.973 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.973 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.973 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.973 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.973 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.974 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:26.975 D/BatterySaverPolicy(  755): accessibility changed to false, updating policy.
+05-25 04:49:27.144 D/WM-DelayedWorkTracker( 1529): Scheduling work b9cb6c5e-8eb2-4073-b10a-40e189416c7c
+05-25 04:49:27.144 D/WM-GreedyScheduler( 1529): Starting tracking for b9cb6c5e-8eb2-4073-b10a-40e189416c7c
+05-25 04:49:27.150 D/WM-ConstraintTracker( 1529): BatteryNotLowTracker: initial state = true
+05-25 04:49:27.152 D/WM-BrdcstRcvrCnstrntTrc( 1529): BatteryNotLowTracker: registering receiver
+05-25 04:49:27.153 D/WM-SystemJobService( 1529): onStartJob for WorkGenerationalId(workSpecId=b9cb6c5e-8eb2-4073-b10a-40e189416c7c, generation=0)
+05-25 04:49:27.155 D/WM-Processor( 1529): Processor: processing WorkGenerationalId(workSpecId=b9cb6c5e-8eb2-4073-b10a-40e189416c7c, generation=0)
+05-25 04:49:27.156 D/WM-GreedyScheduler( 1529): Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=b9cb6c5e-8eb2-4073-b10a-40e189416c7c, generation=0)
+05-25 04:49:27.156 D/WM-WorkerWrapper( 1529): Starting work for com.android.providers.media.photopicker.sync.ProactiveSyncWorker
+05-25 04:49:27.156 D/WM-Processor( 1529): Work WorkGenerationalId(workSpecId=b9cb6c5e-8eb2-4073-b10a-40e189416c7c, generation=0) is already enqueued for processing
+05-25 04:49:27.157 I/PSyncWorker( 1529): Starting proactive picker sync from sync source: 1
+05-25 04:49:27.158 I/PickerSyncTracker( 1529): Created new sync future java.util.concurrent.CompletableFuture@da9bac0[Not completed, 1 dependents]. Future map: {b9cb6c5e-8eb2-4073-b10a-40e189416c7c=java.util.concurrent.CompletableFuture@da9bac0[Not completed, 1 dependents]}
+05-25 04:49:27.158 D/PickerSyncController( 1529): syncAllMediaFromProvider() LOCAL, auth=com.android.providers.media.photopicker, retry=true
+05-25 04:49:27.158 D/PickerSyncController( 1529): getSyncRequestParams() LOCAL, auth=com.android.providers.media.photopicker
+05-25 04:49:27.158 D/PickerSyncController( 1529):    Latest ID/Gen=92835bc8fd6dde81:external_primary/3891
+05-25 04:49:27.158 D/PickerSyncController( 1529):    Cached ID/Gen=92835bc8fd6dde81:external_primary/3882
+05-25 04:49:27.158 D/PickerSyncController( 1529):    RESULT=SyncRequestParams{type=MEDIA_INCREMENTAL, gen=3882, latest=Bundle[{last_media_sync_generation=3891, media_collection_id=92835bc8fd6dde81:external_primary}], pageSize=1000}
+05-25 04:49:27.158 I/PickerSyncController( 1529): Executing SyncAdd. isLocal: true. authority: com.android.providers.media.photopicker
+05-25 04:49:27.159 D/PickerSyncLockManager( 1529): Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+05-25 04:49:27.159 D/CloseableReentrantLock( 1529): Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Locked by thread pool-4-thread-357]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.159 D/CloseableReentrantLock( 1529): Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.159 D/ExternalDbFacade( 1529): Token received for queryMedia = null
+05-25 04:49:27.163 D/PickerSyncLockManager( 1529): Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+05-25 04:49:27.163 D/CloseableReentrantLock( 1529): Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Locked by thread pool-4-thread-357]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.163 D/PickerSyncController( 1529): Saving next page token: 1779680965000|374 for key: local_provider:media_add:resume
+05-25 04:49:27.163 D/CloseableReentrantLock( 1529): Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.165 D/PickerNotificationSender( 1529): Sending a notification for media update
+05-25 04:49:27.166 D/PickerNotificationSender( 1529): Sending a notification for merged album media update Videos
+05-25 04:49:27.166 D/PickerNotificationSender( 1529): Sending a notification for album media update Videos
+05-25 04:49:27.166 D/PickerNotificationSender( 1529): Sending a notification for merged album media update Favorites
+05-25 04:49:27.166 D/PickerNotificationSender( 1529): Sending a notification for album media update Favorites
+05-25 04:49:27.166 D/ExternalDbFacade( 1529): Token received for queryMedia = 1779680965000|374
+05-25 04:49:27.168 D/PickerSyncLockManager( 1529): Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+05-25 04:49:27.168 D/CloseableReentrantLock( 1529): Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Locked by thread pool-4-thread-357]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.168 D/PickerSyncController( 1529): Clearing next page token for key: local_provider:media_add:resume
+05-25 04:49:27.168 D/CloseableReentrantLock( 1529): Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.168 D/PickerNotificationSender( 1529): Sending a notification for media update
+05-25 04:49:27.169 D/PickerNotificationSender( 1529): Sending a notification for merged album media update Videos
+05-25 04:49:27.169 D/PickerNotificationSender( 1529): Sending a notification for album media update Videos
+05-25 04:49:27.169 D/PickerNotificationSender( 1529): Sending a notification for merged album media update Favorites
+05-25 04:49:27.170 D/PickerNotificationSender( 1529): Sending a notification for album media update Favorites
+05-25 04:49:27.171 I/PickerSyncController( 1529): Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1779680965000|374, android.provider.extra.SYNC_GENERATION=3882, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 1
+05-25 04:49:27.171 I/PickerSyncController( 1529): Executing SyncRemove. isLocal: true. authority: com.android.providers.media.photopicker
+05-25 04:49:27.171 D/PickerSyncLockManager( 1529): Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+05-25 04:49:27.171 D/CloseableReentrantLock( 1529): Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Locked by thread pool-4-thread-357]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.171 D/CloseableReentrantLock( 1529): Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.172 D/PickerSyncLockManager( 1529): Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+05-25 04:49:27.172 D/CloseableReentrantLock( 1529): Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Locked by thread pool-4-thread-357]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.172 D/PickerSyncController( 1529): Clearing next page token for key: local_provider:media_remove:resume
+05-25 04:49:27.172 D/CloseableReentrantLock( 1529): Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cffd47[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+05-25 04:49:27.172 D/PickerNotificationSender( 1529): Sending a notification for media update
+05-25 04:49:27.172 D/PickerNotificationSender( 1529): Sending a notification for merged album media update Videos
+05-25 04:49:27.172 D/PickerNotificationSender( 1529): Sending a notification for album media update Videos
+05-25 04:49:27.172 D/PickerNotificationSender( 1529): Sending a notification for merged album media update Favorites
+05-25 04:49:27.172 D/PickerNotificationSender( 1529): Sending a notification for album media update Favorites
+05-25 04:49:27.172 I/PickerSyncController( 1529): Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1779680965000|374, android.provider.extra.SYNC_GENERATION=3882, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 0
+05-25 04:49:27.172 I/PickerSyncTracker( 1529): Marked sync future complete for work id: b9cb6c5e-8eb2-4073-b10a-40e189416c7c. Future map: {}
+05-25 04:49:27.172 I/PSyncWorker( 1529): Completed picker proactive sync complete from local provider.
+05-25 04:49:27.173 I/WM-WorkerWrapper( 1529): Worker result SUCCESS for Work [ id=b9cb6c5e-8eb2-4073-b10a-40e189416c7c, tags={ com.android.providers.media.photopicker.sync.ProactiveSyncWorker } ]
+05-25 04:49:27.175 D/WM-Processor( 1529): Processor b9cb6c5e-8eb2-4073-b10a-40e189416c7c executed; reschedule = false
+05-25 04:49:27.175 D/WM-GreedyScheduler( 1529): Stopping tracking for WorkGenerationalId(workSpecId=b9cb6c5e-8eb2-4073-b10a-40e189416c7c, generation=0)
+05-25 04:49:27.175 D/WM-SystemJobService( 1529): b9cb6c5e-8eb2-4073-b10a-40e189416c7c executed on JobScheduler
+05-25 04:49:27.177 D/WM-GreedyScheduler( 1529): Cancelling work ID b9cb6c5e-8eb2-4073-b10a-40e189416c7c
+05-25 04:49:27.178 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: fce74054-5d75-49ac-b1fb-61b1c63b64d1}. Requires device idle.
+05-25 04:49:27.178 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: 748d3965-3023-45a6-9a32-baafa7d90ebf}. Requires device idle.
+05-25 04:49:27.178 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: bbc248da-5aec-4565-83d8-ed90ba3a683c}. Requires device idle.
+05-25 04:49:27.178 D/WM-GreedyScheduler( 1529): Ignoring {WorkSpec: a7b8fc44-3a39-43d5-96b8-cef5bb529d35}. Requires device idle.
+05-25 04:49:27.178 D/WM-BrdcstRcvrCnstrntTrc( 1529): BatteryNotLowTracker: unregistering receiver
+05-25 04:49:27.906 D/AndroidRuntime(19631): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-25 04:49:27.909 I/AndroidRuntime(19631): Using default boot image
+05-25 04:49:27.909 I/AndroidRuntime(19631): Leaving lock profiling enabled
+05-25 04:49:27.912 I/app_process(19631): Using CollectorTypeCMC GC.
+05-25 04:49:27.978 D/nativeloader(19631): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so
+05-25 04:49:27.986 D/nativeloader(19631): Load libicu_jni.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+05-25 04:49:27.986 D/app_process(19631): u_setTimeZoneFilesDirectory("/apex/com.android.tzdata/etc/tz/versioned/9/icu") succeeded. 
+05-25 04:49:27.986 D/app_process(19631): I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt76l.dat
+05-25 04:49:27.987 D/nativeloader(19631): Load libjavacore.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+05-25 04:49:27.987 D/nativeloader(19631): Load libopenjdk.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+05-25 04:49:27.988 I/app_process(19631): Priority-to-niceness mapping: 19, 16, 13, 10, 0, -2, -4, -5, -6, -8
+05-25 04:49:27.988 W/app_process(19631): Unexpected CPU variant for x86: x86_64.
+05-25 04:49:27.988 W/app_process(19631): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, default
+05-25 04:49:27.989 W/app_process(19631): ClassLoaderContext shared library size mismatch. Expected=2, found=0 (PCL[]{PCL[/system/framework/android.test.base.jar*1653369819]#PCL[/system/framework/android.test.mock.jar*1009639922]} | PCL[])
+05-25 04:49:27.990 W/app_process(19631): ClassLoaderContext classpath size mismatch. expected=0, found=1 (PCL[]{PCL[/system/framework/android.test.runner.jar*3954641918]{PCL[/system/framework/android.test.base.jar*1653369819]#PCL[/system/framework/android.test.mock.jar*1009639922]}#PCL[/system/framework/android.test.base.jar*1653369819]} | PCL[/system/framework/android.test.runner.jar*3954641918])
+05-25 04:49:28.005 D/nativeloader(19631): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+05-25 04:49:28.006 D/AndroidRuntime(19631): Calling main entry com.android.commands.uiautomator.Launcher
+05-25 04:49:28.008 I/AconfigPackage(19631): android.media.swcodec.flags is mapped to com.android.media.swcodec
+05-25 04:49:28.008 I/AconfigPackage(19631): com.android.permission.flags is mapped to com.android.permission
+05-25 04:49:28.008 I/AconfigPackage(19631): com.android.permissioncontroller.flags is mapped to com.android.permission
+05-25 04:49:28.008 I/AconfigPackage(19631): com.android.icu is mapped to com.android.i18n
+05-25 04:49:28.008 I/AconfigPackage(19631): com.android.appsearch.flags is mapped to com.android.appsearch
+05-25 04:49:28.008 I/AconfigPackage(19631): android.uprobestats.mainline.flags is mapped to com.android.uprobestats
+05-25 04:49:28.008 I/AconfigPackage(19631): com.android.crashrecovery.flags is mapped to com.android.crashrecovery
+05-25 04:49:28.008 I/AconfigPackage(19631): android.provider.flags is mapped to com.android.configinfrastructure
+05-25 04:49:28.008 I/AconfigPackage(19631): com.android.server.deviceconfig is mapped to com.android.configinfrastructure
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.compos.flags is mapped to com.android.compos
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.art.flags is mapped to com.android.art
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.art.rw.flags is mapped to com.android.art
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.libcore is mapped to com.android.art
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.telephony.flags is mapped to com.android.telephonycore
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.media.extractor.flags is mapped to com.android.media
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.media.mainline.flags is mapped to com.android.media
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.wifi.flags is mapped to com.android.wifi
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.org.conscrypt.flags is mapped to com.android.conscrypt
+05-25 04:49:28.009 I/AconfigPackage(19631): com.android.org.conscrypt.net.flags is mapped to com.android.conscrypt
+05-25 04:49:28.010 I/AconfigPackage(19631): com.android.healthfitness.flags is mapped to com.android.healthfitness
+05-25 04:49:28.010 I/AconfigPackage(19631): com.android.ipsec.flags is mapped to com.android.ipsec
+05-25 04:49:28.010 I/AconfigPackage(19631): com.android.nfc.module.flags is mapped to com.android.nfcservices
+05-25 04:49:28.010 I/AconfigPackage(19631): com.android.adservices.ondevicepersonalization.flags is mapped to com.android.ondevicepersonalization
+05-25 04:49:28.011 I/AconfigPackage(19631): com.android.adbd.flags is mapped to com.android.adbd
+05-25 04:49:28.011 I/AconfigPackage(19631): com.android.bluetooth.flags is mapped to com.android.bt
+05-25 04:49:28.011 I/AconfigPackage(19631): com.android.devicelock.flags is mapped to com.android.devicelock
+05-25 04:49:28.011 I/AconfigPackage(19631): android.os.profiling is mapped to com.android.profiling
+05-25 04:49:28.011 I/AconfigPackage(19631): android.os.profiling.anomaly.flags is mapped to com.android.profiling
+05-25 04:49:28.011 I/AconfigPackage(19631): com.android.os.statsd.flags is mapped to com.android.os.statsd
+05-25 04:49:28.011 I/AconfigPackage(19631): com.android.rkpd.flags is mapped to com.android.rkpd
+05-25 04:49:28.011 I/AconfigPackage(19631): com.android.cellbroadcastreceiver.flags is mapped to com.android.cellbroadcast
+05-25 04:49:28.011 I/AconfigPackage(19631): com.android.adservices.flags is mapped to com.android.adservices
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.sdksandbox.flags is mapped to com.android.adservices
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.uwb.flags is mapped to com.android.uwb
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.ranging.flags is mapped to com.android.uwb
+05-25 04:49:28.012 I/AconfigPackage(19631): android.graphics.pdf.flags is mapped to com.android.mediaprovider
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.providers.media.flags is mapped to com.android.mediaprovider
+05-25 04:49:28.012 I/AconfigPackage(19631): android.graphics.pdf.flags.readonly is mapped to com.android.mediaprovider
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.tethering.mainline.beta is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): android.net.http is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.tethering.readonly.flags is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): android.net.vcn is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.net.flags is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.tethering.beta.test is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.nearby.flags is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.net.ct.flags is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.net.thread.flags is mapped to com.android.tethering
+05-25 04:49:28.012 I/AconfigPackage(19631): com.android.system.virtualmachine.flags is mapped to com.android.virt
+05-25 04:49:28.012 E/FeatureFlagsImplExport(19631): android.os.flagging.AconfigStorageReadException: ERROR_PACKAGE_NOT_FOUND: package android.xr cannot be found on the device
+05-25 04:49:28.016 D/UiAutomationConnection(19631): Created on user UserHandle{0}
+05-25 04:49:28.016 I/UiAutomation(19631): Initialized for user 0 on display 0
+05-25 04:49:28.016 W/UiAutomation(19631): Created with deprecatead constructor, assumes DEFAULT_DISPLAY
+05-25 04:49:28.018 D/AccessibilityManagerService(  755): changeCurrentUserForTestAutomationIfNeededLocked(0): ignoring because device doesn't support visible background users
+05-25 04:49:28.018 I/UiAutomationManager(  755): Registering UiTestAutomationService (id=com.android.server.accessibility/UiAutomation, flags=0x0) when called by user 0
+05-25 04:49:28.018 V/AccessibilityManagerService(  755): onUserStateChangedLocked for userId: 0, forceUpdate: false
+05-25 04:49:28.019 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_shortcut_target_service, current:{}, new:{}
+05-25 04:49:28.019 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_button_targets, current:{}, new:{}
+05-25 04:49:28.019 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_gesture_targets, current:{}, new:{}
+05-25 04:49:28.019 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_qs_targets, current:{}, new:{}
+05-25 04:49:28.019 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_key_gesture_targets, current:{}, new:{}
+05-25 04:49:28.019 W/MagnificationConnectionManager(  755): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+05-25 04:49:28.020 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.020 I/AiAiEcho( 1546): Settings changed for uri: content://settings/secure/accessibility_enabled
+05-25 04:49:28.020 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:28.020 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:28.020 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:28.020 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:28.020 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:28.020 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:28.020 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:28.020 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:28.020 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:28.020 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:28.021 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+05-25 04:49:28.021 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+05-25 04:49:28.021 W/SsPagerDots( 1012): Total number of pages invalid: 0. Assuming 1 page.
+05-25 04:49:28.022 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.022 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.022 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.022 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.022 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.022 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.022 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.023 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.024 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.024 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.024 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.024 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.024 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.024 V/AccessibilityManagerService(  755): onUserStateChangedLocked for userId: 0, forceUpdate: false
+05-25 04:49:28.025 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_shortcut_target_service, current:{}, new:{}
+05-25 04:49:28.025 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_button_targets, current:{}, new:{}
+05-25 04:49:28.025 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_gesture_targets, current:{}, new:{}
+05-25 04:49:28.025 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_qs_targets, current:{}, new:{}
+05-25 04:49:28.025 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_key_gesture_targets, current:{}, new:{}
+05-25 04:49:28.025 W/MagnificationConnectionManager(  755): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+05-25 04:49:28.025 I/AiAiEcho( 1546): Settings changed for uri: content://settings/secure/accessibility_enabled
+05-25 04:49:28.026 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:28.026 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:28.026 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:28.026 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:28.026 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:28.026 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:28.026 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:28.026 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:28.026 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:28.026 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:28.027 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.027 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+05-25 04:49:28.028 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.028 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.029 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.029 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+05-25 04:49:28.029 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.030 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.030 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.030 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.030 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.030 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.030 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.030 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.031 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.031 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.031 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.031 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.032 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.033 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.033 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:28.033 D/BatterySaverPolicy(  755): accessibility changed to true, updating policy.
+05-25 04:49:28.035 W/SsPagerDots( 1012): Total number of pages invalid: 0. Assuming 1 page.
+05-25 04:49:28.035 D/AccessibilityManagerService(  755): .getAccessibilityShortcutTargets {shortcutType=32, userId=0}
+05-25 04:49:28.203 I/HalDevMgr(  755): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+05-25 04:49:29.054 W/AccessibilityNodeInfoDumper(19631): Fetch time: 1ms
+05-25 04:49:29.056 V/AccessibilityManagerService(  755): onUserStateChangedLocked for userId: 0, forceUpdate: false
+05-25 04:49:29.057 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_shortcut_target_service, current:{}, new:{}
+05-25 04:49:29.057 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_button_targets, current:{}, new:{}
+05-25 04:49:29.057 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_gesture_targets, current:{}, new:{}
+05-25 04:49:29.057 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_qs_targets, current:{}, new:{}
+05-25 04:49:29.057 V/AccessibilityUserState(  755): updateShortcutTargets: type:accessibility_key_gesture_targets, current:{}, new:{}
+05-25 04:49:29.057 W/MagnificationConnectionManager(  755): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+05-25 04:49:29.057 D/AccessibilityManagerService(  755): restoreCurrentUserForTestAutomationIfNeededLocked(): ignoring because device doesn't support visible background users
+05-25 04:49:29.057 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.057 I/AiAiEcho( 1546): Settings changed for uri: content://settings/secure/accessibility_enabled
+05-25 04:49:29.057 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.057 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.057 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.057 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.057 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.058 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.058 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.058 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.058 W/libbinder.IPCThreadState(19631): call to talkWithDriver in joinThreadPool returned error: -9 (Bad file descriptor), FD: -1
+05-25 04:49:29.058 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:29.059 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.059 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.059 D/AndroidRuntime(19631): Shutting down VM
+05-25 04:49:29.059 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.059 W/libbinder.IPCThreadState(19631): call to talkWithDriver in joinThreadPool returned error: -9 (Bad file descriptor), FD: -1
+05-25 04:49:29.060 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:29.060 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:29.060 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:29.060 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:29.060 I/AiAiEcho( 1546): Predicting[0]:  [CONTEXT sampling_count=5 ]
+05-25 04:49:29.060 I/AiAiEcho( 1546): EchoTargets: 
+05-25 04:49:29.060 I/AiAiEcho( 1546): Filtered by AiAi flag check: 
+05-25 04:49:29.060 I/AiAiEcho( 1546): [CONTEXT ratelimit_period="10 SECONDS" ]
+05-25 04:49:29.060 I/AiAiEcho( 1546): #remoteViewsTwiddler: feature disabled.
+05-25 04:49:29.060 W/libbinder.IPCThreadState(19631): call to talkWithDriver in joinThreadPool returned error: -9 (Bad file descriptor), FD: -1
+05-25 04:49:29.061 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+05-25 04:49:29.061 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.061 I/AiAiEcho( 1546): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 W/libbinder.IPCThreadState(  755): Sending oneway calls to frozen process.
+05-25 04:49:29.062 D/BatterySaverPolicy(  755): accessibility changed to false, updating policy.
+05-25 04:49:29.063 W/SsPagerDots( 1012): Total number of pages invalid: 0. Assuming 1 page.
