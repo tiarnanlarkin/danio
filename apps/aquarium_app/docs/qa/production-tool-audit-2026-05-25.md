@@ -94,12 +94,38 @@ Status legend: `Pending`, `Pass`, `Fixed`, `Blocked`, `Documented`.
 
 ## Golden Checks
 
-Phase 1 will replace `Pending Phase 1` entries with source-backed expectations before product fixes. Initial source anchors:
-- Tropica CO2 and fertiliser guidance: https://tropica.com/en/guide/make-your-aquarium-a-success/fertiliser-and-co2/
-- API Freshwater Master Test Kit: https://www.apifishcare.com/products/api-freshwater-master-test-kit
-- AqAdvisor limitations: https://aqadvisor.com/articles/AqAdvisorIntro.php
+These expectations are the Phase 1 oracle for the first product-fix phase. Calculator outputs are acceptance checks; care guidance remains conservative and labelled as an estimate where species/tank variation matters.
+
+| Tool | Golden valid check | Golden invalid / edge check | Source expectation |
+| --- | --- | --- | --- |
+| Water Change Calculator | 100 L, current nitrate 40 ppm, target 20 ppm, source 0 ppm -> 50% / 50 L. With source 5 ppm -> about 57.1% / 57 L. | Source/tap nitrate at or above target should not claim the target is reachable by dilution. Changes over about 60% should advise splitting. | AquaKit documents the dilution formula `tank volume * (current - target) / (current - source)` and explains source water nitrate effects. Aquarium Co-op says nitrate at 50 ppm or above should trigger water changes until a lower target is reached. |
+| CO2 Calculator | KH 4 dKH and pH 7.0 -> 12 mg/L. KH 5 dKH and pH 7.0 -> 15 mg/L. Formula tolerance: +/- 0.1 mg/L. | Invalid pH outside 0-14 and KH <= 0 should show validation. Copy must say the pH/KH result is an estimate. | AquaPilot documents `CO2 mg/L = 3 * KH * 10^(7-pH)` and the carbonate-buffer limitation. Tropica says medium plants need roughly 10-15 mg/L and advanced plants roughly 15-30 mg/L. |
+| Dosing Calculator | Seachem Prime: 100 L -> 2.5 mL. Seachem Stability initial: 100 L -> 12.5 mL. API Stress Coat: 100 L -> about 13.2 mL using 5 mL / 38 L, acceptable if rounded to 12.5 mL at 5 mL / 40 L. Tropica Specialised: 100 L -> 12 mL. Easy Green 500 mL bottle: 100 L -> about 2.6 mL. | Empty/zero tank volume or dose amount should show validation and never calculate. Medication warning stays visible. | Seachem Prime: 5 mL / 200 L. Seachem Stability initial: 5 mL / 40 L. API Stress Coat label: 5 mL / 10 US gal (38 L). Tropica Specialised: 6 mL / 50 L weekly. Aquarium Co-op Easy Green: 1 mL / 10 US gal. |
+| Unit Converter | 1 US gal -> 3.785411784 L. 1 UK gal -> 4.54609 L. 25 C -> 77 F / 298.15 K. 10 in -> 25.4 cm. 1 dGH -> 17.848 ppm CaCO3. | Empty input shows no results without crash. Kelvin below 0 should not be encouraged if the UI ever allows it. Visible unit symbols must render as `degC`, `degF`, and `CaCO3` or proper Unicode, not mojibake. | NIST provides US liquid gallon and cubic inch/litre conversions; temperature formulas are standard Celsius/Fahrenheit/Kelvin conversions; German hardness is commonly 17.848 mg/L CaCO3 per degree. |
+| Tank Volume Calculator | Rectangular 100 x 40 x 50 cm -> 200 L, about 52.8 US gal, 44.0 UK gal, 180 L usable at 90%. Rectangular 20 x 10 x 12 in -> about 39.3 L. | Zero/negative/missing dimensions show the empty calculation state without stale results. Shape labels and degree/bullet symbols must not mojibake. | Rectangular volume is length * width * height; 1 cm3 = 1 mL; NIST conversion factors for gallons/litres/inches. |
+| Lighting Planner | Low-tech planted schedule of 8 hours should be accepted. Algae mode should recommend reducing toward 4-6 hours. A midnight-crossing schedule such as 22:00 -> 02:00 should display as 4 hours and render without layout exceptions. | Siesta periods must not create negative total hours or negative timeline widths. | Aquarium Co-op recommends starting newly planted aquariums at 6-8 hours; Tropica says start with 6 hours; Aquarium Co-op lighting guidance ties excess light to algae risk. |
+| Stocking Calculator | Adding a small shoaling species should increase stocking estimate and remain clearly labelled as an estimate. | Tank volume <= 0 and filter rating <= 0 should show validation. Overstocked state should warn without implying exact safety. | AqAdvisor explains stocking calculators need species attributes, filtration, water-change schedule, compatibility, temperature/pH/hardness, and warns the result is not a replacement for experienced advice. |
+| Workshop Compatibility Checker | Betta + neon tetra should produce a caution warning. Non-overlapping temperature or pH ranges should produce a serious issue. | Empty state should ask the user to add fish and not show a false verdict. | AqAdvisor highlights compatibility, aggression, size, minimum tank size, pH, temperature, hardness, territory, and diet as relevant attributes, while warning such tools are imperfect. |
+| Cycling Assistant | No tests -> ready/not started. Ammonia present -> phase 1. Nitrite present -> phase 2. Ammonia and nitrite near zero with nitrate present -> cycled/near-cycled, with conservative copy. | Copy must describe ammonia oxidation and nitrite oxidation correctly. Planted tanks with very low nitrate should not be falsely framed as impossible to cycle. | Seachem describes cycling as beneficial bacteria converting toxic waste into less toxic forms, with ammonia/nitrite/nitrate tests used to track progress. PetMD and other care sources identify Nitrosomonas-type bacteria as ammonia-to-nitrite and Nitrospira/Nitrobacter-type bacteria as nitrite-to-nitrate. |
+| Cost Tracker | Add expense, persist after leaving screen, summarize month/year/all-time, delete with undo, clear all with confirmation. | Empty description/amount, zero amount, cancel date/settings/destructive dialogs should not write data. Currency symbols and category separators must not mojibake. | App contract; no external care formula required. |
+
+Source URLs:
+- AquaKit water-change formula: https://aquakit.app/tools/water-change-calculator
 - Aquarium Co-op nitrate guidance: https://www.aquariumcoop.com/blogs/aquarium/nitrate
-- AquaKit water-change calculator: https://aquakit.app/tools/water-change-calculator
+- Tropica CO2/fertiliser guidance: https://tropica.com/en/guide/make-your-aquarium-a-success/fertiliser-and-co2/
+- AquaPilot pH/KH CO2 formula: https://aqua-pilot.app/en/tools/co2-ph-kh-chart
+- API Freshwater Master Test Kit: https://www.apifishcare.com/products/api-freshwater-master-test-kit
+- AqAdvisor stocking limitations: https://aqadvisor.com/articles/AqAdvisorIntro.php
+- Seachem Prime directions: https://seachem.zendesk.com/hc/en-us/articles/115000125454-Info-Seachem-Prime-dosing-instructions
+- Seachem Stability directions: https://seachem.zendesk.com/hc/en-us/articles/115000127873-Info-Seachem-Stability-Dosing-Instructions
+- API Stress Coat label via DailyMed: https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?setid=fc4477cc-4d3a-4cbc-9c81-a0f5e48550be&type=pdf
+- Tropica Specialised Nutrition: https://tropica.com/en/plant-care/liquid-fertilisers/specialised-nutrition/
+- Aquarium Co-op Easy Green: https://www.aquariumcoop.com/products/easy-green-all-in-one-fertilizer
+- NIST unit conversions: https://www.nist.gov/document/nist-hb-44-2024-appendix-c-general-tables-units-measurement
+- Aquarium Co-op lighting balance: https://www.aquariumcoop.com/blogs/aquarium/how-to-balance-aquarium-lighting
+- Tropica starting-light guidance: https://tropica.com/en/guide/get-the-right-start/growing-in/
+- Seachem cycling introduction: https://seachem.zendesk.com/hc/en-us/articles/115000145073-Guide-An-introduction-to-cycling-your-tank
+- PetMD beneficial bacteria overview: https://www.petmd.com/fish/care/using-good-bacteria-your-aquarium
 
 ## Issue Triage
 
