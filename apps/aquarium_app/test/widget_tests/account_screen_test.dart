@@ -72,6 +72,22 @@ void main() {
       expect(find.textContaining('storing your tanks'), findsOneWidget);
     });
 
+    testWidgets('points offline users to More for portable backups', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(
+        find.textContaining('Use Backup & Restore from More'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Use Backup & Restore from Preferences'),
+        findsNothing,
+      );
+    });
+
     testWidgets('shows cloud_off icon', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

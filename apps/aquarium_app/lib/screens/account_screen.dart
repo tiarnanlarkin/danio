@@ -105,7 +105,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Danio is storing your tanks, logs, and preferences locally on this device. '
-              'Use Backup & Restore from Preferences when you want a portable copy of your data.',
+              'Use Backup & Restore from More when you want a portable copy of your data.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,

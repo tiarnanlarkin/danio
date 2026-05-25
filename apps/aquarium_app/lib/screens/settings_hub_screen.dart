@@ -352,7 +352,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
         excludeSemantics: true,
         label: _tileSemanticLabel(
           'Backup & Restore',
-          'Export or sync your aquarium data',
+          'Export or import your aquarium data',
         ),
         onTap: () {
           NavigationThrottle.push(
@@ -366,7 +366,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
           child: PrimaryActionTile(
             icon: Icons.backup,
             title: 'Backup & Restore',
-            subtitle: 'Export or sync your aquarium data',
+            subtitle: 'Export or import your aquarium data',
             iconColor: context.textSecondary,
             trailing: const Icon(Icons.chevron_right),
             onTap: () {

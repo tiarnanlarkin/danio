@@ -200,6 +200,33 @@ void main() {
       }
     });
 
+    testWidgets('Backup & Restore is described as local export and import', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      try {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        await tester.scrollUntilVisible(
+          find.text('Backup & Restore'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+
+        expect(find.text('Export or import your aquarium data'), findsOneWidget);
+        expect(find.textContaining('sync'), findsNothing);
+        expect(
+          find.bySemanticsLabel(
+            'Backup and Restore, Export or import your aquarium data',
+          ),
+          findsOneWidget,
+        );
+      } finally {
+        semantics.dispose();
+      }
+    });
+
     testWidgets('Preferences does not duplicate the Workshop calculator hub', (
       tester,
     ) async {

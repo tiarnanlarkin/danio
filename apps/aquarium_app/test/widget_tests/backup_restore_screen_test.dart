@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/backup_restore_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -75,6 +77,17 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       // The info card explains what the backup does
       expect(find.byIcon(Icons.backup), findsWidgets);
+    });
+
+    test('user-facing copy describes local ZIP backup only', () {
+      final source = File(
+        'lib/screens/backup_restore_screen.dart',
+      ).readAsStringSync();
+
+      expect(source, contains('ZIP file'));
+      expect(source, isNot(contains('sync your aquarium data')));
+      expect(source, isNot(contains('cloud backup')));
+      expect(source, isNot(contains('uploaded successfully')));
     });
   });
 }
