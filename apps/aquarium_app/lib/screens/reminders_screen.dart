@@ -11,6 +11,7 @@ import '../widgets/core/app_button.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/core/bubble_loader.dart';
+import '../widgets/danio_bottom_dock.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
@@ -208,7 +209,12 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
               onAction: _addReminder,
             )
           : ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.md,
+                DanioBottomDock.contentClearance + AppSpacing.md,
+              ),
               itemCount: _calculateItemCount(overdue, upcoming),
               itemBuilder: (context, index) {
                 int currentIndex = 0;
@@ -270,11 +276,18 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                 return const SizedBox.shrink();
               },
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _addReminder,
-        icon: const Icon(Icons.add),
-        label: const Text('Add Reminder'),
-      ),
+      floatingActionButton: _isLoading || _reminders.isEmpty
+          ? null
+          : Padding(
+              padding: const EdgeInsets.only(
+                bottom: DanioBottomDock.contentClearance,
+              ),
+              child: FloatingActionButton.extended(
+                onPressed: _addReminder,
+                icon: const Icon(Icons.add),
+                label: const Text('Add Reminder'),
+              ),
+            ),
     );
   }
 }
@@ -630,7 +643,9 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
         AppSpacing.md,
         AppSpacing.md,
         AppSpacing.md,
-        AppSpacing.md + MediaQuery.of(context).viewInsets.bottom,
+        AppSpacing.md +
+            DanioBottomDock.contentClearance +
+            MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -816,10 +831,10 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                     nextDue: nextDue,
                     isRecurring: _isRecurring,
                     frequency: _isRecurring ? _frequency : 'once',
-                    ),
-                  );
-                  Navigator.maybePop(context);
-                },
+                  ),
+                );
+                Navigator.maybePop(context);
+              },
             ),
           ],
         ),

@@ -7,6 +7,7 @@ import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/home/widgets/today_board.dart';
+import 'package:danio/screens/tasks_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -105,6 +106,21 @@ void main() {
     expect(find.text('Water Change'), findsOneWidget);
     expect(find.text('Daily goal complete!'), findsOneWidget);
     expect(find.textContaining(String.fromCharCode(0x1F389)), findsNothing);
+  });
+
+  testWidgets('tank task rows open the task list instead of no-op navigation', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(dailyGoal: _completedGoal(), tasks: [_task()]),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Water Change'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TasksScreen), findsOneWidget);
+    expect(find.text('Tasks'), findsOneWidget);
   });
 
   testWidgets('empty board due-review state uses quiet action copy', (

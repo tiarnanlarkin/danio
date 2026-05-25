@@ -28,7 +28,11 @@ class TempTrendSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.show_chart_rounded, size: 14, color: kTempTealDark),
+            const Icon(
+              Icons.show_chart_rounded,
+              size: 14,
+              color: kTempTealDark,
+            ),
             const SizedBox(width: 6),
             Text(
               '7-day trend',
@@ -61,7 +65,9 @@ class TempTrendSection extends StatelessWidget {
                 )
               : Center(
                   child: Text(
-                    'No data yet',
+                    sparkData.isEmpty
+                        ? 'No data yet'
+                        : 'Add another reading to see a trend',
                     style: AppTypography.labelSmall.copyWith(
                       color: kTempCharcoal.withAlpha(100),
                     ),

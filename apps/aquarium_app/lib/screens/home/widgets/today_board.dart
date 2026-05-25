@@ -13,6 +13,7 @@ import '../../../providers/tank_provider.dart';
 import '../../../providers/spaced_repetition_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../theme/app_theme.dart';
+import '../../tasks_screen.dart';
 import '../../../../screens/tab_navigator.dart';
 
 /// Compact glass-style card showing today's tasks / upcoming maintenance.
@@ -282,6 +283,12 @@ class _TaskRow extends ConsumerWidget {
     final targetTab = _resolveTab(task.title);
 
     void handleTap() {
+      if (targetTab == 2) {
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => TasksScreen(tankId: tankId)));
+        return;
+      }
       if (targetTab != null) {
         ref.read(currentTabProvider.notifier).state = targetTab;
       }

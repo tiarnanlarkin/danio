@@ -18,6 +18,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../widgets/danio_bottom_dock.dart';
 import '../utils/logger.dart';
 
 const _uuid = Uuid();
@@ -114,7 +115,12 @@ class TasksScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md,
+              DanioBottomDock.contentClearance + AppSpacing.md,
+            ),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
@@ -142,10 +148,15 @@ class TasksScreen extends ConsumerWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddDialog(context, ref),
-        tooltip: 'Add a new task',
-        child: const Icon(Icons.add),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(
+          bottom: DanioBottomDock.contentClearance,
+        ),
+        child: FloatingActionButton(
+          onPressed: () => _showAddDialog(context, ref),
+          tooltip: 'Add a new task',
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

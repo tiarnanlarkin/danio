@@ -49,8 +49,9 @@ void main() {
       anim.dispose();
     });
 
-    testWidgets('HeaterStatusPill renders ON state and last-test string',
-        (tester) async {
+    testWidgets('HeaterStatusPill renders ON state and last-test string', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
@@ -79,14 +80,12 @@ void main() {
       ).readAsStringSync();
 
       expect(source, contains('AppColors.whiteAlpha50'));
-      expect(
-        source,
-        isNot(contains('Colors.white.withValues(alpha: 0.5)')),
-      );
+      expect(source, isNot(contains('Colors.white.withValues(alpha: 0.5)')));
     });
 
-    testWidgets('TempTrendSection has no card wrapper decoration',
-        (tester) async {
+    testWidgets('TempTrendSection has no card wrapper decoration', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -120,7 +119,9 @@ void main() {
       expect(decorated, isEmpty);
     });
 
-    testWidgets('TempTrendSection chart is slim (<= 40px tall)', (tester) async {
+    testWidgets('TempTrendSection chart is slim (<= 40px tall)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -144,65 +145,143 @@ void main() {
               matching: find.byType(SizedBox),
             ),
           )
-          .where((sb) => sb.height != null && sb.height! > 20 && sb.height! <= 40)
+          .where(
+            (sb) => sb.height != null && sb.height! > 20 && sb.height! <= 40,
+          )
           .toList();
       expect(sizedBox, isNotEmpty);
     });
 
-    testWidgets('TempPanelContent has no outer gradient + outlined log button',
-        (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            latestWaterTestProvider('t1').overrideWith((_) => Future.value(null)),
-            latestWaterTestEntryProvider('t1')
-                .overrideWith((_) => Future.value(null)),
-            testStreakProvider('t1').overrideWith((_) => Future.value(0)),
-            logsProvider('t1').overrideWith((_) => Future.value(<LogEntry>[])),
-            tankHeaterProvider('t1').overrideWith((_) => Future.value(null)),
-          ],
-          child: MaterialApp(
+    testWidgets(
+      'TempTrendSection uses single-reading copy when one point exists',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
             home: Scaffold(
-              body: TempPanelContent(tankId: 't1', theme: RoomTheme.ocean),
+              body: SizedBox(
+                width: 360,
+                child: TempTrendSection(
+                  sparkData: const [25.5],
+                  minTemp: 25.5,
+                  maxTemp: 25.5,
+                  avgTemp: 25.5,
+                ),
+              ),
             ),
           ),
-        ),
-      );
-      // Pump past the 200ms Future.delayed in initState
-      await tester.pump(const Duration(milliseconds: 250));
-      await tester.pumpAndSettle();
+        );
 
-      final gradientContainers = tester
-          .widgetList<Container>(
-            find.descendant(
-              of: find.byType(TempPanelContent),
-              matching: find.byType(Container),
+        expect(find.text('No data yet'), findsNothing);
+        expect(find.text('Add another reading to see a trend'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'TempPanelContent has no outer gradient + outlined log button',
+      (tester) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              latestWaterTestProvider(
+                't1',
+              ).overrideWith((_) => Future.value(null)),
+              latestWaterTestEntryProvider(
+                't1',
+              ).overrideWith((_) => Future.value(null)),
+              testStreakProvider('t1').overrideWith((_) => Future.value(0)),
+              logsProvider(
+                't1',
+              ).overrideWith((_) => Future.value(<LogEntry>[])),
+              tankHeaterProvider('t1').overrideWith((_) => Future.value(null)),
+            ],
+            child: MaterialApp(
+              home: Scaffold(
+                body: TempPanelContent(tankId: 't1', theme: RoomTheme.ocean),
+              ),
             ),
-          )
-          .where(
-            (c) =>
-                c.decoration is BoxDecoration &&
-                (c.decoration as BoxDecoration).gradient != null,
-          )
-          .toList();
-      expect(gradientContainers, isEmpty);
+          ),
+        );
+        // Pump past the 200ms Future.delayed in initState
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.pumpAndSettle();
 
-      // Log button is outlined pill
-      expect(
-        find.descendant(
-          of: find.byType(TempPanelContent),
-          matching: find.byType(ElevatedButton),
-        ),
-        findsNothing,
-      );
-      expect(
-        find.descendant(
-          of: find.byType(TempPanelContent),
-          matching: find.byType(OutlinedButton),
-        ),
-        findsOneWidget,
-      );
-      expect(find.text('Log Temperature'), findsOneWidget);
-    });
+        final gradientContainers = tester
+            .widgetList<Container>(
+              find.descendant(
+                of: find.byType(TempPanelContent),
+                matching: find.byType(Container),
+              ),
+            )
+            .where(
+              (c) =>
+                  c.decoration is BoxDecoration &&
+                  (c.decoration as BoxDecoration).gradient != null,
+            )
+            .toList();
+        expect(gradientContainers, isEmpty);
+
+        // Log button is outlined pill
+        expect(
+          find.descendant(
+            of: find.byType(TempPanelContent),
+            matching: find.byType(ElevatedButton),
+          ),
+          findsNothing,
+        );
+        expect(
+          find.descendant(
+            of: find.byType(TempPanelContent),
+            matching: find.byType(OutlinedButton),
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Log Temperature'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'TempPanelContent hides temperature metadata when test has no temperature',
+      (tester) async {
+        final timestamp = DateTime.utc(2026, 5, 25, 10);
+        final entry = LogEntry(
+          id: 'water-test-no-temp',
+          tankId: 't1',
+          type: LogType.waterTest,
+          timestamp: timestamp,
+          createdAt: timestamp,
+          waterTest: WaterTestResults(ph: 7.2, ammonia: 0),
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              latestWaterTestProvider(
+                't1',
+              ).overrideWith((_) => Future.value(entry.waterTest)),
+              latestWaterTestEntryProvider(
+                't1',
+              ).overrideWith((_) => Future.value(entry)),
+              testStreakProvider('t1').overrideWith((_) => Future.value(1)),
+              logsProvider(
+                't1',
+              ).overrideWith((_) => Future.value(<LogEntry>[])),
+              tankHeaterProvider('t1').overrideWith((_) => Future.value(null)),
+            ],
+            child: MaterialApp(
+              home: Scaffold(
+                body: TempPanelContent(tankId: 't1', theme: RoomTheme.ocean),
+              ),
+            ),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.pumpAndSettle();
+
+        expect(find.text('--°C'), findsOneWidget);
+        expect(find.textContaining('Last logged:'), findsNothing);
+        expect(find.textContaining('Last test:'), findsNothing);
+        expect(find.textContaining('1-day streak'), findsNothing);
+      },
+    );
   });
 }

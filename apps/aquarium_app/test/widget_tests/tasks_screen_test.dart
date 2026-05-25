@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/tasks_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -53,6 +55,12 @@ void main() {
   });
 
   group('TasksScreen — empty state', () {
+    test('source keeps task actions clear of the persistent bottom dock', () {
+      final source = File('lib/screens/tasks_screen.dart').readAsStringSync();
+
+      expect(source, contains('DanioBottomDock.contentClearance'));
+    });
+
     testWidgets('renders without throwing', (tester) async {
       final svc = InMemoryStorageService();
       await svc.saveTank(_makeTank());

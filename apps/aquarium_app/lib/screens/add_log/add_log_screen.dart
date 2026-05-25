@@ -981,6 +981,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       // Invalidate logs providers
       ref.invalidate(logsProvider(widget.tankId));
       ref.invalidate(allLogsProvider(widget.tankId));
+      if (log.type == LogType.waterTest) {
+        ref.invalidate(latestWaterTestProvider(widget.tankId));
+        ref.invalidate(latestWaterTestEntryProvider(widget.tankId));
+        ref.invalidate(testStreakProvider(widget.tankId));
+      }
 
       // Engagement: count any log as "activity" (and award small XP).
       final xp = switch (log.type) {

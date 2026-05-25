@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 
@@ -67,6 +68,49 @@ Widget _wrapWithLauncher({
             ),
           ),
         ),
+      ),
+    ),
+  );
+}
+
+Widget _wrapWithLatestTemperatureHarness({
+  required InMemoryStorageService storage,
+  String tankId = 'tank-1',
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      home: Consumer(
+        builder: (context, ref, _) {
+          final latest = ref.watch(latestWaterTestProvider(tankId));
+          final label = latest.when(
+            data: (test) =>
+                'Latest temp: ${test?.temperature?.toStringAsFixed(1) ?? '--'}',
+            loading: () => 'Latest temp: loading',
+            error: (_, __) => 'Latest temp: error',
+          );
+
+          return Scaffold(
+            body: Column(
+              children: [
+                Text(label),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AddLogScreen(
+                          tankId: tankId,
+                          initialType: LogType.waterTest,
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Open log form'),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     ),
   );
@@ -195,6 +239,35 @@ void main() {
       final logs = await svc.getLogsForTank(tankId);
       expect(logs, hasLength(1));
       expect(logs.single.waterTest?.ph, 7.2);
+    });
+
+    testWidgets('saving a water test refreshes latest water test readers', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'latest-temp-refresh-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(
+        _wrapWithLatestTemperatureHarness(storage: svc, tankId: tankId),
+      );
+      await _advance(tester);
+
+      expect(find.text('Latest temp: --'), findsOneWidget);
+
+      await tester.tap(find.text('Open log form'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Temperature'),
+        '25.5',
+      );
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      expect(find.text('Latest temp: 25.5'), findsOneWidget);
     });
   });
 

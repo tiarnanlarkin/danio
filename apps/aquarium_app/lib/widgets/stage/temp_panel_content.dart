@@ -58,7 +58,9 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final disableMotion = MediaQuery.of(context).disableAnimations;
-    _fillAnim.duration = disableMotion ? Duration.zero : const Duration(milliseconds: 1100);
+    _fillAnim.duration = disableMotion
+        ? Duration.zero
+        : const Duration(milliseconds: 1100);
   }
 
   @override
@@ -99,8 +101,9 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
     final heaterAsync = ref.watch(tankHeaterProvider(widget.tankId));
 
     final temp = latestTestAsync.value?.temperature;
-    final lastEntry = latestEntryAsync.value;
     final streak = streakAsync.value ?? 0;
+    final lastEntry = temp != null ? latestEntryAsync.value : null;
+    final temperatureStreak = temp != null ? streak : 0;
 
     final heater = heaterAsync.value;
     final optimalMin =
@@ -136,7 +139,7 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TempHeader(streak: streak),
+          TempHeader(streak: temperatureStreak),
           const SizedBox(height: AppSpacing.sm4),
 
           TempHeroSection(
@@ -196,8 +199,7 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
           l.timestamp.day,
         );
         return ld == day;
-      }).toList()
-        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      }).toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
       if (dayLogs.isNotEmpty) {
         result.add(dayLogs.first.waterTest!.temperature!);
       }

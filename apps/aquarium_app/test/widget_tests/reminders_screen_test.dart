@@ -6,6 +6,8 @@
 // fish-bob animation, so pumpAndSettle never settles. We advance time
 // with pump(Duration) calls instead.
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,11 +20,7 @@ import 'package:danio/screens/reminders_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(
-      home: RemindersScreen(),
-    ),
-  );
+  return const ProviderScope(child: MaterialApp(home: RemindersScreen()));
 }
 
 /// Advance far enough for async prefs load and animations to settle.
@@ -45,6 +43,22 @@ void main() {
   });
 
   group('RemindersScreen — rendering', () {
+    test(
+      'source keeps reminder actions clear of the persistent bottom dock',
+      () {
+        final source = File(
+          'lib/screens/reminders_screen.dart',
+        ).readAsStringSync();
+
+        expect(source, contains('DanioBottomDock.contentClearance'));
+        expect(
+          source,
+          contains('MediaQuery.of(context).viewInsets.bottom'),
+          reason: 'Add sheet should respect both the dock and keyboard.',
+        );
+      },
+    );
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
@@ -75,16 +89,42 @@ void main() {
       );
     });
 
-    testWidgets('empty state title uses iconography instead of raw emoji text', (
-      tester,
-    ) async {
+    testWidgets('empty state shows one add action', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
 
-      expect(find.byIcon(Icons.notifications_none), findsWidgets);
-      expect(find.text('Never miss a thing!'), findsOneWidget);
-      expect(find.textContaining('Never miss a thing! 🔔'), findsNothing);
+      expect(find.byType(FloatingActionButton), findsNothing);
+      expect(find.text('Add Reminder'), findsOneWidget);
     });
+
+    testWidgets('non-empty state uses dock-cleared FAB for adding', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'aquarium_reminders':
+            '[{"id":"1","title":"Water Change","notes":null,"category":"water",'
+            '"nextDue":"${DateTime.now().add(const Duration(days: 2)).toIso8601String()}",'
+            '"lastCompleted":null,"isRecurring":true,"frequency":"weekly"}]',
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.text('Add Reminder'), findsOneWidget);
+    });
+
+    testWidgets(
+      'empty state title uses iconography instead of raw emoji text',
+      (tester) async {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
+
+        expect(find.byIcon(Icons.notifications_none), findsWidgets);
+        expect(find.text('Never miss a thing!'), findsOneWidget);
+        expect(find.textContaining('Never miss a thing! 🔔'), findsNothing);
+      },
+    );
 
     testWidgets('shows reminder when data exists in prefs', (tester) async {
       // Use full JSON matching _Reminder.fromJson schema
