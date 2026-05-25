@@ -43,9 +43,7 @@ Widget _wrap({AsyncValue<List<Livestock>>? livestockOverride}) {
 
   return ProviderScope(
     overrides: overrides,
-    child: MaterialApp(
-      home: LivestockScreen(tankId: _fakeTankId),
-    ),
+    child: MaterialApp(home: LivestockScreen(tankId: _fakeTankId)),
   );
 }
 
@@ -97,7 +95,7 @@ void main() {
       expect(find.text('Add Livestock'), findsOneWidget);
     });
 
-    testWidgets('empty state title uses iconography instead of raw emoji text', (
+    testWidgets('empty state does not duplicate the add action with a FAB', (
       tester,
     ) async {
       suppressAvatarError();
@@ -105,16 +103,29 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
-      expect(find.byIcon(Icons.set_meal), findsWidgets);
-      expect(
-        find.text('Your tank awaits its first residents!'),
-        findsOneWidget,
-      );
-      expect(
-        find.textContaining('Your tank awaits its first residents! 🐠'),
-        findsNothing,
-      );
+      expect(find.text('Add Livestock'), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsNothing);
     });
+
+    testWidgets(
+      'empty state title uses iconography instead of raw emoji text',
+      (tester) async {
+        suppressAvatarError();
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.byIcon(Icons.set_meal), findsWidgets);
+        expect(
+          find.text('Your tank awaits its first residents!'),
+          findsOneWidget,
+        );
+        expect(
+          find.textContaining('Your tank awaits its first residents! 🐠'),
+          findsNothing,
+        );
+      },
+    );
 
     testWidgets('has overflow menu button in actions', (tester) async {
       suppressAvatarError();

@@ -127,6 +127,10 @@ class EquipmentScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final equipmentAsync = ref.watch(equipmentProvider(tankId));
+    final showAddFab = equipmentAsync.maybeWhen(
+      data: (equipment) => equipment.isNotEmpty,
+      orElse: () => false,
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Equipment')),
@@ -230,11 +234,13 @@ class EquipmentScreen extends ConsumerWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddDialog(context, ref),
-        tooltip: 'Add equipment',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: showAddFab
+          ? FloatingActionButton(
+              onPressed: () => _showAddDialog(context, ref),
+              tooltip: 'Add equipment',
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -331,7 +337,8 @@ class EquipmentScreen extends ConsumerWidget {
     showAppDestructiveDialog(
       context: context,
       title: 'Remove Equipment?',
-      message: 'Remove "${equipment.name}" from this tank? You can undo within 5 seconds.',
+      message:
+          'Remove "${equipment.name}" from this tank? You can undo within 5 seconds.',
       destructiveLabel: 'Remove Equipment',
       cancelLabel: 'Keep',
       onConfirm: () async {
@@ -356,9 +363,16 @@ class EquipmentScreen extends ConsumerWidget {
             );
           }
         } catch (e, st) {
-          logError('EquipmentScreen: equipment delete failed: $e', stackTrace: st, tag: 'EquipmentScreen');
+          logError(
+            'EquipmentScreen: equipment delete failed: $e',
+            stackTrace: st,
+            tag: 'EquipmentScreen',
+          );
           if (context.mounted) {
-            DanioSnackBar.error(context, 'Couldn\'t remove that equipment. Give it another go!');
+            DanioSnackBar.error(
+              context,
+              'Couldn\'t remove that equipment. Give it another go!',
+            );
           }
         }
       },
@@ -396,57 +410,55 @@ class _EquipmentHistoryContent extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return SizedBox(
-        width: double.maxFinite,
-        child: logsAsync.when(
-          loading: () => const Padding(
-            padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(child: BubbleLoader.small()),
-          ),
-          error: (err, _) => AppErrorState(
-            compact: true,
-            title: 'Couldn\'t load history',
-            message: 'Please close and try again.',
-            onRetry: () => ref.invalidate(allLogsProvider(tankId)),
-          ),
-          data: (logs) {
-            final maintenance =
-                logs
-                    .where((l) => l.type == LogType.equipmentMaintenance)
-                    .where((l) => l.relatedEquipmentId == equipment.id)
-                    .toList()
-                  ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-            if (maintenance.isEmpty) {
-              return Text(
-                'No maintenance logs yet.\n\nTip: Tap "Mark Serviced" and it\'ll show up here and in Recent Activity.',
-                style: AppTypography.bodyMedium,
-              );
-            }
-
-            return SizedBox(
-              height: 320,
-              child: ListView.separated(
-                itemCount: maintenance.length.clamp(0, 25),
-                separatorBuilder: (_, __) => const Divider(height: 1),
-                itemBuilder: (context, i) {
-                  final log = maintenance[i];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const Icon(
-                      Icons.build_circle,
-                      color: AppColors.success,
-                      size: 18,
-                    ),
-                    title: Text(
-                      DateFormat('d MMM yyyy').format(log.timestamp),
-                    ),
-                    subtitle: Text(DateFormat('h:mm a').format(log.timestamp)),
-                  );
-                },
-              ),
-            );
-          },
+      width: double.maxFinite,
+      child: logsAsync.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(AppSpacing.sm2),
+          child: Center(child: BubbleLoader.small()),
         ),
+        error: (err, _) => AppErrorState(
+          compact: true,
+          title: 'Couldn\'t load history',
+          message: 'Please close and try again.',
+          onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+        ),
+        data: (logs) {
+          final maintenance =
+              logs
+                  .where((l) => l.type == LogType.equipmentMaintenance)
+                  .where((l) => l.relatedEquipmentId == equipment.id)
+                  .toList()
+                ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+          if (maintenance.isEmpty) {
+            return Text(
+              'No maintenance logs yet.\n\nTip: Tap "Mark Serviced" and it\'ll show up here and in Recent Activity.',
+              style: AppTypography.bodyMedium,
+            );
+          }
+
+          return SizedBox(
+            height: 320,
+            child: ListView.separated(
+              itemCount: maintenance.length.clamp(0, 25),
+              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemBuilder: (context, i) {
+                final log = maintenance[i];
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(
+                    Icons.build_circle,
+                    color: AppColors.success,
+                    size: 18,
+                  ),
+                  title: Text(DateFormat('d MMM yyyy').format(log.timestamp)),
+                  subtitle: Text(DateFormat('h:mm a').format(log.timestamp)),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -535,7 +547,11 @@ class _EquipmentCard extends StatelessWidget {
           ),
           if (equipment.lastServiced != null)
             Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.xxxl, right: AppSpacing.md, bottom: AppSpacing.sm2),
+              padding: const EdgeInsets.only(
+                left: AppSpacing.xxxl,
+                right: AppSpacing.md,
+                bottom: AppSpacing.sm2,
+              ),
               child: Row(
                 children: [
                   Icon(
@@ -634,7 +650,12 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
           left: AppSpacing.md,
           right: AppSpacing.md,
           top: AppSpacing.md,
-          bottom: max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom) + 16,
+          bottom:
+              max(
+                MediaQuery.of(context).viewInsets.bottom,
+                MediaQuery.of(context).viewPadding.bottom,
+              ) +
+              16,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -792,7 +813,11 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
 
       if (mounted) Navigator.maybePop(context);
     } catch (e, st) {
-      logError('EquipmentScreen: equipment save failed: $e', stackTrace: st, tag: 'EquipmentScreen');
+      logError(
+        'EquipmentScreen: equipment save failed: $e',
+        stackTrace: st,
+        tag: 'EquipmentScreen',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,

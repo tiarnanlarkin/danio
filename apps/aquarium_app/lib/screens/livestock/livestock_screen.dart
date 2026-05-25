@@ -70,6 +70,12 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   Widget build(BuildContext context) {
     final livestockAsync = ref.watch(livestockProvider(widget.tankId));
     final tankAsync = ref.watch(tankProvider(widget.tankId));
+    final showAddFab =
+        !_isSelectMode &&
+        livestockAsync.maybeWhen(
+          data: (livestock) => livestock.isNotEmpty,
+          orElse: () => false,
+        );
 
     return Scaffold(
       appBar: AppBar(
@@ -369,13 +375,13 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           );
         },
       ),
-      floatingActionButton: _isSelectMode
-          ? null
-          : FloatingActionButton(
+      floatingActionButton: showAddFab
+          ? FloatingActionButton(
               onPressed: () => _showAddDialog(context, ref),
               tooltip: 'Add livestock',
               child: const Icon(Icons.add),
-            ),
+            )
+          : null,
     );
   }
 

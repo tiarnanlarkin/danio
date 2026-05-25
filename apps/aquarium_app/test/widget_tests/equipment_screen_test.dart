@@ -20,25 +20,21 @@ import 'package:danio/theme/app_theme.dart';
 final _now = DateTime.now();
 
 Tank _makeTank({String id = 'tank-1'}) => Tank(
-      id: id,
-      name: 'Test Tank',
-      type: TankType.freshwater,
-      volumeLitres: 100,
-      startDate: _now,
-      targets: WaterTargets.freshwaterTropical(),
-      createdAt: _now,
-      updatedAt: _now,
-    );
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
 
 Widget _wrap({InMemoryStorageService? storage}) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
-    overrides: [
-      storageServiceProvider.overrideWithValue(svc),
-    ],
-    child: const MaterialApp(
-      home: EquipmentScreen(tankId: 'tank-1'),
-    ),
+    overrides: [storageServiceProvider.overrideWithValue(svc)],
+    child: const MaterialApp(home: EquipmentScreen(tankId: 'tank-1')),
   );
 }
 
@@ -81,16 +77,18 @@ void main() {
       await _advance(tester);
       // Empty state shows gear up message or Add Equipment button
       expect(
-        find.byWidgetPredicate((w) =>
-            w is Text &&
-            (w.data?.contains('Add Equipment') == true ||
-                w.data?.contains('gear up') == true ||
-                w.data?.contains('Equipment') == true)),
+        find.byWidgetPredicate(
+          (w) =>
+              w is Text &&
+              (w.data?.contains('Add Equipment') == true ||
+                  w.data?.contains('gear up') == true ||
+                  w.data?.contains('Equipment') == true),
+        ),
         findsWidgets,
       );
     });
 
-    testWidgets('empty state title uses iconography instead of raw emoji text', (
+    testWidgets('empty state does not duplicate the add action with a FAB', (
       tester,
     ) async {
       final svc = InMemoryStorageService();
@@ -98,10 +96,23 @@ void main() {
       await tester.pumpWidget(_wrap(storage: svc));
       await _advance(tester);
 
-      expect(find.byIcon(Icons.settings), findsWidgets);
-      expect(find.text('Time to gear up!'), findsOneWidget);
-      expect(find.textContaining('Time to gear up! ⚙️'), findsNothing);
+      expect(find.text('Add Equipment'), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsNothing);
     });
+
+    testWidgets(
+      'empty state title uses iconography instead of raw emoji text',
+      (tester) async {
+        final svc = InMemoryStorageService();
+        await svc.saveTank(_makeTank());
+        await tester.pumpWidget(_wrap(storage: svc));
+        await _advance(tester);
+
+        expect(find.byIcon(Icons.settings), findsWidgets);
+        expect(find.text('Time to gear up!'), findsOneWidget);
+        expect(find.textContaining('Time to gear up! ⚙️'), findsNothing);
+      },
+    );
   });
 
   group('EquipmentScreen — with equipment', () {
@@ -122,26 +133,28 @@ void main() {
       expect(find.text('Fluval 307'), findsOneWidget);
     });
 
-    testWidgets('last-serviced history icon uses the minimum legible app size',
-        (tester) async {
-      final svc = InMemoryStorageService();
-      await svc.saveTank(_makeTank());
-      final equip = Equipment(
-        id: 'equip-1',
-        tankId: 'tank-1',
-        type: EquipmentType.filter,
-        name: 'Fluval 307',
-        lastServiced: _now,
-        createdAt: _now,
-        updatedAt: _now,
-      );
-      await svc.saveEquipment(equip);
-      await tester.pumpWidget(_wrap(storage: svc));
-      await _advance(tester);
+    testWidgets(
+      'last-serviced history icon uses the minimum legible app size',
+      (tester) async {
+        final svc = InMemoryStorageService();
+        await svc.saveTank(_makeTank());
+        final equip = Equipment(
+          id: 'equip-1',
+          tankId: 'tank-1',
+          type: EquipmentType.filter,
+          name: 'Fluval 307',
+          lastServiced: _now,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveEquipment(equip);
+        await tester.pumpWidget(_wrap(storage: svc));
+        await _advance(tester);
 
-      final historyIcon = tester.widget<Icon>(find.byIcon(Icons.history));
-      expect(historyIcon.size, greaterThanOrEqualTo(AppIconSizes.xs));
-    });
+        final historyIcon = tester.widget<Icon>(find.byIcon(Icons.history));
+        expect(historyIcon.size, greaterThanOrEqualTo(AppIconSizes.xs));
+      },
+    );
 
     testWidgets('scaffold renders without crash', (tester) async {
       final svc = InMemoryStorageService();
