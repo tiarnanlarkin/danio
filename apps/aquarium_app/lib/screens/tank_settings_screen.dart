@@ -10,6 +10,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
+import '../widgets/danio_bottom_dock.dart';
 import '../utils/logger.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
@@ -115,7 +116,9 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     left: AppSpacing.md,
                     right: AppSpacing.md,
                     top: AppSpacing.md,
-                    bottom: MediaQuery.of(context).padding.bottom + 96,
+                    bottom:
+                        MediaQuery.of(context).viewPadding.bottom +
+                        DanioBottomDock.contentClearance,
                   ),
                   itemCount: _buildItems(tank).length,
                   itemBuilder: (context, index) => _buildItems(tank)[index],

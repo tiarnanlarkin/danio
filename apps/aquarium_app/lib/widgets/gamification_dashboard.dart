@@ -198,6 +198,7 @@ class _GemsTodayHeartsRow extends ConsumerWidget {
             value: _formatNumber(gems),
             label: 'gems',
             color: DanioColors.tealWater,
+            fillWidth: true,
           ),
         ),
         Expanded(
@@ -206,6 +207,7 @@ class _GemsTodayHeartsRow extends ConsumerWidget {
             value: _formatNumber(todayXp),
             label: 'today',
             color: DanioColors.emeraldGreen,
+            fillWidth: true,
           ),
         ),
         Expanded(
@@ -254,6 +256,7 @@ class _StatItem extends StatelessWidget {
   final String label;
   final Color color;
   final bool alignRight;
+  final bool fillWidth;
 
   const _StatItem({
     required this.icon,
@@ -261,38 +264,43 @@ class _StatItem extends StatelessWidget {
     required this.label,
     required this.color,
     this.alignRight = false,
+    this.fillWidth = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final valueStyle = AppTypography.titleMedium.copyWith(
+      fontWeight: FontWeight.w700,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? context.textPrimary
+          : const Color(0xFF3D2B1F),
+    );
+    final labelStyle = AppTypography.labelSmall.copyWith(
+      color: context.textSecondary,
+    );
+    final textAlignment = alignRight
+        ? Alignment.centerRight
+        : Alignment.centerLeft;
+
     final rowChildren = [
       Icon(icon, size: AppIconSizes.md, color: color),
       const SizedBox(width: AppSpacing.xs),
       Flexible(
-        child: Text(
-          value,
-          style: AppTypography.titleMedium.copyWith(
-            fontWeight: FontWeight.w700,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? context.textPrimary
-                : const Color(0xFF3D2B1F),
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
+        flex: 2,
+        child: Text(value, style: valueStyle, maxLines: 1, softWrap: false),
       ),
       const SizedBox(width: AppSpacing.xxs),
       Flexible(
-        child: Text(
-          label,
-          style: AppTypography.labelSmall.copyWith(
-            color: context.textSecondary,
-          ),
-          overflow: TextOverflow.ellipsis,
+        flex: 3,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: textAlignment,
+          child: Text(label, style: labelStyle, maxLines: 1, softWrap: false),
         ),
       ),
     ];
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: fillWidth ? MainAxisSize.max : MainAxisSize.min,
       children: alignRight
           ? rowChildren.reversed.toList(growable: false)
           : rowChildren,

@@ -12,6 +12,7 @@ import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/tank.dart';
+import 'package:danio/widgets/danio_bottom_dock.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -105,6 +106,21 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.text('Freshwater'), findsOneWidget);
+    });
+
+    testWidgets('adds enough bottom padding for the persistent dock', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final listView = tester.widget<ListView>(find.byType(ListView));
+      final padding = listView.padding as EdgeInsets;
+
+      expect(
+        padding.bottom,
+        greaterThanOrEqualTo(DanioBottomDock.contentClearance),
+      );
     });
 
     testWidgets('shows not found message when tank is null', (tester) async {

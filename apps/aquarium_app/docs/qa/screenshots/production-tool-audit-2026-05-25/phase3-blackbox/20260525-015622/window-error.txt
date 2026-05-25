@@ -1,0 +1,2 @@
+﻿uiautomator dump failed after retries: adb failed: exec-out uiautomator dump /dev/tty
+error: device 'emulator-5564' not found

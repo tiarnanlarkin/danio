@@ -291,5 +291,44 @@ void main() {
       expect(tabBar.labelColor, AppColors.whiteAlpha95);
       expect(tabBar.unselectedLabelColor, AppColors.whiteAlpha70);
     });
+
+    testWidgets('open Tank sheet tab labels scale within dock width', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: Stack(
+                children: [
+                  BottomSheetPanel(
+                    sheetWidth: 822,
+                    progressContent: SizedBox(),
+                    tanksContent: SizedBox(),
+                    todayContent: SizedBox(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.drag(
+        find.byKey(const ValueKey('danio-stage-sheet-nib-hit-target')),
+        const Offset(0, -500),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
+
+      final tabBar = tester.widget<TabBar>(
+        find.byKey(const ValueKey('danio-stage-sheet-tab-row')),
+      );
+
+      for (final tab in tabBar.tabs.cast<Tab>()) {
+        expect(tab.child, isA<FittedBox>());
+      }
+    });
   });
 }

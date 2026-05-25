@@ -1,0 +1,2 @@
+﻿adb failed: shell screencap -p /sdcard/danio-blackbox-failure.png
+adb.exe: device 'emulator-5564' not found

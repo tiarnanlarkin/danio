@@ -330,10 +330,18 @@ class _SheetHeader extends StatelessWidget {
           ),
           indicator: _PillTabIndicator(),
           tabs: const [
-            Tab(text: 'Progress'),
-            Tab(text: 'Tanks'),
-            Tab(text: 'Today'),
-            Tab(text: 'Tools'),
+            Tab(
+              child: FittedBox(fit: BoxFit.scaleDown, child: Text('Progress')),
+            ),
+            Tab(
+              child: FittedBox(fit: BoxFit.scaleDown, child: Text('Tanks')),
+            ),
+            Tab(
+              child: FittedBox(fit: BoxFit.scaleDown, child: Text('Today')),
+            ),
+            Tab(
+              child: FittedBox(fit: BoxFit.scaleDown, child: Text('Tools')),
+            ),
           ],
         ),
       ],

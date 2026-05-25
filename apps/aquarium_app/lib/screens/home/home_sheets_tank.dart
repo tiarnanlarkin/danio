@@ -194,7 +194,10 @@ class _QuickWaterTestSheetState extends ConsumerState<_QuickWaterTestSheet> {
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  decoration: const InputDecoration(labelText: 'Temp (°C)'),
+                  decoration: const InputDecoration(
+                    labelText: 'Temp',
+                    suffixText: '°C',
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
