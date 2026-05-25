@@ -86,13 +86,43 @@ function Install-DebugApk {
     Invoke-Adb @("install", "-r", $apk) | Out-Host
   }
   catch {
-    if ("$_" -notmatch "INSTALL_FAILED_UPDATE_INCOMPATIBLE") {
-      throw
+    $installError = "$_"
+    if ($installError -match "INSTALL_FAILED_INSUFFICIENT_STORAGE") {
+      Write-Host "Emulator storage refused install; trimming package caches and retrying in-place install..."
+      Invoke-Adb @("shell", "cmd", "package", "trim-caches", "2G") | Out-Null
+      try {
+        Invoke-Adb @("install", "-r", $apk) | Out-Host
+        $installError = ""
+      }
+      catch {
+        $installError = "$_"
+      }
     }
 
-    Write-Host "Existing package signature differs; uninstalling $AppId and retrying install..."
-    Invoke-Adb @("uninstall", $AppId) | Out-Null
-    Invoke-Adb @("install", $apk) | Out-Host
+    if ($installError) {
+      if ($installError -notmatch "INSTALL_FAILED_UPDATE_INCOMPATIBLE|INSTALL_FAILED_INSUFFICIENT_STORAGE") {
+        throw $installError
+      }
+
+      Write-Host "Existing package blocks install; uninstalling $AppId and retrying install..."
+      $existingPackage = ""
+      try {
+        $existingPackage = (Invoke-Adb @("shell", "pm", "path", $AppId)) -join "`n"
+      }
+      catch {
+        $existingPackage = ""
+      }
+      if ($existingPackage -match "package:") {
+        Invoke-Adb @("uninstall", $AppId) | Out-Null
+      }
+      else {
+        Write-Host "No installed $AppId package found before clean install retry."
+      }
+      if ($installError -match "INSTALL_FAILED_INSUFFICIENT_STORAGE") {
+        Invoke-Adb @("shell", "cmd", "package", "trim-caches", "2G") | Out-Null
+      }
+      Invoke-Adb @("install", $apk) | Out-Host
+    }
   }
 
   Invoke-Adb @("shell", "am", "force-stop", $AppId) | Out-Null

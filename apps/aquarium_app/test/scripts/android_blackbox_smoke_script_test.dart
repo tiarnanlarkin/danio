@@ -13,6 +13,18 @@ void main() {
     expect(source, contains('"install", "-r"'));
   });
 
+  test('blackbox smoke script retries install after emulator storage refusal', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    expect(source, contains('INSTALL_FAILED_INSUFFICIENT_STORAGE'));
+    expect(source, contains('"cmd", "package", "trim-caches", "2G"'));
+    expect(source, contains('Existing package blocks install'));
+    expect(source, contains(r'Invoke-Adb @("shell", "pm", "path", $AppId)'));
+    expect(source, contains(r'Invoke-Adb @("uninstall", $AppId)'));
+  });
+
   test('blackbox smoke script waits for any first visible app state', () {
     final source = File(
       'scripts/run_android_blackbox_smoke.ps1',

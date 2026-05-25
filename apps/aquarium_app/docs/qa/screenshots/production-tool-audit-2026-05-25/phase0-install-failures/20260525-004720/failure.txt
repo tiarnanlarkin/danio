@@ -1,0 +1,2 @@
+﻿adb failed: uninstall com.tiarnanlarkin.danio
+Failure [DELETE_FAILED_INTERNAL_ERROR]
