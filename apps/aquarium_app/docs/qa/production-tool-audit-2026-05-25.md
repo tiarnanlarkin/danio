@@ -1,12 +1,13 @@
 # Production Tool Audit - 2026-05-25
 
-Branch: `qa/production-tool-audit-2026-05-25`  
-Base commit: `0d107483`  
-Primary QA target: `emulator-5560`, `Danio_E2E_API_36_1`, Android 16, 1080x2400  
-Phase 2 QA target: `emulator-5564`, Android 16, 1080x2400  
-Phase 3 QA target: `emulator-5554`, `Danio_Codex_API_36_1`, Android 16, 1080x2400  
-Phase 5 QA target: `emulator-5554`, `Danio_Codex_API_36_1`, Android 16, 1080x2400  
-Mode: emulator-only production polish audit
+- Branch: `qa/production-tool-audit-2026-05-25`
+- Base commit: `0d107483`
+- Primary QA target: `emulator-5560`, `Danio_E2E_API_36_1`, Android 16, 1080x2400
+- Phase 2 QA target: `emulator-5564`, Android 16, 1080x2400
+- Phase 3 QA target: `emulator-5554`, `Danio_Codex_API_36_1`, Android 16, 1080x2400
+- Phase 5 QA target: `emulator-5554`, `Danio_Codex_API_36_1`, Android 16, 1080x2400
+- Phase 6 QA target: `emulator-5554`, `Danio_Codex_API_36_1`, Android 16, 1080x2400
+- Mode: emulator-only production polish audit
 
 ## Phase 0 Baseline
 
@@ -28,6 +29,22 @@ Notes:
 - The continuing audit target is `emulator-5560`; the other running emulators were left untouched because they had active foreground apps.
 - Integration smoke on `emulator-5560` logged a caught duplicate Firebase initialization during repeated test launches. The normal black-box run did not include crash signatures, Flutter widget exceptions, or `AndroidRuntime: FATAL`.
 - The normal debug APK was rebuilt with `flutter build apk --debug --target lib/main.dart` after integration smoke before the final black-box pass.
+
+## Phase 6 Final Regression
+
+| Gate | Result | Evidence |
+| --- | --- | --- |
+| `flutter analyze --no-pub` | Pass | No issues found, ran in 25.8s |
+| `flutter test` | Pass | 1310 tests passed |
+| `flutter test integration_test/smoke_test_v2.dart -d emulator-5554` | Pass | 5 integration tests passed; Flutter recovered from one emulator install-storage retry by uninstalling/reinstalling |
+| `scripts/run_android_blackbox_smoke.ps1 -DeviceId emulator-5554 -InstallApkPath build/app/outputs/flutter-apk/app-debug.apk -CleanInstall -IncludeQaDeepLinks` | Pass | Clean install, fresh first-run, tabs, Workshop routes, More routes, backup/legal, QA deep links, and final logcat crash-signature scan passed |
+| `flutter build apk --debug --target lib/main.dart` after integration smoke | Pass | Rebuilt normal app APK after the integration runner modified the debug build output |
+| Final debug APK install/launch | Pass | [screenshot](screenshots/production-tool-audit-2026-05-25/phase6-final-launch.png), [XML](screenshots/production-tool-audit-2026-05-25/phase6-final-launch.xml), [logcat](screenshots/production-tool-audit-2026-05-25/phase6-final-launch-logcat.txt) |
+
+Notes:
+- The final candidate is installed and launched on `emulator-5554` at the first-run privacy screen.
+- The final launch logcat scan found no `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `FlutterError`, unhandled exception, widget exception, or ANR signatures.
+- A stale in-place emulator install after integration testing could launch only the raw Flutter surface. A clean uninstall/reinstall plus rebuilding `lib/main.dart` after integration resolved it; the black-box harness now exposes `-CleanInstall` for this path.
 
 ## Tool Matrix
 
@@ -158,6 +175,7 @@ Source URLs:
 | QA-022 | P2 | Lesson completion | The next-lesson reward sheet placed `Back to Path` and `Start Next Lesson` behind the persistent bottom dock. | Fixed by making the sheet scrollable and reserving bottom-dock clearance; XML bounds confirm the action bottom is above the dock top. | `test/widget_tests/lesson_reward_sequence_test.dart`; [before](screenshots/production-tool-audit-2026-05-25/phase4-current-after-complete-transition.png); [after](screenshots/production-tool-audit-2026-05-25/phase4-lesson-next-sheet-fixed.png); [log scan](screenshots/production-tool-audit-2026-05-25/phase4-lesson2-completion-sheet-fixed-logcat.txt) |
 | QA-023 | P3 | Practice hub | Standard and Quick Review rows were disabled at 0 due cards but still drew chevrons, making them look tappable. | Fixed by removing chevrons and disabled semantics from unavailable modes while keeping Weak Spots actionable. | `test/widget_tests/practice_hub_screen_test.dart`; [before](screenshots/production-tool-audit-2026-05-25/phase4-practice-after-lessons-no-due.png); [after](screenshots/production-tool-audit-2026-05-25/phase4-practice-no-due-disabled-actions-fixed.png); [log scan](screenshots/production-tool-audit-2026-05-25/phase4-practice-no-due-disabled-actions-fixed-logcat.txt) |
 | QA-024 | P2 | More / Backup / Offline Data | More described Backup & Restore as `Export or sync`, while the destination is a local ZIP export/import flow; Offline Data pointed users to Backup & Restore from Preferences even though More owns the global backup entry. | Fixed copy to `Export or import your aquarium data` and `Use Backup & Restore from More`; regression tests added. | `test/widget_tests/settings_hub_screen_test.dart`; `test/widget_tests/account_screen_test.dart`; `test/widget_tests/backup_restore_screen_test.dart`; [More tile](screenshots/production-tool-audit-2026-05-25/phase5-more-bottom-backup-preferences.png); [Offline Data](screenshots/production-tool-audit-2026-05-25/phase5-offline-data-more-backup-copy.png) |
+| QA-025 | P2 | Emulator QA harness | After integration testing, an in-place debug APK reinstall could leave the emulator launching only the raw Flutter surface until the package was fully removed and the normal app APK rebuilt. | Fixed in QA harness with explicit `-CleanInstall`; final gate rebuilds `lib/main.dart` after integration before installing the candidate. | `scripts/run_android_blackbox_smoke.ps1`; `test/scripts/android_blackbox_smoke_script_test.dart`; [final launch](screenshots/production-tool-audit-2026-05-25/phase6-final-launch.png); [final logcat](screenshots/production-tool-audit-2026-05-25/phase6-final-launch-logcat.txt) |
 
 ## Phase Notes
 
@@ -217,4 +235,4 @@ Source URLs:
   - Manual emulator screenshots/XML captured for Smart no-key setup, AI setup sheet, Workshop local compatibility route, Anomaly History empty state, More hub/global destinations, Backup & Restore, Offline Data, notification controls, Configure AI empty validation, data/privacy settings, danger zone, About, Privacy, and Terms.
   - Notification controls stayed explicit opt-in: phone notifications were off after permission denial, test notification remained disabled, and scheduler tests confirm review/streak notifications are not scheduled when reminders are disabled.
   - Phase 5 logcat scans found no `FATAL EXCEPTION`, `E/AndroidRuntime`, `FlutterError`, unhandled exception, or widget exception signatures. See [Smart/More/Preferences logcat](screenshots/production-tool-audit-2026-05-25/phase5-smart-more-preferences-logcat.txt) and [More hubs logcat](screenshots/production-tool-audit-2026-05-25/phase5-more-global-hubs-logcat.txt).
-- Later phases will run the full final regression gate and leave the release-candidate debug APK installed on the emulator.
+- Phase 6 completed the full final regression gate and left the release-candidate debug APK installed and launched on `emulator-5554`.

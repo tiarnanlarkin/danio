@@ -4,6 +4,7 @@ param(
   [string]$AdbPath = "",
   [string]$ArtifactDir = "build\qa-artifacts\android-blackbox",
   [string]$InstallApkPath = "",
+  [switch]$CleanInstall,
   [string[]]$ForceStopPackageIds = @(),
   [switch]$KeepState,
   [switch]$IncludeQaDeepLinks,
@@ -80,6 +81,23 @@ function Install-DebugApk {
   }
 
   $apk = (Resolve-Path $InstallApkPath).Path
+  if ($CleanInstall) {
+    Write-Host "Clean install requested; uninstalling any existing $AppId package..."
+    $existingPackage = ""
+    try {
+      $existingPackage = (Invoke-Adb @("shell", "pm", "path", $AppId)) -join "`n"
+    }
+    catch {
+      $existingPackage = ""
+    }
+    if ($existingPackage -match "package:") {
+      Invoke-Adb @("uninstall", $AppId) | Out-Null
+    }
+    else {
+      Write-Host "No installed $AppId package found before clean install."
+    }
+  }
+
   Write-Host "Installing debug APK $apk..."
   try {
     Invoke-Adb @("shell", "am", "force-stop", $AppId) | Out-Null

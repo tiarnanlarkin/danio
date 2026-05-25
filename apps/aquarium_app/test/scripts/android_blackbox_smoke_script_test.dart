@@ -9,8 +9,24 @@ void main() {
     ).readAsStringSync();
 
     expect(source, contains(r'[string]$InstallApkPath'));
+    expect(source, contains(r'[switch]$CleanInstall'));
     expect(source, contains('Installing debug APK'));
     expect(source, contains('"install", "-r"'));
+  });
+
+  test('blackbox smoke script can clean install to avoid stale emulator state', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    expect(source, contains(r'if ($CleanInstall)'));
+    expect(source, contains('Clean install requested'));
+    expect(source, contains(r'Invoke-Adb @("shell", "pm", "path", $AppId)'));
+    expect(source, contains(r'Invoke-Adb @("uninstall", $AppId)'));
+    expect(
+      source,
+      contains(r'No installed $AppId package found before clean install.'),
+    );
   });
 
   test('blackbox smoke script retries install after emulator storage refusal', () {
