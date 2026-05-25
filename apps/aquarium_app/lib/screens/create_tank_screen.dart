@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -498,39 +500,55 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         ref.showXpAnimation(effectiveXp);
       }
 
-      // Check for achievements after tank creation
+      AchievementChecker? achievementChecker;
+      AchievementStats? achievementStats;
+
+      // Prepare achievement checks, but do not show achievement dialogs until
+      // after this wizard route has closed. Otherwise a dialog pushed here can
+      // become the route that Navigator.pop closes, leaving the wizard open.
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
-        try {
-          final achievementChecker = ref.read(achievementCheckerProvider);
-          final stats = AchievementStats(
-            totalXp: profile.totalXp,
-            currentStreak: profile.currentStreak,
-            hasCompletedPlacementTest: profile.hasCompletedPlacementTest,
-            lessonsCompleted: profile.completedLessons.length,
-          );
-          await achievementChecker.checkAllAchievements(stats: stats);
-        } catch (e, st) {
-          logError(
-            'CreateTankScreen: achievement check failed: $e',
-            stackTrace: st,
-            tag: 'CreateTankScreen',
-          );
-        }
+        achievementChecker = ref.read(achievementCheckerProvider);
+        achievementStats = AchievementStats(
+          totalXp: profile.totalXp,
+          currentStreak: profile.currentStreak,
+          hasCompletedPlacementTest: profile.hasCompletedPlacementTest,
+          lessonsCompleted: profile.completedLessons.length,
+        );
       }
 
       if (mounted) {
         AppHaptics.success(
           enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
         );
-        final nav = Navigator.of(context);
         final tankName = _name.trim();
         AppFeedback.showSuccess(
           context,
           '$tankName created! +${XpRewards.createTank} XP',
           duration: const Duration(seconds: 2),
         );
-        nav.pop();
+
+        setState(() => _discardConfirmed = true);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+
+          if (achievementChecker != null && achievementStats != null) {
+            unawaited(
+              achievementChecker
+                  .checkAllAchievements(stats: achievementStats)
+                  .catchError((Object e, StackTrace st) {
+                    logError(
+                      'CreateTankScreen: achievement check failed: $e',
+                      stackTrace: st,
+                      tag: 'CreateTankScreen',
+                    );
+                    return <AchievementUnlockResult>[];
+                  }),
+            );
+          }
+        });
 
         final tanks = ref.read(tanksProvider).value ?? [];
         if (tanks.length <= 1) {

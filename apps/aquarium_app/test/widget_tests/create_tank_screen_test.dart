@@ -10,8 +10,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/create_tank_screen.dart';
 import 'package:danio/screens/create_tank_screen/setup_mode.dart';
+import 'package:danio/models/models.dart';
+import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/services/celebration_service.dart';
 import 'package:danio/services/storage_service.dart';
+import 'package:danio/services/xp_animation_service.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -51,6 +55,48 @@ Widget _wrapWithLauncher({SetupMode mode = SetupMode.guided}) {
         ),
       ),
     ),
+  );
+}
+
+Widget _wrapWithAppShellLauncher(InMemoryStorageService storage) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      builder: (context, child) => XpAnimationListener(
+        child: CelebrationOverlayWrapper(child: child ?? const SizedBox()),
+      ),
+      home: Consumer(
+        builder: (context, ref, _) {
+          ref.watch(tanksProvider);
+          return Scaffold(
+            body: Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const CreateTankScreen()),
+                  );
+                },
+                child: const Text('Open tank form'),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  );
+}
+
+Tank _existingTank() {
+  final now = DateTime(2026, 5, 25);
+  return Tank(
+    id: 'existing-tank',
+    name: 'Existing Tank',
+    type: TankType.freshwater,
+    volumeLitres: 60,
+    startDate: now,
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
   );
 }
 
@@ -166,6 +212,27 @@ void main() {
         expect(find.byType(CreateTankScreen), findsOneWidget);
       }
     });
+
+    testWidgets('guided size preset can be selected after reaching size step', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.enterText(find.byType(TextFormField).first, 'QA Tank');
+      await tester.pump();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Tank size'), findsOneWidget);
+
+      await tester.tap(find.text('60L'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.widgetWithText(TextFormField, '60'), findsOneWidget);
+    });
   });
 
   group('CreateTankScreen — expert mode', () {
@@ -275,6 +342,56 @@ void main() {
       expect(find.byType(CreateTankScreen), findsNothing);
       expect(find.text('Open tank form'), findsOneWidget);
       expect(find.text('Discard new tank?'), findsNothing);
+    });
+
+    testWidgets('successful guided creation closes the wizard', (tester) async {
+      await tester.pumpWidget(_wrapWithLauncher());
+      await _openTankForm(tester);
+
+      await tester.enterText(find.byType(TextFormField).first, 'QA Tank');
+      await tester.pump();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('60L'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Create Tank'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(CreateTankScreen), findsNothing);
+      expect(find.text('Open tank form'), findsOneWidget);
+    });
+
+    testWidgets('successful guided creation closes inside app shell', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_existingTank());
+
+      await tester.pumpWidget(_wrapWithAppShellLauncher(storage));
+      await tester.pumpAndSettle();
+      await _openTankForm(tester);
+
+      await tester.enterText(find.byType(TextFormField).first, 'QA Tank');
+      await tester.pump();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('60L'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Create Tank'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(CreateTankScreen), findsNothing);
+      expect(find.text('Open tank form'), findsOneWidget);
     });
   });
 }

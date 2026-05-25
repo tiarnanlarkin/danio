@@ -51,17 +51,32 @@ class _SizePageState extends State<SizePage> {
     super.didUpdateWidget(oldWidget);
     if (_disposed) return;
     try {
-      final currentText = _volumeController.text;
       final newText = widget.volumeLitres > 0
           ? _formatVolume(widget.volumeLitres)
           : '';
-      if (currentText != newText &&
-          double.tryParse(currentText) != widget.volumeLitres) {
-        _volumeController.text = newText;
+      if (_needsVolumeTextSync(newText, widget.volumeLitres)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || _disposed) return;
+          final latestText = widget.volumeLitres > 0
+              ? _formatVolume(widget.volumeLitres)
+              : '';
+          if (_needsVolumeTextSync(latestText, widget.volumeLitres)) {
+            _volumeController.value = TextEditingValue(
+              text: latestText,
+              selection: TextSelection.collapsed(offset: latestText.length),
+            );
+          }
+        });
       }
     } catch (e) {
       appLog('SizePage: volume controller update failed: $e', tag: 'SizePage');
     }
+  }
+
+  bool _needsVolumeTextSync(String nextText, double nextVolume) {
+    final currentText = _volumeController.text;
+    return currentText != nextText &&
+        double.tryParse(currentText) != nextVolume;
   }
 
   @override

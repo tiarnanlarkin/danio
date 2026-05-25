@@ -219,8 +219,16 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
   }
 
   void _disposeController() {
-    _controller?.dispose();
+    final controller = _controller;
     _controller = null;
+    if (controller == null) return;
+
+    // ConfettiWidget calls stop() on its controller while unmounting. Defer
+    // disposal until after the overlay has been removed so the widget never
+    // receives an already-disposed external controller.
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      controller.dispose();
+    });
   }
 
   @override
