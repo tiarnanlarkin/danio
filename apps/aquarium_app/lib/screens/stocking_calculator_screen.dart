@@ -324,24 +324,27 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     BoxShadow(color: AppOverlays.black12, blurRadius: 8),
                   ],
                 ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _searchResults.length,
-                  itemBuilder: (ctx, i) {
-                    final species = _searchResults[i];
-                    return ListTile(
-                      dense: true,
-                      leading: const Icon(
-                        Icons.add_circle_outline,
-                        size: AppIconSizes.sm,
-                      ),
-                      title: Text(species.commonName),
-                      subtitle: Text(
-                        '${species.adultSizeCm.toStringAsFixed(0)}cm adult',
-                      ),
-                      onTap: () => _addStock(species),
-                    );
-                  },
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _searchResults.length,
+                    itemBuilder: (ctx, i) {
+                      final species = _searchResults[i];
+                      return ListTile(
+                        dense: true,
+                        leading: const Icon(
+                          Icons.add_circle_outline,
+                          size: AppIconSizes.sm,
+                        ),
+                        title: Text(species.commonName),
+                        subtitle: Text(
+                          '${species.adultSizeCm.toStringAsFixed(0)}cm adult',
+                        ),
+                        onTap: () => _addStock(species),
+                      );
+                    },
+                  ),
                 ),
               ),
 

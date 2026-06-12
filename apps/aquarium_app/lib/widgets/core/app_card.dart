@@ -223,7 +223,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         margin: widget.margin,
         decoration: _buildDecoration(isDark),
         clipBehavior: widget.clipBehavior ? Clip.antiAlias : Clip.none,
-        child: _buildContent(),
+        child: Material(
+          type: MaterialType.transparency,
+          child: _buildContent(),
+        ),
       ),
     );
 

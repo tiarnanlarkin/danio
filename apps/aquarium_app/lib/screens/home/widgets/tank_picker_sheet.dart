@@ -93,14 +93,16 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
             ),
             child: ReorderableListView.builder(
               shrinkWrap: true,
-              padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                0,
+                AppSpacing.md,
+                AppSpacing.md,
+              ),
               itemCount: _tanks.length,
-              onReorder: (oldIndex, newIndex) {
+              onReorderItem: (oldIndex, newIndex) {
                 setState(() {
                   _hasReordered = true;
-                  if (newIndex > oldIndex) {
-                    newIndex -= 1;
-                  }
                   final tank = _tanks.removeAt(oldIndex);
                   _tanks.insert(newIndex, tank);
                 });
@@ -177,7 +179,10 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
           // Hint
           if (_hasReordered)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg2, vertical: AppSpacing.sm),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg2,
+                vertical: AppSpacing.sm,
+              ),
               child: Row(
                 children: [
                   Icon(
@@ -214,7 +219,11 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
         AppFeedback.showSuccess(context, 'Tank order saved');
       }
     } catch (e, st) {
-      logError('TankPickerSheet: reorder save failed: $e', stackTrace: st, tag: 'TankPickerSheet');
+      logError(
+        'TankPickerSheet: reorder save failed: $e',
+        stackTrace: st,
+        tag: 'TankPickerSheet',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,

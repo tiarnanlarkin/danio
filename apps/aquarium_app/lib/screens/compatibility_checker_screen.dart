@@ -283,18 +283,21 @@ class _CompatibilityCheckerScreenState
                     BoxShadow(color: AppOverlays.black12, blurRadius: 8),
                   ],
                 ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _searchResults.length,
-                  itemBuilder: (ctx, i) {
-                    final species = _searchResults[i];
-                    return ListTile(
-                      leading: const Icon(Icons.add_circle_outline),
-                      title: Text(species.commonName),
-                      subtitle: Text(species.temperament),
-                      onTap: () => _addSpecies(species),
-                    );
-                  },
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _searchResults.length,
+                    itemBuilder: (ctx, i) {
+                      final species = _searchResults[i];
+                      return ListTile(
+                        leading: const Icon(Icons.add_circle_outline),
+                        title: Text(species.commonName),
+                        subtitle: Text(species.temperament),
+                        onTap: () => _addSpecies(species),
+                      );
+                    },
+                  ),
                 ),
               ),
 
