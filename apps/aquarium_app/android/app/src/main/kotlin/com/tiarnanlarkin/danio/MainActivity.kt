@@ -51,12 +51,14 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
         if (BuildConfig.DEBUG) {
             val uri = intent.data?.toString()
             if (uri != null && uri.startsWith("danio://qa")) {
                 qaLinksChannel?.invokeMethod("onNewIntent", uri)
+                return
             }
         }
+
+        super.onNewIntent(intent)
     }
 }
