@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/user_profile.dart';
 import '../providers/settings_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/notification_scheduler.dart';
 import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../widgets/core/app_states.dart';
+import '../widgets/core/app_list_tile.dart';
 import '../widgets/core/bubble_loader.dart';
 
 /// Screen for configuring explicit opt-in reminder notifications.
@@ -60,6 +63,14 @@ class NotificationSettingsScreen extends ConsumerWidget {
                 ),
               ),
               const Divider(),
+              AppListTile(
+                leading: const Icon(Icons.tune_outlined),
+                title: 'Reminder Intensity',
+                subtitle: _reminderIntensityFor(profile).subtitle,
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () =>
+                    _showReminderIntensityPicker(context, ref, profile),
+              ),
               SwitchListTile(
                 secondary: const Icon(Icons.repeat_rounded),
                 title: const Text('Review Reminders'),
@@ -144,6 +155,65 @@ class NotificationSettingsScreen extends ConsumerWidget {
             ],
           );
         },
+      ),
+    );
+  }
+
+  void _showReminderIntensityPicker(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    final current = _reminderIntensityFor(profile);
+
+    showAppDragSheet(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                children: [
+                  Text(
+                    'Choose Reminder Intensity',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Pick how much Danio should nudge you. You can still fine-tune review and streak reminders below.',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            for (final intensity in _ReminderIntensity.values)
+              AppListTile(
+                leading: Icon(intensity.icon),
+                title: intensity.title,
+                subtitle: intensity.description,
+                isSelected: intensity == current,
+                trailing: intensity == current
+                    ? const Icon(Icons.check, color: AppColors.primary)
+                    : null,
+                onTap: () async {
+                  final applied = await _setReminderIntensity(
+                    context,
+                    ref,
+                    intensity,
+                  );
+                  if (applied && sheetContext.mounted) {
+                    Navigator.maybePop(sheetContext);
+                  }
+                },
+              ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+        ),
       ),
     );
   }
@@ -253,6 +323,31 @@ class NotificationSettingsScreen extends ConsumerWidget {
     );
   }
 
+  Future<bool> _setReminderIntensity(
+    BuildContext context,
+    WidgetRef ref,
+    _ReminderIntensity intensity,
+  ) async {
+    if (intensity.needsPhoneNotifications &&
+        !await _ensureNotificationsEnabled(context, ref)) {
+      return false;
+    }
+
+    await ref
+        .read(userProfileProvider.notifier)
+        .updateProfile(
+          reviewRemindersEnabled: intensity.reviewRemindersEnabled,
+          streakRemindersEnabled: intensity.streakRemindersEnabled,
+        );
+    await NotificationScheduler.instance.scheduleReviewNotifications(ref);
+    await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+
+    if (context.mounted) {
+      AppFeedback.showInfo(context, '${intensity.title} reminders selected');
+    }
+    return true;
+  }
+
   Future<bool> _ensureNotificationsEnabled(
     BuildContext context,
     WidgetRef ref,
@@ -340,4 +435,98 @@ class NotificationSettingsScreen extends ConsumerWidget {
       AppFeedback.showSuccess(context, 'Test notification sent!');
     }
   }
+}
+
+enum _ReminderIntensity { quiet, reviewOnly, dailyHabit, fullSupport }
+
+_ReminderIntensity _reminderIntensityFor(UserProfile profile) {
+  if (profile.reviewRemindersEnabled && profile.streakRemindersEnabled) {
+    return _ReminderIntensity.fullSupport;
+  }
+  if (profile.reviewRemindersEnabled) {
+    return _ReminderIntensity.reviewOnly;
+  }
+  if (profile.streakRemindersEnabled) {
+    return _ReminderIntensity.dailyHabit;
+  }
+  return _ReminderIntensity.quiet;
+}
+
+extension _ReminderIntensityDetails on _ReminderIntensity {
+  String get title {
+    switch (this) {
+      case _ReminderIntensity.quiet:
+        return 'Quiet';
+      case _ReminderIntensity.reviewOnly:
+        return 'Review only';
+      case _ReminderIntensity.dailyHabit:
+        return 'Daily habit';
+      case _ReminderIntensity.fullSupport:
+        return 'Full support';
+    }
+  }
+
+  String get subtitle {
+    switch (this) {
+      case _ReminderIntensity.quiet:
+        return 'Quiet - no review or streak nudges';
+      case _ReminderIntensity.reviewOnly:
+        return 'Review only - due-card reminders';
+      case _ReminderIntensity.dailyHabit:
+        return 'Daily habit - streak and goal nudges';
+      case _ReminderIntensity.fullSupport:
+        return 'Full support - reviews and daily habit nudges';
+    }
+  }
+
+  String get description {
+    switch (this) {
+      case _ReminderIntensity.quiet:
+        return 'No review or streak phone nudges.';
+      case _ReminderIntensity.reviewOnly:
+        return 'A reminder when review cards are due.';
+      case _ReminderIntensity.dailyHabit:
+        return 'Daily streak and goal reminders only.';
+      case _ReminderIntensity.fullSupport:
+        return 'Review reminders plus daily streak and goal nudges.';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case _ReminderIntensity.quiet:
+        return Icons.notifications_off_outlined;
+      case _ReminderIntensity.reviewOnly:
+        return Icons.repeat_rounded;
+      case _ReminderIntensity.dailyHabit:
+        return Icons.local_fire_department_outlined;
+      case _ReminderIntensity.fullSupport:
+        return Icons.notifications_active_outlined;
+    }
+  }
+
+  bool get reviewRemindersEnabled {
+    switch (this) {
+      case _ReminderIntensity.quiet:
+      case _ReminderIntensity.dailyHabit:
+        return false;
+      case _ReminderIntensity.reviewOnly:
+      case _ReminderIntensity.fullSupport:
+        return true;
+    }
+  }
+
+  bool get streakRemindersEnabled {
+    switch (this) {
+      case _ReminderIntensity.quiet:
+      case _ReminderIntensity.reviewOnly:
+        return false;
+      case _ReminderIntensity.dailyHabit:
+      case _ReminderIntensity.fullSupport:
+        return true;
+    }
+  }
+
+  bool get needsPhoneNotifications =>
+      reviewRemindersEnabled || streakRemindersEnabled;
 }

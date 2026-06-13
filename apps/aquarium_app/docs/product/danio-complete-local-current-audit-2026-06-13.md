@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1540 tests.
+- `flutter test`: pass, 1541 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -999,6 +999,17 @@ CL-P1-010D Reduce Motion MediaQuery bridge:
 - Focused coverage verifies a saved `reduced_motion_override` makes descendant
   `MediaQuery.disableAnimations` true.
 
+CL-P1-010E Reminder intensity presets:
+
+- Notification Settings now has a guided Reminder Intensity control with
+  Quiet, Review only, Daily habit, and Full support presets.
+- Presets map to the existing local review-reminder and streak-reminder flags
+  instead of introducing fake notification behavior.
+- Selecting Quiet cancels review/streak scheduling paths and updates both
+  visible reminder toggles to off.
+- Focused widget coverage verifies the Full support state, opens the preset
+  sheet, selects Quiet, and observes both reminder toggles off.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -1085,9 +1096,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
-  haptics, and the Reduce Motion preference now reaches descendant MediaQuery
-  animation checks. Remaining profile/preferences work is centralising
-  reset/edit controls for AI, privacy, and reminders.
+  haptics, the Reduce Motion preference now reaches descendant MediaQuery
+  animation checks, and Notification Settings now has guided reminder intensity
+  presets. Remaining profile/preferences work is centralising reset/edit
+  controls for AI and privacy.
 - Global search now has first complete-local coverage for app destinations,
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, and local logs. Remaining search work is Android phone/tablet
