@@ -7,6 +7,9 @@ void main() {
     final serviceSource = File(
       'lib/services/openai_service.dart',
     ).readAsStringSync();
+    final settingsSource = File(
+      'lib/screens/settings/settings_screen.dart',
+    ).readAsStringSync();
     final featureFiles = [
       'lib/features/smart/fish_id/fish_id_screen.dart',
       'lib/features/smart/symptom_triage/symptom_triage_screen.dart',
@@ -16,11 +19,12 @@ void main() {
 
     expect(serviceSource, contains('setupRequired'));
     expect(serviceSource, contains('Optional AI is not configured'));
-    expect(
-      serviceSource,
-      contains('Optional AI server connection is not fully configured'),
-    );
+    expect(serviceSource, contains('Optional AI is not ready in this build'));
     expect(serviceSource, isNot(contains('Supabase anon key is missing')));
+    expect(serviceSource, isNot(contains('server connection')));
+    expect(settingsSource, contains('Danio-managed Optional AI is active'));
+    expect(settingsSource, isNot(contains('server connection')));
+    expect(settingsSource, isNot(contains('server proxy')));
 
     for (final path in featureFiles) {
       final source = File(path).readAsStringSync();

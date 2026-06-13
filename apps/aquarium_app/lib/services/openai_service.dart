@@ -58,7 +58,7 @@ class OpenAIUserMessages {
   static const setupRequired =
       'Optional AI is not configured. Add an OpenAI key in Preferences before using this AI feature.';
   static const proxyUnavailable =
-      'Optional AI server connection is not fully configured. Local Smart Hub checks still work.';
+      'Optional AI is not ready in this build. Local Smart Hub checks still work.';
   static const rateLimited =
       "You've used your Smart assists for this hour. Try again later.";
   static const timeout =

@@ -945,8 +945,8 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
       title: 'Optional AI',
       subtitle: hasProxy
           ? (proxyReady
-                ? 'Secure AI proxy active'
-                : 'Optional AI server connection needs setup')
+                ? 'Danio-managed AI active'
+                : 'Optional AI is not ready in this build')
           : (_hasUserKey
                 ? 'Custom API key active - tap to manage'
                 : 'Smart Hub works locally; add a key for photo ID and Ask Danio'),
@@ -1217,7 +1217,7 @@ class _ProxyAiStatus extends StatelessWidget {
         Expanded(
           child: Text(
             isReady
-                ? 'Optional AI is managed by Danio\'s secure server proxy. No OpenAI API key is stored on this device.'
+                ? 'Danio-managed Optional AI is active. No OpenAI API key is stored on this device.'
                 : OpenAIUserMessages.proxyUnavailable,
             style: AppTypography.bodyMedium.copyWith(
               color: context.textSecondary,

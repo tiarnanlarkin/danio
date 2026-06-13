@@ -32,6 +32,10 @@ void main() {
         'The AI service is unavailable right now. Try again in a moment.',
       );
       expect(
+        OpenAIUserMessages.proxyUnavailable,
+        'Optional AI is not ready in this build. Local Smart Hub checks still work.',
+      );
+      expect(
         OpenAIUserMessages.unexpectedError,
         'Something went wrong. Try again.',
       );
@@ -42,6 +46,7 @@ void main() {
         OpenAIUserMessages.timeout,
         OpenAIUserMessages.offline,
         OpenAIUserMessages.serverError,
+        OpenAIUserMessages.proxyUnavailable,
         OpenAIUserMessages.unexpectedError,
       ];
 
@@ -154,7 +159,7 @@ void main() {
             isA<OpenAIException>().having(
               (e) => e.message,
               'message',
-              contains('Optional AI server connection is not fully configured'),
+              contains('Optional AI is not ready in this build'),
             ),
           ),
         );
