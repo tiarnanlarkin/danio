@@ -25,7 +25,7 @@ class SupabaseAccountDeletionGateway implements AccountDeletionGateway {
   Future<void> invokeCloudAccountDeletion() async {
     if (!SupabaseService.isInitialised) {
       throw const AccountDeletionException(
-        'Optional cloud account services are not configured for this build.',
+        'Optional cloud account deletion is not set up. Your local Danio data stays on this device.',
       );
     }
 

@@ -9,9 +9,11 @@ void main() {
       expect(result.status, AuthResultStatus.unavailable);
       expect(
         result.errorMessage,
-        contains('Optional cloud account services are not configured'),
+        contains('Optional cloud account features are not set up'),
       );
-      expect(result.errorMessage, contains('fully offline'));
+      expect(result.errorMessage, contains('Danio still works offline'));
+      expect(result.errorMessage, isNot(contains('configured')));
+      expect(result.errorMessage, isNot(contains('this build')));
       expect(result.errorMessage, isNot(contains('not available')));
     });
   });

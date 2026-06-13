@@ -198,8 +198,8 @@ class AuthResult {
     : status = AuthResultStatus.unavailable,
       user = null,
       errorMessage =
-          'Optional cloud account services are not configured. '
-          'The app works fully offline.';
+          'Optional cloud account features are not set up. '
+          'Danio still works offline.';
 
   const AuthResult.pendingRedirect()
     : status = AuthResultStatus.pendingRedirect,

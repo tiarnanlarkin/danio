@@ -38,9 +38,22 @@ void main() {
                 .having(
                   (error) => error.message,
                   'message',
-                  contains(
-                    'Optional cloud account services are not configured',
-                  ),
+                  contains('Optional cloud account deletion is not set up'),
+                )
+                .having(
+                  (error) => error.message,
+                  'message',
+                  contains('local Danio data stays on this device'),
+                )
+                .having(
+                  (error) => error.message,
+                  'message',
+                  isNot(contains('configured')),
+                )
+                .having(
+                  (error) => error.message,
+                  'message',
+                  isNot(contains('this build')),
                 )
                 .having(
                   (error) => error.message,
