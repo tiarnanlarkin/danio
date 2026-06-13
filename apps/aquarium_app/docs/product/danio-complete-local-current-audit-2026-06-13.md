@@ -87,7 +87,8 @@ Verification:
 
 ## 4. Feature Honesty Progress
 
-CL-P0-003 has started with the local/offline and rewards surfaces.
+CL-P0-003 has covered the local/offline, rewards, debug visibility, and
+Smart optional-AI surfaces.
 
 Fixed:
 
@@ -115,12 +116,21 @@ Fixed:
 - Normal Preferences no longer exposes a visible debug-only "Test Error
   Boundary" crash control. Debug tooling remains reachable through the hidden
   version-tap gate in debug builds.
+- Smart now presents itself as local aquarium intelligence with optional AI
+  tools, instead of implying the whole hub is unavailable without an OpenAI key.
+- Locked AI-only Smart cards, the setup banner, the setup sheet, and Preferences
+  now use "Optional AI" copy and clarify that local compatibility checks and
+  Anomaly History work immediately.
+- OpenAI setup failures now direct users to Preferences > Smart Hub > Optional
+  AI without mentioning build-time developer flags.
+- Smart feature card semantics were hardened so the optional-AI setup action is
+  still exposed after the card animation settles.
 
 Remaining CL-P0-003 audit targets:
 
-- Complete pass over AI and premium copy so local intelligence remains the
-  default promise.
 - Complete pass over hidden debug/QA surfaces and public settings/help copy.
+- Complete pass over any remaining visible "planned", upgrade, or future-facing
+  copy outside Smart.
 - Decide whether the remaining badge collectibles are strong enough for the
   finished reward loop or should be moved into the later living-tank unlock
   system.
@@ -139,7 +149,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy and reward/shop honesty slice fixed and tested; social, AI/premium, debug/help copy still need the remaining audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, stale social comments, visible debug crash controls, and Smart optional-AI copy fixed and tested; deeper debug/help, public settings, and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
@@ -153,6 +163,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
+- Smart is now honestly local-first at the copy level, but CL-P0-007 still needs
+  the deeper non-AI Aquarium Intelligence hub before Smart is finished.
 
 ## 6. Next Execution Step
 
@@ -160,6 +172,7 @@ Continue CL-P0-003 feature honesty audit and fixes while Android transport is
 unstable. The next targets are:
 
 - Social/friends/leaderboard remnants.
-- AI/premium copy that needs stronger local/no-AI alternatives.
 - Debug/QA-only routes accidentally reachable or documented as user features.
 - Public help/privacy/settings copy that still assumes future cloud behavior.
+- Remaining planned/upgrade copy such as Shop Street labels and hidden upgrade
+  comments.

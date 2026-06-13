@@ -257,8 +257,8 @@ void main() {
       await tester.pumpWidget(_wrapPreferences());
       await _advance(tester);
 
-      await _scrollUntilTextVisible(tester, 'Configure AI');
-      await tester.tap(find.text('Configure AI'));
+      await _scrollUntilTextVisible(tester, 'Optional AI');
+      await tester.tap(find.text('Optional AI'));
       await tester.pumpAndSettle();
 
       expect(find.text('OpenAI API key'), findsOneWidget);

@@ -15,7 +15,7 @@ void main() {
     ];
 
     expect(serviceSource, contains('setupRequired'));
-    expect(serviceSource, contains('Set up Smart Hub in Preferences'));
+    expect(serviceSource, contains('Optional AI is not configured'));
 
     for (final path in featureFiles) {
       final source = File(path).readAsStringSync();

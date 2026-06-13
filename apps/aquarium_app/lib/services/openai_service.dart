@@ -56,7 +56,7 @@ class OpenAIException implements Exception {
 /// User-facing error messages for common failure modes.
 class OpenAIUserMessages {
   static const setupRequired =
-      'Set up Smart Hub in Preferences before using this AI feature.';
+      'Optional AI is not configured. Add an OpenAI key in Preferences before using this AI feature.';
   static const rateLimited =
       "You've used your Smart assists for this hour. Try again later.";
   static const timeout =
@@ -309,9 +309,8 @@ class OpenAIService {
     _cachedUserKey = key.isNotEmpty ? key : null;
     if (key.isEmpty) {
       throw const OpenAIException(
-        'AI features unavailable — no API key provided. '
-        'Go to Settings → Smart Hub → Configure AI to add your OpenAI key, '
-        'or build with --dart-define=OPENAI_API_KEY=sk-...',
+        'Optional AI is not configured. '
+        'Go to Preferences > Smart Hub > Optional AI to add your OpenAI key.',
       );
     }
   }

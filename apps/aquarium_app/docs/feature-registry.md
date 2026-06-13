@@ -6,8 +6,12 @@
 > star and `docs/product/danio-complete-local-audit-backlog-2026-06-13.md` as
 > the current execution backlog. Update this registry during complete-local
 > work rather than treating the March launch-readiness scores as final truth.
+> 2026-06-13 CL-P0-003 progress: Settings account copy is now local/offline,
+> timed shop boosts are no longer no-op inventory sinks, visible debug crash
+> controls are hidden from normal Preferences, and Smart now frames OpenAI as
+> optional AI while local checks remain available.
 
-**Updated:** 2026-03-29
+**Updated:** 2026-06-13
 **Rule:** Every feature listed with honest status. Updated every wave.
 
 ---
@@ -72,8 +76,8 @@
 
 | Feature | Status | Blocker IDs | Notes |
 |---------|--------|-------------|-------|
-| XP Boost (shop) | 🔴 | FB-H4 | Doesn't work for lessons (main game loop) |
-| Weekend Amulet (shop) | 🔴 | FB-H3 | Complete no-op. Zero code reads it. |
+| XP Boost (shop) | ⚠️ | FB-H4 | Timed effect now remains active in inventory; final reward-loop balance still needs complete-local QA. |
+| Weekend Amulet (shop) | ⚠️ | FB-H3 | Timed effect now remains active in inventory; final reward-loop balance still needs complete-local QA. |
 | Placement Test | 🔴 | FB-H5 | Routes to SRS, not a test. Achievement locked. |
 | Difficulty Settings | 🔴 | FB-H6 | Rich UI, pure in-memory, resets on navigate. |
 | SyncService | 🟠 | FB-H1 | Displays fake sync counts. No HTTP. |
@@ -91,7 +95,7 @@
 
 | Feature | Status | Blocker IDs | Notes |
 |---------|--------|-------------|-------|
-| Account management | ✅ | — | Email auth works |
+| Account / local data guidance | ✅ | — | Local storage and backup guidance; cloud account management is optional future scope. |
 | Notification prefs | ✅ | — | Toggle works |
 | Backup/export | ✅ | — | JSON export/import |
 | Data deletion | ✅ | — | Double confirmation |

@@ -11,6 +11,10 @@ void main() {
   group('OpenAIUserMessages', () {
     test('uses calm plain text fallback copy', () {
       expect(
+        OpenAIUserMessages.setupRequired,
+        'Optional AI is not configured. Add an OpenAI key in Preferences before using this AI feature.',
+      );
+      expect(
         OpenAIUserMessages.rateLimited,
         "You've used your Smart assists for this hour. Try again later.",
       );
@@ -33,6 +37,7 @@ void main() {
       );
 
       final messages = [
+        OpenAIUserMessages.setupRequired,
         OpenAIUserMessages.rateLimited,
         OpenAIUserMessages.timeout,
         OpenAIUserMessages.offline,

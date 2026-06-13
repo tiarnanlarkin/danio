@@ -79,7 +79,7 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.textContaining('coming soon'), findsNothing);
-      expect(find.text('Set up AI in Preferences'), findsNWidgets(3));
+      expect(find.text('Optional AI setup in Preferences'), findsNWidgets(3));
 
       // When not configured, feature cards are rendered but may be offstage
       // (below the viewport fold in the SliverList). Use skipOffstage: false.
@@ -129,7 +129,13 @@ void main() {
       await tester.tap(find.text('Fish & Plant ID'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Set up Smart Hub'), findsOneWidget);
+      expect(find.text('Optional AI tools'), findsWidgets);
+      expect(
+        find.text(
+          'Local Smart Hub checks are ready now. Add optional AI for photo ID, symptom triage, and weekly care planning.',
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Open Preferences'), findsWidgets);
     });
 
@@ -147,6 +153,7 @@ void main() {
           500,
           scrollable: find.byType(Scrollable).first,
         );
+        await tester.pump(const Duration(seconds: 1));
 
         final cardSemantics = find.byWidgetPredicate(
           (widget) =>
@@ -157,15 +164,11 @@ void main() {
 
         final widget = tester.widget<Semantics>(cardSemantics);
         expect(widget.properties.label, contains('Fish & Plant ID'));
-        expect(widget.properties.label, contains('Requires AI setup'));
+        expect(widget.properties.label, contains('Optional AI setup required'));
         expect(widget.properties.label, contains('Open Preferences'));
         expect(widget.properties.button, isTrue);
         expect(widget.properties.enabled, isTrue);
-        final node = tester.getSemantics(
-          find.bySemanticsLabel(
-            RegExp(r'Fish & Plant ID[\s\S]*Open Preferences'),
-          ),
-        );
+        final node = tester.getSemantics(cardSemantics);
         expect(node.getSemanticsData().hasAction(SemanticsAction.tap), isTrue);
       } finally {
         semantics.dispose();

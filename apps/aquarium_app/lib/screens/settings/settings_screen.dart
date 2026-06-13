@@ -106,7 +106,7 @@ class SettingsScreen extends ConsumerWidget {
 
       (_) => const Divider(),
 
-      // Smart Hub (AI features)
+      // Smart Hub (local intelligence and optional AI)
       (_) => const _SectionHeader(title: 'Smart Hub'),
       (_) => const _ConfigureAiTile(),
 
@@ -911,7 +911,7 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
 }
 
 // ---------------------------------------------------------------------------
-// Smart Hub — Configure AI tile
+// Smart Hub - optional AI tile
 // ---------------------------------------------------------------------------
 
 class _ConfigureAiTile extends ConsumerStatefulWidget {
@@ -942,14 +942,14 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
 
     return AppListTile(
       leading: const Icon(Icons.smart_toy_outlined),
-      title: 'Configure AI',
+      title: 'Optional AI',
       subtitle: hasProxy
           ? (proxyReady
                 ? 'Secure AI proxy active'
                 : 'AI proxy configured, but app auth is missing')
           : (_hasUserKey
-                ? 'Custom API key active — tap to manage'
-                : 'Add your OpenAI API key to enable Smart Hub features'),
+                ? 'Custom API key active - tap to manage'
+                : 'Smart Hub works locally; add a key for photo ID and Ask Danio'),
       trailing: hasProxy
           ? Icon(
               proxyReady ? Icons.check_circle : Icons.error_outline,
@@ -1042,7 +1042,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
       if (mounted) {
         setState(() {
           _hasUserKey = true;
-          _statusMessage = 'Key saved! Smart Hub features are now active.';
+          _statusMessage = 'Key saved. Optional AI tools are active.';
           _statusIsError = false;
           _isBusy = false;
         });
@@ -1097,7 +1097,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   @override
   Widget build(BuildContext context) {
     return AppDialog(
-      title: 'Configure AI',
+      title: 'Optional AI',
       actions: [
         if (!_hasProxy && _hasUserKey) ...[
           AppButton(
@@ -1135,7 +1135,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Your key is stored locally on your device and never shared with us.',
+                    'Local Smart Hub checks work without AI. Your key is stored on this device and never shared with us.',
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),
                   const SizedBox(height: AppSpacing.md),
@@ -1217,7 +1217,7 @@ class _ProxyAiStatus extends StatelessWidget {
         Expanded(
           child: Text(
             isReady
-                ? 'AI is managed by Danio\'s secure server proxy. No OpenAI API key is stored on this device.'
+                ? 'Optional AI is managed by Danio\'s secure server proxy. No OpenAI API key is stored on this device.'
                 : 'The AI proxy URL is built in, but this build is missing the Supabase anon key.',
             style: AppTypography.bodyMedium.copyWith(
               color: context.textSecondary,

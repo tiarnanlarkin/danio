@@ -18,6 +18,19 @@ Each entry:
 
 ## Decisions
 
+### 2026-06-13 - Smart is local-first; AI is optional extra power
+**Decision:** Smart Hub copy and settings now treat local aquarium intelligence
+as the default experience. OpenAI-backed features are labelled as Optional AI
+instead of implying Smart Hub itself needs an API key.
+**Reason:** The complete-local finish line requires Danio to be useful without
+cloud services or user-supplied keys, while still allowing advanced users to add
+AI power for photo ID, symptom triage, weekly planning, and Ask Danio.
+**Impact:** Smart's first-visit tooltip, locked card subtitles, setup banner,
+setup sheet, Preferences tile/dialog, and OpenAI setup errors now distinguish
+local checks from optional AI. CL-P0-007 still tracks the deeper rule-based
+Aquarium Intelligence hub.
+**Decided by:** Tiarnan + Codex
+
 ### 2026-06-13 - Complete-local finish line replaces public launch readiness
 **Decision:** Danio is not considered finished when it is merely Play-ready or
 release-build clean. The active finish line is now the complete local Android

@@ -65,7 +65,7 @@ class AppRoutes {
     );
   }
 
-  /// Navigate to the Smart screen (AI features).
+  /// Navigate to the Smart screen (local intelligence and optional AI tools).
   static void toSmartTools(BuildContext context) {
     NavigationThrottle.push(context, const SmartScreen());
   }

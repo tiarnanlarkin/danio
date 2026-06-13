@@ -34,7 +34,7 @@ void _showOfflineSnackBar(BuildContext context) {
   );
 }
 
-/// Smart Hub - central screen for all AI-powered features.
+/// Smart Hub - local aquarium intelligence with optional AI tools.
 class SmartScreen extends ConsumerStatefulWidget {
   const SmartScreen({super.key});
 
@@ -173,7 +173,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           ),
           icon: danioSurfaceVisual(DanioSurfaceVisualKey.smart).icon,
           iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.smart).color,
-          message: 'Smart Hub - AI tools to help you care for your fish!',
+          message:
+              'Smart Hub combines local checks with optional AI tools for extra help.',
           onDismissed: () => setState(() => _showTooltip = false),
         ),
 
@@ -199,7 +200,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Fish & Plant ID',
         subtitle: aiConfigured
             ? 'Snap a photo to identify species'
-            : 'Set up AI in Preferences',
+            : 'Optional AI setup in Preferences',
         color: AppColors.primary,
         isLocked: !aiConfigured,
         onTap: aiConfigured
@@ -218,7 +219,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Symptom Checker',
         subtitle: aiConfigured
             ? 'Describe symptoms, get instant advice'
-            : 'Set up AI in Preferences',
+            : 'Optional AI setup in Preferences',
         color: AppColors.error,
         isLocked: !aiConfigured,
         onTap: aiConfigured
@@ -237,7 +238,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         title: 'Weekly Care Plan',
         subtitle: aiConfigured
             ? 'Your personalised maintenance schedule'
-            : 'Set up AI in Preferences',
+            : 'Optional AI setup in Preferences',
         color: AppColors
             .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
         isLocked: !aiConfigured,
@@ -251,7 +252,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               }
             : () => _showAiSetupSheet(context),
       ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
-      // Compatibility Checker (AI version when key configured)
+      // Compatibility Checker (optional AI advice when a key is configured)
       if (aiConfigured) ...[
         const SizedBox(height: AppSpacing.sm),
         const CompatibilityCheckerWidget(),
@@ -461,7 +462,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    'Set up Smart Hub',
+                    'Optional AI tools',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -470,7 +471,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Fish & Plant ID, Symptom Checker, and Weekly Care Plan need AI setup before they can run.',
+                'Local Smart Hub checks are ready now. Add optional AI for photo ID, symptom triage, and weekly care planning.',
                 style: AppTypography.bodyMedium.copyWith(
                   color: context.textSecondary,
                 ),
@@ -675,7 +676,7 @@ class _AiSetupBanner extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Smart AI Features',
+                      'Optional AI tools',
                       style: AppTypography.titleSmall.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -683,9 +684,8 @@ class _AiSetupBanner extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
-                      'Set up AI in Preferences to use Fish & Plant ID, '
-                      'Symptom Checker, and Weekly Care Plan. Offline '
-                      'compatibility and Anomaly History are ready now.',
+                      'Local compatibility checks and Anomaly History are ready now. '
+                      'Add optional AI for photo ID, symptom triage, and weekly care planning.',
                       style: AppTypography.bodySmall.copyWith(
                         color: context.textSecondary,
                       ),
@@ -753,63 +753,66 @@ class _FeatureCard extends StatelessWidget {
 
     final isDisabled = onTap == null;
     final semanticLabel = isLocked
-        ? '$title. Requires AI setup. Open Preferences to set up AI.'
+        ? '$title. Optional AI setup required. Open Preferences to configure AI.'
         : '$title. $subtitle';
 
     return Semantics(
-      excludeSemantics: true,
+      container: true,
+      explicitChildNodes: true,
       button: onTap != null,
       enabled: onTap != null,
       onTap: onTap,
       label: semanticLabel,
-      child: Opacity(
-        opacity: isDisabled ? 0.6 : (isLocked ? 0.75 : 1.0),
-        child: Card(
-          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: AppRadius.md2Radius,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm2,
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: color.withValues(alpha: 0.1),
-                    child: Icon(icon, color: color),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          subtitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: context.textSecondary,
-                          ),
-                        ),
-                      ],
+      child: ExcludeSemantics(
+        child: Opacity(
+          opacity: isDisabled ? 0.6 : (isLocked ? 0.75 : 1.0),
+          child: Card(
+            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: AppRadius.md2Radius,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm2,
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: color.withValues(alpha: 0.1),
+                      child: Icon(icon, color: color),
                     ),
-                  ),
-                  if (isLocked || isDisabled)
-                    Icon(Icons.lock_outline, color: context.textSecondary)
-                  else
-                    Icon(Icons.chevron_right, color: context.textSecondary),
-                ],
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            subtitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isLocked || isDisabled)
+                      Icon(Icons.lock_outline, color: context.textSecondary)
+                    else
+                      Icon(Icons.chevron_right, color: context.textSecondary),
+                  ],
+                ),
               ),
             ),
           ),
