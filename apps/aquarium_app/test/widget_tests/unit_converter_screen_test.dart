@@ -7,20 +7,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/screens/unit_converter_screen.dart';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 Widget _wrap() {
   return const MaterialApp(home: UnitConverterScreen());
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
-
 void main() {
-  group('UnitConverterScreen — rendering', () {
+  group('UnitConverterScreen - rendering', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
@@ -48,13 +40,21 @@ void main() {
       expect(find.byType(TextField), findsWidgets);
     });
 
-    testWidgets('can tap Temperature tab', (tester) async {
+    testWidgets('Temperature tab uses plain unit labels', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
+
       await tester.tap(find.text('Temp'));
       await tester.pumpAndSettle();
-      // Temperature converter shows °C and °F
-      expect(find.text('°C'), findsWidgets);
+
+      final mojibakeCelsius =
+          '${String.fromCharCode(0x00C2)}${String.fromCharCode(0x00B0)}C';
+      final mojibakeFahrenheit =
+          '${String.fromCharCode(0x00C2)}${String.fromCharCode(0x00B0)}F';
+
+      expect(find.text('C'), findsOneWidget);
+      expect(find.text(mojibakeCelsius), findsNothing);
+      expect(find.text(mojibakeFahrenheit), findsNothing);
     });
   });
 
@@ -82,6 +82,36 @@ void main() {
       await tester.pump();
 
       expect(find.text('Conversions'), findsNothing);
+    });
+
+    testWidgets('temperature conversion from C to F is readable', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Temp'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), '0');
+      await tester.pump();
+
+      expect(find.text('32.00'), findsOneWidget);
+      expect(find.text('F'), findsOneWidget);
+    });
+
+    testWidgets('hardness conversion uses plain CaCO3 labels', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      await tester.tap(find.text('Hardness'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), '5');
+      await tester.pump();
+
+      final mojibakeCaCo3 = 'CaCO${String.fromCharCode(0x00E2)}';
+
+      expect(find.text('ppm CaCO3'), findsOneWidget);
+      expect(find.textContaining(mojibakeCaCo3), findsNothing);
     });
   });
 }

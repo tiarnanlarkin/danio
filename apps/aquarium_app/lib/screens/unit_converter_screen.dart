@@ -126,7 +126,7 @@ class _TemperatureConverter extends StatefulWidget {
 
 class _TemperatureConverterState extends State<_TemperatureConverter> {
   final _controller = TextEditingController();
-  String _fromUnit = '°C';
+  String _fromUnit = 'C';
   double? _value;
 
   @override
@@ -164,10 +164,10 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
               const SizedBox(width: AppSpacing.md),
               DropdownButton<String>(
                 value: _fromUnit,
-                items: ['°C', '°F', 'K']
+                items: ['C', 'F', 'K']
                     .map((u) => DropdownMenuItem(value: u, child: Text(u)))
                     .toList(),
-                onChanged: (v) => setState(() => _fromUnit = v ?? '°C'),
+                onChanged: (v) => setState(() => _fromUnit = v ?? 'C'),
               ),
             ],
           ),
@@ -175,15 +175,15 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm2),
-            if (_fromUnit != '°C')
+            if (_fromUnit != 'C')
               _ConversionResult(
                 value: _toCelsius(_value!, _fromUnit),
-                unit: '°C',
+                unit: 'C',
               ),
-            if (_fromUnit != '°F')
+            if (_fromUnit != 'F')
               _ConversionResult(
                 value: _toFahrenheit(_value!, _fromUnit),
-                unit: '°F',
+                unit: 'F',
               ),
             if (_fromUnit != 'K')
               _ConversionResult(
@@ -198,7 +198,7 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
 
   double _toCelsius(double v, String from) {
     switch (from) {
-      case '°F':
+      case 'F':
         return (v - 32) * 5 / 9;
       case 'K':
         return v - 273.15;
@@ -306,8 +306,8 @@ class _HardnessConverterState extends State<_HardnessConverter> {
   // All relative to dGH
   final _units = {
     'dGH': 1.0,
-    'ppm CaCO₃': 17.848,
-    'mg/L CaCO₃': 17.848,
+    'ppm CaCO3': 17.848,
+    'mg/L CaCO3': 17.848,
     'mmol/L': 0.1783,
     'gpg': 1.043,
   };

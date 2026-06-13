@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1512 tests.
+- `flutter test`: pass, 1514 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -839,6 +839,16 @@ CL-P1-006G Compatibility guided workflow:
   artifacts in headings and temperature copy.
 - Focused coverage verifies direct Compatibility handoff into AddLog and
   Workshop Compatibility context routing.
+
+CL-P1-006H Unit Converter label polish:
+
+- The Unit Converter now uses plain `C`, `F`, `K`, `ppm CaCO3`, and
+  `mg/L CaCO3` labels instead of degree/subscript glyphs that were rendering as
+  mojibake on this Windows setup.
+- Focused coverage verifies readable temperature labels, C-to-F output, and
+  hardness labels.
+- The touched Unit Converter screen and test were cleaned of mojibake/non-ASCII
+  source text.
 
 Current Android device state:
 
