@@ -8,6 +8,7 @@ import '../../../theme/app_theme.dart';
 import '../../../utils/navigation_throttle.dart';
 import '../../../widgets/core/app_button.dart';
 import '../smart_providers.dart';
+import 'aquarium_intelligence_screen.dart';
 import 'aquarium_intelligence_service.dart';
 
 class AquariumIntelligenceSection extends ConsumerWidget {
@@ -107,6 +108,18 @@ class _ReportBody extends StatelessWidget {
                     : AppColors.success,
               ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: 'Review Intelligence',
+            leadingIcon: Icons.open_in_full,
+            size: AppButtonSize.small,
+            variant: AppButtonVariant.secondary,
+            onPressed: () => NavigationThrottle.push(
+              context,
+              const AquariumIntelligenceScreen(),
+              rootNavigator: true,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           if (report.items.isEmpty)

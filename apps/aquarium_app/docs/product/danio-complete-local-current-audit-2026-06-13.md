@@ -311,6 +311,14 @@ CL-P0-007A Local Aquarium Intelligence foundation progress:
 - Smart widget coverage now verifies the no-AI local intelligence section with
   an unsafe-water reason, while service coverage protects the rule outputs.
 
+CL-P0-007B Aquarium Intelligence details progress:
+
+- The compact Smart intelligence section now opens a full Aquarium Intelligence
+  review screen with local summary counts, a Local Care Plan, item reasons,
+  action routes, and a plain-language list of what Danio checked.
+- The detail screen keeps urgent unsafe-water items actionable through the
+  Emergency Guide while still explaining the local checks behind the result.
+
 Current Android device state:
 
 - ADB sees `RFCY8022D5R` as `unauthorized`.
@@ -329,7 +337,7 @@ P0 status:
 | CL-P0-004 | In progress | CL-P0-004A completed region/units capture, profile persistence, and Preferences unit reset. CL-P0-004B completed quick-start sample handoff. CL-P0-004C completed explicit multi-goal capture after tank stage. CL-P0-004D completed setup-context Preferences repair and Smart nudge. Remaining first-run work: final Android phone/tablet screen QA. |
 | CL-P0-005 | In progress | CL-P0-005A adds care priority and next-best action from water logs/tasks. CL-P0-005B makes the main Tank Feed action a direct log with safety feedback. Remaining: richer quick action polish, visual QA, and tighter integration with emergency workflows. |
 | CL-P0-006 | Done | Emergency Guide is now directly reachable from Tank top bar, unsafe-water Tank alerts, Smart Hub, global search, More, LessonScreen, species detail sheets, and unsafe water-test save flows. |
-| CL-P0-007 | In progress | CL-P0-007A adds the local Aquarium Intelligence rule engine and Smart section for risks, care actions, compatibility signals, anomaly history, and reasons without an AI key. Remaining: deeper care-plan flows and richer drill-downs. |
+| CL-P0-007 | In progress | CL-P0-007A adds the local Aquarium Intelligence rule engine and Smart section for risks, care actions, compatibility signals, anomaly history, and reasons without an AI key. CL-P0-007B adds a full local review screen with care-plan actions and checked-reason explanations. Remaining: richer per-tank drill-downs and save/apply flows. |
 
 High-confidence P1/P2 gaps from code/docs evidence:
 
@@ -339,9 +347,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
-- Smart now has the first no-AI Aquarium Intelligence layer, but CL-P0-007
-  still needs deeper care-plan flows and richer drill-downs before Smart is
-  finished.
+- Smart now has the first no-AI Aquarium Intelligence layer and a full local
+  review screen, but CL-P0-007 still needs richer per-tank drill-downs and
+  save/apply flows before Smart is finished.
 
 ## 6. Next Execution Step
 

@@ -335,6 +335,37 @@ void main() {
       expect(find.text('Emergency Guide', skipOffstage: false), findsWidgets);
     });
 
+    testWidgets('opens full local Aquarium Intelligence review', (
+      tester,
+    ) async {
+      final storage = _SmartTestStorageService();
+      final now = DateTime(2026, 6, 13, 12);
+      const tankId = 'smart-local-intelligence-detail-tank';
+      await storage.saveTank(_makeTank(id: tankId, now: now));
+      await storage.saveLog(
+        _waterTestLog(
+          tankId: tankId,
+          timestamp: now.subtract(const Duration(hours: 1)),
+          ammonia: 0.5,
+          nitrite: 0,
+        ),
+      );
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Review Intelligence'), findsOneWidget);
+      await tester.tap(find.text('Review Intelligence'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Aquarium Intelligence'), findsOneWidget);
+      expect(find.text('Local care plan'), findsOneWidget);
+      expect(find.text('What Danio checked'), findsOneWidget);
+      expect(find.text('Unsafe water detected'), findsOneWidget);
+      expect(find.textContaining('Ammonia 0.50 ppm'), findsOneWidget);
+    });
+
     testWidgets('shows AI-only controls when Smart features are configured', (
       tester,
     ) async {
