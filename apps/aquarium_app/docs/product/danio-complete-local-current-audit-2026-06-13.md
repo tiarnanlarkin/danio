@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1553 tests.
+- `flutter test`: pass, 1561 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -999,6 +999,17 @@ CL-P1-009F Backup child collection shape validation:
 - Focused coverage verifies each tank-scoped child collection fails with
   `Invalid format: <collection> must be an array`.
 
+CL-P1-009G Backup child record ID validation:
+
+- Backup preview/import now rejects `logs`, `livestock`, `equipment`, and
+  `tasks` entries that do not include a non-empty `id`.
+- The same shared validator also rejects duplicate child record IDs within each
+  tank-scoped collection, preventing import remapping from silently skipping or
+  overwriting child records.
+- Focused coverage verifies missing child IDs and duplicate child IDs fail with
+  `Invalid format: <collection> entries must include an id` or
+  `Invalid format: duplicate <collection> id`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1152,8 +1163,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Backup & Restore now has clearer import safety copy and validates required
   backup JSON, malformed tank entries, duplicate tank IDs, and orphaned
   tank-scoped child records, plus non-array tank-scoped child collections,
-  before preview/import. Remaining backup/data work is deeper import validation
-  UX, edit/delete/undo coverage, and restore/migration walkthrough QA.
+  missing child record IDs, and duplicate child record IDs before
+  preview/import. Remaining backup/data work is deeper import validation UX,
+  edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

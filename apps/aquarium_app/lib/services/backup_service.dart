@@ -263,10 +263,23 @@ class BackupService {
       throw Exception('Invalid format: $collectionName must be an array');
     }
 
+    final seenIds = <String>{};
     for (final entry in entries) {
       if (entry is! Map) {
         throw Exception(
           'Invalid format: $collectionName entries must be objects',
+        );
+      }
+      final id = entry['id'];
+      if (id is! String || id.trim().isEmpty) {
+        throw Exception(
+          'Invalid format: $collectionName entries must include an id',
+        );
+      }
+      final normalizedId = id.trim();
+      if (!seenIds.add(normalizedId)) {
+        throw Exception(
+          'Invalid format: duplicate $collectionName id "$normalizedId"',
         );
       }
       final tankId = entry['tankId'];
