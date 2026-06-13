@@ -134,6 +134,35 @@ void main() {
       expect(find.byType(SettingsScreen), findsNothing);
       expect(find.text('Your Privacy Matters'), findsOneWidget);
     });
+
+    testWidgets('resets accepted Optional AI disclosure from Preferences', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'openai_disclosure_accepted': true,
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      await _dragUntilTextVisible(tester, 'Optional AI');
+      await tester.tap(find.text('Optional AI').first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('AI disclosure accepted'), findsOneWidget);
+
+      await tester.tap(find.text('Reset AI disclosure'));
+      await tester.pumpAndSettle();
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('openai_disclosure_accepted'), isNull);
+      expect(
+        find.text(
+          'AI disclosure will be shown again before Optional AI sends data.',
+        ),
+        findsOneWidget,
+      );
+    });
   });
 
   group('_ThemeModeTile — theme mode switching', () {

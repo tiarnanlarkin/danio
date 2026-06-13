@@ -14,6 +14,7 @@ import '../../../widgets/core/app_button.dart';
 import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/offline_indicator.dart';
+import '../ai_disclosure_preferences.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
 import '../../../utils/logger.dart';
@@ -32,9 +33,6 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
 
   static const _dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-  /// Key for persisting the OpenAI data disclosure acceptance.
-  static const _openaiDisclosureKey = 'openai_disclosure_accepted';
-
   @override
   void initState() {
     super.initState();
@@ -50,7 +48,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   /// Returns `true` if the user accepts, `false` if they cancel.
   Future<bool> _ensureOpenAIDisclosure() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    if (prefs.getBool(_openaiDisclosureKey) == true) return true;
+    if (AiDisclosurePreferences.isAccepted(prefs)) return true;
 
     if (!mounted) return false;
     final accepted = await showAppConfirmDialog(
@@ -67,7 +65,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     );
 
     if (accepted == true) {
-      await prefs.setBool(_openaiDisclosureKey, true);
+      await AiDisclosurePreferences.markAccepted(prefs);
       return true;
     }
     return false;

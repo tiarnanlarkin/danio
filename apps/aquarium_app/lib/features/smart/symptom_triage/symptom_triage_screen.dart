@@ -17,6 +17,7 @@ import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/danio_snack_bar.dart';
 import '../../../widgets/offline_indicator.dart';
+import '../ai_disclosure_preferences.dart';
 import '../smart_providers.dart';
 import '../../../utils/logger.dart';
 
@@ -71,14 +72,11 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     super.dispose();
   }
 
-  /// Key for persisting the OpenAI data disclosure acceptance.
-  static const _openaiDisclosureKey = 'openai_disclosure_accepted';
-
   /// Shows a one-time disclosure about OpenAI data handling for Symptom Triage.
   /// Returns `true` if the user accepts, `false` if they cancel.
   Future<bool> _ensureOpenAIDisclosure() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    if (prefs.getBool(_openaiDisclosureKey) == true) return true;
+    if (AiDisclosurePreferences.isAccepted(prefs)) return true;
 
     if (!mounted) return false;
     final accepted = await showAppConfirmDialog(
@@ -94,7 +92,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     );
 
     if (accepted == true) {
-      await prefs.setBool(_openaiDisclosureKey, true);
+      await AiDisclosurePreferences.markAccepted(prefs);
       return true;
     }
     return false;

@@ -18,6 +18,7 @@ import '../../providers/reduced_motion_provider.dart';
 import '../../providers/settings_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../features/smart/ai_disclosure_preferences.dart';
 import '../../services/ai_proxy_service.dart';
 import '../../services/openai_service.dart';
 import '../../services/onboarding_service.dart';
@@ -1382,6 +1383,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   bool _obscureText = true;
   bool _isBusy = false;
   bool _hasUserKey = false;
+  bool _aiDisclosureAccepted = false;
   String? _statusMessage;
   bool _statusIsError = false;
 
@@ -1402,7 +1404,14 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
 
   Future<void> _loadStatus() async {
     final hasKey = await AiProxyService.hasUserKey;
-    if (mounted) setState(() => _hasUserKey = hasKey);
+    final prefs = await SharedPreferences.getInstance();
+    final disclosureAccepted = AiDisclosurePreferences.isAccepted(prefs);
+    if (mounted) {
+      setState(() {
+        _hasUserKey = hasKey;
+        _aiDisclosureAccepted = disclosureAccepted;
+      });
+    }
   }
 
   Future<void> _saveKey() async {
@@ -1484,6 +1493,36 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
     }
   }
 
+  Future<void> _resetAiDisclosure() async {
+    setState(() => _isBusy = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await AiDisclosurePreferences.reset(prefs);
+      if (mounted) {
+        setState(() {
+          _aiDisclosureAccepted = false;
+          _statusMessage =
+              'AI disclosure will be shown again before Optional AI sends data.';
+          _statusIsError = false;
+          _isBusy = false;
+        });
+      }
+    } catch (e, st) {
+      logError(
+        'SettingsScreen: AI disclosure reset failed: $e',
+        stackTrace: st,
+        tag: 'SettingsScreen',
+      );
+      if (mounted) {
+        setState(() {
+          _statusMessage = 'Couldn\'t reset the disclosure. Try again.';
+          _statusIsError = true;
+          _isBusy = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppDialog(
@@ -1494,6 +1533,15 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
             label: 'Remove key',
             onPressed: _isBusy ? null : _clearKey,
             variant: AppButtonVariant.destructive,
+            isFullWidth: true,
+          ),
+          const SizedBox(height: AppSpacing.xs),
+        ],
+        if (_aiDisclosureAccepted) ...[
+          AppButton(
+            label: 'Reset AI disclosure',
+            onPressed: _isBusy ? null : _resetAiDisclosure,
+            variant: AppButtonVariant.secondary,
             isFullWidth: true,
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -1527,6 +1575,10 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
                   const Text(
                     'Local Smart Hub checks work without AI. Your key is stored on this device and never shared with us.',
                     style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  _AiDisclosurePreferenceStatus(
+                    isAccepted: _aiDisclosureAccepted,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   if (_hasUserKey) ...[
@@ -1615,6 +1667,62 @@ class _ProxyAiStatus extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _AiDisclosurePreferenceStatus extends StatelessWidget {
+  const _AiDisclosurePreferenceStatus({required this.isAccepted});
+
+  final bool isAccepted;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isAccepted ? AppColors.success : AppColors.info;
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.sm2),
+      decoration: BoxDecoration(
+        color: isAccepted ? AppColors.successAlpha10 : AppColors.infoAlpha10,
+        borderRadius: AppRadius.md2Radius,
+        border: Border.all(
+          color: isAccepted ? AppColors.successAlpha30 : AppColors.infoAlpha30,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            isAccepted ? Icons.verified_user_outlined : Icons.info_outline,
+            color: color,
+            size: 20,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isAccepted
+                      ? 'AI disclosure accepted'
+                      : 'AI disclosure not accepted yet',
+                  style: AppTypography.labelMedium.copyWith(
+                    color: context.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  isAccepted
+                      ? 'Danio will not show the disclosure again unless you reset it.'
+                      : 'Danio will ask before Optional AI sends photos, text, or tank context.',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: context.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

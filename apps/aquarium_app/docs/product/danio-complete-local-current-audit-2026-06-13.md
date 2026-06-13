@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1542 tests.
+- `flutter test`: pass, 1543 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1020,6 +1020,16 @@ CL-P1-010F Preferences Privacy Policy route:
 - Focused widget coverage verifies the Privacy Policy entry is reachable from
   Preferences and opens the local policy screen.
 
+CL-P1-010G Optional AI disclosure reset:
+
+- Optional AI data-disclosure acceptance now uses a shared local preference
+  helper instead of duplicated feature-screen key handling.
+- Preferences > Smart Hub > Optional AI now shows whether the disclosure has
+  already been accepted and lets users reset it, so Danio will show the
+  disclosure again before Optional AI sends photos, text, or tank context.
+- Focused widget coverage verifies the reset action removes the saved local
+  disclosure flag from SharedPreferences.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -1108,9 +1118,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   source-safe. The Haptic Feedback preference now controls shared snackbar
   haptics, the Reduce Motion preference now reaches descendant MediaQuery
   animation checks, Notification Settings now has guided reminder intensity
-  presets, and Preferences links directly to the Privacy Policy. Remaining
-  profile/preferences work is centralising reset/edit controls for AI and any
-  final privacy walkthrough gaps.
+  presets, Preferences links directly to the Privacy Policy, and Optional AI
+  disclosure acceptance can be reset from Preferences. Remaining
+  profile/preferences work is any final AI/provider and privacy walkthrough
+  gaps.
 - Global search now has first complete-local coverage for app destinations,
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, and local logs. Remaining search work is Android phone/tablet
