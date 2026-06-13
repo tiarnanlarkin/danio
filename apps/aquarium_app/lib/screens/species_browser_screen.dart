@@ -545,6 +545,10 @@ class _SpeciesDetailSheet extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg2),
 
+            _SpeciesWatchForCard(species: species),
+
+            const SizedBox(height: AppSpacing.lg2),
+
             // Parameters
             Text('Ideal Parameters', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm2),
@@ -778,6 +782,108 @@ class _CareActionsCard extends ConsumerWidget {
   }
 
   String _formatPh(double value) => value.toStringAsFixed(1);
+}
+
+class _SpeciesWatchForCard extends StatelessWidget {
+  final SpeciesInfo species;
+
+  const _SpeciesWatchForCard({required this.species});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = <_WatchForItem>[
+      if (species.minSchoolSize > 1)
+        _WatchForItem(
+          icon: Icons.groups_outlined,
+          text:
+              'Small groups: plan ${species.minSchoolSize} or more, not a lone fish.',
+        ),
+      if (species.avoidWith.isNotEmpty)
+        _WatchForItem(
+          icon: Icons.warning_amber_outlined,
+          text:
+              'Tankmates: review ${species.avoidWith.join(', ')} before mixing.',
+        ),
+      _WatchForItem(
+        icon: Icons.straighten,
+        text:
+            'Adult fit: plan around ${_formatSize(species.adultSizeCm)} cm adult size and ${species.minTankLitres.toStringAsFixed(0)} L minimum tank.',
+      ),
+      if (!_isBeginnerCare(species.careLevel))
+        _WatchForItem(
+          icon: Icons.speed_outlined,
+          text: 'Care level: ${species.careLevel} needs steadier planning.',
+        ),
+      if (species.medicationWarnings.isNotEmpty)
+        const _WatchForItem(
+          icon: Icons.medical_services_outlined,
+          text: 'Treatment: review medication warnings before dosing.',
+        ),
+    ];
+
+    return AppCard(
+      padding: AppCardPadding.compact,
+      backgroundColor: AppOverlays.warning10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.warning_amber_outlined,
+                color: AppColors.warning,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Watch For', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _WatchForRow(item: item),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isBeginnerCare(String careLevel) {
+    final normalised = careLevel.toLowerCase();
+    return normalised == 'beginner' || normalised == 'easy';
+  }
+
+  String _formatSize(double value) {
+    return value == value.roundToDouble()
+        ? value.toStringAsFixed(0)
+        : value.toStringAsFixed(1);
+  }
+}
+
+class _WatchForItem {
+  final IconData icon;
+  final String text;
+
+  const _WatchForItem({required this.icon, required this.text});
+}
+
+class _WatchForRow extends StatelessWidget {
+  final _WatchForItem item;
+
+  const _WatchForRow({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(item.icon, size: 18, color: AppColors.warning),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(child: Text(item.text, style: AppTypography.bodyMedium)),
+      ],
+    );
+  }
 }
 
 class _CareAction {

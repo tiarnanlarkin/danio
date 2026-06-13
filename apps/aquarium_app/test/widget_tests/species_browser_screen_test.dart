@@ -109,6 +109,32 @@ void main() {
       );
     });
 
+    testWidgets('species detail shows watch-for guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Watch For'), findsOneWidget);
+      expect(
+        find.text('Small groups: plan 6 or more, not a lone fish.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Tankmates: review Angelfish, Bettas, Large Cichlids before mixing.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Adult fit: plan around 3.5 cm adult size and 40 L minimum tank.',
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('species detail opens prefilled stocking calculator', (
       tester,
     ) async {

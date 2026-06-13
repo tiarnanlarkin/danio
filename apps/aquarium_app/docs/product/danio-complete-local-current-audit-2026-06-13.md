@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1450 tests.
+- `flutter test`: pass, 1451 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -455,6 +455,14 @@ CL-P1-003E Plant care actions and wishlist save:
   light level, CO2 setup, and propagation.
 - Plant detail sheets can save plants into the existing local plant wishlist
   with common/scientific name and a short setup note.
+
+CL-P1-003F Species Watch For guidance:
+
+- Fish species detail sheets now include a Watch For card derived from existing
+  species fields: minimum group size, avoid-list tankmates, adult size,
+  minimum tank size, care level, and treatment warnings when present.
+- The guidance improves common-problem awareness without adding unsourced new
+  species facts.
 
 Current Android device state:
 
