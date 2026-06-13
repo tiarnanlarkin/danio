@@ -21,7 +21,6 @@ import '../models/shop_item.dart'; // For InventoryItem
 import 'lesson_provider.dart';
 import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
-import '../services/offline_aware_service.dart';
 import '../utils/debouncer.dart';
 import '../utils/app_constants.dart';
 import '../utils/logger.dart';
@@ -281,178 +280,167 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   }
 
   /// Award XP and handle streak logic (with streak freeze support)
-  /// Now uses offline-aware service to queue changes when offline
+  /// Persists local profile progress immediately.
   /// If xpBoostActive is true, the XP amount will be doubled
   Future<void> recordActivity({int xp = 0, bool xpBoostActive = false}) async {
     // Apply XP boost multiplier via single helper
     final effectiveXp = _applyXp(xp, xpBoostActive: xpBoostActive);
     try {
-      var current = state.value;
-      if (current == null) return;
+      // Read state fresh for each activity write to avoid stale snapshots.
+      // If another XP operation completed between caller setup and here,
+      // using an earlier capture would silently overwrite newer state.
+      var c = state.value;
+      if (c == null) return;
 
-      // Use offline-aware service to handle XP award
-      final offlineService = ref.read(offlineAwareServiceProvider);
+      // Reset streak freeze weekly if needed
+      if (c.shouldResetStreakFreeze) {
+        c = c.copyWith(
+          hasStreakFreeze: true,
+          streakFreezeGrantedDate: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+      }
 
-      await offlineService.awardXp(
-        amount: effectiveXp,
-        localUpdate: () async {
-          // Read state fresh inside the async closure to avoid stale snapshots.
-          // If another XP operation completed between the outer capture and here,
-          // using the captured `current` would silently overwrite newer state.
-          var c = state.value;
-          if (c == null) return;
+      final now = DateTime.now().toUtc();
+      final today = _normalizeDate(now);
 
-          // Reset streak freeze weekly if needed
-          if (c.shouldResetStreakFreeze) {
-            c = c.copyWith(
-              hasStreakFreeze: true,
-              streakFreezeGrantedDate: DateTime.now(),
-              updatedAt: DateTime.now(),
+      int newStreak = c.currentStreak;
+      int longestStreak = c.longestStreak;
+      bool usedFreeze = false;
+
+      if (c.lastActivityDate != null) {
+        final lastDate = _normalizeDate(c.lastActivityDate!);
+        final dayDifference = today.difference(lastDate).inDays;
+
+        if (dayDifference == 0) {
+          // Same day - keep current streak, no increment
+          newStreak = c.currentStreak;
+        } else if (dayDifference == 1) {
+          // Consecutive day - increment streak
+          newStreak = c.currentStreak + 1;
+        } else if (dayDifference == 2 &&
+            c.hasStreakFreeze &&
+            !c.streakFreezeUsedThisWeek &&
+            c.currentStreak > 0) {
+          // 1 day gap + freeze available = use freeze to save streak
+          newStreak = c.currentStreak + 1; // Continue streak
+          usedFreeze = true;
+        } else {
+          // Gap in activity - reset streak
+          newStreak = 1;
+          // Notify UI if the user had a meaningful streak before
+          if (c.currentStreak > 1) {
+            ref.read(streakResetProvider.notifier).state = c.currentStreak;
+          }
+        }
+      } else {
+        // First activity ever
+        newStreak = 1;
+      }
+
+      if (newStreak > longestStreak) {
+        longestStreak = newStreak;
+      }
+
+      // Bonus XP for streak milestones (only when streak increases)
+      int bonusXp = 0;
+      if (newStreak > c.currentStreak) {
+        bonusXp = XpRewards.dailyStreak;
+      }
+
+      // Update daily XP history
+      final todayKey = _formatDate(today);
+      final previousTodayXp = c.dailyXpHistory[todayKey] ?? 0;
+      final todayXp = previousTodayXp + effectiveXp + bonusXp;
+      var updatedHistory = {...c.dailyXpHistory, todayKey: todayXp};
+
+      // Prune dailyXpHistory to last 365 entries
+      if (updatedHistory.length > 365) {
+        final sorted = updatedHistory.entries.toList()
+          ..sort((a, b) => b.key.compareTo(a.key));
+        updatedHistory = Map.fromEntries(sorted.take(365));
+      }
+
+      // Track weekend activity for weekend_warrior achievement
+      List<String>? updatedWeekendDates;
+      if (now.weekday >= 6) {
+        // Saturday (6) or Sunday (7)
+        final todayStr = _formatDate(now);
+        if (!c.weekendActivityDates.contains(todayStr)) {
+          updatedWeekendDates = [...c.weekendActivityDates, todayStr];
+          // Prune to last 100 entries
+          if (updatedWeekendDates.length > 100) {
+            updatedWeekendDates = updatedWeekendDates.sublist(
+              updatedWeekendDates.length - 100,
             );
           }
+        }
+      }
 
-          final now = DateTime.now().toUtc();
-          final today = _normalizeDate(now);
-
-          int newStreak = c.currentStreak;
-          int longestStreak = c.longestStreak;
-          bool usedFreeze = false;
-
-          if (c.lastActivityDate != null) {
-            final lastDate = _normalizeDate(c.lastActivityDate!);
-            final dayDifference = today.difference(lastDate).inDays;
-
-            if (dayDifference == 0) {
-              // Same day - keep current streak, no increment
-              newStreak = c.currentStreak;
-            } else if (dayDifference == 1) {
-              // Consecutive day - increment streak
-              newStreak = c.currentStreak + 1;
-            } else if (dayDifference == 2 &&
-                c.hasStreakFreeze &&
-                !c.streakFreezeUsedThisWeek &&
-                c.currentStreak > 0) {
-              // 1 day gap + freeze available = use freeze to save streak
-              newStreak = c.currentStreak + 1; // Continue streak
-              usedFreeze = true;
-            } else {
-              // Gap in activity - reset streak
-              newStreak = 1;
-              // Notify UI if the user had a meaningful streak before
-              if (c.currentStreak > 1) {
-                ref.read(streakResetProvider.notifier).state = c.currentStreak;
-              }
-            }
-          } else {
-            // First activity ever
-            newStreak = 1;
-          }
-
-          if (newStreak > longestStreak) {
-            longestStreak = newStreak;
-          }
-
-          // Bonus XP for streak milestones (only when streak increases)
-          int bonusXp = 0;
-          if (newStreak > c.currentStreak) {
-            bonusXp = XpRewards.dailyStreak;
-          }
-
-          // Update daily XP history
-          final todayKey = _formatDate(today);
-          final previousTodayXp = c.dailyXpHistory[todayKey] ?? 0;
-          final todayXp = previousTodayXp + effectiveXp + bonusXp;
-          var updatedHistory = {...c.dailyXpHistory, todayKey: todayXp};
-
-          // Prune dailyXpHistory to last 365 entries
-          if (updatedHistory.length > 365) {
-            final sorted = updatedHistory.entries.toList()
-              ..sort((a, b) => b.key.compareTo(a.key));
-            updatedHistory = Map.fromEntries(sorted.take(365));
-          }
-
-          // Track weekend activity for weekend_warrior achievement
-          List<String>? updatedWeekendDates;
-          if (now.weekday >= 6) {
-            // Saturday (6) or Sunday (7)
-            final todayStr = _formatDate(now);
-            if (!c.weekendActivityDates.contains(todayStr)) {
-              updatedWeekendDates = [...c.weekendActivityDates, todayStr];
-              // Prune to last 100 entries
-              if (updatedWeekendDates.length > 100) {
-                updatedWeekendDates = updatedWeekendDates.sublist(
-                  updatedWeekendDates.length - 100,
-                );
-              }
-            }
-          }
-
-          // Update weekly XP for streak/activity bonus
-          final activityXpTotal = effectiveXp + bonusXp;
-          final weeklyUpdate = activityXpTotal > 0
-              ? _updatedWeeklyXP(c, activityXpTotal)
-              : (
-                  weeklyXP: c.weeklyXP,
-                  weekStartDate: c.weekStartDate,
-                  league: c.league,
-                );
-
-          final updated = c.copyWith(
-            totalXp: c.totalXp + activityXpTotal,
-            weeklyXP: weeklyUpdate.weeklyXP,
-            weekStartDate: weeklyUpdate.weekStartDate,
-            league: weeklyUpdate.league,
-            currentStreak: newStreak,
-            longestStreak: longestStreak,
-            lastActivityDate: now,
-            dailyXpHistory: updatedHistory,
-            hasStreakFreeze: usedFreeze ? false : c.hasStreakFreeze,
-            streakFreezeUsedDate: usedFreeze ? now : c.streakFreezeUsedDate,
-            weekendActivityDates: updatedWeekendDates ?? c.weekendActivityDates,
-            updatedAt: now,
-          );
-
-          await _saveImmediate(updated);
-          state = AsyncValue.data(updated);
-
-          // Notify UI if a streak freeze was consumed
-          if (usedFreeze) {
-            ref.read(streakFreezeUsedProvider.notifier).state = true;
-          }
-
-          // Award gems for milestones — non-fatal so XP still records if gems fail.
-          try {
-            final gemsNotifier = ref.read(gemsProvider.notifier);
-
-            // Streak milestone gems (7, 14, 30, 50, 100 days)
-            if (newStreak > c.currentStreak) {
-              final streakGems = GemRewards.getStreakMilestoneReward(newStreak);
-              if (streakGems > 0) {
-                await gemsNotifier.addGems(
-                  amount: streakGems,
-                  reason: GemEarnReason.streakMilestone,
-                  customReason: '$newStreak-day streak!',
-                );
-              }
-            }
-
-            // Daily goal completion gems (first time reaching goal today)
-            if (previousTodayXp < c.dailyXpGoal && todayXp >= c.dailyXpGoal) {
-              await gemsNotifier.addGems(
-                amount: GemRewards.dailyGoalMet,
-                reason: GemEarnReason.dailyGoalMet,
-              );
-            }
-          } catch (e, st) {
-            // Gem awarding failed — log but don't break XP recording.
-            logError(
-              'UserProfileProvider: gem award failed in recordActivity: $e',
-              stackTrace: st,
-              tag: 'UserProfileProvider',
+      // Update weekly XP for streak/activity bonus
+      final activityXpTotal = effectiveXp + bonusXp;
+      final weeklyUpdate = activityXpTotal > 0
+          ? _updatedWeeklyXP(c, activityXpTotal)
+          : (
+              weeklyXP: c.weeklyXP,
+              weekStartDate: c.weekStartDate,
+              league: c.league,
             );
-          }
-        },
+
+      final updated = c.copyWith(
+        totalXp: c.totalXp + activityXpTotal,
+        weeklyXP: weeklyUpdate.weeklyXP,
+        weekStartDate: weeklyUpdate.weekStartDate,
+        league: weeklyUpdate.league,
+        currentStreak: newStreak,
+        longestStreak: longestStreak,
+        lastActivityDate: now,
+        dailyXpHistory: updatedHistory,
+        hasStreakFreeze: usedFreeze ? false : c.hasStreakFreeze,
+        streakFreezeUsedDate: usedFreeze ? now : c.streakFreezeUsedDate,
+        weekendActivityDates: updatedWeekendDates ?? c.weekendActivityDates,
+        updatedAt: now,
       );
+
+      await _saveImmediate(updated);
+      state = AsyncValue.data(updated);
+
+      // Notify UI if a streak freeze was consumed
+      if (usedFreeze) {
+        ref.read(streakFreezeUsedProvider.notifier).state = true;
+      }
+
+      // Award gems for milestones — non-fatal so XP still records if gems fail.
+      try {
+        final gemsNotifier = ref.read(gemsProvider.notifier);
+
+        // Streak milestone gems (7, 14, 30, 50, 100 days)
+        if (newStreak > c.currentStreak) {
+          final streakGems = GemRewards.getStreakMilestoneReward(newStreak);
+          if (streakGems > 0) {
+            await gemsNotifier.addGems(
+              amount: streakGems,
+              reason: GemEarnReason.streakMilestone,
+              customReason: '$newStreak-day streak!',
+            );
+          }
+        }
+
+        // Daily goal completion gems (first time reaching goal today)
+        if (previousTodayXp < c.dailyXpGoal && todayXp >= c.dailyXpGoal) {
+          await gemsNotifier.addGems(
+            amount: GemRewards.dailyGoalMet,
+            reason: GemEarnReason.dailyGoalMet,
+          );
+        }
+      } catch (e, st) {
+        // Gem awarding failed — log but don't break XP recording.
+        logError(
+          'UserProfileProvider: gem award failed in recordActivity: $e',
+          stackTrace: st,
+          tag: 'UserProfileProvider',
+        );
+      }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
       rethrow;

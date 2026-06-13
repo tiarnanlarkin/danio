@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1332 tests.
+- `flutter test`: pass, 1333 tests.
 - `flutter analyze --no-pub`: pass, no issues.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
 - `flutter test test/services/shop_service_test.dart
@@ -89,7 +89,7 @@ Verification:
 
 CL-P0-003 has covered the local/offline, rewards, weekly-progress, returning
 milestones, onboarding feature-summary, debug visibility, freshwater-scope, and
-Smart optional-AI surfaces.
+Smart optional-AI surfaces, plus the dormant backend-sync queue scaffold.
 
 Fixed:
 
@@ -150,6 +150,10 @@ Fixed:
 - Dead cloud-sync status scaffolding was removed from `AccountScreen` and the
   unused sync indicator/status/dialog/cloud-sync files, so stale sync-state
   wording cannot drift back into the local Offline Data surface.
+- The dormant backend sync queue implementation was removed from the profile
+  activity path. XP/streak activity now persists through the local profile save
+  path directly, with a source guard preventing the fake queue scaffold from
+  returning.
 - Optional account/cloud backup copy now says cloud services are optional and
   not configured for local builds instead of promising background sync or
   sounding broken.
@@ -189,7 +193,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, onboarding feature-summary paywall-stub wording, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics and dead sync-status scaffolds, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, onboarding feature-summary paywall-stub wording, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
