@@ -34,7 +34,26 @@ ReviewStats _stats({
   );
 }
 
-Widget _wrap({ReviewStats? stats}) {
+ReviewCard _card({
+  required String id,
+  required String conceptId,
+  double strength = 0.2,
+  bool due = true,
+}) {
+  final now = DateTime.now();
+  return ReviewCard(
+    id: id,
+    conceptId: conceptId,
+    conceptType: ConceptType.fact,
+    strength: strength,
+    lastReviewed: now.subtract(const Duration(days: 2)),
+    nextReview: due
+        ? now.subtract(const Duration(minutes: 1))
+        : now.add(const Duration(days: 2)),
+  );
+}
+
+Widget _wrap({ReviewStats? stats, List<ReviewCard> cards = const []}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
@@ -42,7 +61,7 @@ Widget _wrap({ReviewStats? stats}) {
         return SharedPreferences.getInstance();
       }),
       spacedRepetitionProvider.overrideWith(
-        (ref) => _FakeSrNotifier(stats ?? _stats()),
+        (ref) => _FakeSrNotifier(stats ?? ReviewStats.fromCards(cards), cards),
       ),
     ],
     child: const MaterialApp(home: PracticeHubScreen()),
@@ -51,8 +70,8 @@ Widget _wrap({ReviewStats? stats}) {
 
 class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
-  _FakeSrNotifier(ReviewStats stats)
-    : super(SpacedRepetitionState(cards: const [], stats: stats));
+  _FakeSrNotifier(ReviewStats stats, List<ReviewCard> cards)
+    : super(SpacedRepetitionState(cards: cards, stats: stats));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -167,6 +186,32 @@ void main() {
       expect(standardTile.trailing, isNull);
       expect(quickTile.onTap, isNull);
       expect(quickTile.trailing, isNull);
+    });
+
+    testWidgets('shows unlocked skill drills from related review cards', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          cards: [
+            _card(id: 'water', conceptId: 'wp_ph_section_0'),
+            _card(id: 'health', conceptId: 'fh_ich_quiz_q0'),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('Skill Drills'),
+        320,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Skill Drills'), findsOneWidget);
+      expect(find.text('Parameter Reading'), findsOneWidget);
+      expect(find.text('Diagnosis Practice'), findsOneWidget);
+      expect(find.text('1 due now'), findsAtLeastNWidgets(1));
     });
   });
 }

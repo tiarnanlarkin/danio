@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1471 tests.
+- `flutter test`: pass, 1476 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -654,6 +654,19 @@ CL-P1-004L Troubleshooting guide coverage:
   HTTPS source reference.
 - Every current learning path now has structured guide metadata coverage.
 
+CL-P1-005A Practice Skill Drills:
+
+- Practice Hub now includes five workflow-based Skill Drills when a review deck
+  exists: Parameter Reading, Diagnosis Practice, Compatibility Checks, Setup
+  Planning, and Emergency Decisions.
+- Drill readiness is derived from existing review cards and their lesson paths,
+  so users see unlocked care-skill practice based on what they have actually
+  learned.
+- Unlocked drills start filtered practice sessions through the existing review
+  screen, prioritising related due cards before other related cards.
+- Focused coverage verifies the drill catalog, path-based unlocking, filtered
+  card selection, locked copy, and Practice Hub rendering.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -691,8 +704,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Fish Health, Species Care, Advanced Topics, Aquascaping, and Breeding Basics
   path enrichment, plus Troubleshooting emergency enrichment. Every current
   learning path now has structured guide coverage.
-  Remaining learning work is expanding visual depth, practice drills, and richer
-  learning interactions across the catalog.
+  Remaining learning work is expanding visual depth and richer learning
+  interactions across the catalog.
+- Practice depth now starts with workflow-based Skill Drills mapped to existing
+  lesson paths and filtered review sessions. Remaining Practice work is richer
+  scenario-specific question formats and deeper tank/tool-data integration.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -701,7 +717,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P0-004 first-run flow work when Android transport is usable:
+Continue CL-P1-005 practice depth while Android transport is reserved by other
+sessions:
 
-- Run final first-run screen QA once Android transport is usable.
-- Add focused tests before each onboarding behavior change.
+- Add scenario-specific drill question formats for parameter interpretation and
+  diagnosis.
+- Keep Android phone/tablet visual QA deferred until emulator/device ownership
+  is confirmed.

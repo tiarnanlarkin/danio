@@ -11,7 +11,9 @@ import '../services/review_queue_service.dart';
 import '../services/notification_scheduler.dart';
 import 'achievement_provider.dart';
 import '../models/resolved_question.dart';
+import '../models/practice_drill.dart';
 import '../services/question_resolver.dart';
+import '../services/practice_drill_service.dart';
 import '../utils/logger.dart';
 import 'lesson_provider.dart';
 import 'settings_provider.dart';
@@ -603,6 +605,49 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
       logError(
         'Failed to start review session: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
+      rethrow;
+    }
+  }
+
+  /// Start a workflow-based skill drill using only cards from related lesson
+  /// paths. The existing review renderer handles the session once created.
+  Future<void> startDrillSession({required PracticeDrillId drillId}) async {
+    try {
+      final session = PracticeDrillService.createSession(
+        cards: state.cards,
+        drillId: drillId,
+      );
+      if (session.cards.isEmpty) {
+        throw StateError('No review cards available for drill $drillId');
+      }
+
+      final pathIds = resolvePathIdsForConceptIds(
+        session.cards.map((c) => c.conceptId),
+      );
+      final lessonNotifier = _ref.read(lessonProvider.notifier);
+      for (final pathId in pathIds) {
+        await lessonNotifier.loadPath(pathId);
+      }
+
+      final lessonState = _ref.read(lessonProvider);
+      final resolved = QuestionResolver.resolveQuestions(
+        cards: session.cards,
+        lessonState: lessonState,
+      );
+
+      state = state.copyWith(
+        currentSession: session,
+        resolvedQuestions: resolved,
+        clearError: true,
+      );
+    } catch (e, stackTrace) {
+      state = state.copyWith(
+        errorMessage: "Couldn't start that skill drill. Please try again.",
+      );
+      logError(
+        'Failed to start drill session: $e\n$stackTrace',
         tag: 'SpacedRepetitionProvider',
       );
       rethrow;

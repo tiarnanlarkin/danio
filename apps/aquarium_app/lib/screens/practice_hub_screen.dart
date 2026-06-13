@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/practice_drill.dart';
 import '../models/spaced_repetition.dart';
 import '../providers/guidance_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/guidance_service.dart';
+import '../services/practice_drill_service.dart';
 import '../theme/app_theme.dart';
 import '../theme/learning_visuals.dart';
 import '../utils/logger.dart';
@@ -404,13 +406,39 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     }
   }
 
+  Future<void> _startDrillSession(PracticeDrillId drillId) async {
+    try {
+      await ref
+          .read(spacedRepetitionProvider.notifier)
+          .startDrillSession(drillId: drillId);
+      if (!mounted) return;
+      NavigationThrottle.push(
+        context,
+        const SpacedRepetitionPracticeScreen(),
+        rootNavigator: true,
+      );
+    } catch (e, st) {
+      logError(
+        'PracticeHubScreen: start drill failed: $e',
+        stackTrace: st,
+        tag: 'PracticeHubScreen',
+      );
+      if (!mounted) return;
+      DanioSnackBar.error(
+        context,
+        'Unlock related cards before starting that drill.',
+      );
+    }
+  }
+
   int _getPracticeHubItemCount(int dueCards, int totalCards) {
     // Hero (1) + spacer + stats row + spacer +
     // section header (Review Sessions) + spacer + SR choices + spacer +
+    // section header (Skill Drills) + spacer + drill choices + spacer +
     // section header (Mastery Breakdown) + spacer + mastery widget + spacer +
     // section header (Your Progress) + spacer +
-    // streak + spacer + mastered + spacer + accuracy = 19 items
-    return 19;
+    // streak + spacer + mastered + spacer + accuracy = 23 items
+    return 23;
   }
 
   Widget _buildPracticeHubItem(
@@ -447,7 +475,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             onTap: () => _startReviewSession(ReviewSessionMode.intensive),
           );
         } else if (dueCards == 0 && totalCards > 0) {
-          // Has cards but none are due — genuinely all caught up
+          // Has cards but none are due; genuinely all caught up.
           return _buildHeroCard(
             context,
             title: 'All caught up',
@@ -461,7 +489,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             },
           );
         } else {
-          // No cards at all — user hasn't started yet
+          // No cards at all; user hasn't started yet.
           return _buildHeroCard(
             context,
             title: 'No practice cards yet',
@@ -476,7 +504,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         }
       case 1:
         return const SizedBox(height: AppSpacing.lg);
-      case 2: // Practice Stats — BUG-05: gray for zero values, semantic color only when >0
+      case 2:
         return _buildStatsRow(
           context,
           stats: [
@@ -505,12 +533,12 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         return Text('Review Sessions', style: AppTypography.headlineSmall);
       case 5:
         return const SizedBox(height: AppSpacing.sm2);
-      case 6: // Spaced Repetition card — PRIMARY practice mode
+      case 6:
         return _buildPracticeCard(
           context,
           title: 'Spaced Repetition',
           subtitle:
-              'Review cards based on memory strength — the most effective way to learn',
+              'Review cards based on memory strength - the most effective way to learn',
           icon: Icons.psychology,
           iconColor: AppColors.primary,
           onTap: () {
@@ -523,19 +551,27 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         );
       case 7:
         return const SizedBox(height: AppSpacing.lg);
-      case 8: // Section: Mastery Breakdown
-        return Text('Mastery Breakdown', style: AppTypography.headlineSmall);
+      case 8:
+        return Text('Skill Drills', style: AppTypography.headlineSmall);
       case 9:
         return const SizedBox(height: AppSpacing.sm2);
-      case 10: // Mastery level breakdown
-        return _buildMasteryBreakdown(context, srState);
+      case 10:
+        return _buildSkillDrillSection(context, srState);
       case 11:
         return const SizedBox(height: AppSpacing.lg);
-      case 12: // Section: Your Progress
-        return Text('Your Progress', style: AppTypography.headlineSmall);
+      case 12:
+        return Text('Mastery Breakdown', style: AppTypography.headlineSmall);
       case 13:
         return const SizedBox(height: AppSpacing.sm2);
-      case 14: // Study Streak card — BUG-06: neutral look when streak=0
+      case 14:
+        return _buildMasteryBreakdown(context, srState);
+      case 15:
+        return const SizedBox(height: AppSpacing.lg);
+      case 16:
+        return Text('Your Progress', style: AppTypography.headlineSmall);
+      case 17:
+        return const SizedBox(height: AppSpacing.sm2);
+      case 18:
         {
           final streak = profile ?? 0;
           return _buildProgressCard(
@@ -550,9 +586,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             color: streak > 0 ? AppColors.warning : context.textSecondary,
           );
         }
-      case 15:
+      case 19:
         return const SizedBox(height: AppSpacing.sm2);
-      case 16: // Cards Mastered card
+      case 20:
         return _buildProgressCard(
           context,
           title: 'Cards Mastered',
@@ -560,9 +596,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
           icon: Icons.stars,
           color: AppColors.success,
         );
-      case 17:
+      case 21:
         return const SizedBox(height: AppSpacing.sm2);
-      case 18: // Practice Accuracy — computed from ReviewCard history
+      case 22:
         {
           final totalReviews = srState.stats.totalReviews;
           final allCards = srState.cards;
@@ -818,6 +854,130 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     );
   }
 
+  Widget _buildSkillDrillSection(
+    BuildContext context,
+    SpacedRepetitionState srState,
+  ) {
+    final summaries = PracticeDrillService.buildSummaries(cards: srState.cards);
+    return Column(
+      children: [
+        for (var index = 0; index < summaries.length; index++) ...[
+          if (index > 0) const SizedBox(height: AppSpacing.sm2),
+          _buildSkillDrillChoice(context, summaries[index]),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSkillDrillChoice(
+    BuildContext context,
+    PracticeDrillSummary summary,
+  ) {
+    final enabled = summary.isUnlocked;
+    final color = enabled
+        ? _drillColor(context, summary.drill.id)
+        : context.textHint;
+    final pathLine = summary.supportingPathTitles.take(2).join(' + ');
+
+    return Semantics(
+      button: enabled,
+      enabled: enabled,
+      child: Card(
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
+        child: ListTile(
+          enabled: enabled,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm2,
+          ),
+          leading: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: color.withAlpha(26),
+              borderRadius: AppRadius.smallRadius,
+            ),
+            child: Icon(
+              _drillIcon(summary.drill.id),
+              color: color,
+              size: AppIconSizes.md,
+            ),
+          ),
+          title: Text(
+            summary.drill.title,
+            style: AppTypography.titleMedium.copyWith(
+              color: enabled ? null : context.textHint,
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                summary.drill.subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: enabled ? context.textSecondary : context.textHint,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                enabled ? pathLine : summary.statusLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.labelSmall.copyWith(
+                  color: enabled ? color : context.textHint,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          trailing: enabled
+              ? Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: color.withAlpha(24),
+                    borderRadius: AppRadius.md2Radius,
+                  ),
+                  child: Text(
+                    summary.statusLabel,
+                    style: AppTypography.labelSmall.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                )
+              : Icon(Icons.lock_outline_rounded, color: context.textHint),
+          onTap: enabled ? () => _startDrillSession(summary.drill.id) : null,
+        ),
+      ),
+    );
+  }
+
+  IconData _drillIcon(PracticeDrillId id) {
+    return switch (id) {
+      PracticeDrillId.parameterInterpretation => Icons.science_rounded,
+      PracticeDrillId.diagnosis => Icons.manage_search_rounded,
+      PracticeDrillId.compatibility => Icons.diversity_2_rounded,
+      PracticeDrillId.setupPlanning => Icons.design_services_rounded,
+      PracticeDrillId.emergencyDecision => Icons.emergency_rounded,
+    };
+  }
+
+  Color _drillColor(BuildContext context, PracticeDrillId id) {
+    return switch (id) {
+      PracticeDrillId.parameterInterpretation => AppColors.info,
+      PracticeDrillId.diagnosis => AppColors.warning,
+      PracticeDrillId.compatibility => AppColors.secondary,
+      PracticeDrillId.setupPlanning => AppColors.primary,
+      PracticeDrillId.emergencyDecision => AppColors.error,
+    };
+  }
+
   Widget _buildModeChoice(
     BuildContext context, {
     required String title,
@@ -982,7 +1142,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     required IconData icon,
     required Color color,
   }) {
-    // Long CTA strings overflow the ~72dp trailing slot — show them as a
+    // Long CTA strings overflow the ~72dp trailing slot; show them as a
     // subtitle instead and use an em-dash placeholder in trailing.
     const longCta = 'Complete a review session';
     final isLongCta = value == longCta;
@@ -1004,7 +1164,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
               )
             : null,
         trailing: Text(
-          isLongCta ? '—' : value,
+          isLongCta ? '-' : value,
           style: AppTypography.titleLarge.copyWith(
             color: color,
             fontWeight: FontWeight.bold,
