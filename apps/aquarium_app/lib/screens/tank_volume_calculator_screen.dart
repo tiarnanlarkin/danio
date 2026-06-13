@@ -1,20 +1,26 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
 
-class TankVolumeCalculatorScreen extends StatefulWidget {
-  const TankVolumeCalculatorScreen({super.key});
+class TankVolumeCalculatorScreen extends ConsumerStatefulWidget {
+  final String? tankId;
+
+  const TankVolumeCalculatorScreen({super.key, this.tankId});
 
   @override
-  State<TankVolumeCalculatorScreen> createState() =>
+  ConsumerState<TankVolumeCalculatorScreen> createState() =>
       _TankVolumeCalculatorScreenState();
 }
 
 class _TankVolumeCalculatorScreenState
-    extends State<TankVolumeCalculatorScreen> {
+    extends ConsumerState<TankVolumeCalculatorScreen> {
   _TankShape _shape = _TankShape.rectangular;
+  bool _isApplyingVolume = false;
 
   // Rectangular
   double? _length;
@@ -47,7 +53,7 @@ class _TankVolumeCalculatorScreenState
             w *= 2.54;
             h *= 2.54;
           }
-          return (l * w * h) / 1000; // cm³ to litres
+          return (l * w * h) / 1000; // cubic cm to litres
         }
         break;
       case _TankShape.cylindrical:
@@ -74,7 +80,7 @@ class _TankVolumeCalculatorScreenState
           }
           // Approximate: rectangular base + half-cylinder for the bow.
           // Bow protrudes `d` cm from the front panel; model as a
-          // half-cylinder: V = (π × r²) / 2 × length, where r = d.
+          // half-cylinder: V = (pi * r^2) / 2 * length, where r = d.
           final rectVolume = l * w * h;
           final bowVolume = (pi * pow(d, 2) / 2) * l;
           return (rectVolume + bowVolume) / 1000;
@@ -87,7 +93,7 @@ class _TankVolumeCalculatorScreenState
             s *= 2.54;
             h *= 2.54;
           }
-          // Area of regular hexagon = (3√3/2) × s²
+          // Area of regular hexagon = (3 * sqrt(3) / 2) * s^2
           final area = (3 * sqrt(3) / 2) * pow(s, 2);
           return (area * h) / 1000;
         }
@@ -105,6 +111,41 @@ class _TankVolumeCalculatorScreenState
         break;
     }
     return null;
+  }
+
+  bool get _canApplyToTank => widget.tankId != null && _volume != null;
+
+  Future<void> _applyVolumeToTank() async {
+    final tankId = widget.tankId;
+    final volume = _volume;
+    if (tankId == null || volume == null || volume <= 0 || _isApplyingVolume) {
+      return;
+    }
+
+    setState(() => _isApplyingVolume = true);
+    try {
+      final tank = await ref.read(tankProvider(tankId).future);
+      if (tank == null) {
+        throw StateError('Tank not found');
+      }
+
+      await ref
+          .read(tankActionsProvider)
+          .updateTank(tank.copyWith(volumeLitres: volume));
+
+      if (!mounted) return;
+      AppFeedback.showSuccess(
+        context,
+        'Updated tank volume to ${volume.toStringAsFixed(1)} L.',
+      );
+    } catch (_) {
+      if (!mounted) return;
+      AppFeedback.showError(context, 'Could not update this tank volume.');
+    } finally {
+      if (mounted) {
+        setState(() => _isApplyingVolume = false);
+      }
+    }
   }
 
   @override
@@ -213,7 +254,7 @@ class _TankVolumeCalculatorScreenState
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        '${(_volume! / 3.785).toStringAsFixed(1)} US gal  •  ${(_volume! / 4.546).toStringAsFixed(1)} UK gal',
+                        '${(_volume! / 3.785).toStringAsFixed(1)} US gal - ${(_volume! / 4.546).toStringAsFixed(1)} UK gal',
                         style: AppTypography.bodySmall,
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -237,6 +278,62 @@ class _TankVolumeCalculatorScreenState
                 ),
               ],
 
+              if (_canApplyToTank) ...[
+                const SizedBox(height: AppSpacing.lg),
+                AppCard(
+                  backgroundColor: AppOverlays.info10,
+                  padding: AppCardPadding.standard,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.route_outlined,
+                            color: AppColors.info,
+                            size: AppIconSizes.sm,
+                          ),
+                          const SizedBox(width: AppSpacing.sm2),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Guided next step',
+                                  style: AppTypography.labelLarge,
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
+                                Text(
+                                  'Apply this calculated volume to your tank profile so care tools use the same number.',
+                                  style: AppTypography.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      FilledButton.icon(
+                        onPressed: _isApplyingVolume
+                            ? null
+                            : _applyVolumeToTank,
+                        icon: _isApplyingVolume
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.save_outlined),
+                        label: const Text('Apply to tank profile'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
               const SizedBox(height: AppSpacing.lg),
 
               // Tips
@@ -248,19 +345,19 @@ class _TankVolumeCalculatorScreenState
                     Text('Tips', style: AppTypography.labelLarge),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      '• Actual water volume is ~90% of total (substrate, decor)',
+                      '- Actual water volume is about 90% of total (substrate, decor)',
                       style: AppTypography.bodySmall,
                     ),
                     Text(
-                      '• 1 litre of water weighs 1 kg',
+                      '- 1 litre of water weighs 1 kg',
                       style: AppTypography.bodySmall,
                     ),
                     Text(
-                      '• Add tank weight + stand capacity when planning placement',
+                      '- Add tank weight + stand capacity when planning placement',
                       style: AppTypography.bodySmall,
                     ),
                     Text(
-                      '• Internal dimensions give more accurate results',
+                      '- Internal dimensions give more accurate results',
                       style: AppTypography.bodySmall,
                     ),
                   ],
@@ -413,7 +510,7 @@ enum _TankShape {
   cylindrical('Cylindrical'),
   bowFront('Bow Front'),
   hexagonal('Hexagonal'),
-  corner('Corner (90°)');
+  corner('Corner (90 deg)');
 
   final String label;
   const _TankShape(this.label);

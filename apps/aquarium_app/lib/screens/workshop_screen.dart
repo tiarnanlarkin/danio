@@ -76,6 +76,48 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     );
   }
 
+  /// Open Tank Volume with tank context when it is available.
+  Future<void> _openTankVolumeCalculator() async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      NavigationThrottle.push(
+        context,
+        const TankVolumeCalculatorScreen(),
+        rootNavigator: true,
+      );
+      return;
+    }
+
+    Tank? tank;
+    if (tanks.length == 1) {
+      tank = tanks.first;
+    } else {
+      tank = await showDialog<Tank>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: const Text('Choose a Tank'),
+          children: tanks
+              .map(
+                (tank) => SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, tank),
+                  child: Text(tank.name),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (tank == null || !mounted) return;
+    NavigationThrottle.push(
+      context,
+      TankVolumeCalculatorScreen(tankId: tank.id),
+      rootNavigator: true,
+    );
+  }
+
   /// Pick a tank, then navigate to the Cycling Assistant for that tank.
   Future<void> _openCyclingAssistant() async {
     final tanks = await ref.read(tanksProvider.future);
@@ -164,7 +206,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
               // Header
               SliverToBoxAdapter(child: _WorkshopHeader()),
 
-              // Tool cards — 10 cards in 2-col grid
+              // Tool cards - 10 cards in 2-col grid
               SliverPadding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 sliver: SliverGrid(
@@ -195,7 +237,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                     ),
                     _ToolCard(
                       icon: Icons.science,
-                      title: 'CO₂ Calculator',
+                      title: 'CO2 Calculator',
                       subtitle: 'From pH & KH',
                       color: DanioColors.tealWater,
                       onTap: () => NavigationThrottle.push(
@@ -231,11 +273,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       title: 'Tank Volume',
                       subtitle: 'Calculate capacity',
                       color: DanioColors.tealWater,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const TankVolumeCalculatorScreen(),
-                        rootNavigator: true,
-                      ),
+                      onTap: _openTankVolumeCalculator,
                     ),
                     _ToolCard(
                       icon: Icons.lightbulb,
@@ -277,7 +315,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                 ),
               ),
 
-              // Cost Tracker — full-width card at the bottom
+              // Cost Tracker - full-width card at the bottom
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacing.md,
@@ -560,7 +598,7 @@ class _QuickConversions extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               _ConversionRow('1 gallon', '3.785 liters'),
               _ConversionRow('1 inch', '2.54 cm'),
-              _ConversionRow('°F to °C', '(°F - 32) × 5/9'),
+              _ConversionRow('deg F to deg C', '(deg F - 32) x 5/9'),
               _ConversionRow('ppm', 'mg/L (same)'),
             ],
           ),

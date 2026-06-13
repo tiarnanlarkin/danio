@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1499 tests.
+- `flutter test`: pass, 1501 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -756,6 +756,20 @@ CL-P1-006A Water Change guided workflow:
 - Focused coverage verifies AddLog suggested-percent persistence, calculator
   handoff into AddLog, Workshop tank-volume prefill, safe-area coverage, and
   Workshop tool text encoding.
+
+CL-P1-006B Tank Volume guided workflow:
+
+- The Tank Volume Calculator can now launch with tank context from Workshop and
+  apply a calculated litre value back to the selected local tank profile.
+- Workshop opens Tank Volume as a standalone calculator when there are no tanks,
+  automatically passes context when there is one tank, and asks the user to
+  choose a tank when multiple tanks exist.
+- Valid tank-volume results now include a guided next-step card explaining why
+  applying the result matters, with an `Apply to tank profile` action.
+- The guided action reuses `tankActionsProvider.updateTank(...)`, invalidates
+  existing tank providers, and shows local success/error feedback.
+- Focused coverage verifies direct calculator persistence and Workshop handoff
+  into the contextual calculator.
 
 Current Android device state:
 

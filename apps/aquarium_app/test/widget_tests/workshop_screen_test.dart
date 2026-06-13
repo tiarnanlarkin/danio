@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/models.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/tank_volume_calculator_screen.dart';
 import 'package:danio/screens/water_change_calculator_screen.dart';
 import 'package:danio/screens/workshop_screen.dart';
 import 'package:danio/services/storage_service.dart';
@@ -105,6 +106,38 @@ void main() {
       await tester.pump();
 
       expect(find.text('Log this water change'), findsOneWidget);
+    });
+
+    testWidgets('opens Tank Volume with current tank context', (tester) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(volumeLitres: 40));
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Tank Volume'), 300);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Tank Volume'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TankVolumeCalculatorScreen), findsOneWidget);
+
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '60');
+      await tester.enterText(fields.at(1), '30');
+      await tester.enterText(fields.at(2), '30');
+      await tester.pump();
+
+      await tester.scrollUntilVisible(
+        find.text('Apply to tank profile'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Apply to tank profile'));
+      await tester.pumpAndSettle();
+
+      final tank = await storage.getTank('tank-1');
+      expect(tank?.volumeLitres, 54.0);
     });
 
     testWidgets('tool cards expose one concise screen reader label', (
