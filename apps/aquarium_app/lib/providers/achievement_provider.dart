@@ -13,6 +13,8 @@ import '../models/gem_economy.dart';
 import '../data/achievements.dart';
 import '../services/achievement_service.dart';
 import '../services/notification_service.dart';
+import '../services/room_theme_unlock_service.dart';
+import '../theme/room_themes.dart';
 import '../widgets/achievement_unlocked_dialog.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
@@ -574,6 +576,10 @@ class AchievementChecker {
       0,
       (sum, r) => sum + _getGemReward(r.achievement.rarity),
     );
+    final roomVibeRewards =
+        RoomThemeUnlockService.roomVibesUnlockedByAchievementIds(
+          results.map((result) => result.achievement.id),
+        );
 
     await showAppDialog(
       context: context,
@@ -656,6 +662,51 @@ class AchievementChecker {
                     ),
                   ],
                 ),
+              ],
+            ),
+          ),
+          if (roomVibeRewards.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            _buildRoomVibeRewardSummary(roomVibeRewards),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoomVibeRewardSummary(List<RoomThemeType> roomVibes) {
+    final roomVibeNames = roomVibes
+        .map((type) => RoomTheme.fromType(type).name)
+        .join(', ');
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppOverlays.black10,
+        borderRadius: AppRadius.md2Radius,
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.palette_rounded,
+            size: 22,
+            color: DanioColors.amethyst,
+          ),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  roomVibes.length == 1
+                      ? 'Room vibe unlocked'
+                      : 'Room vibes unlocked',
+                  style: AppTypography.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(roomVibeNames, style: AppTypography.bodySmall),
               ],
             ),
           ),

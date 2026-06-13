@@ -46,6 +46,38 @@ void main() {
     expect(states[RoomThemeType.aurora]!.requirementLabel, isNotEmpty);
     expect(states[RoomThemeType.aurora]!.requirementLabel, contains('2500 XP'));
   });
+
+  test('achievement IDs expose room vibe cosmetic rewards', () {
+    expect(
+      RoomThemeUnlockService.roomVibesUnlockedByAchievementId('streak_7'),
+      [RoomThemeType.midnight],
+    );
+    expect(
+      RoomThemeUnlockService.roomVibesUnlockedByAchievementId('lessons_10'),
+      [RoomThemeType.dreamy],
+    );
+    expect(RoomThemeUnlockService.roomVibesUnlockedByAchievementId('xp_2500'), [
+      RoomThemeType.aurora,
+    ]);
+  });
+
+  test('batch achievement room vibe rewards are unique and stable', () {
+    expect(
+      RoomThemeUnlockService.roomVibesUnlockedByAchievementIds([
+        'night_owl',
+        'streak_7',
+        'xp_2500',
+      ]),
+      [RoomThemeType.midnight, RoomThemeType.aurora],
+    );
+  });
+
+  test('unmapped achievements do not claim cosmetic rewards', () {
+    expect(
+      RoomThemeUnlockService.roomVibesUnlockedByAchievementId('first_lesson'),
+      isEmpty,
+    );
+  });
 }
 
 UserProfile _profile({

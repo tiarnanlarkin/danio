@@ -17,6 +17,18 @@ class RoomThemeUnlockState {
 class RoomThemeUnlockService {
   const RoomThemeUnlockService._();
 
+  static const Map<String, List<RoomThemeType>> _achievementRoomVibeUnlocks = {
+    'streak_3': [RoomThemeType.eveningGlow],
+    'streak_7': [RoomThemeType.midnight],
+    'night_owl': [RoomThemeType.midnight],
+    'lessons_10': [RoomThemeType.dreamy],
+    'five_species': [RoomThemeType.forest],
+    'plants_master': [RoomThemeType.forest],
+    'xp_1000': [RoomThemeType.watercolor],
+    'perfectionist': [RoomThemeType.cotton],
+    'xp_2500': [RoomThemeType.aurora],
+  };
+
   static Map<RoomThemeType, RoomThemeUnlockState> statesFor({
     required UserProfile? profile,
     required Set<String> unlockedSpecies,
@@ -33,6 +45,27 @@ class RoomThemeUnlockService {
           requirementLabel: _requirementLabel(type),
         ),
     };
+  }
+
+  static List<RoomThemeType> roomVibesUnlockedByAchievementId(
+    String achievementId,
+  ) {
+    return List.unmodifiable(
+      _achievementRoomVibeUnlocks[achievementId] ?? const <RoomThemeType>[],
+    );
+  }
+
+  static List<RoomThemeType> roomVibesUnlockedByAchievementIds(
+    Iterable<String> achievementIds,
+  ) {
+    final unlocked = <RoomThemeType>{};
+    for (final achievementId in achievementIds) {
+      unlocked.addAll(roomVibesUnlockedByAchievementId(achievementId));
+    }
+
+    return RoomThemeType.values
+        .where(unlocked.contains)
+        .toList(growable: false);
   }
 
   static bool _isUnlocked({

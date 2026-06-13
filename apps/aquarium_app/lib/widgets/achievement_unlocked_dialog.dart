@@ -9,6 +9,8 @@ import 'package:confetti/confetti.dart';
 import 'dart:math';
 import '../models/achievements.dart';
 import '../models/gem_economy.dart';
+import '../services/room_theme_unlock_service.dart';
+import '../theme/room_themes.dart';
 import 'core/app_button.dart';
 
 /// Show full-screen achievement unlocked dialog
@@ -104,6 +106,10 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
   Widget build(BuildContext context) {
     final rarityColor = _getRarityColor(widget.achievement.rarity);
     final gemReward = _getGemReward(widget.achievement.rarity);
+    final roomVibeRewards =
+        RoomThemeUnlockService.roomVibesUnlockedByAchievementId(
+          widget.achievement.id,
+        );
 
     return Scaffold(
       backgroundColor: AppColors.blackAlpha85,
@@ -294,6 +300,10 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                                   ),
                                 ],
                               ),
+                              if (roomVibeRewards.isNotEmpty) ...[
+                                const SizedBox(height: AppSpacing.lg),
+                                _buildRoomVibeReward(roomVibeRewards),
+                              ],
                             ],
                           ),
                         ),
@@ -416,6 +426,55 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildRoomVibeReward(List<RoomThemeType> roomVibes) {
+    final roomVibeNames = roomVibes
+        .map((type) => RoomTheme.fromType(type).name)
+        .join(', ');
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppOverlays.white20,
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(color: AppOverlays.white40),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.palette_rounded,
+            color: Colors.white,
+            size: AppIconSizes.lg,
+          ),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  roomVibes.length == 1
+                      ? 'Room vibe unlocked'
+                      : 'Room vibes unlocked',
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  roomVibeNames,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: AppOverlays.white80,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

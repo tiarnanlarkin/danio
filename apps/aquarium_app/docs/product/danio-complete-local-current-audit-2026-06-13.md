@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1433 tests.
+- `flutter test`: pass, 1438 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -399,6 +399,15 @@ CL-P1-002B Achievement badge display polish:
 - Achievement category filters now show plain category labels with icon avatars,
   improving polish, accessibility, and rendering consistency while preserving
   the existing achievement metadata for compatibility.
+
+CL-P1-002C Achievement cosmetic reward feedback:
+
+- Room-vibe rewards that are already tied to achievement IDs now surface in
+  achievement celebrations, so users see when a streak, lesson, XP, perfect
+  score, plant, or species milestone unlocks a room vibe.
+- Single-achievement and batch achievement dialogs both summarize earned room
+  vibes using the existing theme names and a controlled palette icon, without
+  adding fake inventory, currency, or cloud/premium promises.
 
 Current Android device state:
 
