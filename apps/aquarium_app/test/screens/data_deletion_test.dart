@@ -34,6 +34,8 @@ Future<void> _scrollToDeleteMyData(WidgetTester tester) async {
     500.0,
     scrollable: find.byType(Scrollable).first,
   );
+  await tester.ensureVisible(find.text('Delete My Data'));
+  await tester.pump();
 }
 
 // ---------------------------------------------------------------------------

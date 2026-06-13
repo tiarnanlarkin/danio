@@ -9,6 +9,7 @@ import '../about_screen.dart';
 import '../difficulty_settings_screen.dart';
 import '../learn_screen.dart';
 import '../onboarding/consent_screen.dart';
+import '../privacy_policy_screen.dart';
 import '../../navigation/app_routes.dart';
 import '../../models/adaptive_difficulty.dart';
 import '../../models/user_profile.dart';
@@ -134,6 +135,13 @@ class SettingsScreen extends ConsumerWidget {
         onTap: kDebugMode ? () => handleVersionTap(context) : null,
       ),
       (_) => const _AnalyticsConsentToggle(),
+      (_) => NavListTile(
+        icon: Icons.privacy_tip_outlined,
+        title: 'Privacy Policy',
+        subtitle: 'Local data, crash reports, and optional services',
+        onTap: () =>
+            NavigationThrottle.push(context, const PrivacyPolicyScreen()),
+      ),
       (_) => SettingsDataSection(ref: ref),
 
       (_) => const Divider(),

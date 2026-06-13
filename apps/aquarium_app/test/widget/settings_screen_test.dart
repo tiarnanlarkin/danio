@@ -120,6 +120,20 @@ void main() {
       expect(find.text('Test Error Boundary'), findsNothing);
       expect(find.text('Trigger a crash to test error handling'), findsNothing);
     });
+
+    testWidgets('opens Privacy Policy directly from Preferences', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      await _dragUntilTextVisible(tester, 'Privacy Policy');
+      await tester.tap(find.text('Privacy Policy'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SettingsScreen), findsNothing);
+      expect(find.text('Your Privacy Matters'), findsOneWidget);
+    });
   });
 
   group('_ThemeModeTile — theme mode switching', () {

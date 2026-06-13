@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1541 tests.
+- `flutter test`: pass, 1542 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1010,6 +1010,16 @@ CL-P1-010E Reminder intensity presets:
 - Focused widget coverage verifies the Full support state, opens the preset
   sheet, selects Quiet, and observes both reminder toggles off.
 
+CL-P1-010F Preferences Privacy Policy route:
+
+- Preferences now exposes a direct Privacy Policy entry in the About & Privacy
+  section instead of requiring users to discover it through About or search.
+- The route opens the existing local Privacy Policy screen covering local data,
+  crash reports, optional AI services, cloud-sync/account status, deletion, and
+  contact details.
+- Focused widget coverage verifies the Privacy Policy entry is reachable from
+  Preferences and opens the local policy screen.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -1097,9 +1107,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
   haptics, the Reduce Motion preference now reaches descendant MediaQuery
-  animation checks, and Notification Settings now has guided reminder intensity
-  presets. Remaining profile/preferences work is centralising reset/edit
-  controls for AI and privacy.
+  animation checks, Notification Settings now has guided reminder intensity
+  presets, and Preferences links directly to the Privacy Policy. Remaining
+  profile/preferences work is centralising reset/edit controls for AI and any
+  final privacy walkthrough gaps.
 - Global search now has first complete-local coverage for app destinations,
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, and local logs. Remaining search work is Android phone/tablet
