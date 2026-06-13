@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1491 tests.
+- `flutter test`: pass, 1496 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -728,6 +728,19 @@ CL-P1-005F Setup Planning drill questions:
 - Focused coverage verifies filter planning, planted lighting, first-tank
   checklist, and general setup fallback scenarios.
 
+CL-P1-005G Practice tank-context recommendations:
+
+- Skill Drill summaries now accept local tank context from water-test logs,
+  care tasks, livestock health state, and equipment records.
+- The Practice Hub reads the first visible tank and quietly reorders/enriches
+  drill cards with context hints when a relevant local condition exists.
+- Covered signals include unsafe ammonia/nitrite prioritising Emergency
+  Decisions, missing or stale water tests prioritising Parameter Reading,
+  health alerts prioritising Diagnosis Practice, missing equipment/overdue care
+  prioritising Setup Planning, and stocked tanks nudging Compatibility Checks.
+- Focused coverage verifies service ordering/hints and visible Practice Hub
+  context copy for an unsafe-water tank.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -767,11 +780,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   learning path now has structured guide coverage.
   Remaining learning work is expanding visual depth and richer learning
   interactions across the catalog.
-- Practice depth now starts with workflow-based Skill Drills mapped to existing
-  lesson paths, filtered review sessions, and scenario-style Parameter Reading,
+- Practice depth now includes workflow-based Skill Drills mapped to existing
+  lesson paths, filtered review sessions, scenario-style Parameter Reading,
   Diagnosis Practice, Compatibility Checks, Setup Planning, and Emergency
-  Decisions questions. Remaining Practice work is deeper tank/tool-data
-  integration.
+  Decisions questions, plus tank-context recommendation hints in Practice Hub.
+  Richer persisted tool-result context belongs with CL-P1-006 guided tools.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -780,10 +793,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P1-005 practice depth while Android transport is reserved by other
+Begin CL-P1-006 guided tools while Android transport is reserved by other
 sessions:
 
-- Connect Practice drill recommendations/questions to available tank and tool
-  context.
+- Convert the first high-value calculator/workshop flow into a guided workflow
+  with explanation, warnings, save/apply, and confirmation.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

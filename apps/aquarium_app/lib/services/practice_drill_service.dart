@@ -58,10 +58,15 @@ class PracticeDrillService {
 
   static List<PracticeDrillSummary> buildSummaries({
     required List<ReviewCard> cards,
+    PracticeDrillContext? context,
   }) {
-    return [
-      for (final drill in catalog) _buildSummary(drill: drill, cards: cards),
+    final summaries = [
+      for (final drill in catalog)
+        _buildSummary(drill: drill, cards: cards, context: context),
     ];
+
+    summaries.sort(_compareSummaries);
+    return summaries;
   }
 
   static List<ReviewCard> cardsForDrill({
@@ -119,6 +124,7 @@ class PracticeDrillService {
   static PracticeDrillSummary _buildSummary({
     required PracticeDrill drill,
     required List<ReviewCard> cards,
+    required PracticeDrillContext? context,
   }) {
     final drillCards = cardsForDrill(
       cards: cards,
@@ -127,6 +133,9 @@ class PracticeDrillService {
     );
     final dueCount = drillCards.where((card) => card.isDue).length;
     final weakCount = drillCards.where((card) => card.isWeak).length;
+    final signal = drillCards.isEmpty
+        ? null
+        : _contextSignal(drill: drill, context: context);
 
     return PracticeDrillSummary(
       drill: drill,
@@ -142,7 +151,68 @@ class PracticeDrillService {
         for (final pathId in drill.pathIds)
           if (_pathTitleById[pathId] != null) _pathTitleById[pathId]!,
       ],
+      contextHint: signal?.hint,
+      contextPriority: signal?.priority ?? 0,
     );
+  }
+
+  static _PracticeDrillContextSignal? _contextSignal({
+    required PracticeDrill drill,
+    required PracticeDrillContext? context,
+  }) {
+    if (context == null) return null;
+
+    switch (drill.id) {
+      case PracticeDrillId.emergencyDecision:
+        if (context.hasUnsafeWater) {
+          return const _PracticeDrillContextSignal(
+            priority: 100,
+            hint: 'Unsafe water logged. Practise emergency actions first.',
+          );
+        }
+      case PracticeDrillId.diagnosis:
+        if (context.healthAlertCount > 0) {
+          return const _PracticeDrillContextSignal(
+            priority: 90,
+            hint: 'Livestock health notes make diagnosis practice useful.',
+          );
+        }
+      case PracticeDrillId.parameterInterpretation:
+        if (context.hasMissingOrStaleWaterTest) {
+          return const _PracticeDrillContextSignal(
+            priority: 80,
+            hint: 'No recent water test recorded. Practise reading results.',
+          );
+        }
+        if (context.hasHighNitrate) {
+          return const _PracticeDrillContextSignal(
+            priority: 75,
+            hint: 'Recent nitrate is high. Practise reading water trends.',
+          );
+        }
+      case PracticeDrillId.setupPlanning:
+        if (context.equipmentCount == 0) {
+          return const _PracticeDrillContextSignal(
+            priority: 70,
+            hint: 'No equipment recorded. Practise setup planning next.',
+          );
+        }
+        if (context.overdueTaskCount > 0) {
+          return const _PracticeDrillContextSignal(
+            priority: 65,
+            hint: 'Overdue care tasks make setup planning useful.',
+          );
+        }
+      case PracticeDrillId.compatibility:
+        if (context.livestockCount >= 2) {
+          return const _PracticeDrillContextSignal(
+            priority: 50,
+            hint: 'This stocked tank makes compatibility practice useful.',
+          );
+        }
+    }
+
+    return null;
   }
 
   static String _statusLabel({
@@ -173,4 +243,24 @@ class PracticeDrillService {
 
     return a.conceptId.compareTo(b.conceptId);
   }
+
+  static int _compareSummaries(PracticeDrillSummary a, PracticeDrillSummary b) {
+    final priority = b.contextPriority.compareTo(a.contextPriority);
+    if (priority != 0) return priority;
+    return _catalogIndex(a.drill.id).compareTo(_catalogIndex(b.drill.id));
+  }
+
+  static int _catalogIndex(PracticeDrillId id) {
+    return catalog.indexWhere((drill) => drill.id == id);
+  }
+}
+
+class _PracticeDrillContextSignal {
+  final int priority;
+  final String hint;
+
+  const _PracticeDrillContextSignal({
+    required this.priority,
+    required this.hint,
+  });
 }

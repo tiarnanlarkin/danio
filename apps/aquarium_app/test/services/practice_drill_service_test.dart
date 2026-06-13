@@ -4,6 +4,9 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:danio/models/equipment.dart';
+import 'package:danio/models/livestock.dart';
+import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/practice_drill.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/services/practice_drill_service.dart';
@@ -24,6 +27,44 @@ ReviewCard _card({
     nextReview: due
         ? now.subtract(const Duration(minutes: 1))
         : now.add(const Duration(days: 2)),
+  );
+}
+
+LogEntry _waterTestLog(DateTime now, WaterTestResults results) {
+  return LogEntry(
+    id: 'log-water-${now.millisecondsSinceEpoch}',
+    tankId: 'tank-1',
+    type: LogType.waterTest,
+    timestamp: now,
+    waterTest: results,
+    createdAt: now,
+  );
+}
+
+Equipment _equipment(DateTime now, {required EquipmentType type}) {
+  return Equipment(
+    id: 'equipment-${type.name}',
+    tankId: 'tank-1',
+    type: type,
+    name: type.name,
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+Livestock _livestock(
+  DateTime now, {
+  HealthStatus healthStatus = HealthStatus.healthy,
+}) {
+  return Livestock(
+    id: 'livestock-${healthStatus.name}',
+    tankId: 'tank-1',
+    commonName: 'Neon tetra',
+    count: 6,
+    dateAdded: now.subtract(const Duration(days: 30)),
+    healthStatus: healthStatus,
+    createdAt: now,
+    updatedAt: now,
   );
 }
 
@@ -92,6 +133,84 @@ void main() {
 
       expect(summary.isUnlocked, isFalse);
       expect(summary.statusLabel, 'Unlock through Equipment Guide');
+    });
+
+    test('unsafe water context recommends emergency decisions first', () {
+      final now = DateTime(2026, 6, 13, 12);
+      final summaries = PracticeDrillService.buildSummaries(
+        cards: [
+          _card(id: 'water', conceptId: 'wp_ph_section_0'),
+          _card(id: 'emergency', conceptId: 'tr_emergency_section_0'),
+        ],
+        context: PracticeDrillContext.fromTankData(
+          logs: [
+            _waterTestLog(now, WaterTestResults(ammonia: 0.25, nitrite: 0.1)),
+          ],
+          tasks: const [],
+          livestock: const [],
+          equipment: const [],
+          now: now,
+        ),
+      );
+
+      expect(summaries.first.drill.id, PracticeDrillId.emergencyDecision);
+      final emergency = summaries.byId(PracticeDrillId.emergencyDecision);
+      expect(emergency.contextHint, contains('Unsafe water'));
+      expect(emergency.contextPriority, greaterThan(0));
+    });
+
+    test('missing water-test context recommends parameter reading', () {
+      final now = DateTime(2026, 6, 13, 12);
+      final summaries = PracticeDrillService.buildSummaries(
+        cards: [_card(id: 'water', conceptId: 'wp_ph_section_0')],
+        context: PracticeDrillContext.fromTankData(
+          logs: const [],
+          tasks: const [],
+          livestock: const [],
+          equipment: [_equipment(now, type: EquipmentType.filter)],
+          now: now,
+        ),
+      );
+
+      final parameter = summaries.byId(PracticeDrillId.parameterInterpretation);
+      expect(parameter.contextHint, contains('No recent water test'));
+      expect(summaries.first.drill.id, PracticeDrillId.parameterInterpretation);
+    });
+
+    test('health alerts recommend diagnosis practice', () {
+      final now = DateTime(2026, 6, 13, 12);
+      final summaries = PracticeDrillService.buildSummaries(
+        cards: [_card(id: 'health', conceptId: 'fh_ich_section_0')],
+        context: PracticeDrillContext.fromTankData(
+          logs: [_waterTestLog(now, WaterTestResults(ammonia: 0, nitrite: 0))],
+          tasks: const [],
+          livestock: [_livestock(now, healthStatus: HealthStatus.quarantine)],
+          equipment: [_equipment(now, type: EquipmentType.filter)],
+          now: now,
+        ),
+      );
+
+      final diagnosis = summaries.byId(PracticeDrillId.diagnosis);
+      expect(diagnosis.contextHint, contains('health'));
+      expect(summaries.first.drill.id, PracticeDrillId.diagnosis);
+    });
+
+    test('missing equipment context recommends setup planning', () {
+      final now = DateTime(2026, 6, 13, 12);
+      final summaries = PracticeDrillService.buildSummaries(
+        cards: [_card(id: 'equipment', conceptId: 'eq_filters_section_0')],
+        context: PracticeDrillContext.fromTankData(
+          logs: [_waterTestLog(now, WaterTestResults(ammonia: 0, nitrite: 0))],
+          tasks: const [],
+          livestock: const [],
+          equipment: const [],
+          now: now,
+        ),
+      );
+
+      final setup = summaries.byId(PracticeDrillId.setupPlanning);
+      expect(setup.contextHint, contains('No equipment'));
+      expect(summaries.first.drill.id, PracticeDrillId.setupPlanning);
     });
   });
 }

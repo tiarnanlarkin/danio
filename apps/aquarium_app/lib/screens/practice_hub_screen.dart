@@ -4,6 +4,7 @@ import '../models/practice_drill.dart';
 import '../models/spaced_repetition.dart';
 import '../providers/guidance_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
+import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/guidance_service.dart';
 import '../services/practice_drill_service.dart';
@@ -72,6 +73,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     final profile = ref.watch(
       userProfileProvider.select((p) => p.value?.currentStreak),
     );
+    final practiceContext = _buildPracticeContext(ref);
     final dueCards = srState.stats.dueCards;
     final totalCards = srState.stats.totalCards;
     _latestSrState = srState;
@@ -136,6 +138,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                   totalCards,
                   srState,
                   profile,
+                  practiceContext,
                 ),
               ),
             ),
@@ -188,6 +191,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     int totalCards,
     SpacedRepetitionState srState,
     dynamic profile,
+    PracticeDrillContext? practiceContext,
   ) {
     final items = totalCards == 0
         ? _buildEmptyPracticeDeckItems(context, ref)
@@ -205,6 +209,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                 totalCards,
                 srState,
                 profile,
+                practiceContext,
               ),
           ];
 
@@ -449,6 +454,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     int totalCards,
     SpacedRepetitionState srState,
     dynamic profile,
+    PracticeDrillContext? practiceContext,
   ) {
     switch (index) {
       case 0: // Hero card
@@ -556,7 +562,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
       case 9:
         return const SizedBox(height: AppSpacing.sm2);
       case 10:
-        return _buildSkillDrillSection(context, srState);
+        return _buildSkillDrillSection(context, srState, practiceContext);
       case 11:
         return const SizedBox(height: AppSpacing.lg);
       case 12:
@@ -857,8 +863,12 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   Widget _buildSkillDrillSection(
     BuildContext context,
     SpacedRepetitionState srState,
+    PracticeDrillContext? practiceContext,
   ) {
-    final summaries = PracticeDrillService.buildSummaries(cards: srState.cards);
+    final summaries = PracticeDrillService.buildSummaries(
+      cards: srState.cards,
+      context: practiceContext,
+    );
     return Column(
       children: [
         for (var index = 0; index < summaries.length; index++) ...[
@@ -878,6 +888,9 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         ? _drillColor(context, summary.drill.id)
         : context.textHint;
     final pathLine = summary.supportingPathTitles.take(2).join(' + ');
+    final subtitle = enabled && summary.contextHint != null
+        ? summary.contextHint!
+        : summary.drill.subtitle;
 
     return Semantics(
       button: enabled,
@@ -914,7 +927,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                summary.drill.subtitle,
+                subtitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.bodyMedium.copyWith(
@@ -976,6 +989,26 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
       PracticeDrillId.setupPlanning => AppColors.primary,
       PracticeDrillId.emergencyDecision => AppColors.error,
     };
+  }
+
+  PracticeDrillContext? _buildPracticeContext(WidgetRef ref) {
+    final tanks = ref.watch(tanksProvider).valueOrNull;
+    if (tanks == null || tanks.isEmpty) return null;
+
+    final tankId = tanks.first.id;
+    final logs = ref.watch(logsProvider(tankId)).valueOrNull ?? const [];
+    final tasks = ref.watch(tasksProvider(tankId)).valueOrNull ?? const [];
+    final livestock =
+        ref.watch(livestockProvider(tankId)).valueOrNull ?? const [];
+    final equipment =
+        ref.watch(equipmentProvider(tankId)).valueOrNull ?? const [];
+
+    return PracticeDrillContext.fromTankData(
+      logs: logs,
+      tasks: tasks,
+      livestock: livestock,
+      equipment: equipment,
+    );
   }
 
   Widget _buildModeChoice(

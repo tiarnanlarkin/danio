@@ -8,9 +8,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/practice_hub_screen.dart';
+import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
+import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/models/tank.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -53,7 +56,11 @@ ReviewCard _card({
   );
 }
 
-Widget _wrap({ReviewStats? stats, List<ReviewCard> cards = const []}) {
+Widget _wrap({
+  ReviewStats? stats,
+  List<ReviewCard> cards = const [],
+  List<Override> overrides = const [],
+}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
@@ -63,6 +70,7 @@ Widget _wrap({ReviewStats? stats, List<ReviewCard> cards = const []}) {
       spacedRepetitionProvider.overrideWith(
         (ref) => _FakeSrNotifier(stats ?? ReviewStats.fromCards(cards), cards),
       ),
+      ...overrides,
     ],
     child: const MaterialApp(home: PracticeHubScreen()),
   );
@@ -81,6 +89,30 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 500));
   await tester.pump(const Duration(seconds: 1));
+}
+
+Tank _tank(DateTime now) {
+  return Tank(
+    id: 'tank-1',
+    name: 'Main tank',
+    type: TankType.freshwater,
+    volumeLitres: 90,
+    startDate: now.subtract(const Duration(days: 120)),
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+LogEntry _waterTestLog(DateTime now, WaterTestResults results) {
+  return LogEntry(
+    id: 'water-log',
+    tankId: 'tank-1',
+    type: LogType.waterTest,
+    timestamp: now,
+    waterTest: results,
+    createdAt: now,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -212,6 +244,48 @@ void main() {
       expect(find.text('Parameter Reading'), findsOneWidget);
       expect(find.text('Diagnosis Practice'), findsOneWidget);
       expect(find.text('1 due now'), findsAtLeastNWidgets(1));
+    });
+
+    testWidgets('skill drills show tank-context recommendation hints', (
+      tester,
+    ) async {
+      final now = DateTime(2026, 6, 13, 12);
+
+      await tester.pumpWidget(
+        _wrap(
+          cards: [
+            _card(id: 'water', conceptId: 'wp_ph_section_0'),
+            _card(id: 'emergency', conceptId: 'tr_emergency_section_0'),
+          ],
+          overrides: [
+            tanksProvider.overrideWith((ref) async => [_tank(now)]),
+            logsProvider('tank-1').overrideWith(
+              (ref) async => [
+                _waterTestLog(
+                  now,
+                  WaterTestResults(ammonia: 0.25, nitrite: 0.1),
+                ),
+              ],
+            ),
+            tasksProvider('tank-1').overrideWith((ref) async => const []),
+            livestockProvider('tank-1').overrideWith((ref) async => const []),
+            equipmentProvider('tank-1').overrideWith((ref) async => const []),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('Emergency Decisions'),
+        320,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Unsafe water logged. Practise emergency actions first.'),
+        findsOneWidget,
+      );
     });
   });
 }
