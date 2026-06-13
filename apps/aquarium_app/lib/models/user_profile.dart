@@ -593,7 +593,7 @@ extension TankTypeExt on TankType {
       case TankType.freshwater:
         return 'Tropical or coldwater fish';
       case TankType.marine:
-        return 'Saltwater fish — arriving soon!';
+        return 'Marine setup support is outside Danio\'s freshwater focus';
     }
   }
 

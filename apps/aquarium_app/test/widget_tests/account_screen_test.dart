@@ -114,5 +114,24 @@ void main() {
       expect(source, isNot(contains('Icons.g_mobiledata')));
       expect(source, contains('GoogleSignInMark'));
     });
+
+    test('optional account copy does not promise background sync', () {
+      final source = File('lib/screens/account_screen.dart').readAsStringSync();
+      const oldSyncPromise =
+          'Sync your aquarium data across'
+          ' devices';
+      const oldUploadCopy =
+          'Encrypt & upload'
+          ' to cloud';
+      const oldRestoreCopy =
+          'Download & decrypt'
+          ' from cloud';
+
+      expect(source, isNot(contains(oldSyncPromise)));
+      expect(source, isNot(contains(oldUploadCopy)));
+      expect(source, isNot(contains(oldRestoreCopy)));
+      expect(source, contains('Optional cloud backup'));
+      expect(source, contains('Local use still works without an account'));
+    });
   });
 }

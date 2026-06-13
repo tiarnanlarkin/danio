@@ -27,6 +27,30 @@ void main() {
       expect(gateway.deleteCalls, 1);
       expect(gateway.signOutCalls, 0);
     });
+
+    test(
+      'unconfigured cloud deletion copy keeps local use reassuring',
+      () async {
+        await expectLater(
+          const SupabaseAccountDeletionGateway().invokeCloudAccountDeletion(),
+          throwsA(
+            isA<AccountDeletionException>()
+                .having(
+                  (error) => error.message,
+                  'message',
+                  contains(
+                    'Optional cloud account services are not configured',
+                  ),
+                )
+                .having(
+                  (error) => error.message,
+                  'message',
+                  isNot(contains('not available')),
+                ),
+          ),
+        );
+      },
+    );
   });
 }
 

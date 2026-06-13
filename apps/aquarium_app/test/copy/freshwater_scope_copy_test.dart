@@ -57,4 +57,17 @@ void main() {
       expect(source, contains('freshwater'), reason: path);
     }
   });
+
+  test('legacy marine model copy avoids future availability promises', () {
+    final source = _source('lib/models/user_profile.dart');
+    final placeholderCopy = RegExp(
+      'arriving'
+      ' soon|coming'
+      ' soon',
+      caseSensitive: false,
+    );
+
+    expect(source, isNot(contains(placeholderCopy)));
+    expect(source, contains('freshwater focus'));
+  });
 }

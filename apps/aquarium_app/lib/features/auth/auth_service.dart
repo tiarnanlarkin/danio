@@ -49,7 +49,11 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e, st) {
-      logError('AuthService: signUp failed: $e', stackTrace: st, tag: 'AuthService');
+      logError(
+        'AuthService: signUp failed: $e',
+        stackTrace: st,
+        tag: 'AuthService',
+      );
       return const AuthResult.error(
         'We couldn\'t connect. Check your internet and try again!',
       );
@@ -78,7 +82,11 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e, st) {
-      logError('AuthService: signIn failed: $e', stackTrace: st, tag: 'AuthService');
+      logError(
+        'AuthService: signIn failed: $e',
+        stackTrace: st,
+        tag: 'AuthService',
+      );
       return const AuthResult.error(
         'We couldn\'t connect. Check your internet and try again!',
       );
@@ -108,7 +116,11 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e, st) {
-      logError('AuthService: Google sign-in failed: $e', stackTrace: st, tag: 'AuthService');
+      logError(
+        'AuthService: Google sign-in failed: $e',
+        stackTrace: st,
+        tag: 'AuthService',
+      );
       return const AuthResult.error(
         'We couldn\'t connect. Check your internet and try again!',
       );
@@ -130,7 +142,11 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e, st) {
-      logError('AuthService: resetPassword failed: $e', stackTrace: st, tag: 'AuthService');
+      logError(
+        'AuthService: resetPassword failed: $e',
+        stackTrace: st,
+        tag: 'AuthService',
+      );
       return const AuthResult.error(
         'We couldn\'t connect. Check your internet and try again!',
       );
@@ -182,7 +198,7 @@ class AuthResult {
     : status = AuthResultStatus.unavailable,
       user = null,
       errorMessage =
-          'Cloud services are not available. '
+          'Optional cloud account services are not configured. '
           'The app works fully offline.';
 
   const AuthResult.pendingRedirect()

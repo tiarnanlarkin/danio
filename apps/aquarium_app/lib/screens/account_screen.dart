@@ -148,8 +148,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'Sync your aquarium data across devices.\n'
-              'An account is optional — the app works fully offline.',
+              'Optional cloud backup can protect a copy of your data.\n'
+              'Local use still works without an account.',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -314,14 +314,14 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             ListTile(
               leading: const Icon(Icons.cloud_upload),
               title: const Text('Backup Now'),
-              subtitle: const Text('Encrypt & upload to cloud'),
+              subtitle: const Text('Create an encrypted cloud backup copy'),
               onTap: () => _createBackup(context),
             ),
             const Divider(height: 1),
             ListTile(
               leading: const Icon(Icons.cloud_download),
               title: const Text('Restore from Backup'),
-              subtitle: const Text('Download & decrypt from cloud'),
+              subtitle: const Text('Restore your encrypted cloud backup'),
               onTap: () => _restoreBackup(context),
             ),
           ],

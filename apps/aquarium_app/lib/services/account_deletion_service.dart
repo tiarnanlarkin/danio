@@ -25,7 +25,7 @@ class SupabaseAccountDeletionGateway implements AccountDeletionGateway {
   Future<void> invokeCloudAccountDeletion() async {
     if (!SupabaseService.isInitialised) {
       throw const AccountDeletionException(
-        'Cloud services are not available in this build.',
+        'Optional cloud account services are not configured for this build.',
       );
     }
 
