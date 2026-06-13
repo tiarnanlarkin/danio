@@ -44,16 +44,15 @@ class JournalScreen extends ConsumerWidget {
             onRetry: () => ref.invalidate(allLogsProvider(tankId)),
           ),
           data: (logs) {
-            // Get observation logs as journal entries
-            final journalEntries =
-                logs.where((l) => l.type == LogType.observation).toList()
-                  ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+            final timelineEntries = [...logs]
+              ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-            if (journalEntries.isEmpty) {
+            if (timelineEntries.isEmpty) {
               return EmptyState.withMascot(
                 icon: Icons.book_outlined,
                 title: 'Your story starts here!',
-                message: 'Every great tank has a story. Start writing yours — observations, milestones, and little victories.',
+                message:
+                    'Every great tank has a story. Start writing yours - observations, milestones, and little victories.',
                 mascotContext: MascotContext.encouragement,
                 actionLabel: 'Write First Entry',
                 onAction: () => _addJournalEntry(context, ref),
@@ -62,7 +61,7 @@ class JournalScreen extends ConsumerWidget {
 
             // Group by month
             final grouped = <String, List<LogEntry>>{};
-            for (final entry in journalEntries) {
+            for (final entry in timelineEntries) {
               final month = DateFormat('MMMM yyyy').format(entry.timestamp);
               grouped.putIfAbsent(month, () => []).add(entry);
             }
@@ -78,7 +77,9 @@ class JournalScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.sm,
+                      ),
                       child: Text(month, style: AppTypography.headlineSmall),
                     ),
                     ...entries.map((e) => _JournalEntryCard(entry: e)),
@@ -117,6 +118,7 @@ class JournalScreen extends ConsumerWidget {
           final storage = ref.read(storageServiceProvider);
           await storage.saveLog(entry);
           ref.invalidate(allLogsProvider(tankId));
+          ref.invalidate(logsProvider(tankId));
 
           if (ctx.mounted) Navigator.maybePop(ctx);
         },
@@ -134,6 +136,8 @@ class _JournalEntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final dateStr = DateFormat('EEEE, d MMMM').format(entry.timestamp);
     final timeStr = DateFormat('h:mm a').format(entry.timestamp);
+    final notes = entry.notes?.trim();
+    final summary = _summaryFor(entry);
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
@@ -152,26 +156,56 @@ class _JournalEntryCard extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Center(
-                    child: Text(
-                      '${entry.timestamp.day}',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: AppColors.primary,
-                      ),
+                    child: Icon(
+                      _iconFor(entry.type),
+                      size: AppIconSizes.sm,
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm2),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(dateStr, style: AppTypography.labelLarge),
-                    Text(timeStr, style: AppTypography.bodySmall),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _titleFor(entry),
+                        style: AppTypography.labelLarge.copyWith(
+                          color: context.textPrimary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '${entry.typeName} | $dateStr | $timeStr',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: context.textSecondary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm2),
-            Text(entry.notes ?? '', style: AppTypography.bodyMedium),
+            if (summary.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm2),
+              Text(summary, style: AppTypography.bodyMedium),
+            ],
+            if (notes != null && notes.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm2),
+              Text(notes, style: AppTypography.bodyMedium),
+            ],
+            if (summary.isEmpty && (notes == null || notes.isEmpty)) ...[
+              const SizedBox(height: AppSpacing.sm2),
+              Text(
+                'Logged ${entry.typeName.toLowerCase()} event.',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+            ],
             if (entry.photoUrls != null && entry.photoUrls!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm2),
               Row(
@@ -194,6 +228,105 @@ class _JournalEntryCard extends StatelessWidget {
       ),
     );
   }
+}
+
+IconData _iconFor(LogType type) {
+  switch (type) {
+    case LogType.waterTest:
+      return Icons.science;
+    case LogType.waterChange:
+      return Icons.water_drop;
+    case LogType.feeding:
+      return Icons.restaurant;
+    case LogType.medication:
+      return Icons.medication;
+    case LogType.observation:
+      return Icons.visibility;
+    case LogType.livestockAdded:
+      return Icons.add_circle;
+    case LogType.livestockRemoved:
+      return Icons.remove_circle;
+    case LogType.equipmentMaintenance:
+      return Icons.build;
+    case LogType.taskCompleted:
+      return Icons.task_alt;
+    case LogType.other:
+      return Icons.note;
+  }
+}
+
+String _titleFor(LogEntry entry) {
+  final title = entry.title?.trim();
+  switch (entry.type) {
+    case LogType.waterTest:
+      return title != null && title.isNotEmpty ? title : 'Water Test';
+    case LogType.waterChange:
+      final suffix = entry.waterChangePercent != null
+          ? ' (${entry.waterChangePercent}%)'
+          : '';
+      return title != null && title.isNotEmpty ? title : 'Water Change$suffix';
+    case LogType.taskCompleted:
+      return title != null && title.isNotEmpty
+          ? 'Completed: $title'
+          : 'Task completed';
+    case LogType.observation:
+      return title != null && title.isNotEmpty ? title : 'Journal entry';
+    case LogType.feeding:
+    case LogType.medication:
+    case LogType.livestockAdded:
+    case LogType.livestockRemoved:
+    case LogType.equipmentMaintenance:
+    case LogType.other:
+      return title != null && title.isNotEmpty ? title : entry.typeName;
+  }
+}
+
+String _summaryFor(LogEntry entry) {
+  switch (entry.type) {
+    case LogType.waterTest:
+      final test = entry.waterTest;
+      if (test == null || !test.hasValues) return '';
+      return _waterTestSummary(test);
+    case LogType.waterChange:
+      final percent = entry.waterChangePercent;
+      return percent == null ? '' : 'Changed $percent% of the water.';
+    case LogType.feeding:
+      return 'Feeding logged.';
+    case LogType.medication:
+      return 'Medication logged.';
+    case LogType.livestockAdded:
+      return 'Livestock added to the tank.';
+    case LogType.livestockRemoved:
+      return 'Livestock removed from the tank.';
+    case LogType.equipmentMaintenance:
+      return 'Equipment maintenance logged.';
+    case LogType.taskCompleted:
+    case LogType.observation:
+    case LogType.other:
+      return '';
+  }
+}
+
+String _waterTestSummary(WaterTestResults test) {
+  final parts = <String>[];
+
+  void addReading(String label, double? value, {String? suffix}) {
+    if (value == null) return;
+    final unit = suffix == null ? '' : ' $suffix';
+    parts.add('$label: ${value.toStringAsFixed(2)}$unit');
+  }
+
+  addReading('pH', test.ph);
+  addReading('NH3', test.ammonia);
+  addReading('NO2', test.nitrite);
+  addReading('NO3', test.nitrate);
+  addReading('Temp', test.temperature, suffix: 'C');
+  addReading('GH', test.gh);
+  addReading('KH', test.kh);
+  addReading('PO4', test.phosphate);
+  addReading('CO2', test.co2);
+
+  return parts.join(' | ');
 }
 
 class _NewJournalEntrySheet extends StatefulWidget {
@@ -230,7 +363,12 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.md + bottomPadding),
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md + bottomPadding,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,7 +394,8 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
             controller: _controller,
             focusNode: _focusNode,
             maxLines: 6,
-            hint: 'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
+            hint:
+                'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
           ),
           const SizedBox(height: AppSpacing.md),
           AppButton(

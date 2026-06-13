@@ -26,21 +26,40 @@ Widget _wrap({List<LogEntry>? logs}) {
       storageServiceProvider.overrideWithValue(memStorage),
       allLogsProvider.overrideWith((ref, tankId) async => logs ?? []),
     ],
-    child: MaterialApp(
-      home: JournalScreen(tankId: _fakeTankId),
-    ),
+    child: MaterialApp(home: JournalScreen(tankId: _fakeTankId)),
   );
 }
 
-LogEntry _journalEntry({String id = 'j-001', String notes = 'Tank looking healthy!'}) =>
-    LogEntry(
-      id: id,
-      tankId: _fakeTankId,
-      type: LogType.observation,
-      timestamp: DateTime(2024, 7, 1),
-      notes: notes,
-      createdAt: DateTime(2024, 7, 1),
-    );
+LogEntry _journalEntry({
+  String id = 'j-001',
+  String notes = 'Tank looking healthy!',
+}) => LogEntry(
+  id: id,
+  tankId: _fakeTankId,
+  type: LogType.observation,
+  timestamp: DateTime(2024, 7, 1),
+  notes: notes,
+  createdAt: DateTime(2024, 7, 1),
+);
+
+LogEntry _waterTestEntry() => LogEntry(
+  id: 'wt-001',
+  tankId: _fakeTankId,
+  type: LogType.waterTest,
+  timestamp: DateTime(2024, 7, 2, 9),
+  waterTest: WaterTestResults(ammonia: 0, nitrite: 0, nitrate: 20, ph: 7.2),
+  createdAt: DateTime(2024, 7, 2, 9),
+);
+
+LogEntry _taskCompletedEntry() => LogEntry(
+  id: 'task-001',
+  tankId: _fakeTankId,
+  type: LogType.taskCompleted,
+  timestamp: DateTime(2024, 7, 3, 18),
+  title: 'Water change',
+  notes: 'Changed 30% of water',
+  createdAt: DateTime(2024, 7, 3, 18),
+);
 
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
@@ -57,7 +76,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  group('JournalScreen — empty state', () {
+  group('JournalScreen - empty state', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
@@ -89,12 +108,33 @@ void main() {
     });
   });
 
-  group('JournalScreen — with entries', () {
+  group('JournalScreen - with entries', () {
     testWidgets('shows journal entry notes when entries exist', (tester) async {
       final entries = [_journalEntry(notes: 'Tank looking healthy!')];
       await tester.pumpWidget(_wrap(logs: entries));
       await _advance(tester);
       expect(find.text('Tank looking healthy!'), findsOneWidget);
+    });
+
+    testWidgets('shows water tests as journal timeline events', (tester) async {
+      await tester.pumpWidget(_wrap(logs: [_waterTestEntry()]));
+      await _advance(tester);
+
+      expect(find.text('Water Test'), findsOneWidget);
+      expect(find.textContaining('NH3: 0.00'), findsOneWidget);
+      expect(find.textContaining('NO3: 20.00'), findsOneWidget);
+      expect(find.text('Your story starts here!'), findsNothing);
+    });
+
+    testWidgets('shows completed care tasks as journal timeline events', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(logs: [_taskCompletedEntry()]));
+      await _advance(tester);
+
+      expect(find.text('Completed: Water change'), findsOneWidget);
+      expect(find.text('Changed 30% of water'), findsOneWidget);
+      expect(find.text('Your story starts here!'), findsNothing);
     });
   });
 }
