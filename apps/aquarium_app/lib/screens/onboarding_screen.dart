@@ -309,34 +309,33 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             primaryTankType: TankType.freshwater,
             goals: [UserGoal.keepFishAlive],
           );
-      // Create a default 60L starter tank for the quick-start user
+      // Give skipped users a populated sample tank so the local experience
+      // feels complete without pretending we know their real setup.
       if (mounted) {
         try {
           final tankNotifier = ref.read(tankActionsProvider);
-          await tankNotifier.createTank(
-            name: 'My Tank',
-            type: TankType.freshwater,
-            volumeLitres: 60,
-          );
+          await tankNotifier.addDemoTank();
         } catch (e) {
           logError(
-            '[QuickStart] Tank creation failed: $e',
+            '[QuickStart] Sample tank creation failed: $e',
             tag: 'OnboardingScreen',
           );
         }
       }
       // Same as _completeOnboarding: let the reactive router handle
       // the transition. No Navigator.popUntil.
+      final currentTabNotifier = ref.read(currentTabProvider.notifier);
+      currentTabNotifier.state = 2;
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
       if (!mounted) return;
       ref.invalidate(onboardingCompletedProvider);
-      // Show a disclosure about the default tank after navigation settles
+      // Show a disclosure about the sample tank after navigation settles
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           DanioSnackBar.info(
             context,
-            "We've set up a 60L starter tank for you — you can change this in Settings",
+            'Sample tank added so you can explore. Replace it with your own setup when ready.',
           );
         }
       });
