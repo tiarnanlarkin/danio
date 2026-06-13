@@ -334,22 +334,20 @@ class _Day7MilestoneCardState extends State<Day7MilestoneCard>
 
 // =============================================================================
 
-/// Day 30 — Inline card for free users
+/// Day 30 — Inline card for returning users
 ///
-/// Celebrates 30 days of usage with a usage summary and soft CTA to upgrade.
+/// Celebrates 30 days of usage with a usage summary and optional next step.
 class Day30CommittedCard extends StatelessWidget {
   final int lessonsCompleted;
   final int xpEarned;
-  // FB-B4: onUpgrade is nullable — pass null to hide the CTA when no
-  // upgrade destination exists yet. This prevents the button from just
-  // closing the dialog with no visible effect.
-  final VoidCallback? onUpgrade;
+  // Pass null to keep the card as a quiet celebration-only milestone.
+  final VoidCallback? onExplore;
 
   const Day30CommittedCard({
     super.key,
     required this.lessonsCompleted,
     required this.xpEarned,
-    this.onUpgrade,
+    this.onExplore,
   });
 
   @override
@@ -385,19 +383,17 @@ class Day30CommittedCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm3),
             _buildStatRow(context, Icons.star_rounded, '$xpEarned XP earned'),
-            // FB-B4: Only show the upgrade CTA when a real destination is wired up.
-            // When onUpgrade is null the button is hidden — avoids it just closing the dialog.
-            if (onUpgrade != null) ...[
+            if (onExplore != null) ...[
               const SizedBox(height: AppSpacing.lg2),
               AppButton(
                 label: "See what's waiting for you →",
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  onUpgrade!();
+                  onExplore!();
                 },
                 variant: AppButtonVariant.secondary,
                 isFullWidth: true,
-                semanticsLabel: "See what's waiting for you, upgrade",
+                semanticsLabel: "See what's waiting for you",
               ),
             ],
           ],

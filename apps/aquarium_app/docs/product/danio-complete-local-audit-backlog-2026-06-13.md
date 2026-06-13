@@ -80,7 +80,7 @@ These establish the shape of the finished local product.
 | --- | --- | --- | --- |
 | CL-P0-001 | Navigation | Default returning users to Tank while keeping Tank as centre tab. | Done in `f86a32c3`; fresh returning-user shell opens with Tank selected and tests were updated. |
 | CL-P0-002 | Product truth | Update canonical docs so complete-local replaces store-launch as the active finish line. | Done; March finish docs now point future agents at `danio-complete-local-product.md` and this backlog. |
-| CL-P0-003 | Feature honesty | Re-audit all visible dormant/future/cloud/social/premium/unsupported-scope surfaces. | In progress; local/offline account copy, optional account/cloud backup copy, signed-in account cloud-data copy, weekly-progress tier copy, onboarding feature-summary paywall-stub wording, reward/shop mechanics, More and Shop Street copy, stale social comments, visible debug-crash controls, debug sync shell diagnostics and dead sync-status scaffolds, Privacy local-build copy, Delete My Data privacy/help copy, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, and Smart optional-AI copy were fixed on 2026-06-13. Remaining passes: deeper debug/help and remaining future-facing wording. |
+| CL-P0-003 | Feature honesty | Re-audit all visible dormant/future/cloud/social/premium/unsupported-scope surfaces. | In progress; local/offline account copy, optional account/cloud backup copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, onboarding feature-summary paywall-stub wording, reward/shop mechanics, More and Shop Street copy, stale social comments, visible debug-crash controls, debug sync shell diagnostics and dead sync-status scaffolds, Privacy local-build copy, Delete My Data privacy/help copy, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, and Smart optional-AI copy were fixed on 2026-06-13. Remaining passes: deeper debug/help and remaining future-facing wording. |
 | CL-P0-004 | First-run flow | Redesign onboarding around experience, region/units, tank type/stage/goals, skip path, and contextual prompts. | Skippable onboarding lands in a polished sample/local experience; missing context is requested later where needed. |
 | CL-P0-005 | Tank daily loop | Make Tank the daily ritual surface: next-best action, care status, quick log, feed, water change, tasks, and warnings close at hand. | A normal user can understand what matters today within 10 seconds. |
 | CL-P0-006 | Emergency access | Create accessible emergency flows for ammonia/nitrite spike, gasping, heater failure, filter failure, ich, injury, and poisoning. | Emergencies are reachable from Tank alerts, Smart, Search/More, lessons, species pages, and water logs. |
@@ -141,8 +141,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the onboarding feature-summary paywall-stub
-wording cleanup on 2026-06-13, `flutter test` passes 1331 tests,
+Current verification note: as of the returning-user milestone upgrade wording
+cleanup on 2026-06-13, `flutter test` passes 1332 tests,
 `flutter analyze --no-pub` is clean, and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

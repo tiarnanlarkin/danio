@@ -163,9 +163,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         milestoneCard = Day30CommittedCard(
           lessonsCompleted: lessonsCompleted,
           xpEarned: totalXp,
-          // FB-B4: No upgrade destination yet — pass null to hide the CTA.
-          // Wire onUpgrade to a real paywall/upgrade screen when available.
-          onUpgrade: null,
+          // Complete-local build uses this as a celebration-only card.
+          onExplore: null,
         );
         prefsKey = 'seen_day30_committed';
       }
