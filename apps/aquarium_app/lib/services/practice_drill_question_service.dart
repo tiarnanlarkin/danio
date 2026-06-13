@@ -18,14 +18,21 @@ class PracticeDrillQuestionService {
       lessonState: lessonState,
     );
 
-    if (drillId != PracticeDrillId.parameterInterpretation) {
-      return fallback;
+    if (drillId == PracticeDrillId.parameterInterpretation) {
+      return [
+        for (var index = 0; index < cards.length; index++)
+          _parameterQuestion(cards[index]) ?? fallback[index],
+      ];
     }
 
-    return [
-      for (var index = 0; index < cards.length; index++)
-        _parameterQuestion(cards[index]) ?? fallback[index],
-    ];
+    if (drillId == PracticeDrillId.diagnosis) {
+      return [
+        for (var index = 0; index < cards.length; index++)
+          _diagnosisQuestion(cards[index]) ?? fallback[index],
+      ];
+    }
+
+    return fallback;
   }
 
   static MultipleChoiceQuestion? _parameterQuestion(ReviewCard card) {
@@ -134,6 +141,129 @@ class PracticeDrillQuestionService {
       correctIndex: 0,
       explanation:
           'Good parameter reading is trend-based. Confirm the result, look at fish behaviour, and avoid sudden changes unless there is an emergency.',
+    );
+  }
+
+  static MultipleChoiceQuestion? _diagnosisQuestion(ReviewCard card) {
+    final conceptId = card.conceptId;
+
+    if (conceptId.startsWith('fh_ich')) {
+      return _mc(
+        card: card,
+        questionText:
+            'Several fish have tiny white spots, are flashing against decor, and one is breathing faster. What is the best diagnosis step?',
+        options: [
+          'Test water, confirm the pattern fits ich, protect oxygen, and use an appropriate treatment plan',
+          'Add three medications at once before checking water quality',
+          'Move every fish between tanks repeatedly until the spots fall off',
+          'Stop filtration because filters make white spots spread faster',
+        ],
+        correctIndex: 0,
+        explanation:
+            'White spots and flashing can fit ich, but water quality and oxygen still matter. Confirm signs before treating and avoid random medication mixes.',
+      );
+    }
+
+    if (conceptId.startsWith('fh_fin_rot')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A fish has ragged fins after a week of high nitrate and chasing from tank mates. What should you do first?',
+        options: [
+          'Test water, improve conditions, reduce stress, and isolate or treat if the damage worsens',
+          'Trim the fins so they grow back evenly',
+          'Add salt and antibiotics without checking the tank',
+          'Ignore it because fins never indicate stress',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Fin damage often involves water quality, stress, or injury. Stabilising conditions and watching progression comes before heavy treatment.',
+      );
+    }
+
+    if (conceptId.startsWith('fh_fungal')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A fish has a cottony patch where it was scraped during a netting attempt. What is the safest interpretation?',
+        options: [
+          'Treat it as a possible secondary infection, improve water, and isolate if needed',
+          'Assume every cottony patch is harmless plant debris',
+          'Dose the display tank blindly with several medications',
+          'Raise temperature sharply to burn the patch away',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Fungal-looking growth often follows injury or poor conditions. Clean water and careful isolation reduce risk while treatment is chosen.',
+      );
+    }
+
+    if (conceptId.startsWith('fh_parasites')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A new fish is losing weight, flashing, and producing stringy waste while the rest of the tank looks normal. What is the best next move?',
+        options: [
+          'Quarantine, record symptoms, check water, and choose treatment only after narrowing the cause',
+          'Treat the whole tank for every parasite at once',
+          'Add more food only, because all weight loss is hunger',
+          'Move the fish into colder water to slow the symptoms',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Parasite signs can overlap with stress and diet issues. Quarantine and evidence gathering make treatment safer.',
+      );
+    }
+
+    if (conceptId.startsWith('tr_disease_diagnosis')) {
+      return _mc(
+        card: card,
+        questionText:
+            'You notice clamped fins, hiding, and one fish breathing quickly, but there are no obvious spots or wounds. What should come before treatment?',
+        options: [
+          'Run water tests, check recent history, and compare symptoms across fish',
+          'Choose the strongest medication because the exact cause is unclear',
+          'Stop feeding for a month to remove all disease risk',
+          'Replace all substrate before taking any readings',
+        ],
+        correctIndex: 0,
+        explanation:
+            'A diagnosis starts with water, behaviour, affected fish, and recent history. That prevents treating the wrong problem.',
+      );
+    }
+
+    if (conceptId.startsWith('fh_prevention') ||
+        conceptId.startsWith('fh_hospital_tank') ||
+        conceptId.startsWith('ff_quarantine')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A new fish looks quiet on day two after purchase, with no single clear symptom yet. What is the safest prevention-minded response?',
+        options: [
+          'Keep it isolated if possible, test water, observe appetite and breathing, and avoid rushing medication',
+          'Add it to the main tank so other fish can make it comfortable',
+          'Medicate every tank immediately before symptoms exist',
+          'Skip water tests because new fish always act quiet',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Observation, quarantine, and water checks catch problems early without exposing the main tank or overusing treatments.',
+      );
+    }
+
+    return _mc(
+      card: card,
+      questionText:
+          'A fish shows a new symptom and you are not sure whether it is disease, stress, injury, or water quality. What is the best first step?',
+      options: [
+        'Check water, note recent changes, observe all fish, and isolate the affected fish if risk is high',
+        'Treat with the strongest medication immediately',
+        'Change every piece of equipment before testing',
+        'Wait a week without observing because most symptoms disappear',
+      ],
+      correctIndex: 0,
+      explanation:
+          'Good diagnosis is evidence-led. Water, recent history, affected fish, and symptom pattern point to safer next actions.',
     );
   }
 

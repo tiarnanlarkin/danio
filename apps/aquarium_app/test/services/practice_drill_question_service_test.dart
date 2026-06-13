@@ -62,7 +62,7 @@ void main() {
 
     test('non-parameter drills keep the normal fallback resolver', () {
       final questions = PracticeDrillQuestionService.resolveQuestions(
-        drillId: PracticeDrillId.diagnosis,
+        drillId: PracticeDrillId.compatibility,
         cards: [_card('fh_ich_section_0')],
         lessonState: const LessonState(),
       );
@@ -70,6 +70,45 @@ void main() {
       expect(questions.single, isA<MultipleChoiceQuestion>());
       final question = questions.single as MultipleChoiceQuestion;
       expect(question.questionText, contains('Ich'));
+    });
+
+    test('turns ich cards into a diagnosis scenario', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.diagnosis,
+        cards: [_card('fh_ich_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('white spots'));
+      expect(question.questionText, contains('flashing'));
+      expect(question.options[question.correctIndex], contains('Test water'));
+      expect(question.explanation, contains('ich'));
+    });
+
+    test('turns troubleshooting diagnosis cards into a triage scenario', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.diagnosis,
+        cards: [_card('tr_disease_diagnosis_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('clamped fins'));
+      expect(question.options[question.correctIndex], contains('water tests'));
+      expect(question.explanation, contains('history'));
+    });
+
+    test('uses a general diagnosis scenario for other diagnosis cards', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.diagnosis,
+        cards: [_card('fh_hospital_tank_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('symptom'));
+      expect(question.options[question.correctIndex], contains('water'));
     });
   });
 }
