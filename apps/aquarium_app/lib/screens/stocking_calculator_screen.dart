@@ -7,7 +7,9 @@ import '../theme/app_theme.dart';
 import '../widgets/core/app_text_field.dart';
 
 class StockingCalculatorScreen extends StatefulWidget {
-  const StockingCalculatorScreen({super.key});
+  final SpeciesInfo? initialSpecies;
+
+  const StockingCalculatorScreen({super.key, this.initialSpecies});
 
   @override
   State<StockingCalculatorScreen> createState() =>
@@ -23,6 +25,20 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   final List<_StockEntry> _stock = [];
   String _searchQuery = '';
   Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    final species = widget.initialSpecies;
+    if (species != null) {
+      _stock.add(
+        _StockEntry(
+          species: species,
+          count: species.minSchoolSize > 0 ? species.minSchoolSize : 1,
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {

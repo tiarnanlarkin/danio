@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1445 tests.
+- `flutter test`: pass, 1447 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -433,6 +433,13 @@ CL-P1-003B Species care actions:
   compatibility checks, and treatment-warning review when relevant.
 - This makes species pages more actionable without adding unverified new
   species facts or pretending add-to-tank/reminder persistence exists yet.
+
+CL-P1-003C Species stocking handoff:
+
+- Fish species detail sheets now include a Plan stocking fit action that opens
+  the Stocking Calculator with that species prefilled.
+- The calculator seeds the selected species at its minimum group size so
+  schooling fish start from a realistic planning count instead of a single fish.
 
 Current Android device state:
 

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/species_browser_screen.dart';
+import 'package:danio/screens/stocking_calculator_screen.dart';
 import 'package:danio/utils/navigation_throttle.dart';
 
 // ---------------------------------------------------------------------------
@@ -106,6 +107,26 @@ void main() {
         find.text('Check the avoid list before adding tankmates.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('species detail opens prefilled stocking calculator', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Plan stocking fit'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Plan stocking fit'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StockingCalculatorScreen), findsOneWidget);
+      expect(find.text('Stocking Calculator'), findsOneWidget);
+      expect(find.text('Neon Tetra'), findsOneWidget);
+      expect(find.text('6'), findsOneWidget);
     });
 
     testWidgets(

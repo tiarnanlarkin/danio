@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:danio/data/species_database.dart';
 import 'package:danio/screens/stocking_calculator_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -13,6 +14,11 @@ import 'package:danio/screens/stocking_calculator_screen.dart';
 
 Widget _wrap() {
   return const MaterialApp(home: StockingCalculatorScreen());
+}
+
+Widget _wrapWithInitialSpecies() {
+  final species = SpeciesDatabase.lookup('Neon Tetra')!;
+  return MaterialApp(home: StockingCalculatorScreen(initialSpecies: species));
 }
 
 Widget _wrapWithBottomInset() {
@@ -63,6 +69,15 @@ void main() {
       await tester.pump();
       // Search field for adding species
       expect(find.byType(TextField), findsWidgets);
+    });
+
+    testWidgets('can open with an initial species group', (tester) async {
+      await tester.pumpWidget(_wrapWithInitialSpecies());
+      await tester.pump();
+
+      expect(find.text('Neon Tetra'), findsOneWidget);
+      expect(find.text('6'), findsOneWidget);
+      expect(find.text('Search and add fish above'), findsNothing);
     });
   });
 

@@ -13,6 +13,7 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
 import 'emergency_guide_screen.dart';
+import 'stocking_calculator_screen.dart';
 
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});
@@ -699,6 +700,18 @@ class _CareActionsCard extends StatelessWidget {
             (action) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: _CareActionRow(action: action),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          AppButton(
+            label: 'Plan stocking fit',
+            leadingIcon: Icons.calculate_outlined,
+            variant: AppButtonVariant.secondary,
+            size: AppButtonSize.small,
+            onPressed: () => NavigationThrottle.push(
+              context,
+              StockingCalculatorScreen(initialSpecies: species),
+              rootNavigator: true,
             ),
           ),
         ],
