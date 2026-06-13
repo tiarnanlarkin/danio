@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 import '../models/models.dart';
+import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/core/bubble_loader.dart';
+import '../widgets/danio_snack_bar.dart';
+import 'add_log_screen.dart';
+
+const _uuid = Uuid();
 
 /// Interactive Nitrogen Cycle Assistant - guides beginners through tank cycling.
 ///
@@ -81,6 +88,13 @@ class _CyclingAssistantBody extends StatelessWidget {
         phase: phase,
         tankAgeDays: tankAgeDays,
       ).animate().fadeIn(duration: 400.ms),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      _CycleGuidedActions(
+        phase: phase,
+        tankId: tank.id,
+      ).animate().fadeIn(delay: 150.ms, duration: 400.ms),
 
       const SizedBox(height: AppSpacing.lg),
 
@@ -166,6 +180,204 @@ class _CyclingAssistantBody extends StatelessWidget {
 }
 
 enum _CyclePhase { notStarted, phase1, phase2, phase3, cycled }
+
+class _CycleGuidedActions extends ConsumerStatefulWidget {
+  final _CyclePhase phase;
+  final String tankId;
+
+  const _CycleGuidedActions({required this.phase, required this.tankId});
+
+  @override
+  ConsumerState<_CycleGuidedActions> createState() =>
+      _CycleGuidedActionsState();
+}
+
+class _CycleGuidedActionsState extends ConsumerState<_CycleGuidedActions> {
+  bool _isCreatingReminder = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final suggestion = _CycleTaskSuggestion.forPhase(widget.phase);
+
+    return AppCard(
+      backgroundColor: AppOverlays.info10,
+      padding: AppCardPadding.standard,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.route_outlined,
+                color: AppColors.info,
+                size: AppIconSizes.sm,
+              ),
+              const SizedBox(width: AppSpacing.sm2),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Guided next step', style: AppTypography.labelLarge),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(suggestion.summary, style: AppTypography.bodySmall),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              FilledButton.icon(
+                onPressed: () => _openWaterTest(context),
+                icon: const Icon(Icons.water_drop_outlined),
+                label: const Text('Log water test'),
+              ),
+              OutlinedButton.icon(
+                onPressed: _isCreatingReminder ? null : _createReminder,
+                icon: _isCreatingReminder
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.event_available_outlined),
+                label: const Text('Create cycling reminder'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openWaterTest(BuildContext context) {
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(tankId: widget.tankId, initialType: LogType.waterTest),
+      rootNavigator: true,
+    );
+  }
+
+  Future<void> _createReminder() async {
+    setState(() => _isCreatingReminder = true);
+
+    try {
+      final suggestion = _CycleTaskSuggestion.forPhase(widget.phase);
+      await ref
+          .read(storageServiceProvider)
+          .saveTask(suggestion.toTask(tankId: widget.tankId));
+      ref.invalidate(tasksProvider(widget.tankId));
+
+      if (mounted) {
+        DanioSnackBar.success(context, 'Cycling reminder created');
+      }
+    } catch (_) {
+      if (mounted) {
+        DanioSnackBar.error(
+          context,
+          "Couldn't create that reminder. Give it another go.",
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isCreatingReminder = false);
+      }
+    }
+  }
+}
+
+class _CycleTaskSuggestion {
+  final String title;
+  final String description;
+  final String summary;
+  final RecurrenceType recurrence;
+  final int? intervalDays;
+  final Duration dueIn;
+  final TaskPriority priority;
+
+  const _CycleTaskSuggestion({
+    required this.title,
+    required this.description,
+    required this.summary,
+    required this.recurrence,
+    required this.dueIn,
+    required this.priority,
+    this.intervalDays,
+  });
+
+  factory _CycleTaskSuggestion.forPhase(_CyclePhase phase) {
+    switch (phase) {
+      case _CyclePhase.phase2:
+        return const _CycleTaskSuggestion(
+          title: 'Test ammonia and nitrite',
+          description:
+              'Check ammonia and nitrite every 2 days until both trend down.',
+          summary:
+              'Log today\'s readings, or add a 2-day reminder for ammonia and nitrite checks.',
+          recurrence: RecurrenceType.custom,
+          intervalDays: 2,
+          dueIn: Duration(days: 2),
+          priority: TaskPriority.high,
+        );
+      case _CyclePhase.phase3:
+        return const _CycleTaskSuggestion(
+          title: 'Confirm cycle is stable',
+          description:
+              'Confirm ammonia and nitrite stay at zero before adding fish.',
+          summary:
+              'Keep checking every 1-2 days until ammonia and nitrite stay at zero.',
+          recurrence: RecurrenceType.custom,
+          intervalDays: 2,
+          dueIn: Duration(days: 2),
+          priority: TaskPriority.high,
+        );
+      case _CyclePhase.cycled:
+        return const _CycleTaskSuggestion(
+          title: 'Weekly water test',
+          description:
+              'Keep a weekly check on ammonia, nitrite, nitrate, and pH.',
+          summary:
+              'Log a final cycle check, then keep a weekly water-test habit.',
+          recurrence: RecurrenceType.weekly,
+          dueIn: Duration(days: 7),
+          priority: TaskPriority.normal,
+        );
+      case _CyclePhase.notStarted:
+      case _CyclePhase.phase1:
+        return const _CycleTaskSuggestion(
+          title: 'Test cycling water',
+          description:
+              'Check ammonia, nitrite, and nitrate while the tank is cycling.',
+          summary:
+              'Start with a water test, then set a 3-day reminder while bacteria establish.',
+          recurrence: RecurrenceType.custom,
+          intervalDays: 3,
+          dueIn: Duration(days: 3),
+          priority: TaskPriority.high,
+        );
+    }
+  }
+
+  Task toTask({required String tankId}) {
+    final now = DateTime.now();
+    return Task(
+      id: _uuid.v4(),
+      tankId: tankId,
+      title: title,
+      description: description,
+      recurrence: recurrence,
+      intervalDays: intervalDays,
+      dueDate: now.add(dueIn),
+      priority: priority,
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
+}
 
 class _PhaseHeader extends StatelessWidget {
   final _CyclePhase phase;

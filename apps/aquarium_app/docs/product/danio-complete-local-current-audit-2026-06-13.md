@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1514 tests.
+- `flutter test`: pass, 1516 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -849,6 +849,18 @@ CL-P1-006H Unit Converter label polish:
   hardness labels.
 - The touched Unit Converter screen and test were cleaned of mojibake/non-ASCII
   source text.
+
+CL-P1-006I Cycling Assistant guided actions:
+
+- Cycling Assistant now shows a visible `Guided next step` card near the top of
+  the tank-scoped cycle view.
+- `Log water test` opens `AddLogScreen` directly as a water-test log for the
+  current tank.
+- `Create cycling reminder` saves a phase-aware local task through the existing
+  task storage path. Phase 2 creates a high-priority custom 2-day `Test ammonia
+  and nitrite` reminder; other cycle phases use matching 3-day, 2-day, or
+  weekly guidance.
+- Focused coverage verifies the AddLog handoff and task creation persistence.
 
 Current Android device state:
 

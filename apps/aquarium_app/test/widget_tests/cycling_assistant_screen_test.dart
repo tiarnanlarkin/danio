@@ -8,11 +8,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/cycling_assistant_screen.dart';
+import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/tank.dart';
+import 'package:danio/models/task.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -20,8 +22,12 @@ import 'package:danio/models/tank.dart';
 
 const _fakeTankId = 'tank-cycle-001';
 
-Widget _wrap({Tank? tank, List<LogEntry> logs = const []}) {
-  final memStorage = InMemoryStorageService();
+Widget _wrap({
+  Tank? tank,
+  List<LogEntry> logs = const [],
+  InMemoryStorageService? storage,
+}) {
+  final memStorage = storage ?? InMemoryStorageService();
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
@@ -90,7 +96,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  group('CyclingAssistantScreen — rendering', () {
+  group('CyclingAssistantScreen - rendering', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
@@ -193,6 +199,51 @@ void main() {
 
       expect(find.text('Tank not found'), findsOneWidget);
       expect(find.text('This tank may have been deleted.'), findsOneWidget);
+    });
+
+    testWidgets('guided action opens a water-test log for this tank', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('Log water test'), findsOneWidget);
+      await tester.tap(find.text('Log water test'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddLogScreen), findsOneWidget);
+      expect(find.text('Log Water Test'), findsOneWidget);
+      expect(find.text('Water Parameters'), findsOneWidget);
+    });
+
+    testWidgets('guided action creates a phase-aware cycling reminder', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      final now = DateTime(2026, 5, 18);
+
+      await tester.pumpWidget(
+        _wrap(
+          storage: storage,
+          logs: [
+            _waterTest(timestamp: now, ammonia: 0.2, nitrite: 1, nitrate: 5),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.text('Create cycling reminder'), findsOneWidget);
+      await tester.tap(find.text('Create cycling reminder'));
+      await tester.pumpAndSettle();
+
+      final tasks = await storage.getTasksForTank(_fakeTankId);
+      expect(tasks, hasLength(1));
+      expect(tasks.single.title, 'Test ammonia and nitrite');
+      expect(tasks.single.description, contains('ammonia and nitrite'));
+      expect(tasks.single.recurrence, RecurrenceType.custom);
+      expect(tasks.single.intervalDays, 2);
+      expect(tasks.single.priority, TaskPriority.high);
+      expect(find.text('Cycling reminder created'), findsOneWidget);
     });
   });
 }
