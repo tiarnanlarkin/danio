@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final maintenancePath = LearningPath(
   id: 'maintenance',
@@ -21,6 +22,19 @@ final maintenancePath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 4,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Explain why water changes remove nitrate and refresh stability.',
+          'Prepare replacement water so large changes stay fish-safe.',
+        ],
+        scenario:
+            'Nitrate is climbing, the tank looks clear, and the weekly water change was skipped twice.',
+        careDrill: [
+          'Match temperature, dechlorinate, and decide the change size before draining.',
+          'Log nitrate before and after the water change to learn the tank pattern.',
+        ],
+        sources: [lessonSourceRspcaWaterQuality, lessonSourceMerckWaterRanges],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -76,6 +90,23 @@ final maintenancePath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 4,
       prerequisites: ['maint_water_changes'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Protect filter bacteria while restoring water flow.',
+          'Know when to rinse, stagger, or replace filter media.',
+        ],
+        scenario:
+            'The filter flow has slowed down and the sponge looks brown, but the tank has no ammonia reading yet.',
+        careDrill: [
+          'Rinse filter media gently in removed tank water during a water change.',
+          'Replace biological media in small stages instead of changing everything at once.',
+        ],
+        sources: [
+          lessonSourceInjafNitrogenCycle,
+          lessonSourceRspcaWaterQuality,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -164,6 +195,22 @@ final maintenancePath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['maint_filter'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Use gravel vacuuming to remove trapped waste during a water change.',
+          'Adjust technique for planted, sand, bare-bottom, or open substrate areas.',
+        ],
+        scenario:
+            'Food and waste are collecting behind the decor, but a group of plants has rooted across the back half of the tank.',
+        careDrill: [
+          'Vacuum open substrate in sections while watching how much water is leaving.',
+          'Hover over sand or planted roots instead of plunging the tube into them.',
+        ],
+        sources: [
+          lessonSourceRspcaWaterQuality,
+          lessonSourceRspcaTropicalFishCare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -323,6 +370,22 @@ final maintenancePath = LearningPath(
       xpReward: 75,
       estimatedMinutes: 6,
       prerequisites: ['maint_gravel_vac'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Identify light and nutrient imbalance as the usual algae driver.',
+          'Choose control steps that fix causes instead of only scraping symptoms.',
+        ],
+        scenario:
+            'Green algae returns within days of cleaning, and the light runs from morning until bedtime.',
+        careDrill: [
+          'Check lighting hours, feeding amount, nitrate, and dead plant waste together.',
+          'Change one algae driver at a time so you can see what works.',
+        ],
+        sources: [
+          lessonSourceRspcaTropicalFishCare,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -496,6 +559,22 @@ final maintenancePath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 4,
       prerequisites: ['maint_algae'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Clean glass and decor without introducing toxic residues.',
+          'Protect the tank ecosystem by avoiding household cleaning habits.',
+        ],
+        scenario:
+            'A decoration is covered in algae and someone suggests washing it with dish soap.',
+        careDrill: [
+          'Use aquarium-only tools and never use soap on anything that returns to the tank.',
+          'Clean inside glass before a water change so loosened debris can be removed.',
+        ],
+        sources: [
+          lessonSourceRspcaWaterQuality,
+          lessonSourceRspcaTropicalFishCare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -665,6 +744,23 @@ final maintenancePath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['maint_cleaning'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Turn maintenance into daily, weekly, monthly, and seasonal habits.',
+          'Use observation and testing to catch problems before they become emergencies.',
+        ],
+        scenario:
+            'The tank seems fine, but you cannot remember when the filter was last checked or nitrate was last tested.',
+        careDrill: [
+          'Pick one weekly maintenance day and attach daily checks to feeding time.',
+          'Review logs monthly for missed tasks, rising nitrate, or equipment drift.',
+        ],
+        sources: [
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceRspcaTropicalFishCare,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
