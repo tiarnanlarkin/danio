@@ -57,6 +57,23 @@ LogEntry _waterChange(String id, String tankId, {int daysAgo = 3}) {
   );
 }
 
+LogEntry _observation(
+  String id,
+  String tankId,
+  String note, {
+  int daysAgo = 0,
+}) {
+  final timestamp = DateTime.now().subtract(Duration(days: daysAgo));
+  return LogEntry(
+    id: id,
+    tankId: tankId,
+    type: LogType.observation,
+    timestamp: timestamp,
+    notes: note,
+    createdAt: timestamp,
+  );
+}
+
 Task _task(String id, String tankId, String title, DateTime dueDate) => Task(
   id: id,
   tankId: tankId,
@@ -286,6 +303,37 @@ void main() {
         find.textContaining('Water parameters need attention'),
         findsWidgets,
       );
+    });
+
+    testWidgets('shows recent activity across all tanks', (tester) async {
+      suppressErrors();
+      final tankA = _tank('t1', 'Tank A');
+      final tankB = _tank('t2', 'Tank B');
+      final tankC = _tank('t3', 'Tank C');
+
+      await tester.pumpWidget(
+        _wrap(
+          tanks: [tankA, tankB, tankC],
+          logs: {
+            tankA.id: [_waterChange('wc-a', tankA.id, daysAgo: 4)],
+            tankB.id: [_observation('obs-b', tankB.id, 'New plant growth')],
+            tankC.id: [_waterTest('wt-c', tankC.id, nitrate: 80)],
+          },
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(
+        find.text('Recent activity across tanks'),
+        250,
+        scrollable: find.byType(Scrollable),
+      );
+      expect(find.text('Recent activity across tanks'), findsOneWidget);
+      expect(find.textContaining('Tank C'), findsWidgets);
+      expect(find.textContaining('Water Test'), findsWidgets);
+      expect(find.textContaining('Tank B'), findsWidgets);
+      expect(find.textContaining('New plant growth'), findsWidgets);
     });
 
     testWidgets('shows honest sparse-data states without inventing metrics', (

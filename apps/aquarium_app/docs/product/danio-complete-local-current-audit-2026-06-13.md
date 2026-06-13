@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1520 tests.
+- `flutter test`: pass, 1521 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -895,6 +895,17 @@ CL-P1-008A Unified Tank Journal timeline:
 - Focused coverage verifies water-test and completed-care-task events appear in
   the Journal and suppress the empty state.
 
+CL-P1-007B / CL-P1-008B All-tanks activity timeline:
+
+- Compare Tanks now collects the already-loaded local logs for every tank and
+  sorts them into a recent all-tanks activity card.
+- The card shows the latest five events with tank name, log title, type/date
+  metadata, and either notes, a water/maintenance summary, or a plain fallback.
+- Journal and Compare Tanks now share `LogEntryDisplay` for log icons, titles,
+  summaries, and fallback wording.
+- Focused coverage verifies recent activity across three tanks, including an
+  unselected tank, appears in the comparison flow.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -939,12 +950,13 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Diagnosis Practice, Compatibility Checks, Setup Planning, and Emergency
   Decisions questions, plus tank-context recommendation hints in Practice Hub.
   Richer persisted tool-result context belongs with CL-P1-006 guided tools.
-- Multi-tank comparison now has a first all-tanks priority overview. Remaining
-  multi-tank work is broader all-tanks timeline/history, switching polish, and
+- Multi-tank comparison now has a first all-tanks priority overview and recent
+  all-tanks activity card. Remaining multi-tank work is switching polish and
   Android phone/tablet QA.
 - Tank Journal now has a first unified local timeline pass for current log
-  types. Remaining timeline work is richer tool-result history, accepted AI
-  notes, milestones, and all-tanks history surfaces.
+  types, and Compare Tanks now surfaces recent history across tanks. Remaining
+  timeline work is richer tool-result history, accepted AI notes, and
+  milestones.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -956,8 +968,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
 Continue CL-P1-007/CL-P1-008 remaining local depth while Android transport is
 reserved by other sessions:
 
-- Expand all-tanks history and richer tool-result/AI-note/milestone timeline
-  handoffs so users can understand care priorities and tank history without
-  opening every tank one by one.
+- Expand richer tool-result/AI-note/milestone timeline handoffs and polish
+  multi-tank switching so users can understand care priorities and tank history
+  without opening every tank one by one.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

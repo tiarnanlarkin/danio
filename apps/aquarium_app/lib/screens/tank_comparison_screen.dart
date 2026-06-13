@@ -7,6 +7,7 @@ import '../providers/tank_provider.dart';
 import '../services/tank_comparison_service.dart';
 import '../services/tank_health_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/log_entry_display.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/core/bubble_loader.dart';
 
@@ -125,6 +126,7 @@ class _ComparisonDataView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final summaries = <TankComparisonSummary>[];
+    final activityEvents = <_TankActivityEvent>[];
     var isLoading = false;
     Object? firstError;
 
@@ -145,13 +147,21 @@ class _ComparisonDataView extends ConsumerWidget {
           .firstOrNull;
       if (firstError != null) continue;
 
+      final tankLogs = logs.value ?? const <LogEntry>[];
+      final tankTasks = tasks.value ?? const <Task>[];
+      final tankLivestock = livestock.value ?? const <Livestock>[];
+      final tankEquipment = equipment.value ?? const <Equipment>[];
+      activityEvents.addAll(
+        tankLogs.map((log) => _TankActivityEvent(tank: tank, log: log)),
+      );
+
       summaries.add(
         TankComparisonService.buildSummary(
           tank: tank,
-          logs: logs.value ?? const [],
-          tasks: tasks.value ?? const [],
-          livestock: livestock.value ?? const [],
-          equipment: equipment.value ?? const [],
+          logs: tankLogs,
+          tasks: tankTasks,
+          livestock: tankLivestock,
+          equipment: tankEquipment,
         ),
       );
     }
@@ -186,6 +196,8 @@ class _ComparisonDataView extends ConsumerWidget {
     final needsAttention = TankComparisonService.chooseNeedsAttentionFirst(
       summaries,
     );
+    final recentActivityEvents = [...activityEvents]
+      ..sort((a, b) => b.log.timestamp.compareTo(a.log.timestamp));
 
     final items = <Widget>[
       selectors,
@@ -194,6 +206,10 @@ class _ComparisonDataView extends ConsumerWidget {
       if (summaries.length > 2) const SizedBox(height: AppSpacing.md),
       if (needsAttention != null) _InsightCard(summary: needsAttention),
       const SizedBox(height: AppSpacing.md),
+      if (recentActivityEvents.isNotEmpty)
+        _AllTanksActivityCard(events: recentActivityEvents),
+      if (recentActivityEvents.isNotEmpty)
+        const SizedBox(height: AppSpacing.md),
       ...selectedSummaries.map((summary) => _SummaryCard(summary: summary)),
       const SizedBox(height: AppSpacing.sm),
       _ComparisonSection(
@@ -304,6 +320,125 @@ class _AllTanksPriorityCard extends StatelessWidget {
             }),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _TankActivityEvent {
+  const _TankActivityEvent({required this.tank, required this.log});
+
+  final Tank tank;
+  final LogEntry log;
+}
+
+class _AllTanksActivityCard extends StatelessWidget {
+  const _AllTanksActivityCard({required this.events});
+
+  final List<_TankActivityEvent> events;
+
+  @override
+  Widget build(BuildContext context) {
+    final recent = events.take(5).toList();
+    final tankCount = events.map((event) => event.tank.id).toSet().length;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.history, color: AppColors.primary),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'Recent activity across tanks',
+                  style: AppTypography.labelLarge,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              '${events.length} logged event${events.length == 1 ? '' : 's'} across $tankCount tank${tankCount == 1 ? '' : 's'}',
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            ...recent.map((event) => _AllTanksActivityRow(event: event)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AllTanksActivityRow extends StatelessWidget {
+  const _AllTanksActivityRow({required this.event});
+
+  final _TankActivityEvent event;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = LogEntryDisplay.titleFor(event.log);
+    final summary = LogEntryDisplay.summaryFor(event.log);
+    final notes = event.log.notes?.trim();
+    final detail = notes != null && notes.isNotEmpty
+        ? notes
+        : summary.isNotEmpty
+        ? summary
+        : LogEntryDisplay.fallbackFor(event.log);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppOverlays.primary10,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              LogEntryDisplay.iconFor(event.log.type),
+              size: AppIconSizes.sm,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${event.tank.name} - $title',
+                  style: AppTypography.labelLarge,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacing.xs2),
+                Text(
+                  '${event.log.typeName} | ${DateFormat('d MMM y').format(event.log.timestamp)}',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: context.textSecondary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: AppSpacing.xs2),
+                Text(
+                  detail,
+                  style: AppTypography.bodySmall,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
