@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final speciesCarePath = LearningPath(
   id: 'species_care',
@@ -22,6 +23,23 @@ final speciesCarePath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Replace betta bowl myths with heated, filtered, spacious care.',
+          'Plan safe tankmates and aggression boundaries before adding a betta.',
+        ],
+        scenario:
+            'A betta is being kept in an unheated bowl and the owner wants to move it into a community tank.',
+        careDrill: [
+          'Check tank volume, temperature, filtration, and resting cover before buying tankmates.',
+          'Avoid male betta pairings and long-finned tankmates that may trigger aggression.',
+        ],
+        sources: [
+          lessonSourceFishBase,
+          lessonSourceRspcaFishWelfare,
+          lessonSourceRspcaFishEnvironment,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -111,6 +129,23 @@ final speciesCarePath = LearningPath(
       orderIndex: 1,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Explain why goldfish need large, cool, heavily filtered systems.',
+          'Separate fancy-goldfish aquarium planning from common/comet pond needs.',
+        ],
+        scenario:
+            'A small fancy goldfish is being sold with a bowl and no filter as a first pet.',
+        careDrill: [
+          'Estimate adult size, waste load, and long-term tank or pond fit before buying.',
+          'Plan filtration and water-change capacity around goldfish waste, not current juvenile size.',
+        ],
+        sources: [
+          lessonSourceRspcaFishWelfare,
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.text,
@@ -130,12 +165,7 @@ final speciesCarePath = LearningPath(
           const QuizQuestion(
             id: 'sc_gold_q1',
             question: 'How large can goldfish grow?',
-            options: [
-              '1-2 inches',
-              '3-4 inches',
-              '6-12 inches',
-              '24 inches',
-            ],
+            options: ['1-2 inches', '3-4 inches', '6-12 inches', '24 inches'],
             correctIndex: 2,
             explanation:
                 'Goldfish grow to 6-12 inches depending on variety. They\'re not small fish — commons and comets can reach 12+ inches and are really pond fish.',
@@ -143,12 +173,7 @@ final speciesCarePath = LearningPath(
           const QuizQuestion(
             id: 'sc_gold_q2',
             question: 'How long can goldfish live with proper care?',
-            options: [
-              '2-4 weeks',
-              '1-2 years',
-              '10-20 years',
-              '50+ years',
-            ],
+            options: ['2-4 weeks', '1-2 years', '10-20 years', '50+ years'],
             correctIndex: 2,
             explanation:
                 'With proper care, goldfish live 10-20 years. The "dies in a week" myth comes from keeping them in tiny, unfiltered bowls.',
@@ -156,12 +181,7 @@ final speciesCarePath = LearningPath(
           const QuizQuestion(
             id: 'sc_gold_q3',
             question: 'How much tank space does the first fancy goldfish need?',
-            options: [
-              '5 gallons',
-              '10 gallons',
-              '20 gallons',
-              '50 gallons',
-            ],
+            options: ['5 gallons', '10 gallons', '20 gallons', '50 gallons'],
             correctIndex: 2,
             explanation:
                 'The first fancy goldfish needs 20 gallons, plus 10 additional gallons per extra fish. They produce a lot of waste and need powerful filtration.',
@@ -191,6 +211,23 @@ final speciesCarePath = LearningPath(
       orderIndex: 2,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Choose tetra schools by group size, water fit, and tank maturity.',
+          'Spot when schooling fish stress or disease requires isolation and water checks.',
+        ],
+        scenario:
+            'Four neon tetras hide constantly in a bright tank and one has a faded patch along the body.',
+        careDrill: [
+          'Increase group planning to at least six, ideally more, before mixing species.',
+          'Check water quality and isolate visibly sick fish before assuming normal shyness.',
+        ],
+        sources: [
+          lessonSourceFishBase,
+          lessonSourceRspcaFishWelfare,
+          lessonSourceMerckFishDiseases,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -238,19 +275,15 @@ final speciesCarePath = LearningPath(
           const QuizQuestion(
             id: 'sc_tet_q1',
             question: 'What is the minimum recommended school size for tetras?',
-            options: [
-              '2 fish',
-              '4 fish',
-              '6 fish',
-              '12 fish',
-            ],
+            options: ['2 fish', '4 fish', '6 fish', '12 fish'],
             correctIndex: 2,
             explanation:
                 'Tetras need at least 6 to form a proper school and feel secure. Fewer fish leads to stress, hiding, and potential fin-nipping.',
           ),
           const QuizQuestion(
             id: 'sc_tet_q2',
-            question: 'What should you do if you notice blotchy fading on a tetra\'s body?',
+            question:
+                'What should you do if you notice blotchy fading on a tetra\'s body?',
             options: [
               'Raise the temperature and add salt',
               'Isolate the fish immediately — it may have Neon Tetra Disease',
@@ -299,6 +332,23 @@ final speciesCarePath = LearningPath(
       orderIndex: 3,
       xpReward: 50,
       estimatedMinutes: 7,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Separate African and South American cichlid needs before stocking.',
+          'Use tank size, hardscape, and water chemistry to reduce aggression and stress.',
+        ],
+        scenario:
+            'A user wants to mix colourful African cichlids with rams and angelfish in one community tank.',
+        careDrill: [
+          'Choose one cichlid region/water profile instead of forcing a compromise.',
+          'Plan caves, sight breaks, filtration, and adult size before choosing individuals.',
+        ],
+        sources: [
+          lessonSourceFishBase,
+          lessonSourceRspcaFishWelfare,
+          lessonSourceMerckWaterRanges,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -358,20 +408,17 @@ final speciesCarePath = LearningPath(
           ),
           const QuizQuestion(
             id: 'sc_cich_q2',
-            question: 'What is the minimum tank size recommended for African cichlids?',
-            options: [
-              '10 gallons',
-              '20 gallons',
-              '30 gallons',
-              '55 gallons',
-            ],
+            question:
+                'What is the minimum tank size recommended for African cichlids?',
+            options: ['10 gallons', '20 gallons', '30 gallons', '55 gallons'],
             correctIndex: 3,
             explanation:
                 'African cichlids need 55 gallons as a minimum. The extra space dilutes aggression and allows the natural territorial behaviours without constant fighting.',
           ),
           const QuizQuestion(
             id: 'sc_cich_q3',
-            question: 'Why should you never mix African and South American cichlids?',
+            question:
+                'Why should you never mix African and South American cichlids?',
             options: [
               'They look too similar and will breed',
               'Their water chemistry requirements are incompatible',
@@ -384,7 +431,8 @@ final speciesCarePath = LearningPath(
           ),
           const QuizQuestion(
             id: 'sc_cich_q4',
-            question: 'For African cichlids, how does overstocking help manage aggression?',
+            question:
+                'For African cichlids, how does overstocking help manage aggression?',
             options: [
               'More fish means less oxygen for fighting',
               'Aggression is spread across the group instead of targeting one fish',
@@ -407,6 +455,23 @@ final speciesCarePath = LearningPath(
       orderIndex: 4,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Keep shrimp only in stable, fully cycled tanks with safe mineral levels.',
+          'Recognise copper, ammonia, nitrite, and sudden changes as high-risk shrimp threats.',
+        ],
+        scenario:
+            'A planted nano tank has new cherry shrimp planned, but it is only one week old and an ich medication is on the shelf.',
+        careDrill: [
+          'Confirm zero ammonia and nitrite, stable TDS/GH, and mature biofilm before adding shrimp.',
+          'Check every medication and fertiliser label for copper or invertebrate warnings.',
+        ],
+        sources: [
+          lessonSourceRspcaWaterQuality,
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaFishWelfare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -463,12 +528,7 @@ final speciesCarePath = LearningPath(
           const QuizQuestion(
             id: 'sc_shrimp_q2',
             question: 'What is the recommended TDS range for cherry shrimp?',
-            options: [
-              '50–100',
-              '150–250',
-              '350–500',
-              '600–800',
-            ],
+            options: ['50–100', '150–250', '350–500', '600–800'],
             correctIndex: 1,
             explanation:
                 'Cherry shrimp do best with TDS 150–250. Too low means insufficient minerals; too high stresses them. This range supports healthy moulting and breeding.',
@@ -488,7 +548,8 @@ final speciesCarePath = LearningPath(
           ),
           const QuizQuestion(
             id: 'sc_shrimp_q4',
-            question: 'Why do shrimp require a fully cycled tank more strictly than fish?',
+            question:
+                'Why do shrimp require a fully cycled tank more strictly than fish?',
             options: [
               'Shrimp create more ammonia than fish',
               'Shrimp have zero tolerance for ammonia and nitrite — even small amounts are lethal',
@@ -512,6 +573,23 @@ final speciesCarePath = LearningPath(
       orderIndex: 5,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Choose snails by breeding behaviour, shell needs, and cleanup role.',
+          'Treat snail population booms as a feeding and maintenance signal.',
+        ],
+        scenario:
+            'Pest snails suddenly cover the glass after several weeks of heavy feeding.',
+        careDrill: [
+          'Reduce excess food and detritus before adding snail-control animals.',
+          'Check calcium/mineral support if snail shells look thin, pitted, or cracked.',
+        ],
+        sources: [
+          lessonSourceRspcaFishWelfare,
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -567,7 +645,8 @@ final speciesCarePath = LearningPath(
           ),
           const QuizQuestion(
             id: 'sc_snail_q2',
-            question: 'What does a Malaysian Trumpet Snail population explosion usually indicate?',
+            question:
+                'What does a Malaysian Trumpet Snail population explosion usually indicate?',
             options: [
               'The tank water is too cold',
               'The tank is overfeeding — MTS thrive on excess food',
@@ -593,7 +672,8 @@ final speciesCarePath = LearningPath(
           ),
           const QuizQuestion(
             id: 'sc_snail_q4',
-            question: 'What is the best natural method to control pest snail populations?',
+            question:
+                'What is the best natural method to control pest snail populations?',
             options: [
               'Add a strong chemical treatment to kill all snails',
               'Reduce feeding and add assassin snails',

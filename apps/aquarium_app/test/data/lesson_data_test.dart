@@ -241,6 +241,10 @@ void main() {
       _expectStructuredGuides('Fish Health', fishHealthPath.lessons);
     });
 
+    test('every species care lesson has a structured guide', () {
+      _expectStructuredGuides('Species Care', _mergedSpeciesCarePath.lessons);
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {

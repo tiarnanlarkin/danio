@@ -122,3 +122,17 @@ const lessonSourceCdcFishHealth = LessonSource(
   url: 'https://www.cdc.gov/healthy-pets/about/fish.html',
   note: 'Sick-fish separation, observation, and safe handling guidance.',
 );
+
+const lessonSourceFishBase = LessonSource(
+  title: 'FishBase',
+  publisher: 'FishBase Consortium',
+  url: 'https://www.fishbase.se/',
+  note: 'Taxonomy, biology, size, distribution, and species context.',
+);
+
+const lessonSourceRspcaFishWelfare = LessonSource(
+  title: 'Keeping freshwater fish as pets',
+  publisher: 'RSPCA',
+  url: 'https://www.rspca.org.uk/adviceandwelfare/pets/fish',
+  note: 'General freshwater fish welfare and species-specific care context.',
+);

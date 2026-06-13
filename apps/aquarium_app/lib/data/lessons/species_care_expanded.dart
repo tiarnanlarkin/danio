@@ -3,6 +3,7 @@
 library;
 
 import '../../models/learning.dart';
+import '../lesson_sources.dart';
 
 final speciesCareExpandedLessons = [
   // SC-7: Corydoras Care
@@ -10,11 +11,29 @@ final speciesCareExpandedLessons = [
     id: 'sc_corydoras',
     pathId: 'species_care',
     title: 'Corydoras: The Essential Cleanup Crew',
-    description: 'More than just bottom-vacuum fish — social, curious, and long-lived',
+    description:
+        'More than just bottom-vacuum fish — social, curious, and long-lived',
     orderIndex: 6,
     xpReward: 50,
     estimatedMinutes: 7,
     prerequisites: ['ff_choosing'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Set up Corydoras for schooling, soft-substrate foraging, and barbel safety.',
+        'Recognise medication and oxygen sensitivity before problems become urgent.',
+      ],
+      scenario:
+          'A user wants two Corydoras on coarse gravel as a cleanup crew for leftover food.',
+      careDrill: [
+        'Plan a same-species group of at least six on fine sand before purchase.',
+        'Check surface agitation if cories dash to the surface repeatedly rather than occasionally.',
+      ],
+      sources: [
+        lessonSourceFishBase,
+        lessonSourceRspcaFishWelfare,
+        lessonSourceMerckFishDiseases,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -123,11 +142,29 @@ final speciesCareExpandedLessons = [
     id: 'sc_livebearers',
     pathId: 'species_care',
     title: 'Livebearers: Guppies, Platys & Mollies',
-    description: 'Fish that give birth to live young — with all the complications that brings',
+    description:
+        'Fish that give birth to live young — with all the complications that brings',
     orderIndex: 7,
     xpReward: 50,
     estimatedMinutes: 7,
     prerequisites: ['ff_choosing'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Plan livebearer groups around breeding, sex ratios, and harder-water preferences.',
+        'Prevent population pressure before fry appear.',
+      ],
+      scenario:
+          'A beginner adds one male and one female guppy, then finds new fry every few weeks.',
+      careDrill: [
+        'Choose male-only, female-only, or a planned breeding ratio before mixing sexes.',
+        'Prepare fry cover, rehoming options, or predator-safe limits before the first brood.',
+      ],
+      sources: [
+        lessonSourceFishBase,
+        lessonSourceRspcaFishWelfare,
+        lessonSourceRspcaFishEnvironment,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -256,6 +293,23 @@ final speciesCareExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['ff_choosing'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Match small schoolers to group size, tank maturity, and water stability.',
+        'Use planting and subdued light to help nano fish behave confidently.',
+      ],
+      scenario:
+          'A new 30L nano tank is ready for chili rasboras, but it has only just finished filling.',
+      careDrill: [
+        'Wait for a fully cycled, stable tank before adding tiny schoolers.',
+        'Plan groups of 10-20 with cover and gentle flow instead of a few display fish.',
+      ],
+      sources: [
+        lessonSourceFishBase,
+        lessonSourceRspcaFishWelfare,
+        lessonSourceMerckWaterQuality,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -327,12 +381,7 @@ final speciesCareExpandedLessons = [
           id: 'sc_ras_q2',
           question:
               'What is the minimum recommended school size for Harlequin Rasboras?',
-          options: [
-            '3 fish',
-            '6 fish',
-            '10 fish',
-            '25 fish minimum',
-          ],
+          options: ['3 fish', '6 fish', '10 fish', '25 fish minimum'],
           correctIndex: 2,
           explanation:
               'Harlequin rasboras need a group of at least 10 to feel secure and school properly. Fewer fish means stress, hiding, and pale colouration. In groups of 10+, they school actively through the midwater and show much bolder colouration.',
@@ -364,6 +413,23 @@ final speciesCareExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 7,
     prerequisites: ['sc_cichlids'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Plan angelfish around tall tank space, adult body size, and temperament.',
+        'Choose tankmates that are not bite-sized, fin-nippy, or too boisterous.',
+      ],
+      scenario:
+          'A small angelfish is being considered for a short community tank with neon tetras.',
+      careDrill: [
+        'Check adult height and vertical swimming space before choosing the tank.',
+        'Review tankmate adult size and fin-nipping risk before adding angels.',
+      ],
+      sources: [
+        lessonSourceFishBase,
+        lessonSourceRspcaFishWelfare,
+        lessonSourceMerckHomeForFish,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -486,6 +552,23 @@ final speciesCareExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['maint_algae'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Avoid algae-eater purchases that outgrow the aquarium or worsen waste load.',
+        'Support plecos and otocinclus with mature tanks, diet variety, and driftwood or biofilm needs.',
+      ],
+      scenario:
+          'A shop recommends a common pleco to solve algae in a 90L community tank.',
+      careDrill: [
+        'Check adult size before buying any pleco or algae eater.',
+        'Supplement algae grazers with vegetables, wafers, and mature biofilm instead of relying on tank algae.',
+      ],
+      sources: [
+        lessonSourceFishBase,
+        lessonSourceRspcaFishWelfare,
+        lessonSourceMerckWaterQuality,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -598,6 +681,23 @@ final speciesCareExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['ff_choosing'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Explain how labyrinth breathing changes surface access, lid, and flow needs.',
+        'Plan gourami stocking around species temperament and disease-risk awareness.',
+      ],
+      scenario:
+          'A dwarf gourami is being added to a tank with strong current, no lid, and little surface cover.',
+      careDrill: [
+        'Leave a warm, accessible air gap and soften the current before adding labyrinth fish.',
+        'Quarantine new dwarf gouramis and watch for wasting, colour loss, or appetite decline.',
+      ],
+      sources: [
+        lessonSourceFishBase,
+        lessonSourceRspcaFishWelfare,
+        lessonSourceMerckFishDiseases,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -653,7 +753,8 @@ final speciesCareExpandedLessons = [
       questions: [
         const QuizQuestion(
           id: 'sc_gour_q1',
-          question: 'Why must labyrinth fish always have access to the water surface?',
+          question:
+              'Why must labyrinth fish always have access to the water surface?',
           options: [
             'They feed exclusively at the surface and cannot reach food elsewhere',
             'They breathe atmospheric air using their labyrinth organ and will suffocate without surface access',
@@ -699,11 +800,29 @@ final speciesCareExpandedLessons = [
     id: 'sc_loaches',
     pathId: 'species_care',
     title: 'Loaches: Active Bottom Dwellers',
-    description: 'The comedians of the aquarium — social, quirky, and fascinating',
+    description:
+        'The comedians of the aquarium — social, quirky, and fascinating',
     orderIndex: 12,
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['ff_choosing', 'eq_substrate'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Choose loaches by adult size, school size, substrate, and oxygen needs.',
+        'Recognise scaleless-fish medication sensitivity before treatment.',
+      ],
+      scenario:
+          'A single clown loach is being bought for a 60L tank because it is small in the shop.',
+      careDrill: [
+        'Check adult size and group needs before buying any loach species.',
+        'Use sand, hiding places, and reduced medication dosing plans for sensitive loaches.',
+      ],
+      sources: [
+        lessonSourceFishBase,
+        lessonSourceRspcaFishWelfare,
+        lessonSourceMerckFishDiseases,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,

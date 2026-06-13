@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1466 tests.
+- `flutter test`: pass, 1467 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -593,6 +593,18 @@ CL-P1-004G Fish Health guide coverage:
   outcomes, a real-tank scenario, at least two care drill steps, and an HTTPS
   source reference.
 
+CL-P1-004H Species Care guide coverage:
+
+- Species Care now has structured guide metadata across all 13 merged lessons:
+  bettas, goldfish, tetras, cichlids, shrimp, snails, Corydoras, livebearers,
+  rasboras, angelfish, plecos, gouramis, and loaches.
+- Shared lesson references now include FishBase and RSPCA freshwater fish
+  welfare guidance, alongside existing Merck/RSPCA health, environment,
+  water-quality, and diet references where relevant.
+- A focused data contract verifies every merged Species Care lesson has at
+  least two outcomes, a real-tank scenario, at least two care drill steps, and
+  an HTTPS source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -627,7 +639,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
   database depth and visual asset quality, not missing core page actions.
 - Learning depth is now started with structured guide metadata plus Nitrogen
   Cycle, Water Parameters, First Fish, Maintenance, Planted Tanks, Equipment,
-  and Fish Health path enrichment.
+  Fish Health, and Species Care path enrichment.
   Remaining learning work is expanding that guide depth, source references,
   visuals, and practice drills across the full catalog.
 - Tablet verification is not yet current.
