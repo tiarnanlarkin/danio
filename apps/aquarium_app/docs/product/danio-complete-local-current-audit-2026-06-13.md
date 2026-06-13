@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1534 tests.
+- `flutter test`: pass, 1536 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -939,6 +939,16 @@ CL-P1-009B Backup data validation:
 - Focused coverage verifies malformed backup ZIP data fails with
   `Invalid format: missing tanks array`.
 
+CL-P1-009C Backup tank-entry validation:
+
+- Backup preview/import now rejects tank arrays containing non-object entries
+  or tank objects without a non-empty string `id`.
+- The validation lives in `BackupService._readValidatedBackupData`, so
+  `getBackupData` and `restoreBackup` share the same guard before UI preview or
+  photo restore proceeds.
+- Focused coverage verifies `Invalid format: tank entries must be objects` and
+  `Invalid format: tank entries must include an id`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1038,9 +1048,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   accepted AI notes, milestones, and any richer tool-result detail cards found
   in walkthroughs.
 - Backup & Restore now has clearer import safety copy and validates required
-  backup JSON before preview/import. Remaining backup/data work is deeper
-  import validation UX, edit/delete/undo coverage, and restore/migration
-  walkthrough QA.
+  backup JSON plus malformed tank entries before preview/import. Remaining
+  backup/data work is deeper import validation UX, edit/delete/undo coverage,
+  and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. Remaining profile/preferences work is centralising reset/edit

@@ -224,6 +224,17 @@ class BackupService {
       throw Exception('Invalid format: missing tanks array');
     }
 
+    final tanks = data['tanks'] as List;
+    for (final tank in tanks) {
+      if (tank is! Map) {
+        throw Exception('Invalid format: tank entries must be objects');
+      }
+      final id = tank['id'];
+      if (id is! String || id.trim().isEmpty) {
+        throw Exception('Invalid format: tank entries must include an id');
+      }
+    }
+
     return data;
   }
 

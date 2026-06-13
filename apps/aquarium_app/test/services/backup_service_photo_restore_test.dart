@@ -92,5 +92,49 @@ void main() {
         ),
       );
     });
+
+    test('getBackupData rejects non-object tank entries', () async {
+      final service = BackupService(
+        getDocumentsDirectory: () async => sourceDocs,
+        getTemporaryDirectory: () async => tempDir,
+      );
+      final zipPath = await service.createBackup({
+        'tanks': ['not-a-tank'],
+      });
+
+      await expectLater(
+        service.getBackupData(zipPath),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('Invalid format: tank entries must be objects'),
+          ),
+        ),
+      );
+    });
+
+    test('getBackupData rejects tank entries without ids', () async {
+      final service = BackupService(
+        getDocumentsDirectory: () async => sourceDocs,
+        getTemporaryDirectory: () async => tempDir,
+      );
+      final zipPath = await service.createBackup({
+        'tanks': [
+          {'name': 'Missing ID'},
+        ],
+      });
+
+      await expectLater(
+        service.getBackupData(zipPath),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('Invalid format: tank entries must include an id'),
+          ),
+        ),
+      );
+    });
   });
 }
