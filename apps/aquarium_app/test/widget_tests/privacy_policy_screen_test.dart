@@ -80,7 +80,7 @@ void main() {
       expect(find.textContaining('Firebase Crashlytics'), findsWidgets);
     });
 
-    testWidgets('describes cloud services as inactive in the local build', (
+    testWidgets('describes cloud services as inactive in this version', (
       tester,
     ) async {
       await tester.pumpWidget(_wrap());
@@ -89,15 +89,16 @@ void main() {
       expect(find.text('Cloud Sync & Accounts'), findsOneWidget);
       expect(
         find.textContaining(
-          'Cloud sync and account login are not active in this local build',
+          'Cloud sync and account login are not active in this version of Danio',
         ),
         findsWidgets,
       );
+      expect(find.textContaining('local build'), findsNothing);
       expect(find.textContaining('synced cloud rows'), findsNothing);
       expect(find.textContaining('delete your cloud account'), findsNothing);
     });
 
-    test('does not mention dormant provider implementation details', () {
+    test('does not mention dormant provider or developer wording', () {
       final source = File(
         'lib/screens/privacy_policy_screen.dart',
       ).readAsStringSync();
@@ -105,6 +106,8 @@ void main() {
       expect(source, isNot(contains('Supabase')));
       expect(source, isNot(contains('When activated in future')));
       expect(source, isNot(contains('Cloud sync code exists')));
+      expect(source, isNot(contains('local build')));
+      expect(source, isNot(contains('\u2014')));
     });
   });
 }

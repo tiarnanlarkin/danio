@@ -118,14 +118,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildHighlight(
-              'OpenAI API — Fish ID (optional feature)',
+              'OpenAI API - Fish ID (optional feature)',
               'When you use the Fish ID feature, the photo you capture is stripped of metadata before being sent to OpenAI Inc. (USA) for species identification. Images are retained by OpenAI for a maximum of 30 days, then automatically deleted. OpenAI does not use your data to train their models.',
               Icons.photo_camera,
             ),
 
             _buildHighlight(
               'Cloud Sync & Accounts',
-              'Cloud sync and account login are not active in this local build. Danio does not upload tank records, photos, logs, or backups to a Danio server.',
+              'Cloud sync and account login are not active in this version of Danio. Danio does not upload tank records, photos, logs, or backups to a Danio server.',
               Icons.cloud_off,
             ),
 
@@ -135,8 +135,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'Crash reports: Art. 6(1)(a) — Your explicit consent, given on first launch and manageable in Settings',
-              'Fish ID images: Art. 6(1)(a) — Your consent each time you use the feature',
+              'Crash reports: Art. 6(1)(a) - Your explicit consent, given on first launch and manageable in Settings',
+              'Fish ID images: Art. 6(1)(a) - Your consent each time you use the feature',
               'Local app data: Not subject to GDPR as it does not leave your device',
             ], context),
 
@@ -146,8 +146,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'Google LLC (USA) — Firebase Crashlytics data, covered by the EU-US Data Privacy Framework and Google\'s Data Processing Agreement',
-              'OpenAI Inc. (USA) — Fish ID image data, covered by OpenAI\'s Data Processing Agreement and standard contractual clauses',
+              'Google LLC (USA) - Firebase Crashlytics data, covered by the EU-US Data Privacy Framework and Google\'s Data Processing Agreement',
+              'OpenAI Inc. (USA) - Fish ID image data, covered by OpenAI\'s Data Processing Agreement and standard contractual clauses',
               'Appropriate safeguards are in place for all transfers in compliance with UK GDPR Chapter V',
             ], context),
 
@@ -209,8 +209,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'In-app: Settings > Clear All Data — permanently removes all local tank, log, task, and photo data',
-              'In-app: Settings > Delete My Data — removes local tanks, progress, achievements, and onboarding state',
+              'In-app: Settings > Clear All Data - permanently removes all local tank, log, task, and photo data',
+              'In-app: Settings > Delete My Data - removes local tanks, progress, achievements, and onboarding state',
               'Email request: Contact larkintiarnanbizz@gmail.com and we will delete all data we hold within 30 days',
               'Uninstall: Removing the app deletes all local data from your device',
               'Crash report opt-out: Disabling Crash Reports in Settings stops further crash diagnostic collection',
@@ -224,7 +224,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _buildBulletList([
               'Optional online services use HTTPS/TLS encryption',
               'Local data is protected by your device\'s security (lock screen, encryption)',
-              'No sensitive personal data, such as passwords or financial information, is collected in the local build',
+              'No sensitive personal data, such as passwords or financial information, is collected by this version of Danio',
             ], context),
 
             _buildSection(
@@ -313,7 +313,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             'Fish ID sends metadata-stripped photos to OpenAI for identification',
           ),
           _buildSummaryItem(
-            'Cloud sync and account login are not active in this local build',
+            'Cloud sync and account login are not active in this version of Danio',
           ),
           _buildSummaryItem('You can delete all data in-app or by emailing us'),
           _buildSummaryItem('Crash reports can be toggled off in Settings'),
