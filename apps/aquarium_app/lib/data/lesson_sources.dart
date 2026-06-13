@@ -38,3 +38,34 @@ const lessonSourceRspcaFishEnvironment = LessonSource(
   url: 'https://www.rspca.org.uk/adviceandwelfare/pets/fish/environment',
   note: 'Fish environment, heating, and species-specific temperature advice.',
 );
+
+const lessonSourceMerckHomeForFish = LessonSource(
+  title: 'Providing a Home for Fish',
+  publisher: 'Merck Veterinary Manual',
+  url:
+      'https://www.merckvetmanual.com/all-other-pets/fish/providing-a-home-for-fish',
+  note: 'Introducing fish, stocking pace, quarantine, and water testing.',
+);
+
+const lessonSourceMerckRoutineFishHealth = LessonSource(
+  title: 'Routine Health Care of Fish',
+  publisher: 'Merck Veterinary Manual',
+  url:
+      'https://www.merckvetmanual.com/all-other-pets/fish/routine-health-care-of-fish',
+  note: 'Quarantine, observation, and routine fish health context.',
+);
+
+const lessonSourceRspcaFishDiet = LessonSource(
+  title: 'What to feed your pet fish',
+  publisher: 'RSPCA',
+  url: 'https://www.rspca.org.uk/adviceandwelfare/pets/fish/diet',
+  note: 'Feeding guidance and overfeeding warnings.',
+);
+
+const lessonSourceRspcaTropicalFishCare = LessonSource(
+  title: 'How should I care for my tropical fish?',
+  publisher: 'RSPCA Australia',
+  url:
+      'https://kb.rspca.org.au/categories/companion-animals/fish/how-should-i-care-for-my-tropical-fish',
+  note: 'Tropical fish care, feeding, and common overfeeding risks.',
+);

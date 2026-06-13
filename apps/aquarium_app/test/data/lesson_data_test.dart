@@ -221,6 +221,10 @@ void main() {
       _expectStructuredGuides('Water Parameters', waterParametersPath.lessons);
     });
 
+    test('every first fish lesson has a structured guide', () {
+      _expectStructuredGuides('First Fish', firstFishPath.lessons);
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {

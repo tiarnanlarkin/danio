@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final firstFishPath = LearningPath(
   id: 'first_fish',
@@ -21,6 +22,22 @@ final firstFishPath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 5,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Choose beginner fish by adult size, group needs, and compatibility.',
+          'Avoid impulse purchases when a species does not fit your tank plan.',
+        ],
+        scenario:
+            'A shop tank has tiny common plecos beside colourful guppies, but your tank is only 60 litres.',
+        careDrill: [
+          'Check adult size, minimum tank, group size, and temperament before buying.',
+          'Save unknown fish to a wishlist instead of taking them home immediately.',
+        ],
+        sources: [
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckHomeForFish,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -119,6 +136,22 @@ final firstFishPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['ff_choosing'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Reduce shock by matching temperature and water chemistry gradually.',
+          'Protect the tank by keeping store water out of your aquarium.',
+        ],
+        scenario:
+            'New fish arrive home in a bag after a long trip, and the store water feels cooler than your tank.',
+        careDrill: [
+          'Dim lights and temperature-match the sealed bag before opening it.',
+          'Move the fish with a net and discard bag water after gradual mixing.',
+        ],
+        sources: [
+          lessonSourceMerckHomeForFish,
+          lessonSourceMerckRoutineFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -207,6 +240,23 @@ final firstFishPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['ff_acclimation'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Feed small, observable portions instead of reacting to begging behaviour.',
+          'Connect leftover food to ammonia, cloudy water, and algae pressure.',
+        ],
+        scenario:
+            'A family member adds an extra pinch because the fish still look hungry after breakfast.',
+        careDrill: [
+          'Feed only what the fish finish in about two minutes.',
+          'Remove leftovers and treat overfeeding as a water-quality risk.',
+        ],
+        sources: [
+          lessonSourceRspcaFishDiet,
+          lessonSourceRspcaTropicalFishCare,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -366,6 +416,22 @@ final firstFishPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 6,
       prerequisites: ['ff_feeding'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Separate normal species behaviour from stress signals.',
+          'Use unusual behaviour as a prompt to test water before medicating.',
+        ],
+        scenario:
+            'Your usually active danios are hiding, one fish has clamped fins, and another is breathing fast.',
+        careDrill: [
+          'Spend two minutes checking count, appetite, fins, colour, and breathing.',
+          'Test ammonia, nitrite, temperature, and pH when behaviour changes suddenly.',
+        ],
+        sources: [
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaTropicalFishCare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -525,6 +591,22 @@ final firstFishPath = LearningPath(
       xpReward: 75,
       estimatedMinutes: 5,
       prerequisites: ['ff_behavior'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Use quarantine to protect the main tank from new-fish disease risk.',
+          'Understand why treatment is safer in a separate hospital tank when possible.',
+        ],
+        scenario:
+            'A new tetra looks healthy, but the store tank also had fish flashing against decorations.',
+        careDrill: [
+          'Observe new fish in a simple quarantine tank for two to four weeks.',
+          'Treat sick fish separately when medication could harm the main filter bacteria.',
+        ],
+        sources: [
+          lessonSourceMerckHomeForFish,
+          lessonSourceMerckRoutineFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -680,6 +762,23 @@ final firstFishPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 6,
       prerequisites: ['ff_quarantine'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Recognise the beginner patterns that usually cause fish loss.',
+          'Choose patience, research, and stable routines over quick fixes.',
+        ],
+        scenario:
+            'A new tank looks perfect, a sale fish catches your eye, and the store says it can go in today.',
+        careDrill: [
+          'Check cycle status, adult size, compatibility, and feeding plan before buying.',
+          'Make one careful change at a time and wait for the tank to stabilise.',
+        ],
+        sources: [
+          lessonSourceInjafNitrogenCycle,
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckHomeForFish,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,

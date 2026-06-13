@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1461 tests.
+- `flutter test`: pass, 1462 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -532,6 +532,18 @@ CL-P1-004B Water Parameters guide coverage:
   two outcomes, a real-tank scenario, at least two care drill steps, and an
   HTTPS source reference.
 
+CL-P1-004C First Fish guide coverage:
+
+- First Fish now has structured guide metadata across all six beginner
+  decision lessons: choosing hardy species, acclimation, feeding, behaviour,
+  quarantine, and common mistakes.
+- Shared lesson references now include Merck Veterinary Manual fish home/routine
+  care pages and RSPCA fish diet/tropical care pages for acclimation,
+  quarantine, feeding, and beginner decision guidance.
+- A focused data contract verifies every First Fish lesson has at least two
+  outcomes, a real-tank scenario, at least two care drill steps, and an HTTPS
+  source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -565,9 +577,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   species request guidance, and source trails. Future species work is content
   database depth and visual asset quality, not missing core page actions.
 - Learning depth is now started with structured guide metadata plus Nitrogen
-  Cycle and Water Parameters path enrichment. Remaining learning work is
-  expanding that guide depth, source references, visuals, and practice drills
-  across the full catalog.
+  Cycle, Water Parameters, and First Fish path enrichment. Remaining learning
+  work is expanding that guide depth, source references, visuals, and practice
+  drills across the full catalog.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
