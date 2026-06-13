@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1523 tests.
+- `flutter test`: pass, 1525 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -926,6 +926,15 @@ CL-P1-009B Backup data validation:
 - Focused coverage verifies malformed backup ZIP data fails with
   `Invalid format: missing tanks array`.
 
+CL-P1-010A Tank Settings water-profile copy:
+
+- Tank Settings now shows readable tropical/coldwater target labels:
+  `24-28 C - most community fish` and `15-22 C - goldfish etc.`.
+- The touched Tank Settings source no longer contains degree/bullet glyphs that
+  were rendering as mojibake on this Windows setup.
+- Focused coverage verifies the visible labels and guards the screen source
+  against non-ASCII artifacts.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -981,6 +990,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   backup JSON before preview/import. Remaining backup/data work is deeper
   import validation UX, edit/delete/undo coverage, and restore/migration
   walkthrough QA.
+- Tank Settings water-profile labels are now readable and source-safe.
+  Remaining profile/preferences work is centralising reset/edit controls for
+  all onboarding preferences, AI, privacy, reminders, motion, and haptics.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -993,6 +1005,7 @@ Continue CL-P1-007/CL-P1-008 remaining local depth while Android transport is
 reserved by other sessions:
 
 - Expand richer tool-result/AI-note/milestone timeline handoffs, polish
-  multi-tank switching, and continue CL-P1-009 data-safety hardening.
+  multi-tank switching, continue CL-P1-009 data-safety hardening, and continue
+  CL-P1-010 preference centralisation.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

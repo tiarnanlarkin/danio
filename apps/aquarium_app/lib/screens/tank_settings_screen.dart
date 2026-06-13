@@ -241,12 +241,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
             RadioListTile<String>(
               value: 'tropical',
               title: const Text('Tropical'),
-              subtitle: const Text('24-28°C • most community fish'),
+              subtitle: const Text('24-28 C - most community fish'),
             ),
             RadioListTile<String>(
               value: 'coldwater',
               title: const Text('Coldwater'),
-              subtitle: const Text('15-22°C • goldfish etc.'),
+              subtitle: const Text('15-22 C - goldfish etc.'),
             ),
           ],
         ),

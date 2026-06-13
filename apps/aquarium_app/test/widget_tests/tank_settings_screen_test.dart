@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/tank_settings_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -118,6 +120,24 @@ void main() {
       expect(find.textContaining('Marine'), findsNothing);
       expect(find.textContaining('not available'), findsNothing);
       expect(find.byType(DropdownButtonFormField<TankType>), findsNothing);
+    });
+
+    testWidgets('shows readable water profile temperature labels', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('24-28 C - most community fish'), findsOneWidget);
+      expect(find.text('15-22 C - goldfish etc.'), findsOneWidget);
+    });
+
+    test('TankSettingsScreen source is ASCII-safe', () {
+      final source = File(
+        'lib/screens/tank_settings_screen.dart',
+      ).readAsStringSync();
+
+      expect(RegExp(r'[^\x00-\x7F]').hasMatch(source), isFalse);
     });
 
     testWidgets('adds enough bottom padding for the persistent dock', (
