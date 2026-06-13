@@ -80,6 +80,29 @@ void main() {
       expect(find.text('Propagate by rhizome division.'), findsOneWidget);
     });
 
+    testWidgets('plant detail shows planting profile', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Anubias Barteri'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Planting Profile'), findsOneWidget);
+      expect(
+        find.text('Layout role: midground, 15-30 cm mature height.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Growth pace: slow growth, easy difficulty.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Light and CO2: low light, no CO2 setup needed.'),
+        findsOneWidget,
+      );
+      expect(find.text('Propagation: rhizome division.'), findsOneWidget);
+    });
+
     testWidgets('plant detail shows watch-for guidance', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

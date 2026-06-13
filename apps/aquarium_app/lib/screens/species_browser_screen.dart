@@ -548,6 +548,10 @@ class _SpeciesDetailSheet extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg2),
 
+            _SpeciesCareProfileCard(species: species),
+
+            const SizedBox(height: AppSpacing.lg2),
+
             _CareActionsCard(species: species),
 
             const SizedBox(height: AppSpacing.lg2),
@@ -659,6 +663,80 @@ class _SpeciesDetailSheet extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _SpeciesCareProfileCard extends StatelessWidget {
+  final SpeciesInfo species;
+
+  const _SpeciesCareProfileCard({required this.species});
+
+  @override
+  Widget build(BuildContext context) {
+    final ghText = species.minGh != null && species.maxGh != null
+        ? ', GH ${_format(species.minGh!)}-${_format(species.maxGh!)}'
+        : '';
+    final items = <_CareAction>[
+      _CareAction(
+        icon: Icons.home_work_outlined,
+        text:
+            'Tank fit: ${species.minTankLitres.toStringAsFixed(0)} L+, ${species.swimLevel.toLowerCase()} swimmer, ${species.temperament.toLowerCase()} temperament.',
+      ),
+      _CareAction(
+        icon: Icons.groups_outlined,
+        text: species.minSchoolSize > 1
+            ? 'Group plan: keep ${species.minSchoolSize} or more together.'
+            : 'Group plan: can be planned singly when the setup fits.',
+      ),
+      _CareAction(
+        icon: Icons.water_drop_outlined,
+        text:
+            'Water window: ${_format(species.minTempC)}-${_format(species.maxTempC)} C, pH ${_formatPh(species.minPh)}-${_formatPh(species.maxPh)}$ghText.',
+      ),
+      _CareAction(
+        icon: Icons.restaurant_outlined,
+        text: 'Feeding style: ${_normaliseCopy(species.diet)}',
+      ),
+    ];
+
+    return AppCard(
+      padding: AppCardPadding.compact,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.fact_check_outlined, color: AppColors.primary),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Care Profile', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _CareActionRow(action: item),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _format(double value) {
+    return value == value.roundToDouble()
+        ? value.toStringAsFixed(0)
+        : value.toStringAsFixed(1);
+  }
+
+  String _formatPh(double value) => value.toStringAsFixed(1);
+
+  String _normaliseCopy(String value) {
+    final mojibakeEmDash = String.fromCharCodes([0x00e2, 0x20ac, 0x201d]);
+    return value
+        .replaceAll(mojibakeEmDash, '-')
+        .replaceAll(String.fromCharCode(0x2014), '-')
+        .replaceAll(String.fromCharCode(0x2013), '-');
   }
 }
 

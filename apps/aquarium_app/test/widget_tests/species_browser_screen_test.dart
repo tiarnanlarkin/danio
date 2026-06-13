@@ -135,6 +135,31 @@ void main() {
       );
     });
 
+    testWidgets('species detail shows care profile', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Care Profile'), findsOneWidget);
+      expect(
+        find.text('Tank fit: 40 L+, middle swimmer, peaceful temperament.'),
+        findsOneWidget,
+      );
+      expect(find.text('Group plan: keep 6 or more together.'), findsOneWidget);
+      expect(
+        find.text('Water window: 20-26 C, pH 6.0-7.0, GH 1-10.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Feeding style: Omnivore - flakes, micro pellets, frozen/live foods',
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('species detail shows watch-for guidance', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

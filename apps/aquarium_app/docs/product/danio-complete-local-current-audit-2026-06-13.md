@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1456 tests.
+- `flutter test`: pass, 1458 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -496,6 +496,16 @@ CL-P1-003J Care source trails:
   planted aquarium beginner guide.
 - The card opens sources externally and avoids claiming every local field has
   been individually source-audited.
+
+CL-P1-003K Care profile cards:
+
+- Fish species detail sheets now include a Care Profile card with tank fit,
+  group plan, water window, and feeding style derived from local species data.
+- Plant detail sheets now include a Planting Profile card with layout role,
+  growth pace, light/CO2 needs, and propagation derived from local plant data.
+- This completes the current local species/plant guide pass: detail pages now
+  have profiles, actions, watch-outs, wishlist saves, tank/task handoffs, missing
+  species request guidance, and source trails.
 
 Current Android device state:
 

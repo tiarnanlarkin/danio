@@ -448,6 +448,10 @@ class _PlantDetailSheet extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg2),
 
+            _PlantingProfileCard(plant: plant),
+
+            const SizedBox(height: AppSpacing.lg2),
+
             _PlantCareActionsCard(plant: plant),
 
             const SizedBox(height: AppSpacing.lg2),
@@ -505,6 +509,60 @@ class _PlantDetailSheet extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _PlantingProfileCard extends StatelessWidget {
+  final PlantInfo plant;
+
+  const _PlantingProfileCard({required this.plant});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = <_PlantCareAction>[
+      _PlantCareAction(
+        icon: Icons.layers_outlined,
+        text:
+            'Layout role: ${plant.placement.toLowerCase()}, ${plant.minHeightCm.toStringAsFixed(0)}-${plant.maxHeightCm.toStringAsFixed(0)} cm mature height.',
+      ),
+      _PlantCareAction(
+        icon: Icons.trending_up_outlined,
+        text:
+            'Growth pace: ${plant.growthRate.toLowerCase()} growth, ${plant.difficulty.toLowerCase()} difficulty.',
+      ),
+      _PlantCareAction(
+        icon: Icons.wb_sunny_outlined,
+        text:
+            'Light and CO2: ${plant.lightLevel.toLowerCase()} light, ${plant.needsCO2 ? 'CO2 setup recommended' : 'no CO2 setup needed'}.',
+      ),
+      _PlantCareAction(
+        icon: Icons.call_split_outlined,
+        text: 'Propagation: ${plant.propagation.toLowerCase()}.',
+      ),
+    ];
+
+    return AppCard(
+      padding: AppCardPadding.compact,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.eco_outlined, color: AppColors.success),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Planting Profile', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _PlantCareActionRow(action: item),
+            ),
+          ),
+        ],
       ),
     );
   }
