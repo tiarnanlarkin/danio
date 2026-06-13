@@ -8,12 +8,17 @@ void main() {
   test('weekly progress copy avoids social leaderboard promises', () {
     final files = [
       'lib/models/leaderboard.dart',
+      'lib/models/user_profile.dart',
       'lib/data/achievements.dart',
       'lib/services/analytics_service.dart',
+      'lib/services/difficulty_service.dart',
+      'lib/providers/user_profile_notifier.dart',
     ];
     final oldCopy = RegExp(
       'Bronze League|Silver League|Gold League|Diamond League|'
-      'League Climber|competitive spirit|promote to|secure your promotion',
+      'League Climber|Leaderboard/Competition|Determine league|'
+      'competitive spirit|competitive league|'
+      'leaderboard/progress view|promote to|secure your promotion',
       caseSensitive: false,
     );
 

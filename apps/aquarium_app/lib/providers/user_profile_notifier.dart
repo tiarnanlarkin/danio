@@ -15,7 +15,7 @@ import '../data/achievements.dart'; // New canonical achievement definitions (re
 import '../models/lesson_progress.dart';
 import '../models/gem_economy.dart';
 import '../models/gem_transaction.dart';
-import '../models/leaderboard.dart'; // For League and WeekPeriod
+import '../models/leaderboard.dart'; // For local weekly tiers and week periods
 import '../models/shop_item.dart'; // For InventoryItem
 // spaced_repetition.dart no longer needed — card seeding delegated to SpacedRepetitionProvider
 import 'lesson_provider.dart';
@@ -480,7 +480,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Add to weekly XP
     weeklyXP += effectiveAmount;
 
-    // Determine league based on weekly XP
+    // Determine the local weekly tier based on weekly XP
     final newLeague = _calculateLeagueFromXP(weeklyXP);
 
     // Update today's XP in history
@@ -540,7 +540,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     ).subtract(Duration(days: daysFromMonday));
   }
 
-  /// Determine league based on weekly XP
+  /// Determine the local weekly tier based on weekly XP.
   League _calculateLeagueFromXP(int weeklyXP) {
     if (weeklyXP >= League.diamond.minWeeklyXP) return League.diamond;
     if (weeklyXP >= League.gold.minWeeklyXP) return League.gold;
@@ -549,7 +549,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   }
 
   /// Calculate updated weekly XP fields for a given XP amount.
-  /// Returns (weeklyXP, weekStartDate, league) to merge into copyWith.
+  /// Returns updated weekly XP fields to merge into copyWith.
   /// All XP paths MUST call this so weeklyXP stays in sync with totalXp.
   ({int weeklyXP, DateTime? weekStartDate, League league}) _updatedWeeklyXP(
     UserProfile current,

@@ -5,7 +5,7 @@ library;
 import 'package:flutter/foundation.dart';
 import 'lesson_progress.dart';
 import 'tank.dart'; // For TankType enum
-import 'leaderboard.dart'; // For League enum
+import 'leaderboard.dart'; // For local weekly tier enum
 import 'shop_item.dart'; // For InventoryItem
 
 enum ExperienceLevel { beginner, intermediate, expert }
@@ -62,9 +62,9 @@ class UserProfile {
   final int hearts; // Current hearts (0-5)
   final DateTime? lastHeartRefill; // Last time hearts auto-refilled
 
-  // Leaderboard/Competition
+  // Local weekly progression
   final League
-  league; // Current competitive league (Bronze/Silver/Gold/Diamond)
+  league; // Current local weekly tier, kept as `league` for saved-data compatibility
   final int weeklyXP; // XP earned this week (Monday-Sunday)
   final DateTime?
   weekStartDate; // When current week started (for reset tracking)

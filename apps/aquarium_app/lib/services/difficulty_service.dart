@@ -288,7 +288,7 @@ class DifficultyService {
     };
   }
 
-  /// Get all topics ranked by skill level (for leaderboard/progress view)
+  /// Get all topics ranked by skill level for the local progress view.
   List<MapEntry<String, double>> getTopicsRankedBySkill({
     required UserSkillProfile profile,
   }) {
