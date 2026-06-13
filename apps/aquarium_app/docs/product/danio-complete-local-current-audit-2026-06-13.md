@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1504 tests.
+- `flutter test`: pass, 1506 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -784,6 +784,18 @@ CL-P1-006C Dosing guided workflow:
   while still using the existing validation and log-save path.
 - Focused coverage verifies AddLog initial-note persistence, direct Dosing
   handoff into AddLog, and Workshop Dosing tank-volume prefill.
+
+CL-P1-006D CO2 guided workflow:
+
+- The CO2 Calculator can now launch with tank context from Workshop.
+- Valid CO2 estimates now include a guided next-step card with a
+  `Log this CO2 note` action.
+- The guided action opens `AddLogScreen` as an observation with a prefilled note
+  covering calculated CO2 ppm, status, pH, KH, and an estimate caveat.
+- The touched CO2 calculator and tests were cleaned of mojibake/non-ASCII
+  artifacts in comments, hints, and bullet markers.
+- Focused coverage verifies direct CO2 handoff into AddLog and Workshop CO2
+  context routing.
 
 Current Android device state:
 

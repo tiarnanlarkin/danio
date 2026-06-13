@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/models.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/co2_calculator_screen.dart';
 import 'package:danio/screens/dosing_calculator_screen.dart';
 import 'package:danio/screens/tank_volume_calculator_screen.dart';
 import 'package:danio/screens/water_change_calculator_screen.dart';
@@ -163,6 +164,27 @@ void main() {
       );
 
       expect(find.text('Log this dosing note'), findsOneWidget);
+    });
+
+    testWidgets('opens CO2 with current tank context', (tester) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.tap(find.text('CO2 Calculator'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Co2CalculatorScreen), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('Log this CO2 note'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      expect(find.text('Log this CO2 note'), findsOneWidget);
     });
 
     testWidgets('tool cards expose one concise screen reader label', (

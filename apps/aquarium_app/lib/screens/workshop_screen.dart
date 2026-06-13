@@ -163,6 +163,48 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     );
   }
 
+  /// Open CO2 with tank context when it is available.
+  Future<void> _openCo2Calculator() async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      NavigationThrottle.push(
+        context,
+        const Co2CalculatorScreen(),
+        rootNavigator: true,
+      );
+      return;
+    }
+
+    Tank? tank;
+    if (tanks.length == 1) {
+      tank = tanks.first;
+    } else {
+      tank = await showDialog<Tank>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: const Text('Choose a Tank'),
+          children: tanks
+              .map(
+                (tank) => SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, tank),
+                  child: Text(tank.name),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (tank == null || !mounted) return;
+    NavigationThrottle.push(
+      context,
+      Co2CalculatorScreen(tankId: tank.id),
+      rootNavigator: true,
+    );
+  }
+
   /// Pick a tank, then navigate to the Cycling Assistant for that tank.
   Future<void> _openCyclingAssistant() async {
     final tanks = await ref.read(tanksProvider.future);
@@ -285,11 +327,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       title: 'CO2 Calculator',
                       subtitle: 'From pH & KH',
                       color: DanioColors.tealWater,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const Co2CalculatorScreen(),
-                        rootNavigator: true,
-                      ),
+                      onTap: _openCo2Calculator,
                     ),
                     _ToolCard(
                       icon: Icons.medication_liquid,

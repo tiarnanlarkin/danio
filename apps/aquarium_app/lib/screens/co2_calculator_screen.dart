@@ -1,12 +1,17 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../models/log_entry.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_text_field.dart';
+import 'add_log_screen.dart';
 
 class Co2CalculatorScreen extends StatefulWidget {
-  const Co2CalculatorScreen({super.key});
+  final String? tankId;
+
+  const Co2CalculatorScreen({super.key, this.tankId});
 
   @override
   State<Co2CalculatorScreen> createState() => _Co2CalculatorScreenState();
@@ -46,7 +51,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
       return;
     }
 
-    // Bounds check: pH must be 0.1–14, KH must be 0.1–50
+    // Bounds check: pH must be 0.1-14, KH must be 0.1-50
     if (ph < 0.1 || ph > 14.0) {
       setState(() {
         _co2Level = null;
@@ -62,7 +67,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
       return;
     }
 
-    // CO2 (ppm) = 3 × KH × 10^(7-pH)
+    // CO2 (ppm) = 3 * KH * 10^(7-pH)
     final co2 = 3 * kh * _pow10(7 - ph);
     setState(() {
       _co2Level = co2;
@@ -89,6 +94,33 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
     if (_co2Level! <= 30) return AppColors.success;
     if (_co2Level! <= 40) return AppColors.warning;
     return AppColors.error;
+  }
+
+  bool get _canLogCo2 =>
+      widget.tankId != null && _co2Level != null && _validationError == null;
+
+  String get _co2Summary {
+    final co2Level = _co2Level;
+    if (co2Level == null) return '';
+    return 'CO2 estimate: ${co2Level.toStringAsFixed(1)} ppm ($_co2Status).\n'
+        'pH: ${_phController.text}.\n'
+        'KH: ${_khController.text} dKH.\n'
+        'This is calculated from pH and KH, so compare it with fish behaviour and drop-checker trends.';
+  }
+
+  void _logCo2Note() {
+    final tankId = widget.tankId;
+    if (tankId == null || _co2Level == null) return;
+
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(
+        tankId: tankId,
+        initialType: LogType.observation,
+        initialNotes: _co2Summary,
+      ),
+      rootNavigator: true,
+    );
   }
 
   @override
@@ -144,7 +176,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             child: AppTextField(
               controller: _phController,
               label: 'pH',
-              hint: '0.1 – 14.0',
+              hint: '0.1 - 14.0',
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
@@ -159,7 +191,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             child: AppTextField(
               controller: _khController,
               label: 'KH (dKH)',
-              hint: '0.1 – 50 dKH',
+              hint: '0.1 - 50 dKH',
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
@@ -213,6 +245,52 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
       ),
 
       const SizedBox(height: AppSpacing.lg),
+
+      if (_canLogCo2) ...[
+        AppCard(
+          backgroundColor: AppOverlays.info10,
+          padding: AppCardPadding.standard,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.route_outlined,
+                    color: AppColors.info,
+                    size: AppIconSizes.sm,
+                  ),
+                  const SizedBox(width: AppSpacing.sm2),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Guided next step',
+                          style: AppTypography.labelLarge,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Save this CO2 estimate as a tank journal note so later plant and fish observations have context.',
+                          style: AppTypography.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              FilledButton.icon(
+                onPressed: _logCo2Note,
+                icon: const Icon(Icons.edit_note_rounded),
+                label: const Text('Log this CO2 note'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+      ],
 
       // Reference chart
       Text('CO2 Reference Chart', style: AppTypography.headlineSmall),
@@ -463,7 +541,7 @@ class _TipRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ', style: AppTypography.bodyMedium),
+          Text('- ', style: AppTypography.bodyMedium),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),
