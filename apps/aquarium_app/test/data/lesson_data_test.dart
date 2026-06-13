@@ -245,6 +245,10 @@ void main() {
       _expectStructuredGuides('Species Care', _mergedSpeciesCarePath.lessons);
     });
 
+    test('every advanced topics lesson has a structured guide', () {
+      _expectStructuredGuides('Advanced Topics', advancedTopicsPath.lessons);
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {

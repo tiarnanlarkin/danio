@@ -136,3 +136,34 @@ const lessonSourceRspcaFishWelfare = LessonSource(
   url: 'https://www.rspca.org.uk/adviceandwelfare/pets/fish',
   note: 'General freshwater fish welfare and species-specific care context.',
 );
+
+const lessonSourceMerckFishBreeding = LessonSource(
+  title: 'Breeding and Reproduction of Fish',
+  publisher: 'Merck Veterinary Manual',
+  url:
+      'https://www.merckvetmanual.com/all-other-pets/fish/breeding-and-reproduction-of-fish',
+  note: 'Fish breeding triggers, livebearers, egg layers, and fry care.',
+);
+
+const lessonSourceInjafLivebearers = LessonSource(
+  title: 'Beginners Guide to Livebearers',
+  publisher: 'INJAF',
+  url: 'https://injaf.org/aquarium-fish/beginners-guide-to-livebearers/',
+  note: 'Livebearer care, water needs, breeding risk, and welfare context.',
+);
+
+const lessonSourceFishBaseReproduction = LessonSource(
+  title: 'The REPRODUCTION Table',
+  publisher: 'FishBase',
+  url: 'https://fishbase.se/manual/english/fishbasethe_REPRODUCTION_Table.htm',
+  note:
+      'Reproductive mode, spawning behaviour, and reproductive guild context.',
+);
+
+const lessonSourceGovUkRehomeNotRelease = LessonSource(
+  title: 'Why it is important to rehome rather than release unwanted fish',
+  publisher: 'Marine Science Blog, GOV.UK',
+  url:
+      'https://marinescience.blog.gov.uk/2019/05/14/why-it-is-important-to-rehome-rather-than-release-unwanted-fish/',
+  note: 'Environmental risk and rehoming guidance for unwanted aquarium fish.',
+);

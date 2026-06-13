@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final advancedTopicsPath = LearningPath(
   id: 'advanced_topics',
@@ -23,6 +24,23 @@ final advancedTopicsPath = LearningPath(
       orderIndex: 0,
       xpReward: 75,
       estimatedMinutes: 7,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Plan livebearer breeding around sex ratio, adult stress, and fry survival.',
+          'Create a rehoming plan before a prolific livebearer tank becomes overstocked.',
+        ],
+        scenario:
+            'A mixed guppy tank has produced surprise fry and the owner is not sure whether to protect them or let the community tank limit numbers.',
+        careDrill: [
+          'Count males and females, then adjust toward one male per two or three females if harassment is visible.',
+          'Choose one fry plan: dense plant cover, a separate grow-out tank, or confirmed rehoming before the next brood.',
+        ],
+        sources: [
+          lessonSourceMerckFishBreeding,
+          lessonSourceInjafLivebearers,
+          lessonSourceGovUkRehomeNotRelease,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -65,7 +83,8 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_live_q1',
-            question: 'What male-to-female ratio is recommended for livebearers?',
+            question:
+                'What male-to-female ratio is recommended for livebearers?',
             options: [
               '3 males per female',
               '1 male per female',
@@ -78,13 +97,9 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_live_q2',
-            question: 'How long is the approximate gestation period for guppies?',
-            options: [
-              '7 days',
-              '28 days',
-              '60 days',
-              '90 days',
-            ],
+            question:
+                'How long is the approximate gestation period for guppies?',
+            options: ['7 days', '28 days', '60 days', '90 days'],
             correctIndex: 1,
             explanation:
                 'Guppy gestation is approximately 28 days, varying with temperature. Warmer water shortens it slightly; cooler water lengthens it.',
@@ -104,7 +119,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_live_q4',
-            question: 'Why should unwanted livebearer fry never be released into local waterways?',
+            question:
+                'Why should unwanted livebearer fry never be released into local waterways?',
             options: [
               'They will die immediately in cold water',
               'It is illegal in most countries and can devastate native ecosystems',
@@ -127,6 +143,23 @@ final advancedTopicsPath = LearningPath(
       orderIndex: 1,
       xpReward: 75,
       estimatedMinutes: 8,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Match egg-layer spawning setup to scatterers, depositors, nesters, or mouthbrooders.',
+          'Protect eggs and fry without creating unsafe filter flow or dirty nursery water.',
+        ],
+        scenario:
+            'A pair of zebra danios is conditioned well, but the eggs vanish within hours of spawning in the display tank.',
+        careDrill: [
+          'Identify the species spawning strategy before choosing mops, marbles, caves, or parent removal.',
+          'Prepare a gentle sponge-filtered nursery and first foods before attempting another spawn.',
+        ],
+        sources: [
+          lessonSourceMerckFishBreeding,
+          lessonSourceFishBaseReproduction,
+          lessonSourceMerckHomeForFish,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -177,7 +210,8 @@ final advancedTopicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'at_egg_q1',
-            question: 'What food is best for conditioning fish before breeding?',
+            question:
+                'What food is best for conditioning fish before breeding?',
             options: [
               'Flake food fed twice daily',
               'Algae wafers',
@@ -203,7 +237,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_egg_q3',
-            question: 'What is the correct fry feeding sequence after egg layers hatch?',
+            question:
+                'What is the correct fry feeding sequence after egg layers hatch?',
             options: [
               'Crushed flake immediately from day one',
               'Baby brine shrimp → infusoria → large pellets',
@@ -216,7 +251,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_egg_q4',
-            question: 'What must you do immediately after egg scatterers (like danios) have spawned?',
+            question:
+                'What must you do immediately after egg scatterers (like danios) have spawned?',
             options: [
               'Add medication to prevent fungus',
               'Remove the parents — they will eat the eggs',
@@ -240,6 +276,23 @@ final advancedTopicsPath = LearningPath(
       orderIndex: 2,
       xpReward: 75,
       estimatedMinutes: 8,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Choose an aquascape style that matches plant demands, equipment, and maintenance capacity.',
+          'Build visual depth with substrate, hardscape, plant height, and an intentional focal point.',
+        ],
+        scenario:
+            'A new aquascaper wants a clean Iwagumi carpet but has low light, no CO2, and little weekly maintenance time.',
+        careDrill: [
+          'Sketch the focal point and hardscape layout before adding substrate or water.',
+          'Check each chosen plant against light, CO2, growth rate, and trimming needs before buying.',
+        ],
+        sources: [
+          lessonSourceTropicaPlants,
+          lessonSourceTropicaCare,
+          lessonSourceInjafAquariumPlants,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -294,7 +347,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_aqua_q2',
-            question: 'Where should your focal point be placed according to the rule of thirds?',
+            question:
+                'Where should your focal point be placed according to the rule of thirds?',
             options: [
               'Dead centre of the tank',
               'In the back corner',
@@ -307,7 +361,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_aqua_q3',
-            question: 'What order should you follow when building an aquascape?',
+            question:
+                'What order should you follow when building an aquascape?',
             options: [
               'Plants first, then rocks, then substrate',
               'Substrate first, then hardscape, then plants',
@@ -320,13 +375,9 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_aqua_q4',
-            question: 'How long does it typically take for an aquascape to fully grow in?',
-            options: [
-              '1–2 weeks',
-              '1 month',
-              '2–6 months',
-              '2 years',
-            ],
+            question:
+                'How long does it typically take for an aquascape to fully grow in?',
+            options: ['1–2 weeks', '1 month', '2–6 months', '2 years'],
             correctIndex: 2,
             explanation:
                 'A fully grown aquascape takes 2–6 months depending on plants, lighting, and CO2. Patience is essential — the scape looks best after plants have filled in completely.',
@@ -343,6 +394,24 @@ final advancedTopicsPath = LearningPath(
       orderIndex: 3,
       xpReward: 75,
       estimatedMinutes: 7,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Research a biotope by specific habitat needs rather than broad continent labels.',
+          'Connect species choice, water chemistry, substrate, hardscape, and behaviour into one coherent plan.',
+        ],
+        scenario:
+            'A keeper wants an Amazon blackwater tank but has mixed hard-water livebearers, tetras, and Rift Lake rockwork on the same shopping list.',
+        careDrill: [
+          'Pick one habitat theme and write down its target water, substrate, cover, flow, and species group.',
+          'Remove any fish, plant, or hardscape choice that conflicts with the chosen habitat conditions.',
+        ],
+        sources: [
+          lessonSourceFishBase,
+          lessonSourceFishBaseReproduction,
+          lessonSourceMerckWaterRanges,
+          lessonSourceRspcaFishEnvironment,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -423,7 +492,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_bio_q4',
-            question: 'What natural material releases tannins for an Amazon blackwater setup?',
+            question:
+                'What natural material releases tannins for an Amazon blackwater setup?',
             options: [
               'Crushed coral',
               'Indian almond leaves',
@@ -446,6 +516,24 @@ final advancedTopicsPath = LearningPath(
       orderIndex: 4,
       xpReward: 75,
       estimatedMinutes: 9,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Triage emergencies by oxygen, temperature, toxins, disease signs, and recent changes.',
+          'Use tests and species tolerance before choosing water changes, aeration, medication, salt, or heat.',
+        ],
+        scenario:
+            'Fish are gasping at the surface after a missed filter maintenance window and the water looks cloudy.',
+        careDrill: [
+          'Increase aeration, test ammonia/nitrite/nitrate/temperature, and do a controlled water change if toxins are present.',
+          'Confirm tropical, coldwater, scaleless, plant, and invertebrate risks before using heat, salt, or medication.',
+        ],
+        sources: [
+          lessonSourceMerckWaterQuality,
+          lessonSourceMerckFishDiseases,
+          lessonSourceMerckAquariumFishManagement,
+          lessonSourceRspcaFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -500,7 +588,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_trouble_q2',
-            question: 'How do you treat ich (white spot disease) in a TROPICAL fish tank?',
+            question:
+                'How do you treat ich (white spot disease) in a TROPICAL fish tank?',
             options: [
               'Do nothing — it resolves on its own',
               'Lower temperature to 65°F and add medication',
@@ -513,7 +602,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_trouble_q3',
-            question: 'During a power outage, what is the single most important piece of emergency equipment?',
+            question:
+                'During a power outage, what is the single most important piece of emergency equipment?',
             options: [
               'A spare heater',
               'A battery-powered air pump',
@@ -549,6 +639,24 @@ final advancedTopicsPath = LearningPath(
       orderIndex: 5,
       xpReward: 75,
       estimatedMinutes: 10,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Use GH, KH, TDS, and RO water as planning tools instead of isolated numbers.',
+          'Stabilise pH and mineral changes gradually, especially in planted or soft-water systems.',
+        ],
+        scenario:
+            'A planted tank with CO2 injection has a low KH reading and the pH swings sharply between morning and evening.',
+        careDrill: [
+          'Record tap, tank, and replacement-water GH/KH/TDS before changing buffers or mixing RO water.',
+          'Adjust mineral targets slowly and retest after water changes rather than chasing pH directly.',
+        ],
+        sources: [
+          lessonSourceMerckWaterRanges,
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaWaterQuality,
+          lessonSourceTropicaCare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -607,7 +715,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_chem_q2',
-            question: 'What is the problem with using pure RO water without remineralisation?',
+            question:
+                'What is the problem with using pure RO water without remineralisation?',
             options: [
               'RO water has too high a pH',
               'RO water has no minerals — fish and plants need minerals to survive',
@@ -633,7 +742,8 @@ final advancedTopicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'at_chem_q4',
-            question: 'Why must you shake the API Nitrate test Bottle #2 vigorously before use?',
+            question:
+                'Why must you shake the API Nitrate test Bottle #2 vigorously before use?',
             options: [
               'It\'s just a superstition — it makes no difference',
               'The reagents precipitate and settle — not shaking causes falsely low nitrate readings',
