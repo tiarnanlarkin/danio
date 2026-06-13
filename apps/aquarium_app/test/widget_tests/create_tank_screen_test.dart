@@ -171,6 +171,18 @@ void main() {
       }
     });
 
+    testWidgets('tank type step presents the supported freshwater scope', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Freshwater'), findsOneWidget);
+      expect(find.text('Marine'), findsNothing);
+      expect(find.textContaining('not available'), findsNothing);
+    });
+
     testWidgets('close action exposes one tappable semantics node', (
       tester,
     ) async {

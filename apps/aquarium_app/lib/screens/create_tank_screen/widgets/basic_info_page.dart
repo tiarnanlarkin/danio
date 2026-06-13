@@ -4,7 +4,6 @@ import '../../../models/models.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/accessibility_utils.dart';
 import '../../../utils/app_constants.dart';
-import '../../../widgets/danio_snack_bar.dart';
 
 /// First page of tank creation — name and type selection.
 class BasicInfoPage extends StatelessWidget {
@@ -69,7 +68,7 @@ class BasicInfoPage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Freshwater is the most common choice for beginners.',
+            'Danio is focused on freshwater aquariums: tropical, coldwater, planted, shrimp, and nano setups.',
             style: AppTypography.bodyMedium,
           ),
           const SizedBox(height: AppSpacing.md),
@@ -92,34 +91,12 @@ class _TypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _TypeCard(
-            icon: Icons.water_drop,
-            title: 'Freshwater',
-            subtitle: 'Tropical, coldwater, planted',
-            isSelected: selected == TankType.freshwater,
-            onTap: () => onChanged(TankType.freshwater),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm2),
-        Expanded(
-          child: _TypeCard(
-            icon: Icons.waves,
-            title: 'Marine',
-            subtitle: 'Not available in this version',
-            isSelected: selected == TankType.marine,
-            isDisabled: true,
-            onTap: () {
-              DanioSnackBar.info(
-                context,
-                'Marine setup is not available in this version. Use freshwater profiles for now.',
-              );
-            },
-          ),
-        ),
-      ],
+    return _TypeCard(
+      icon: Icons.water_drop,
+      title: 'Freshwater',
+      subtitle: 'Tropical, coldwater, planted, shrimp, and nano care',
+      isSelected: selected == TankType.freshwater,
+      onTap: () => onChanged(TankType.freshwater),
     );
   }
 }
@@ -129,7 +106,6 @@ class _TypeCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool isSelected;
-  final bool isDisabled;
   final VoidCallback? onTap;
 
   const _TypeCard({
@@ -137,7 +113,6 @@ class _TypeCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.isSelected,
-    this.isDisabled = false,
     this.onTap,
   });
 
@@ -145,64 +120,52 @@ class _TypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: A11yLabels.selectableItem(title, isSelected),
-      hint: isDisabled ? 'Not available in this version' : subtitle,
+      hint: subtitle,
       button: true,
-      enabled: !isDisabled,
+      enabled: true,
       selected: isSelected,
       onTap: onTap,
       excludeSemantics: true,
-      child: Opacity(
-        opacity: isDisabled ? 0.6 : 1,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: AppRadius.mediumRadius,
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? AppOverlays.primary10
-                  : context.surfaceVariant,
-              borderRadius: AppRadius.mediumRadius,
-              border: Border.all(
-                color: isSelected ? AppColors.primary : Colors.transparent,
-                width: 2,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: AppRadius.mediumRadius,
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: isSelected ? AppOverlays.primary10 : context.surfaceVariant,
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(
+              color: isSelected ? AppColors.primary : Colors.transparent,
+              width: 2,
+            ),
+          ),
+          child: Column(
+            children: [
+              ExcludeSemantics(
+                child: Icon(
+                  icon,
+                  size: 32,
+                  color: isSelected ? AppColors.primary : context.textSecondary,
+                ),
               ),
-            ),
-            child: Column(
-              children: [
-                ExcludeSemantics(
-                  child: Icon(
-                    icon,
-                    size: 32,
-                    color: isSelected
-                        ? AppColors.primary
-                        : context.textSecondary,
+              const SizedBox(height: AppSpacing.sm),
+              ExcludeSemantics(
+                child: Text(
+                  title,
+                  style: AppTypography.labelLarge.copyWith(
+                    color: isSelected ? AppColors.primary : context.textPrimary,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                ExcludeSemantics(
-                  child: Text(
-                    title,
-                    style: AppTypography.labelLarge.copyWith(
-                      color: isSelected
-                          ? AppColors.primary
-                          : context.textPrimary,
-                    ),
-                  ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              ExcludeSemantics(
+                child: Text(
+                  subtitle,
+                  style: AppTypography.bodySmall,
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: AppSpacing.xs),
-                ExcludeSemantics(
-                  child: Text(
-                    subtitle,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: isDisabled ? context.textHint : null,
-                      fontStyle: isDisabled ? FontStyle.italic : null,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

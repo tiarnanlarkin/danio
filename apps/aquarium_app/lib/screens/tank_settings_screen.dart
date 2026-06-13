@@ -59,7 +59,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
         if (!_initialized) {
           _name = tank.name;
-          _type = tank.type;
+          _type = TankType.freshwater;
           _volumeLitres = tank.volumeLitres;
           _lengthCm = tank.lengthCm;
           _widthCm = tank.widthCm;
@@ -120,8 +120,8 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                         MediaQuery.of(context).viewPadding.bottom +
                         DanioBottomDock.contentClearance,
                   ),
-                  itemCount: _buildItems(tank).length,
-                  itemBuilder: (context, index) => _buildItems(tank)[index],
+                  itemCount: _buildItems().length,
+                  itemBuilder: (context, index) => _buildItems()[index],
                 ),
               ),
             ),
@@ -131,7 +131,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     );
   }
 
-  List<Widget> _buildItems(Tank tank) {
+  List<Widget> _buildItems() {
     return [
       Text('Basics', style: AppTypography.headlineSmall),
       const SizedBox(height: AppSpacing.sm2),
@@ -150,36 +150,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         },
       ),
       const SizedBox(height: AppSpacing.sm2),
-      DropdownButtonFormField<TankType>(
-        initialValue: _type,
-        isExpanded: true,
-        items: const [
-          DropdownMenuItem(
-            value: TankType.freshwater,
-            child: Text('Freshwater', overflow: TextOverflow.ellipsis),
-          ),
-          DropdownMenuItem(
-            value: TankType.marine,
-            child: Text(
-              'Marine (not available in this version)',
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-        onChanged: (v) {
-          if (v == null) return;
-          // Keep MVP simple: prevent switching to marine for now.
-          if (v == TankType.marine) {
-            AppFeedback.showInfo(
-              context,
-              'Marine setup is not available in this version. Use freshwater profiles for now.',
-            );
-            return;
-          }
-          setState(() => _type = v);
-        },
-        decoration: const InputDecoration(labelText: 'Tank type'),
-      ),
+      const _FreshwaterTypeField(),
 
       const SizedBox(height: AppSpacing.lg),
       Text('Size', style: AppTypography.headlineSmall),
@@ -262,27 +233,24 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         style: AppTypography.bodySmall,
       ),
       const SizedBox(height: AppSpacing.sm2),
-      if (_type == TankType.freshwater)
-        RadioGroup<String>(
-          groupValue: _waterType,
-          onChanged: (v) => setState(() => _waterType = v!),
-          child: Column(
-            children: [
-              RadioListTile<String>(
-                value: 'tropical',
-                title: const Text('Tropical'),
-                subtitle: const Text('24-28°C • most community fish'),
-              ),
-              RadioListTile<String>(
-                value: 'coldwater',
-                title: const Text('Coldwater'),
-                subtitle: const Text('15-22°C • goldfish etc.'),
-              ),
-            ],
-          ),
-        )
-      else
-        const Text('Marine targets are not available in this version.'),
+      RadioGroup<String>(
+        groupValue: _waterType,
+        onChanged: (v) => setState(() => _waterType = v!),
+        child: Column(
+          children: [
+            RadioListTile<String>(
+              value: 'tropical',
+              title: const Text('Tropical'),
+              subtitle: const Text('24-28°C • most community fish'),
+            ),
+            RadioListTile<String>(
+              value: 'coldwater',
+              title: const Text('Coldwater'),
+              subtitle: const Text('15-22°C • goldfish etc.'),
+            ),
+          ],
+        ),
+      ),
 
       const SizedBox(height: AppSpacing.lg),
       Text('Start date', style: AppTypography.headlineSmall),
@@ -368,7 +336,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
   bool _hasUnsavedChanges(Tank tank) {
     return _name.trim() != tank.name ||
-        _type != tank.type ||
+        _type != TankType.freshwater ||
         _volumeLitres != tank.volumeLitres ||
         _lengthCm != tank.lengthCm ||
         _widthCm != tank.widthCm ||
@@ -396,7 +364,6 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
   }
 
   WaterTargets _selectedTargets() {
-    if (_type != TankType.freshwater) return const WaterTargets();
     return _waterType == 'coldwater'
         ? WaterTargets.freshwaterColdwater()
         : WaterTargets.freshwaterTropical();
@@ -479,6 +446,35 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       duration: kSnackbarDuration,
       actionLabel: 'Undo',
       onAction: () => actions.undoDeleteTank(widget.tankId),
+    );
+  }
+}
+
+class _FreshwaterTypeField extends StatelessWidget {
+  const _FreshwaterTypeField();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Tank type, Freshwater',
+      readOnly: true,
+      child: InputDecorator(
+        decoration: const InputDecoration(labelText: 'Tank type'),
+        child: Row(
+          children: [
+            Icon(Icons.water_drop_outlined, color: context.textSecondary),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                'Freshwater',
+                style: AppTypography.bodyLarge.copyWith(
+                  color: context.textPrimary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

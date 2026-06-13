@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1315 tests.
+- `flutter test`: pass, 1322 tests.
 - `flutter analyze --no-pub`: pass, no issues.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
 - `flutter test test/services/shop_service_test.dart
@@ -87,8 +87,8 @@ Verification:
 
 ## 4. Feature Honesty Progress
 
-CL-P0-003 has covered the local/offline, rewards, debug visibility, and
-Smart optional-AI surfaces.
+CL-P0-003 has covered the local/offline, rewards, debug visibility,
+freshwater-scope, and Smart optional-AI surfaces.
 
 Fixed:
 
@@ -131,6 +131,12 @@ Fixed:
 - The in-app Privacy Policy now describes the current local build instead of
   dormant cloud-provider implementation details. It no longer tells normal
   users to delete a cloud account or synced cloud rows from Offline Data.
+- The normal app shell no longer mounts the debug sync diagnostic indicator in
+  debug APKs used for local testing.
+- Create Tank and Tank Settings now present Danio as a freshwater-focused local
+  product instead of offering disabled "Marine not available" setup choices.
+  Tank Settings uses a read-only Freshwater field and always shows the supported
+  tropical/coldwater water profile controls.
 
 Remaining CL-P0-003 audit targets:
 
@@ -155,7 +161,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, unsupported marine setup choices, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
@@ -180,5 +186,5 @@ unstable. The next targets are:
 - Social/friends/leaderboard remnants.
 - Debug/QA-only routes accidentally reachable or documented as user features.
 - Public help/privacy/settings copy that still assumes future cloud behavior.
-- Remaining planned/upgrade copy such as Shop Street labels and hidden upgrade
-  comments.
+- Remaining planned/upgrade copy and visible scope mismatches outside the
+  audited primary setup surfaces.

@@ -108,6 +108,18 @@ void main() {
       expect(find.text('Freshwater'), findsOneWidget);
     });
 
+    testWidgets('shows tank type as fixed supported freshwater scope', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('Freshwater'), findsOneWidget);
+      expect(find.textContaining('Marine'), findsNothing);
+      expect(find.textContaining('not available'), findsNothing);
+      expect(find.byType(DropdownButtonFormField<TankType>), findsNothing);
+    });
+
     testWidgets('adds enough bottom padding for the persistent dock', (
       tester,
     ) async {
