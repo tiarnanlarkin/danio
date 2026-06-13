@@ -4,12 +4,12 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final troubleshootingPath = LearningPath(
   id: 'troubleshooting',
   title: 'Troubleshooting & Emergencies',
-  description:
-      'Diagnose problems fast and respond before fish die',
+  description: 'Diagnose problems fast and respond before fish die',
   emoji: '🚨',
   recommendedFor: [
     ExperienceLevel.beginner,
@@ -28,6 +28,23 @@ final troubleshootingPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 6,
       prerequisites: ['nc_intro'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Triage distress by oxygen, ammonia/nitrite, temperature, contamination, and recent changes.',
+          'Act quickly with controlled water changes and aeration while preserving biological filtration.',
+        ],
+        scenario:
+            'Several fish are gasping near the surface after the filter was off overnight and the tank looks dull.',
+        careDrill: [
+          'Increase surface agitation, then test ammonia, nitrite, nitrate, pH, and temperature before dosing anything.',
+          'Do a controlled dechlorinated water change and remove the root cause rather than resetting the whole tank.',
+        ],
+        sources: [
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaFishHealth,
+          lessonSourceRspcaWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -146,11 +163,30 @@ final troubleshootingPath = LearningPath(
       id: 'tr_disease_diagnosis',
       pathId: 'troubleshooting',
       title: 'Disease Diagnosis: What\'s Wrong With My Fish?',
-      description: 'A systematic approach to identifying fish diseases correctly',
+      description:
+          'A systematic approach to identifying fish diseases correctly',
       orderIndex: 1,
       xpReward: 60,
       estimatedMinutes: 8,
       prerequisites: ['tr_emergency', 'fh_prevention'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Separate water-quality stress from disease signs before choosing medication.',
+          'Use quarantine, observation, and targeted treatment instead of broad main-tank dosing.',
+        ],
+        scenario:
+            'One new fish has clamped fins and white marks, while the rest of the community is still eating normally.',
+        careDrill: [
+          'Record symptoms, affected species, appetite, breathing, water tests, and recent additions before naming the disease.',
+          'Move the sick fish to a hospital tank when safe and treat the identified problem at the correct dose.',
+        ],
+        sources: [
+          lessonSourceMerckFishDiseases,
+          lessonSourceMerckRoutineFishHealth,
+          lessonSourceRspcaFishHealth,
+          lessonSourceCdcFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -265,6 +301,23 @@ final troubleshootingPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 5,
       prerequisites: ['nc_intro', 'maint_water_changes'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Read cloudy water by colour, timing, smell, and test results instead of treating every cloud the same way.',
+          'Fix the cause through cycling, light control, waste reduction, and water-quality checks.',
+        ],
+        scenario:
+            'A new tank turns milky white three days after extra food was added, but the fish are still active.',
+        careDrill: [
+          'Identify whether the cloud is white, green, brown, or tannin-stained and test ammonia/nitrite before acting.',
+          'Reduce the likely driver: excess food, immature cycle, excess light, disturbed substrate, or neglected maintenance.',
+        ],
+        sources: [
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaWaterQuality,
+          lessonSourceTropicaCare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -372,11 +425,29 @@ final troubleshootingPath = LearningPath(
       id: 'tr_power_outage',
       pathId: 'troubleshooting',
       title: 'Power Outage Recovery',
-      description: 'What to do when the power goes out — and how to keep fish alive',
+      description:
+          'What to do when the power goes out — and how to keep fish alive',
       orderIndex: 3,
       xpReward: 60,
       estimatedMinutes: 6,
       prerequisites: ['tr_emergency'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Prioritise oxygen and temperature stability during a power outage.',
+          'Restart filtration safely after an outage without dumping stagnant filter waste into the tank.',
+        ],
+        scenario:
+            'The power has been out for six hours in a stocked tropical tank and the filter canister has been idle the whole time.',
+        careDrill: [
+          'Add battery aeration or manual surface movement and avoid feeding until filtration and oxygen are stable.',
+          'Check filter smell and water condition before restart, then test ammonia/nitrite during recovery.',
+        ],
+        sources: [
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckHomeForFish,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -468,10 +539,10 @@ final troubleshootingPath = LearningPath(
             question:
                 'Why should you test ammonia immediately when power is restored after a long outage?',
             options: [
-                'Power surges cause chemical reactions that create ammonia',
-                'Ammonia builds up whenever filtration stops — it will have accumulated during the outage',
-                'Ammonia only tests accurately when equipment is running normally',
-                'Power cuts affect test kit accuracy, so you need to recalibrate',
+              'Power surges cause chemical reactions that create ammonia',
+              'Ammonia builds up whenever filtration stops — it will have accumulated during the outage',
+              'Ammonia only tests accurately when equipment is running normally',
+              'Power cuts affect test kit accuracy, so you need to recalibrate',
             ],
             correctIndex: 1,
             explanation:
@@ -500,11 +571,29 @@ final troubleshootingPath = LearningPath(
       id: 'tr_temperature_crash',
       pathId: 'troubleshooting',
       title: 'Temperature Crash: Heater Failure',
-      description: 'Emergency response to sudden temperature drops and heater failures',
+      description:
+          'Emergency response to sudden temperature drops and heater failures',
       orderIndex: 4,
       xpReward: 60,
       estimatedMinutes: 6,
       prerequisites: ['tr_emergency'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Respond to heater failure with gradual temperature correction, not sudden heat shock.',
+          'Verify the real cause of temperature swings before trusting the heater dial.',
+        ],
+        scenario:
+            'A tropical tank reads several degrees colder than usual in the morning and the fish are sluggish near the bottom.',
+        careDrill: [
+          'Confirm temperature with a second thermometer and inspect heater, plug, room temperature, and water flow.',
+          'Raise temperature gradually while monitoring fish breathing and avoiding direct hot-water additions.',
+        ],
+        sources: [
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckWaterQuality,
+          lessonSourceMerckWaterRanges,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -607,8 +696,7 @@ final troubleshootingPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'tr_temp_q3',
-            question:
-                'A heater stuck in the ON position is dangerous because:',
+            question: 'A heater stuck in the ON position is dangerous because:',
             options: [
               'It causes electrical fires that can damage the entire aquarium cabinet',
               'It continuously raises water temperature, potentially cooking fish before you notice',
@@ -628,11 +716,29 @@ final troubleshootingPath = LearningPath(
       id: 'tr_ph_crash',
       pathId: 'troubleshooting',
       title: 'pH Crash and Overnight Deaths',
-      description: 'What causes the tank to crash overnight — and how to prevent it',
+      description:
+          'What causes the tank to crash overnight — and how to prevent it',
       orderIndex: 5,
       xpReward: 60,
       estimatedMinutes: 7,
       prerequisites: ['tr_emergency', 'wp_ph'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Explain how depleted KH can make pH unstable and dangerous overnight.',
+          'Stabilise buffering and water-change rhythm instead of chasing pH with rapid chemical swings.',
+        ],
+        scenario:
+            'A soft-water tank with low KH has several overnight deaths after skipped maintenance and heavy organic buildup.',
+        careDrill: [
+          'Test pH, KH, ammonia, nitrite, nitrate, and compare tank water to tap or replacement water.',
+          'Correct the cause gradually with water changes and buffering strategy rather than large sudden pH jumps.',
+        ],
+        sources: [
+          lessonSourceMerckWaterRanges,
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,

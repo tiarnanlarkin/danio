@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1470 tests.
+- `flutter test`: pass, 1471 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -641,6 +641,19 @@ CL-P1-004K Breeding Basics guide coverage:
   two outcomes, a real-tank scenario, at least two care drill steps, and an
   HTTPS source reference.
 
+CL-P1-004L Troubleshooting guide coverage:
+
+- Troubleshooting now has structured guide metadata across all six emergency
+  lessons: fish distress, disease diagnosis, cloudy water, power outage
+  recovery, temperature crash, and pH crash.
+- The guide content keeps emergency advice practical and safety-focused:
+  test first, protect oxygen and temperature, isolate when appropriate, and
+  avoid reactive treatments that can destabilise the tank further.
+- A focused data contract verifies every Troubleshooting lesson has at least
+  two outcomes, a real-tank scenario, at least two care drill steps, and an
+  HTTPS source reference.
+- Every current learning path now has structured guide metadata coverage.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -676,9 +689,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Learning depth is now started with structured guide metadata plus Nitrogen
   Cycle, Water Parameters, First Fish, Maintenance, Planted Tanks, Equipment,
   Fish Health, Species Care, Advanced Topics, Aquascaping, and Breeding Basics
-  path enrichment.
-  Remaining learning work is expanding that guide depth, source references,
-  visuals, and practice drills across the full catalog.
+  path enrichment, plus Troubleshooting emergency enrichment. Every current
+  learning path now has structured guide coverage.
+  Remaining learning work is expanding visual depth, practice drills, and richer
+  learning interactions across the catalog.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.

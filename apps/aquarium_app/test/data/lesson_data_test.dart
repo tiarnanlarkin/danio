@@ -257,6 +257,10 @@ void main() {
       _expectStructuredGuides('Breeding Basics', breedingBasicsPath.lessons);
     });
 
+    test('every troubleshooting lesson has a structured guide', () {
+      _expectStructuredGuides('Troubleshooting', troubleshootingPath.lessons);
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {
