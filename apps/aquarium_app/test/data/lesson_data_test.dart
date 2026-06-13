@@ -253,6 +253,10 @@ void main() {
       _expectStructuredGuides('Aquascaping', aquascapingPath.lessons);
     });
 
+    test('every breeding basics lesson has a structured guide', () {
+      _expectStructuredGuides('Breeding Basics', breedingBasicsPath.lessons);
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {

@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final breedingBasicsPath = LearningPath(
   id: 'breeding_basics',
@@ -11,9 +12,7 @@ final breedingBasicsPath = LearningPath(
   description:
       'Successfully breed fish in a home aquarium — from egg layers to livebearers',
   emoji: '🥚',
-  recommendedFor: [
-    ExperienceLevel.intermediate,
-  ],
+  recommendedFor: [ExperienceLevel.intermediate],
   orderIndex: 10,
   lessons: [
     // BR-1: Setting Up a Breeding Tank
@@ -26,6 +25,23 @@ final breedingBasicsPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 6,
       prerequisites: ['nc_how_to', 'ff_quarantine'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Set up a breeding tank that protects eggs, fry, and biological stability.',
+          'Condition adults and trigger spawning without compromising water quality or welfare.',
+        ],
+        scenario:
+            'A keeper has a conditioned pair ready to spawn, but the only available tank has a strong power filter and gravel substrate.',
+        careDrill: [
+          'Check the breeding tank for gentle sponge filtration, stable heat, low stress cover, and species-specific spawning media.',
+          'Prepare first foods and a water-change routine before introducing the breeding pair.',
+        ],
+        sources: [
+          lessonSourceMerckFishBreeding,
+          lessonSourceFishBaseReproduction,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -150,6 +166,23 @@ final breedingBasicsPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 6,
       prerequisites: ['br_breeding_tank'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Match fry feeding to egg, wriggler, free-swimming, and juvenile stages.',
+          'Keep fry water clean with gentle, controlled maintenance instead of adult-tank shortcuts.',
+        ],
+        scenario:
+            'A clutch has just become free-swimming and the fry tank floor is collecting food dust after frequent feeds.',
+        careDrill: [
+          'Confirm whether fry are still absorbing yolk sacs or are ready for first foods before feeding.',
+          'Use airline tubing over a bucket for small daily water changes and stop flow if fry approach the siphon.',
+        ],
+        sources: [
+          lessonSourceMerckFishBreeding,
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaFishDiet,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -228,8 +261,7 @@ final breedingBasicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'br_fry_q1',
-            question:
-                'Why should you wait before feeding newly hatched fry?',
+            question: 'Why should you wait before feeding newly hatched fry?',
             options: [
               'Fry don\'t require any food for the first full week',
               'Newly hatched fry have a yolk sac to absorb — feeding during this wriggler stage wastes food and dirties water',
@@ -242,8 +274,7 @@ final breedingBasicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'br_fry_q2',
-            question:
-                'What is the safest water change method for a fry tank?',
+            question: 'What is the safest water change method for a fry tank?',
             options: [
               'Full gravel vacuum as normal — fry are tougher than they look',
               'A slow siphon with airline tubing with flow controlled by a finger',
@@ -277,11 +308,29 @@ final breedingBasicsPath = LearningPath(
       id: 'br_egg_layers',
       pathId: 'breeding_basics',
       title: 'Egg-Layer Spawning Techniques',
-      description: 'Scatter spawners, guarders, mouthbrooders, and bubble nesters',
+      description:
+          'Scatter spawners, guarders, mouthbrooders, and bubble nesters',
       orderIndex: 2,
       xpReward: 60,
       estimatedMinutes: 7,
       prerequisites: ['br_breeding_tank', 'br_raising_fry'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Match egg-layer setup to scatterers, guarders, mouthbrooders, and bubble nesters.',
+          'Protect eggs from parents, fungus, and unsafe filter flow while preserving stable water.',
+        ],
+        scenario:
+            'A tetra spawning attempt produced eggs overnight, but the adults ate them before the keeper noticed.',
+        careDrill: [
+          'Identify the species reproductive guild, then choose mops, marbles, caves, bubble-nest space, or parent removal.',
+          'Plan egg monitoring and gentle antifungal/water-quality management before the next spawn.',
+        ],
+        sources: [
+          lessonSourceMerckFishBreeding,
+          lessonSourceFishBaseReproduction,
+          lessonSourceMerckRoutineFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -365,7 +414,8 @@ final breedingBasicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'br_egg_q1',
-            question: 'Why are marbles used as a substrate in egg-scatter spawning tanks?',
+            question:
+                'Why are marbles used as a substrate in egg-scatter spawning tanks?',
             options: [
               'Marbles look attractive and stimulate spawning behaviour',
               'Eggs fall between the marbles and are hidden from parents who would immediately eat them',
@@ -378,7 +428,8 @@ final breedingBasicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'br_egg_q2',
-            question: 'What does methylene blue do when added to a spawning/hatching tank?',
+            question:
+                'What does methylene blue do when added to a spawning/hatching tank?',
             options: [
               'Provides essential nutrients to developing embryos',
               'Acts as an antifungal agent to reduce fungal spread from unfertilised eggs',
@@ -391,7 +442,8 @@ final breedingBasicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'br_egg_q3',
-            question: 'When should a female betta be removed from the spawning tank?',
+            question:
+                'When should a female betta be removed from the spawning tank?',
             options: [
               'Before spawning begins — females should never be in the spawning tank',
               'Immediately after spawning is complete',
@@ -417,6 +469,23 @@ final breedingBasicsPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 7,
       prerequisites: ['br_breeding_tank'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Plan livebearer breeding around sex ratio, water hardness, female stress, and brood frequency.',
+          'Prevent accidental overpopulation by deciding where fry will grow and where juveniles will go.',
+        ],
+        scenario:
+            'A community tank with guppies and mollies has multiple pregnant females and no spare grow-out space.',
+        careDrill: [
+          'Check male-to-female ratio, water hardness, hiding cover, and harassment signs before saving every brood.',
+          'Write a fry capacity and rehoming plan before separating pregnant females or protecting more fry.',
+        ],
+        sources: [
+          lessonSourceMerckFishBreeding,
+          lessonSourceInjafLivebearers,
+          lessonSourceGovUkRehomeNotRelease,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -500,7 +569,8 @@ final breedingBasicsPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'br_live_q1',
-            question: 'What male-to-female ratio is recommended for livebearer tanks?',
+            question:
+                'What male-to-female ratio is recommended for livebearer tanks?',
             options: [
               '3 males per female for maximum breeding activity',
               '1 male per female for balanced pairing',
@@ -552,6 +622,23 @@ final breedingBasicsPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 6,
       prerequisites: ['br_raising_fry', 'br_livebearers'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Grow fry with stable water, frequent small feeds, and size-aware management.',
+          'Separate weak husbandry issues from normal growth variation before making welfare decisions.',
+        ],
+        scenario:
+            'A grow-out tank has fast-growing fry outcompeting smaller siblings and nitrate is rising between changes.',
+        careDrill: [
+          'Record feed frequency, uneaten food removal, temperature stability, and ammonia/nitrite/nitrate trends.',
+          'Sort fry by size when larger siblings suppress feeding access for smaller fry.',
+        ],
+        sources: [
+          lessonSourceMerckFishBreeding,
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaFishDiet,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -640,8 +727,7 @@ final breedingBasicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'br_care_q2',
-            question:
-                'What is the purpose of size-grading fry at 3–4 weeks?',
+            question: 'What is the purpose of size-grading fry at 3–4 weeks?',
             options: [
               'Larger fry need warmer water, so they must be separated by temperature requirement',
               'To identify which fry to sell and which to keep — size indicates quality',
@@ -654,7 +740,8 @@ final breedingBasicsPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'br_care_q3',
-            question: 'Why do many responsible breeders cull a percentage of each spawn?',
+            question:
+                'Why do many responsible breeders cull a percentage of each spawn?',
             options: [
               'To maintain the exclusive value of their fish by limiting supply',
               'Culling deformed fry prevents their suffering and prevents passing deformities to future generations',
@@ -674,11 +761,29 @@ final breedingBasicsPath = LearningPath(
       id: 'br_rehoming',
       pathId: 'breeding_basics',
       title: 'Separating Fry and Responsible Rehoming',
-      description: 'When and how to move fry — and what to do with the ones you can\'t keep',
+      description:
+          'When and how to move fry — and what to do with the ones you can\'t keep',
       orderIndex: 5,
       xpReward: 60,
       estimatedMinutes: 5,
       prerequisites: ['br_fry_care'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Move fry only when size, temperature, and tankmate risk make the transfer safe.',
+          'Create responsible rehoming options and never release aquarium fish into the wild.',
+        ],
+        scenario:
+            'A successful livebearer project has produced more juveniles than the owner can keep in the display tank.',
+        careDrill: [
+          'Compare juvenile size against every tankmate mouth size before moving fry into a community tank.',
+          'Contact shops, clubs, or local hobbyists before the grow-out tank reaches stocking limits.',
+        ],
+        sources: [
+          lessonSourceGovUkRehomeNotRelease,
+          lessonSourceInjafLivebearers,
+          lessonSourceRspcaFishWelfare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,

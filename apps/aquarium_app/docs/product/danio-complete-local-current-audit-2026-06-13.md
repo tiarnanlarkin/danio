@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1469 tests.
+- `flutter test`: pass, 1470 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -629,6 +629,18 @@ CL-P1-004J Aquascaping guide coverage:
   outcomes, a real-tank scenario, at least two care drill steps, and an HTTPS
   source reference.
 
+CL-P1-004K Breeding Basics guide coverage:
+
+- Breeding Basics now has structured guide metadata across all six lessons:
+  breeding tank setup, fry raising, egg-layer techniques, livebearer breeding,
+  fry grow-out health, and responsible rehoming.
+- The guide content connects breeding ambition to welfare, water stability,
+  first-food readiness, fry capacity, and rehome-not-release responsibility
+  using the shared Merck, FishBase, INJAF, RSPCA, and GOV.UK source trail.
+- A focused data contract verifies every Breeding Basics lesson has at least
+  two outcomes, a real-tank scenario, at least two care drill steps, and an
+  HTTPS source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -663,7 +675,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   database depth and visual asset quality, not missing core page actions.
 - Learning depth is now started with structured guide metadata plus Nitrogen
   Cycle, Water Parameters, First Fish, Maintenance, Planted Tanks, Equipment,
-  Fish Health, Species Care, Advanced Topics, and Aquascaping path enrichment.
+  Fish Health, Species Care, Advanced Topics, Aquascaping, and Breeding Basics
+  path enrichment.
   Remaining learning work is expanding that guide depth, source references,
   visuals, and practice drills across the full catalog.
 - Tablet verification is not yet current.
