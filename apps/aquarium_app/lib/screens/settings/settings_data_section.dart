@@ -67,7 +67,7 @@ Future<void> exportData(BuildContext context) async {
         dismissLoadingInFinally = false;
         AppFeedback.showInfo(
           context,
-          'Nothing to export yet — start logging to build your data!',
+          'Nothing to export yet. Start logging to build your data!',
         );
       }
       return;
@@ -138,7 +138,7 @@ Future<void> importData(BuildContext context) async {
         dismissLoadingInFinally = false;
         AppFeedback.showError(
           context,
-          'Invalid backup file — expected Danio export format',
+          'Invalid backup file. Expected Danio export format',
         );
       }
       return;
@@ -153,7 +153,7 @@ Future<void> importData(BuildContext context) async {
         dismissLoadingInFinally = false;
         AppFeedback.showError(
           context,
-          'Invalid backup file — expected Danio export format',
+          'Invalid backup file. Expected Danio export format',
         );
       }
       return;
@@ -283,7 +283,7 @@ Future<void> confirmClearData(BuildContext context, WidgetRef ref) async {
   }
 }
 
-/// GDPR "Delete My Data" — clears all local data and navigates to onboarding.
+/// GDPR "Delete My Data" - clears all local data and navigates to onboarding.
 Future<void> confirmDeleteMyData(BuildContext context, WidgetRef ref) async {
   final confirmed = await showAppDialog<bool>(
     context: context,
