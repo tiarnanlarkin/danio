@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1407 tests.
+- `flutter test`: pass, 1412 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -355,6 +355,15 @@ CL-P1-001C Living tank feeding feedback progress:
   static particle burst, and keeps the aquarium feedback visual rather than
   adding extra instructional text.
 
+CL-P1-001D Living tank livestock cue progress:
+
+- The central Tank aquarium now derives a livestock visual cue from current
+  tank livestock, using local health flags and the existing compatibility
+  service instead of a separate decorative-only model.
+- Sick/quarantine livestock produces a health-review cue, and compatibility
+  warnings such as risky tankmate combinations produce a compatibility-review
+  cue. The cue is non-interactive, text-free, and labelled for accessibility.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -380,8 +389,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 - AI is still OpenAI-first rather than provider-aware.
 - Living Tank visuals now react to latest water-test state, old water-change
-  logs, and feeding events, but do not yet reflect livestock
-  stress/compatibility, plant/decor inventory, or progression unlocks.
+  logs, feeding events, and livestock health/compatibility cues, but do not yet
+  reflect plant/decor inventory or progression unlocks.
 - Species and plant data are broad but not yet final content-rich guide pages
   with sources, tank actions, and missing-species request flow.
 - Tablet verification is not yet current.

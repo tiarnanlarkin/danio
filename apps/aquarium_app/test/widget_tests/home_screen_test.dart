@@ -282,5 +282,54 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('Tank aquarium reflects livestock compatibility visually', (
+      tester,
+    ) async {
+      suppressLayoutErrors();
+      final storage = InMemoryStorageService();
+      final now = DateTime(2026, 6, 13);
+      final tank = Tank(
+        id: 'livestock-cue-${now.microsecondsSinceEpoch}',
+        name: 'Compatibility Cue Tank',
+        type: TankType.freshwater,
+        volumeLitres: 100,
+        startDate: now,
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+      );
+      await storage.saveLivestock(
+        Livestock(
+          id: 'betta-${tank.id}',
+          tankId: tank.id,
+          commonName: 'Betta',
+          count: 1,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.saveLivestock(
+        Livestock(
+          id: 'guppy-${tank.id}',
+          tankId: tank.id,
+          commonName: 'Guppy',
+          count: 3,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+
+      await tester.pumpWidget(_wrapWithTank(tank: tank, storage: storage));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 5));
+
+      expect(
+        find.byKey(const Key('tank-livestock-overlay-compatibilityConcern')),
+        findsOneWidget,
+      );
+    });
   });
 }

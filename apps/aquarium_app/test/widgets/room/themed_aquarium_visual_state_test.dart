@@ -1,13 +1,18 @@
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
+import 'package:danio/services/tank_livestock_visual_service.dart';
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/widgets/room/themed_aquarium.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap(WaterTestResults? latestWaterTest, {int feedingPulse = 0}) {
+Widget _wrap(
+  WaterTestResults? latestWaterTest, {
+  int feedingPulse = 0,
+  TankLivestockVisualState? livestockVisualState,
+}) {
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(InMemoryStorageService()),
@@ -24,6 +29,7 @@ Widget _wrap(WaterTestResults? latestWaterTest, {int feedingPulse = 0}) {
               reduceMotion: true,
               latestWaterTest: latestWaterTest,
               feedingPulse: feedingPulse,
+              livestockVisualState: livestockVisualState,
             ),
           ),
         ),
@@ -105,6 +111,38 @@ void main() {
 
       expect(find.byKey(const Key('tank-feeding-pulse-1')), findsOneWidget);
       expect(find.bySemanticsLabel('Tank feeding animation'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('shows livestock compatibility cue when provided', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _wrap(
+          null,
+          livestockVisualState: const TankLivestockVisualState(
+            condition: TankLivestockVisualCondition.compatibilityConcern,
+            semanticsLabel:
+                'Tank livestock visual state: compatibility needs review',
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('tank-livestock-overlay-compatibilityConcern')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(
+          'Tank livestock visual state: compatibility needs review',
+        ),
+        findsOneWidget,
+      );
     } finally {
       semantics.dispose();
     }

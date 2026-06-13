@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../models/log_entry.dart';
+import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
@@ -32,6 +35,7 @@ class ThemedAquarium extends StatelessWidget {
   final WaterTestResults? latestWaterTest;
   final TankVisualState? visualState;
   final int feedingPulse;
+  final TankLivestockVisualState? livestockVisualState;
 
   const ThemedAquarium({
     super.key,
@@ -44,6 +48,7 @@ class ThemedAquarium extends StatelessWidget {
     this.latestWaterTest,
     this.visualState,
     this.feedingPulse = 0,
+    this.livestockVisualState,
   });
 
   @override
@@ -179,6 +184,12 @@ class ThemedAquarium extends StatelessWidget {
             if (resolvedVisualState.hasOverlay)
               Positioned.fill(
                 child: _TankVisualStateOverlay(resolvedVisualState),
+              ),
+
+            if (livestockVisualState != null &&
+                livestockVisualState!.hasOverlay)
+              Positioned.fill(
+                child: _TankLivestockVisualOverlay(livestockVisualState!),
               ),
 
             // Top light bar
@@ -364,6 +375,93 @@ class _FoodParticle extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _TankLivestockVisualOverlay extends StatelessWidget {
+  final TankLivestockVisualState state;
+
+  const _TankLivestockVisualOverlay(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: state.semanticsLabel,
+      excludeSemantics: true,
+      child: IgnorePointer(
+        child: CustomPaint(
+          key: Key('tank-livestock-overlay-${state.condition.name}'),
+          painter: _LivestockCuePainter(
+            color: _cueColor,
+            condition: state.condition,
+          ),
+          child: const SizedBox.expand(),
+        ),
+      ),
+    );
+  }
+
+  Color get _cueColor {
+    return switch (state.condition) {
+      TankLivestockVisualCondition.healthConcern => const Color(0xFFD94D2E),
+      TankLivestockVisualCondition.compatibilityConcern => const Color(
+        0xFFD99A2E,
+      ),
+      TankLivestockVisualCondition.clear => Colors.transparent,
+    };
+  }
+}
+
+class _LivestockCuePainter extends CustomPainter {
+  final Color color;
+  final TankLivestockVisualCondition condition;
+
+  const _LivestockCuePainter({required this.color, required this.condition});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty || condition == TankLivestockVisualCondition.clear) {
+      return;
+    }
+
+    final stroke = Paint()
+      ..color = color.withValues(alpha: 0.72)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.2;
+
+    final wash = Paint()
+      ..color = color.withValues(alpha: 0.08)
+      ..style = PaintingStyle.fill;
+
+    final radius = size.shortestSide * 0.075;
+    final centers = [
+      Offset(size.width * 0.34, size.height * 0.34),
+      Offset(size.width * 0.66, size.height * 0.40),
+    ];
+
+    for (final center in centers) {
+      if (condition == TankLivestockVisualCondition.healthConcern) {
+        canvas.drawCircle(center, radius * 1.45, wash);
+      }
+
+      final rect = Rect.fromCircle(center: center, radius: radius);
+      canvas.drawArc(rect, -math.pi * 0.92, math.pi * 0.45, false, stroke);
+      canvas.drawArc(rect, -math.pi * 0.08, math.pi * 0.42, false, stroke);
+
+      if (condition == TankLivestockVisualCondition.compatibilityConcern) {
+        canvas.drawLine(
+          center.translate(-radius * 0.52, radius * 0.82),
+          center.translate(radius * 0.52, radius * 1.12),
+          stroke,
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _LivestockCuePainter oldDelegate) {
+    return color != oldDelegate.color || condition != oldDelegate.condition;
   }
 }
 
