@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1423 tests.
+- `flutter test`: pass, 1431 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -381,6 +381,16 @@ CL-P1-001F Living tank progression cue progress:
 - The cue uses the real `speciesUnlockProvider` and `defaultUnlockedSpecies`
   boundary, so it reflects earned lesson/species progression without inventing
   unavailable room, decoration, or tank-theme cosmetics.
+
+CL-P1-002A Room vibe unlock progress:
+
+- The room theme picker now treats premium room vibes as local progression
+  unlocks. Starter/cozy vibes remain available, while premium vibes stay visible
+  with plain unlock requirements until the user's real progress qualifies.
+- Unlock rules are derived from existing local state: earned species, XP,
+  streaks, completed lessons, perfect scores, and achievement IDs. Locked vibes
+  cannot be applied from the picker, so cosmetics now feel earned without
+  adding fake shop inventory or cloud/premium promises.
 
 Current Android device state:
 

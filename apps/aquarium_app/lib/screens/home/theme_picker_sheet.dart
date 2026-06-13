@@ -6,10 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/reduced_motion_provider.dart';
 import '../../providers/room_theme_provider.dart';
+import '../../providers/room_theme_unlock_provider.dart';
 import '../../providers/settings_provider.dart';
+import '../../services/room_theme_unlock_service.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import '../../utils/haptic_feedback.dart';
+import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/room/mini_tank_painter.dart';
 import '../../widgets/room/room_background.dart';
 
@@ -68,11 +71,9 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
     super.dispose();
   }
 
-  bool get _reduceMotion =>
-      ref.read(reducedMotionProvider).isEnabled;
+  bool get _reduceMotion => ref.read(reducedMotionProvider).isEnabled;
 
-  bool get _hapticEnabled =>
-      ref.read(settingsProvider).hapticFeedbackEnabled;
+  bool get _hapticEnabled => ref.read(settingsProvider).hapticFeedbackEnabled;
 
   void _advanceCard(int direction) {
     setState(() {
@@ -192,6 +193,12 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
 
   void _selectTheme() {
     final type = _themes[_currentIndex];
+    final unlockState = ref.read(roomThemeUnlockStatesProvider)[type];
+    if (unlockState != null && !unlockState.isUnlocked) {
+      DanioSnackBar.info(context, unlockState.requirementLabel);
+      AppHaptics.selection(enabled: _hapticEnabled);
+      return;
+    }
     ref.read(roomThemeProvider.notifier).setTheme(type);
     AppHaptics.success(enabled: _hapticEnabled);
     Navigator.maybePop(context);
@@ -201,6 +208,14 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
   Widget build(BuildContext context) {
     final currentType = _themes[_currentIndex];
     final currentTheme = RoomTheme.fromType(currentType);
+    final unlockStates = ref.watch(roomThemeUnlockStatesProvider);
+    final currentUnlock =
+        unlockStates[currentType] ??
+        RoomThemeUnlockState(
+          type: currentType,
+          isUnlocked: true,
+          requirementLabel: 'Unlocked from the start.',
+        );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -226,15 +241,13 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
         const SizedBox(height: AppSpacing.md),
 
         // Card stack
-        SizedBox(
-          height: 320,
-          child: _buildCardStack(),
-        ),
+        SizedBox(height: 320, child: _buildCardStack(unlockStates)),
         const SizedBox(height: AppSpacing.lg2),
 
         // Theme info + apply
         _ThemeInfoBar(
           theme: currentTheme,
+          unlockState: currentUnlock,
           onApply: _selectTheme,
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -242,7 +255,9 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
     );
   }
 
-  Widget _buildCardStack() {
+  Widget _buildCardStack(
+    Map<RoomThemeType, RoomThemeUnlockState> unlockStates,
+  ) {
     return AnimatedBuilder(
       animation: _entranceController,
       builder: (context, _) {
@@ -255,7 +270,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
           opacity: t.clamp(0.0, 1.0),
           child: Stack(
             alignment: Alignment.center,
-            children: _buildCardWidgets(t),
+            children: _buildCardWidgets(t, unlockStates),
           ),
         );
       },
@@ -263,18 +278,29 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
   }
 
   /// Builds the visible card stack bottom-to-top so the top card renders last.
-  List<Widget> _buildCardWidgets(double entranceFactor) {
+  List<Widget> _buildCardWidgets(
+    double entranceFactor,
+    Map<RoomThemeType, RoomThemeUnlockState> unlockStates,
+  ) {
     final cards = <Widget>[];
     for (var i = _maxVisibleCards - 1; i >= 0; i--) {
       final themeIndex = (_currentIndex + i) % _themes.length;
       final type = _themes[themeIndex];
       final theme = RoomTheme.fromType(type);
+      final unlockState =
+          unlockStates[type] ??
+          RoomThemeUnlockState(
+            type: type,
+            isUnlocked: true,
+            requirementLabel: 'Unlocked from the start.',
+          );
       final isTop = i == 0;
 
       cards.add(
         _buildCard(
           type: type,
           theme: theme,
+          unlockState: unlockState,
           stackIndex: i,
           isTop: isTop,
           entranceFactor: entranceFactor,
@@ -287,6 +313,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
   Widget _buildCard({
     required RoomThemeType type,
     required RoomTheme theme,
+    required RoomThemeUnlockState unlockState,
     required int stackIndex,
     required bool isTop,
     required double entranceFactor,
@@ -308,7 +335,11 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
       dy += _dragY * 0.3;
       rotation += _dragX * 0.001; // subtle rotation while dragging
       // Fade the card as it's swiped away
-      final dragProgress = (_dragX.abs() / (MediaQuery.of(context).size.width * 0.5)).clamp(0.0, 1.0);
+      final dragProgress =
+          (_dragX.abs() / (MediaQuery.of(context).size.width * 0.5)).clamp(
+            0.0,
+            1.0,
+          );
       opacity = 1.0 - (dragProgress * 0.3);
     }
 
@@ -322,7 +353,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
         ..scaleByDouble(scale, scale, 1.0, 1.0),
       child: Opacity(
         opacity: opacity.clamp(0.0, 1.0),
-        child: _ThemeCard(type: type, theme: theme),
+        child: _ThemeCard(type: type, theme: theme, unlockState: unlockState),
       ),
     );
 
@@ -333,8 +364,9 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
         onPanEnd: _onPanEnd,
         onTap: _selectTheme,
         child: Semantics(
-          label: '${theme.name} theme, ${theme.description}. '
-              'Swipe to browse, tap to select',
+          label: unlockState.isUnlocked
+              ? '${theme.name} theme, ${theme.description}. Swipe to browse, tap to select'
+              : '${theme.name} theme, locked. ${unlockState.requirementLabel}',
           button: true,
           child: card,
         ),
@@ -352,8 +384,13 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
 class _ThemeCard extends StatelessWidget {
   final RoomThemeType type;
   final RoomTheme theme;
+  final RoomThemeUnlockState unlockState;
 
-  const _ThemeCard({required this.type, required this.theme});
+  const _ThemeCard({
+    required this.type,
+    required this.theme,
+    required this.unlockState,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -384,10 +421,31 @@ class _ThemeCard extends StatelessWidget {
               left: 0,
               right: 0,
               bottom: 90, // leave room for info area
-              child: CustomPaint(
-                painter: MiniTankPainter(theme: theme),
-              ),
+              child: CustomPaint(painter: MiniTankPainter(theme: theme)),
             ),
+
+            if (!unlockState.isUnlocked)
+              Positioned(
+                top: AppSpacing.sm,
+                right: AppSpacing.sm,
+                child: Semantics(
+                  label: 'Locked room vibe',
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.blackAlpha60,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.whiteAlpha35),
+                    ),
+                    child: const Icon(
+                      Icons.lock_outline_rounded,
+                      color: AppColors.whiteAlpha90,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ),
 
             // Frosted info area at bottom
             Positioned(
@@ -402,7 +460,10 @@ class _ThemeCard extends StatelessWidget {
                   filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.md, AppSpacing.sm2, AppSpacing.md, AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.sm2,
+                      AppSpacing.md,
+                      AppSpacing.md,
                     ),
                     color: context.cardColor.withAlpha(180),
                     child: Column(
@@ -496,9 +557,14 @@ class _ColorDot extends StatelessWidget {
 /// Theme name, description, and apply button below the card stack.
 class _ThemeInfoBar extends StatelessWidget {
   final RoomTheme theme;
+  final RoomThemeUnlockState unlockState;
   final VoidCallback onApply;
 
-  const _ThemeInfoBar({required this.theme, required this.onApply});
+  const _ThemeInfoBar({
+    required this.theme,
+    required this.unlockState,
+    required this.onApply,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -517,7 +583,9 @@ class _ThemeInfoBar extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  theme.description,
+                  unlockState.isUnlocked
+                      ? theme.description
+                      : unlockState.requirementLabel,
                   style: AppTypography.bodySmall.copyWith(
                     color: context.textSecondary,
                   ),
@@ -526,9 +594,12 @@ class _ThemeInfoBar extends StatelessWidget {
             ),
           ),
           FilledButton.icon(
-            onPressed: onApply,
-            icon: const Icon(Icons.check, size: 18),
-            label: const Text('Apply'),
+            onPressed: unlockState.isUnlocked ? onApply : null,
+            icon: Icon(
+              unlockState.isUnlocked ? Icons.check : Icons.lock_outline_rounded,
+              size: 18,
+            ),
+            label: Text(unlockState.isUnlocked ? 'Apply' : 'Locked'),
           ),
         ],
       ),
