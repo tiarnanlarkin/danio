@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1451 tests.
+- `flutter test`: pass, 1452 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -463,6 +463,13 @@ CL-P1-003F Species Watch For guidance:
   minimum tank size, care level, and treatment warnings when present.
 - The guidance improves common-problem awareness without adding unsourced new
   species facts.
+
+CL-P1-003G Plant Watch For guidance:
+
+- Plant detail sheets now include Watch For guidance derived from existing
+  propagation, care-tip, growth-rate, height, CO2, and difficulty fields.
+- This gives plant pages practical common-problem cues while staying within
+  the local database facts already present.
 
 Current Android device state:
 

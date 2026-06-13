@@ -80,6 +80,28 @@ void main() {
       expect(find.text('Propagate by rhizome division.'), findsOneWidget);
     });
 
+    testWidgets('plant detail shows watch-for guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Anubias Barteri'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Watch For'), findsOneWidget);
+      expect(
+        find.text('Rhizome: keep it above the substrate.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Slow growth: avoid judging progress too quickly.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Size: leave room for 15-30 cm growth.'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('plant detail saves plant to wishlist', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

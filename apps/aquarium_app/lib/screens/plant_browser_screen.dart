@@ -450,6 +450,10 @@ class _PlantDetailSheet extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg2),
 
+            _PlantWatchForCard(plant: plant),
+
+            const SizedBox(height: AppSpacing.lg2),
+
             // Details
             _DetailSection(
               title: 'Details',
@@ -596,6 +600,103 @@ class _PlantCareActionsCard extends ConsumerWidget {
         DanioSnackBar.error(context, 'Could not save ${plant.commonName}');
       }
     }
+  }
+}
+
+class _PlantWatchForCard extends StatelessWidget {
+  final PlantInfo plant;
+
+  const _PlantWatchForCard({required this.plant});
+
+  @override
+  Widget build(BuildContext context) {
+    final tipsText = plant.tips.join(' ').toLowerCase();
+    final propagation = plant.propagation.toLowerCase();
+    final growthRate = plant.growthRate.toLowerCase();
+    final items = <_PlantWatchForItem>[
+      if (propagation.contains('rhizome') || tipsText.contains('rhizome'))
+        const _PlantWatchForItem(
+          icon: Icons.grass_outlined,
+          text: 'Rhizome: keep it above the substrate.',
+        ),
+      if (growthRate.contains('slow'))
+        const _PlantWatchForItem(
+          icon: Icons.hourglass_bottom_outlined,
+          text: 'Slow growth: avoid judging progress too quickly.',
+        )
+      else if (growthRate.contains('fast'))
+        const _PlantWatchForItem(
+          icon: Icons.trending_up_outlined,
+          text: 'Fast growth: plan regular trimming.',
+        ),
+      _PlantWatchForItem(
+        icon: Icons.height_outlined,
+        text:
+            'Size: leave room for ${plant.minHeightCm.toStringAsFixed(0)}-${plant.maxHeightCm.toStringAsFixed(0)} cm growth.',
+      ),
+      if (plant.needsCO2)
+        const _PlantWatchForItem(
+          icon: Icons.bubble_chart_outlined,
+          text: 'CO2: plan equipment before planting.',
+        ),
+      if (plant.difficulty.toLowerCase() != 'easy')
+        _PlantWatchForItem(
+          icon: Icons.speed_outlined,
+          text: 'Care level: ${plant.difficulty} needs steadier setup.',
+        ),
+    ];
+
+    return AppCard(
+      padding: AppCardPadding.compact,
+      backgroundColor: AppOverlays.warning10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.warning_amber_outlined,
+                color: AppColors.warning,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Watch For', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _PlantWatchForRow(item: item),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PlantWatchForItem {
+  final IconData icon;
+  final String text;
+
+  const _PlantWatchForItem({required this.icon, required this.text});
+}
+
+class _PlantWatchForRow extends StatelessWidget {
+  final _PlantWatchForItem item;
+
+  const _PlantWatchForRow({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(item.icon, size: 18, color: AppColors.warning),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(child: Text(item.text, style: AppTypography.bodyMedium)),
+      ],
+    );
   }
 }
 
