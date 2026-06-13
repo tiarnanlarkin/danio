@@ -8,8 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/settings_hub_screen.dart';
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -84,6 +86,7 @@ Future<Set<String>> _visibleWhileScrolling(
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
   });
 
   group('SettingsHubScreen', () {
@@ -171,6 +174,11 @@ void main() {
     testWidgets('shows Achievements category', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
+      await tester.scrollUntilVisible(
+        find.text('Achievements'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Achievements'), findsOneWidget);
     });
 
@@ -190,6 +198,7 @@ void main() {
       await _advance(tester);
 
       for (final label in const [
+        'Emergency Guide',
         'Shop Street',
         'Gem Shop',
         'Achievements',
@@ -199,6 +208,22 @@ void main() {
       ]) {
         await _scrollUntilTextVisible(tester, label);
       }
+    });
+
+    testWidgets('opens Emergency Guide from the More hub', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('Emergency Guide'), findsOneWidget);
+      expect(
+        find.text('Urgent steps for water or fish problems'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Emergency Guide'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EmergencyGuideScreen), findsOneWidget);
     });
 
     testWidgets('Backup & Restore is described as local export and import', (
@@ -303,6 +328,12 @@ void main() {
       try {
         await tester.pumpWidget(_wrap());
         await _advance(tester);
+
+        await tester.scrollUntilVisible(
+          find.text('Achievements'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
 
         expect(
           find.bySemanticsLabel('Achievements, Your badges and milestones'),

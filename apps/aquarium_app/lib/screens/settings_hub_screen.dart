@@ -17,6 +17,7 @@ import 'achievements_screen.dart';
 import 'analytics_screen.dart';
 import 'backup_restore_screen.dart';
 import 'debug_menu_screen.dart';
+import 'emergency_guide_screen.dart';
 import 'gem_shop_screen.dart';
 import 'settings_screen.dart';
 import 'shop_street_screen.dart';
@@ -145,6 +146,42 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
 
       // === Profile Card ===
       _buildProfileCard(context, name, level, xp, streak),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // === Section: Care Safety ===
+      _buildSectionHeader('Care Safety'),
+      const SizedBox(height: AppSpacing.sm),
+
+      Semantics(
+        button: true,
+        excludeSemantics: true,
+        label: _tileSemanticLabel(
+          'Emergency Guide',
+          'Urgent steps for water or fish problems',
+        ),
+        onTap: () {
+          NavigationThrottle.push(
+            context,
+            const EmergencyGuideScreen(),
+            rootNavigator: true,
+          );
+        },
+        child: PrimaryActionTile(
+          icon: Icons.emergency_outlined,
+          title: 'Emergency Guide',
+          subtitle: 'Urgent steps for water or fish problems',
+          iconColor: AppColors.error,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            NavigationThrottle.push(
+              context,
+              const EmergencyGuideScreen(),
+              rootNavigator: true,
+            );
+          },
+        ),
+      ),
 
       const SizedBox(height: AppSpacing.lg),
 
