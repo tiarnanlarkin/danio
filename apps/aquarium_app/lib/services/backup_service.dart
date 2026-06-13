@@ -225,6 +225,7 @@ class BackupService {
     }
 
     final tanks = data['tanks'] as List;
+    final seenTankIds = <String>{};
     for (final tank in tanks) {
       if (tank is! Map) {
         throw Exception('Invalid format: tank entries must be objects');
@@ -232,6 +233,10 @@ class BackupService {
       final id = tank['id'];
       if (id is! String || id.trim().isEmpty) {
         throw Exception('Invalid format: tank entries must include an id');
+      }
+      final normalizedId = id.trim();
+      if (!seenTankIds.add(normalizedId)) {
+        throw Exception('Invalid format: duplicate tank id "$normalizedId"');
       }
     }
 

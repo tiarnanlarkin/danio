@@ -136,5 +136,29 @@ void main() {
         ),
       );
     });
+
+    test('getBackupData rejects duplicate tank ids', () async {
+      final service = BackupService(
+        getDocumentsDirectory: () async => sourceDocs,
+        getTemporaryDirectory: () async => tempDir,
+      );
+      final zipPath = await service.createBackup({
+        'tanks': [
+          {'id': 'tank-1', 'name': 'First copy'},
+          {'id': 'tank-1', 'name': 'Duplicate copy'},
+        ],
+      });
+
+      await expectLater(
+        service.getBackupData(zipPath),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('Invalid format: duplicate tank id'),
+          ),
+        ),
+      );
+    });
   });
 }
