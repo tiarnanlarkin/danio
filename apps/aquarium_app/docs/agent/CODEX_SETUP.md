@@ -31,6 +31,26 @@ apps/aquarium_app/docs/   Product, QA, release, and agent docs
 
 Use `apps/aquarium_app` as the working directory for Flutter commands.
 
+## Dirty Worktree And Parallel Session Discipline
+
+Before any edit:
+
+```powershell
+git status --short -uall
+```
+
+Rules:
+
+- Treat dirty files as owned by the user or another Codex session unless you
+  made them in the current slice.
+- Do not stage, format, rewrite, delete, or revert unrelated dirty files.
+- If a needed file is already dirty, inspect the diff first and preserve the
+  existing work.
+- Keep product changes, docs-only setup, and design-baseline updates in
+  separate commits.
+- After each committed slice, run `git status --short -uall` and continue only
+  when the worktree is clean or the remaining dirt is explicitly understood.
+
 ## Windows Environment
 
 If the shell cannot find Flutter, Java, or Android tools, set the local paths for the current PowerShell session:
@@ -59,6 +79,7 @@ Run focused tests for the changed area before the full suite:
 
 ```powershell
 flutter test test/widget_tests/<changed_screen>_test.dart
+flutter test test/widget/<changed_flow>_test.dart
 flutter test test/services/<changed_service>_test.dart
 flutter test test/copy/current_docs_local_truth_test.dart
 ```
@@ -163,3 +184,17 @@ If Maestro is not installed, do not block ordinary Flutter verification on it.
 - Commit docs-only setup separately from product behavior changes.
 - Include verification results in the final response after each committed slice.
 - Push only after tests/checks requested for that slice have passed.
+
+## Setup Verification Notes
+
+For docs-only setup slices, verify at minimum:
+
+```powershell
+git diff --check
+flutter test test/copy/current_docs_local_truth_test.dart
+flutter analyze
+```
+
+The full Flutter suite and debug APK build are required when docs also assert a
+new product state, alter product behavior, or change test/build instructions
+that need end-to-end proof.

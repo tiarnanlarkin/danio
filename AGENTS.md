@@ -23,6 +23,9 @@ This repo is developed local-first. Agents must keep work no-cost, offline-capab
 - Never revert, delete, or overwrite user changes you did not make.
 - If unrelated files are dirty, leave them alone.
 - If files you need are dirty, inspect them and work with the changes.
+- If another Codex session has active dirty work, do not stage, format, or
+  rewrite those files. Either wait for a clean handoff or work only in files
+  that are clearly isolated from that session's slice.
 - Commit focused slices separately. Docs-only setup changes must stay separate from product behavior changes.
 
 ## Local Verification Gates
@@ -38,11 +41,13 @@ flutter build apk --debug --target lib/main.dart
 git diff --check
 ```
 
-Also run focused tests for changed areas, for example:
+Also run focused tests for changed areas before the full suite, especially
+focused widget tests for changed screens or settings flows:
 
 ```powershell
 flutter test test/widget_tests/journal_screen_test.dart
 flutter test test/widget_tests/search_screen_test.dart
+flutter test test/widget/settings_screen_test.dart
 flutter test test/copy/current_docs_local_truth_test.dart
 ```
 

@@ -19,11 +19,14 @@ Examples:
 flutter test test/widget_tests/search_screen_test.dart
 flutter test test/widget_tests/journal_screen_test.dart
 flutter test test/widget_tests/backup_restore_screen_test.dart
+flutter test test/widget/settings_screen_test.dart
 flutter test test/services/backup_service_test.dart
 flutter test test/copy/current_docs_local_truth_test.dart
 ```
 
 Use the smallest focused test first, then broaden.
+For UI/settings/navigation changes, include the focused widget test that proves
+the visible flow can be reached and interacted with.
 
 ## Standard Product Gates
 
@@ -51,6 +54,7 @@ For docs-only changes:
 
 ```powershell
 git diff --check
+flutter test test/copy/current_docs_local_truth_test.dart
 rg -n "Maestro Cloud|Vercel|Supabase|Sentry|OpenAI API calls|paid service|fake premium|fake social|fake cloud" AGENTS.md apps/aquarium_app/docs/agent
 ```
 
