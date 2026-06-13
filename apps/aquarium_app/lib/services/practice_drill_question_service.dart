@@ -32,6 +32,13 @@ class PracticeDrillQuestionService {
       ];
     }
 
+    if (drillId == PracticeDrillId.compatibility) {
+      return [
+        for (var index = 0; index < cards.length; index++)
+          _compatibilityQuestion(cards[index]) ?? fallback[index],
+      ];
+    }
+
     return fallback;
   }
 
@@ -264,6 +271,98 @@ class PracticeDrillQuestionService {
       correctIndex: 0,
       explanation:
           'Good diagnosis is evidence-led. Water, recent history, affected fish, and symptom pattern point to safer next actions.',
+    );
+  }
+
+  static MultipleChoiceQuestion? _compatibilityQuestion(ReviewCard card) {
+    final conceptId = card.conceptId;
+
+    if (conceptId.startsWith('sc_betta')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A user wants to add a betta to a busy community tank with fast fin-nipping fish. What is the safest compatibility advice?',
+        options: [
+          'Choose calm tank mates only if the tank size, layout, and individual temperament make it low risk',
+          'Add two male bettas so they can keep each other company',
+          'Pick the most active fin nippers because they will exercise the betta',
+          'Ignore temperament because bettas always live peacefully in communities',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Betta compatibility depends on temperament, tank layout, fin-nipping risk, and the individual fish. Calm tank mates are safer than busy or aggressive fish.',
+      );
+    }
+
+    if (conceptId.startsWith('sc_goldfish')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A keeper wants to add goldfish to a warm tropical community tank. What is the best response?',
+        options: [
+          'Plan a separate suitable setup because goldfish adult size, waste, and temperature needs do not fit most tropical communities',
+          'Add them if they are small because they will stay the size of the tank',
+          'Raise the tropical tank temperature so goldfish digest food faster',
+          'Add extra tropical fish to dilute the goldfish waste',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Goldfish are high-waste fish with different temperature and space needs from many tropical community fish. Small juveniles still grow.',
+      );
+    }
+
+    if (conceptId.startsWith('sc_tetras') ||
+        conceptId.startsWith('sc_rasboras') ||
+        conceptId.startsWith('sc_corydoras') ||
+        conceptId.startsWith('sc_loaches')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A schooling species is being considered as a single show fish in a community tank. What should you check before buying?',
+        options: [
+          'Group size, adult size, temperament, water preferences, and whether the tank has enough open space',
+          'Only the colour, because schooling fish do not have social needs',
+          'Whether it can survive alone for the first year',
+          'Whether it will clean the tank instead of needing care',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Schooling and social species need suitable group size as well as compatible size, behaviour, water, and swimming space.',
+      );
+    }
+
+    if (conceptId.startsWith('sc_cichlids') ||
+        conceptId.startsWith('sc_angelfish') ||
+        conceptId.startsWith('sc_gouramis')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A semi-territorial fish is being added to a peaceful community tank. What makes the decision safer?',
+        options: [
+          'Check adult size, territory needs, tank layout, sex/temperament risk, and backup rehoming options',
+          'Add it at night and assume darkness prevents aggression forever',
+          'Crowd the tank so no fish can claim territory',
+          'Choose the smallest juvenile and ignore adult behaviour',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Territorial behaviour often increases with maturity. Adult size, layout, stocking density, and backup plans matter.',
+      );
+    }
+
+    return _mc(
+      card: card,
+      questionText:
+          'A new fish looks attractive for a community tank, but you have not checked compatibility yet. What is the best checklist?',
+      options: [
+        'Compare adult size, group size, temperament, temperature, water needs, diet, and tank space',
+        'Buy it first and identify the species after it settles',
+        'Only check whether the fish is currently small',
+        'Assume all freshwater fish share the same needs',
+      ],
+      correctIndex: 0,
+      explanation:
+          'Compatibility is a whole-life decision. Adult size, group size, temperament, water, diet, and space prevent avoidable stress.',
     );
   }
 
