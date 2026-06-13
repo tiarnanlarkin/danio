@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../models/log_entry.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../theme/room_themes.dart';
 import '../ambient/ambient_overlay.dart';
@@ -21,6 +22,7 @@ class LivingRoomScene extends ConsumerWidget {
   final double? ph;
   final double? ammonia;
   final double? nitrate;
+  final WaterTestResults? latestWaterTest;
   final RoomTheme theme;
   final VoidCallback? onTankTap;
   final VoidCallback? onTestKitTap;
@@ -45,6 +47,7 @@ class LivingRoomScene extends ConsumerWidget {
     this.ph,
     this.ammonia,
     this.nitrate,
+    this.latestWaterTest,
     this.onTankTap,
     this.onTestKitTap,
     this.onFoodTap,
@@ -136,6 +139,7 @@ class LivingRoomScene extends ConsumerWidget {
                       useRiveFish: useRiveFish,
                       reduceMotion: MediaQuery.of(context).disableAnimations,
                       tankId: tankId,
+                      latestWaterTest: latestWaterTest,
                     ),
                   ),
                 ),

@@ -197,5 +197,42 @@ void main() {
       expect(find.byType(EmergencyGuideScreen), findsOneWidget);
       expect(find.text('Emergency Guide'), findsWidgets);
     });
+
+    testWidgets('Tank aquarium reflects unsafe water logs visually', (
+      tester,
+    ) async {
+      suppressLayoutErrors();
+      final storage = InMemoryStorageService();
+      final now = DateTime(2026, 1, 2);
+      final tank = Tank(
+        id: 'visual-state-${DateTime.now().microsecondsSinceEpoch}',
+        name: 'Visual State Tank',
+        type: TankType.freshwater,
+        volumeLitres: 100,
+        startDate: now,
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+      );
+      await storage.saveLog(
+        LogEntry(
+          id: 'unsafe-water-${tank.id}',
+          tankId: tank.id,
+          type: LogType.waterTest,
+          timestamp: now,
+          waterTest: WaterTestResults(ammonia: 0.5, nitrite: 0),
+          createdAt: now,
+        ),
+      );
+
+      await tester.pumpWidget(_wrapWithTank(tank: tank, storage: storage));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 5));
+
+      expect(
+        find.byKey(const Key('tank-visual-overlay-unsafeWater')),
+        findsOneWidget,
+      );
+    });
   });
 }

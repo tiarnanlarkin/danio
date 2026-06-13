@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../models/log_entry.dart';
+import '../../services/tank_visual_state_service.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
 import '../ambient/swaying_plant.dart';
@@ -27,6 +29,7 @@ class ThemedAquarium extends StatelessWidget {
 
   /// Optional tank ID passed to [TankFishManager] for livestock cross-reference.
   final String? tankId;
+  final WaterTestResults? latestWaterTest;
 
   const ThemedAquarium({
     super.key,
@@ -36,10 +39,13 @@ class ThemedAquarium extends StatelessWidget {
     this.useRiveFish = true,
     this.reduceMotion = false,
     this.tankId,
+    this.latestWaterTest,
   });
 
   @override
   Widget build(BuildContext context) {
+    final visualState = TankVisualStateService.fromWaterTest(latestWaterTest);
+
     return Container(
       width: width,
       height: height,
@@ -162,6 +168,9 @@ class ThemedAquarium extends StatelessWidget {
               ),
             ),
 
+            if (visualState.hasOverlay)
+              Positioned.fill(child: _TankVisualStateOverlay(visualState)),
+
             // Top light bar
             Positioned(
               top: -4,
@@ -205,10 +214,10 @@ class ThemedAquarium extends StatelessWidget {
     final animated = reduceMotion
         ? plant
         : tall
-            ? SwayingPlantTall(index: swayIndex, child: plant)
-            : (swayIndex == 3
-                ? SwayingPlant(index: swayIndex, child: plant)
-                : SwayingPlantSmall(index: swayIndex, child: plant));
+        ? SwayingPlantTall(index: swayIndex, child: plant)
+        : (swayIndex == 3
+              ? SwayingPlant(index: swayIndex, child: plant)
+              : SwayingPlantSmall(index: swayIndex, child: plant));
 
     return Positioned(
       bottom: bottom,
@@ -216,5 +225,46 @@ class ThemedAquarium extends StatelessWidget {
       right: right,
       child: RepaintBoundary(child: animated),
     );
+  }
+}
+
+class _TankVisualStateOverlay extends StatelessWidget {
+  final TankVisualState state;
+
+  const _TankVisualStateOverlay(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: state.semanticsLabel,
+      excludeSemantics: true,
+      child: IgnorePointer(
+        child: DecoratedBox(
+          key: Key('tank-visual-overlay-${state.condition.name}'),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: _overlayColors,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Color> get _overlayColors {
+    switch (state.condition) {
+      case TankVisualCondition.unsafeWater:
+        return const [Color(0x22C58A35), Color(0x44A96B26), Color(0x557B4D19)];
+      case TankVisualCondition.tooWarm:
+        return const [Color(0x18FFD08A), Color(0x30FF8A4C), Color(0x3BD94D2E)];
+      case TankVisualCondition.tooCold:
+        return const [Color(0x181E88E5), Color(0x331E88E5), Color(0x442E5FA7)];
+      case TankVisualCondition.staleWater:
+        return const [Color(0x1A8FAE4A), Color(0x3B6E8F37), Color(0x4D3E6E42)];
+      case TankVisualCondition.clear:
+        return const [Colors.transparent, Colors.transparent];
+    }
   }
 }

@@ -328,11 +328,21 @@ CL-P0-007B Aquarium Intelligence details progress:
 - The detail screen keeps urgent unsafe-water items actionable through the
   Emergency Guide while still explaining the local checks behind the result.
 
+CL-P1-001A Living tank water-state progress:
+
+- The central Tank aquarium now derives a visual water state from the latest
+  water-test log and subtly tints the illustrated water for unsafe nitrogen,
+  high nitrate/stale water, and temperature extremes.
+- The water-state layer is non-interactive and has an accessibility label, so
+  the visual cue remains tied to real care data without adding visible text or
+  disrupting the current watercolor tank style.
+
 Current Android device state:
 
-- ADB sees `RFCY8022D5R` as `unauthorized`.
-- No usable emulator was attached at the latest check, so blackbox screen QA
-  remains blocked on Android transport.
+- ADB previously saw `RFCY8022D5R` as `unauthorized`.
+- A usable emulator is attached as `emulator-5554`, but it is currently
+  foregrounding `com.misescope.app`, so Danio blackbox screen QA remains
+  deferred to avoid interfering with another active Codex session.
 
 ## 5. Current Complete-Local Gap Map
 
@@ -351,6 +361,9 @@ P0 status:
 High-confidence P1/P2 gaps from code/docs evidence:
 
 - AI is still OpenAI-first rather than provider-aware.
+- Living Tank visuals now react to latest water-test state, but do not yet
+  reflect feeding animation, dirty-water age from missed changes, livestock
+  stress/compatibility, plant/decor inventory, or progression unlocks.
 - Species and plant data are broad but not yet final content-rich guide pages
   with sources, tank actions, and missing-species request flow.
 - Tablet verification is not yet current.

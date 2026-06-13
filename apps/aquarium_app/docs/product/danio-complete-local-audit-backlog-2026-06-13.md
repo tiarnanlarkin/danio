@@ -90,7 +90,7 @@ These establish the shape of the finished local product.
 
 | ID | Area | Work | Acceptance |
 | --- | --- | --- | --- |
-| CL-P1-001 | Living tank | Map care state to visual cues for clean/dirty water, feeding, temperature, stress, compatibility, plant presence, decorations, and theme. | Tank feels alive and truthful; visual state never rewards harmful care. |
+| CL-P1-001 | Living tank | Map care state to visual cues for clean/dirty water, feeding, temperature, stress, compatibility, plant presence, decorations, and theme. | In progress; CL-P1-001A adds latest-water-test visual state for unsafe nitrogen, high nitrate/stale water, and temperature extremes. Remaining: feeding animation, dirty-water age from missed changes, livestock stress/compatibility, plant/decor inventory, and progression unlocks. |
 | CL-P1-002 | Rewards | Connect progression to meaningful unlocks: rooms, tank vibes, decorations, seasonal themes, badges, and achievement-based cosmetics. | Unlocks feel earned and useful, not disposable. |
 | CL-P1-003 | Species pages | Upgrade species/plant pages into beautiful actionable guides. | Pages include care, compatibility, warnings, add-to-tank, reminders, common problems, source trail, and missing-species request. |
 | CL-P1-004 | Learning depth | Expand lessons into richer pathways with visuals, examples, scenarios, quizzes, review, skill drills, and subtle citations. | Learn supports beginners through serious hobbyists without feeling like a text dump. |

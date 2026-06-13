@@ -309,6 +309,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         .length;
   }
 
+  WaterTestResults? _latestWaterTest(List<LogEntry> logs) {
+    final waterTests =
+        logs
+            .where(
+              (log) => log.type == LogType.waterTest && log.waterTest != null,
+            )
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    return waterTests.isEmpty ? null : waterTests.first.waterTest;
+  }
+
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
     if (_selectedTankIds.isEmpty) {
       if (mounted) {
@@ -429,6 +441,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final currentTank = tanks[_currentTankIndex % tanks.length];
         final currentLogs =
             ref.watch(logsProvider(currentTank.id)).valueOrNull ?? [];
+        final latestWaterTest = _latestWaterTest(currentLogs);
         return Stack(
           children: [
             Positioned.fill(
@@ -439,6 +452,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     tankName: currentTank.name,
                     tankVolume: currentTank.volumeLitres,
                     theme: theme,
+                    latestWaterTest: latestWaterTest,
                     isNewUser: _isNewUser(ref),
                     onTankTap: () =>
                         _navigateToTankDetail(context, currentTank),

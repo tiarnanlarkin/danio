@@ -1,0 +1,96 @@
+import 'package:danio/models/log_entry.dart';
+import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/services/storage_service.dart';
+import 'package:danio/theme/room_themes.dart';
+import 'package:danio/widgets/room/themed_aquarium.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+Widget _wrap(WaterTestResults? latestWaterTest) {
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+    ],
+    child: MaterialApp(
+      home: MediaQuery(
+        data: const MediaQueryData(disableAnimations: true),
+        child: Scaffold(
+          body: Center(
+            child: ThemedAquarium(
+              width: 320,
+              height: 220,
+              theme: RoomTheme.ocean,
+              reduceMotion: true,
+              latestWaterTest: latestWaterTest,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+void main() {
+  testWidgets('safe readings do not render a water-state overlay', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        WaterTestResults(temperature: 25, ammonia: 0, nitrite: 0, nitrate: 15),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const Key('tank-visual-overlay-clear')), findsNothing);
+  });
+
+  testWidgets('unsafe nitrogen renders an unsafe water overlay', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _wrap(WaterTestResults(ammonia: 0.5, nitrite: 0, nitrate: 10)),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('tank-visual-overlay-unsafeWater')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel('Tank visual state: unsafe water'),
+        findsOneWidget,
+      );
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('warm water renders a warm overlay', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        WaterTestResults(temperature: 31, ammonia: 0, nitrite: 0, nitrate: 10),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('tank-visual-overlay-tooWarm')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('high nitrate renders a stale water overlay', (tester) async {
+    await tester.pumpWidget(
+      _wrap(WaterTestResults(ammonia: 0, nitrite: 0, nitrate: 50)),
+    );
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('tank-visual-overlay-staleWater')),
+      findsOneWidget,
+    );
+  });
+}
