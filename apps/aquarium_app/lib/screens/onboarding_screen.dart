@@ -16,6 +16,7 @@ import 'onboarding/welcome_screen.dart';
 import 'onboarding/region_units_screen.dart';
 import 'onboarding/experience_level_screen.dart';
 import 'onboarding/tank_status_screen.dart';
+import 'onboarding/goals_screen.dart';
 import 'onboarding/micro_lesson_screen.dart';
 import 'onboarding/xp_celebration_screen.dart';
 import 'onboarding/fish_select_screen.dart';
@@ -30,16 +31,17 @@ import '../providers/species_unlock_provider.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 
-/// Orchestrates the 11-screen onboarding flow.
+/// Orchestrates the 12-screen onboarding flow.
 ///
 /// Uses a [PageView] with [NeverScrollableScrollPhysics] so navigation is
 /// purely programmatic (no swiping). State collected across screens is held
 /// in this widget and passed down to each child.
 ///
 /// Current flow:
-///   Welcome -> Region & Units -> Experience Level -> Tank Status -> Micro
-///   Lesson -> XP Celebration -> Fish Select -> Aha Moment -> Feature Summary
-///   -> Push Permission -> Warm Entry -> (creates profile + tank) -> Home
+///   Welcome -> Region & Units -> Experience Level -> Tank Status -> Goals
+///   -> Micro Lesson -> XP Celebration -> Fish Select -> Aha Moment
+///   -> Feature Summary -> Push Permission -> Warm Entry
+///   -> (creates profile + tank) -> Home
 ///
 /// Intentionally skipped (with rationale):
 ///   - Placement quiz: The placement test system exists (PlacementChallengeCard
@@ -48,7 +50,7 @@ import '../widgets/core/app_dialog.dart';
 ///     New users start at the beginning of all learning paths regardless.
 ///   - Tutorial: hasSeenTutorial is set to false after onboarding. The
 ///     "tutorial" concept is distributed — first-visit tooltips on each
-///     tab, the micro-lesson on Page 4, and the stage panel hint on home.
+///     tab, the micro-lesson on Page 5, and the stage panel hint on home.
 ///     A dedicated tutorial overlay would add friction to an already
 ///     long flow.
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -66,10 +68,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _useMetricUnits = true;
   ExperienceLevel? _experienceLevel;
   String? _tankStatus; // 'planning' | 'cycling' | 'active'
+  List<UserGoal> _selectedGoals = const [];
   SpeciesInfo? _selectedFish;
   String? _userName;
 
-  static const _totalPages = 11;
+  static const _totalPages = 12;
   int _currentPage = 0;
 
   @override
@@ -116,14 +119,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     _nextPage();
   }
 
-  // ── Derive a goal from collected state ───────────────────────────────
-  UserGoal _deriveGoal() {
+  // ── Derive a recommendation from collected state ─────────────────────
+  UserGoal _recommendedGoal() {
     final level = _experienceLevel ?? ExperienceLevel.beginner;
     if (_tankStatus == 'planning') return UserGoal.learnTheScience;
     if (level == ExperienceLevel.expert) {
       return UserGoal.masterTheHobby;
     }
     return UserGoal.keepFishAlive;
+  }
+
+  List<UserGoal> _effectiveGoals() {
+    if (_selectedGoals.isNotEmpty) {
+      return List.unmodifiable(_selectedGoals);
+    }
+    return [_recommendedGoal()];
   }
 
   // ── Complete onboarding ──────────────────────────────────────────────
@@ -145,7 +155,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           experienceLevel: level,
           primaryTankType: TankType.freshwater,
           regionCode: _regionCode,
-          goals: [_deriveGoal()],
+          goals: _effectiveGoals(),
           name: _userName,
           tankStatus: _tankStatus,
           firstFishSpeciesId: _selectedFish?.commonName,
@@ -154,7 +164,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         await profileNotifier.updateProfile(
           experienceLevel: level,
           regionCode: _regionCode,
-          goals: [_deriveGoal()],
+          goals: _effectiveGoals(),
           tankStatus: _tankStatus,
           firstFishSpeciesId: _selectedFish?.commonName,
           name: _userName,
@@ -415,7 +425,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
 
-                  // Page 4: Micro Lesson
+                  // Page 4: Goals
+                  GoalsScreen(
+                    recommendedGoal: _recommendedGoal(),
+                    onContinue: (goals) {
+                      setState(() => _selectedGoals = List.unmodifiable(goals));
+                      _nextPage();
+                    },
+                  ),
+
+                  // Page 5: Micro Lesson
                   // experienceLevel may be null if user somehow reaches here without
                   // selecting — default to beginner.
                   MicroLessonScreen(
@@ -424,10 +443,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     onComplete: _nextPage,
                   ),
 
-                  // Page 5: XP Celebration
+                  // Page 6: XP Celebration
                   XpCelebrationScreen(onNext: _nextPage),
 
-                  // Page 6: Fish Select
+                  // Page 7: Fish Select
                   FishSelectScreen(
                     tankStatus: _tankStatus ?? 'planning',
                     onFishSelected: (fish) {
@@ -436,7 +455,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
 
-                  // Page 7: Aha Moment
+                  // Page 8: Aha Moment
                   // Uses a Builder to defer construction until state is available.
                   Builder(
                     builder: (context) {
@@ -444,7 +463,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           _experienceLevel == null ||
                           _tankStatus == null) {
                         return _OnboardingFallback(
-                          onGoBack: () => _goToStep(6),
+                          onGoBack: () => _goToStep(7),
                         );
                       }
                       return AhaMomentScreen(
@@ -456,36 +475,36 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
 
-                  // Page 8: Feature Summary
+                  // Page 9: Feature Summary
                   Builder(
                     builder: (context) {
                       if (_selectedFish == null) {
                         return _OnboardingFallback(
-                          onGoBack: () => _goToStep(6),
+                          onGoBack: () => _goToStep(7),
                         );
                       }
                       return FeatureSummaryScreen(
                         selectedFish: _selectedFish!,
-                        onComplete: () => _goToStep(9),
-                        onSkip: () => _goToStep(9),
+                        onComplete: () => _goToStep(10),
+                        onSkip: () => _goToStep(10),
                       );
                     },
                   ),
 
-                  // Page 9: Push Permission
+                  // Page 10: Push Permission
                   PushPermissionScreen(
                     onAllow: _handleNotificationAllow,
                     onSkip: _nextPage,
                   ),
 
-                  // Page 10: Warm Entry
+                  // Page 11: Warm Entry
                   Builder(
                     builder: (context) {
                       if (_selectedFish == null ||
                           _experienceLevel == null ||
                           _tankStatus == null) {
                         return _OnboardingFallback(
-                          onGoBack: () => _goToStep(6),
+                          onGoBack: () => _goToStep(7),
                         );
                       }
                       return WarmEntryScreen(

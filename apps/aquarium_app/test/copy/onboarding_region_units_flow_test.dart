@@ -9,7 +9,7 @@ void main() {
     ).readAsStringSync();
 
     expect(source, contains("import 'onboarding/region_units_screen.dart';"));
-    expect(source, contains('static const _totalPages = 11;'));
+    expect(source, contains('static const _totalPages = 12;'));
     expect(
       source.indexOf('RegionUnitsScreen('),
       lessThan(source.indexOf('ExperienceLevelScreen(')),
