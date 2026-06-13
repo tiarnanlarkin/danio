@@ -18,7 +18,7 @@ import 'smart_screen.dart';
 import '../widgets/danio_snack_bar.dart';
 
 /// Provider for current tab index
-final currentTabProvider = StateProvider<int>((ref) => 0); // Start at Learn tab
+final currentTabProvider = StateProvider<int>((ref) => 2); // Start at Tank tab
 
 /// Holds the list of per-tab nested navigator keys.
 /// Initialized once by [TabNavigator] so that external callers (notification

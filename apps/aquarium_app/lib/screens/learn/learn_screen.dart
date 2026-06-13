@@ -74,6 +74,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
   /// Auto-scroll to first lesson module on first visit (no completed lessons).
   void _maybeScrollToFirstLesson(UserProfile? userProfile) {
+    if (!_isVisibleTab) return;
     if (_hasScrolledToFirstLesson) return;
     if (_firstPathScrollScheduled) return;
     if (userProfile == null) return;
@@ -81,6 +82,8 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
     _scheduleFirstPathScroll(duration: const Duration(milliseconds: 600));
   }
+
+  bool get _isVisibleTab => TickerMode.valuesOf(context).enabled;
 
   void _scheduleFirstPathScroll({required Duration duration, int attempt = 0}) {
     if (attempt == 0) {
@@ -90,6 +93,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      if (!_isVisibleTab) {
+        _firstPathScrollScheduled = false;
+        return;
+      }
 
       final keyContext = _firstPathKey.currentContext;
       final settled =

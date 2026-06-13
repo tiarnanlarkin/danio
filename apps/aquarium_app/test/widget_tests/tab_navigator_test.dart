@@ -65,7 +65,7 @@ Widget _wrap({
   int dueCards = 0,
   UserProfile? profile,
   bool learnGuidanceSeen = true,
-  int initialTab = 0,
+  int? initialTab,
 }) {
   SharedPreferences.setMockInitialValues({
     if (profile != null) 'user_profile': jsonEncode(profile.toJson()),
@@ -79,7 +79,8 @@ Widget _wrap({
 
   return ProviderScope(
     overrides: [
-      currentTabProvider.overrideWith((ref) => initialTab),
+      if (initialTab != null)
+        currentTabProvider.overrideWith((ref) => initialTab),
       spacedRepetitionProvider.overrideWith(
         (ref) => _FrozenSpacedRepetitionNotifier(ref, dueCards: dueCards),
       ),
@@ -100,6 +101,7 @@ Widget _wrapWithDeferredLearnPaths({required UserProfile profile}) {
 
   return ProviderScope(
     overrides: [
+      currentTabProvider.overrideWith((ref) => 0),
       pathMetadataProvider.overrideWith(
         (ref) => ref.watch(_deferredPathMetadataProvider),
       ),
@@ -220,15 +222,15 @@ void main() {
       );
     });
 
-    testWidgets('tab 0 is selected by default', (tester) async {
+    testWidgets('Tank tab is selected by default', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(
-        find.byKey(const ValueKey('danio-bottom-dock-item-learn-selected')),
+        find.byKey(const ValueKey('danio-bottom-dock-item-tank-selected')),
         findsOneWidget,
       );
       expect(
-        find.byKey(const ValueKey('danio-bottom-dock-item-learn-glow')),
+        find.byKey(const ValueKey('danio-bottom-dock-item-tank-glow')),
         findsOneWidget,
       );
     });
@@ -236,7 +238,7 @@ void main() {
     testWidgets('uses floating rail without globally shrinking tab content', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(_wrap(initialTab: 0));
       await _advance(tester);
 
       expect(
@@ -266,7 +268,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(_wrap(profile: _profile()));
+      await tester.pumpWidget(_wrap(profile: _profile(), initialTab: 0));
       await _advance(tester);
 
       final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
@@ -286,7 +288,7 @@ void main() {
     testWidgets('bottom dock uses an opaque system navigation bar color', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(profile: _profile()));
+      await tester.pumpWidget(_wrap(profile: _profile(), initialTab: 0));
       await _advance(tester);
 
       final systemUiRegionFinder = find.byKey(
@@ -310,7 +312,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(_wrap(initialTab: 0));
       await _advance(tester);
 
       expect(
@@ -330,7 +332,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(_wrap(profile: _profile()));
+      await tester.pumpWidget(_wrap(profile: _profile(), initialTab: 0));
       await _advance(tester);
 
       final learningPathsFinder = find.text('Learning Paths');
@@ -359,7 +361,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(_wrap(profile: _profile()));
+      await tester.pumpWidget(_wrap(profile: _profile(), initialTab: 0));
       await _advance(tester);
 
       final firstPathCardFinder = find.byType(LazyLearningPathCard).first;
@@ -446,7 +448,11 @@ void main() {
       });
 
       await tester.pumpWidget(
-        _wrap(profile: _profile(), learnGuidanceSeen: false),
+        _wrap(
+          profile: _profile(),
+          learnGuidanceSeen: false,
+          initialTab: 0,
+        ),
       );
       await _advance(tester);
 
@@ -471,7 +477,7 @@ void main() {
     ) async {
       final semantics = tester.ensureSemantics();
       try {
-        await tester.pumpWidget(_wrap(profile: _profile()));
+        await tester.pumpWidget(_wrap(profile: _profile(), initialTab: 0));
         await _advance(tester);
 
         expect(
