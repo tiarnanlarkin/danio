@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/storage_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
 
+import 'intelligence/aquarium_intelligence_service.dart';
 import 'models/smart_models.dart';
 import '../../utils/logger.dart';
 
@@ -30,7 +32,10 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
               jsonDecode(s) as Map<String, dynamic>,
             );
           } catch (e) {
-            logError('Smart: failed to parse AI interaction: $e', tag: 'SmartProviders');
+            logError(
+              'Smart: failed to parse AI interaction: $e',
+              tag: 'SmartProviders',
+            );
             return null;
           }
         })
@@ -80,7 +85,10 @@ class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
           try {
             return Anomaly.fromJson(jsonDecode(s) as Map<String, dynamic>);
           } catch (e) {
-            logError('Smart: failed to parse anomaly: $e', tag: 'SmartProviders');
+            logError(
+              'Smart: failed to parse anomaly: $e',
+              tag: 'SmartProviders',
+            );
             return null;
           }
         })
@@ -121,6 +129,33 @@ final anomalyHistoryProvider =
 
 // ── Weekly Plan Cache ───────────────────────────────────────────────────
 
+final aquariumIntelligenceProvider =
+    FutureProvider.autoDispose<AquariumIntelligenceReport>((ref) async {
+      final storage = ref.watch(storageServiceProvider);
+      final tanks = await storage.getAllTanks();
+      final anomalies = ref.watch(anomalyHistoryProvider);
+      final inputs = <AquariumIntelligenceTankInput>[];
+
+      for (final tank in tanks) {
+        inputs.add(
+          AquariumIntelligenceTankInput(
+            tank: tank,
+            logs: await storage.getLogsForTank(tank.id, limit: 50),
+            tasks: await storage.getTasksForTank(tank.id),
+            livestock: await storage.getLivestockForTank(tank.id),
+            equipment: await storage.getEquipmentForTank(tank.id),
+            anomalies: anomalies
+                .where(
+                  (anomaly) => anomaly.tankId == tank.id && !anomaly.dismissed,
+                )
+                .toList(),
+          ),
+        );
+      }
+
+      return AquariumIntelligenceService.evaluate(tanks: inputs);
+    });
+
 /// Cached weekly plan - stored in shared prefs.
 class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
   final Ref ref;
@@ -137,7 +172,10 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
       try {
         state = WeeklyPlan.fromJson(jsonDecode(raw) as Map<String, dynamic>);
       } catch (e) {
-        logError('Smart: failed to parse weekly plan: $e', tag: 'SmartProviders');
+        logError(
+          'Smart: failed to parse weekly plan: $e',
+          tag: 'SmartProviders',
+        );
         // Corrupted - ignore
       }
     }

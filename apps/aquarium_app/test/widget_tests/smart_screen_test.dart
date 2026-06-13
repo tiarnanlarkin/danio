@@ -15,7 +15,10 @@ import 'package:danio/screens/smart_screen.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/workshop_screen.dart';
 import 'package:danio/features/smart/smart_providers.dart';
+import 'package:danio/models/models.dart';
 import 'package:danio/services/openai_service.dart';
+import 'package:danio/services/storage_service.dart';
+import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/utils/navigation_throttle.dart';
 import 'package:danio/widgets/offline_indicator.dart';
 
@@ -23,9 +26,16 @@ import 'package:danio/widgets/offline_indicator.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({bool isOnline = true, bool aiConfigured = false}) {
+Widget _wrap({
+  bool isOnline = true,
+  bool aiConfigured = false,
+  StorageService? storage,
+}) {
   return ProviderScope(
     overrides: [
+      storageServiceProvider.overrideWithValue(
+        storage ?? _SmartTestStorageService(),
+      ),
       openAIServiceProvider.overrideWithValue(
         OpenAIService(directApiKey: aiConfigured ? 'sk-test' : ''),
       ),
@@ -74,6 +84,131 @@ Map<String, dynamic> _profileJson({String? regionCode, String? tankStatus}) {
     'createdAt': now,
     'updatedAt': now,
   };
+}
+
+class _SmartTestStorageService implements StorageService {
+  final Map<String, Tank> _tanks = {};
+  final Map<String, Livestock> _livestock = {};
+  final Map<String, Equipment> _equipment = {};
+  final Map<String, LogEntry> _logs = {};
+  final Map<String, Task> _tasks = {};
+
+  @override
+  Future<List<Tank>> getAllTanks() async => _tanks.values.toList();
+
+  @override
+  Future<Tank?> getTank(String id) async => _tanks[id];
+
+  @override
+  Future<void> saveTank(Tank tank) async {
+    _tanks[tank.id] = tank;
+  }
+
+  @override
+  Future<void> saveTanks(List<Tank> tanks) async {
+    for (final tank in tanks) {
+      _tanks[tank.id] = tank;
+    }
+  }
+
+  @override
+  Future<void> deleteTank(String id) async {
+    _tanks.remove(id);
+    _livestock.removeWhere((_, value) => value.tankId == id);
+    _equipment.removeWhere((_, value) => value.tankId == id);
+    _logs.removeWhere((_, value) => value.tankId == id);
+    _tasks.removeWhere((_, value) => value.tankId == id);
+  }
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) async {
+    final idSet = ids.toSet();
+    _tanks.removeWhere((id, _) => idSet.contains(id));
+    _livestock.removeWhere((_, value) => idSet.contains(value.tankId));
+    _equipment.removeWhere((_, value) => idSet.contains(value.tankId));
+    _logs.removeWhere((_, value) => idSet.contains(value.tankId));
+    _tasks.removeWhere((_, value) => idSet.contains(value.tankId));
+  }
+
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) async {
+    return _livestock.values.where((entry) => entry.tankId == tankId).toList();
+  }
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    _livestock[livestock.id] = livestock;
+  }
+
+  @override
+  Future<void> deleteLivestock(String id) async {
+    _livestock.remove(id);
+  }
+
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) async {
+    return _equipment.values.where((entry) => entry.tankId == tankId).toList();
+  }
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) async {
+    _equipment[equipment.id] = equipment;
+  }
+
+  @override
+  Future<void> deleteEquipment(String id) async {
+    _equipment.remove(id);
+  }
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) async {
+    final logs =
+        _logs.values
+            .where((log) => log.tankId == tankId)
+            .where((log) => after == null || log.timestamp.isAfter(after))
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    return limit == null ? logs : logs.take(limit).toList();
+  }
+
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) async {
+    final tests = await getLogsForTank(tankId);
+    return tests
+        .where((log) => log.type == LogType.waterTest && log.waterTest != null)
+        .firstOrNull;
+  }
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    _logs[log.id] = log;
+  }
+
+  @override
+  Future<void> deleteLog(String id) async {
+    _logs.remove(id);
+  }
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) async {
+    return _tasks.values
+        .where((task) => tankId == null || task.tankId == tankId)
+        .toList();
+  }
+
+  @override
+  Future<void> saveTask(Task task) async {
+    _tasks[task.id] = task;
+  }
+
+  @override
+  Future<void> deleteTask(String id) async {
+    _tasks.remove(id);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -173,11 +308,45 @@ void main() {
       expect(find.byType(EmergencyGuideScreen), findsOneWidget);
     });
 
+    testWidgets('shows local aquarium intelligence without optional AI', (
+      tester,
+    ) async {
+      final storage = _SmartTestStorageService();
+      final now = DateTime(2026, 6, 13, 12);
+      const tankId = 'smart-local-intelligence-tank';
+      await storage.saveTank(_makeTank(id: tankId, now: now));
+      await storage.saveLog(
+        _waterTestLog(
+          tankId: tankId,
+          timestamp: now.subtract(const Duration(hours: 1)),
+          ammonia: 0.5,
+          nitrite: 0,
+        ),
+      );
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Aquarium Intelligence'), findsOneWidget);
+      expect(find.text('Local checks, no AI key needed'), findsOneWidget);
+      expect(find.text('Unsafe water detected'), findsOneWidget);
+      expect(find.textContaining('Ammonia 0.50 ppm'), findsOneWidget);
+      expect(find.text('Emergency Guide', skipOffstage: false), findsWidgets);
+    });
+
     testWidgets('shows AI-only controls when Smart features are configured', (
       tester,
     ) async {
       await tester.pumpWidget(_wrap(aiConfigured: true));
       await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(
+        find.text('Ask Danio'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.text('Ask Danio', skipOffstage: false), findsOneWidget);
@@ -306,6 +475,13 @@ void main() {
         await tester.pump();
         await tester.pump(const Duration(seconds: 1));
 
+        await tester.scrollUntilVisible(
+          find.text('Workshop Compatibility Checker'),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pump(const Duration(seconds: 1));
+
         expect(
           find.text('Workshop Compatibility Checker', skipOffstage: false),
           findsOneWidget,
@@ -318,11 +494,6 @@ void main() {
           findsOneWidget,
         );
 
-        await tester.scrollUntilVisible(
-          find.text('Workshop Compatibility Checker'),
-          500,
-          scrollable: find.byType(Scrollable).first,
-        );
         await tester.tap(find.text('Workshop Compatibility Checker'));
         await tester.pumpAndSettle();
 
@@ -364,4 +535,33 @@ void main() {
       expect(find.text('Ask a fishkeeping question first.'), findsOneWidget);
     });
   });
+}
+
+Tank _makeTank({required String id, required DateTime now}) {
+  return Tank(
+    id: id,
+    name: 'River Room',
+    type: TankType.freshwater,
+    volumeLitres: 100,
+    startDate: now.subtract(const Duration(days: 60)),
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+LogEntry _waterTestLog({
+  required String tankId,
+  required DateTime timestamp,
+  double? ammonia,
+  double? nitrite,
+}) {
+  return LogEntry(
+    id: 'log-$tankId-${timestamp.millisecondsSinceEpoch}',
+    tankId: tankId,
+    type: LogType.waterTest,
+    timestamp: timestamp,
+    waterTest: WaterTestResults(ammonia: ammonia, nitrite: nitrite),
+    createdAt: timestamp,
+  );
 }

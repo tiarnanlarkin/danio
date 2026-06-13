@@ -206,7 +206,7 @@ git commit -m "feat: add local aquarium intelligence rules"
 - Modify: `apps/aquarium_app/lib/screens/smart_screen.dart`
 - Modify: `apps/aquarium_app/test/widget_tests/smart_screen_test.dart`
 
-- [ ] **Step 1: Write failing Smart widget test**
+- [x] **Step 1: Write failing Smart widget test**
 
 Update the Smart test wrapper to accept an `InMemoryStorageService`, override `storageServiceProvider`, save a tank plus unsafe water-test log, render Smart without AI configured, and expect:
 
@@ -216,7 +216,7 @@ Update the Smart test wrapper to accept an `InMemoryStorageService`, override `s
 - `Ammonia 0.50 ppm`;
 - `Emergency Guide` action from the intelligence item.
 
-- [ ] **Step 2: Run Smart widget test to verify failure**
+- [x] **Step 2: Run Smart widget test to verify failure**
 
 Run:
 
@@ -227,7 +227,7 @@ flutter test test/widget_tests/smart_screen_test.dart --plain-name "shows local 
 
 Expected: FAIL because the UI section/provider does not exist yet.
 
-- [ ] **Step 3: Add provider**
+- [x] **Step 3: Add provider**
 
 In `smart_providers.dart`, add:
 
@@ -256,15 +256,15 @@ final aquariumIntelligenceProvider =
 });
 ```
 
-- [ ] **Step 4: Add UI section**
+- [x] **Step 4: Add UI section**
 
 Create `AquariumIntelligenceSection` as a `ConsumerWidget` that watches `aquariumIntelligenceProvider`, renders a card titled `Aquarium Intelligence`, shows summary chips for risks/care/compatibility/anomalies, lists up to three report items with reasons, and routes item actions through existing `NavigationThrottle`/`AppRoutes`.
 
-- [ ] **Step 5: Insert UI section in Smart**
+- [x] **Step 5: Insert UI section in Smart**
 
 Import `aquarium_intelligence_section.dart` in `smart_screen.dart` and insert `const AquariumIntelligenceSection()` after the setup-context banner and before `Emergency Guide`.
 
-- [ ] **Step 6: Run Smart widget test to verify pass**
+- [x] **Step 6: Run Smart widget test to verify pass**
 
 Run:
 
@@ -275,7 +275,7 @@ flutter test test/widget_tests/smart_screen_test.dart --plain-name "shows local 
 
 Expected: PASS.
 
-- [ ] **Step 7: Run full Smart widget test file**
+- [x] **Step 7: Run full Smart widget test file**
 
 Run:
 
@@ -286,7 +286,7 @@ flutter test test/widget_tests/smart_screen_test.dart
 
 Expected: PASS.
 
-- [ ] **Step 8: Commit UI slice**
+- [x] **Step 8: Commit UI slice**
 
 Run:
 

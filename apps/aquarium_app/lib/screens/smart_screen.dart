@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/smart/models/smart_models.dart';
+import '../features/smart/intelligence/aquarium_intelligence_section.dart';
 import '../features/smart/smart_providers.dart';
 import '../navigation/app_routes.dart';
 import '../providers/guidance_provider.dart';
@@ -208,6 +209,10 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           ),
         ),
       ],
+
+      const SizedBox(height: AppSpacing.md),
+
+      const AquariumIntelligenceSection(),
 
       const SizedBox(height: AppSpacing.md),
 
