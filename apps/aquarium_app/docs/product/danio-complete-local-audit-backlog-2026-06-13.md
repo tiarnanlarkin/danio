@@ -101,7 +101,7 @@ These establish the shape of the finished local product.
 | CL-P1-009 | Backup/data | Harden backup, restore, import validation, schema migration, edit/delete/undo, and normal-user explanations. | In progress; CL-P1-009A clarifies backup import safety copy, explains merge-vs-replace behavior for normal users, and protects Backup & Restore source copy from mojibake/non-ASCII glyphs. CL-P1-009B validates required backup data before preview/import. Remaining: deeper import validation UX, edit/delete/undo coverage, and restore/migration walkthrough QA. |
 | CL-P1-010 | Profile/preferences | Centralise experience, goals, interests, units, region, AI, privacy, reminder intensity, motion/haptics, and reset controls. | In progress; CL-P1-010A polishes Tank Settings water-profile labels so tropical/coldwater target copy is readable and source-safe. Remaining: centralised reset/edit controls for all onboarding preferences, AI, privacy, reminder intensity, motion, and haptics. |
 | CL-P1-011 | Global search | Make search a top-bar/contextual/More feature, not a bottom tab. | Done for current complete-local search scope; CL-P1-011A adds grouped app, tool, learning-path, guide, settings/privacy/backup, species, equipment, livestock, and local log search results. Remaining: Android phone/tablet walkthrough QA and optional direct-per-lesson deep links if needed. |
-| CL-P1-012 | Demo mode | Provide one polished sample tank, resettable and separate from real data. | Partially done; quick start and Settings can add the populated sample tank, clearly marked as demo data. Remaining: reset/replace polish and final screen QA. |
+| CL-P1-012 | Demo mode | Provide one polished sample tank, resettable and separate from real data. | In progress; quick start and Settings can add the populated sample tank, clearly marked as demo data. CL-P1-012A makes sample-tank creation reset/replace existing demo tanks without touching real tanks. Remaining: final screen QA. |
 
 ## 7. P2 Work - Presentation System
 
@@ -141,8 +141,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the Tool Result timeline-label slice on
-2026-06-13, `flutter test` passes 1530 tests and `flutter analyze` is clean,
+Current verification note: as of the Sample Tank reset slice on 2026-06-13,
+`flutter test` passes 1531 tests and `flutter analyze` is clean,
 and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

@@ -109,13 +109,30 @@ class TankActions {
     return tank;
   }
 
-  /// Add a sample/demo tank even if the user already has existing tanks.
+  /// Add or reset the sample/demo tank without touching real user tanks.
   ///
-  /// Used by Settings → "Add Sample Tank".
+  /// Used by Settings and first-run quick-start flows.
   Future<Tank> addDemoTank() async {
+    final existingDemoTankIds = (await _storage.getAllTanks())
+        .where((tank) => tank.isDemoTank)
+        .map((tank) => tank.id)
+        .toList(growable: false);
+
+    if (existingDemoTankIds.isNotEmpty) {
+      await _storage.deleteAllTanks(existingDemoTankIds);
+    }
+
     final tank = await SampleData.addFreshwaterDemoTank(_storage);
 
     _ref.invalidate(tanksProvider);
+    for (final tankId in existingDemoTankIds) {
+      _ref.invalidate(tankProvider(tankId));
+      _ref.invalidate(livestockProvider(tankId));
+      _ref.invalidate(equipmentProvider(tankId));
+      _ref.invalidate(logsProvider(tankId));
+      _ref.invalidate(allLogsProvider(tankId));
+      _ref.invalidate(tasksProvider(tankId));
+    }
     _ref.invalidate(tankProvider(tank.id));
     _ref.invalidate(livestockProvider(tank.id));
     _ref.invalidate(equipmentProvider(tank.id));

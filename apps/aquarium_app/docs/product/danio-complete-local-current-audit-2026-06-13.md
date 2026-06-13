@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1530 tests.
+- `flutter test`: pass, 1531 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -964,6 +964,16 @@ CL-P1-010A Tank Settings water-profile copy:
 - Focused coverage verifies Backup & Restore, Unit Converter, Nitrogen Cycle
   learning, and local log-note search results.
 
+### CL-P1-012A Resettable Sample Tank
+
+- Settings now presents the sample-tank action as `Reset Sample Tank` and tells
+  users it replaces demo data without touching real tanks.
+- `TankActions.addDemoTank()` now removes only existing `isDemoTank` records
+  before creating a fresh populated sample tank, so onboarding, empty-state, and
+  Settings flows cannot pile up duplicate demo tanks.
+- Focused provider coverage verifies existing demo tanks are replaced while a
+  real user tank remains in storage.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -1027,6 +1037,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, and local logs. Remaining search work is Android phone/tablet
   walkthrough QA and any future direct-per-lesson deep links.
+- Demo mode now has a resettable populated sample tank that replaces existing
+  demo data without deleting real tanks. Remaining demo work is final screen QA.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.

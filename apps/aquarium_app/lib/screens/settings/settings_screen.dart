@@ -145,14 +145,14 @@ class SettingsScreen extends ConsumerWidget {
       ),
       (_) => AppListTile(
         leading: const Icon(Icons.auto_awesome),
-        title: 'Add Sample Tank',
-        subtitle: 'Explore the app with demo data',
+        title: 'Reset Sample Tank',
+        subtitle: 'Replaces demo data without touching your real tanks',
         onTap: () async {
           try {
             final actions = ref.read(tankActionsProvider);
             final demoTank = await actions.addDemoTank();
             if (context.mounted) {
-              AppFeedback.showSuccess(context, 'Sample tank added!');
+              AppFeedback.showSuccess(context, 'Sample tank ready!');
               AppRoutes.toTankDetail(context, demoTank.id);
             }
           } catch (e, st) {

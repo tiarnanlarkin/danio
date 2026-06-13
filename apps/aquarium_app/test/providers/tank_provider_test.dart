@@ -252,6 +252,31 @@ void main() {
     });
   });
 
+  // --- TankActions.addDemoTank ---
+
+  group('TankActions - demo tank', () {
+    test('replaces existing demo tanks without removing real tanks', () async {
+      final storage = _TestStorageService();
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      await storage.saveTank(_makeTank(id: 'real-tank', name: 'Real Tank'));
+      await storage.saveTank(
+        _makeTank(id: 'old-demo', name: 'Old Demo').copyWith(isDemoTank: true),
+      );
+
+      final demoTank = await container.read(tankActionsProvider).addDemoTank();
+      final tanks = await storage.getAllTanks();
+      final demoTanks = tanks.where((tank) => tank.isDemoTank).toList();
+
+      expect(tanks.any((tank) => tank.id == 'real-tank'), isTrue);
+      expect(await storage.getTank('old-demo'), isNull);
+      expect(demoTanks, hasLength(1));
+      expect(demoTanks.single.id, demoTank.id);
+      expect(demoTank.id, isNot('old-demo'));
+    });
+  });
+
   // ── tanksProvider (listing) ────────────────────────────────────────────────
 
   group('tanksProvider - listing', () {
