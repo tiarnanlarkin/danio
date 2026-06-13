@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/achievements.dart';
 import 'package:danio/screens/achievements_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -14,11 +15,7 @@ import 'package:danio/screens/achievements_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(
-      home: AchievementsScreen(),
-    ),
-  );
+  return const ProviderScope(child: MaterialApp(home: AchievementsScreen()));
 }
 
 // ---------------------------------------------------------------------------
@@ -68,6 +65,16 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       expect(find.byIcon(Icons.sort), findsOneWidget);
+    });
+
+    testWidgets('shows plain category filter labels', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      for (final category in AchievementCategory.values) {
+        expect(find.text(category.displayName), findsOneWidget);
+      }
     });
   });
 

@@ -213,7 +213,8 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(right: AppSpacing.sm),
                     child: FilterChip(
-                      label: Text('${category.icon} ${category.displayName}'),
+                      avatar: Icon(AchievementCard.iconFor(category), size: 18),
+                      label: Text(category.displayName),
                       selected: _selectedCategory == category,
                       onSelected: (selected) {
                         setState(() {

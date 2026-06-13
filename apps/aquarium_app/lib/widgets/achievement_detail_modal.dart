@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/achievements.dart';
+import 'achievement_card.dart';
 
 /// Modal showing detailed achievement information when tapped.
 ///
@@ -52,7 +53,7 @@ class AchievementDetailModal extends StatelessWidget {
               ),
             ),
 
-            // Icon with glow effect
+            // Badge icon with glow effect
             Container(
               width: 120,
               height: 120,
@@ -73,13 +74,17 @@ class AchievementDetailModal extends StatelessWidget {
               ),
               child: Center(
                 child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    Text(
-                      achievement.icon,
-                      style: Theme.of(context).textTheme.headlineMedium!
-                          .copyWith(
-                            color: isLocked ? AppColors.blackAlpha25 : null,
-                          ),
+                    Semantics(
+                      label:
+                          '${achievement.category.displayName} achievement badge',
+                      image: true,
+                      child: Icon(
+                        AchievementCard.iconFor(achievement.category),
+                        size: 58,
+                        color: isLocked ? AppColors.blackAlpha25 : rarityColor,
+                      ),
                     ),
                     if (isLocked && achievement.isHidden)
                       Positioned.fill(
@@ -148,9 +153,20 @@ class AchievementDetailModal extends StatelessWidget {
                 color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: AppRadius.mediumRadius,
               ),
-              child: Text(
-                '${achievement.category.icon} ${achievement.category.displayName}',
-                style: Theme.of(context).textTheme.bodySmall,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    AchievementCard.iconFor(achievement.category),
+                    size: 16,
+                    color: context.textSecondary,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    achievement.category.displayName,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ),
 

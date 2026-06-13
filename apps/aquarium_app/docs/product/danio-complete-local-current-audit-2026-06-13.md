@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1431 tests.
+- `flutter test`: pass, 1433 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -391,6 +391,14 @@ CL-P1-002A Room vibe unlock progress:
   streaks, completed lessons, perfect scores, and achievement IDs. Locked vibes
   cannot be applied from the picker, so cosmetics now feel earned without
   adding fake shop inventory or cloud/premium promises.
+
+CL-P1-002B Achievement badge display polish:
+
+- Achievement detail now uses controlled Material badge icons and plain category
+  labels instead of rendering stored achievement emoji strings as visible text.
+- Achievement category filters now show plain category labels with icon avatars,
+  improving polish, accessibility, and rendering consistency while preserving
+  the existing achievement metadata for compatibility.
 
 Current Android device state:
 
