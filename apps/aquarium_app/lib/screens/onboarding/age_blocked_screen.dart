@@ -29,7 +29,7 @@ class AgeBlockedScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 const Text(
-                  'Danio requires users to be 13 or older. Please ask a parent or guardian to help you set up an account.',
+                  'Danio requires users to be 13 or older. Please ask a parent or guardian to review this with you.',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.lg),

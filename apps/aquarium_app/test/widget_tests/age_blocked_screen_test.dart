@@ -15,9 +15,7 @@ import 'package:danio/screens/onboarding/age_blocked_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const MaterialApp(
-    home: AgeBlockedScreen(),
-  );
+  return const MaterialApp(home: AgeBlockedScreen());
 }
 
 // ---------------------------------------------------------------------------
@@ -38,14 +36,21 @@ void main() {
       expect(find.textContaining('Age Requirement'), findsOneWidget);
     });
 
-    testWidgets('shows under-13 message explaining requirement', (tester) async {
+    testWidgets('shows under-13 message explaining requirement', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       // Should explain that user needs to be 13 or older
-      expect(
-        find.textContaining('13'),
-        findsAtLeastNWidgets(1),
-      );
+      expect(find.textContaining('13'), findsAtLeastNWidgets(1));
+    });
+
+    testWidgets('does not imply account setup is required', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(find.textContaining('set up an account'), findsNothing);
+      expect(find.textContaining('complete setup with you'), findsOneWidget);
     });
 
     testWidgets('shows Privacy Policy link', (tester) async {
@@ -54,7 +59,9 @@ void main() {
       expect(find.textContaining('Privacy Policy'), findsOneWidget);
     });
 
-    testWidgets('Privacy Policy is a TextButton (tappable link)', (tester) async {
+    testWidgets('Privacy Policy is a TextButton (tappable link)', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       expect(find.byType(TextButton), findsOneWidget);
