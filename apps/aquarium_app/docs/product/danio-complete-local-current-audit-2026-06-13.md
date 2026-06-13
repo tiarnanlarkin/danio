@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1476 tests.
+- `flutter test`: pass, 1479 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -667,6 +667,18 @@ CL-P1-005A Practice Skill Drills:
 - Focused coverage verifies the drill catalog, path-based unlocking, filtered
   card selection, locked copy, and Practice Hub rendering.
 
+CL-P1-005B Parameter Reading drill questions:
+
+- The Parameter Reading drill now resolves related cards into scenario-style
+  multiple-choice questions instead of only reusing generic lesson recall.
+- Covered scenarios include pH swings, low tropical temperature, untreated tap
+  water, ammonia/nitrite spikes, nitrate/maintenance drift, and a general
+  water-test interpretation fallback.
+- Other drill types still use the normal question resolver until their
+  scenario formats are implemented.
+- Focused coverage verifies pH scenario generation, cycling-spike immediate
+  action guidance, and non-parameter fallback behaviour.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -707,8 +719,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Remaining learning work is expanding visual depth and richer learning
   interactions across the catalog.
 - Practice depth now starts with workflow-based Skill Drills mapped to existing
-  lesson paths and filtered review sessions. Remaining Practice work is richer
-  scenario-specific question formats and deeper tank/tool-data integration.
+  lesson paths, filtered review sessions, and scenario-style Parameter Reading
+  questions. Remaining Practice work is scenario-specific diagnosis,
+  compatibility, setup-planning, and emergency formats plus deeper
+  tank/tool-data integration.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -720,7 +734,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
 Continue CL-P1-005 practice depth while Android transport is reserved by other
 sessions:
 
-- Add scenario-specific drill question formats for parameter interpretation and
-  diagnosis.
+- Add scenario-specific drill question formats for diagnosis and emergency
+  decisions.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

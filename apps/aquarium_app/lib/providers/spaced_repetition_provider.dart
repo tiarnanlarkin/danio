@@ -14,6 +14,7 @@ import '../models/resolved_question.dart';
 import '../models/practice_drill.dart';
 import '../services/question_resolver.dart';
 import '../services/practice_drill_service.dart';
+import '../services/practice_drill_question_service.dart';
 import '../utils/logger.dart';
 import 'lesson_provider.dart';
 import 'settings_provider.dart';
@@ -632,7 +633,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       }
 
       final lessonState = _ref.read(lessonProvider);
-      final resolved = QuestionResolver.resolveQuestions(
+      final resolved = PracticeDrillQuestionService.resolveQuestions(
+        drillId: drillId,
         cards: session.cards,
         lessonState: lessonState,
       );
