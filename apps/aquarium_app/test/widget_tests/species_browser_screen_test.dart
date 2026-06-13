@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/species_browser_screen.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -30,6 +32,7 @@ Future<void> _advance(WidgetTester tester) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
   });
 
   group('SpeciesBrowserScreen — rendering', () {
@@ -64,6 +67,25 @@ void main() {
       await _advance(tester);
       // Species database is static — at least one card should be present
       expect(find.byType(ListView), findsWidgets);
+    });
+
+    testWidgets('species detail opens Emergency Guide', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Emergency Guide'), findsOneWidget);
+      expect(
+        find.text('Urgent steps for illness, injury, gasping, or unsafe water'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Emergency Guide'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EmergencyGuideScreen), findsOneWidget);
     });
 
     testWidgets(

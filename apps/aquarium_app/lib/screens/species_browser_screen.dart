@@ -7,9 +7,11 @@ import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../utils/debouncer.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
+import 'emergency_guide_screen.dart';
 
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});
@@ -426,6 +428,54 @@ class _SpeciesDetailSheet extends StatelessWidget {
                 ),
                 _StatChip(label: species.family, icon: Icons.account_tree),
               ],
+            ),
+
+            const SizedBox(height: AppSpacing.lg2),
+
+            AppCard(
+              padding: AppCardPadding.compact,
+              backgroundColor: AppOverlays.error10,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.emergency_outlined,
+                        color: AppColors.error,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          'Species safety',
+                          style: AppTypography.labelLarge.copyWith(
+                            color: AppColors.error,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Urgent steps for illness, injury, gasping, or unsafe water',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  AppButton(
+                    label: 'Emergency Guide',
+                    leadingIcon: Icons.emergency_outlined,
+                    variant: AppButtonVariant.secondary,
+                    size: AppButtonSize.small,
+                    onPressed: () => NavigationThrottle.push(
+                      context,
+                      const EmergencyGuideScreen(),
+                      rootNavigator: true,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             const SizedBox(height: AppSpacing.lg2),
