@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../models/tank.dart';
 import '../models/wishlist.dart';
+import '../providers/tank_provider.dart';
 import '../providers/wishlist_provider.dart';
 import '../widgets/core/app_text_field.dart';
 import '../models/learning.dart';
@@ -16,6 +18,7 @@ import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/danio_snack_bar.dart';
 import 'emergency_guide_screen.dart';
+import 'livestock/livestock_add_dialog.dart';
 import 'stocking_calculator_screen.dart';
 
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
@@ -744,6 +747,13 @@ class _CareActionsCard extends ConsumerWidget {
                   rootNavigator: true,
                 ),
               ),
+              AppButton(
+                label: 'Add to tank',
+                leadingIcon: Icons.add_circle_outline,
+                variant: AppButtonVariant.primary,
+                size: AppButtonSize.small,
+                onPressed: () => _addToTank(context, ref),
+              ),
             ],
           ),
         ],
@@ -773,6 +783,57 @@ class _CareActionsCard extends ConsumerWidget {
         DanioSnackBar.error(context, 'Could not save ${species.commonName}');
       }
     }
+  }
+
+  Future<void> _addToTank(BuildContext context, WidgetRef ref) async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!context.mounted) return;
+
+    if (tanks.isEmpty) {
+      DanioSnackBar.warning(
+        context,
+        'Add a tank first before adding livestock.',
+      );
+      return;
+    }
+
+    Tank? selectedTank;
+    if (tanks.length == 1) {
+      selectedTank = tanks.first;
+    } else {
+      selectedTank = await showAppDialog<Tank>(
+        context: context,
+        title: 'Choose a Tank',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: tanks
+              .map(
+                (tank) => ListTile(
+                  leading: const Icon(Icons.water),
+                  title: Text(tank.name),
+                  subtitle: Text('${tank.volumeLitres.toStringAsFixed(0)} L'),
+                  onTap: () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context, tank);
+                    }
+                  },
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (selectedTank == null || !context.mounted) return;
+
+    await showAppDragSheet(
+      context: context,
+      builder: (_) => LivestockAddDialog(
+        tankId: selectedTank!.id,
+        prefillCommonName: species.commonName,
+        prefillScientificName: species.scientificName,
+      ),
+    );
   }
 
   String _format(double value) {

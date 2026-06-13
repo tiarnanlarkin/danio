@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1452 tests.
+- `flutter test`: pass, 1453 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -432,7 +432,7 @@ CL-P1-003B Species care actions:
   existing species data: minimum tank size, group size, temperature/pH range,
   compatibility checks, and treatment-warning review when relevant.
 - This makes species pages more actionable without adding unverified new
-  species facts or pretending add-to-tank/reminder persistence exists yet.
+  species facts or pretending reminder persistence exists yet.
 
 CL-P1-003C Species stocking handoff:
 
@@ -470,6 +470,14 @@ CL-P1-003G Plant Watch For guidance:
   propagation, care-tip, growth-rate, height, CO2, and difficulty fields.
 - This gives plant pages practical common-problem cues while staying within
   the local database facts already present.
+
+CL-P1-003H Species add-to-tank handoff:
+
+- Fish species detail sheets now include an Add to tank action that reuses the
+  existing tank picker and `LivestockAddDialog` flow.
+- The handoff prefills common/scientific names and uses the species minimum
+  school size for schooling fish, while keeping actual livestock persistence,
+  logs, XP, validation, and provider invalidation inside the existing dialog.
 
 Current Android device state:
 

@@ -69,6 +69,9 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
     } else if (widget.prefillCommonName != null) {
       // Try to match the pre-filled name against our local species DB.
       _selectedSpecies = SpeciesDatabase.lookup(widget.prefillCommonName!);
+      if (_selectedSpecies != null && _selectedSpecies!.minSchoolSize > 1) {
+        _countController.text = _selectedSpecies!.minSchoolSize.toString();
+      }
     }
   }
 
@@ -164,20 +167,23 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
                   child: Column(
                     children: _suggestions
                         .map(
-                          (species) => ListTile(
-                            dense: true,
-                            title: Text(species.commonName),
-                            subtitle: Text(
-                              '${species.scientificName} • ${species.temperament}',
-                              style: AppTypography.bodySmall,
-                            ),
-                            trailing: Text(
-                              species.careLevel,
-                              style: AppTypography.bodySmall.copyWith(
-                                color: _careLevelColor(species.careLevel),
+                          (species) => Material(
+                            type: MaterialType.transparency,
+                            child: ListTile(
+                              dense: true,
+                              title: Text(species.commonName),
+                              subtitle: Text(
+                                '${species.scientificName} • ${species.temperament}',
+                                style: AppTypography.bodySmall,
                               ),
+                              trailing: Text(
+                                species.careLevel,
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: _careLevelColor(species.careLevel),
+                                ),
+                              ),
+                              onTap: () => _selectSpecies(species),
                             ),
-                            onTap: () => _selectSpecies(species),
                           ),
                         )
                         .toList(),

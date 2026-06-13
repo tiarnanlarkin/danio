@@ -7,9 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/models.dart';
+import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/species_browser_screen.dart';
 import 'package:danio/screens/stocking_calculator_screen.dart';
+import 'package:danio/services/storage_service.dart';
 import 'package:danio/utils/navigation_throttle.dart';
 
 // ---------------------------------------------------------------------------
@@ -18,6 +22,28 @@ import 'package:danio/utils/navigation_throttle.dart';
 
 Widget _wrap() {
   return const ProviderScope(child: MaterialApp(home: SpeciesBrowserScreen()));
+}
+
+Widget _wrapWithTank({required InMemoryStorageService storage}) {
+  final now = DateTime(2026, 6, 13);
+  final tank = Tank(
+    id: 'species-test-tank',
+    name: 'Species Test Tank',
+    type: TankType.freshwater,
+    volumeLitres: 120,
+    startDate: now,
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
+  );
+
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(storage),
+      tanksProvider.overrideWith((ref) async => [tank]),
+    ],
+    child: const MaterialApp(home: SpeciesBrowserScreen()),
+  );
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -153,6 +179,31 @@ void main() {
       expect(find.text('Stocking Calculator'), findsOneWidget);
       expect(find.text('Neon Tetra'), findsOneWidget);
       expect(find.text('6'), findsOneWidget);
+    });
+
+    testWidgets('species detail opens prefilled add-to-tank dialog', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+
+      await tester.pumpWidget(_wrapWithTank(storage: storage));
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Add to tank'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Add to tank'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Add Livestock'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Neon Tetra'), findsOneWidget);
+      expect(
+        find.widgetWithText(TextField, 'Paracheirodon innesi'),
+        findsOneWidget,
+      );
+      expect(find.widgetWithText(TextField, '6'), findsOneWidget);
     });
 
     testWidgets('species detail saves fish to wishlist', (tester) async {
