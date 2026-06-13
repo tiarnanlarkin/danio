@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1529 tests.
+- `flutter test`: pass, 1530 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -906,6 +906,19 @@ CL-P1-007B / CL-P1-008B All-tanks activity timeline:
 - Focused coverage verifies recent activity across three tanks, including an
   unselected tank, appears in the comparison flow.
 
+CL-P1-008C Saved tool-result timeline labels:
+
+- Tank Journal now recognises observation notes saved by guided tools and
+  labels them as `Tool Result` timeline entries instead of generic
+  observations.
+- Existing saved notes with known guided-tool prefixes such as
+  `Dosing calculation:`, `CO2 estimate:`, `Lighting schedule`,
+  `Compatibility check`, and `Stocking estimate` get specific journal titles.
+- The change is display-only and keeps the existing local `LogEntry` schema, so
+  previously saved local tool notes improve without a migration.
+- Focused coverage verifies a saved dosing-calculator note appears as
+  `Dosing Calculator Result` with `Tool Result` metadata.
+
 CL-P1-009A Backup import safety copy:
 
 - Backup & Restore now explains import behavior in normal-user terms:
@@ -999,9 +1012,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   all-tanks activity card. Remaining multi-tank work is switching polish and
   Android phone/tablet QA.
 - Tank Journal now has a first unified local timeline pass for current log
-  types, and Compare Tanks now surfaces recent history across tanks. Remaining
-  timeline work is richer tool-result history, accepted AI notes, and
-  milestones.
+  types, saved guided-tool notes now appear as Tool Result entries, and Compare
+  Tanks now surfaces recent history across tanks. Remaining timeline work is
+  accepted AI notes, milestones, and any richer tool-result detail cards found
+  in walkthroughs.
 - Backup & Restore now has clearer import safety copy and validates required
   backup JSON before preview/import. Remaining backup/data work is deeper
   import validation UX, edit/delete/undo coverage, and restore/migration
@@ -1024,9 +1038,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
 Continue CL-P1-007/CL-P1-008 remaining local depth while Android transport is
 reserved by other sessions:
 
-- Expand richer tool-result/AI-note/milestone timeline handoffs, polish
-  multi-tank switching, continue CL-P1-009 data-safety hardening, continue
-  CL-P1-010 preference centralisation, and keep CL-P1-011 direct-per-lesson
-  search/deep links as optional polish if walkthroughs show users need it.
+- Expand accepted AI-note/milestone timeline handoffs, polish multi-tank
+  switching, continue CL-P1-009 data-safety hardening, continue CL-P1-010
+  preference centralisation, and keep CL-P1-011 direct-per-lesson search/deep
+  links as optional polish if walkthroughs show users need it.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

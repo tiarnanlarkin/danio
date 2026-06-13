@@ -47,6 +47,8 @@ class LogEntryDisplay {
             ? 'Completed: $title'
             : 'Task completed';
       case LogType.observation:
+        final toolTitle = toolResultTitleFor(entry);
+        if (toolTitle != null) return toolTitle;
         return title != null && title.isNotEmpty ? title : 'Journal entry';
       case LogType.feeding:
       case LogType.medication:
@@ -56,6 +58,36 @@ class LogEntryDisplay {
       case LogType.other:
         return title != null && title.isNotEmpty ? title : entry.typeName;
     }
+  }
+
+  static String timelineKindFor(LogEntry entry) {
+    return toolResultTitleFor(entry) == null ? entry.typeName : 'Tool Result';
+  }
+
+  static String? toolResultTitleFor(LogEntry entry) {
+    if (entry.type != LogType.observation) return null;
+
+    final notes = entry.notes?.trim().toLowerCase();
+    if (notes == null || notes.isEmpty) return null;
+
+    if (notes.startsWith('dosing calculation:')) {
+      return 'Dosing Calculator Result';
+    }
+    if (notes.startsWith('co2 estimate:')) {
+      return 'CO2 Calculator Result';
+    }
+    if (notes.startsWith('lighting schedule')) {
+      return 'Lighting Planner Result';
+    }
+    if (notes.startsWith('compatibility check')) {
+      return 'Compatibility Check Result';
+    }
+    if (notes.startsWith('stocking estimate') ||
+        notes.startsWith('stocking check')) {
+      return 'Stocking Calculator Result';
+    }
+
+    return null;
   }
 
   static String summaryFor(LogEntry entry) {

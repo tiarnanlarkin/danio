@@ -61,6 +61,16 @@ LogEntry _taskCompletedEntry() => LogEntry(
   createdAt: DateTime(2024, 7, 3, 18),
 );
 
+LogEntry _savedToolResultEntry() => LogEntry(
+  id: 'tool-001',
+  tankId: _fakeTankId,
+  type: LogType.observation,
+  timestamp: DateTime(2024, 7, 4, 12),
+  notes:
+      'Dosing calculation: 12.50 ml.\nTank volume: 125 L.\nDose rate: 5 ml per 50 L.',
+  createdAt: DateTime(2024, 7, 4, 12),
+);
+
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 500));
@@ -134,6 +144,21 @@ void main() {
 
       expect(find.text('Completed: Water change'), findsOneWidget);
       expect(find.text('Changed 30% of water'), findsOneWidget);
+      expect(find.text('Your story starts here!'), findsNothing);
+    });
+
+    testWidgets('labels saved calculator notes as tool results', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(logs: [_savedToolResultEntry()]));
+      await _advance(tester);
+
+      expect(find.text('Dosing Calculator Result'), findsOneWidget);
+      expect(find.textContaining('Tool Result |'), findsOneWidget);
+      expect(
+        find.textContaining('Dosing calculation: 12.50 ml'),
+        findsOneWidget,
+      );
       expect(find.text('Your story starts here!'), findsNothing);
     });
   });

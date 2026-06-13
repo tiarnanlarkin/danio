@@ -178,7 +178,7 @@ class _JournalEntryCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        '${entry.typeName} | $dateStr | $timeStr',
+                        '${LogEntryDisplay.timelineKindFor(entry)} | $dateStr | $timeStr',
                         style: AppTypography.bodySmall.copyWith(
                           color: context.textSecondary,
                         ),
