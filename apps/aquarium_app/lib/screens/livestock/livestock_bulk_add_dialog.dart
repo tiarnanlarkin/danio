@@ -63,7 +63,8 @@ class _LivestockBulkAddDialogState
         left: AppSpacing.md,
         right: AppSpacing.md,
         top: AppSpacing.md,
-        bottom: max(
+        bottom:
+            max(
               MediaQuery.of(context).viewInsets.bottom,
               MediaQuery.of(context).viewPadding.bottom,
             ) +
@@ -93,7 +94,10 @@ class _LivestockBulkAddDialogState
             ),
             const SizedBox(height: AppSpacing.sm2),
             if (_items.isNotEmpty) ...[
-              Text('Preview (${_items.length})', style: AppTypography.labelLarge),
+              Text(
+                'Preview (${_items.length})',
+                style: AppTypography.labelLarge,
+              ),
               const SizedBox(height: AppSpacing.sm),
               ..._items.map(
                 (i) => Padding(
@@ -104,7 +108,7 @@ class _LivestockBulkAddDialogState
                         child: Text(i.name, style: AppTypography.bodyMedium),
                       ),
                       const SizedBox(width: AppSpacing.sm2),
-                      Text('×${i.count}', style: AppTypography.bodyMedium),
+                      Text('x${i.count}', style: AppTypography.bodyMedium),
                     ],
                   ),
                 ),
@@ -157,7 +161,7 @@ class _LivestockBulkAddDialogState
             tankId: widget.tankId,
             type: LogType.livestockAdded,
             timestamp: now,
-            title: 'Added ${livestock.count}× ${livestock.commonName}',
+            title: 'Added ${livestock.count} ${livestock.commonName}',
             relatedLivestockId: livestock.id,
             createdAt: now,
           ),
@@ -179,11 +183,15 @@ class _LivestockBulkAddDialogState
         Navigator.maybePop(context);
         AppFeedback.showSuccess(
           context,
-          'Welcome aboard, new friends! \u{1F420} ${_items.length} added',
+          'Added ${_items.length} livestock entries.',
         );
       }
     } catch (e, st) {
-      logError('LivestockBulkAddDialog: bulk save failed: $e', stackTrace: st, tag: 'LivestockBulkAddDialog');
+      logError(
+        'LivestockBulkAddDialog: bulk save failed: $e',
+        stackTrace: st,
+        tag: 'LivestockBulkAddDialog',
+      );
       if (mounted) {
         AppFeedback.showError(
           context,
