@@ -14,7 +14,8 @@
 > cloud implementation details. The normal app shell no longer mounts debug sync
 > diagnostics, and tank setup/settings, guide copy, mascot prompts, and optional
 > AI prompts present Freshwater as the supported local scope instead of disabled
-> or implied marine setup choices.
+> or implied marine setup choices. Optional AI server-connection errors no
+> longer expose Supabase/build-auth jargon to normal users.
 
 **Updated:** 2026-06-13
 **Rule:** Every feature listed with honest status. Updated every wave.

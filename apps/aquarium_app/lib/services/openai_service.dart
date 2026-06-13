@@ -57,6 +57,8 @@ class OpenAIException implements Exception {
 class OpenAIUserMessages {
   static const setupRequired =
       'Optional AI is not configured. Add an OpenAI key in Preferences before using this AI feature.';
+  static const proxyUnavailable =
+      'Optional AI server connection is not fully configured. Local Smart Hub checks still work.';
   static const rateLimited =
       "You've used your Smart assists for this hour. Try again later.";
   static const timeout =
@@ -280,9 +282,7 @@ class OpenAIService {
   Future<Map<String, String>> _headers() async {
     if (_usesProxy) {
       if (_proxyAuthToken.isEmpty) {
-        throw const OpenAIException(
-          'AI proxy is configured but the Supabase anon key is missing.',
-        );
+        throw const OpenAIException(OpenAIUserMessages.proxyUnavailable);
       }
       return {
         'Content-Type': 'application/json',
@@ -297,9 +297,7 @@ class OpenAIService {
   Future<void> _assertConfigured() async {
     if (_usesProxy) {
       if (_proxyAuthToken.isEmpty) {
-        throw const OpenAIException(
-          'AI proxy is configured but the Supabase anon key is missing.',
-        );
+        throw const OpenAIException(OpenAIUserMessages.proxyUnavailable);
       }
       return;
     }

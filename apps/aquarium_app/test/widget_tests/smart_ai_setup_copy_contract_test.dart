@@ -16,6 +16,11 @@ void main() {
 
     expect(serviceSource, contains('setupRequired'));
     expect(serviceSource, contains('Optional AI is not configured'));
+    expect(
+      serviceSource,
+      contains('Optional AI server connection is not fully configured'),
+    );
+    expect(serviceSource, isNot(contains('Supabase anon key is missing')));
 
     for (final path in featureFiles) {
       final source = File(path).readAsStringSync();

@@ -154,7 +154,7 @@ void main() {
             isA<OpenAIException>().having(
               (e) => e.message,
               'message',
-              contains('Supabase anon key is missing'),
+              contains('Optional AI server connection is not fully configured'),
             ),
           ),
         );

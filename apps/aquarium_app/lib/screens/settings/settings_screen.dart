@@ -946,7 +946,7 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
       subtitle: hasProxy
           ? (proxyReady
                 ? 'Secure AI proxy active'
-                : 'AI proxy configured, but app auth is missing')
+                : 'Optional AI server connection needs setup')
           : (_hasUserKey
                 ? 'Custom API key active - tap to manage'
                 : 'Smart Hub works locally; add a key for photo ID and Ask Danio'),
@@ -1218,7 +1218,7 @@ class _ProxyAiStatus extends StatelessWidget {
           child: Text(
             isReady
                 ? 'Optional AI is managed by Danio\'s secure server proxy. No OpenAI API key is stored on this device.'
-                : 'The AI proxy URL is built in, but this build is missing the Supabase anon key.',
+                : OpenAIUserMessages.proxyUnavailable,
             style: AppTypography.bodyMedium.copyWith(
               color: context.textSecondary,
             ),

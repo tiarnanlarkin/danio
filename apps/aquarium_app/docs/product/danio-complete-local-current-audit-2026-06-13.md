@@ -141,6 +141,9 @@ Fixed:
   system prompts now stay aligned to the freshwater local scope. A focused copy
   contract protects those scoped surfaces without removing legitimate brackish
   biology facts from species/lesson content.
+- Optional AI server-connection failures no longer expose Supabase/build-auth
+  jargon in Settings or AI-service errors. Users now see a plain message that
+  local Smart Hub checks still work.
 
 Remaining CL-P0-003 audit targets:
 
@@ -165,7 +168,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, unsupported marine setup choices/scope copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, unsupported marine setup choices/scope copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
