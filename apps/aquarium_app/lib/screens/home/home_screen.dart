@@ -32,6 +32,7 @@ import '../add_log_screen.dart';
 import '../journal_screen.dart';
 import '../tank_settings_screen.dart';
 import '../backup_restore_screen.dart';
+import '../emergency_guide_screen.dart';
 import 'home_sheets.dart';
 import 'widgets/tank_switcher.dart';
 import 'widgets/selection_mode_panel.dart';
@@ -561,6 +562,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const Padding(
                       padding: EdgeInsets.only(right: AppSpacing.sm),
                       child: HeartIndicator(compact: true),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.emergency_outlined,
+                        color: AppColors.error,
+                      ),
+                      tooltip: 'Emergency Guide',
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        const EmergencyGuideScreen(),
+                        rootNavigator: true,
+                      ),
                     ),
                     Semantics(
                       label: 'Tank Toolbox',

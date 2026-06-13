@@ -255,6 +255,12 @@ CL-P0-005B Tank quick-feed progress:
   safety-aware portion feedback, while the room food object still opens the
   deeper feeding guidance sheet.
 
+CL-P0-006A Tank emergency access progress:
+
+- Tank top bar now exposes Emergency Guide directly beside core tank actions, so
+  urgent help is reachable from the centre screen without going through
+  Settings.
+
 Current Android device state:
 
 - ADB sees `RFCY8022D5R` as `unauthorized`.
@@ -272,7 +278,7 @@ P0 status:
 | CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
 | CL-P0-004 | In progress | CL-P0-004A completed region/units capture, profile persistence, and Preferences unit reset. CL-P0-004B completed quick-start sample handoff. CL-P0-004C completed explicit multi-goal capture after tank stage. CL-P0-004D completed setup-context Preferences repair and Smart nudge. Remaining first-run work: final Android phone/tablet screen QA. |
 | CL-P0-005 | In progress | CL-P0-005A adds care priority and next-best action from water logs/tasks. CL-P0-005B makes the main Tank Feed action a direct log with safety feedback. Remaining: richer quick action polish, visual QA, and tighter integration with emergency workflows. |
-| CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
+| CL-P0-006 | In progress | CL-P0-006A makes Emergency Guide directly reachable from the Tank top bar. Remaining: emergency entry from Tank alerts, Smart, Search/More, lessons, species pages, and water logs. |
 | CL-P0-007 | Not started | Smart needs stronger non-AI Aquarium Intelligence hub. |
 
 High-confidence P1/P2 gaps from code/docs evidence:

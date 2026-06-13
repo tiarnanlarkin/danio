@@ -65,4 +65,12 @@ void main() {
       contains('_quickLogFeeding(context, ref, currentTank, currentLogs)'),
     );
   });
+
+  test('Tank top bar keeps Emergency Guide directly reachable', () {
+    final source = File('lib/screens/home/home_screen.dart').readAsStringSync();
+
+    expect(source, contains("tooltip: 'Emergency Guide'"));
+    expect(source, contains('const EmergencyGuideScreen()'));
+    expect(source, contains('Icons.emergency_outlined'));
+  });
 }
