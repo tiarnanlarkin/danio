@@ -66,4 +66,12 @@ void main() {
     expect(smartSource, contains('Workshop Compatibility Checker'));
     expect(smartSource, isNot(contains("title: 'Compatibility Advice'")));
   });
+
+  test('Main shell does not mount debug sync diagnostics', () {
+    final source = _source('lib/screens/tab_navigator.dart');
+
+    expect(source, contains('OfflineIndicator'));
+    expect(source, isNot(contains('SyncIndicator')));
+    expect(source, isNot(contains('sync_indicator.dart')));
+  });
 }

@@ -4,9 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../providers/reduced_motion_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
-import 'package:flutter/foundation.dart';
 import '../widgets/offline_indicator.dart';
-import '../widgets/sync_indicator.dart';
 import '../widgets/celebrations/level_up_listener.dart';
 import '../widgets/celebrations/streak_milestone_listener.dart';
 import '../widgets/danio_bottom_dock.dart';
@@ -233,7 +231,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                   ),
                 ),
 
-                // === Offline/Sync Indicators at Top ===
+                // === Offline Indicator at Top ===
                 Positioned(
                   top: 0,
                   left: 0,
@@ -242,10 +240,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                     bottom: false,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const OfflineIndicator(),
-                        if (kDebugMode) const SyncIndicator(),
-                      ],
+                      children: [const OfflineIndicator()],
                     ),
                   ),
                 ),
