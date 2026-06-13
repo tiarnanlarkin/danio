@@ -22,7 +22,10 @@ import '../../widgets/celebrations/water_change_celebration.dart';
 import '../../utils/app_feedback.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
+import '../../widgets/app_bottom_sheet.dart';
+import '../../utils/navigation_throttle.dart';
 import '../../utils/logger.dart';
+import '../emergency_guide_screen.dart';
 import 'log_type_selector.dart';
 import 'water_param_fields.dart';
 import 'photo_grid.dart';
@@ -932,6 +935,88 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
     return destPath;
   }
 
+  bool _isUnsafeWaterTest(WaterTestResults? test) {
+    if (test == null) return false;
+    final ammonia = test.ammonia;
+    final nitrite = test.nitrite;
+    return (ammonia != null && ammonia > 0.25) ||
+        (nitrite != null && nitrite > 0.25);
+  }
+
+  Future<void> _showUnsafeWaterEmergencySheet(int effectiveXp) async {
+    await showAppBottomSheet<void>(
+      context: context,
+      child: Builder(
+        builder: (sheetContext) {
+          void markSaved() {
+            if (!mounted) return;
+            setState(() => _discardConfirmed = true);
+          }
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.emergency_outlined, color: AppColors.error),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    'Unsafe water logged',
+                    style: AppTypography.titleLarge.copyWith(
+                      color: AppColors.error,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Water test saved. Ammonia or nitrite above 0.25 ppm can harm fish quickly. Open emergency steps now, then log the water change.',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: sheetContext.textSecondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                '+$effectiveXp XP earned',
+                style: AppTypography.bodySmall.copyWith(
+                  color: sheetContext.textSecondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AppButton(
+                label: 'Emergency Guide',
+                leadingIcon: Icons.emergency_outlined,
+                isFullWidth: true,
+                onPressed: () {
+                  markSaved();
+                  Navigator.maybePop(sheetContext);
+                  NavigationThrottle.push(
+                    context,
+                    const EmergencyGuideScreen(),
+                    rootNavigator: true,
+                  );
+                },
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              AppButton(
+                label: 'Done',
+                isFullWidth: true,
+                variant: AppButtonVariant.text,
+                onPressed: () {
+                  markSaved();
+                  Navigator.maybePop(sheetContext);
+                  Navigator.maybePop(context);
+                },
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   Future<void> _save() async {
     // Validate all form fields (range checks on water params)
     if (!(_formKey.currentState?.validate() ?? true)) return;
@@ -1036,6 +1121,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       if (mounted) {
         final messenger = ScaffoldMessenger.of(context);
+        final unsafeWaterTest =
+            log.type == LogType.waterTest && _isUnsafeWaterTest(log.waterTest);
         // Show water change celebration on root overlay (survives nav pop)
         if (log.type == LogType.waterChange) {
           final rootOverlay = Overlay.of(context, rootOverlay: true);
@@ -1047,11 +1134,19 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           );
           rootOverlay.insert(celebrationEntry);
         }
-        AppFeedback.showSuccessViaMessenger(
-          messenger,
-          '${log.typeName} logged! +$effectiveXp XP',
-        );
-        Navigator.maybePop(context);
+        if (unsafeWaterTest) {
+          setState(() {
+            _isSaving = false;
+            _discardConfirmed = true;
+          });
+          await _showUnsafeWaterEmergencySheet(effectiveXp);
+        } else {
+          AppFeedback.showSuccessViaMessenger(
+            messenger,
+            '${log.typeName} logged! +$effectiveXp XP',
+          );
+          Navigator.maybePop(context);
+        }
       }
     } catch (e, st) {
       logError(

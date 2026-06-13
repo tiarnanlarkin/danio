@@ -7,11 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -129,6 +131,7 @@ Future<void> _advance(WidgetTester tester) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
   });
 
   group('AddLogScreen — renders', () {
@@ -268,6 +271,65 @@ void main() {
       await _advance(tester);
 
       expect(find.text('Latest temp: 25.5'), findsOneWidget);
+    });
+
+    testWidgets('unsafe water test opens Emergency Guide action', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'unsafe-water-log-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Ammonia'),
+        '0.5',
+      );
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Unsafe water logged'), findsOneWidget);
+      expect(find.text('Emergency Guide'), findsOneWidget);
+      expect(await svc.getLogsForTank(tankId), hasLength(1));
+
+      await tester.tap(find.text('Emergency Guide'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EmergencyGuideScreen), findsOneWidget);
+    });
+
+    testWidgets('dismissed unsafe water sheet leaves saved log clean', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'unsafe-water-dismiss-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+      await tester.pumpWidget(_wrapWithLauncher(storage: svc, tankId: tankId));
+
+      await tester.tap(find.text('Open log form'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Ammonia'),
+        '0.5',
+      );
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Unsafe water logged'), findsOneWidget);
+      expect(await svc.getLogsForTank(tankId), hasLength(1));
+
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Back'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Discard changes?'), findsNothing);
+      expect(find.byType(AddLogScreen), findsNothing);
+      expect(find.text('Open log form'), findsOneWidget);
     });
   });
 
