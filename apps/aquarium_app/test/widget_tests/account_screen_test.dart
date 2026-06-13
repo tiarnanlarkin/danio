@@ -126,12 +126,18 @@ void main() {
       const oldRestoreCopy =
           'Download & decrypt'
           ' from cloud';
+      const oldSignOutCopy = 'resume syncing';
+      const oldSyncedDataCopy = 'synced cloud data';
 
       expect(source, isNot(contains(oldSyncPromise)));
       expect(source, isNot(contains(oldUploadCopy)));
       expect(source, isNot(contains(oldRestoreCopy)));
+      expect(source, isNot(contains(oldSignOutCopy)));
+      expect(source, isNot(contains(oldSyncedDataCopy)));
       expect(source, contains('Optional cloud backup'));
       expect(source, contains('Local use still works without an account'));
+      expect(source, contains('use cloud backup again'));
+      expect(source, contains('cloud-stored account data'));
     });
   });
 }

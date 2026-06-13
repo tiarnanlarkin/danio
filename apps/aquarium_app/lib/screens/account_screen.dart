@@ -456,7 +456,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       title: 'Sign Out?',
       message:
           'Your local data will remain on this device. '
-          'You can sign back in anytime to resume syncing.',
+          'You can sign back in anytime to use cloud backup again.',
       confirmLabel: 'Sign Out',
       onConfirm: () => ref.read(authProvider.notifier).signOut(),
     );
@@ -467,7 +467,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       context: context,
       title: 'Delete Cloud Account?',
       message:
-          'This permanently deletes your Danio cloud account, synced cloud data, and cloud backups. '
+          'This permanently deletes your Danio cloud account, cloud-stored account data, and cloud backups. '
           'Your local tanks, progress, and photos stay on this device. This cannot be undone.',
       destructiveLabel: 'Delete Account',
       cancelLabel: 'Keep Account',
@@ -575,7 +575,7 @@ class AccountDangerZone extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Delete your cloud account and synced cloud data. Local data on this device is preserved.',
+          'Delete your cloud account and cloud-stored account data. Local data on this device is preserved.',
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),

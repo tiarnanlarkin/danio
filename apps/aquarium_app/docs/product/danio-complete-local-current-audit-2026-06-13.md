@@ -152,6 +152,9 @@ Fixed:
 - Optional account/cloud backup copy now says cloud services are optional and
   not configured for local builds instead of promising background sync or
   sounding broken.
+- Signed-in account management copy now frames sign-out and deletion around
+  optional cloud backup/account data instead of "resume syncing" or "synced
+  cloud data".
 - Legacy marine profile copy now says marine setup support is outside Danio's
   freshwater focus instead of advertising future availability.
 - Local weekly progress now uses tier/momentum language, including "Weekly
@@ -181,7 +184,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, weekly-progress tier copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics and dead sync-status scaffolds, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, signed-in account cloud-data copy, weekly-progress tier copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics and dead sync-status scaffolds, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
