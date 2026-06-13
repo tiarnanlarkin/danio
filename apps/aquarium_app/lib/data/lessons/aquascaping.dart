@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final aquascapingPath = LearningPath(
   id: 'aquascaping',
@@ -11,10 +12,7 @@ final aquascapingPath = LearningPath(
   description:
       'Create stunning aquatic landscapes — from layout principles to plant placement and maintenance',
   emoji: '🌿',
-  recommendedFor: [
-    ExperienceLevel.intermediate,
-    ExperienceLevel.expert,
-  ],
+  recommendedFor: [ExperienceLevel.intermediate, ExperienceLevel.expert],
   orderIndex: 9,
   lessons: [
     // AQ-1: Layout Styles
@@ -22,11 +20,29 @@ final aquascapingPath = LearningPath(
       id: 'aq_layout_styles',
       pathId: 'aquascaping',
       title: 'Aquascape Layout Styles',
-      description: 'Iwagumi, Dutch, and Nature Aquarium — three distinct philosophies',
+      description:
+          'Iwagumi, Dutch, and Nature Aquarium — three distinct philosophies',
       orderIndex: 0,
       xpReward: 60,
       estimatedMinutes: 7,
       prerequisites: ['at_aquascaping'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Choose an aquascape style that matches equipment, planting density, and maintenance time.',
+          'Use focal points and hardscape placement to make the layout intentional before planting.',
+        ],
+        scenario:
+            'A keeper wants a minimalist Iwagumi tank but has low light, no CO2, and only a short weekly maintenance window.',
+        careDrill: [
+          'Pick one style, then list its light, CO2, trimming, water-change, and algae-risk demands.',
+          'Sketch the hardscape and focal point before buying rocks, wood, plants, or substrate.',
+        ],
+        sources: [
+          lessonSourceTropicaPlants,
+          lessonSourceTropicaCare,
+          lessonSourceInjafAquariumPlants,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -139,6 +155,23 @@ final aquascapingPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 7,
       prerequisites: ['aq_layout_styles', 'planted_basics'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Build depth by matching plant height, growth speed, and placement zone.',
+          'Avoid rhizome and carpet-plant mistakes that cause early melt or rot.',
+        ],
+        scenario:
+            'A new planted tank looks flat because every plant was placed in one row and the slow rhizome plants were buried in the substrate.',
+        careDrill: [
+          'Sort each planned plant into foreground, midground, background, epiphyte, or floating role before planting.',
+          'Check whether each plant feeds mainly from roots, water column, or attached rhizomes before choosing substrate or glue placement.',
+        ],
+        sources: [
+          lessonSourceTropicaPlants,
+          lessonSourceInjafAquariumPlants,
+          lessonSourceTropicaCare,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -249,6 +282,23 @@ final aquascapingPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 7,
       prerequisites: ['aq_plant_zones', 'planted_co2'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Match liquid fertiliser, root tabs, and CO2 decisions to plant feeding style.',
+          'Read plant deficiency clues without adding nutrients blindly to an unbalanced tank.',
+        ],
+        scenario:
+            'A planted tank has yellowing leaves and pinholes, but the owner has increased light without changing CO2, fertiliser, or water-change rhythm.',
+        careDrill: [
+          'Separate root feeders from water-column feeders and plan root tabs or liquid dosing accordingly.',
+          'Check light duration, CO2 stability, water changes, and livestock safety before increasing fertiliser dose.',
+        ],
+        sources: [
+          lessonSourceTropicaCare,
+          lessonSourceTropicaPlants,
+          lessonSourceRspcaWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -367,6 +417,23 @@ final aquascapingPath = LearningPath(
       xpReward: 60,
       estimatedMinutes: 7,
       prerequisites: ['aq_fertilisation', 'maint_algae'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Treat algae as a signal about light, CO2, nutrients, waste, or tank maturity.',
+          'Choose targeted algae actions that protect plants, fish, shrimp, and biological filtration.',
+        ],
+        scenario:
+            'A high-light planted tank develops black beard algae on hardscape and green spot algae on slow leaves after the photoperiod was extended.',
+        careDrill: [
+          'Identify the algae type, then write the most likely imbalance before reaching for treatment.',
+          'Adjust photoperiod, CO2 stability, maintenance, and manual removal before using chemical spot treatments.',
+        ],
+        sources: [
+          lessonSourceTropicaCare,
+          lessonSourceInjafAquariumPlants,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -445,7 +512,8 @@ final aquascapingPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'aq_alg_q2',
-            question: 'Why do diatoms (brown algae) usually self-resolve in new tanks?',
+            question:
+                'Why do diatoms (brown algae) usually self-resolve in new tanks?',
             options: [
               'Fish gradually eat all the diatoms over the first few weeks',
               'As the tank matures, beneficial bacteria, plants, and biofilm organisms outcompete diatoms for silicates',
