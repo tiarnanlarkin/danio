@@ -71,6 +71,16 @@ LogEntry _savedToolResultEntry() => LogEntry(
   createdAt: DateTime(2024, 7, 4, 12),
 );
 
+LogEntry _savedMilestoneEntry() => LogEntry(
+  id: 'milestone-001',
+  tankId: _fakeTankId,
+  type: LogType.observation,
+  timestamp: DateTime(2024, 7, 5, 8),
+  title: 'First shrimp berries',
+  notes: 'Milestone: First shrimp berries spotted in the moss.',
+  createdAt: DateTime(2024, 7, 5, 8),
+);
+
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 500));
@@ -157,6 +167,21 @@ void main() {
       expect(find.textContaining('Tool Result |'), findsOneWidget);
       expect(
         find.textContaining('Dosing calculation: 12.50 ml'),
+        findsOneWidget,
+      );
+      expect(find.text('Your story starts here!'), findsNothing);
+    });
+
+    testWidgets('labels saved milestone notes as milestone events', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(logs: [_savedMilestoneEntry()]));
+      await _advance(tester);
+
+      expect(find.text('First shrimp berries'), findsOneWidget);
+      expect(find.textContaining('Milestone |'), findsOneWidget);
+      expect(
+        find.textContaining('First shrimp berries spotted in the moss'),
         findsOneWidget,
       );
       expect(find.text('Your story starts here!'), findsNothing);

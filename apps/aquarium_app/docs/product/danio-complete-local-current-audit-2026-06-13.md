@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1538 tests.
+- `flutter test`: pass, 1539 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -919,6 +919,16 @@ CL-P1-008C Saved tool-result timeline labels:
 - Focused coverage verifies a saved dosing-calculator note appears as
   `Dosing Calculator Result` with `Tool Result` metadata.
 
+CL-P1-008D Saved milestone timeline labels:
+
+- Tank Journal now recognises saved observation notes that begin with
+  `Milestone:` and labels them as `Milestone` timeline entries instead of
+  generic observations.
+- Milestone cards show the clean milestone text without repeating the raw
+  prefix, while keeping the existing local `LogEntry` schema.
+- Focused coverage verifies a saved milestone note appears with `Milestone`
+  metadata and no empty-state fallback.
+
 CL-P1-009A Backup import safety copy:
 
 - Backup & Restore now explains import behavior in normal-user terms:
@@ -1053,9 +1063,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Android phone/tablet QA.
 - Tank Journal now has a first unified local timeline pass for current log
   types, saved guided-tool notes now appear as Tool Result entries, and Compare
-  Tanks now surfaces recent history across tanks. Remaining timeline work is
-  accepted AI notes, milestones, and any richer tool-result detail cards found
-  in walkthroughs.
+  Tanks now surfaces recent history across tanks. Saved `Milestone:` journal
+  notes now appear as Milestone entries. Remaining timeline work is accepted
+  AI-note history and any richer tool-result/milestone detail cards found in
+  walkthroughs.
 - Backup & Restore now has clearer import safety copy and validates required
   backup JSON plus malformed tank entries before preview/import. Remaining
   backup/data work is deeper import validation UX, edit/delete/undo coverage,

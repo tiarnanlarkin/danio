@@ -49,6 +49,13 @@ class LogEntryDisplay {
       case LogType.observation:
         final toolTitle = toolResultTitleFor(entry);
         if (toolTitle != null) return toolTitle;
+        if (isMilestone(entry)) {
+          if (title != null && title.isNotEmpty) {
+            return _stripMilestonePrefix(title);
+          }
+          final milestoneSummary = _milestoneSummaryFor(entry);
+          return milestoneSummary.isEmpty ? 'Milestone' : milestoneSummary;
+        }
         return title != null && title.isNotEmpty ? title : 'Journal entry';
       case LogType.feeding:
       case LogType.medication:
@@ -61,7 +68,19 @@ class LogEntryDisplay {
   }
 
   static String timelineKindFor(LogEntry entry) {
-    return toolResultTitleFor(entry) == null ? entry.typeName : 'Tool Result';
+    if (toolResultTitleFor(entry) != null) return 'Tool Result';
+    if (isMilestone(entry)) return 'Milestone';
+    return entry.typeName;
+  }
+
+  static bool isMilestone(LogEntry entry) {
+    if (entry.type != LogType.observation) return false;
+
+    final title = entry.title?.trim().toLowerCase();
+    final notes = entry.notes?.trim().toLowerCase();
+
+    return (title != null && title.startsWith('milestone:')) ||
+        (notes != null && notes.startsWith('milestone:'));
   }
 
   static String? toolResultTitleFor(LogEntry entry) {
@@ -110,14 +129,31 @@ class LogEntryDisplay {
       case LogType.equipmentMaintenance:
         return 'Equipment maintenance logged.';
       case LogType.taskCompleted:
+        return '';
       case LogType.observation:
+        if (isMilestone(entry)) return _milestoneSummaryFor(entry);
+        return '';
       case LogType.other:
         return '';
     }
   }
 
   static String fallbackFor(LogEntry entry) {
+    if (isMilestone(entry)) return 'Logged milestone event.';
     return 'Logged ${entry.typeName.toLowerCase()} event.';
+  }
+
+  static String _milestoneSummaryFor(LogEntry entry) {
+    final notes = entry.notes?.trim();
+    if (notes == null || notes.isEmpty) return '';
+    return _stripMilestonePrefix(notes);
+  }
+
+  static String _stripMilestonePrefix(String value) {
+    final trimmed = value.trim();
+    final lower = trimmed.toLowerCase();
+    if (!lower.startsWith('milestone:')) return trimmed;
+    return trimmed.substring('milestone:'.length).trim();
   }
 
   static String _waterTestSummary(WaterTestResults test) {
