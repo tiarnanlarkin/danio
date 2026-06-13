@@ -25,6 +25,7 @@ import '../widgets/app_bottom_sheet.dart';
 import '../widgets/themed_tab_header.dart';
 import '../widgets/danio_bottom_dock.dart';
 import '../utils/logger.dart';
+import 'emergency_guide_screen.dart';
 import 'settings_screen.dart';
 
 /// Helper to show a snackbar when an AI feature is tapped while offline.
@@ -209,6 +210,18 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       ],
 
       const SizedBox(height: AppSpacing.md),
+
+      _FeatureCard(
+        icon: Icons.emergency_outlined,
+        title: 'Emergency Guide',
+        subtitle: 'Fast steps for urgent water and fish issues',
+        color: AppColors.error,
+        onTap: () => NavigationThrottle.push(
+          context,
+          const EmergencyGuideScreen(),
+          rootNavigator: true,
+        ),
+      ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
       // Feature cards gated behind API key (CA-004) + connectivity
       _FeatureCard(

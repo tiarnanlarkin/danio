@@ -12,9 +12,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/smart_screen.dart';
+import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/workshop_screen.dart';
 import 'package:danio/features/smart/smart_providers.dart';
 import 'package:danio/services/openai_service.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 import 'package:danio/widgets/offline_indicator.dart';
 
 // ---------------------------------------------------------------------------
@@ -94,6 +96,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
   });
 
   group('SmartScreen — renders', () {
@@ -117,7 +120,10 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.textContaining('coming soon'), findsNothing);
-      expect(find.text('Optional AI setup in Preferences'), findsNWidgets(3));
+      expect(
+        find.text('Optional AI setup in Preferences', skipOffstage: false),
+        findsNWidgets(3),
+      );
 
       // When not configured, feature cards are rendered but may be offstage
       // (below the viewport fold in the SliverList). Use skipOffstage: false.
@@ -138,6 +144,33 @@ void main() {
         find.text('Weekly Care Plan', skipOffstage: false),
         findsOneWidget,
       );
+    });
+
+    testWidgets('opens Emergency Guide from the local Smart actions', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Emergency Guide', skipOffstage: false), findsOneWidget);
+      expect(
+        find.text(
+          'Fast steps for urgent water and fish issues',
+          skipOffstage: false,
+        ),
+        findsOneWidget,
+      );
+
+      await tester.scrollUntilVisible(
+        find.text('Emergency Guide'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Emergency Guide'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EmergencyGuideScreen), findsOneWidget);
     });
 
     testWidgets('shows AI-only controls when Smart features are configured', (
@@ -324,6 +357,7 @@ void main() {
         500,
         scrollable: find.byType(Scrollable).first,
       );
+      await tester.pump(const Duration(seconds: 1));
       await tester.tap(find.byTooltip('Send question'));
       await tester.pump();
 
