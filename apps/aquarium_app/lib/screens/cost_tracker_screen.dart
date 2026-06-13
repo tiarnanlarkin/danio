@@ -16,8 +16,34 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../widgets/danio_snack_bar.dart';
 
+const _fallbackCurrencySymbol = '\u00A3';
+const _defaultCurrencyOptions = <String>[
+  _fallbackCurrencySymbol,
+  r'$',
+  '\u20AC',
+  '\u00A5',
+  r'A$',
+  r'C$',
+];
+
+List<String> _currencyOptions(String activeCurrency) {
+  final options = <String>[];
+  final active = activeCurrency.trim();
+  if (active.isNotEmpty) {
+    options.add(active);
+  }
+
+  for (final option in _defaultCurrencyOptions) {
+    if (!options.contains(option)) {
+      options.add(option);
+    }
+  }
+
+  return options;
+}
+
 /// Returns the currency symbol for the current device locale.
-/// Falls back to '£' if the locale cannot be determined.
+/// Falls back to GBP if the locale cannot be determined.
 String _localeCurrencySymbol() {
   try {
     final locale = Platform.localeName; // e.g. "en_GB", "en_US"
@@ -25,10 +51,10 @@ String _localeCurrencySymbol() {
     return format.currencySymbol;
   } catch (e) {
     appLog(
-      'CostTrackerScreen: locale currency lookup failed, using £: $e',
+      'CostTrackerScreen: locale currency lookup failed, using GBP fallback: $e',
       tag: 'CostTrackerScreen',
     );
-    return '£';
+    return _fallbackCurrencySymbol;
   }
 }
 
@@ -296,14 +322,9 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
             title: const Text('Currency'),
             trailing: DropdownButton<String>(
               value: _currency,
-              items: [
-                '£',
-                '\$',
-                '€',
-                '¥',
-                'A\$',
-                'C\$',
-              ].map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+              items: _currencyOptions(
+                _currency,
+              ).map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
               onChanged: (v) {
                 setState(() => _currency = v ?? _localeCurrencySymbol());
                 _saveExpenses();
@@ -552,7 +573,7 @@ class _ExpenseTile extends StatelessWidget {
           ),
           title: Text(expense.description, style: AppTypography.labelLarge),
           subtitle: Text(
-            '${expense.category} • ${DateFormat('d MMM y').format(expense.date)}',
+            '${expense.category} - ${DateFormat('d MMM y').format(expense.date)}',
             style: AppTypography.bodySmall,
           ),
           trailing: Text(

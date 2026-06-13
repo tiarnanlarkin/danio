@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1516 tests.
+- `flutter test`: pass, 1517 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -861,6 +861,15 @@ CL-P1-006I Cycling Assistant guided actions:
   and nitrite` reminder; other cycle phases use matching 3-day, 2-day, or
   weekly guidance.
 - Focused coverage verifies the AddLog handoff and task creation persistence.
+
+CL-P1-006J Cost Tracker currency/settings polish:
+
+- Cost Tracker settings now keep a saved or locale-derived active currency in
+  the dropdown even when it is not one of the built-in symbol shortcuts.
+- Built-in currency symbols now use source-safe string escapes, and expense
+  subtitles use an ASCII separator.
+- Focused coverage verifies opening settings with a custom saved `CHF`
+  currency does not trigger a dropdown assertion and keeps `CHF` selectable.
 
 Current Android device state:
 

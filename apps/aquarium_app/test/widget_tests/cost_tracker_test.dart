@@ -26,7 +26,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  group('CostTrackerScreen — empty state', () {
+  group('CostTrackerScreen - empty state', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
@@ -72,7 +72,7 @@ void main() {
     });
   });
 
-  group('CostTrackerScreen — add expense', () {
+  group('CostTrackerScreen - add expense', () {
     testWidgets('bottom sheet has required fields', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
@@ -117,12 +117,12 @@ void main() {
       await tester.tap(find.text('Add First Expense'));
       await tester.pumpAndSettle();
 
-      // Fill description — target the TextField with "Description" labelText
+      // Fill description - target the TextField with "Description" labelText
       // (the labelText appears as a child Text widget when the field is empty)
       final descField = find.widgetWithText(TextField, 'Description');
       await tester.enterText(descField, 'Neon Tetras x6');
 
-      // Fill amount — target the TextField with "Amount" labelText
+      // Fill amount - target the TextField with "Amount" labelText
       final amountField = find.widgetWithText(TextField, 'Amount');
       await tester.enterText(amountField, '24.99');
 
@@ -169,12 +169,12 @@ void main() {
     });
   });
 
-  group('CostTrackerScreen — with saved data', () {
+  group('CostTrackerScreen - with saved data', () {
     testWidgets('shows expense list when data exists', (tester) async {
       SharedPreferences.setMockInitialValues({
         'cost_tracker_expenses':
             '[{"id":"1","description":"Filter","amount":35.0,"category":"Equipment","date":"2025-01-15T12:00:00.000"}]',
-        'cost_tracker_currency': '£',
+        'cost_tracker_currency': '\u00A3',
       });
 
       await tester.pumpWidget(_wrap());
@@ -182,15 +182,15 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.text('Filter'), findsOneWidget);
-      // £35.00 appears in summary card, category bar, and expense tile
-      expect(find.text('£35.00'), findsWidgets);
+      // GBP35.00 appears in summary card, category bar, and expense tile.
+      expect(find.text('\u00A335.00'), findsWidgets);
     });
 
     testWidgets('shows summary cards', (tester) async {
       SharedPreferences.setMockInitialValues({
         'cost_tracker_expenses':
             '[{"id":"1","description":"Fish Food","amount":12.0,"category":"Food","date":"${DateTime.now().toIso8601String()}"}]',
-        'cost_tracker_currency': '£',
+        'cost_tracker_currency': '\u00A3',
       });
 
       await tester.pumpWidget(_wrap());
@@ -213,6 +213,27 @@ void main() {
 
       expect(find.text('Settings'), findsOneWidget);
       expect(find.text('Currency'), findsOneWidget);
+    });
+
+    testWidgets('settings keeps custom saved currency selectable', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'cost_tracker_expenses': '[]',
+        'cost_tracker_currency': 'CHF',
+      });
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Settings'), findsOneWidget);
+      expect(find.text('Currency'), findsOneWidget);
+      expect(find.text('CHF'), findsOneWidget);
     });
   });
 }
