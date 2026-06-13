@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1485 tests.
+- `flutter test`: pass, 1488 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -704,6 +704,18 @@ CL-P1-005D Compatibility Checks drill questions:
 - Focused coverage verifies betta, goldfish, and general compatibility
   scenarios.
 
+CL-P1-005E Emergency Decisions drill questions:
+
+- Emergency Decisions now resolves related emergency/troubleshooting cards into
+  urgent prioritisation scenarios instead of generic recall.
+- Covered scenarios include fish gasping or unsafe water, power outage,
+  temperature crash, pH crash, and general uncertain emergency triage.
+- The question copy prioritises oxygen, temperature, conditioned water changes,
+  water tests, toxin removal, retesting, and avoiding random medication before
+  basic life-support checks.
+- Focused coverage verifies immediate unsafe-water triage, power outage
+  oxygen/temperature handling, and the general emergency fallback.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -744,10 +756,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Remaining learning work is expanding visual depth and richer learning
   interactions across the catalog.
 - Practice depth now starts with workflow-based Skill Drills mapped to existing
-  lesson paths, filtered review sessions, and scenario-style Parameter Reading
-  Diagnosis Practice, and Compatibility Checks questions. Remaining Practice
-  work is scenario-specific setup-planning and emergency formats plus deeper
-  tank/tool-data integration.
+  lesson paths, filtered review sessions, and scenario-style Parameter Reading,
+  Diagnosis Practice, Compatibility Checks, and Emergency Decisions questions.
+  Remaining Practice work is scenario-specific setup-planning formats plus
+  deeper tank/tool-data integration.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -759,7 +771,6 @@ High-confidence P1/P2 gaps from code/docs evidence:
 Continue CL-P1-005 practice depth while Android transport is reserved by other
 sessions:
 
-- Add scenario-specific drill question formats for setup planning and emergency
-  decisions.
+- Add scenario-specific drill question formats for setup planning.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

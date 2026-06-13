@@ -39,6 +39,13 @@ class PracticeDrillQuestionService {
       ];
     }
 
+    if (drillId == PracticeDrillId.emergencyDecision) {
+      return [
+        for (var index = 0; index < cards.length; index++)
+          _emergencyQuestion(cards[index]) ?? fallback[index],
+      ];
+    }
+
     return fallback;
   }
 
@@ -363,6 +370,96 @@ class PracticeDrillQuestionService {
       correctIndex: 0,
       explanation:
           'Compatibility is a whole-life decision. Adult size, group size, temperament, water, diet, and space prevent avoidable stress.',
+    );
+  }
+
+  static MultipleChoiceQuestion? _emergencyQuestion(ReviewCard card) {
+    final conceptId = card.conceptId;
+
+    if (conceptId.startsWith('tr_emergency') ||
+        conceptId.startsWith('nc_spikes') ||
+        conceptId.startsWith('wp_chlorine')) {
+      return _mc(
+        card: card,
+        questionText:
+            'Fish are gasping near the surface and a quick test may show unsafe water. What should you prioritise first?',
+        options: [
+          'Increase oxygen, test ammonia and nitrite, do a conditioned partial water change, and retest',
+          'Feed heavily so the fish have energy during the emergency',
+          'Turn off the filter to make the surface calmer',
+          'Add several medications before checking water quality',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Gasping can be oxygen, ammonia, nitrite, toxin, or temperature related. Oxygen, dilution, conditioned water, and retesting are the safest first sequence.',
+      );
+    }
+
+    if (conceptId.startsWith('tr_power_outage')) {
+      return _mc(
+        card: card,
+        questionText:
+            'The power has been out for two hours and the filter and heater are off. What is the safest emergency plan?',
+        options: [
+          'Protect temperature, preserve oxygen with safe aeration/water movement, reduce feeding, and monitor water',
+          'Feed extra food because filtration has stopped',
+          'Rinse the filter media under tap water before power returns',
+          'Seal the tank completely so no heat escapes',
+        ],
+        correctIndex: 0,
+        explanation:
+            'During a power outage, oxygen and temperature are the priorities. Feeding less reduces waste until filtration is stable again.',
+      );
+    }
+
+    if (conceptId.startsWith('tr_temperature_crash') ||
+        conceptId.startsWith('wp_temp')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A heater has failed and the tank temperature is dropping quickly. What should happen first?',
+        options: [
+          'Stabilise temperature gradually, add safe insulation, check oxygen, and replace faulty equipment',
+          'Pour boiling water directly into the aquarium',
+          'Move fish repeatedly between containers until one feels warm',
+          'Turn off filtration so cold water stops moving',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Temperature emergencies need gradual stabilisation. Sudden changes and lost filtration can make stress worse.',
+      );
+    }
+
+    if (conceptId.startsWith('tr_ph_crash') || conceptId.startsWith('wp_ph')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A tank has dropped from pH 7.2 to 6.0 and fish look stressed. What is the safest emergency response?',
+        options: [
+          'Check KH, do a cautious conditioned water change, increase aeration, and correct stability gradually',
+          'Dump in enough buffer to reach the old pH immediately',
+          'Ignore it because low pH is always harmless',
+          'Replace every filter pad to remove acidity',
+        ],
+        correctIndex: 0,
+        explanation:
+            'A pH crash is dangerous because of sudden change and lost buffering. Gradual correction and water stability matter more than chasing a number.',
+      );
+    }
+
+    return _mc(
+      card: card,
+      questionText:
+          'Something urgent is wrong in the tank, but the cause is not obvious yet. What is the safest triage sequence?',
+      options: [
+        'Protect oxygen and temperature, test water, remove obvious toxins, make safe water changes if needed, then narrow the cause',
+        'Choose a random treatment first and test water later',
+        'Stop all filtration until the fish calm down',
+        'Wait until tomorrow before observing the fish again',
+      ],
+      correctIndex: 0,
+      explanation:
+          'Emergency response needs sequence: stabilise life-support basics first, test water, reduce immediate harm, then diagnose.',
     );
   }
 

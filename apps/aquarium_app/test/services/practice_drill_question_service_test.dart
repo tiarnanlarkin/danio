@@ -150,5 +150,52 @@ void main() {
       expect(question.options[question.correctIndex], contains('adult size'));
       expect(question.options[question.correctIndex], contains('group size'));
     });
+
+    test('turns emergency cards into an immediate triage scenario', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.emergencyDecision,
+        cards: [_card('tr_emergency_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('gasping'));
+      expect(question.options[question.correctIndex], contains('oxygen'));
+      expect(question.options[question.correctIndex], contains('water change'));
+      expect(question.explanation, contains('ammonia'));
+    });
+
+    test(
+      'turns power outage cards into an oxygen and temperature scenario',
+      () {
+        final questions = PracticeDrillQuestionService.resolveQuestions(
+          drillId: PracticeDrillId.emergencyDecision,
+          cards: [_card('tr_power_outage_section_0')],
+          lessonState: const LessonState(),
+        );
+
+        final question = questions.single as MultipleChoiceQuestion;
+        expect(question.questionText, contains('power'));
+        expect(
+          question.options[question.correctIndex],
+          contains('temperature'),
+        );
+        expect(question.options[question.correctIndex], contains('feeding'));
+        expect(question.explanation, contains('oxygen'));
+      },
+    );
+
+    test('uses a general emergency triage scenario for urgent cards', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.emergencyDecision,
+        cards: [_card('fh_medication_dosing_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('urgent'));
+      expect(question.options[question.correctIndex], contains('test water'));
+      expect(question.explanation, contains('sequence'));
+    });
   });
 }
