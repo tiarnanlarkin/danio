@@ -3,6 +3,7 @@
 // Run: flutter test test/widget_tests/smart_screen_test.dart
 
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
@@ -34,6 +35,43 @@ Widget _wrap({bool isOnline = true, bool aiConfigured = false}) {
     ],
     child: const MaterialApp(home: SmartScreen()),
   );
+}
+
+Map<String, dynamic> _profileJson({String? regionCode, String? tankStatus}) {
+  final now = DateTime.now().toIso8601String();
+  return {
+    'id': 'smart-test-user',
+    'experienceLevel': 'beginner',
+    'primaryTankType': 'freshwater',
+    'regionCode': regionCode,
+    'goals': ['keepFishAlive'],
+    'tankStatus': tankStatus,
+    'totalXp': 0,
+    'currentStreak': 0,
+    'longestStreak': 0,
+    'completedLessons': <String>[],
+    'achievements': <String>[],
+    'lessonProgress': <String, dynamic>{},
+    'completedStories': <String>[],
+    'storyProgress': <String, dynamic>{},
+    'hasCompletedPlacementTest': false,
+    'hasSkippedPlacementTest': false,
+    'dailyXpGoal': 50,
+    'dailyXpHistory': <String, int>{},
+    'hasStreakFreeze': false,
+    'hearts': 5,
+    'league': 'bronze',
+    'weeklyXP': 0,
+    'inventory': <dynamic>[],
+    'dailyTipsEnabled': true,
+    'streakRemindersEnabled': true,
+    'hasSeenTutorial': false,
+    'weekendActivityDates': <String>[],
+    'fullHeartDates': <String>[],
+    'perfectScoreCount': 0,
+    'createdAt': now,
+    'updatedAt': now,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -114,6 +152,42 @@ void main() {
         find.text('Snap a photo to identify species', skipOffstage: false),
         findsOneWidget,
       );
+    });
+
+    testWidgets('shows setup-context nudge when profile context is missing', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(_profileJson()),
+      });
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Complete setup details'), findsOneWidget);
+      expect(
+        find.text(
+          'Add your region and tank stage so Smart can tune risks, reminders, and care plans.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('hides setup-context nudge when profile context is complete', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(
+          _profileJson(regionCode: 'gb_ie', tankStatus: 'active'),
+        ),
+      });
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Complete setup details'), findsNothing);
     });
 
     testWidgets('locked AI cards open Smart setup guidance', (tester) async {

@@ -11,6 +11,7 @@
 // Run: flutter test test/widget/settings_screen_test.dart
 
 import 'dart:io';
+import 'dart:convert';
 import 'dart:ui' show SemanticsAction;
 
 import 'package:flutter/material.dart';
@@ -27,6 +28,43 @@ import 'package:danio/widgets/core/app_list_tile.dart';
 
 Widget _wrap(Widget child) {
   return ProviderScope(child: MaterialApp(home: child));
+}
+
+Map<String, dynamic> _profileJson({String? regionCode, String? tankStatus}) {
+  final now = DateTime.now().toIso8601String();
+  return {
+    'id': 'settings-test-user',
+    'experienceLevel': 'beginner',
+    'primaryTankType': 'freshwater',
+    'regionCode': regionCode,
+    'goals': ['keepFishAlive'],
+    'tankStatus': tankStatus,
+    'totalXp': 0,
+    'currentStreak': 0,
+    'longestStreak': 0,
+    'completedLessons': <String>[],
+    'achievements': <String>[],
+    'lessonProgress': <String, dynamic>{},
+    'completedStories': <String>[],
+    'storyProgress': <String, dynamic>{},
+    'hasCompletedPlacementTest': false,
+    'hasSkippedPlacementTest': false,
+    'dailyXpGoal': 50,
+    'dailyXpHistory': <String, int>{},
+    'hasStreakFreeze': false,
+    'hearts': 5,
+    'league': 'bronze',
+    'weeklyXP': 0,
+    'inventory': <dynamic>[],
+    'dailyTipsEnabled': true,
+    'streakRemindersEnabled': true,
+    'hasSeenTutorial': false,
+    'weekendActivityDates': <String>[],
+    'fullHeartDates': <String>[],
+    'perfectScoreCount': 0,
+    'createdAt': now,
+    'updatedAt': now,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -164,6 +202,46 @@ void main() {
 
       await tester.scrollUntilVisible(find.text('Units'), 500.0);
       expect(find.text('US units (gallons, inches, F)'), findsOneWidget);
+    });
+  });
+
+  group('_SetupDetailsSection', () {
+    testWidgets('shows missing setup context in Preferences', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(_profileJson()),
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(find.text('Region'), 500.0);
+      expect(find.text('Region'), findsOneWidget);
+      expect(find.text('Not set - helps localise guidance'), findsOneWidget);
+      expect(find.text('Tank stage'), findsOneWidget);
+      expect(find.text('Not set - helps tune care prompts'), findsOneWidget);
+    });
+
+    testWidgets('region picker updates the visible profile region', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(_profileJson()),
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(find.text('Region'), 500.0);
+      await tester.tap(find.text('Region'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('UK & Ireland'));
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(find.text('Region'), 500.0);
+      expect(find.text('UK & Ireland'), findsOneWidget);
     });
   });
 

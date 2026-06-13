@@ -8,6 +8,7 @@ import '../features/smart/models/smart_models.dart';
 import '../features/smart/smart_providers.dart';
 import '../navigation/app_routes.dart';
 import '../providers/guidance_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../services/api_rate_limiter.dart';
 import '../services/guidance_service.dart';
 import '../services/openai_service.dart';
@@ -163,6 +164,10 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final history = ref.watch(aiHistoryProvider);
     final anomalies = ref.watch(anomalyHistoryProvider);
     final activeAnomalies = anomalies.where((a) => !a.dismissed).toList();
+    final profile = ref.watch(userProfileProvider).valueOrNull;
+    final needsSetupContext =
+        profile != null &&
+        (profile.regionCode == null || profile.tankStatus == null);
 
     final items = <Widget>[
       // First-visit tooltip
@@ -191,6 +196,17 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         ref.watch(isOnlineProvider)
             ? _UsageChip(callCount: openai.apiCallsThisMonth)
             : const OfflineIndicatorCompact(),
+
+      if (needsSetupContext) ...[
+        const SizedBox(height: AppSpacing.sm),
+        _SetupContextBanner(
+          onOpenPreferences: () => NavigationThrottle.push(
+            context,
+            const SettingsScreen(),
+            rootNavigator: true,
+          ),
+        ),
+      ],
 
       const SizedBox(height: AppSpacing.md),
 
@@ -701,6 +717,67 @@ class _AiSetupBanner extends StatelessWidget {
             leadingIcon: Icons.tune,
             onPressed: onOpenPreferences,
             variant: AppButtonVariant.secondary,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SetupContextBanner extends StatelessWidget {
+  final VoidCallback onOpenPreferences;
+
+  const _SetupContextBanner({required this.onOpenPreferences});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: AppRadius.md2Radius,
+        border: Border.all(color: AppColors.accentText.withValues(alpha: 0.35)),
+        boxShadow: AppShadows.soft,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.accentText.withValues(alpha: 0.12),
+              borderRadius: AppRadius.smallRadius,
+            ),
+            child: const Icon(Icons.tune_outlined, color: AppColors.accentText),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Complete setup details',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Add your region and tank stage so Smart can tune risks, reminders, and care plans.',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: context.textSecondary),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                AppButton(
+                  label: 'Open Preferences',
+                  onPressed: onOpenPreferences,
+                  variant: AppButtonVariant.secondary,
+                  size: AppButtonSize.small,
+                ),
+              ],
+            ),
           ),
         ],
       ),

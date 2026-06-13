@@ -86,6 +86,9 @@ class SettingsScreen extends ConsumerWidget {
       (_) => const _ThemeModeTile(),
       (_) => const _RoomThemeTile(),
       (_) => const _UnitsTile(),
+      (_) => const _SectionHeader(title: 'Setup Details'),
+      (_) => const _RegionProfileTile(),
+      (_) => const _TankStageProfileTile(),
       (_) => NavListTile(
         icon: Icons.tune,
         title: 'Difficulty Settings',
@@ -433,6 +436,31 @@ String _unitsLabel(bool useMetric) {
   return useMetric ? 'Metric (litres, cm, C)' : 'US units (gallons, inches, F)';
 }
 
+const _regionLabels = {
+  'gb_ie': 'UK & Ireland',
+  'europe': 'Europe',
+  'us': 'United States',
+  'canada': 'Canada',
+  'aus_nz': 'Australia & New Zealand',
+  'other': 'Other / not listed',
+};
+
+const _tankStageLabels = {
+  'planning': 'Planning a tank',
+  'cycling': 'Cycling / setting up',
+  'active': 'Tank running with livestock',
+};
+
+String _regionLabel(String? regionCode) {
+  if (regionCode == null) return 'Not set - helps localise guidance';
+  return _regionLabels[regionCode] ?? 'Other / not listed';
+}
+
+String _tankStageLabel(String? tankStatus) {
+  if (tankStatus == null) return 'Not set - helps tune care prompts';
+  return _tankStageLabels[tankStatus] ?? 'Not set - helps tune care prompts';
+}
+
 void _showUnitsPicker(BuildContext context, WidgetRef ref, bool useMetric) {
   showAppDragSheet(
     context: context,
@@ -491,6 +519,120 @@ class _UnitsTile extends ConsumerWidget {
       title: 'Units',
       subtitle: _unitsLabel(useMetric),
       onTap: () => _showUnitsPicker(context, ref, useMetric),
+    );
+  }
+}
+
+void _showRegionPicker(
+  BuildContext context,
+  WidgetRef ref,
+  String? currentRegion,
+) {
+  showAppDragSheet(
+    context: context,
+    builder: (ctx) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Text(
+              'Choose Region',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          for (final entry in _regionLabels.entries)
+            AppListTile(
+              leading: const Icon(Icons.public),
+              title: entry.value,
+              isSelected: currentRegion == entry.key,
+              trailing: currentRegion == entry.key
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              onTap: () {
+                ref
+                    .read(userProfileProvider.notifier)
+                    .updateProfile(regionCode: entry.key);
+                Navigator.maybePop(ctx);
+              },
+            ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ),
+    ),
+  );
+}
+
+void _showTankStagePicker(
+  BuildContext context,
+  WidgetRef ref,
+  String? currentTankStage,
+) {
+  showAppDragSheet(
+    context: context,
+    builder: (ctx) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Text(
+              'Choose Tank Stage',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          for (final entry in _tankStageLabels.entries)
+            AppListTile(
+              leading: const Icon(Icons.water),
+              title: entry.value,
+              isSelected: currentTankStage == entry.key,
+              trailing: currentTankStage == entry.key
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              onTap: () {
+                ref
+                    .read(userProfileProvider.notifier)
+                    .updateProfile(tankStatus: entry.key);
+                Navigator.maybePop(ctx);
+              },
+            ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ),
+    ),
+  );
+}
+
+class _RegionProfileTile extends ConsumerWidget {
+  const _RegionProfileTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final regionCode = ref.watch(
+      userProfileProvider.select((profile) => profile.valueOrNull?.regionCode),
+    );
+    return NavListTile(
+      icon: Icons.public,
+      title: 'Region',
+      subtitle: _regionLabel(regionCode),
+      onTap: () => _showRegionPicker(context, ref, regionCode),
+    );
+  }
+}
+
+class _TankStageProfileTile extends ConsumerWidget {
+  const _TankStageProfileTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tankStage = ref.watch(
+      userProfileProvider.select((profile) => profile.valueOrNull?.tankStatus),
+    );
+    return NavListTile(
+      icon: Icons.water,
+      title: 'Tank stage',
+      subtitle: _tankStageLabel(tankStage),
+      onTap: () => _showTankStagePicker(context, ref, tankStage),
     );
   }
 }
