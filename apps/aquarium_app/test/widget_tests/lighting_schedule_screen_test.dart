@@ -3,11 +3,38 @@
 // Run: flutter test test/widget_tests/lighting_schedule_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/models.dart';
+import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/lighting_schedule_screen.dart';
+import 'package:danio/services/storage_service.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
-Widget _wrap() => const MaterialApp(home: LightingScheduleScreen());
+final _now = DateTime.now();
+
+Tank _makeTank({String id = 'tank-1'}) => Tank(
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+Widget _wrap({String? tankId, InMemoryStorageService? storage}) {
+  return ProviderScope(
+    overrides: [
+      if (storage != null) storageServiceProvider.overrideWithValue(storage),
+    ],
+    child: MaterialApp(home: LightingScheduleScreen(tankId: tankId)),
+  );
+}
 
 Widget _wrapWithSchedule({
   required TimeOfDay lightsOn,
@@ -15,20 +42,40 @@ Widget _wrapWithSchedule({
   bool useSiesta = false,
   TimeOfDay siestaStart = const TimeOfDay(hour: 14, minute: 0),
   TimeOfDay siestaEnd = const TimeOfDay(hour: 16, minute: 0),
+  String? tankId,
+  InMemoryStorageService? storage,
 }) {
-  return MaterialApp(
-    home: LightingScheduleScreen(
-      initialLightsOn: lightsOn,
-      initialLightsOff: lightsOff,
-      initialUseSiesta: useSiesta,
-      initialSiestaStart: siestaStart,
-      initialSiestaEnd: siestaEnd,
+  return ProviderScope(
+    overrides: [
+      if (storage != null) storageServiceProvider.overrideWithValue(storage),
+    ],
+    child: MaterialApp(
+      home: LightingScheduleScreen(
+        tankId: tankId,
+        initialLightsOn: lightsOn,
+        initialLightsOff: lightsOff,
+        initialUseSiesta: useSiesta,
+        initialSiestaStart: siestaStart,
+        initialSiestaEnd: siestaEnd,
+      ),
     ),
   );
 }
 
+Future<void> _clearStorage() async {
+  final storage = InMemoryStorageService();
+  final tanks = await storage.getAllTanks();
+  await storage.deleteAllTanks(tanks.map((tank) => tank.id).toList());
+}
+
 void main() {
-  group('LightingScheduleScreen — rendering', () {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
+    await _clearStorage();
+  });
+
+  group('LightingScheduleScreen - rendering', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
@@ -92,6 +139,39 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'guided action opens an observation log with schedule summary',
+      (tester) async {
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank());
+
+        await tester.pumpWidget(_wrap(tankId: 'tank-1', storage: storage));
+        await tester.pump();
+
+        await tester.scrollUntilVisible(
+          find.text('Log this lighting schedule'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(find.text('Log this lighting schedule'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AddLogScreen), findsOneWidget);
+        expect(find.text('Observation'), findsWidgets);
+        expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is TextFormField &&
+                (widget.initialValue ?? '').contains('Lighting schedule') &&
+                (widget.initialValue ?? '').contains('Lights on: 10:00 AM') &&
+                (widget.initialValue ?? '').contains('Lights off: 8:00 PM') &&
+                (widget.initialValue ?? '').contains('Total light: 10 hours'),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
   });
 
   group('LightingScheduleScreen - midnight schedules', () {

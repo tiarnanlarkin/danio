@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import '../models/log_entry.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
+import 'add_log_screen.dart';
 
 class LightingScheduleScreen extends StatefulWidget {
+  final String? tankId;
   final TimeOfDay? initialLightsOn;
   final TimeOfDay? initialLightsOff;
   final bool initialUseSiesta;
@@ -11,6 +15,7 @@ class LightingScheduleScreen extends StatefulWidget {
 
   const LightingScheduleScreen({
     super.key,
+    this.tankId,
     this.initialLightsOn,
     this.initialLightsOff,
     this.initialUseSiesta = false,
@@ -104,6 +109,36 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
       return 'Fish-only tanks don\'t need much light. Consider reducing to 8-10 hours.';
     }
     return 'Looks good for a fish-only setup!';
+  }
+
+  String get _lightingSummary {
+    final siestaSummary = _useSiesta
+        ? '${_formatTime(_siestaStart)} to ${_formatTime(_siestaEnd)}'
+        : 'Off';
+    return 'Lighting schedule\n'
+        'Lights on: ${_formatTime(_lightsOn)}\n'
+        'Lights off: ${_formatTime(_lightsOff)}\n'
+        'Total light: $_totalLightHours hours\n'
+        'Siesta: $siestaSummary\n'
+        'Live plants: ${_hasPlants ? 'Yes' : 'No'}\n'
+        'CO2 injection: ${_hasCO2 ? 'Yes' : 'No'}\n'
+        'Algae issues: ${_hasAlgaeIssues ? 'Yes' : 'No'}\n'
+        'Recommendation: $_recommendation';
+  }
+
+  void _logLightingSchedule() {
+    final tankId = widget.tankId;
+    if (tankId == null) return;
+
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(
+        tankId: tankId,
+        initialType: LogType.observation,
+        initialNotes: _lightingSummary,
+      ),
+      rootNavigator: true,
+    );
   }
 
   @override
@@ -284,6 +319,52 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
 
       const SizedBox(height: AppSpacing.lg),
 
+      if (widget.tankId != null) ...[
+        AppCard(
+          backgroundColor: AppOverlays.info10,
+          padding: AppCardPadding.standard,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.route_outlined,
+                    color: AppColors.info,
+                    size: AppIconSizes.sm,
+                  ),
+                  const SizedBox(width: AppSpacing.sm2),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Guided next step',
+                          style: AppTypography.labelLarge,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Save this lighting plan to the tank journal so future algae, plant, and CO2 changes have context.',
+                          style: AppTypography.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              FilledButton.icon(
+                onPressed: _logLightingSchedule,
+                icon: const Icon(Icons.edit_note_rounded),
+                label: const Text('Log this lighting schedule'),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+      ],
+
       Text('Quick Guide', style: AppTypography.headlineSmall),
       const SizedBox(height: AppSpacing.sm2),
 
@@ -311,12 +392,12 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 // FB-B1 fix: clamp/modulo hour to valid 0-23 range to prevent TimeOfDay(hour: -1) crash when lights-on is 00:xx
-                '• CO2 ON: ${_formatTime(TimeOfDay(hour: (_lightsOn.hour - 1 + 24) % 24, minute: _lightsOn.minute))} (1hr before lights)',
+                '- CO2 ON: ${_formatTime(TimeOfDay(hour: (_lightsOn.hour - 1 + 24) % 24, minute: _lightsOn.minute))} (1hr before lights)',
                 style: AppTypography.bodyMedium,
               ),
               Text(
                 // FB-B1 fix: same guard for lights-off hour
-                '• CO2 OFF: ${_formatTime(TimeOfDay(hour: (_lightsOff.hour - 1 + 24) % 24, minute: _lightsOff.minute))} (1hr before lights off)',
+                '- CO2 OFF: ${_formatTime(TimeOfDay(hour: (_lightsOff.hour - 1 + 24) % 24, minute: _lightsOff.minute))} (1hr before lights off)',
                 style: AppTypography.bodyMedium,
               ),
               const SizedBox(height: AppSpacing.sm),

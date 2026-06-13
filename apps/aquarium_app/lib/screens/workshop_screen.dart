@@ -205,6 +205,48 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     );
   }
 
+  /// Open Lighting with tank context when it is available.
+  Future<void> _openLightingSchedule() async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      NavigationThrottle.push(
+        context,
+        const LightingScheduleScreen(),
+        rootNavigator: true,
+      );
+      return;
+    }
+
+    Tank? tank;
+    if (tanks.length == 1) {
+      tank = tanks.first;
+    } else {
+      tank = await showDialog<Tank>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: const Text('Choose a Tank'),
+          children: tanks
+              .map(
+                (tank) => SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, tank),
+                  child: Text(tank.name),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (tank == null || !mounted) return;
+    NavigationThrottle.push(
+      context,
+      LightingScheduleScreen(tankId: tank.id),
+      rootNavigator: true,
+    );
+  }
+
   /// Pick a tank, then navigate to the Cycling Assistant for that tank.
   Future<void> _openCyclingAssistant() async {
     final tanks = await ref.read(tanksProvider.future);
@@ -359,11 +401,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       title: 'Lighting',
                       subtitle: 'Schedule lights',
                       color: DanioColors.wishlistAmber,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const LightingScheduleScreen(),
-                        rootNavigator: true,
-                      ),
+                      onTap: _openLightingSchedule,
                     ),
 
                     _ToolCard(

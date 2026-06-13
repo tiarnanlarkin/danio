@@ -11,6 +11,7 @@ import 'package:danio/models/models.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/co2_calculator_screen.dart';
 import 'package:danio/screens/dosing_calculator_screen.dart';
+import 'package:danio/screens/lighting_schedule_screen.dart';
 import 'package:danio/screens/tank_volume_calculator_screen.dart';
 import 'package:danio/screens/water_change_calculator_screen.dart';
 import 'package:danio/screens/workshop_screen.dart';
@@ -185,6 +186,29 @@ void main() {
       );
 
       expect(find.text('Log this CO2 note'), findsOneWidget);
+    });
+
+    testWidgets('opens Lighting with current tank context', (tester) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Lighting'), 300);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Lighting'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LightingScheduleScreen), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('Log this lighting schedule'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      expect(find.text('Log this lighting schedule'), findsOneWidget);
     });
 
     testWidgets('tool cards expose one concise screen reader label', (
