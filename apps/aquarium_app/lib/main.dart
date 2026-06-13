@@ -30,6 +30,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
+import 'widgets/reduced_motion_media_query.dart';
 import 'widgets/error_boundary.dart';
 import 'widgets/core/bubble_loader.dart';
 import 'utils/logger.dart';
@@ -226,11 +227,13 @@ class DanioApp extends ConsumerWidget {
       themeMode: themeMode,
       // navigatorObservers: [
       // ],
-      builder: (context, child) => XpAnimationListener(
-        child: CelebrationOverlayWrapper(
-          child: AppPerformanceOverlay(
-            showOverlay: _showPerformanceOverlay,
-            child: child ?? const SizedBox.shrink(),
+      builder: (context, child) => ReducedMotionMediaQuery(
+        child: XpAnimationListener(
+          child: CelebrationOverlayWrapper(
+            child: AppPerformanceOverlay(
+              showOverlay: _showPerformanceOverlay,
+              child: child ?? const SizedBox.shrink(),
+            ),
           ),
         ),
       ),
