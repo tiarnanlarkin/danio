@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/settings_provider.dart';
 import '../theme/app_theme.dart';
 import 'haptic_feedback.dart';
 
@@ -10,6 +12,17 @@ import 'haptic_feedback.dart';
 /// AppFeedback.showError(context, 'Failed to save');
 /// ```
 class AppFeedback {
+  static bool _hapticsEnabled(BuildContext context) {
+    try {
+      return ProviderScope.containerOf(
+        context,
+        listen: false,
+      ).read(settingsProvider).hapticFeedbackEnabled;
+    } catch (_) {
+      return true;
+    }
+  }
+
   /// Show success message with green background + haptic
   static void showSuccess(
     BuildContext context,
@@ -18,7 +31,7 @@ class AppFeedback {
     VoidCallback? onAction,
     Duration duration = const Duration(seconds: 2),
   }) {
-    AppHaptics.success();
+    AppHaptics.success(enabled: _hapticsEnabled(context));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -61,7 +74,7 @@ class AppFeedback {
     String message, {
     VoidCallback? onRetry,
   }) {
-    AppHaptics.error();
+    AppHaptics.error(enabled: _hapticsEnabled(context));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -96,7 +109,7 @@ class AppFeedback {
 
   /// Show warning message with amber background + haptic
   static void showWarning(BuildContext context, String message) {
-    AppHaptics.medium();
+    AppHaptics.medium(enabled: _hapticsEnabled(context));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1536 tests.
+- `flutter test`: pass, 1538 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -969,6 +969,15 @@ CL-P1-010B Preferences setup editing:
 - Focused widget coverage verifies the visible profile summaries and both
   picker update paths.
 
+CL-P1-010C Preferences haptic-feedback control:
+
+- The visible Haptic Feedback preference now controls shared snackbar feedback
+  haptics from `AppFeedback.showSuccess`, `showError`, and `showWarning`.
+- `AppFeedback` reads `settingsProvider` from the active `ProviderScope` and
+  falls back to enabled only when feedback is shown outside app/provider scope.
+- Focused coverage verifies success feedback stays silent when haptics are
+  disabled and still fires the expected success pattern when enabled.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -1053,8 +1062,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
-  source-safe. Remaining profile/preferences work is centralising reset/edit
-  controls for AI, privacy, reminders, motion, and haptics.
+  source-safe. The Haptic Feedback preference now controls shared snackbar
+  haptics. Remaining profile/preferences work is centralising reset/edit
+  controls for AI, privacy, reminders, and motion.
 - Global search now has first complete-local coverage for app destinations,
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, and local logs. Remaining search work is Android phone/tablet
