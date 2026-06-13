@@ -60,7 +60,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   Widget build(BuildContext context) {
     final tanksAsync = ref.watch(tanksProvider);
 
-    // Build item list once — ListView.builder calls itemCount and itemBuilder
+    // Build item list once - ListView.builder calls itemCount and itemBuilder
     // separately, so evaluating inside each callback would double the work.
     final items = _buildItems(tanksAsync);
     return Scaffold(
@@ -156,7 +156,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                               top: AppSpacing.xs,
                             ),
                             child: Text(
-                              '• ${t.name}',
+                              '- ${t.name}',
                               style: AppTypography.bodySmall,
                             ),
                           ),
@@ -202,7 +202,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                       const SizedBox(height: AppSpacing.sm),
                       Center(
                         child: Text(
-                          '✓ Last backup: $_lastBackup',
+                          'Last backup: $_lastBackup',
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.success,
                           ),
@@ -332,10 +332,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Import Warning', style: AppTypography.labelLarge),
+                  Text('Import Safety', style: AppTypography.labelLarge),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Importing adds backed-up tanks as new tanks. It also restores profile, learning progress, gems, and preferences from the backup.',
+                    'Imports add backed-up tanks as new tanks. Existing tanks and logs stay on this device. App-wide profile, learning progress, gems, and preferences are replaced from the backup.',
                     style: AppTypography.bodySmall,
                   ),
                 ],

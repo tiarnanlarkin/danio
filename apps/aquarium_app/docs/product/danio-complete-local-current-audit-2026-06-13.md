@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1521 tests.
+- `flutter test`: pass, 1522 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -906,6 +906,17 @@ CL-P1-007B / CL-P1-008B All-tanks activity timeline:
 - Focused coverage verifies recent activity across three tanks, including an
   unselected tank, appears in the comparison flow.
 
+CL-P1-009A Backup import safety copy:
+
+- Backup & Restore now explains import behavior in normal-user terms:
+  backed-up tanks are added as new tanks, existing tanks/logs stay on-device,
+  and app-wide profile, learning progress, gems, and preferences are replaced
+  from the backup.
+- The backup screen source no longer contains corrupted bullet/check/em-dash
+  glyphs in touched copy paths.
+- Focused coverage verifies the visible import-safety copy and guards the
+  backup screen source against non-ASCII/mojibake artifacts.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -957,6 +968,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   types, and Compare Tanks now surfaces recent history across tanks. Remaining
   timeline work is richer tool-result history, accepted AI notes, and
   milestones.
+- Backup & Restore now has clearer import safety copy. Remaining backup/data
+  work is deeper import validation UX, edit/delete/undo coverage, and
+  restore/migration walkthrough QA.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -968,8 +982,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
 Continue CL-P1-007/CL-P1-008 remaining local depth while Android transport is
 reserved by other sessions:
 
-- Expand richer tool-result/AI-note/milestone timeline handoffs and polish
-  multi-tank switching so users can understand care priorities and tank history
-  without opening every tank one by one.
+- Expand richer tool-result/AI-note/milestone timeline handoffs, polish
+  multi-tank switching, and continue CL-P1-009 data-safety hardening.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.
