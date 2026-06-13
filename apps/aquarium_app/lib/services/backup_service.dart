@@ -258,7 +258,10 @@ class BackupService {
     Set<String> tankIds,
   ) {
     final entries = data[collectionName];
-    if (entries == null || entries is! List) return;
+    if (entries == null) return;
+    if (entries is! List) {
+      throw Exception('Invalid format: $collectionName must be an array');
+    }
 
     for (final entry in entries) {
       if (entry is! Map) {
