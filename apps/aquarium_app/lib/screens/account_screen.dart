@@ -6,7 +6,6 @@ import '../providers/restore_invalidation.dart';
 import '../services/account_deletion_service.dart';
 import '../services/supabase_service.dart';
 import '../services/cloud_backup_service.dart';
-// import '../services/cloud_sync_service.dart'; // FB-H1: hidden with sync UI
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../widgets/danio_snack_bar.dart';
@@ -308,10 +307,6 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       ),
       const SizedBox(height: AppSpacing.lg),
 
-      // FB-H1: Sync status hidden — SyncService is scaffolding only.
-      // No HTTP requests are made; showing sync status would mislead users.
-      // const SizedBox(height: AppSpacing.md),
-
       // Backup & Restore
       Card(
         child: Column(
@@ -599,57 +594,3 @@ class AccountDangerZone extends StatelessWidget {
     );
   }
 }
-
-// ---------------------------------------------------------------------------
-// FB-H1: _SyncStatusCard removed — SyncService is scaffolding only.
-// Kept as dead code reference for future cloud sync implementation.
-// ---------------------------------------------------------------------------
-
-/* class _SyncStatusCard extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final syncStatus = ref.watch(cloudSyncStatusProvider);
-
-    final IconData icon;
-    final String label;
-    final Color color;
-
-    switch (syncStatus) {
-      case CloudSyncStatus.synced:
-        icon = Icons.cloud_done;
-        label = 'All data synced';
-        color = AppColors.success;
-      case CloudSyncStatus.syncing:
-        icon = Icons.sync;
-        label = 'Syncing...';
-        color = AppColors.info;
-      case CloudSyncStatus.offline:
-        icon = Icons.cloud_off;
-        label = 'Offline — changes queued';
-        color = AppColors.warning;
-      case CloudSyncStatus.error:
-        icon = Icons.error_outline;
-        label = 'Sync error — tap to retry';
-        color = AppColors.error;
-      case CloudSyncStatus.disabled:
-        icon = Icons.cloud_off;
-        label = 'Cloud sync not active';
-        color = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4);
-    }
-
-    return Card(
-      child: ListTile(
-        leading: Icon(icon, color: color),
-        title: Text(label),
-        subtitle: const Text('Multi-device sync'),
-        trailing: syncStatus == CloudSyncStatus.error
-            ? IconButton(
-                tooltip: 'Edit profile',
-                icon: const Icon(Icons.refresh),
-                onPressed: () => ref.read(cloudSyncServiceProvider).syncNow(),
-              )
-            : null,
-      ),
-    );
-  }
-} */

@@ -298,7 +298,7 @@ Future<void> confirmDeleteMyData(BuildContext context, WidgetRef ref) async {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'For server-side data deletion requests, email '
+          'For privacy or data help, email '
           'larkintiarnanbizz@gmail.com',
           style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
         ),

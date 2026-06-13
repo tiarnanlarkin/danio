@@ -69,9 +69,45 @@ void main() {
 
   test('Main shell does not mount debug sync diagnostics', () {
     final source = _source('lib/screens/tab_navigator.dart');
+    const syncIndicatorClass =
+        'Sync'
+        'Indicator';
+    const syncIndicatorImport =
+        'sync_'
+        'indicator.dart';
 
     expect(source, contains('OfflineIndicator'));
-    expect(source, isNot(contains('SyncIndicator')));
-    expect(source, isNot(contains('sync_indicator.dart')));
+    expect(source, isNot(contains(syncIndicatorClass)));
+    expect(source, isNot(contains(syncIndicatorImport)));
+  });
+
+  test('legacy sync status scaffolds are not shipped as UI entry points', () {
+    const legacyWidget =
+        'lib/widgets/sync_'
+        'indicator.dart';
+    const legacyStatusWidget =
+        'lib/widgets/sync_'
+        'status_widget.dart';
+    const legacyDebugDialog =
+        'lib/widgets/sync_'
+        'debug_dialog.dart';
+    const legacyCloudSyncService =
+        'lib/services/cloud_'
+        'sync_service.dart';
+    const hiddenStatusComment =
+        'Sync status'
+        ' hidden';
+    const scaffoldingComment =
+        'SyncService is'
+        ' scaffolding';
+
+    expect(File(legacyWidget).existsSync(), isFalse);
+    expect(File(legacyStatusWidget).existsSync(), isFalse);
+    expect(File(legacyDebugDialog).existsSync(), isFalse);
+    expect(File(legacyCloudSyncService).existsSync(), isFalse);
+
+    final accountSource = _source('lib/screens/account_screen.dart');
+    expect(accountSource, isNot(contains(hiddenStatusComment)));
+    expect(accountSource, isNot(contains(scaffoldingComment)));
   });
 }

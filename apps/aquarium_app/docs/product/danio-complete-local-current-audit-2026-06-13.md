@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1324 tests.
+- `flutter test`: pass, 1325 tests.
 - `flutter analyze --no-pub`: pass, no issues.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
 - `flutter test test/services/shop_service_test.dart
@@ -144,6 +144,11 @@ Fixed:
 - Optional AI server-connection failures no longer expose Supabase/build-auth
   jargon in Settings or AI-service errors. Users now see a plain message that
   local Smart Hub checks still work.
+- The Delete My Data dialog now frames the contact email as privacy/data help
+  instead of implying a server-side deletion process in the local build.
+- Dead cloud-sync status scaffolding was removed from `AccountScreen` and the
+  unused sync indicator/status/dialog/cloud-sync files, so stale sync-state
+  wording cannot drift back into the local Offline Data surface.
 
 Remaining CL-P0-003 audit targets:
 
@@ -168,7 +173,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, unsupported marine setup choices/scope copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics and dead sync-status scaffolds, unsupported marine setup choices/scope copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |

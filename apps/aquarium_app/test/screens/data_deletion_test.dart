@@ -24,9 +24,7 @@ import 'package:danio/widgets/core/app_dialog.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap(Widget child) {
-  return ProviderScope(
-    child: MaterialApp(home: child),
-  );
+  return ProviderScope(child: MaterialApp(home: child));
 }
 
 /// Scrolls down the settings list until "Delete My Data" is visible.
@@ -72,8 +70,9 @@ void main() {
       );
     });
 
-    testWidgets('tapping Delete My Data shows confirmation dialog',
-        (tester) async {
+    testWidgets('tapping Delete My Data shows confirmation dialog', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const SettingsScreen()));
       await tester.pump();
 
@@ -107,21 +106,24 @@ void main() {
       );
     });
 
-    testWidgets('confirmation dialog has Delete Everything and Cancel buttons',
-        (tester) async {
-      await tester.pumpWidget(_wrap(const SettingsScreen()));
-      await tester.pump();
+    testWidgets(
+      'confirmation dialog has Delete Everything and Cancel buttons',
+      (tester) async {
+        await tester.pumpWidget(_wrap(const SettingsScreen()));
+        await tester.pump();
 
-      await _scrollToDeleteMyData(tester);
-      await tester.tap(find.text('Delete My Data'));
-      await tester.pumpAndSettle();
+        await _scrollToDeleteMyData(tester);
+        await tester.tap(find.text('Delete My Data'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Delete Everything'), findsOneWidget);
-      expect(find.text('Cancel'), findsOneWidget);
-    });
+        expect(find.text('Delete Everything'), findsOneWidget);
+        expect(find.text('Cancel'), findsOneWidget);
+      },
+    );
 
-    testWidgets('tapping Cancel dismisses dialog without deleting',
-        (tester) async {
+    testWidgets('tapping Cancel dismisses dialog without deleting', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const SettingsScreen()));
       await tester.pump();
 
@@ -141,9 +143,9 @@ void main() {
       expect(find.byType(SettingsScreen), findsOneWidget);
     });
 
-    testWidgets(
-        'dialog mentions email address for server-side data deletion',
-        (tester) async {
+    testWidgets('dialog mentions email address for privacy/data help', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const SettingsScreen()));
       await tester.pump();
 
@@ -151,17 +153,12 @@ void main() {
       await tester.tap(find.text('Delete My Data'));
       await tester.pumpAndSettle();
 
-      // The dialog should mention the contact email per GDPR compliance
-      expect(
-        find.textContaining('larkintiarnanbizz@gmail.com'),
-        findsWidgets,
-      );
+      expect(find.textContaining('For privacy or data help'), findsOneWidget);
+      expect(find.textContaining('larkintiarnanbizz@gmail.com'), findsWidgets);
     });
 
-    testWidgets(
-        'tapping Delete Everything triggers deletion '
-        '(SharedPreferences cleared, dialog dismissed)',
-        (tester) async {
+    testWidgets('tapping Delete Everything triggers deletion '
+        '(SharedPreferences cleared, dialog dismissed)', (tester) async {
       // Pre-seed some preferences to verify they get cleared.
       // Use int/bool types to avoid type-cast warnings from SettingsProvider.
       SharedPreferences.setMockInitialValues({
@@ -228,10 +225,7 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
 
-      expect(
-        find.text('Delete all tanks, logs, and settings'),
-        findsOneWidget,
-      );
+      expect(find.text('Delete all tanks, logs, and settings'), findsOneWidget);
     });
   });
 }
