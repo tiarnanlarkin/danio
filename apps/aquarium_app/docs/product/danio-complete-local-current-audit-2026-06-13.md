@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1453 tests.
+- `flutter test`: pass, 1454 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -478,6 +478,14 @@ CL-P1-003H Species add-to-tank handoff:
 - The handoff prefills common/scientific names and uses the species minimum
   school size for schooling fish, while keeping actual livestock persistence,
   logs, XP, validation, and provider invalidation inside the existing dialog.
+
+CL-P1-003I Species care task creation:
+
+- Fish species detail sheets now include a Create care task action that saves
+  or updates a weekly tank task through the existing task storage path.
+- The saved task records minimum group, minimum tank, temperature, pH, and
+  tankmate/treatment cautions when present, so species guidance can surface in
+  Tank, Today, and Tasks without adding a separate reminder silo.
 
 Current Android device state:
 
