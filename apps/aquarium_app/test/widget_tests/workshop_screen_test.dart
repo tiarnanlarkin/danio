@@ -12,6 +12,7 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/co2_calculator_screen.dart';
 import 'package:danio/screens/dosing_calculator_screen.dart';
 import 'package:danio/screens/lighting_schedule_screen.dart';
+import 'package:danio/screens/stocking_calculator_screen.dart';
 import 'package:danio/screens/tank_volume_calculator_screen.dart';
 import 'package:danio/screens/water_change_calculator_screen.dart';
 import 'package:danio/screens/workshop_screen.dart';
@@ -231,6 +232,27 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.text('Stocking'), findsOneWidget);
+    });
+
+    testWidgets('opens Stocking with current tank context', (tester) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(volumeLitres: 72));
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.tap(find.text('Stocking'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StockingCalculatorScreen), findsOneWidget);
+      expect(find.widgetWithText(TextField, '72'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField).last, 'Neon');
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.tap(find.textContaining('Neon').last);
+      await tester.pump();
+
+      expect(find.text('Log stocking check'), findsOneWidget);
     });
 
     testWidgets('shows multiple calculator tools in grid', (tester) async {

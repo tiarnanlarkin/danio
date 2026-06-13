@@ -3,13 +3,23 @@ import '../utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../data/species_database.dart';
+import '../models/log_entry.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_text_field.dart';
+import 'add_log_screen.dart';
 
 class StockingCalculatorScreen extends StatefulWidget {
+  final String? tankId;
+  final double? initialTankVolumeLitres;
   final SpeciesInfo? initialSpecies;
 
-  const StockingCalculatorScreen({super.key, this.initialSpecies});
+  const StockingCalculatorScreen({
+    super.key,
+    this.tankId,
+    this.initialTankVolumeLitres,
+    this.initialSpecies,
+  });
 
   @override
   State<StockingCalculatorScreen> createState() =>
@@ -29,6 +39,11 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   @override
   void initState() {
     super.initState();
+    final initialVolume = widget.initialTankVolumeLitres;
+    if (initialVolume != null && initialVolume > 0) {
+      _tankVolumeController.text = _formatCompactNumber(initialVolume);
+    }
+
     final species = widget.initialSpecies;
     if (species != null) {
       _stock.add(
@@ -110,6 +125,11 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   double get _stockingPercent =>
       _capacity > 0 ? (_bioload / _capacity) * 100 : 0;
 
+  bool get _canLogStocking =>
+      widget.tankId != null &&
+      _stock.isNotEmpty &&
+      _setupValidationMessage == null;
+
   String? get _setupValidationMessage {
     if (_tankVolume <= 0) {
       return 'Enter a tank volume greater than 0';
@@ -132,6 +152,46 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
     if (_stockingPercent < 75) return AppColors.success;
     if (_stockingPercent < 100) return AppColors.warning;
     return AppColors.error;
+  }
+
+  String _formatCompactNumber(double value) {
+    return value == value.roundToDouble()
+        ? value.toStringAsFixed(0)
+        : value.toStringAsFixed(1);
+  }
+
+  String get _stockingSummary {
+    final stockLines = _stock
+        .map(
+          (entry) =>
+              '${entry.species.commonName} x ${entry.count} '
+              '(${entry.species.adultSizeCm.toStringAsFixed(0)} cm adult)',
+        )
+        .join('\n');
+
+    return 'Stocking check\n'
+        'Tank volume: ${_formatCompactNumber(_tankVolume)} L\n'
+        'Filter rating: ${_formatCompactNumber(_filterRating)}x\n'
+        'Live plants: ${_hasLivePlants ? 'Yes' : 'No'}\n'
+        'Stocking: ${_stockingPercent.toStringAsFixed(0)}% ($_stockingLevel)\n'
+        'Species:\n'
+        '$stockLines\n'
+        'This is a planning estimate. Confirm adult size, temperament, group size, filtration, and water-change routine before buying or moving fish.';
+  }
+
+  void _logStockingCheck() {
+    final tankId = widget.tankId;
+    if (tankId == null || _stock.isEmpty) return;
+
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(
+        tankId: tankId,
+        initialType: LogType.observation,
+        initialNotes: _stockingSummary,
+      ),
+      rootNavigator: true,
+    );
   }
 
   void _addStock(SpeciesInfo species) {
@@ -220,7 +280,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     flex: 2,
                     child: AppTextField(
                       controller: _filterRatingController,
-                      label: 'Filter ×',
+                      label: 'Filter x',
                       hint: '1.0 = standard',
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
@@ -385,7 +445,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                           child: ListTile(
                             title: Text(entry.species.commonName),
                             subtitle: Text(
-                              '${entry.species.adultSizeCm.toStringAsFixed(0)}cm × ${entry.count} = '
+                              '${entry.species.adultSizeCm.toStringAsFixed(0)}cm x ${entry.count} = '
                               '${(entry.species.adultSizeCm * entry.count * _getBioloadMultiplier(entry.species)).toStringAsFixed(1)} bioload',
                               style: AppTypography.bodySmall,
                             ),
@@ -452,6 +512,44 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                           color: AppColors.success,
                         ),
                       ),
+                    if (_canLogStocking) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      const Divider(height: 1),
+                      const SizedBox(height: AppSpacing.md),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.route_outlined,
+                            color: AppColors.info,
+                            size: AppIconSizes.sm,
+                          ),
+                          const SizedBox(width: AppSpacing.sm2),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Guided next step',
+                                  style: AppTypography.labelLarge,
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
+                                Text(
+                                  'Save this stocking check to the tank journal before you buy or move fish.',
+                                  style: AppTypography.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      FilledButton.icon(
+                        onPressed: _logStockingCheck,
+                        icon: const Icon(Icons.edit_note_rounded),
+                        label: const Text('Log stocking check'),
+                      ),
+                    ],
                   ],
                 ),
               ),

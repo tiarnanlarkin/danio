@@ -76,6 +76,51 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     );
   }
 
+  /// Open Stocking with tank context when it is available.
+  Future<void> _openStockingCalculator() async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      NavigationThrottle.push(
+        context,
+        const StockingCalculatorScreen(),
+        rootNavigator: true,
+      );
+      return;
+    }
+
+    Tank? tank;
+    if (tanks.length == 1) {
+      tank = tanks.first;
+    } else {
+      tank = await showDialog<Tank>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: const Text('Choose a Tank'),
+          children: tanks
+              .map(
+                (tank) => SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, tank),
+                  child: Text(tank.name),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (tank == null || !mounted) return;
+    NavigationThrottle.push(
+      context,
+      StockingCalculatorScreen(
+        tankId: tank.id,
+        initialTankVolumeLitres: tank.volumeLitres,
+      ),
+      rootNavigator: true,
+    );
+  }
+
   /// Open Tank Volume with tank context when it is available.
   Future<void> _openTankVolumeCalculator() async {
     final tanks = await ref.read(tanksProvider.future);
@@ -358,11 +403,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       title: 'Stocking',
                       subtitle: 'Fish capacity',
                       color: DanioColors.wishlistAmber,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const StockingCalculatorScreen(),
-                        rootNavigator: true,
-                      ),
+                      onTap: _openStockingCalculator,
                     ),
                     _ToolCard(
                       icon: Icons.science,

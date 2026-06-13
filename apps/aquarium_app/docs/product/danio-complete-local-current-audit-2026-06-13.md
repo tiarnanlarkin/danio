@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1508 tests.
+- `flutter test`: pass, 1510 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -809,6 +809,20 @@ CL-P1-006E Lighting guided workflow:
   artifacts in headings and CO2 timing bullets.
 - Focused coverage verifies direct Lighting handoff into AddLog and Workshop
   Lighting context routing.
+
+CL-P1-006F Stocking guided workflow:
+
+- The Stocking Calculator can now launch with tank context and tank-volume
+  prefill from Workshop.
+- Stocking checks with selected fish now include a guided next-step action:
+  `Log stocking check`.
+- The guided action opens `AddLogScreen` as an observation with a prefilled note
+  covering tank volume, filter rating, plant state, stocking percentage/level,
+  species counts, and a planning-estimate caveat.
+- The touched Stocking screen and test were cleaned of mojibake/non-ASCII
+  artifacts in headings, filter label, and stock math copy.
+- Focused coverage verifies direct Stocking handoff into AddLog and Workshop
+  Stocking context routing.
 
 Current Android device state:
 

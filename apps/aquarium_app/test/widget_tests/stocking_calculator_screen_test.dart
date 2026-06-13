@@ -3,43 +3,85 @@
 // Run: flutter test test/widget_tests/stocking_calculator_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/data/species_database.dart';
+import 'package:danio/models/models.dart';
+import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/stocking_calculator_screen.dart';
+import 'package:danio/services/storage_service.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+final _now = DateTime.now();
 
-Widget _wrap() {
-  return const MaterialApp(home: StockingCalculatorScreen());
-}
+Tank _makeTank({String id = 'tank-1', double volumeLitres = 72}) => Tank(
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: volumeLitres,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
 
-Widget _wrapWithInitialSpecies() {
-  final species = SpeciesDatabase.lookup('Neon Tetra')!;
-  return MaterialApp(home: StockingCalculatorScreen(initialSpecies: species));
-}
-
-Widget _wrapWithBottomInset() {
-  return MaterialApp(
-    home: MediaQuery(
-      data: const MediaQueryData(
-        size: Size(390, 844),
-        padding: EdgeInsets.only(bottom: 34),
-        viewPadding: EdgeInsets.only(bottom: 34),
+Widget _wrap({
+  String? tankId,
+  double? initialTankVolumeLitres,
+  SpeciesInfo? initialSpecies,
+  InMemoryStorageService? storage,
+}) {
+  return ProviderScope(
+    overrides: [
+      if (storage != null) storageServiceProvider.overrideWithValue(storage),
+    ],
+    child: MaterialApp(
+      home: StockingCalculatorScreen(
+        tankId: tankId,
+        initialTankVolumeLitres: initialTankVolumeLitres,
+        initialSpecies: initialSpecies,
       ),
-      child: const StockingCalculatorScreen(),
     ),
   );
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
+Widget _wrapWithInitialSpecies() {
+  final species = SpeciesDatabase.lookup('Neon Tetra')!;
+  return _wrap(initialSpecies: species);
+}
+
+Widget _wrapWithBottomInset() {
+  return ProviderScope(
+    child: MaterialApp(
+      home: MediaQuery(
+        data: const MediaQueryData(
+          size: Size(390, 844),
+          padding: EdgeInsets.only(bottom: 34),
+          viewPadding: EdgeInsets.only(bottom: 34),
+        ),
+        child: const StockingCalculatorScreen(),
+      ),
+    ),
+  );
+}
+
+Future<void> _clearStorage() async {
+  final storage = InMemoryStorageService();
+  final tanks = await storage.getAllTanks();
+  await storage.deleteAllTanks(tanks.map((tank) => tank.id).toList());
+}
 
 void main() {
-  group('StockingCalculatorScreen — rendering', () {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
+    await _clearStorage();
+  });
+
+  group('StockingCalculatorScreen - rendering', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
@@ -67,7 +109,6 @@ void main() {
     testWidgets('shows search field for species', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      // Search field for adding species
       expect(find.byType(TextField), findsWidgets);
     });
 
@@ -104,6 +145,42 @@ void main() {
         isEmpty,
       );
     });
+
+    testWidgets(
+      'guided action opens an observation log with stocking summary',
+      (tester) async {
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank());
+        final neon = SpeciesDatabase.lookup('Neon Tetra')!;
+
+        await tester.pumpWidget(
+          _wrap(
+            tankId: 'tank-1',
+            initialTankVolumeLitres: 72,
+            initialSpecies: neon,
+            storage: storage,
+          ),
+        );
+        await tester.pump();
+
+        expect(find.widgetWithText(TextField, '72'), findsOneWidget);
+        await tester.tap(find.text('Log stocking check'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AddLogScreen), findsOneWidget);
+        expect(find.text('Observation'), findsWidgets);
+        expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is TextFormField &&
+                (widget.initialValue ?? '').contains('Stocking check') &&
+                (widget.initialValue ?? '').contains('Tank volume: 72 L') &&
+                (widget.initialValue ?? '').contains('Neon Tetra x 6'),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('stocking advice uses an icon instead of raw emoji text', (
       tester,
