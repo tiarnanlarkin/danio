@@ -139,7 +139,10 @@ class _JournalEntryCard extends StatelessWidget {
     final timeStr = DateFormat('h:mm a').format(entry.timestamp);
     final summary = LogEntryDisplay.summaryFor(entry);
     final rawNotes = entry.notes?.trim();
-    final notes = LogEntryDisplay.isMilestone(entry) ? null : rawNotes;
+    final notes =
+        LogEntryDisplay.isMilestone(entry) || LogEntryDisplay.isAiNote(entry)
+        ? null
+        : rawNotes;
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm2),

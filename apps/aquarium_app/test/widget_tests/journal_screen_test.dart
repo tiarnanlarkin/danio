@@ -81,6 +81,16 @@ LogEntry _savedMilestoneEntry() => LogEntry(
   createdAt: DateTime(2024, 7, 5, 8),
 );
 
+LogEntry _savedAiNoteEntry() => LogEntry(
+  id: 'ai-note-001',
+  tankId: _fakeTankId,
+  type: LogType.observation,
+  timestamp: DateTime(2024, 7, 6, 10),
+  notes:
+      'Symptom Triage Result\n\nLikely water quality stress. Test ammonia and nitrite first.',
+  createdAt: DateTime(2024, 7, 6, 10),
+);
+
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 500));
@@ -182,6 +192,19 @@ void main() {
       expect(find.textContaining('Milestone |'), findsOneWidget);
       expect(
         find.textContaining('First shrimp berries spotted in the moss'),
+        findsOneWidget,
+      );
+      expect(find.text('Your story starts here!'), findsNothing);
+    });
+
+    testWidgets('labels saved AI notes as AI note events', (tester) async {
+      await tester.pumpWidget(_wrap(logs: [_savedAiNoteEntry()]));
+      await _advance(tester);
+
+      expect(find.text('Symptom Triage AI Note'), findsOneWidget);
+      expect(find.textContaining('AI Note |'), findsOneWidget);
+      expect(
+        find.textContaining('Likely water quality stress'),
         findsOneWidget,
       );
       expect(find.text('Your story starts here!'), findsNothing);

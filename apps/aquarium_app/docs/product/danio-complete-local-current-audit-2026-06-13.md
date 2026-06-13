@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1543 tests.
+- `flutter test`: pass, 1544 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -929,6 +929,17 @@ CL-P1-008D Saved milestone timeline labels:
 - Focused coverage verifies a saved milestone note appears with `Milestone`
   metadata and no empty-state fallback.
 
+CL-P1-008E Saved AI-note timeline labels:
+
+- Tank Journal now recognises saved accepted AI notes such as Symptom Triage
+  journal saves and labels them as `AI Note` timeline entries instead of
+  generic observations.
+- Saved AI notes get a specific title such as `Symptom Triage AI Note`, and the
+  visible summary drops the raw saved-note prefix so the card reads like a
+  timeline event.
+- Focused coverage verifies a saved Symptom Triage journal result appears with
+  `AI Note` metadata and the saved guidance body.
+
 CL-P1-009A Backup import safety copy:
 
 - Backup & Restore now explains import behavior in normal-user terms:
@@ -1106,9 +1117,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Tank Journal now has a first unified local timeline pass for current log
   types, saved guided-tool notes now appear as Tool Result entries, and Compare
   Tanks now surfaces recent history across tanks. Saved `Milestone:` journal
-  notes now appear as Milestone entries. Remaining timeline work is accepted
-  AI-note history and any richer tool-result/milestone detail cards found in
-  walkthroughs.
+  notes now appear as Milestone entries, and saved accepted AI notes now appear
+  as AI Note entries. Remaining timeline work is any richer
+  tool-result/AI-note/milestone detail cards found in walkthroughs.
 - Backup & Restore now has clearer import safety copy and validates required
   backup JSON plus malformed tank entries before preview/import. Remaining
   backup/data work is deeper import validation UX, edit/delete/undo coverage,

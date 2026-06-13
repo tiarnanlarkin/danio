@@ -49,6 +49,8 @@ class LogEntryDisplay {
       case LogType.observation:
         final toolTitle = toolResultTitleFor(entry);
         if (toolTitle != null) return toolTitle;
+        final aiNoteTitle = aiNoteTitleFor(entry);
+        if (aiNoteTitle != null) return aiNoteTitle;
         if (isMilestone(entry)) {
           if (title != null && title.isNotEmpty) {
             return _stripMilestonePrefix(title);
@@ -69,6 +71,7 @@ class LogEntryDisplay {
 
   static String timelineKindFor(LogEntry entry) {
     if (toolResultTitleFor(entry) != null) return 'Tool Result';
+    if (isAiNote(entry)) return 'AI Note';
     if (isMilestone(entry)) return 'Milestone';
     return entry.typeName;
   }
@@ -109,6 +112,30 @@ class LogEntryDisplay {
     return null;
   }
 
+  static bool isAiNote(LogEntry entry) => aiNoteTitleFor(entry) != null;
+
+  static String? aiNoteTitleFor(LogEntry entry) {
+    if (entry.type != LogType.observation) return null;
+
+    final notes = entry.notes?.trim().toLowerCase();
+    if (notes == null || notes.isEmpty) return null;
+
+    if (notes.startsWith('symptom triage result')) {
+      return 'Symptom Triage AI Note';
+    }
+    if (notes.startsWith('ai stocking suggestions')) {
+      return 'AI Stocking Note';
+    }
+    if (notes.startsWith('ai compatibility advice')) {
+      return 'AI Compatibility Note';
+    }
+    if (notes.startsWith('ask danio')) {
+      return 'Ask Danio Note';
+    }
+
+    return null;
+  }
+
   static String summaryFor(LogEntry entry) {
     switch (entry.type) {
       case LogType.waterTest:
@@ -131,6 +158,7 @@ class LogEntryDisplay {
       case LogType.taskCompleted:
         return '';
       case LogType.observation:
+        if (isAiNote(entry)) return _aiNoteSummaryFor(entry);
         if (isMilestone(entry)) return _milestoneSummaryFor(entry);
         return '';
       case LogType.other:
@@ -139,8 +167,28 @@ class LogEntryDisplay {
   }
 
   static String fallbackFor(LogEntry entry) {
+    if (isAiNote(entry)) return 'Logged saved AI note.';
     if (isMilestone(entry)) return 'Logged milestone event.';
     return 'Logged ${entry.typeName.toLowerCase()} event.';
+  }
+
+  static String _aiNoteSummaryFor(LogEntry entry) {
+    final notes = entry.notes?.trim();
+    if (notes == null || notes.isEmpty) return '';
+
+    const prefixes = [
+      'Symptom Triage Result',
+      'AI Stocking Suggestions',
+      'AI Compatibility Advice',
+      'Ask Danio',
+    ];
+
+    for (final prefix in prefixes) {
+      if (notes.toLowerCase().startsWith(prefix.toLowerCase())) {
+        return notes.substring(prefix.length).trim();
+      }
+    }
+    return notes;
   }
 
   static String _milestoneSummaryFor(LogEntry entry) {
