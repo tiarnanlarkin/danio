@@ -12,7 +12,7 @@ void main() {
     test('uses calm plain text fallback copy', () {
       expect(
         OpenAIUserMessages.setupRequired,
-        'Optional AI is not configured. Add an OpenAI key in Preferences before using this AI feature.',
+        'Optional AI is not set up. Add an OpenAI key in Preferences before using this AI feature.',
       );
       expect(
         OpenAIUserMessages.rateLimited,
@@ -33,7 +33,7 @@ void main() {
       );
       expect(
         OpenAIUserMessages.proxyUnavailable,
-        'Optional AI is not ready in this build. Local Smart Hub checks still work.',
+        'Optional AI is not ready in this version of Danio. Local Smart Hub checks still work.',
       );
       expect(
         OpenAIUserMessages.unexpectedError,
@@ -53,6 +53,8 @@ void main() {
       for (final message in messages) {
         expect(message, isNot(contains('!')));
         expect(message, isNot(contains('Oops')));
+        expect(message, isNot(contains('this build')));
+        expect(message, isNot(contains('not configured')));
         expect(message, isNot(contains(String.fromCharCode(0x1F41F))));
         expect(message, isNot(contains(String.fromCharCode(0x1F420))));
       }
@@ -159,7 +161,7 @@ void main() {
             isA<OpenAIException>().having(
               (e) => e.message,
               'message',
-              contains('Optional AI is not ready in this build'),
+              contains('Optional AI is not ready in this version of Danio'),
             ),
           ),
         );

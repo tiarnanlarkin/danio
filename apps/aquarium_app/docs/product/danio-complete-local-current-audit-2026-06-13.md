@@ -146,8 +146,8 @@ Fixed:
   biology facts from species/lesson content.
 - Optional AI setup/status and AI-service failures no longer expose
   developer-facing server/proxy/build-auth wording. Users now see plain
-  Danio-managed AI or not-ready-in-this-build copy while local Smart Hub checks
-  still work.
+  Danio-managed AI, not-set-up, or this-version-of-Danio copy while local Smart
+  Hub checks still work.
 - The Delete My Data dialog now frames the contact email as privacy/data help
   instead of implying a server-side deletion process in the local build.
 - Dead cloud-sync status scaffolding was removed from `AccountScreen` and the
@@ -216,7 +216,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub wording, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub wording, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |

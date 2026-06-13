@@ -18,11 +18,21 @@ void main() {
     ];
 
     expect(serviceSource, contains('setupRequired'));
-    expect(serviceSource, contains('Optional AI is not configured'));
-    expect(serviceSource, contains('Optional AI is not ready in this build'));
+    expect(serviceSource, contains('Optional AI is not set up'));
+    expect(
+      serviceSource,
+      contains('Optional AI is not ready in this version of Danio'),
+    );
+    expect(serviceSource, isNot(contains('not configured')));
+    expect(serviceSource, isNot(contains('this build')));
     expect(serviceSource, isNot(contains('Supabase anon key is missing')));
     expect(serviceSource, isNot(contains('server connection')));
     expect(settingsSource, contains('Danio-managed Optional AI is active'));
+    expect(
+      settingsSource,
+      contains('Optional AI is not ready in this version of Danio'),
+    );
+    expect(settingsSource, isNot(contains('this build')));
     expect(settingsSource, isNot(contains('server connection')));
     expect(settingsSource, isNot(contains('server proxy')));
 

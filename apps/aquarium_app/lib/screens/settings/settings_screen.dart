@@ -946,7 +946,7 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
       subtitle: hasProxy
           ? (proxyReady
                 ? 'Danio-managed AI active'
-                : 'Optional AI is not ready in this build')
+                : 'Optional AI is not ready in this version of Danio')
           : (_hasUserKey
                 ? 'Custom API key active - tap to manage'
                 : 'Smart Hub works locally; add a key for photo ID and Ask Danio'),
