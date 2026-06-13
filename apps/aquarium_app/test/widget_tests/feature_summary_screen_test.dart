@@ -65,6 +65,23 @@ void main() {
         reason: path,
       );
     }
+
+    final featureSummary = File(
+      'lib/screens/onboarding/feature_summary_screen.dart',
+    ).readAsStringSync();
+    expect(
+      featureSummary,
+      contains('Danio is free to use. No subscription needed.'),
+    );
+    expect(
+      featureSummary,
+      isNot(
+        contains(
+          'Danio is free to use ${String.fromCharCode(0x2014)} '
+          'no subscription needed.',
+        ),
+      ),
+    );
   });
 
   group('FeatureSummaryScreen — rendering', () {
@@ -83,7 +100,10 @@ void main() {
     testWidgets('shows free-to-use subtitle', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
-      expect(find.textContaining('free to use'), findsOneWidget);
+      expect(
+        find.text('Danio is free to use. No subscription needed.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows fish care guide reference text', (tester) async {

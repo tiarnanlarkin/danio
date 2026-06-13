@@ -109,7 +109,7 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Danio is free to use — no subscription needed.',
+                        'Danio is free to use. No subscription needed.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppColors.textSecondary,
                           fontWeight: FontWeight.w500,
