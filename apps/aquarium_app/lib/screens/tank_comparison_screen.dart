@@ -78,6 +78,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
               : tanks[1];
 
           return _ComparisonDataView(
+            allTanks: tanks,
             selectedTanks: [tank1, tank2],
             selectors: Row(
               children: [
@@ -112,10 +113,12 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
 
 class _ComparisonDataView extends ConsumerWidget {
   const _ComparisonDataView({
+    required this.allTanks,
     required this.selectedTanks,
     required this.selectors,
   });
 
+  final List<Tank> allTanks;
   final List<Tank> selectedTanks;
   final Widget selectors;
 
@@ -125,7 +128,7 @@ class _ComparisonDataView extends ConsumerWidget {
     var isLoading = false;
     Object? firstError;
 
-    for (final tank in selectedTanks) {
+    for (final tank in allTanks) {
       final logs = ref.watch(allLogsProvider(tank.id));
       final tasks = ref.watch(tasksProvider(tank.id));
       final livestock = ref.watch(livestockProvider(tank.id));
@@ -158,7 +161,7 @@ class _ComparisonDataView extends ConsumerWidget {
         child: AppErrorState(
           message: "Couldn't load comparison data. Tap to try again.",
           onRetry: () {
-            for (final tank in selectedTanks) {
+            for (final tank in allTanks) {
               ref.invalidate(allLogsProvider(tank.id));
               ref.invalidate(tasksProvider(tank.id));
               ref.invalidate(livestockProvider(tank.id));
@@ -169,10 +172,17 @@ class _ComparisonDataView extends ConsumerWidget {
       );
     }
 
-    if (isLoading || summaries.length < selectedTanks.length) {
+    if (isLoading || summaries.length < allTanks.length) {
       return const Center(child: BubbleLoader(message: 'Comparing tanks...'));
     }
 
+    final summariesByTankId = {
+      for (final summary in summaries) summary.tank.id: summary,
+    };
+    final selectedSummaries = selectedTanks
+        .map((tank) => summariesByTankId[tank.id])
+        .whereType<TankComparisonSummary>()
+        .toList();
     final needsAttention = TankComparisonService.chooseNeedsAttentionFirst(
       summaries,
     );
@@ -180,42 +190,44 @@ class _ComparisonDataView extends ConsumerWidget {
     final items = <Widget>[
       selectors,
       const SizedBox(height: AppSpacing.lg),
+      if (summaries.length > 2) _AllTanksPriorityCard(summaries: summaries),
+      if (summaries.length > 2) const SizedBox(height: AppSpacing.md),
       if (needsAttention != null) _InsightCard(summary: needsAttention),
       const SizedBox(height: AppSpacing.md),
-      ...summaries.map((summary) => _SummaryCard(summary: summary)),
+      ...selectedSummaries.map((summary) => _SummaryCard(summary: summary)),
       const SizedBox(height: AppSpacing.sm),
       _ComparisonSection(
         title: 'Water',
         icon: Icons.water_drop,
-        children: summaries
+        children: selectedSummaries
             .map((summary) => _WaterSummary(summary: summary))
             .toList(),
       ),
       _ComparisonSection(
         title: 'Care rhythm',
         icon: Icons.event_available,
-        children: summaries
+        children: selectedSummaries
             .map((summary) => _CareSummary(summary: summary))
             .toList(),
       ),
       _ComparisonSection(
         title: 'Livestock & stocking',
         icon: Icons.set_meal,
-        children: summaries
+        children: selectedSummaries
             .map((summary) => _LivestockSummary(summary: summary))
             .toList(),
       ),
       _ComparisonSection(
         title: 'Equipment',
         icon: Icons.filter_alt,
-        children: summaries
+        children: selectedSummaries
             .map((summary) => _EquipmentSummary(summary: summary))
             .toList(),
       ),
       _ComparisonSection(
         title: 'Activity',
         icon: Icons.history,
-        children: summaries
+        children: selectedSummaries
             .map((summary) => _ActivitySummary(summary: summary))
             .toList(),
       ),
@@ -226,6 +238,73 @@ class _ComparisonDataView extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       itemBuilder: (context, index) => items[index],
       itemCount: items.length,
+    );
+  }
+}
+
+class _AllTanksPriorityCard extends StatelessWidget {
+  const _AllTanksPriorityCard({required this.summaries});
+
+  final List<TankComparisonSummary> summaries;
+
+  @override
+  Widget build(BuildContext context) {
+    final sorted = [...summaries]
+      ..sort((a, b) => b.attentionScore.compareTo(a.attentionScore));
+    final top = sorted.first;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.dashboard_customize, color: AppColors.primary),
+                const SizedBox(width: AppSpacing.sm),
+                Text('All tanks at a glance', style: AppTypography.labelLarge),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Highest priority: ${top.tank.name}',
+              style: AppTypography.headlineSmall,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(top.primaryReason, style: AppTypography.bodyMedium),
+            const SizedBox(height: AppSpacing.md),
+            ...sorted.take(5).map((summary) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _HealthChip(summary: summary),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            summary.tank.name,
+                            style: AppTypography.labelLarge,
+                          ),
+                          const SizedBox(height: AppSpacing.xs2),
+                          Text(
+                            summary.primaryReason,
+                            style: AppTypography.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
     );
   }
 }

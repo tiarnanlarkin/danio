@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1517 tests.
+- `flutter test`: pass, 1518 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -871,6 +871,18 @@ CL-P1-006J Cost Tracker currency/settings polish:
 - Focused coverage verifies opening settings with a custom saved `CHF`
   currency does not trigger a dropdown assertion and keeps `CHF` selectable.
 
+CL-P1-007A Multi-tank priority strip:
+
+- Compare Tanks now evaluates all tanks for the priority insight, not only the
+  selected two-tank detail pair.
+- When three or more tanks exist, a visible `All tanks at a glance` card shows
+  the highest-priority tank and compact reasons for the top tanks.
+- The detailed Water, Care rhythm, Livestock, Equipment, and Activity sections
+  still compare the selected pair, preserving the existing focused comparison
+  workflow.
+- Focused coverage verifies an urgent unselected third tank remains visible as
+  `Highest priority: Tank C`.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -915,6 +927,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Diagnosis Practice, Compatibility Checks, Setup Planning, and Emergency
   Decisions questions, plus tank-context recommendation hints in Practice Hub.
   Richer persisted tool-result context belongs with CL-P1-006 guided tools.
+- Multi-tank comparison now has a first all-tanks priority overview. Remaining
+  multi-tank work is broader all-tanks timeline/history, switching polish, and
+  Android phone/tablet QA.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -923,10 +938,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P1-006 guided tools while Android transport is reserved by other
+Continue CL-P1-007/CL-P1-008 local depth while Android transport is reserved by other
 sessions:
 
-- Convert the remaining high-value calculator/workshop flows into guided
-  workflows with explanation, warnings, save/apply, and confirmation.
+- Expand multi-tank and timeline/history surfaces so users can understand care
+  priorities and tank history without opening every tank one by one.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

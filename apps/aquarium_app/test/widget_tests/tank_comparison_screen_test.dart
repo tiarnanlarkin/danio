@@ -239,6 +239,55 @@ void main() {
       expect(find.text('Activity'), findsOneWidget);
     });
 
+    testWidgets('surfaces urgent unselected tanks in all-tanks overview', (
+      tester,
+    ) async {
+      suppressErrors();
+      final tankA = _tank('t1', 'Tank A');
+      final tankB = _tank('t2', 'Tank B');
+      final tankC = _tank('t3', 'Tank C');
+      final now = DateTime.now();
+
+      await tester.pumpWidget(
+        _wrap(
+          tanks: [tankA, tankB, tankC],
+          logs: {
+            tankA.id: [
+              _waterChange('wc-a', tankA.id),
+              _waterTest('wt-a', tankA.id, nitrate: 10),
+            ],
+            tankB.id: [
+              _waterChange('wc-b', tankB.id),
+              _waterTest('wt-b', tankB.id, nitrate: 10),
+            ],
+            tankC.id: [
+              _waterChange('wc-c', tankC.id, daysAgo: 21),
+              _waterTest('wt-c', tankC.id, nitrate: 80),
+            ],
+          },
+          tasks: {
+            tankC.id: [
+              _task(
+                'task-c',
+                tankC.id,
+                'Water change',
+                now.subtract(const Duration(days: 2)),
+              ),
+            ],
+          },
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('All tanks at a glance'), findsOneWidget);
+      expect(find.text('Highest priority: Tank C'), findsOneWidget);
+      expect(
+        find.textContaining('Water parameters need attention'),
+        findsWidgets,
+      );
+    });
+
     testWidgets('shows honest sparse-data states without inventing metrics', (
       tester,
     ) async {
