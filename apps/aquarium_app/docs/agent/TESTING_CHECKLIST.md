@@ -88,6 +88,30 @@ apps/aquarium_app/docs/qa/screenshots/<date-or-branch>/<slice>/
 - Include enough context to reproduce the state.
 - Do not commit temporary screenshots unless they are useful QA evidence.
 
+## Design And Visual Baseline Checks
+
+Use `docs/design/BASELINES.md` to choose the minimum screenshot or golden-test
+set for broad visual work and `docs/design/VISUAL_QA_CHECKLIST.md` for local
+pass/fail criteria.
+
+For focused Flutter golden checks:
+
+```powershell
+flutter test test/golden_tests/mc_card_golden_test.dart
+flutter test test/golden_tests/empty_room_scene_golden_test.dart
+```
+
+Regenerate ignored local golden references only when intentionally reviewing
+visual output:
+
+```powershell
+flutter test --update-goldens test/golden_tests/
+```
+
+For app-wide screenshot evidence, reuse committed local screenshot folders such
+as `docs/qa/screenshots/whole-app-map-2026-05-18/` and capture new local
+evidence only when device ownership is clear.
+
 ## Product Truth Checklist
 
 Before committing product or docs changes, confirm:

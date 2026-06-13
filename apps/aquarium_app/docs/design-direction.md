@@ -76,3 +76,17 @@ When generating replacement assets:
 - **Format:** WebP for illustrations, PNG for sprites
 - **Naming:** Match existing filename exactly (drop-in replacement)
 - **Validation:** Must pass art bible comparison before committing
+
+## Codex Design Autonomy Baseline
+
+- Start visual work from this file, `docs/theme-system.md`, a current app
+  screenshot, a Flutter golden, or a selected mockup/Figma frame.
+- Use Product Design, Figma, screenshot, Playwright, Android, and Flutter
+  golden workflows only within no-cost local limits.
+- Treat Figma as reference-only unless a free edit-capable seat is confirmed in
+  the active session. Do not use Figma Code Connect or paid Figma features.
+- For app UI changes, compare the changed surface against
+  `docs/design/BASELINES.md` and record evidence in the active QA or agent
+  notes.
+- Do not promote generated or downloaded visual assets unless ownership,
+  license, style fit, and review status are explicit.

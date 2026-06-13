@@ -70,6 +70,22 @@ Run Flutter/doc truth tests when docs assert current product behavior.
 - Temporary screenshots can stay in a temp folder if they are only for inspection.
 - Do not upload screenshots to external services unless the user explicitly asks.
 
+## Design And Visual QA
+
+- Before material UI, layout, illustration, icon, chart, or visual polish work,
+  ground the change in a current screenshot, Flutter golden, mockup, Figma
+  frame, or existing app surface.
+- Use `apps/aquarium_app/docs/design-direction.md`,
+  `apps/aquarium_app/docs/theme-system.md`, and the setup docs under
+  `apps/aquarium_app/docs/design/` for local design decisions.
+- Figma and Product Design skills may be used only within no-cost access. The
+  current Figma setup may be reference-only; do not use Figma Code Connect,
+  paid Figma features, paid assets, or cloud visual QA.
+- Preserve Danio's local-first product honesty: no fake AI, fake premium, fake
+  social, fake cloud sync, or care claims that imply veterinary advice.
+- For visual changes, run the applicable Flutter/golden/screenshot checks from
+  `apps/aquarium_app/docs/design/VISUAL_QA_CHECKLIST.md`.
+
 ## Documentation References
 
 - Codex setup: `apps/aquarium_app/docs/agent/CODEX_SETUP.md`

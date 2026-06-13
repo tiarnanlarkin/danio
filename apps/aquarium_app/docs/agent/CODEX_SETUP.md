@@ -9,6 +9,7 @@ This setup is intentionally no-cost and local-first. It is for building, testing
 - Local screenshots and local log capture.
 - Local-only Maestro CLI if already installed or if the user explicitly approves a local install.
 - Installed global Codex skills such as Playwright, screenshots, OpenAI docs lookup, and security review skills, provided they do not call paid services or require external accounts.
+- Installed no-cost design skills such as Figma, Product Design workflows, Playwright, and screenshots, provided they stay local/reference-only and do not require paid seats, secrets, uploads, or external accounts.
 
 ## What Agents Must Not Use
 
@@ -108,6 +109,25 @@ Acceptable local screenshot options:
 - Codex screenshot skill when it only captures local UI and does not upload to a paid service.
 
 Do not use external screenshot hosting.
+
+## Design Skills And Baselines
+
+Use these docs before UI, illustration, chart, or visual polish work:
+
+- `docs/design-direction.md`
+- `docs/theme-system.md`
+- `docs/design/DESIGN_SYSTEM.md`
+- `docs/design/BASELINES.md`
+- `docs/design/VISUAL_QA_CHECKLIST.md`
+
+Figma MCP may be useful for reference or no-cost exploration, but the current
+seat may be read/reference-only. Do not use Figma Code Connect, paid Figma
+features, paid stock assets, cloud visual testing, or account-backed design
+services.
+
+Flutter golden tests are local verification aids. Their reference images are
+platform-dependent and ignored by this repo, so use them for focused local
+regression checks rather than cross-machine visual truth.
 
 ## Optional Local-Only Maestro CLI Notes
 
