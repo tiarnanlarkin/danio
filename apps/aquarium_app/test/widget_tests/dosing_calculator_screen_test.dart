@@ -3,18 +3,56 @@
 // Run: flutter test test/widget_tests/dosing_calculator_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/models.dart';
+import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/dosing_calculator_screen.dart';
+import 'package:danio/services/storage_service.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({double? tankVolumeLitres}) {
-  return MaterialApp(
-    home: DosingCalculatorScreen(tankVolumeLitres: tankVolumeLitres),
+final _now = DateTime.now();
+
+Tank _makeTank({String id = 'tank-1', double volumeLitres = 100}) => Tank(
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: volumeLitres,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+Widget _wrap({
+  double? tankVolumeLitres,
+  String? tankId,
+  InMemoryStorageService? storage,
+}) {
+  return ProviderScope(
+    overrides: [
+      if (storage != null) storageServiceProvider.overrideWithValue(storage),
+    ],
+    child: MaterialApp(
+      home: DosingCalculatorScreen(
+        tankId: tankId,
+        tankVolumeLitres: tankVolumeLitres,
+      ),
+    ),
   );
+}
+
+Future<void> _clearStorage() async {
+  final storage = InMemoryStorageService();
+  final tanks = await storage.getAllTanks();
+  await storage.deleteAllTanks(tanks.map((tank) => tank.id).toList());
 }
 
 Finder _productPreset(String name) {
@@ -40,7 +78,13 @@ Future<void> _tapProductPreset(WidgetTester tester, String name) async {
 // ---------------------------------------------------------------------------
 
 void main() {
-  group('DosingCalculatorScreen — rendering', () {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
+    await _clearStorage();
+  });
+
+  group('DosingCalculatorScreen - rendering', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
@@ -106,7 +150,7 @@ void main() {
     });
   });
 
-  group('DosingCalculatorScreen — calculation', () {
+  group('DosingCalculatorScreen - calculation', () {
     testWidgets('entering volume shows result card', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
@@ -184,6 +228,40 @@ void main() {
 
       expect(find.text('20.00 ml'), findsOneWidget);
       expect(find.text('Total dose for your tank'), findsOneWidget);
+    });
+
+    testWidgets('guided action opens an observation log with dose summary', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+
+      await tester.pumpWidget(
+        _wrap(tankId: 'tank-1', tankVolumeLitres: 100, storage: storage),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.widgetWithText(TextFormField, 'Amount'), '2');
+      await tester.pump();
+
+      await tester.scrollUntilVisible(
+        find.text('Log this dosing note'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Log this dosing note'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddLogScreen), findsOneWidget);
+      expect(find.text('Observation'), findsWidgets);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is TextFormField &&
+              (widget.initialValue ?? '').contains('20.00 ml'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('zero volume shows validation guidance instead of a dose', (

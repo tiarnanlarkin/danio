@@ -37,6 +37,7 @@ class AddLogScreen extends ConsumerStatefulWidget {
   final LogType initialType;
   final LogEntry? existingLog;
   final int? suggestedWaterChangePercent;
+  final String? initialNotes;
 
   const AddLogScreen({
     super.key,
@@ -44,6 +45,7 @@ class AddLogScreen extends ConsumerStatefulWidget {
     this.initialType = LogType.waterTest,
     this.existingLog,
     this.suggestedWaterChangePercent,
+    this.initialNotes,
   });
 
   @override
@@ -157,6 +159,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
     } else {
       _type = widget.initialType;
+      _notes = widget.initialNotes?.trim() ?? '';
       if (_type == LogType.waterChange) {
         final suggested = widget.suggestedWaterChangePercent;
         if (suggested != null && suggested > 0 && suggested <= 100) {

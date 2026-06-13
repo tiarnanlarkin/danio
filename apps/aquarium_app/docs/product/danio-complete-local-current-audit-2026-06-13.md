@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1501 tests.
+- `flutter test`: pass, 1504 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -770,6 +770,20 @@ CL-P1-006B Tank Volume guided workflow:
   existing tank providers, and shows local success/error feedback.
 - Focused coverage verifies direct calculator persistence and Workshop handoff
   into the contextual calculator.
+
+CL-P1-006C Dosing guided workflow:
+
+- The Dosing Calculator can now launch with tank context from Workshop,
+  including the selected tank ID and tank volume.
+- Valid liquid-product dose results now include a guided next-step card with a
+  `Log this dosing note` action.
+- The guided action opens `AddLogScreen` as an observation with a prefilled dose
+  summary covering total dose, tank volume, dose rate, and a product-label
+  reminder.
+- `AddLogScreen` now supports `initialNotes` for observation-style handoffs
+  while still using the existing validation and log-save path.
+- Focused coverage verifies AddLog initial-note persistence, direct Dosing
+  handoff into AddLog, and Workshop Dosing tank-volume prefill.
 
 Current Android device state:
 

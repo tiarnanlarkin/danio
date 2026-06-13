@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../models/log_entry.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
+import 'add_log_screen.dart';
 
 class DosingCalculatorScreen extends StatefulWidget {
+  final String? tankId;
   final double? tankVolumeLitres;
 
-  const DosingCalculatorScreen({super.key, this.tankVolumeLitres});
+  const DosingCalculatorScreen({super.key, this.tankId, this.tankVolumeLitres});
 
   @override
   State<DosingCalculatorScreen> createState() => _DosingCalculatorScreenState();
@@ -57,6 +61,37 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
     if (volume == null || dosePer == null) return null;
     if (volume <= 0 || dosePer <= 0) return null;
     return (volume / _dosePerLitres) * dosePer;
+  }
+
+  bool get _canLogDose => widget.tankId != null && _totalDose != null;
+
+  String get _doseSummary {
+    final totalDose = _totalDose;
+    final tankVolume = _tankVolume;
+    final dosePer = _dosePer;
+    if (totalDose == null || tankVolume == null || dosePer == null) {
+      return '';
+    }
+
+    return 'Dosing calculation: ${totalDose.toStringAsFixed(2)} ml.\n'
+        'Tank volume: ${tankVolume.toStringAsFixed(0)} L.\n'
+        'Dose rate: ${dosePer.toStringAsFixed(1)} ml per ${_dosePerLitres.toStringAsFixed(0)} L.\n'
+        'Check the product label before adding anything to the tank.';
+  }
+
+  void _logDosingNote() {
+    final tankId = widget.tankId;
+    if (tankId == null || _totalDose == null) return;
+
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(
+        tankId: tankId,
+        initialType: LogType.observation,
+        initialNotes: _doseSummary,
+      ),
+      rootNavigator: true,
+    );
   }
 
   @override
@@ -269,6 +304,52 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                   ),
 
                   const SizedBox(height: AppSpacing.lg),
+
+                  if (_canLogDose) ...[
+                    AppCard(
+                      backgroundColor: AppOverlays.info10,
+                      padding: AppCardPadding.standard,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.route_outlined,
+                                color: AppColors.info,
+                                size: AppIconSizes.sm,
+                              ),
+                              const SizedBox(width: AppSpacing.sm2),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Guided next step',
+                                      style: AppTypography.labelLarge,
+                                    ),
+                                    const SizedBox(height: AppSpacing.xs),
+                                    Text(
+                                      'Save this dose as a tank journal note so you can see what was added later.',
+                                      style: AppTypography.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          FilledButton.icon(
+                            onPressed: _logDosingNote,
+                            icon: const Icon(Icons.edit_note_rounded),
+                            label: const Text('Log this dosing note'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                  ],
 
                   // Common liquid products
                   Text(

@@ -118,6 +118,51 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
     );
   }
 
+  /// Open Dosing with tank context when it is available.
+  Future<void> _openDosingCalculator() async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      NavigationThrottle.push(
+        context,
+        const DosingCalculatorScreen(),
+        rootNavigator: true,
+      );
+      return;
+    }
+
+    Tank? tank;
+    if (tanks.length == 1) {
+      tank = tanks.first;
+    } else {
+      tank = await showDialog<Tank>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: const Text('Choose a Tank'),
+          children: tanks
+              .map(
+                (tank) => SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, tank),
+                  child: Text(tank.name),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (tank == null || !mounted) return;
+    NavigationThrottle.push(
+      context,
+      DosingCalculatorScreen(
+        tankId: tank.id,
+        tankVolumeLitres: tank.volumeLitres,
+      ),
+      rootNavigator: true,
+    );
+  }
+
   /// Pick a tank, then navigate to the Cycling Assistant for that tank.
   Future<void> _openCyclingAssistant() async {
     final tanks = await ref.read(tanksProvider.future);
@@ -251,11 +296,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       title: 'Dosing',
                       subtitle: 'Fertilizer calculator',
                       color: AppColors.success,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const DosingCalculatorScreen(),
-                        rootNavigator: true,
-                      ),
+                      onTap: _openDosingCalculator,
                     ),
                     _ToolCard(
                       icon: Icons.swap_horiz,

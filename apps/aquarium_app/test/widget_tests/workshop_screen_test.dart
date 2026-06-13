@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/models.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/dosing_calculator_screen.dart';
 import 'package:danio/screens/tank_volume_calculator_screen.dart';
 import 'package:danio/screens/water_change_calculator_screen.dart';
 import 'package:danio/screens/workshop_screen.dart';
@@ -138,6 +139,30 @@ void main() {
 
       final tank = await storage.getTank('tank-1');
       expect(tank?.volumeLitres, 54.0);
+    });
+
+    testWidgets('opens Dosing with current tank context', (tester) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(volumeLitres: 72));
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.tap(find.text('Dosing'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DosingCalculatorScreen), findsOneWidget);
+      expect(find.widgetWithText(TextFormField, '72'), findsOneWidget);
+
+      await tester.enterText(find.widgetWithText(TextFormField, 'Amount'), '2');
+      await tester.pump();
+      await tester.scrollUntilVisible(
+        find.text('Log this dosing note'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      expect(find.text('Log this dosing note'), findsOneWidget);
     });
 
     testWidgets('tool cards expose one concise screen reader label', (

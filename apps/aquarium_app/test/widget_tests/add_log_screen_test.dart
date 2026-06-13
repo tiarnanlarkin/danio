@@ -37,6 +37,7 @@ Widget _wrap({
   LogType type = LogType.waterTest,
   String tankId = 'tank-1',
   int? suggestedWaterChangePercent,
+  String? initialNotes,
 }) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
@@ -46,6 +47,7 @@ Widget _wrap({
         tankId: tankId,
         initialType: type,
         suggestedWaterChangePercent: suggestedWaterChangePercent,
+        initialNotes: initialNotes,
       ),
     ),
   );
@@ -139,7 +141,7 @@ void main() {
     NavigationThrottle.reset();
   });
 
-  group('AddLogScreen — renders', () {
+  group('AddLogScreen - renders', () {
     testWidgets('renders without throwing', (tester) async {
       final svc = InMemoryStorageService();
       await svc.saveTank(_makeTank());
@@ -193,7 +195,7 @@ void main() {
       await _advance(tester);
       await tester.tap(find.text('Water Change'));
       await tester.pump(const Duration(milliseconds: 300));
-      // No crash — chip tapped successfully
+      // No crash - chip tapped successfully
       expect(find.text('Water Change'), findsWidgets);
     });
 
@@ -363,6 +365,35 @@ void main() {
       expect(logs, hasLength(1));
       expect(logs.single.type, LogType.waterChange);
       expect(logs.single.waterChangePercent, 57);
+    });
+
+    testWidgets('prefills initial observation notes before saving', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'initial-notes-tank';
+      const note = 'Dosing calculation: 20.00 ml for this tank.';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(
+        _wrap(
+          storage: svc,
+          tankId: tankId,
+          type: LogType.observation,
+          initialNotes: note,
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.widgetWithText(TextFormField, note), findsOneWidget);
+
+      await tester.tap(find.text('Save'));
+      await _advance(tester);
+
+      final logs = await svc.getLogsForTank(tankId);
+      expect(logs, hasLength(1));
+      expect(logs.single.type, LogType.observation);
+      expect(logs.single.notes, note);
     });
   });
 
