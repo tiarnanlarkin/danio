@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:danio/models/daily_goal.dart';
+import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/models/task.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
@@ -12,11 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap({required DailyGoal dailyGoal, required List<Task> tasks}) {
+Widget _wrap({
+  required DailyGoal dailyGoal,
+  required List<Task> tasks,
+  List<LogEntry>? logs,
+}) {
+  final resolvedLogs = logs ?? [_waterTest(), _feeding()];
   return ProviderScope(
     overrides: [
       todaysDailyGoalProvider.overrideWithValue(dailyGoal),
       tasksProvider('tank-1').overrideWith((ref) async => tasks),
+      logsProvider('tank-1').overrideWith((ref) async => resolvedLogs),
       spacedRepetitionProvider.overrideWith(
         (ref) => _FakeSrNotifier(_reviewStats()),
       ),
@@ -27,11 +34,13 @@ Widget _wrap({required DailyGoal dailyGoal, required List<Task> tasks}) {
   );
 }
 
-Widget _wrapEmptyBoard({required ReviewStats stats}) {
+Widget _wrapEmptyBoard({required ReviewStats stats, List<LogEntry>? logs}) {
+  final resolvedLogs = logs ?? [_waterTest(), _feeding()];
   return ProviderScope(
     overrides: [
       todaysDailyGoalProvider.overrideWithValue(_completedGoal()),
       tasksProvider('tank-1').overrideWith((ref) async => const []),
+      logsProvider('tank-1').overrideWith((ref) async => resolvedLogs),
       spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier(stats)),
     ],
     child: const MaterialApp(
@@ -87,6 +96,29 @@ Task _task() {
   );
 }
 
+LogEntry _waterTest({double? ammonia = 0, double? nitrite = 0}) {
+  final now = DateTime.now();
+  return LogEntry(
+    id: 'water-test',
+    tankId: 'tank-1',
+    type: LogType.waterTest,
+    timestamp: now,
+    createdAt: now,
+    waterTest: WaterTestResults(ammonia: ammonia, nitrite: nitrite),
+  );
+}
+
+LogEntry _feeding() {
+  final now = DateTime.now();
+  return LogEntry(
+    id: 'feeding',
+    tankId: 'tank-1',
+    type: LogType.feeding,
+    timestamp: now,
+    createdAt: now,
+  );
+}
+
 void main() {
   test('Today board source keeps visible separators ASCII-safe', () {
     final source = File(
@@ -121,6 +153,31 @@ void main() {
 
     expect(find.byType(TasksScreen), findsOneWidget);
     expect(find.text('Tasks'), findsOneWidget);
+  });
+
+  testWidgets('shows unsafe water priority above tasks', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        dailyGoal: _completedGoal(),
+        tasks: [_task()],
+        logs: [_waterTest(ammonia: 0.5), _feeding()],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Unsafe water detected'), findsOneWidget);
+    expect(find.text('Water Change'), findsOneWidget);
+  });
+
+  testWidgets('shows water-test priority when no water tests are logged', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrapEmptyBoard(stats: _reviewStats(), logs: [_feeding()]),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Log a water test'), findsOneWidget);
   });
 
   testWidgets('empty board due-review state uses quiet action copy', (

@@ -8,11 +8,14 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../models/log_entry.dart';
 import '../../../models/task.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../providers/spaced_repetition_provider.dart';
 import '../../../providers/user_profile_provider.dart';
+import '../../../services/tank_care_priority_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../add_log_screen.dart';
 import '../../tasks_screen.dart';
 import '../../../../screens/tab_navigator.dart';
 
@@ -29,6 +32,7 @@ class TodayBoardCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(tasksProvider(tankId));
+    final logsAsync = ref.watch(logsProvider(tankId));
 
     return tasksAsync.when(
       loading: () => const SizedBox.shrink(),
@@ -52,6 +56,11 @@ class TodayBoardCard extends ConsumerWidget {
         ),
       ),
       data: (tasks) {
+        final logs = logsAsync.valueOrNull;
+        final priority = logs == null
+            ? null
+            : TankCarePriorityService.evaluate(tasks: tasks, logs: logs);
+
         // Build ordered list: overdue first, then today, then upcoming
         final overdue = tasks.where((t) => t.isOverdue && t.isEnabled).toList();
         final today = tasks
@@ -77,6 +86,10 @@ class TodayBoardCard extends ConsumerWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (priority != null) ...[
+                _CarePriorityStrip(priority: priority, tankId: tankId),
+                const SizedBox(height: AppSpacing.xs),
+              ],
               _buildEmptyState(context, ref),
               const SizedBox(height: AppSpacing.xs),
               const _DailyGoalBar(),
@@ -87,6 +100,10 @@ class TodayBoardCard extends ConsumerWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (priority != null) ...[
+              _CarePriorityStrip(priority: priority, tankId: tankId),
+              const SizedBox(height: AppSpacing.xs),
+            ],
             _TodayBoardContent(tankId: tankId, tasks: combined),
             const SizedBox(height: AppSpacing.xs),
             const _DailyGoalBar(),
@@ -159,6 +176,142 @@ class TodayBoardCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class _CarePriorityStrip extends StatelessWidget {
+  final TankCarePriority priority;
+  final String tankId;
+
+  const _CarePriorityStrip({required this.priority, required this.tankId});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _accentColor(context);
+    final icon = _icon;
+    final isActionable = priority.action != TankCarePriorityAction.none;
+
+    return Semantics(
+      label: priority.semanticsLabel,
+      button: isActionable,
+      child: GestureDetector(
+        onTap: isActionable ? () => _handleTap(context) : null,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: AppOverlays.white88,
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(color: color.withAlpha(70)),
+            boxShadow: AppShadows.soft,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: color.withAlpha(34),
+                  borderRadius: AppRadius.smallRadius,
+                ),
+                child: Icon(icon, size: 17, color: color),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      priority.title,
+                      style: AppTypography.labelMedium.copyWith(
+                        color: priority.level == TankCarePriorityLevel.emergency
+                            ? AppColors.error
+                            : context.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacing.xs2),
+                    Text(
+                      priority.subtitle,
+                      style: AppTypography.labelSmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              if (isActionable) ...[
+                const SizedBox(width: AppSpacing.xs),
+                Icon(Icons.arrow_forward, size: 16, color: color),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconData get _icon {
+    switch (priority.action) {
+      case TankCarePriorityAction.waterChange:
+        return Icons.water_drop_rounded;
+      case TankCarePriorityAction.waterTest:
+        return Icons.science_rounded;
+      case TankCarePriorityAction.feeding:
+        return Icons.restaurant_rounded;
+      case TankCarePriorityAction.tasks:
+        return Icons.checklist_rounded;
+      case TankCarePriorityAction.none:
+        return Icons.check_circle_rounded;
+    }
+  }
+
+  Color _accentColor(BuildContext context) {
+    switch (priority.level) {
+      case TankCarePriorityLevel.emergency:
+        return AppColors.error;
+      case TankCarePriorityLevel.due:
+        return AppColors.warning;
+      case TankCarePriorityLevel.suggested:
+        return AppColors.primary;
+      case TankCarePriorityLevel.clear:
+        return AppColors.success;
+    }
+  }
+
+  void _handleTap(BuildContext context) {
+    Widget? destination;
+    switch (priority.action) {
+      case TankCarePriorityAction.waterChange:
+        destination = AddLogScreen(
+          tankId: tankId,
+          initialType: LogType.waterChange,
+        );
+      case TankCarePriorityAction.waterTest:
+        destination = AddLogScreen(
+          tankId: tankId,
+          initialType: LogType.waterTest,
+        );
+      case TankCarePriorityAction.feeding:
+        destination = AddLogScreen(
+          tankId: tankId,
+          initialType: LogType.feeding,
+        );
+      case TankCarePriorityAction.tasks:
+        destination = TasksScreen(tankId: tankId);
+      case TankCarePriorityAction.none:
+        destination = null;
+    }
+
+    if (destination == null) return;
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => destination!));
   }
 }
 
