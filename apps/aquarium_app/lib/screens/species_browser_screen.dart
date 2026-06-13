@@ -537,6 +537,10 @@ class _SpeciesDetailSheet extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg2),
 
+            _CareActionsCard(species: species),
+
+            const SizedBox(height: AppSpacing.lg2),
+
             // Parameters
             Text('Ideal Parameters', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm2),
@@ -636,6 +640,102 @@ class _SpeciesDetailSheet extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CareActionsCard extends StatelessWidget {
+  final SpeciesInfo species;
+
+  const _CareActionsCard({required this.species});
+
+  @override
+  Widget build(BuildContext context) {
+    final actions = <_CareAction>[
+      _CareAction(
+        icon: Icons.home_work_outlined,
+        text:
+            'Use a tank of at least ${species.minTankLitres.toStringAsFixed(0)} L.',
+      ),
+      _CareAction(
+        icon: Icons.groups_outlined,
+        text: species.minSchoolSize > 1
+            ? 'Plan a group of ${species.minSchoolSize} or more.'
+            : 'Can be planned as a single fish when the tank setup fits.',
+      ),
+      _CareAction(
+        icon: Icons.thermostat_outlined,
+        text:
+            'Keep water around ${_format(species.minTempC)}-${_format(species.maxTempC)} C and pH ${_formatPh(species.minPh)}-${_formatPh(species.maxPh)}.',
+      ),
+      _CareAction(
+        icon: Icons.fact_check_outlined,
+        text: species.avoidWith.isNotEmpty
+            ? 'Check the avoid list before adding tankmates.'
+            : 'Check adult size and temperament before adding tankmates.',
+      ),
+      if (species.medicationWarnings.isNotEmpty)
+        const _CareAction(
+          icon: Icons.medical_services_outlined,
+          text: 'Review treatment warnings before medicating.',
+        ),
+    ];
+
+    return AppCard(
+      padding: AppCardPadding.compact,
+      backgroundColor: AppOverlays.primary10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.checklist_outlined, color: AppColors.primary),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Care Actions', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          ...actions.map(
+            (action) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _CareActionRow(action: action),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _format(double value) {
+    return value == value.roundToDouble()
+        ? value.toStringAsFixed(0)
+        : value.toStringAsFixed(1);
+  }
+
+  String _formatPh(double value) => value.toStringAsFixed(1);
+}
+
+class _CareAction {
+  final IconData icon;
+  final String text;
+
+  const _CareAction({required this.icon, required this.text});
+}
+
+class _CareActionRow extends StatelessWidget {
+  final _CareAction action;
+
+  const _CareActionRow({required this.action});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(action.icon, size: 18, color: AppColors.primary),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(child: Text(action.text, style: AppTypography.bodyMedium)),
+      ],
     );
   }
 }

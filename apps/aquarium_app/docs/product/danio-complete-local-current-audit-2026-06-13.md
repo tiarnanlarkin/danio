@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1444 tests.
+- `flutter test`: pass, 1445 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -425,6 +425,14 @@ CL-P1-003A Missing species request path:
 - The request dialog keeps the local build honest: it shows the searched name,
   tells users what details to email, provides the contact address, and clarifies
   that Danio does not send anything automatically.
+
+CL-P1-003B Species care actions:
+
+- Fish species detail sheets now include a Care Actions card derived from
+  existing species data: minimum tank size, group size, temperature/pH range,
+  compatibility checks, and treatment-warning review when relevant.
+- This makes species pages more actionable without adding unverified new
+  species facts or pretending add-to-tank/reminder persistence exists yet.
 
 Current Android device state:
 

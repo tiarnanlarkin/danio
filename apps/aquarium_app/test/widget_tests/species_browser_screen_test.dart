@@ -88,6 +88,26 @@ void main() {
       expect(find.byType(EmergencyGuideScreen), findsOneWidget);
     });
 
+    testWidgets('species detail shows actionable care plan', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Care Actions'), findsOneWidget);
+      expect(find.text('Use a tank of at least 40 L.'), findsOneWidget);
+      expect(find.text('Plan a group of 6 or more.'), findsOneWidget);
+      expect(
+        find.text('Keep water around 20-26 C and pH 6.0-7.0.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Check the avoid list before adding tankmates.'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets(
       'empty search state uses iconography instead of raw emoji text',
       (tester) async {
