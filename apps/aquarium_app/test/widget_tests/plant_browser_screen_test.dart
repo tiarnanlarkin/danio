@@ -102,6 +102,21 @@ void main() {
       );
     });
 
+    testWidgets('plant detail shows source trail', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Anubias Barteri'));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Source trail'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Source trail'), findsOneWidget);
+      expect(find.text('Tropica plant database'), findsOneWidget);
+      expect(find.text('INJAF planted aquarium guide'), findsOneWidget);
+    });
+
     testWidgets('plant detail saves plant to wishlist', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

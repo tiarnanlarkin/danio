@@ -161,6 +161,22 @@ void main() {
       );
     });
 
+    testWidgets('species detail shows source trail', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Source trail'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Source trail'), findsOneWidget);
+      expect(find.text('FishBase'), findsOneWidget);
+      expect(find.text('Merck Veterinary Manual'), findsOneWidget);
+      expect(find.text('RSPCA fish welfare advice'), findsOneWidget);
+    });
+
     testWidgets('species detail opens prefilled stocking calculator', (
       tester,
     ) async {

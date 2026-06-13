@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1454 tests.
+- `flutter test`: pass, 1456 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -486,6 +486,16 @@ CL-P1-003I Species care task creation:
 - The saved task records minimum group, minimum tank, temperature, pH, and
   tankmate/treatment cautions when present, so species guidance can surface in
   Tank, Today, and Tasks without adding a separate reminder silo.
+
+CL-P1-003J Care source trails:
+
+- Fish species and plant detail sheets now show a subtle Source trail card with
+  broad references behind Danio's care guidance.
+- Fish sources include FishBase, Merck Veterinary Manual, and RSPCA fish
+  welfare advice. Plant sources include Tropica's plant database and INJAF's
+  planted aquarium beginner guide.
+- The card opens sources externally and avoids claiming every local field has
+  been individually source-audited.
 
 Current Android device state:
 

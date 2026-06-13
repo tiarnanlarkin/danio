@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/care_sources.dart';
 import '../data/species_database.dart';
 import '../models/tank.dart';
 import '../models/task.dart';
@@ -19,6 +20,7 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../widgets/source_trail_card.dart';
 import 'emergency_guide_screen.dart';
 import 'livestock/livestock_add_dialog.dart';
 import 'stocking_calculator_screen.dart';
@@ -648,6 +650,9 @@ class _SpeciesDetailSheet extends StatelessWidget {
                 ),
               ),
             ],
+
+            const SizedBox(height: AppSpacing.lg2),
+            const SourceTrailCard(sources: fishCareSources),
 
             const SizedBox(height: AppSpacing.xl),
           ],

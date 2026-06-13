@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../utils/app_constants.dart';
 import '../utils/debouncer.dart';
+import '../data/care_sources.dart';
 import '../data/plant_database.dart';
 import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
@@ -14,6 +15,7 @@ import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/danio_snack_bar.dart';
+import '../widgets/source_trail_card.dart';
 
 class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});
@@ -496,6 +498,9 @@ class _PlantDetailSheet extends StatelessWidget {
                 ),
               ],
             ),
+
+            const SizedBox(height: AppSpacing.lg2),
+            const SourceTrailCard(sources: plantCareSources),
 
             const SizedBox(height: AppSpacing.xl),
           ],
