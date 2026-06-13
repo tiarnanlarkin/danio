@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1488 tests.
+- `flutter test`: pass, 1491 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -716,6 +716,18 @@ CL-P1-005E Emergency Decisions drill questions:
 - Focused coverage verifies immediate unsafe-water triage, power outage
   oxygen/temperature handling, and the general emergency fallback.
 
+CL-P1-005F Setup Planning drill questions:
+
+- Setup Planning now resolves related equipment/planted cards into scenario
+  questions instead of generic recall.
+- Covered scenarios include filter flow and bioload planning, lighting and
+  photoperiod planning, first-tank equipment/checklist planning, and general
+  setup planning before livestock is bought.
+- The question copy reinforces adult size, water needs, equipment, layout,
+  cycling, stocking pace, and maintainable care routines.
+- Focused coverage verifies filter planning, planted lighting, first-tank
+  checklist, and general setup fallback scenarios.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -757,9 +769,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   interactions across the catalog.
 - Practice depth now starts with workflow-based Skill Drills mapped to existing
   lesson paths, filtered review sessions, and scenario-style Parameter Reading,
-  Diagnosis Practice, Compatibility Checks, and Emergency Decisions questions.
-  Remaining Practice work is scenario-specific setup-planning formats plus
-  deeper tank/tool-data integration.
+  Diagnosis Practice, Compatibility Checks, Setup Planning, and Emergency
+  Decisions questions. Remaining Practice work is deeper tank/tool-data
+  integration.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -771,6 +783,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
 Continue CL-P1-005 practice depth while Android transport is reserved by other
 sessions:
 
-- Add scenario-specific drill question formats for setup planning.
+- Connect Practice drill recommendations/questions to available tank and tool
+  context.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

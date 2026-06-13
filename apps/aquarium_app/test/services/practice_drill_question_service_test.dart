@@ -60,16 +60,61 @@ void main() {
       },
     );
 
-    test('non-parameter drills keep the normal fallback resolver', () {
+    test('uses a general setup checklist for broad planning cards', () {
       final questions = PracticeDrillQuestionService.resolveQuestions(
         drillId: PracticeDrillId.setupPlanning,
-        cards: [_card('fh_ich_section_0')],
+        cards: [_card('ff_choosing_section_0')],
         lessonState: const LessonState(),
       );
 
       expect(questions.single, isA<MultipleChoiceQuestion>());
       final question = questions.single as MultipleChoiceQuestion;
-      expect(question.questionText, contains('Ich'));
+      expect(question.questionText, contains('setup'));
+      expect(question.options[question.correctIndex], contains('adult size'));
+      expect(question.options[question.correctIndex], contains('equipment'));
+      expect(question.explanation, contains('maintenance'));
+    });
+
+    test('turns filter cards into a flow and bioload planning scenario', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.setupPlanning,
+        cards: [_card('eq_filters_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('filter'));
+      expect(question.options[question.correctIndex], contains('bioload'));
+      expect(question.options[question.correctIndex], contains('flow'));
+      expect(question.explanation, contains('maintenance'));
+    });
+
+    test('turns lighting cards into a photoperiod planning scenario', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.setupPlanning,
+        cards: [_card('planted_light_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('lighting'));
+      expect(question.options[question.correctIndex], contains('photoperiod'));
+      expect(question.options[question.correctIndex], contains('plants'));
+      expect(question.explanation, contains('algae'));
+    });
+
+    test('turns first setup cards into a full checklist scenario', () {
+      final questions = PracticeDrillQuestionService.resolveQuestions(
+        drillId: PracticeDrillId.setupPlanning,
+        cards: [_card('eq_setup_guide_section_0')],
+        lessonState: const LessonState(),
+      );
+
+      final question = questions.single as MultipleChoiceQuestion;
+      expect(question.questionText, contains('new tank'));
+      expect(question.options[question.correctIndex], contains('equipment'));
+      expect(question.options[question.correctIndex], contains('maintenance'));
+      expect(question.explanation, contains('livestock'));
     });
 
     test('turns ich cards into a diagnosis scenario', () {

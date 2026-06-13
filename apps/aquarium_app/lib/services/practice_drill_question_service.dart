@@ -39,6 +39,13 @@ class PracticeDrillQuestionService {
       ];
     }
 
+    if (drillId == PracticeDrillId.setupPlanning) {
+      return [
+        for (var index = 0; index < cards.length; index++)
+          _setupPlanningQuestion(cards[index]) ?? fallback[index],
+      ];
+    }
+
     if (drillId == PracticeDrillId.emergencyDecision) {
       return [
         for (var index = 0; index < cards.length; index++)
@@ -370,6 +377,81 @@ class PracticeDrillQuestionService {
       correctIndex: 0,
       explanation:
           'Compatibility is a whole-life decision. Adult size, group size, temperament, water, diet, and space prevent avoidable stress.',
+    );
+  }
+
+  static MultipleChoiceQuestion? _setupPlanningQuestion(ReviewCard card) {
+    final conceptId = card.conceptId;
+
+    if (conceptId.startsWith('eq_filters')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A keeper is choosing a filter for a planned community tank. What matters most before buying?',
+        options: [
+          'Match filter type, media space, bioload, flow, and maintenance access to the livestock plan',
+          'Buy the strongest filter available and ignore fish that dislike current',
+          'Choose the smallest filter so it is easier to hide',
+          'Skip filtration if the tank will have live plants',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Good filter planning balances biological capacity, safe flow, livestock needs, and realistic maintenance.',
+      );
+    }
+
+    if (conceptId.startsWith('eq_lighting') ||
+        conceptId.startsWith('planted_light')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A new planted tank plan includes bright lighting but no clear schedule. What is the safest setup choice?',
+        options: [
+          'Choose lighting that fits the plants, set a consistent photoperiod, and adjust gradually if algae appears',
+          'Run the lights all day so plants never stop growing',
+          'Use the brightest setting immediately and add livestock the same day',
+          'Ignore plant needs because fish are the only setup constraint',
+        ],
+        correctIndex: 0,
+        explanation:
+            'Lighting should match plant demand and tank maturity. Too much light too soon can drive algae before plants settle.',
+      );
+    }
+
+    if (conceptId.startsWith('eq_setup_guide') ||
+        conceptId.startsWith('eq_heaters') ||
+        conceptId.startsWith('eq_test_kits') ||
+        conceptId.startsWith('eq_air_pumps') ||
+        conceptId.startsWith('eq_substrate')) {
+      return _mc(
+        card: card,
+        questionText:
+            'A user is planning a new tank before buying fish. What checklist should come first?',
+        options: [
+          'Confirm equipment, cycle plan, test kit, substrate/layout, maintenance routine, and suitable livestock',
+          'Buy livestock first so equipment choices can be guessed later',
+          'Skip water testing until fish show visible stress',
+          'Choose decor only by colour and ignore cleaning access',
+        ],
+        correctIndex: 0,
+        explanation:
+            'A new setup is safer when equipment, cycling, maintenance, layout, and livestock needs are planned before fish arrive.',
+      );
+    }
+
+    return _mc(
+      card: card,
+      questionText:
+          'A freshwater setup idea sounds appealing, but the details are still loose. What should be checked before committing?',
+      options: [
+        'Match adult size, water needs, equipment, layout, stocking pace, and maintenance rhythm before buying',
+        'Buy everything that looks good and solve conflicts later',
+        'Plan only the tank colour because care details can wait',
+        'Assume all freshwater setups need identical equipment',
+      ],
+      correctIndex: 0,
+      explanation:
+          'Setup planning links fish, plants, equipment, space, and maintenance before money is spent or livestock is exposed to risk.',
     );
   }
 
