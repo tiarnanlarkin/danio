@@ -33,11 +33,11 @@ The current app is already a substantial Flutter product:
   preferences, debug QA tools, smoke/integration test harnesses, and extensive
   prior QA evidence.
 
-## 3. Important State Found During This Pass
+## 3. Important State Found During The Initial Pass
 
-- The current `currentTabProvider` default is Learn (`0`), but the approved
-  complete-local direction says the app should open on Tank while Tank remains
-  the centre tab.
+- Initial finding: `currentTabProvider` defaulted to Learn (`0`), but the
+  approved complete-local direction says the app should open on Tank while Tank
+  remains the centre tab. Fixed in commit `f86a32c3`.
 - AI is implemented as OpenAI-first. The finished direction is multiple visible
   provider options with a recommended default, user-supplied keys, and optional
   premium AI power later.
@@ -78,9 +78,9 @@ These establish the shape of the finished local product.
 
 | ID | Area | Work | Acceptance |
 | --- | --- | --- | --- |
-| CL-P0-001 | Navigation | Default returning users to Tank while keeping Tank as centre tab. | Fresh returning-user shell opens with Tank selected; tests updated. |
-| CL-P0-002 | Product truth | Update canonical docs so complete-local replaces store-launch as the active finish line. | Docs point future agents at `danio-complete-local-product.md` and this backlog. |
-| CL-P0-003 | Feature honesty | Re-audit all visible dormant/future/cloud/social/premium surfaces. | Every visible fake/unfinished feature is removed, hidden, or reframed as local/offline/informational. |
+| CL-P0-001 | Navigation | Default returning users to Tank while keeping Tank as centre tab. | Done in `f86a32c3`; fresh returning-user shell opens with Tank selected and tests were updated. |
+| CL-P0-002 | Product truth | Update canonical docs so complete-local replaces store-launch as the active finish line. | Done; March finish docs now point future agents at `danio-complete-local-product.md` and this backlog. |
+| CL-P0-003 | Feature honesty | Re-audit all visible dormant/future/cloud/social/premium surfaces. | In progress; local/offline account copy and reward/shop mechanics were fixed on 2026-06-13. Remaining passes: social, AI/premium, debug/help, and public settings copy. |
 | CL-P0-004 | First-run flow | Redesign onboarding around experience, region/units, tank type/stage/goals, skip path, and contextual prompts. | Skippable onboarding lands in a polished sample/local experience; missing context is requested later where needed. |
 | CL-P0-005 | Tank daily loop | Make Tank the daily ritual surface: next-best action, care status, quick log, feed, water change, tasks, and warnings close at hand. | A normal user can understand what matters today within 10 seconds. |
 | CL-P0-006 | Emergency access | Create accessible emergency flows for ammonia/nitrite spike, gasping, heater failure, filter failure, ich, injury, and poisoning. | Emergencies are reachable from Tank alerts, Smart, Search/More, lessons, species pages, and water logs. |
@@ -137,6 +137,15 @@ AI expansion comes after the local core is strong.
 | CL-QA-006 | Data resilience | Test create/edit/delete tank, log, task, livestock, lesson completion, backup/restore, migration, and app-kill flush paths. | Critical local data paths are covered. |
 | CL-QA-007 | Debug tools | Expand QA seed states for emergencies, bad water, incompatible fish, skipped onboarding, demo mode, unlocks, tablet, and AI/no-AI. | Manual QA can jump straight to every important state. |
 
+Current QA note: `danio_api36` exists and boots, but ADB transport dropped
+during blackbox and focused verification on 2026-06-13. See
+`danio-complete-local-current-audit-2026-06-13.md`.
+
+Current verification note: as of the reward/shop honesty slice on 2026-06-13,
+`flutter test` passes 1315 tests, `flutter analyze --no-pub` is clean, and a
+debug APK builds successfully. Android blackbox QA is still blocked because the
+only visible device is `RFCY8022D5R` in an unauthorized ADB state.
+
 ## 10. First Execution Order
 
 1. Lock docs and landing behaviour.
@@ -167,4 +176,3 @@ and Android tablet:
 - Multi-tank user can compare priorities and history across tanks.
 - User exports data, restores it, and sees clear validation/error handling.
 - Accessibility basics hold under large text and reduced motion.
-

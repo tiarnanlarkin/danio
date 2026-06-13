@@ -70,7 +70,8 @@ final learningStatsProvider = Provider<LearningStats?>((ref) {
 ///
 /// FB-H3: When the Weekend Amulet is active and today is Saturday or Sunday,
 /// the daily XP target is halved (minimum 5 XP) to give users a meaningful
-/// break while still encouraging light engagement.
+/// break while still encouraging light engagement. Goal Shield uses the same
+/// gentler target for 24 hours on any day.
 final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
   // Use .select() to only rebuild when goal-relevant fields change
   final dailyXpGoal = ref.watch(
@@ -83,20 +84,31 @@ final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
   if (dailyXpHistory == null) return null;
 
   // Weekend Amulet: halve the daily goal on Sat/Sun when the item is active.
+  // Goal Shield: halve the daily goal while active on any day.
   final inventory = ref.watch(inventoryProvider);
-  final isWeekendAmuletActive = inventory.when(
-    loading: () => false,
-    error: (_, __) => false,
+  final (isWeekendAmuletActive, isGoalShieldActive) = inventory.when(
+    loading: () => (false, false),
+    error: (_, __) => (false, false),
     data: (items) {
-      final item = items.where((i) => i.itemId == 'weekend_amulet').firstOrNull;
-      return item != null && item.isActive && !item.isExpired;
+      final weekendItem = items
+          .where((i) => i.itemId == 'weekend_amulet')
+          .firstOrNull;
+      final goalShield = items
+          .where((i) => i.itemId == 'daily_goal_shield')
+          .firstOrNull;
+      return (
+        weekendItem != null && weekendItem.isActive && !weekendItem.isExpired,
+        goalShield != null && goalShield.isActive && !goalShield.isExpired,
+      );
     },
   );
 
   final today = DateTime.now();
   final isWeekend =
       today.weekday == DateTime.saturday || today.weekday == DateTime.sunday;
-  final effectiveGoal = (isWeekendAmuletActive && isWeekend)
+  final shouldRelaxGoal =
+      isGoalShieldActive || (isWeekendAmuletActive && isWeekend);
+  final effectiveGoal = shouldRelaxGoal
       ? (dailyXpGoal ~/ 2).clamp(5, dailyXpGoal)
       : dailyXpGoal;
 

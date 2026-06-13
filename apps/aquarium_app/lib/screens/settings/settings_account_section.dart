@@ -12,7 +12,7 @@ class SettingsAccountSection extends StatelessWidget {
     return NavListTile(
       icon: Icons.phonelink_lock_outlined,
       title: 'Offline Data',
-      subtitle: 'Local-only storage and optional account status',
+      subtitle: 'Local storage and backup guidance',
       onTap: () => NavigationThrottle.push(context, const AccountScreen()),
     );
   }

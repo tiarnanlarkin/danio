@@ -120,7 +120,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       if (item.isConsumable) {
         // Check if item already exists (stack quantities)
         final existingIndex = currentInventory.indexWhere(
-          (i) => i.itemId == item.id,
+          (i) => i.itemId == item.id && !i.isActive && !i.isExpired,
         );
 
         if (existingIndex >= 0) {
@@ -196,14 +196,29 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       );
       return false;
     }
+    final shopItem = ShopCatalog.getById(itemId);
+    if (shopItem == null) return false;
+
+    await cleanupExpiredItems();
     final currentInventory = state.valueOrNull ?? [];
-    final itemIndex = currentInventory.indexWhere((i) => i.itemId == itemId);
+    final itemIndex = currentInventory.indexWhere(
+      (i) =>
+          i.itemId == itemId && i.quantity > 0 && !(i.isActive && !i.isExpired),
+    );
 
     if (itemIndex < 0) return false;
 
     final item = currentInventory[itemIndex];
-    final shopItem = ShopCatalog.getById(itemId);
-    if (shopItem == null) return false;
+
+    if (shopItem.isConsumable && shopItem.durationHours != null) {
+      await _activateConsumableTimedItem(
+        currentInventory: currentInventory,
+        itemIndex: itemIndex,
+        sourceItem: item,
+        durationHours: shopItem.durationHours!,
+      );
+      return true;
+    }
 
     // Apply the effect first
     final effectApplied = await _applyItemEffect(shopItem);
@@ -260,10 +275,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         return true;
 
       case ShopItemType.xpBoost:
-        // XP boost is handled by activating the item with expiry time
-        // The xpBoostActiveProvider checks if it's active
-        await _activateTimedItem(item.id, item.durationHours ?? 1);
-        return true;
+        return item.durationHours != null;
 
       case ShopItemType.quizSecondChance:
       case ShopItemType.lessonHelper:
@@ -284,58 +296,47 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         return true;
 
       case ShopItemType.goalAdjust:
-        // Goal adjustments are time-based
-        if (item.durationHours != null) {
-          await _activateTimedItem(item.id, item.durationHours!);
-        }
-        return true;
+        return item.durationHours != null;
     }
   }
 
-  /// Activate a timed item (sets isActive=true with expiry)
-  Future<void> _activateTimedItem(String itemId, int durationHours) async {
-    final currentInventory = state.valueOrNull ?? [];
-    final itemIndex = currentInventory.indexWhere((i) => i.itemId == itemId);
-    if (itemIndex < 0) return;
-
-    final item = currentInventory[itemIndex];
+  /// Move one purchased timed consumable into an active expiring record.
+  ///
+  /// Timed consumables need to remain visible to derived providers while active
+  /// (XP boosts, weekend amulets, goal shields). Stacks stay as inactive
+  /// inventory records; each use creates or replaces one active expiring entry.
+  Future<void> _activateConsumableTimedItem({
+    required List<InventoryItem> currentInventory,
+    required int itemIndex,
+    required InventoryItem sourceItem,
+    required int durationHours,
+  }) async {
     final expiresAt = DateTime.now().add(Duration(hours: durationHours));
-    final updatedItem = item.copyWith(isActive: true, expiresAt: expiresAt);
+    final activeItem = InventoryItem(
+      itemId: sourceItem.itemId,
+      quantity: 1,
+      purchasedAt: sourceItem.purchasedAt,
+      isActive: true,
+      expiresAt: expiresAt,
+    );
 
     final updated = List<InventoryItem>.from(currentInventory);
-    updated[itemIndex] = updatedItem;
+    if (sourceItem.quantity <= 1) {
+      updated[itemIndex] = activeItem;
+    } else {
+      updated[itemIndex] = sourceItem.copyWith(
+        quantity: sourceItem.quantity - 1,
+      );
+      updated.add(activeItem);
+    }
+
     await _save(updated);
     state = AsyncValue.data(updated);
   }
 
   /// Activate a time-based item (XP boost, etc.)
   Future<bool> activateItem(String itemId) async {
-    final currentInventory = state.valueOrNull ?? [];
-    final itemIndex = currentInventory.indexWhere((i) => i.itemId == itemId);
-
-    if (itemIndex < 0) return false;
-
-    final item = currentInventory[itemIndex];
-    final shopItem = ShopCatalog.getById(itemId);
-    if (shopItem == null || shopItem.durationHours == null) return false;
-
-    // Set expiry time and mark as active
-    final expiresAt = DateTime.now().add(
-      Duration(hours: shopItem.durationHours!),
-    );
-    final updatedItem = item.copyWith(isActive: true, expiresAt: expiresAt);
-
-    final updated = List<InventoryItem>.from(currentInventory);
-    updated[itemIndex] = updatedItem;
-    await _save(updated);
-    state = AsyncValue.data(updated);
-
-    // If consumable, decrease quantity
-    if (shopItem.isConsumable) {
-      await useItem(itemId);
-    }
-
-    return true;
+    return useItem(itemId);
   }
 
   /// Check if user owns an item
@@ -347,22 +348,17 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   /// Get quantity of an item
   int getQuantity(String itemId) {
     final currentInventory = state.valueOrNull ?? [];
-    final item = currentInventory.firstWhere(
-      (i) => i.itemId == itemId,
-      orElse: () =>
-          InventoryItem(itemId: '', quantity: 0, purchasedAt: DateTime.now()),
-    );
-    return item.quantity;
+    return currentInventory
+        .where((i) => i.itemId == itemId && !i.isActive && !i.isExpired)
+        .fold<int>(0, (sum, i) => sum + i.quantity);
   }
 
   /// Check if an item is active
   bool isItemActive(String itemId) {
     final currentInventory = state.valueOrNull ?? [];
-    final item = currentInventory.firstWhere(
-      (i) => i.itemId == itemId,
-      orElse: () => InventoryItem(itemId: '', purchasedAt: DateTime.now()),
+    return currentInventory.any(
+      (i) => i.itemId == itemId && i.isActive && !i.isExpired,
     );
-    return item.isActive && !item.isExpired;
   }
 
   /// Get all active power-ups
@@ -378,13 +374,19 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     final currentInventory = state.valueOrNull ?? [];
 
     bool hasChanges = false;
-    final updated = currentInventory.map((item) {
+    final updated = <InventoryItem>[];
+    for (final item in currentInventory) {
       if (item.isExpired && item.isActive) {
         hasChanges = true;
-        return item.copyWith(isActive: false);
+        final shopItem = ShopCatalog.getById(item.itemId);
+        if (shopItem?.isConsumable ?? false) {
+          continue;
+        }
+        updated.add(item.copyWith(isActive: false));
+        continue;
       }
-      return item;
-    }).toList();
+      updated.add(item);
+    }
 
     if (hasChanges) {
       await _save(updated);
@@ -409,7 +411,8 @@ final ownsItemProvider = Provider.autoDispose.family<bool, String>((
   return inventory.when(
     loading: () => false,
     error: (_, __) => false,
-    data: (items) => items.any((i) => i.itemId == itemId),
+    data: (items) =>
+        items.any((i) => i.itemId == itemId && !(i.isActive && i.isExpired)),
   );
 });
 

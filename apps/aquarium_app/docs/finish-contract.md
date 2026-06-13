@@ -1,5 +1,13 @@
 # Danio — Finish Contract
 
+> 2026-06-13 update: This March finish contract is now historical launch-readiness
+> evidence, not the active product finish line. The active bar is the
+> complete-local product defined in
+> `docs/product/danio-complete-local-product.md` and tracked in
+> `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`.
+> Public launch, store listing, and hosted legal/admin work remain paused until
+> the complete-local bar is met.
+
 **Locked:** 2026-03-29
 **Authority:** Tiarnan Larkin + Athena
 **Source evidence:** finish-line-review.md, completion-surface-audit.md, final-truth-pass.md (207KB, 9 agents)

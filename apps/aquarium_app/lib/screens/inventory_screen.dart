@@ -32,6 +32,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(inventoryProvider.notifier).cleanupExpiredItems();
+    });
   }
 
   @override
@@ -121,7 +125,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
 
             for (final item in inventory) {
               final shopItem = ShopCatalog.getById(item.itemId);
-              if (shopItem == null) continue;
+              if (shopItem == null || !shopItem.isAvailable) continue;
 
               if (item.isActive && !item.isExpired) {
                 activeItems.add(item);

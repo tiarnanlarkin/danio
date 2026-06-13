@@ -14,10 +14,11 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
-/// Account screen - sign-in / profile / sync management.
+/// Local data status and optional cloud account management.
 ///
-/// When signed out: shows email+password form and Google sign-in button.
-/// When signed in: shows profile info, sync status, backup/restore, sign-out.
+/// In the local-first build this shows the offline storage status. If cloud
+/// services are configured, it also exposes optional sign-in and cloud backup
+/// actions without blocking local use.
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
 

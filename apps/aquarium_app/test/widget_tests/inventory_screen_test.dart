@@ -72,11 +72,13 @@ void main() {
         r'[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]',
         unicode: true,
       );
-      final renderedText = tester.widgetList<Text>(find.byType(Text)).map((
-        widget,
-      ) {
-        return widget.data ?? widget.textSpan?.toPlainText() ?? '';
-      }).where(emoji.hasMatch).toList();
+      final renderedText = tester
+          .widgetList<Text>(find.byType(Text))
+          .map((widget) {
+            return widget.data ?? widget.textSpan?.toPlainText() ?? '';
+          })
+          .where(emoji.hasMatch)
+          .toList();
 
       expect(renderedText, isEmpty);
     });
@@ -100,6 +102,24 @@ void main() {
 
       expect(find.text(item.name), findsOneWidget);
       expect(find.text(item.emoji), findsNothing);
+    });
+
+    testWidgets('hides unavailable legacy catalog items', (tester) async {
+      final hidden = ShopCatalog.getById('progress_protector')!;
+      final owned = InventoryItem(
+        itemId: hidden.id,
+        quantity: 1,
+        purchasedAt: DateTime(2026, 5, 3),
+      );
+
+      SharedPreferences.setMockInitialValues({
+        'shop_inventory': jsonEncode([owned.toJson()]),
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text(hidden.name), findsNothing);
     });
   });
 }

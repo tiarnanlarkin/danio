@@ -1,5 +1,12 @@
 # Danio — Feature Registry
 
+> 2026-06-13 update: This registry contains useful historical feature evidence,
+> but some statuses are stale after later fixes and the active finish standard
+> has changed. Use `docs/product/danio-complete-local-product.md` as the north
+> star and `docs/product/danio-complete-local-audit-backlog-2026-06-13.md` as
+> the current execution backlog. Update this registry during complete-local
+> work rather than treating the March launch-readiness scores as final truth.
+
 **Updated:** 2026-03-29
 **Rule:** Every feature listed with honest status. Updated every wave.
 

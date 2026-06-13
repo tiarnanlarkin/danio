@@ -1,0 +1,159 @@
+# Danio Complete Local Current Audit
+
+Status: Active current-state audit
+Created: 2026-06-13
+Scope: Android local completion workstream
+
+## 1. Verification Baseline
+
+Environment:
+
+- Flutter 3.44.0 stable, Dart 3.12.0.
+- Branch: `qa/production-tool-audit-2026-05-25`.
+- Android emulator configured: `danio_api36`.
+- Physical Android device visible as `RFCY8022D5R`, but currently unauthorized
+  over ADB in this Windows-reset environment.
+
+Passing checks in this pass:
+
+- `flutter test`: pass, 1315 tests.
+- `flutter analyze --no-pub`: pass, no issues.
+- `flutter test test/scripts/android_main_activity_test.dart`: pass.
+- `flutter test test/services/shop_service_test.dart
+  test/widget_tests/gem_shop_screen_test.dart
+  test/widget_tests/inventory_screen_test.dart
+  test/widget_tests/account_screen_test.dart
+  test/scripts/android_main_activity_test.dart`: pass.
+- `flutter build apk --debug --target lib/main.dart`: pass.
+
+Build warning:
+
+- Flutter reports that the app/plugins still apply the Kotlin Gradle Plugin in
+  a way that future Flutter versions will reject. This does not block the
+  current debug build, but it is a future toolchain maintenance item.
+
+## 2. Android QA State
+
+`danio_api36` booted successfully as `emulator-5554`, but the emulator dropped
+off ADB during blackbox/focused verification attempts. The only remaining ADB
+device was the unauthorized physical phone. This prevented a full fresh
+screen-by-screen Android capture in this pass.
+
+Observed emulator/ADB failures:
+
+- Full blackbox smoke timed out after the emulator disappeared from ADB.
+- Focused cold-start QA deep-link verification also timed out after the
+  emulator disappeared from ADB.
+- Latest failure artifacts show ADB transport loss, not an app crash:
+  `error: device 'emulator-5554' not found`.
+
+Action:
+
+- Treat CL-QA-001 and CL-QA-002 as blocked on stable Android emulator/device
+  transport for now.
+- Continue product/code work using analyzer, tests, debug builds, code audits,
+  and prior screenshot evidence until the emulator/device connection is stable.
+
+## 3. Reliability Finding Fixed In This Pass
+
+Older blackbox artifacts revealed an app-level error boundary during a QA
+settings deep-link attempt:
+
+- Failure: `Expected UI pattern not visible within 12 seconds: Preferences`.
+- Screen: "Oops! Something went wrong".
+- Logcat root cause: Flutter attempted to route `RouteSettings("/settings")`
+  and failed because `MaterialApp` has no `/settings` named route.
+
+Cause:
+
+- Warm QA intents were already intercepted by `MainActivity.onNewIntent`, but
+  cold-start QA links could still be interpreted by FlutterActivity's native
+  deep-link route forwarding before the debug QA MethodChannel handled them.
+
+Fix:
+
+- `MainActivity` now treats debug `danio://qa...` intents as QA-only.
+- `shouldHandleDeeplinking()` returns `false` for debug QA intents.
+- `getInitialRoute()` returns `/` for debug QA intents.
+- Warm intents still dispatch through `danio/qa_links`.
+- Regression coverage added in `test/scripts/android_main_activity_test.dart`.
+
+Verification:
+
+- Focused script test passed.
+- Analyzer passed.
+- Debug APK build passed.
+- Direct emulator confirmation is still pending because ADB transport dropped.
+
+## 4. Feature Honesty Progress
+
+CL-P0-003 has started with the local/offline and rewards surfaces.
+
+Fixed:
+
+- Settings now labels the account/data entry as "Offline Data" with the
+  subtitle "Local storage and backup guidance", instead of implying account
+  status in the local-only build.
+- `AccountScreen` code comments now describe the local-first behavior and the
+  optional nature of cloud account management when cloud services are
+  configured.
+- Timed gem rewards now work as real active effects instead of disappearing
+  immediately after use. XP Boost, Weekend Amulet, and Goal Shield stay visible
+  to derived providers while active and expire cleanly.
+- Goal Shield is now a real 24-hour goal relaxer that halves today's XP target,
+  rather than claiming to complete the goal with no implementation.
+- Legacy no-op Progress Protector is hidden from the available shop.
+- Cosmetic shop items that do not yet affect the tank/profile are hidden unless
+  they are honest permanent collectible badges visible in My Items.
+- Shop catalog strings touched in this pass were changed to ASCII-safe copy so
+  corrupted emoji literals do not leak into dialogs if a fallback surface ever
+  renders them.
+
+Remaining CL-P0-003 audit targets:
+
+- Complete pass over social/friends/leaderboard remnants.
+- Complete pass over AI and premium copy so local intelligence remains the
+  default promise.
+- Complete pass over hidden debug/QA surfaces and public settings/help copy.
+- Decide whether the remaining badge collectibles are strong enough for the
+  finished reward loop or should be moved into the later living-tank unlock
+  system.
+
+Current Android device state:
+
+- ADB sees `RFCY8022D5R` as `unauthorized`.
+- No usable emulator was attached at the latest check, so blackbox screen QA
+  remains blocked on Android transport.
+
+## 5. Current Complete-Local Gap Map
+
+P0 status:
+
+| ID | State | Notes |
+| --- | --- | --- |
+| CL-P0-001 | Done | Returning users now land on Tank by default. |
+| CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
+| CL-P0-003 | In progress | Local/offline account copy and reward/shop honesty slice fixed and tested; social, AI/premium, debug/help copy still need the remaining audit pass. |
+| CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
+| CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
+| CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
+| CL-P0-007 | Not started | Smart needs stronger non-AI Aquarium Intelligence hub. |
+
+High-confidence P1/P2 gaps from code/docs evidence:
+
+- AI is still OpenAI-first rather than provider-aware.
+- Species and plant data are broad but not yet final content-rich guide pages
+  with sources, tank actions, and missing-species request flow.
+- Tablet verification is not yet current.
+- Visual asset quality still has known older audit gaps.
+- Full local screen audit is blocked until Android target is stable.
+
+## 6. Next Execution Step
+
+Continue CL-P0-003 feature honesty audit and fixes while Android transport is
+unstable. The next targets are:
+
+- Social/friends/leaderboard remnants.
+- AI/premium copy that needs stronger local/no-AI alternatives.
+- Debug/QA-only routes accidentally reachable or documented as user features.
+- Public help/privacy/settings copy that still assumes future cloud behavior.

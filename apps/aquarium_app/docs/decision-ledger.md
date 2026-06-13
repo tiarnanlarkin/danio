@@ -18,6 +18,24 @@ Each entry:
 
 ## Decisions
 
+### 2026-06-13 - Complete-local finish line replaces public launch readiness
+**Decision:** Danio is not considered finished when it is merely Play-ready or
+release-build clean. The active finish line is now the complete local Android
+phone/tablet product described in `docs/product/danio-complete-local-product.md`.
+Public launch, store listing, hosted legal URL, and Play Console work stay on
+hold until the local app feels complete, polished, content-rich, trustworthy,
+Tank-centred, and working end-to-end.
+**Reason:** Tiarnan clarified that the priority is maximum local quality before
+public release: all visible features complete, Tank emotionally central, strong
+content, robust onboarding, non-AI intelligence, optional AI, tablet support,
+living/collectible tank progression, emergency workflows, and no unfinished
+public-facing push.
+**Impact:** `docs/product/danio-complete-local-product.md` becomes the north
+star. `docs/product/danio-complete-local-audit-backlog-2026-06-13.md` becomes
+the working backlog. March finish docs remain historical evidence but no longer
+define the complete product.
+**Decided by:** Tiarnan + Codex
+
 ### 2026-03-29 — Finish line locked from truth pass
 **Decision:** Convert truth pass findings into hard finish contract with 4 buckets: Finish Blockers (35), Finish Quality Requirements (27), Deferred (18), Future Scope (13).
 **Reason:** Three rounds of audits (finish-line review, surface audit, truth pass) provided sufficient evidence to lock scope.

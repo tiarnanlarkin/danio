@@ -13,6 +13,21 @@ class MainActivity : FlutterActivity() {
     private val QA_LINKS_CHANNEL = "danio/qa_links"
     private var qaLinksChannel: MethodChannel? = null
 
+    private fun isDebugQaIntent(intent: Intent?): Boolean {
+        if (!BuildConfig.DEBUG) return false
+        return intent?.data?.toString()?.startsWith("danio://qa") == true
+    }
+
+    override fun shouldHandleDeeplinking(): Boolean {
+        if (isDebugQaIntent(intent)) return false
+        return super.shouldHandleDeeplinking()
+    }
+
+    override fun getInitialRoute(): String? {
+        if (isDebugQaIntent(intent)) return "/"
+        return super.getInitialRoute()
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         
@@ -51,9 +66,9 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
-        if (BuildConfig.DEBUG) {
+        if (isDebugQaIntent(intent)) {
             val uri = intent.data?.toString()
-            if (uri != null && uri.startsWith("danio://qa")) {
+            if (uri != null) {
                 qaLinksChannel?.invokeMethod("onNewIntent", uri)
                 return
             }

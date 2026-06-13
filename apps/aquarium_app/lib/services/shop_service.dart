@@ -37,24 +37,20 @@ class ShopService {
   /// Check if user owns a specific item.
   bool ownsItem(String itemId) {
     final inventory = getInventory();
-    InventoryItem? item;
-    try {
-      item = inventory.firstWhere((inv) => inv.itemId == itemId);
-    } on StateError {
-      // Item not found in inventory — expected path
-      return false;
-    }
+    return inventory.any((item) {
+      if (item.itemId != itemId) return false;
+      if (item.isActive || item.expiresAt != null) return !item.isExpired;
+      if (item.quantity > 0) return true;
 
-    // Check if it's a consumable with quantity
-    if (item.quantity > 0) return true;
-
-    // Check if it's a time-based item that hasn't expired
-    if (item.expiresAt != null) {
-      return !item.isExpired;
-    }
-
-    // Non-consumable permanent item
-    return true;
+      try {
+        final catalogItem = ShopCatalog.allItems.firstWhere(
+          (catalogItem) => catalogItem.id == item.itemId,
+        );
+        return !catalogItem.isConsumable;
+      } on StateError {
+        return false;
+      }
+    });
   }
 
   /// Get quantity of a consumable item.
@@ -137,13 +133,9 @@ final itemQuantityProvider = Provider.family<int, String>((ref, itemId) {
   return inventoryAsync.when(
     loading: () => 0,
     error: (_, __) => 0,
-    data: (items) {
-      final item = items.cast<InventoryItem?>().firstWhere(
-        (i) => i?.itemId == itemId,
-        orElse: () => null,
-      );
-      return item?.quantity ?? 0;
-    },
+    data: (items) => items
+        .where((i) => i.itemId == itemId && !i.isActive && !i.isExpired)
+        .fold<int>(0, (sum, i) => sum + i.quantity),
   );
 });
 
@@ -153,13 +145,8 @@ final isItemActiveProvider = Provider.family<bool, String>((ref, itemId) {
   return inventoryAsync.when(
     loading: () => false,
     error: (_, __) => false,
-    data: (items) {
-      final item = items.cast<InventoryItem?>().firstWhere(
-        (i) => i?.itemId == itemId,
-        orElse: () => null,
-      );
-      if (item == null) return false;
-      return item.isActive && !item.isExpired;
-    },
+    data: (items) => items.any(
+      (item) => item.itemId == itemId && item.isActive && !item.isExpired,
+    ),
   );
 });
