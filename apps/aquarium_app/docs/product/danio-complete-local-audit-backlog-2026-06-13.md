@@ -90,7 +90,7 @@ These establish the shape of the finished local product.
 
 | ID | Area | Work | Acceptance |
 | --- | --- | --- | --- |
-| CL-P1-001 | Living tank | Map care state to visual cues for clean/dirty water, feeding, temperature, stress, compatibility, plant presence, decorations, and theme. | In progress; CL-P1-001A adds latest-water-test visual state for unsafe nitrogen, high nitrate/stale water, and temperature extremes. CL-P1-001B adds stale-water visuals from old water-change logs. CL-P1-001C adds a food-particle aquarium pulse after successful feeding logs. CL-P1-001D adds health and compatibility review cues from current livestock. Remaining: plant/decor inventory and progression unlocks. |
+| CL-P1-001 | Living tank | Map care state to visual cues for clean/dirty water, feeding, temperature, stress, compatibility, plant presence, decorations, and theme. | In progress; CL-P1-001A adds latest-water-test visual state for unsafe nitrogen, high nitrate/stale water, and temperature extremes. CL-P1-001B adds stale-water visuals from old water-change logs. CL-P1-001C adds a food-particle aquarium pulse after successful feeding logs. CL-P1-001D adds health and compatibility review cues from current livestock. CL-P1-001E adds planted/decorated aquascape cues from current equipment records. Remaining: progression unlocks and a fuller dedicated plant/decor inventory model if product demands it. |
 | CL-P1-002 | Rewards | Connect progression to meaningful unlocks: rooms, tank vibes, decorations, seasonal themes, badges, and achievement-based cosmetics. | Unlocks feel earned and useful, not disposable. |
 | CL-P1-003 | Species pages | Upgrade species/plant pages into beautiful actionable guides. | Pages include care, compatibility, warnings, add-to-tank, reminders, common problems, source trail, and missing-species request. |
 | CL-P1-004 | Learning depth | Expand lessons into richer pathways with visuals, examples, scenarios, quizzes, review, skill drills, and subtle citations. | Learn supports beginners through serious hobbyists without feeling like a text dump. |
@@ -141,8 +141,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the living-tank livestock cue slice on
-2026-06-13, `flutter test` passes 1412 tests and `flutter analyze` is clean,
+Current verification note: as of the living-tank aquascape cue slice on
+2026-06-13, `flutter test` passes 1418 tests and `flutter analyze` is clean,
 and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

@@ -331,5 +331,52 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('Tank aquarium reflects aquascape equipment visually', (
+      tester,
+    ) async {
+      suppressLayoutErrors();
+      final storage = InMemoryStorageService();
+      final now = DateTime(2026, 6, 13);
+      final tank = Tank(
+        id: 'aquascape-cue-${now.microsecondsSinceEpoch}',
+        name: 'Aquascape Cue Tank',
+        type: TankType.freshwater,
+        volumeLitres: 100,
+        startDate: now,
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+      );
+      await storage.saveEquipment(
+        Equipment(
+          id: 'co2-${tank.id}',
+          tankId: tank.id,
+          type: EquipmentType.co2System,
+          name: 'CO2 Kit',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.saveEquipment(
+        Equipment(
+          id: 'stone-${tank.id}',
+          tankId: tank.id,
+          type: EquipmentType.other,
+          name: 'Seiryu stone decor',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+
+      await tester.pumpWidget(_wrapWithTank(tank: tank, storage: storage));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 5));
+
+      expect(
+        find.byKey(const Key('tank-aquascape-overlay-plantedDecorated')),
+        findsOneWidget,
+      );
+    });
   });
 }

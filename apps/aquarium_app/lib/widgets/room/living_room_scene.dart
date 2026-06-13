@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/log_entry.dart';
 import '../../providers/room_theme_provider.dart';
+import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
 import '../../theme/room_themes.dart';
@@ -27,6 +28,7 @@ class LivingRoomScene extends ConsumerWidget {
   final WaterTestResults? latestWaterTest;
   final TankVisualState? visualState;
   final int feedingPulse;
+  final TankAquascapeVisualState? aquascapeVisualState;
   final TankLivestockVisualState? livestockVisualState;
   final RoomTheme theme;
   final VoidCallback? onTankTap;
@@ -55,6 +57,7 @@ class LivingRoomScene extends ConsumerWidget {
     this.latestWaterTest,
     this.visualState,
     this.feedingPulse = 0,
+    this.aquascapeVisualState,
     this.livestockVisualState,
     this.onTankTap,
     this.onTestKitTap,
@@ -150,6 +153,7 @@ class LivingRoomScene extends ConsumerWidget {
                       latestWaterTest: latestWaterTest,
                       visualState: visualState,
                       feedingPulse: feedingPulse,
+                      aquascapeVisualState: aquascapeVisualState,
                       livestockVisualState: livestockVisualState,
                     ),
                   ),

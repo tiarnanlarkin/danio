@@ -9,6 +9,7 @@ import '../../providers/tank_visual_event_provider.dart';
 import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/guidance_service.dart';
+import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
 import '../../theme/app_theme.dart';
@@ -435,7 +436,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ref.watch(logsProvider(currentTank.id)).valueOrNull ?? [];
         final currentLivestock =
             ref.watch(livestockProvider(currentTank.id)).valueOrNull ?? [];
+        final currentEquipment =
+            ref.watch(equipmentProvider(currentTank.id)).valueOrNull ?? [];
         final tankVisualState = TankVisualStateService.fromLogs(currentLogs);
+        final aquascapeVisualState = TankAquascapeVisualService.fromEquipment(
+          currentEquipment,
+        );
         final livestockVisualState = TankLivestockVisualService.fromTank(
           tank: currentTank,
           livestock: currentLivestock,
@@ -455,6 +461,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     theme: theme,
                     visualState: tankVisualState,
                     feedingPulse: feedingPulse,
+                    aquascapeVisualState: aquascapeVisualState,
                     livestockVisualState: livestockVisualState,
                     isNewUser: _isNewUser(ref),
                     onTankTap: () =>

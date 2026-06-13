@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1412 tests.
+- `flutter test`: pass, 1418 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -364,6 +364,15 @@ CL-P1-001D Living tank livestock cue progress:
   warnings such as risky tankmate combinations produce a compatibility-review
   cue. The cue is non-interactive, text-free, and labelled for accessibility.
 
+CL-P1-001E Living tank aquascape cue progress:
+
+- The central Tank aquarium now derives planted/decorated aquascape cues from
+  existing tank equipment records. CO2 systems and planted-labelled equipment
+  add extra plant accents, while hardscape/decor-labelled entries add soft
+  stone/wood accents.
+- This is intentionally an honest cue layer over current data, not a claim
+  that Danio has a complete dedicated plant/decor inventory model yet.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -390,7 +399,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - AI is still OpenAI-first rather than provider-aware.
 - Living Tank visuals now react to latest water-test state, old water-change
   logs, feeding events, and livestock health/compatibility cues, but do not yet
-  reflect plant/decor inventory or progression unlocks.
+  include a dedicated plant/decor inventory model or progression unlocks.
 - Species and plant data are broad but not yet final content-rich guide pages
   with sources, tank actions, and missing-species request flow.
 - Tablet verification is not yet current.

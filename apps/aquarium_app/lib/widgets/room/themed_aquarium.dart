@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../models/log_entry.dart';
+import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
 import '../../theme/app_theme.dart';
@@ -35,6 +36,7 @@ class ThemedAquarium extends StatelessWidget {
   final WaterTestResults? latestWaterTest;
   final TankVisualState? visualState;
   final int feedingPulse;
+  final TankAquascapeVisualState? aquascapeVisualState;
   final TankLivestockVisualState? livestockVisualState;
 
   const ThemedAquarium({
@@ -48,6 +50,7 @@ class ThemedAquarium extends StatelessWidget {
     this.latestWaterTest,
     this.visualState,
     this.feedingPulse = 0,
+    this.aquascapeVisualState,
     this.livestockVisualState,
   });
 
@@ -161,6 +164,12 @@ class ThemedAquarium extends StatelessWidget {
               swayIndex: 3,
               tall: false,
             ),
+
+            if (aquascapeVisualState != null &&
+                aquascapeVisualState!.hasOverlay)
+              Positioned.fill(
+                child: _TankAquascapeVisualOverlay(aquascapeVisualState!),
+              ),
 
             // ── FISH — species sprites managed by TankFishManager ─────────
             // TankFishManager reads unlocked species and renders them as
@@ -375,6 +384,126 @@ class _FoodParticle extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _TankAquascapeVisualOverlay extends StatelessWidget {
+  final TankAquascapeVisualState state;
+
+  const _TankAquascapeVisualOverlay(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: state.semanticsLabel,
+      excludeSemantics: true,
+      child: IgnorePointer(
+        child: CustomPaint(
+          key: Key('tank-aquascape-overlay-${state.condition.name}'),
+          painter: _AquascapeCuePainter(condition: state.condition),
+          child: const SizedBox.expand(),
+        ),
+      ),
+    );
+  }
+}
+
+class _AquascapeCuePainter extends CustomPainter {
+  final TankAquascapeVisualCondition condition;
+
+  const _AquascapeCuePainter({required this.condition});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty || condition == TankAquascapeVisualCondition.clear) {
+      return;
+    }
+
+    if (_hasDecor) _drawDecor(canvas, size);
+    if (_hasPlants) _drawPlants(canvas, size);
+  }
+
+  bool get _hasPlants =>
+      condition == TankAquascapeVisualCondition.planted ||
+      condition == TankAquascapeVisualCondition.plantedDecorated;
+
+  bool get _hasDecor =>
+      condition == TankAquascapeVisualCondition.decorated ||
+      condition == TankAquascapeVisualCondition.plantedDecorated;
+
+  void _drawPlants(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF3F8F64).withValues(alpha: 0.72)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = math.max(1.4, size.shortestSide * 0.008);
+
+    final bases = [
+      Offset(size.width * 0.38, size.height * 0.88),
+      Offset(size.width * 0.44, size.height * 0.88),
+      Offset(size.width * 0.50, size.height * 0.87),
+      Offset(size.width * 0.56, size.height * 0.88),
+      Offset(size.width * 0.62, size.height * 0.88),
+    ];
+
+    for (var i = 0; i < bases.length; i++) {
+      final base = bases[i];
+      final height = size.height * (0.12 + (i.isEven ? 0.04 : 0));
+      final sway = size.width * (i.isEven ? -0.025 : 0.025);
+      final path = Path()
+        ..moveTo(base.dx, base.dy)
+        ..quadraticBezierTo(
+          base.dx + sway,
+          base.dy - height * 0.55,
+          base.dx + (sway * 0.35),
+          base.dy - height,
+        );
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  void _drawDecor(Canvas canvas, Size size) {
+    final stone = Paint()
+      ..color = const Color(0xFF746B5F).withValues(alpha: 0.55)
+      ..style = PaintingStyle.fill;
+    final wood = Paint()
+      ..color = const Color(0xFF7D5A3A).withValues(alpha: 0.52)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = math.max(2.0, size.shortestSide * 0.014);
+
+    final bottom = size.height * 0.88;
+    final stones = [
+      Rect.fromCenter(
+        center: Offset(size.width * 0.28, bottom),
+        width: size.width * 0.10,
+        height: size.height * 0.04,
+      ),
+      Rect.fromCenter(
+        center: Offset(size.width * 0.72, bottom + size.height * 0.01),
+        width: size.width * 0.12,
+        height: size.height * 0.045,
+      ),
+    ];
+
+    for (final rect in stones) {
+      canvas.drawOval(rect, stone);
+    }
+
+    final woodPath = Path()
+      ..moveTo(size.width * 0.18, size.height * 0.82)
+      ..quadraticBezierTo(
+        size.width * 0.31,
+        size.height * 0.78,
+        size.width * 0.41,
+        size.height * 0.85,
+      );
+    canvas.drawPath(woodPath, wood);
+  }
+
+  @override
+  bool shouldRepaint(covariant _AquascapeCuePainter oldDelegate) {
+    return condition != oldDelegate.condition;
   }
 }
 
