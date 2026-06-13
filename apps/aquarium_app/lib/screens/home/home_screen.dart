@@ -8,6 +8,7 @@ import '../../providers/room_theme_provider.dart';
 import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/guidance_service.dart';
+import '../../services/tank_visual_state_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/hearts_widgets.dart';
@@ -309,18 +310,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         .length;
   }
 
-  WaterTestResults? _latestWaterTest(List<LogEntry> logs) {
-    final waterTests =
-        logs
-            .where(
-              (log) => log.type == LogType.waterTest && log.waterTest != null,
-            )
-            .toList()
-          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-    return waterTests.isEmpty ? null : waterTests.first.waterTest;
-  }
-
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
     if (_selectedTankIds.isEmpty) {
       if (mounted) {
@@ -441,7 +430,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final currentTank = tanks[_currentTankIndex % tanks.length];
         final currentLogs =
             ref.watch(logsProvider(currentTank.id)).valueOrNull ?? [];
-        final latestWaterTest = _latestWaterTest(currentLogs);
+        final tankVisualState = TankVisualStateService.fromLogs(currentLogs);
         return Stack(
           children: [
             Positioned.fill(
@@ -452,7 +441,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     tankName: currentTank.name,
                     tankVolume: currentTank.volumeLitres,
                     theme: theme,
-                    latestWaterTest: latestWaterTest,
+                    visualState: tankVisualState,
                     isNewUser: _isNewUser(ref),
                     onTankTap: () =>
                         _navigateToTankDetail(context, currentTank),

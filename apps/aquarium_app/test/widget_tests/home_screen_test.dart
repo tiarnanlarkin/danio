@@ -234,5 +234,52 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('Tank aquarium reflects overdue water changes visually', (
+      tester,
+    ) async {
+      suppressLayoutErrors();
+      final storage = InMemoryStorageService();
+      final now = DateTime.now();
+      final tank = Tank(
+        id: 'water-age-${now.microsecondsSinceEpoch}',
+        name: 'Water Age Tank',
+        type: TankType.freshwater,
+        volumeLitres: 100,
+        startDate: now.subtract(const Duration(days: 90)),
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+      );
+      await storage.saveLog(
+        LogEntry(
+          id: 'safe-water-${tank.id}',
+          tankId: tank.id,
+          type: LogType.waterTest,
+          timestamp: now,
+          waterTest: WaterTestResults(ammonia: 0, nitrite: 0, nitrate: 15),
+          createdAt: now,
+        ),
+      );
+      await storage.saveLog(
+        LogEntry(
+          id: 'old-change-${tank.id}',
+          tankId: tank.id,
+          type: LogType.waterChange,
+          timestamp: now.subtract(const Duration(days: 18)),
+          waterChangePercent: 30,
+          createdAt: now.subtract(const Duration(days: 18)),
+        ),
+      );
+
+      await tester.pumpWidget(_wrapWithTank(tank: tank, storage: storage));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 5));
+
+      expect(
+        find.byKey(const Key('tank-visual-overlay-staleWater')),
+        findsOneWidget,
+      );
+    });
   });
 }

@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('TankVisualStateService', () {
+    final now = DateTime(2026, 6, 13, 12);
+
     test('unsafe ammonia maps to unsafe water', () {
       final state = TankVisualStateService.fromWaterTest(
         WaterTestResults(ammonia: 0.5, nitrite: 0, nitrate: 10),
@@ -58,5 +60,56 @@ void main() {
       expect(state.semanticsLabel, 'Tank visual state: clear water');
       expect(state.hasOverlay, isFalse);
     });
+
+    test('old water change maps to stale water from logs', () {
+      final state = TankVisualStateService.fromLogs([
+        _waterTestLog(now, WaterTestResults(ammonia: 0, nitrite: 0)),
+        _waterChangeLog(now.subtract(const Duration(days: 15))),
+      ], now: now);
+
+      expect(state.condition, TankVisualCondition.staleWater);
+      expect(state.semanticsLabel, 'Tank visual state: stale water');
+    });
+
+    test('recent water change with safe readings stays clear from logs', () {
+      final state = TankVisualStateService.fromLogs([
+        _waterTestLog(now, WaterTestResults(ammonia: 0, nitrite: 0)),
+        _waterChangeLog(now.subtract(const Duration(days: 6))),
+      ], now: now);
+
+      expect(state.condition, TankVisualCondition.clear);
+      expect(state.hasOverlay, isFalse);
+    });
+
+    test('unsafe water stays highest priority when water change is old', () {
+      final state = TankVisualStateService.fromLogs([
+        _waterTestLog(now, WaterTestResults(ammonia: 0.5, nitrite: 0)),
+        _waterChangeLog(now.subtract(const Duration(days: 21))),
+      ], now: now);
+
+      expect(state.condition, TankVisualCondition.unsafeWater);
+    });
   });
+}
+
+LogEntry _waterTestLog(DateTime timestamp, WaterTestResults results) {
+  return LogEntry(
+    id: 'water-test-${timestamp.microsecondsSinceEpoch}',
+    tankId: 'tank-visual',
+    type: LogType.waterTest,
+    timestamp: timestamp,
+    waterTest: results,
+    createdAt: timestamp,
+  );
+}
+
+LogEntry _waterChangeLog(DateTime timestamp) {
+  return LogEntry(
+    id: 'water-change-${timestamp.microsecondsSinceEpoch}',
+    tankId: 'tank-visual',
+    type: LogType.waterChange,
+    timestamp: timestamp,
+    waterChangePercent: 30,
+    createdAt: timestamp,
+  );
 }

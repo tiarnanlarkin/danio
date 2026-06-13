@@ -19,8 +19,30 @@ class TankVisualStateService {
   static const double warmWaterCelsius = 30;
   static const double coldWaterCelsius = 20;
   static const double staleNitratePpm = 40;
+  static const int staleWaterChangeDays = 14;
 
   const TankVisualStateService._();
+
+  static TankVisualState fromLogs(List<LogEntry> logs, {DateTime? now}) {
+    final waterState = fromWaterTest(_latestWaterTest(logs)?.waterTest);
+    if (waterState.hasOverlay) return waterState;
+
+    final latestWaterChange = _latestWaterChange(logs);
+    final referenceTime = now ?? DateTime.now();
+    if (latestWaterChange != null &&
+        referenceTime.difference(latestWaterChange.timestamp).inDays >
+            staleWaterChangeDays) {
+      return const TankVisualState(
+        condition: TankVisualCondition.staleWater,
+        semanticsLabel: 'Tank visual state: stale water',
+      );
+    }
+
+    return const TankVisualState(
+      condition: TankVisualCondition.clear,
+      semanticsLabel: 'Tank visual state: clear water',
+    );
+  }
 
   static TankVisualState fromWaterTest(WaterTestResults? results) {
     if (results == null || !results.hasValues) {
@@ -65,5 +87,25 @@ class TankVisualStateService {
       condition: TankVisualCondition.clear,
       semanticsLabel: 'Tank visual state: clear water',
     );
+  }
+
+  static LogEntry? _latestWaterTest(List<LogEntry> logs) {
+    final waterTests =
+        logs
+            .where(
+              (log) => log.type == LogType.waterTest && log.waterTest != null,
+            )
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    return waterTests.isEmpty ? null : waterTests.first;
+  }
+
+  static LogEntry? _latestWaterChange(List<LogEntry> logs) {
+    final changes =
+        logs.where((log) => log.type == LogType.waterChange).toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    return changes.isEmpty ? null : changes.first;
   }
 }

@@ -30,6 +30,7 @@ class ThemedAquarium extends StatelessWidget {
   /// Optional tank ID passed to [TankFishManager] for livestock cross-reference.
   final String? tankId;
   final WaterTestResults? latestWaterTest;
+  final TankVisualState? visualState;
 
   const ThemedAquarium({
     super.key,
@@ -40,11 +41,13 @@ class ThemedAquarium extends StatelessWidget {
     this.reduceMotion = false,
     this.tankId,
     this.latestWaterTest,
+    this.visualState,
   });
 
   @override
   Widget build(BuildContext context) {
-    final visualState = TankVisualStateService.fromWaterTest(latestWaterTest);
+    final resolvedVisualState =
+        visualState ?? TankVisualStateService.fromWaterTest(latestWaterTest);
 
     return Container(
       width: width,
@@ -168,8 +171,10 @@ class ThemedAquarium extends StatelessWidget {
               ),
             ),
 
-            if (visualState.hasOverlay)
-              Positioned.fill(child: _TankVisualStateOverlay(visualState)),
+            if (resolvedVisualState.hasOverlay)
+              Positioned.fill(
+                child: _TankVisualStateOverlay(resolvedVisualState),
+              ),
 
             // Top light bar
             Positioned(

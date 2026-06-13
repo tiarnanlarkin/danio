@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/log_entry.dart';
 import '../../providers/room_theme_provider.dart';
+import '../../services/tank_visual_state_service.dart';
 import '../../theme/room_themes.dart';
 import '../ambient/ambient_overlay.dart';
 import '../effects/ripple_container.dart';
@@ -23,6 +24,7 @@ class LivingRoomScene extends ConsumerWidget {
   final double? ammonia;
   final double? nitrate;
   final WaterTestResults? latestWaterTest;
+  final TankVisualState? visualState;
   final RoomTheme theme;
   final VoidCallback? onTankTap;
   final VoidCallback? onTestKitTap;
@@ -48,6 +50,7 @@ class LivingRoomScene extends ConsumerWidget {
     this.ammonia,
     this.nitrate,
     this.latestWaterTest,
+    this.visualState,
     this.onTankTap,
     this.onTestKitTap,
     this.onFoodTap,
@@ -140,6 +143,7 @@ class LivingRoomScene extends ConsumerWidget {
                       reduceMotion: MediaQuery.of(context).disableAnimations,
                       tankId: tankId,
                       latestWaterTest: latestWaterTest,
+                      visualState: visualState,
                     ),
                   ),
                 ),

@@ -337,6 +337,15 @@ CL-P1-001A Living tank water-state progress:
   the visual cue remains tied to real care data without adding visible text or
   disrupting the current watercolor tank style.
 
+CL-P1-001B Living tank water-change age progress:
+
+- The same water-state visual layer now considers recent tank logs, so a water
+  change older than 14 days makes the illustrated water look stale even when
+  the latest test readings are otherwise safe.
+- Unsafe nitrogen and temperature/high-nitrate readings stay higher priority
+  than water-change age, so serious care states are not hidden by routine
+  maintenance signals.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -361,8 +370,8 @@ P0 status:
 High-confidence P1/P2 gaps from code/docs evidence:
 
 - AI is still OpenAI-first rather than provider-aware.
-- Living Tank visuals now react to latest water-test state, but do not yet
-  reflect feeding animation, dirty-water age from missed changes, livestock
+- Living Tank visuals now react to latest water-test state and old water-change
+  logs, but do not yet reflect feeding animation, livestock
   stress/compatibility, plant/decor inventory, or progression unlocks.
 - Species and plant data are broad but not yet final content-rich guide pages
   with sources, tank actions, and missing-species request flow.
