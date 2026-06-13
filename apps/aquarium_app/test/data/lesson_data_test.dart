@@ -70,6 +70,64 @@ List<LearningPath> get _allPaths => [
 /// All lessons across every path.
 List<Lesson> get _allLessons => _allPaths.expand((p) => p.lessons).toList();
 
+void _expectStructuredGuides(String pathName, List<Lesson> lessons) {
+  for (final lesson in lessons) {
+    final guide = lesson.guide;
+
+    expect(
+      guide,
+      isNotNull,
+      reason: '$pathName lesson "${lesson.id}" has no structured guide',
+    );
+    expect(
+      guide!.outcomes.length,
+      greaterThanOrEqualTo(2),
+      reason: '$pathName lesson "${lesson.id}" needs at least two outcomes',
+    );
+    expect(
+      guide.scenario.trim(),
+      isNotEmpty,
+      reason: '$pathName lesson "${lesson.id}" needs a real tank scenario',
+    );
+    expect(
+      guide.careDrill.length,
+      greaterThanOrEqualTo(2),
+      reason:
+          '$pathName lesson "${lesson.id}" needs at least two care drill steps',
+    );
+    expect(
+      guide.sources,
+      isNotEmpty,
+      reason: '$pathName lesson "${lesson.id}" needs at least one source',
+    );
+
+    for (final source in guide.sources) {
+      expect(
+        source.title.trim(),
+        isNotEmpty,
+        reason: '$pathName lesson "${lesson.id}" has a source with no title',
+      );
+      expect(
+        source.publisher.trim(),
+        isNotEmpty,
+        reason:
+            '$pathName lesson "${lesson.id}" has a source with no publisher',
+      );
+      expect(
+        source.url.trim(),
+        startsWith('https://'),
+        reason:
+            '$pathName lesson "${lesson.id}" has a source without an https URL',
+      );
+      expect(
+        source.note.trim(),
+        isNotEmpty,
+        reason: '$pathName lesson "${lesson.id}" has a source with no note',
+      );
+    }
+  }
+}
+
 void main() {
   group('Lesson data — individual lesson integrity', () {
     test('every lesson has a non-empty title', () {
@@ -156,58 +214,11 @@ void main() {
     });
 
     test('every nitrogen cycle lesson has a structured guide', () {
-      for (final lesson in nitrogenCyclePath.lessons) {
-        final guide = lesson.guide;
+      _expectStructuredGuides('Nitrogen Cycle', nitrogenCyclePath.lessons);
+    });
 
-        expect(
-          guide,
-          isNotNull,
-          reason: 'Lesson "${lesson.id}" has no structured guide',
-        );
-        expect(
-          guide!.outcomes.length,
-          greaterThanOrEqualTo(2),
-          reason: 'Lesson "${lesson.id}" needs at least two outcomes',
-        );
-        expect(
-          guide.scenario.trim(),
-          isNotEmpty,
-          reason: 'Lesson "${lesson.id}" needs a real tank scenario',
-        );
-        expect(
-          guide.careDrill.length,
-          greaterThanOrEqualTo(2),
-          reason: 'Lesson "${lesson.id}" needs at least two care drill steps',
-        );
-        expect(
-          guide.sources,
-          isNotEmpty,
-          reason: 'Lesson "${lesson.id}" needs at least one source',
-        );
-
-        for (final source in guide.sources) {
-          expect(
-            source.title.trim(),
-            isNotEmpty,
-            reason: 'Lesson "${lesson.id}" has a source with no title',
-          );
-          expect(
-            source.publisher.trim(),
-            isNotEmpty,
-            reason: 'Lesson "${lesson.id}" has a source with no publisher',
-          );
-          expect(
-            source.url.trim(),
-            startsWith('https://'),
-            reason: 'Lesson "${lesson.id}" has a source without an https URL',
-          );
-          expect(
-            source.note.trim(),
-            isNotEmpty,
-            reason: 'Lesson "${lesson.id}" has a source with no note',
-          );
-        }
-      }
+    test('every water parameters lesson has a structured guide', () {
+      _expectStructuredGuides('Water Parameters', waterParametersPath.lessons);
     });
 
     test('lesson content has no stale image placeholders', () {

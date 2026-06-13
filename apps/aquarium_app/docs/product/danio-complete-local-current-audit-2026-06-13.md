@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1460 tests.
+- `flutter test`: pass, 1461 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -520,6 +520,18 @@ CL-P1-004A Structured lesson guides:
 - A data contract verifies every Nitrogen Cycle lesson has at least two
   outcomes, a scenario, at least two drill steps, and a source reference.
 
+CL-P1-004B Water Parameters guide coverage:
+
+- Shared lesson source references now live in `lib/data/lesson_sources.dart`,
+  so learning paths can reuse the same cited source data instead of duplicating
+  private constants.
+- Water Parameters now has structured guide metadata across all six lessons:
+  pH, temperature, GH/KH, chlorine/chloramine, TDS, and seasonal water
+  challenges.
+- A focused data contract verifies every Water Parameters lesson has at least
+  two outcomes, a real-tank scenario, at least two care drill steps, and an
+  HTTPS source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -552,9 +564,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   profiles, actions, watch-outs, wishlist saves, tank/task handoffs, missing
   species request guidance, and source trails. Future species work is content
   database depth and visual asset quality, not missing core page actions.
-- Learning depth is now started with structured guide metadata and Nitrogen
-  Cycle path enrichment. Remaining learning work is expanding that guide depth,
-  source references, visuals, and practice drills across the full catalog.
+- Learning depth is now started with structured guide metadata plus Nitrogen
+  Cycle and Water Parameters path enrichment. Remaining learning work is
+  expanding that guide depth, source references, visuals, and practice drills
+  across the full catalog.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.

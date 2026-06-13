@@ -4,30 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
-
-const _injafNitrogenCycleSource = LessonSource(
-  title: 'The Nitrogen Cycle and the Fishless Cycle',
-  publisher: 'INJAF',
-  url:
-      'https://injaf.org/articles-guides/beginners-guides/the-nitrogen-cycle-and-the-fishless-cycle-getting-your-aquarium-ready-for-fish/',
-  note: 'Beginner cycling sequence and fishless cycle guidance.',
-);
-
-const _merckWaterQualitySource = LessonSource(
-  title: 'Environmental diseases and water quality',
-  publisher: 'Merck Veterinary Manual',
-  url:
-      'https://www.merckvetmanual.com/exotic-and-laboratory-animals/aquatic-systems/environmental-diseases-of-aquatic-animals-in-aquatic-systems',
-  note: 'Water-quality risks including ammonia and oxygen stress.',
-);
-
-const _rspcaWaterQualitySource = LessonSource(
-  title: 'Why water quality matters when setting up an aquarium',
-  publisher: 'RSPCA Australia',
-  url:
-      'https://kb.rspca.org.au/categories/companion-animals/fish/why-is-water-quality-important-when-setting-up-a-fish-aquarium',
-  note: 'Aquarium setup, nitrogen cycle, and nitrate control context.',
-);
+import '../lesson_sources.dart';
 
 final nitrogenCyclePath = LearningPath(
   id: 'nitrogen_cycle',
@@ -59,9 +36,9 @@ final nitrogenCyclePath = LearningPath(
           'Delay new livestock until ammonia and nitrite both read zero.',
         ],
         sources: [
-          _injafNitrogenCycleSource,
-          _merckWaterQualitySource,
-          _rspcaWaterQualitySource,
+          lessonSourceInjafNitrogenCycle,
+          lessonSourceMerckWaterQuality,
+          lessonSourceRspcaWaterQuality,
         ],
       ),
       sections: [
@@ -177,7 +154,10 @@ final nitrogenCyclePath = LearningPath(
           'Compare all three nitrogen results before deciding the tank is safe.',
           'Treat any nitrite reading as a stop signal for new livestock.',
         ],
-        sources: [_injafNitrogenCycleSource, _merckWaterQualitySource],
+        sources: [
+          lessonSourceInjafNitrogenCycle,
+          lessonSourceMerckWaterQuality,
+        ],
       ),
       sections: [
         const LessonSection(
@@ -305,7 +285,10 @@ final nitrogenCyclePath = LearningPath(
           'Keep the filter running and dose ammonia only to a controlled, testable level.',
           'Wait for ammonia and nitrite to return to zero before the stocking water change.',
         ],
-        sources: [_injafNitrogenCycleSource, _rspcaWaterQualitySource],
+        sources: [
+          lessonSourceInjafNitrogenCycle,
+          lessonSourceRspcaWaterQuality,
+        ],
       ),
       sections: [
         const LessonSection(
@@ -437,7 +420,7 @@ final nitrogenCyclePath = LearningPath(
           'Log the date, ammonia, nitrite, nitrate, and pH after every test.',
           'Retest before acting if a result does not match fish behaviour or recent care events.',
         ],
-        sources: [_merckWaterQualitySource, _rspcaWaterQualitySource],
+        sources: [lessonSourceMerckWaterQuality, lessonSourceRspcaWaterQuality],
       ),
       sections: [
         const LessonSection(
@@ -598,7 +581,7 @@ final nitrogenCyclePath = LearningPath(
           'Stop feeding and change temperature-matched, dechlorinated water first.',
           'Retest after the water change and keep aeration high while the filter catches up.',
         ],
-        sources: [_merckWaterQualitySource, _rspcaWaterQualitySource],
+        sources: [lessonSourceMerckWaterQuality, lessonSourceRspcaWaterQuality],
       ),
       sections: [
         const LessonSection(
@@ -763,7 +746,10 @@ final nitrogenCyclePath = LearningPath(
           'Rinse filter media only in removed tank water, never chlorinated tap water.',
           'Test daily after medication, power outages, or major filter cleaning.',
         ],
-        sources: [_injafNitrogenCycleSource, _merckWaterQualitySource],
+        sources: [
+          lessonSourceInjafNitrogenCycle,
+          lessonSourceMerckWaterQuality,
+        ],
       ),
       sections: [
         const LessonSection(

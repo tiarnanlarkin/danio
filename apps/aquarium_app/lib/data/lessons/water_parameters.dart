@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final waterParametersPath = LearningPath(
   id: 'water_parameters',
@@ -21,6 +22,19 @@ final waterParametersPath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 4,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Explain what pH measures without chasing a perfect number.',
+          'Choose stability and species fit before chemical pH adjustment.',
+        ],
+        scenario:
+            'Your tap water sits at pH 7.6, but a community fish guide says some fish prefer softer, more acidic water.',
+        careDrill: [
+          'Test tap water and tank water before choosing fish or pH products.',
+          'Match fish to your stable baseline unless you have a clear species need.',
+        ],
+        sources: [lessonSourceMerckWaterRanges, lessonSourceRspcaWaterQuality],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -92,6 +106,22 @@ final waterParametersPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 4,
       prerequisites: ['wp_ph'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Connect fish metabolism and stress to temperature stability.',
+          'Set tropical or coldwater equipment around actual species needs.',
+        ],
+        scenario:
+            'A tropical tank is near a window and swings from 23C overnight to 29C in the afternoon.',
+        careDrill: [
+          'Check the thermometer away from heaters, windows, and direct sun.',
+          'Adjust heater placement or room exposure before changing livestock plans.',
+        ],
+        sources: [
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -152,6 +182,19 @@ final waterParametersPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['wp_temp'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Tell GH, KH, and pH apart in normal aquarium decisions.',
+          'Use KH as a stability warning instead of treating hardness as one number.',
+        ],
+        scenario:
+            'Your pH keeps dropping between water changes, and the KH test is nearly zero.',
+        careDrill: [
+          'Test pH and KH together when pH is drifting.',
+          'Change hardness slowly and recheck before adding sensitive livestock.',
+        ],
+        sources: [lessonSourceMerckWaterRanges, lessonSourceRspcaWaterQuality],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -240,6 +283,19 @@ final waterParametersPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['wp_hardness'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Explain why untreated tap water can harm fish and filter bacteria.',
+          'Choose conditioner habits that cover chlorine and chloramine safely.',
+        ],
+        scenario:
+            'A user changes half the tank water in a hurry and forgets conditioner until fish start flashing.',
+        careDrill: [
+          'Dose conditioner for new water before it reaches livestock when possible.',
+          'Confirm whether your water supplier uses chlorine, chloramine, or seasonal changes.',
+        ],
+        sources: [lessonSourceRspcaWaterQuality, lessonSourceMerckWaterQuality],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -406,6 +462,19 @@ final waterParametersPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 4,
       prerequisites: ['wp_chlorine'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Use TDS as a trend clue rather than a complete water-quality diagnosis.',
+          'Know when a fast TDS change should trigger full parameter testing.',
+        ],
+        scenario:
+            'A shrimp tank usually reads 220 ppm TDS, but this week it jumps to 340 ppm.',
+        careDrill: [
+          'Compare TDS against your own tank baseline, not a generic perfect number.',
+          'Run ammonia, nitrite, nitrate, GH, and KH tests when TDS changes quickly.',
+        ],
+        sources: [lessonSourceMerckWaterRanges, lessonSourceRspcaWaterQuality],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -553,6 +622,22 @@ final waterParametersPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['wp_tds'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Anticipate heat, cold, evaporation, and tap-water shifts before they become emergencies.',
+          'Plan water changes around temperature matching and oxygen stress.',
+        ],
+        scenario:
+            'A summer heatwave pushes a tropical tank above 30C while evaporation concentrates minerals.',
+        careDrill: [
+          'Check temperature twice daily during heatwaves or cold snaps.',
+          'Prepare conditioned, temperature-matched water before seasonal water changes.',
+        ],
+        sources: [
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
