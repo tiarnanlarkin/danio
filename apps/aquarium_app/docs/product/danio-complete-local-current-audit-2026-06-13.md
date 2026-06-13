@@ -200,14 +200,13 @@ Fixed:
   queues, or removed social/friends scaffolds as current architecture. A focused
   docs-honesty guard prevents those claims from drifting back.
 
-Remaining CL-P0-003 audit targets:
+CL-P0-003 closeout:
 
-- Complete pass over hidden debug/QA surfaces and public settings/help copy.
-- Complete pass over any remaining visible upgrade or future-facing copy outside
-  the audited primary surfaces.
-- Decide whether the remaining badge collectibles are strong enough for the
-  finished reward loop or should be moved into the later living-tank unlock
-  system.
+- Source-level honesty/copy audit is complete for the current tree. Remaining
+  findings from future emulator/device walkthroughs should be filed under the
+  relevant feature P0/P1 item instead of keeping CL-P0-003 open indefinitely.
+- Badge collectibles remain honest as current local collectibles, but the
+  deeper reward-loop quality question belongs to CL-P1-002.
 
 Current Android device state:
 
@@ -223,7 +222,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |
@@ -242,11 +241,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P0-003 feature honesty audit and fixes while Android transport is
-unstable. The next targets are:
+Start CL-P0-004 first-run flow work while Android transport is unstable:
 
-- Social/friends remnants.
-- Debug/QA-only routes accidentally reachable or documented as user features.
-- Public help/privacy/settings copy that still assumes future cloud behavior.
-- Remaining planned/upgrade copy and visible scope mismatches outside the
-  audited primary setup surfaces.
+- Re-map current onboarding screens, persisted profile fields, skip behavior,
+  and contextual prompts.
+- Design the final first-run spine around experience, region/units, tank
+  type/stage/goals, and a polished sample/local handoff.
+- Add focused tests before changing production onboarding behavior.
