@@ -16,8 +16,9 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1334 tests.
+- `flutter test`: pass, 1335 tests.
 - `flutter analyze --no-pub`: pass, no issues.
+- `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
 - `flutter test test/services/shop_service_test.dart
   test/widget_tests/gem_shop_screen_test.dart
@@ -174,6 +175,10 @@ Fixed:
 - Local weekly progress now uses tier/momentum language, including "Weekly
   Climber", instead of implying a social leaderboard, competitive league, or
   promotion race.
+- README, Feature Registry, and Data Resilience docs now describe the current
+  local-first build instead of treating Supabase backend setup, fake sync
+  queues, or removed social/friends scaffolds as current architecture. A focused
+  docs-honesty guard prevents those claims from drifting back.
 
 Remaining CL-P0-003 audit targets:
 
@@ -198,7 +203,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, onboarding feature-summary paywall-stub wording, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, optional account/cloud backup copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, onboarding feature-summary paywall-stub wording, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |

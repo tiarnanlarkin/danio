@@ -15,7 +15,7 @@
 > diagnostics, and tank setup/settings, guide copy, mascot prompts, and optional
 > AI prompts present Freshwater as the supported local scope instead of disabled
 > or implied marine setup choices. Optional AI server-connection errors no
-> longer expose Supabase/build-auth jargon to normal users.
+> longer expose Supabase/build-auth jargon to normal users. The dormant backend-sync queue code has been removed, as have hidden social reward and referral mechanics.
 
 **Updated:** 2026-06-13
 **Rule:** Every feature listed with honest status. Updated every wave.
@@ -86,15 +86,14 @@
 | Weekend Amulet (shop) | ⚠️ | FB-H3 | Timed effect now remains active in inventory; final reward-loop balance still needs complete-local QA. |
 | Placement Test | 🔴 | FB-H5 | Routes to SRS, not a test. Achievement locked. |
 | Difficulty Settings | 🔴 | FB-H6 | Rich UI, pure in-memory, resets on navigate. |
-| SyncService | 🟠 | FB-H1 | Displays fake sync counts. No HTTP. |
 | Tank Comparison | 🟠 | RF-1 | 3 static fields only. Placeholder. |
 
 ## Hidden / Dormant
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Friends (CA-002) | ⚫ | Commented-out import. No screen. |
-| Leaderboard (CA-003) | ⚫ | Model scaffolding. No UI. |
+| Social/friends UI | Removed | No visible social screen or user-to-user feature ships in the current local build. |
+| Weekly tiers | ✅ | Local single-player weekly XP tiers remain as progress language, not social rankings. |
 | ThemeGalleryScreen | ⚫ | No route leads to it. RF-4. |
 
 ## Settings Sub-features

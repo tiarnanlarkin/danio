@@ -1,189 +1,178 @@
-# 🐠 Danio
+# Danio
 
-**Learn Aquarium Keeping — the Duolingo Way**
+**Learn aquarium keeping with a local-first, tank-centred companion.**
 
-Danio is a gamified Flutter mobile app for aquarium hobbyists of all levels. It combines bite-sized lessons, spaced repetition, smart tank management, and a cosy room-exploration UI to make fish keeping genuinely fun to learn.
+Danio is a gamified Flutter mobile app for aquarium hobbyists of all levels. It
+combines bite-sized lessons, spaced repetition, smart local tank care, practical
+tools, and a cosy illustrated aquarium room to make fishkeeping easier to learn
+and more satisfying to maintain.
+
+The active finish line is complete local quality first: the app should feel
+polished, useful, and honest on Android phone and tablet before public store
+launch work resumes.
 
 ---
 
-## Quick Start (10 minutes to productive)
+## Quick Start
 
 ### Prerequisites
 
 | Tool | Minimum version |
-|------|----------------|
-| Flutter | **3.32.x** (Dart SDK ^3.10.8) |
+|------|-----------------|
+| Flutter | 3.44.x |
+| Dart | 3.12.x |
 | Android Studio / Xcode | Latest stable |
 | A device or emulator | Android 6+ / iOS 14+ |
 
-> **WSL users:** see `docs/WSL_BUILD_GUIDE.md` for the full Windows/WSL build setup.
+WSL users can use `docs/WSL_BUILD_GUIDE.md` for the Windows/WSL build setup.
 
-### Install & run
+### Install and run
 
 ```bash
-# 1. Clone the repo (if you haven't already)
+# 1. Clone the repo if needed
 git clone <repo-url>
 cd "Danio Aquarium App Project/repo/apps/aquarium_app"
 
 # 2. Get dependencies
 flutter pub get
 
-# 3. Run on a connected device / emulator
+# 3. Run on a connected device or emulator
 flutter run
 
-# 4. Run in release mode (no debug banner, production perf)
+# 4. Run in release mode
 flutter run --release
 ```
 
-### Environment / secrets
+### Environment and optional services
 
-The app uses Supabase for its backend. Copy the example env file and fill in your keys:
+The core app is local-first. Lessons, tank data, tools, backup export/import,
+progress, and the non-AI Smart Hub checks run without a backend.
 
-```bash
-cp .env.example .env   # if present, otherwise check lib/supabase/
-```
+Optional services are present in code but are not required for local completion:
 
-Secrets live in `lib/supabase/` — never commit real keys.
+| Service | Current role |
+|---------|--------------|
+| OpenAI | Optional AI tools when a user key or configured proxy is available |
+| Supabase | Optional account/cloud helpers when configured; disabled in the local build |
+| Firebase Crashlytics | Optional diagnostics after user consent |
+
+Never commit real service keys. Local testing should work with no secrets.
 
 ---
 
 ## Features
 
 | Area | What it does |
-|------|-------------|
-| **Lessons** | Bite-sized learning cards with spaced repetition (SRS) |
-| **Quiz engine** | Multiple choice, fill-in-the-blank, true/false, matching, ordering |
-| **Tank management** | Create & track aquariums — volume, inhabitants, water parameters |
-| **Water log** | Log pH, temperature, ammonia, nitrite, nitrate with trend arrows |
-| **XP & streaks** | Daily goals, streak calendar, level-up celebrations |
-| **Achievements** | Bronze → Diamond tier badge system |
-| **AI stocking** | Smart fish compatibility checker + stocking suggestions |
-| **Cosy room UI** | Explore a room scene; click desk, tank, bookshelf to navigate |
-| **Dark mode** | Full warm-dark theme (not cold blue-grey — real warm charcoal) |
-| **Offline** | Core content and tank data available without internet |
+|------|--------------|
+| Tank | Illustrated aquarium room, tank care status, quick actions, logs, tasks, livestock, equipment, and multi-tank support |
+| Learn | 12 learning paths, 82 lessons, stories, quizzes, XP, hearts, gems, and spaced repetition |
+| Practice | Due reviews, weak-spot practice, and broader fishkeeping skill drills |
+| Smart | Local compatibility, anomaly history, care suggestions, optional AI photo ID, symptom triage, Ask Danio, and weekly planning |
+| Workshop | Water change, stocking, CO2, dosing, volume, unit, lighting, compatibility, cycling, and cost tools |
+| Data | Local JSON storage, SharedPreferences progress, ZIP backup/export/import, and clear local data controls |
+| Design | Illustrated watercolor-style tank/room surfaces with warm light and motion |
 
 ---
 
 ## Architecture
 
-```
+```text
 lib/
-├── main.dart               ← App entry point; theme + providers wired here
-├── theme/
-│   └── app_theme.dart      ← Single source of truth: colours, typography, spacing, radius
-├── features/               ← Feature slices (Riverpod providers + business logic)
-│   ├── auth/               ← Sign-in, sign-up, session
-│   └── smart/              ← AI stocking, compatibility
-├── screens/                ← Full-screen UI (one file per route)
-├── widgets/
-│   ├── core/               ← Design system widgets (AppButton, AppCard, AppChip, AppTextField)
-│   ├── common/             ← Shared utility widgets
-│   ├── stage/              ← Stage/scene backdrop system
-│   ├── room/               ← Cosy room scene widgets
-│   ├── ambient/            ← Ambient animation effects
-│   ├── effects/            ← Particle / celebration effects
-│   ├── celebrations/       ← Streak & XP celebration overlays
-│   ├── mascot/             ← Danio fish mascot widget
-│   └── rive/               ← Rive animation integration
-├── models/                 ← Plain Dart data classes
-├── providers/              ← Riverpod state providers
-├── services/               ← Business logic services (sync, backup, analytics)
-├── utils/                  ← Helpers: app_feedback.dart, formatting, etc.
-├── painters/               ← Custom CustomPainter classes
-├── data/                   ← Static data (fish catalogue, lesson content)
-├── constants/              ← App-wide constants
-└── supabase/               ← Supabase client initialisation
+|-- main.dart               App entry point, theme, providers, bootstrap
+|-- theme/                  Colors, typography, spacing, radius, shadows
+|-- features/               Feature slices such as auth and Smart
+|-- screens/                Full-screen UI routes
+|-- widgets/                Shared UI, room, tank, mascot, effects, and core widgets
+|-- models/                 Plain Dart data classes
+|-- providers/              Riverpod state providers
+|-- services/               Local storage, backup, notifications, optional AI/account helpers
+|-- utils/                  Logging, formatting, feedback, and helper APIs
+|-- painters/               Custom painter classes
+|-- data/                   Bundled species, plant, lesson, and story content
+|-- constants/              App-wide constants
+`-- supabase/               Optional cloud/account schema and helper code
 ```
 
 ### State management
 
-[Riverpod](https://riverpod.dev/) throughout. Providers live in `lib/providers/` and feature-specific state in each `lib/features/` slice.
+Danio uses Riverpod throughout. Shared providers live in `lib/providers/`, and
+feature-specific state lives inside the relevant `lib/features/` slice.
 
 ### Navigation
 
-Standard Flutter `Navigator` + `MaterialPageRoute`. All routes get an automatic slide+fade transition via `AppTheme` (`_DanioPageTransitionsBuilder`).
+The app uses standard Flutter `Navigator` and `MaterialPageRoute`, with
+project-level route helpers in `lib/navigation/`.
 
-### Backend
+### Local data
 
-Supabase (Postgres + Auth + Realtime). The client is initialised once in `lib/supabase/` and injected via a Riverpod provider.
+Tank data is stored locally through `LocalJsonStorageService`. Progress,
+preferences, and Smart history use `SharedPreferences` where appropriate.
+Backup/export/import is file-based and does not require a cloud account.
 
 ---
 
 ## Key Files
 
 | File | What it is |
-|------|-----------|
-| `lib/theme/app_theme.dart` | **Start here.** All colours, spacing, radius, typography, shadows |
-| `lib/main.dart` | App bootstrap — providers, theme, scroll behaviour |
-| `lib/widgets/core/` | Design system components (use these, not raw Material widgets) |
-| `lib/widgets/danio_snack_bar.dart` | App-wide snack bar API |
-| `lib/widgets/app_bottom_sheet.dart` | Three bottom sheet patterns |
-| `docs/theme-system.md` | How to style things in this app |
-| `docs/widgets.md` | Widget library catalog |
-| `docs/WSL_BUILD_GUIDE.md` | Build on Windows/WSL |
-| `plans/typography-spec.md` | Font rationale (Fredoka / Nunito / Lora) |
+|------|------------|
+| `lib/theme/app_theme.dart` | Color, spacing, radius, typography, and shadow system |
+| `lib/main.dart` | App bootstrap, providers, theme, startup work |
+| `lib/widgets/core/` | Shared design-system components |
+| `lib/widgets/danio_snack_bar.dart` | App-wide snackbar API |
+| `lib/widgets/app_bottom_sheet.dart` | Shared bottom sheet patterns |
+| `docs/product/danio-complete-local-audit-backlog-2026-06-13.md` | Active complete-local backlog |
+| `docs/product/danio-complete-local-current-audit-2026-06-13.md` | Current audit status |
 
 ---
 
 ## Running Tests
 
 ```bash
-# Unit + widget tests
+# Unit and widget tests
 flutter test
 
 # Single test file
-flutter test test/my_test.dart
+flutter test test/copy/current_docs_local_truth_test.dart
 
-# With coverage
-flutter test --coverage
-# Open coverage/lcov.info in your IDE or run:
-# genhtml coverage/lcov.info -o coverage/html && open coverage/html/index.html
+# Analyzer
+flutter analyze --no-pub
 ```
 
-Integration tests live in `integration_test/`.
+Integration tests live in `integration_test/`. Android emulator or device QA
+should only run after confirming no other local Codex session is using the same
+target.
 
 ---
 
-## Building for Release
+## Building
 
 ```bash
-# Android APK
+# Android debug APK
+flutter build apk --debug
+
+# Android release APK
 flutter build apk --release
 
-# Android App Bundle (Play Store)
+# Android App Bundle
 flutter build appbundle --release
-
-# iOS (requires Xcode + signing)
-flutter build ios --release
 ```
 
-See `docs/BUILD_RELEASE_GUIDE.md` for signing, versioning, and Play Store upload steps.
+Public release and Play Store work are intentionally downstream of the
+complete-local quality bar.
 
 ---
 
 ## Code Style
 
-- **Linting:** `analysis_options.yaml` (Flutter recommended rules)
-- **Formatting:** `dart format .` before every commit
-- **No raw `withOpacity()`:** use the pre-computed alpha constants in `AppColors` / `AppOverlays`
-- **No raw `TextStyle()`:** use `AppTypography.*` or `Theme.of(context).textTheme.*`
-- **No raw colours:** all colours come from `AppColors` or `DanioColors`
-
----
-
-## Docs
-
-| Document | Purpose |
-|---------|---------|
-| `docs/theme-system.md` | Colour, spacing, radius, typography guide |
-| `docs/widgets.md` | Shared widget catalog |
-| `docs/WSL_BUILD_GUIDE.md` | Windows/WSL build setup |
-| `plans/typography-spec.md` | Font system rationale |
-| `prd/` | Product requirements |
-| `docs/architecture/` | Architecture decision records |
+- Use `dart format` before committing Dart changes.
+- Prefer shared widgets from `lib/widgets/core/`.
+- Use `AppTypography`, `AppColors`, `DanioColors`, and `AppOverlays` instead of
+  raw text styles, raw colors, or raw opacity values.
+- Keep visible feature copy honest: every visible feature should work locally or
+  clearly say what optional setup is needed.
 
 ---
 
 ## Project Folder
 
-`C:\Users\larki\Documents\Danio Aquarium App Project`
+`C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project`

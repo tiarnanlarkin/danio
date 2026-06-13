@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-Danio has a solid offline-first foundation. The core tank management data lives in a local JSON file with atomic writes and a mutex lock — that's more than most apps bother with at MVP stage. The gamification layer (XP, gems, achievements) uses `SharedPreferences` with its own backup coverage. Cloud sync via Supabase is additive and gracefully disabled when credentials are absent.
+Danio has a solid offline-first foundation. The core tank management data lives in a local JSON file with atomic writes and a mutex lock — that's more than most apps bother with at MVP stage. The gamification layer (XP, gems, achievements) uses `SharedPreferences` with its own backup coverage. Optional account/cloud helpers are disabled when credentials are absent and are not part of the complete-local baseline.
 
 The main risks are: no version migration strategy for the local JSON schema, crash-during-form means unsaved data is lost, no deduplication in the restore-backup path for logs, and the SharedPreferences backup has a whitelist that could miss keys added in future.
 
@@ -25,7 +25,7 @@ The main risks are: no version migration strategy for the local JSON schema, cra
 | Analytics / charts | ✅ Yes | Computed from local data |
 | Learning lessons | ✅ Yes | All lesson content is bundled in-app |
 | Spaced-repetition practice | ✅ Yes | Local |
-| XP, gems, achievements | ✅ Yes | `SharedPreferences`; queued for eventual sync |
+| XP, gems, achievements | ✅ Yes | `SharedPreferences`; backed up locally |
 | Streak tracking | ✅ Yes | UTC-based local calc |
 | Cost tracker | ✅ Yes | `SharedPreferences` |
 | Wishlist | ✅ Yes | `SharedPreferences` |
@@ -37,16 +37,18 @@ The main risks are: no version migration strategy for the local JSON schema, cra
 | AI Weekly Plan | ❌ No | Requires OpenAI API |
 | AI Stocking Suggestions | ❌ No | Requires OpenAI API |
 | AI Compatibility Checker | ❌ No | Requires OpenAI API |
-| Cloud account sign-in / sign-out | ❌ No | Requires Supabase |
-| Cloud backup (encrypted upload) | ❌ No | Requires Supabase Storage |
-| Realtime cross-device sync | ❌ No | Requires Supabase Realtime |
-| Friends / social | N/A | Debug-only stub; not yet shipped |
+| Optional cloud account sign-in / sign-out | ❌ No | Requires configured cloud services |
+| Optional cloud backup upload | ❌ No | Requires configured cloud storage |
+| Cross-device cloud data sharing | ❌ No | Outside the current local build |
+| User-to-user social features | N/A | Not shipped in the current local build |
 
 **Offline UX handling:**
 - `OfflineIndicator` banner shown app-wide via `connectivityProvider` (stream from `connectivity_plus`).
 - All AI features check `isOnlineProvider` before calling OpenAI and display a clear offline error message.
 - `isOnlineProvider` defaults to `true` while loading and on error — i.e. it optimistically assumes online until confirmed otherwise. This means there is a brief window on startup where the app may attempt an AI call and fail.
-- `SyncService` queues XP/gem/achievement/lesson actions locally and re-syncs when online. **CAVEAT: The comment in `sync_service.dart` says "Backend sync not yet implemented — queued actions execute locally only."** The queue exists but the flush-to-backend path is scaffolding.
+- No dormant backend queue remains in the current local build. XP, gems,
+  achievements, and lesson progress persist directly through their local save
+  paths.
 
 ---
 
@@ -62,9 +64,9 @@ The main risks are: no version migration strategy for the local JSON schema, cra
 | Log entries | `aquarium_data.json` | `LocalJsonStorageService` | ✅ Yes | ✅ Yes (water_parameters) |
 | Tasks | `aquarium_data.json` | `LocalJsonStorageService` | ✅ Yes | ✅ Yes (tasks) |
 | Photos | App documents/photos/ | Local files | ✅ Bundled in ZIP | ❌ No |
-| User profile (XP, streak, etc.) | `SharedPreferences` | JSON blobs | ✅ Yes (v3 backup) | Via `user_profiles` (sync queue only) |
-| Gems state | `SharedPreferences` | JSON blob | ✅ Yes | Via sync queue (scaffolding) |
-| Achievements | `SharedPreferences` | JSON blob | ✅ Yes | Via sync queue (scaffolding) |
+| User profile (XP, streak, etc.) | `SharedPreferences` | JSON blobs | ✅ Yes (v3 backup) | No backend copy in local build |
+| Gems state | `SharedPreferences` | JSON blob | ✅ Yes | No backend copy in local build |
+| Achievements | `SharedPreferences` | JSON blob | ✅ Yes | No backend copy in local build |
 | Shop inventory | `SharedPreferences` | JSON blob | ✅ Yes | N/A |
 | Wishlist | `SharedPreferences` | JSON blob | ✅ Yes | N/A |
 | Cost tracker expenses | `SharedPreferences` | JSON array | ✅ Yes | ❌ No |
@@ -72,7 +74,7 @@ The main risks are: no version migration strategy for the local JSON schema, cra
 | Weekly plan cache | `SharedPreferences` | JSON string | ✅ Yes | ❌ No |
 | Settings (theme, units, etc.) | `SharedPreferences` | Primitives | ✅ Yes | ❌ No |
 | GDPR analytics consent | `SharedPreferences` | Bool | ✅ Yes | ❌ No |
-| Lesson progress / completed lessons | `SharedPreferences` | String lists | ✅ Yes | Via sync queue (scaffolding) |
+| Lesson progress / completed lessons | `SharedPreferences` | String lists | ✅ Yes | No backend copy in local build |
 | Spaced-repetition state | `SharedPreferences` | JSON | ✅ Yes | N/A |
 
 ### Storage Corruption Handling (`LocalJsonStorageService`)
@@ -164,8 +166,10 @@ All write operations in `LocalJsonStorageService` are wrapped in `_persistLock.s
 **Potential race on read-then-write:** The `_ensureLoaded()` guard uses a `_loadFuture` to coalesce concurrent loads. However, if a write is triggered before the initial load completes (unlikely but possible on very fast first-launch), the `await _ensureLoaded()` at the top of each write method will handle it correctly since it awaits `_loadFuture`.
 
 ### Cross-Service Concurrency
-- `CloudSyncService._handleRemoteChange` → calls `storage.saveLog()` / `storage.saveTank()` etc. from a Realtime callback. These go through the same `_persistLock`, so they're safe.
-- `SyncService` queues to `SharedPreferences` but the queue itself has no lock — multiple simultaneous `queueAction()` calls could race if triggered rapidly. In practice, the Riverpod `StateNotifier` serializes its mutations on the event loop, so this is low risk.
+- Optional cloud restore/change handlers should continue to call the same local
+  storage write APIs, because those paths go through `_persistLock`.
+- The removed backend queue no longer adds an extra concurrent write path for
+  XP, gems, achievements, or lesson progress.
 
 ### `SharedPreferences` Writes
 - No lock on `SharedPreferences` writes (e.g. `GemsProvider`, `AchievementProvider`). These are async but `SharedPreferences` on mobile is backed by a single file with platform-level serialization, so corruption is unlikely. However, simultaneous writes to different keys from unrelated providers could produce unexpected read-back order.
@@ -201,7 +205,7 @@ All write operations in `LocalJsonStorageService` are wrapped in `_persistLock.s
 
 ### System Date Manipulation
 - A user setting their clock backwards could extend their streak (daily XP credit would re-trigger). The streak logic checks `_todayUtc()` which uses `DateTime.now().toUtc()` — manipulable by the user.
-- No server-side timestamp validation (sync queue is local-only scaffold).
+- No server-side timestamp validation in the local build.
 - Offline-only mode means there is no authoritative time source.
 
 ---
@@ -257,10 +261,14 @@ All write operations in `LocalJsonStorageService` are wrapped in `_persistLock.s
 
 ---
 
-### #8 — Implement Sync Queue Flush (Backend Sync Scaffold) ⭐⭐⭐
-**Impact:** The `SyncService` and `OfflineAwareService` queue XP/gem/lesson/achievement actions for backend sync, but the flush-to-Supabase path is marked as scaffolding and doesn't execute. If Supabase credentials are ever provided, these queued actions will never actually sync, leaving cloud profiles permanently stale.
+### #8 — Decide Optional Cloud Data Direction ⭐⭐⭐
+**Impact:** The complete-local app no longer carries a dormant backend queue.
+If optional cloud account or backup support becomes part of a later milestone,
+it needs a fresh end-to-end design rather than hidden queue scaffolding.
 
-**What to do:** Implement `SyncService._flushQueue()` to actually `upsert` queued records to Supabase when online and authenticated. Add a `startListening()` call in `main.dart` that connects the connectivity stream to the flush trigger.
+**What to do:** Keep local persistence as the source of truth for the current
+build. When cloud support returns, design explicit user-facing account, backup,
+restore, conflict, and deletion flows with tests before enabling it.
 
 ---
 
@@ -288,7 +296,7 @@ All write operations in `LocalJsonStorageService` are wrapped in `_persistLock.s
 | Backup coverage (SharedPreferences) | 🟠 Medium | `cost_tracker_*` keys missing from whitelist |
 | Restore atomicity | 🟠 Medium | No transactional rollback on import failure |
 | Large data performance | 🟠 Medium | Full in-memory load; no lazy paging for logs |
-| Sync queue | 🟠 Medium | Backend flush is scaffolding only |
+| Optional cloud data | 🟠 Medium | Later scope; current build keeps local persistence as source of truth |
 | Photo path integrity | 🟡 Low-Medium | Broken paths after app reset; silent failures |
 | Concurrent writes | 🟢 Low | `Lock` mutex properly applied throughout |
 | Timezone handling | 🟢 Low | Streaks use UTC; tasks/logs are local time (minor) |
