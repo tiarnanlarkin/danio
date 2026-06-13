@@ -12,6 +12,7 @@ import '../../../models/log_entry.dart';
 import '../../../models/task.dart';
 import '../../../providers/storage_provider.dart';
 import '../../../providers/tank_provider.dart';
+import '../../../providers/tank_visual_event_provider.dart';
 import '../../../providers/spaced_repetition_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../services/tank_care_priority_service.dart';
@@ -266,6 +267,7 @@ class _QuickCareRail extends ConsumerWidget {
 
       ref.invalidate(logsProvider(tankId));
       ref.invalidate(allLogsProvider(tankId));
+      ref.read(tankFeedingPulseProvider(tankId).notifier).state += 1;
 
       if (!context.mounted) return;
       DanioSnackBar.success(context, 'Feeding logged. Keep portions tiny.');

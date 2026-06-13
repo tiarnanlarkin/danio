@@ -31,6 +31,7 @@ class ThemedAquarium extends StatelessWidget {
   final String? tankId;
   final WaterTestResults? latestWaterTest;
   final TankVisualState? visualState;
+  final int feedingPulse;
 
   const ThemedAquarium({
     super.key,
@@ -42,6 +43,7 @@ class ThemedAquarium extends StatelessWidget {
     this.tankId,
     this.latestWaterTest,
     this.visualState,
+    this.feedingPulse = 0,
   });
 
   @override
@@ -171,6 +173,9 @@ class ThemedAquarium extends StatelessWidget {
               ),
             ),
 
+            if (feedingPulse > 0)
+              Positioned.fill(child: _FeedingPulseOverlay(pulse: feedingPulse)),
+
             if (resolvedVisualState.hasOverlay)
               Positioned.fill(
                 child: _TankVisualStateOverlay(resolvedVisualState),
@@ -229,6 +234,135 @@ class ThemedAquarium extends StatelessWidget {
       left: left,
       right: right,
       child: RepaintBoundary(child: animated),
+    );
+  }
+}
+
+class _FeedingPulseOverlay extends StatelessWidget {
+  final int pulse;
+
+  const _FeedingPulseOverlay({required this.pulse});
+
+  @override
+  Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    return TweenAnimationBuilder<double>(
+      key: ValueKey('tank-feeding-animation-$pulse'),
+      tween: Tween<double>(begin: 0, end: reduceMotion ? 0 : 1),
+      duration: reduceMotion
+          ? Duration.zero
+          : const Duration(milliseconds: 850),
+      curve: Curves.easeOutCubic,
+      builder: (context, progress, _) {
+        final opacity = reduceMotion ? 1.0 : (1 - progress).clamp(0.0, 1.0);
+
+        return Opacity(
+          opacity: opacity,
+          child: Semantics(
+            label: 'Tank feeding animation',
+            excludeSemantics: true,
+            child: IgnorePointer(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(
+                    key: Key('tank-feeding-pulse-$pulse'),
+                    children: [
+                      _FoodParticle(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        leftFactor: 0.44,
+                        topFactor: 0.18,
+                        size: 7,
+                        opacity: 0.95,
+                        progress: progress,
+                      ),
+                      _FoodParticle(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        leftFactor: 0.51,
+                        topFactor: 0.23,
+                        size: 5,
+                        opacity: 0.82,
+                        progress: progress,
+                      ),
+                      _FoodParticle(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        leftFactor: 0.58,
+                        topFactor: 0.16,
+                        size: 6,
+                        opacity: 0.75,
+                        progress: progress,
+                      ),
+                      _FoodParticle(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        leftFactor: 0.47,
+                        topFactor: 0.31,
+                        size: 4,
+                        opacity: 0.58,
+                        progress: progress,
+                      ),
+                      _FoodParticle(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        leftFactor: 0.55,
+                        topFactor: 0.34,
+                        size: 4,
+                        opacity: 0.48,
+                        progress: progress,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _FoodParticle extends StatelessWidget {
+  final double width;
+  final double height;
+  final double leftFactor;
+  final double topFactor;
+  final double size;
+  final double opacity;
+  final double progress;
+
+  const _FoodParticle({
+    required this.width,
+    required this.height,
+    required this.leftFactor,
+    required this.topFactor,
+    required this.size,
+    required this.opacity,
+    required this.progress,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: width * leftFactor,
+      top: height * (topFactor + (progress * 0.16)),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: const Color(0xFFDCA45A).withValues(alpha: opacity),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFE6C177).withValues(alpha: opacity * 0.35),
+              blurRadius: 4,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -175,6 +175,7 @@ void main() {
       final logs = await storage.getLogsForTank(tank.id);
       expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
       expect(find.textContaining('Feeding logged'), findsOneWidget);
+      expect(find.byKey(const Key('tank-feeding-pulse-1')), findsOneWidget);
       expect(find.byType(AddLogScreen), findsNothing);
     });
 

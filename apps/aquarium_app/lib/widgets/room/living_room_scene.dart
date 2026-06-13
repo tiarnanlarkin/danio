@@ -25,6 +25,7 @@ class LivingRoomScene extends ConsumerWidget {
   final double? nitrate;
   final WaterTestResults? latestWaterTest;
   final TankVisualState? visualState;
+  final int feedingPulse;
   final RoomTheme theme;
   final VoidCallback? onTankTap;
   final VoidCallback? onTestKitTap;
@@ -51,6 +52,7 @@ class LivingRoomScene extends ConsumerWidget {
     this.nitrate,
     this.latestWaterTest,
     this.visualState,
+    this.feedingPulse = 0,
     this.onTankTap,
     this.onTestKitTap,
     this.onFoodTap,
@@ -144,6 +146,7 @@ class LivingRoomScene extends ConsumerWidget {
                       tankId: tankId,
                       latestWaterTest: latestWaterTest,
                       visualState: visualState,
+                      feedingPulse: feedingPulse,
                     ),
                   ),
                 ),

@@ -5,6 +5,7 @@ import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/room_theme_provider.dart';
+import '../../providers/tank_visual_event_provider.dart';
 import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/guidance_service.dart';
@@ -279,6 +280,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       ref.invalidate(logsProvider(tank.id));
       ref.invalidate(allLogsProvider(tank.id));
+      ref.read(tankFeedingPulseProvider(tank.id).notifier).state += 1;
 
       if (!context.mounted) return;
       final feedingsToday = _feedingsToday(currentLogs, now) + 1;
@@ -431,6 +433,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final currentLogs =
             ref.watch(logsProvider(currentTank.id)).valueOrNull ?? [];
         final tankVisualState = TankVisualStateService.fromLogs(currentLogs);
+        final feedingPulse = ref.watch(
+          tankFeedingPulseProvider(currentTank.id),
+        );
         return Stack(
           children: [
             Positioned.fill(
@@ -442,6 +447,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     tankVolume: currentTank.volumeLitres,
                     theme: theme,
                     visualState: tankVisualState,
+                    feedingPulse: feedingPulse,
                     isNewUser: _isNewUser(ref),
                     onTankTap: () =>
                         _navigateToTankDetail(context, currentTank),

@@ -16,8 +16,8 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1335 tests.
-- `flutter analyze --no-pub`: pass, no issues.
+- `flutter test`: pass, 1407 tests.
+- `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
 - `flutter test test/services/shop_service_test.dart
@@ -346,6 +346,15 @@ CL-P1-001B Living tank water-change age progress:
   than water-change age, so serious care states are not hidden by routine
   maintenance signals.
 
+CL-P1-001C Living tank feeding feedback progress:
+
+- Main Tank quick feeding and the Today Board Feed action now trigger a
+  short, non-interactive food-particle pulse in the central aquarium after the
+  feeding log is saved.
+- The pulse is keyed per tank event, supports reduced-motion users with a
+  static particle burst, and keeps the aquarium feedback visual rather than
+  adding extra instructional text.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -370,8 +379,8 @@ P0 status:
 High-confidence P1/P2 gaps from code/docs evidence:
 
 - AI is still OpenAI-first rather than provider-aware.
-- Living Tank visuals now react to latest water-test state and old water-change
-  logs, but do not yet reflect feeding animation, livestock
+- Living Tank visuals now react to latest water-test state, old water-change
+  logs, and feeding events, but do not yet reflect livestock
   stress/compatibility, plant/decor inventory, or progression unlocks.
 - Species and plant data are broad but not yet final content-rich guide pages
   with sources, tank actions, and missing-species request flow.

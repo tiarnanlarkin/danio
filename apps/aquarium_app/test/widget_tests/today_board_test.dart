@@ -7,6 +7,7 @@ import 'package:danio/models/task.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/providers/tank_visual_event_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
@@ -212,6 +213,53 @@ void main() {
       expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
       expect(find.textContaining('Feeding logged'), findsOneWidget);
       expect(find.byType(AddLogScreen), findsNothing);
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('Feed quick care action emits a tank feeding pulse', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final storage = _LogOnlyStorageService();
+
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            storageServiceProvider.overrideWithValue(storage),
+            todaysDailyGoalProvider.overrideWithValue(_completedGoal()),
+            tasksProvider('tank-1').overrideWith((ref) async => [_task()]),
+            logsProvider('tank-1').overrideWith((ref) async => [_waterTest()]),
+            spacedRepetitionProvider.overrideWith(
+              (ref) => _FakeSrNotifier(_reviewStats()),
+            ),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  const TodayBoardCard(tankId: 'tank-1'),
+                  Consumer(
+                    builder: (context, ref, _) => Text(
+                      'pulse ${ref.watch(tankFeedingPulseProvider("tank-1"))}',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('pulse 0'), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel('Quick care action: Feed'));
+      await tester.pump();
+
+      expect(find.text('pulse 1'), findsOneWidget);
     } finally {
       semantics.dispose();
     }

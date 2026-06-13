@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _wrap(WaterTestResults? latestWaterTest) {
+Widget _wrap(WaterTestResults? latestWaterTest, {int feedingPulse = 0}) {
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(InMemoryStorageService()),
@@ -23,6 +23,7 @@ Widget _wrap(WaterTestResults? latestWaterTest) {
               theme: RoomTheme.ocean,
               reduceMotion: true,
               latestWaterTest: latestWaterTest,
+              feedingPulse: feedingPulse,
             ),
           ),
         ),
@@ -92,5 +93,20 @@ void main() {
       find.byKey(const Key('tank-visual-overlay-staleWater')),
       findsOneWidget,
     );
+  });
+
+  testWidgets('shows feeding pulse when feedingPulse is positive', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(_wrap(null, feedingPulse: 1));
+      await tester.pump();
+
+      expect(find.byKey(const Key('tank-feeding-pulse-1')), findsOneWidget);
+      expect(find.bySemanticsLabel('Tank feeding animation'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
   });
 }
