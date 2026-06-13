@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/lesson_screen.dart';
 import 'package:danio/models/learning.dart';
 import 'package:danio/models/user_profile.dart';
@@ -20,6 +21,7 @@ import 'package:danio/providers/inventory_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
 // ---------------------------------------------------------------------------
 // Fake SpacedRepetitionNotifier (avoids NotificationService init)
@@ -151,6 +153,7 @@ Future<void> _advance(WidgetTester tester) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
   });
 
   group('LessonScreen', () {
@@ -211,6 +214,24 @@ void main() {
         find.textContaining('nitrogen cycle is the most important'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('opens Emergency Guide from the lesson app bar', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.byTooltip('Emergency Guide'), findsOneWidget);
+
+      final emergencyButton = tester.widget<IconButton>(
+        find.widgetWithIcon(IconButton, Icons.emergency_outlined),
+      );
+      emergencyButton.onPressed!();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byType(EmergencyGuideScreen), findsOneWidget);
     });
 
     testWidgets('XP badge reflects active boost for lesson rewards', (

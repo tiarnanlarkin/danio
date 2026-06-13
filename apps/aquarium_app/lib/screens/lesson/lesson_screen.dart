@@ -13,6 +13,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/haptic_feedback.dart';
+import '../../utils/navigation_throttle.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../../utils/logger.dart';
 import 'lesson_card_widget.dart';
@@ -21,6 +22,7 @@ import 'lesson_completion_flow.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/core/app_dialog.dart';
 import '../../providers/species_unlock_provider.dart';
+import '../emergency_guide_screen.dart';
 import '../learn/unlock_celebration_screen.dart';
 import '../../providers/inventory_provider.dart';
 
@@ -144,6 +146,18 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           ),
           actions: [
             if (!widget.isPracticeMode) ...[
+              IconButton(
+                tooltip: 'Emergency Guide',
+                icon: const Icon(
+                  Icons.emergency_outlined,
+                  color: AppColors.error,
+                ),
+                onPressed: () => NavigationThrottle.push(
+                  context,
+                  const EmergencyGuideScreen(),
+                  rootNavigator: true,
+                ),
+              ),
               const Padding(
                 padding: EdgeInsets.only(right: AppSpacing.sm),
                 child: Center(child: HeartIndicator(compact: true)),
