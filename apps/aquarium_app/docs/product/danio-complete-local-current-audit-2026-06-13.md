@@ -108,10 +108,16 @@ Fixed:
 - Shop catalog strings touched in this pass were changed to ASCII-safe copy so
   corrupted emoji literals do not leak into dialogs if a fallback surface ever
   renders them.
+- More now describes Gem Shop as useful boosts and collectible badges, matching
+  the currently available reward catalog.
+- More's stale Friends/Leaderboard code comments were removed because those
+  surfaces are not visible complete-local features.
+- Normal Preferences no longer exposes a visible debug-only "Test Error
+  Boundary" crash control. Debug tooling remains reachable through the hidden
+  version-tap gate in debug builds.
 
 Remaining CL-P0-003 audit targets:
 
-- Complete pass over social/friends/leaderboard remnants.
 - Complete pass over AI and premium copy so local intelligence remains the
   default promise.
 - Complete pass over hidden debug/QA surfaces and public settings/help copy.

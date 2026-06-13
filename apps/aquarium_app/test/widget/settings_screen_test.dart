@@ -56,6 +56,16 @@ void main() {
       await tester.pump();
       expect(find.byType(ListView), findsOneWidget);
     });
+
+    testWidgets('does not expose debug crash controls in normal preferences', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      expect(find.text('Test Error Boundary'), findsNothing);
+      expect(find.text('Trigger a crash to test error handling'), findsNothing);
+    });
   });
 
   group('_ThemeModeTile — theme mode switching', () {

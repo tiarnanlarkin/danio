@@ -162,7 +162,7 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
 
-      final subtitle = find.text('Spend gems on rewards and cosmetics');
+      final subtitle = find.text('Useful boosts and collectible badges');
       expect(subtitle, findsOneWidget);
       expect(tester.widget<Text>(subtitle).maxLines, greaterThanOrEqualTo(2));
     });
@@ -214,7 +214,10 @@ void main() {
           scrollable: find.byType(Scrollable).first,
         );
 
-        expect(find.text('Export or import your aquarium data'), findsOneWidget);
+        expect(
+          find.text('Export or import your aquarium data'),
+          findsOneWidget,
+        );
         expect(find.textContaining('sync'), findsNothing);
         expect(
           find.bySemanticsLabel(

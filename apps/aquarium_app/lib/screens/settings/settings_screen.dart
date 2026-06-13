@@ -197,7 +197,6 @@ class SettingsScreen extends ConsumerWidget {
         isDestructive: true,
         onTap: () => confirmDeleteMyData(context, ref),
       ),
-      if (kDebugMode) (_) => const SettingsDebugSection(),
     ];
   }
 

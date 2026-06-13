@@ -19,8 +19,6 @@ import 'backup_restore_screen.dart';
 import 'debug_menu_screen.dart';
 import 'gem_shop_screen.dart';
 import 'settings_screen.dart';
-// friends_screen.dart — hidden until feature ships (CA-002)
-// leaderboard_screen.dart — hidden until feature ships (CA-003)
 import 'shop_street_screen.dart';
 import 'workshop_screen.dart';
 
@@ -29,7 +27,7 @@ const String appVersion = kAppVersion;
 
 /// Settings Hub - Consolidates all secondary features
 /// This is Tab 3 in the new navigation structure
-/// Includes: Profile, Friends, Leaderboard, Shop, Tools, Settings
+/// Includes: profile summary, rewards, tools, settings, backup, and app info.
 class SettingsHubScreen extends ConsumerStatefulWidget {
   const SettingsHubScreen({super.key});
 
@@ -191,7 +189,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
         excludeSemantics: true,
         label: _tileSemanticLabel(
           'Gem Shop',
-          'Spend gems on rewards and cosmetics',
+          'Useful boosts and collectible badges',
         ),
         onTap: () {
           NavigationThrottle.push(
@@ -203,7 +201,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
         child: PrimaryActionTile(
           icon: danioSurfaceVisual(DanioSurfaceVisualKey.gemShop).icon,
           title: 'Gem Shop',
-          subtitle: 'Spend gems on rewards and cosmetics',
+          subtitle: 'Useful boosts and collectible badges',
           iconColor: danioSurfaceVisual(DanioSurfaceVisualKey.gemShop).color,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
