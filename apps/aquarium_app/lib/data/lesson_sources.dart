@@ -69,3 +69,25 @@ const lessonSourceRspcaTropicalFishCare = LessonSource(
       'https://kb.rspca.org.au/categories/companion-animals/fish/how-should-i-care-for-my-tropical-fish',
   note: 'Tropical fish care, feeding, and common overfeeding risks.',
 );
+
+const lessonSourceTropicaPlants = LessonSource(
+  title: 'Aquarium Plants',
+  publisher: 'Tropica',
+  url: 'https://tropica.com/en/plants/',
+  note: 'Plant requirements, difficulty, growth, and layout context.',
+);
+
+const lessonSourceTropicaCare = LessonSource(
+  title: 'Care',
+  publisher: 'Tropica',
+  url: 'https://tropica.com/en/guide/care/',
+  note: 'Planted aquarium care, waste removal, and balance.',
+);
+
+const lessonSourceInjafAquariumPlants = LessonSource(
+  title: "Beginner's Guide to Aquarium Plants",
+  publisher: 'INJAF',
+  url:
+      'https://injaf.org/articles-guides/beginners-guides/beginners-guide-to-aquarium-plants/',
+  note: 'Beginner plant choices, planting, and care guidance.',
+);

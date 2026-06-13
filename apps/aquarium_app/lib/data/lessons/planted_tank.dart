@@ -5,6 +5,7 @@ library;
 import '../../models/tank.dart';
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final plantedTankPath = LearningPath(
   id: 'planted',
@@ -23,6 +24,23 @@ final plantedTankPath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 4,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Explain how live plants support water quality, cover, and algae balance.',
+          'Choose low-tech starter plants before adding high-tech equipment.',
+        ],
+        scenario:
+            'A new community tank has nitrate building between water changes and shy fish staying in open water.',
+        careDrill: [
+          'Pick one rhizome plant, one moss or foreground option, and one rooted background plant that fit your light.',
+          'Place plants where fish need cover without burying rhizomes under the substrate.',
+        ],
+        sources: [
+          lessonSourceTropicaPlants,
+          lessonSourceInjafAquariumPlants,
+          lessonSourceRspcaWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -83,6 +101,23 @@ final plantedTankPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['planted_basics'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Balance light, nutrients, and CO2 instead of turning light up blindly.',
+          'Use a timer and modest fertiliser plan to reduce algae risk.',
+        ],
+        scenario:
+            'Plants are stretching upward, algae is spreading on the glass, and the light is on for 11 hours.',
+        careDrill: [
+          'Set a 6-8 hour light timer before increasing fertiliser or CO2.',
+          'Dose lightly at first, then adjust from plant growth and algae response.',
+        ],
+        sources: [
+          lessonSourceTropicaCare,
+          lessonSourceInjafAquariumPlants,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -176,6 +211,23 @@ final plantedTankPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['planted_light'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Match substrate choice to plant type, livestock, and maintenance style.',
+          'Recognise why nutrient-rich planted substrates need extra early monitoring.',
+        ],
+        scenario:
+            'You want carpeting plants and shrimp, but the tank currently has plain gravel.',
+        careDrill: [
+          'List root feeders versus rhizome or epiphyte plants before changing substrate.',
+          'Test ammonia and pH more often after adding nutrient-rich aquasoil.',
+        ],
+        sources: [
+          lessonSourceTropicaPlants,
+          lessonSourceInjafAquariumPlants,
+          lessonSourceMerckWaterRanges,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -345,6 +397,23 @@ final plantedTankPath = LearningPath(
       xpReward: 75,
       estimatedMinutes: 6,
       prerequisites: ['planted_substrate'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Decide when CO2 is optional and when it supports high-light planting.',
+          'Recognise CO2 instability as both an algae and fish-safety risk.',
+        ],
+        scenario:
+            'A high-light planted tank is growing hair algae and fish are breathing faster near lights-on.',
+        careDrill: [
+          'Keep light and fertiliser modest if running without injected CO2.',
+          'Watch fish breathing and use a drop checker or pH trend if adding CO2.',
+        ],
+        sources: [
+          lessonSourceTropicaCare,
+          lessonSourceInjafAquariumPlants,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -523,6 +592,23 @@ final plantedTankPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['planted_co2'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Propagate common plant types without damaging growth points.',
+          'Use trimming and replanting to make the aquarium fuller over time.',
+        ],
+        scenario:
+            'Stem plants have reached the surface while crypts and java fern are growing slowly.',
+        careDrill: [
+          'Trim stem plants below a node and replant healthy tops into open substrate.',
+          'Split runners or rhizomes only when each new piece has roots and leaves.',
+        ],
+        sources: [
+          lessonSourceTropicaPlants,
+          lessonSourceTropicaCare,
+          lessonSourceInjafAquariumPlants,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,

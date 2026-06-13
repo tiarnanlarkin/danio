@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1463 tests.
+- `flutter test`: pass, 1464 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -556,6 +556,18 @@ CL-P1-004D Maintenance guide coverage:
   outcomes, a real-tank scenario, at least two care drill steps, and an HTTPS
   source reference.
 
+CL-P1-004E Planted Tanks guide coverage:
+
+- Planted Tanks now has structured guide metadata across all five lessons:
+  live-plant benefits, light and nutrients, substrate choice, CO2 decisions,
+  and propagation.
+- Shared lesson references now include Tropica plant/care pages and INJAF's
+  aquarium plant beginner guide, alongside existing RSPCA/Merck water-quality
+  references where the lesson touches fish safety or water chemistry.
+- A focused data contract verifies every Planted Tanks lesson has at least two
+  outcomes, a real-tank scenario, at least two care drill steps, and an HTTPS
+  source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -589,7 +601,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   species request guidance, and source trails. Future species work is content
   database depth and visual asset quality, not missing core page actions.
 - Learning depth is now started with structured guide metadata plus Nitrogen
-  Cycle, Water Parameters, First Fish, and Maintenance path enrichment.
+  Cycle, Water Parameters, First Fish, Maintenance, and Planted Tanks path
+  enrichment.
   Remaining learning work is expanding that guide depth, source references,
   visuals, and practice drills across the full catalog.
 - Tablet verification is not yet current.

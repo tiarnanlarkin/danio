@@ -229,6 +229,10 @@ void main() {
       _expectStructuredGuides('Maintenance', maintenancePath.lessons);
     });
 
+    test('every planted tank lesson has a structured guide', () {
+      _expectStructuredGuides('Planted Tanks', plantedTankPath.lessons);
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {
