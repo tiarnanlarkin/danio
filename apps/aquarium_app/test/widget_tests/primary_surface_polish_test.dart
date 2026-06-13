@@ -66,12 +66,13 @@ void main() {
   test('shipped surfaces avoid placeholder availability copy', () {
     final files = [
       'lib/screens/gem_shop_screen.dart',
+      'lib/screens/shop_street_screen.dart',
       'lib/screens/tank_settings_screen.dart',
       'lib/screens/create_tank_screen/widgets/basic_info_page.dart',
     ];
 
     final placeholder = RegExp(
-      r'on the way|coming soon|arriving soon|stay tuned|check back soon',
+      r'on the way|coming soon|arriving soon|stay tuned|check back soon|planned',
       caseSensitive: false,
     );
 

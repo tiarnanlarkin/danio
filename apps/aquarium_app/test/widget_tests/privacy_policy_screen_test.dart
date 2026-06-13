@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/privacy_policy_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -76,6 +78,33 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       expect(find.textContaining('Firebase Crashlytics'), findsWidgets);
+    });
+
+    testWidgets('describes cloud services as inactive in the local build', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(find.text('Cloud Sync & Accounts'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'Cloud sync and account login are not active in this local build',
+        ),
+        findsWidgets,
+      );
+      expect(find.textContaining('synced cloud rows'), findsNothing);
+      expect(find.textContaining('delete your cloud account'), findsNothing);
+    });
+
+    test('does not mention dormant provider implementation details', () {
+      final source = File(
+        'lib/screens/privacy_policy_screen.dart',
+      ).readAsStringSync();
+
+      expect(source, isNot(contains('Supabase')));
+      expect(source, isNot(contains('When activated in future')));
+      expect(source, isNot(contains('Cloud sync code exists')));
     });
   });
 }

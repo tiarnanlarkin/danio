@@ -9,7 +9,9 @@
 > 2026-06-13 CL-P0-003 progress: Settings account copy is now local/offline,
 > timed shop boosts are no longer no-op inventory sinks, visible debug crash
 > controls are hidden from normal Preferences, and Smart now frames OpenAI as
-> optional AI while local checks remain available.
+> optional AI while local checks remain available. Shop Street and Privacy copy
+> now describe current local features instead of planned upgrades or dormant
+> cloud implementation details.
 
 **Updated:** 2026-06-13
 **Rule:** Every feature listed with honest status. Updated every wave.

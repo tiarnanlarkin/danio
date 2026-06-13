@@ -14,11 +14,7 @@ import 'package:danio/screens/shop_street_screen.dart';
 // ---------------------------------------------------------------------------
 
 Widget _wrap() {
-  return const ProviderScope(
-    child: MaterialApp(
-      home: ShopStreetScreen(),
-    ),
-  );
+  return const ProviderScope(child: MaterialApp(home: ShopStreetScreen()));
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -65,6 +61,19 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.textContaining('Equipment Wishlist'), findsWidgets);
+    });
+
+    testWidgets('uses honest local planning copy, not planned-feature copy', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('Gear to compare before buying'), findsOneWidget);
+      expect(find.text('Useful boosts and collectible badges'), findsOneWidget);
+      expect(find.text('Wishlists, budget, and shops'), findsOneWidget);
+      expect(find.textContaining('planned'), findsNothing);
+      expect(find.textContaining('coming soon'), findsNothing);
     });
   });
 }

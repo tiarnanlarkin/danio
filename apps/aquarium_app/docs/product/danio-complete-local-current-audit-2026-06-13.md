@@ -125,12 +125,18 @@ Fixed:
   AI without mentioning build-time developer flags.
 - Smart feature card semantics were hardened so the optional-AI setup action is
   still exposed after the card animation settles.
+- Shop Street now describes the working local planning tools: wishlists,
+  budget, saved shops, useful gem boosts, and collectible badges. The visible
+  "Gear upgrades planned" copy was removed.
+- The in-app Privacy Policy now describes the current local build instead of
+  dormant cloud-provider implementation details. It no longer tells normal
+  users to delete a cloud account or synced cloud rows from Offline Data.
 
 Remaining CL-P0-003 audit targets:
 
 - Complete pass over hidden debug/QA surfaces and public settings/help copy.
-- Complete pass over any remaining visible "planned", upgrade, or future-facing
-  copy outside Smart.
+- Complete pass over any remaining visible upgrade or future-facing copy outside
+  the audited primary surfaces.
 - Decide whether the remaining badge collectibles are strong enough for the
   finished reward loop or should be moved into the later living-tank unlock
   system.
@@ -149,7 +155,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, stale social comments, visible debug crash controls, and Smart optional-AI copy fixed and tested; deeper debug/help, public settings, and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |

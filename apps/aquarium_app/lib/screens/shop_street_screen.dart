@@ -98,7 +98,7 @@ class ShopStreetScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.sm2),
                     _ShopSection(
                       title: 'Equipment Wishlist',
-                      subtitle: 'Gear upgrades planned',
+                      subtitle: 'Gear to compare before buying',
                       icon: Icons.build,
                       color: DanioColors.wishlistAmber,
                       itemCount: equipmentCount,
@@ -112,7 +112,7 @@ class ShopStreetScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.sm2),
                     _ShopSection(
                       title: 'Gem Shop',
-                      subtitle: 'Spend gems on rewards & cosmetics',
+                      subtitle: 'Useful boosts and collectible badges',
                       icon: Icons.diamond,
                       color: AppColors.accentAlt,
                       itemCount: 0,
@@ -364,7 +364,7 @@ class _ShopHeader extends StatelessWidget {
               const SizedBox(height: AppSpacing.xs),
               Builder(
                 builder: (context) => Text(
-                  'Wishlists & shopping',
+                  'Wishlists, budget, and shops',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.textSecondaryDark,
                   ),

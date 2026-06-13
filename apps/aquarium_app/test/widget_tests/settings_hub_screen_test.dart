@@ -146,6 +146,7 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.text('Shop Street'), findsOneWidget);
+      expect(find.text('Plan wishlists, budgets, and shops'), findsOneWidget);
     });
 
     testWidgets('shows Gem Shop as a clear More hub destination', (
@@ -305,6 +306,12 @@ void main() {
 
         expect(
           find.bySemanticsLabel('Achievements, Your badges and milestones'),
+          findsOneWidget,
+        );
+        expect(
+          find.bySemanticsLabel(
+            'Shop Street, Plan wishlists, budgets, and shops',
+          ),
           findsOneWidget,
         );
       } finally {

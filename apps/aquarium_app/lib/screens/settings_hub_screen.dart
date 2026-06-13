@@ -157,7 +157,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
         excludeSemantics: true,
         label: _tileSemanticLabel(
           'Shop Street',
-          'Discover local aquarium shops',
+          'Plan wishlists, budgets, and shops',
         ),
         onTap: () {
           NavigationThrottle.push(
@@ -169,7 +169,7 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
         child: PrimaryActionTile(
           icon: Icons.storefront,
           title: 'Shop Street',
-          subtitle: 'Discover local aquarium shops',
+          subtitle: 'Plan wishlists, budgets, and shops',
           iconColor: AppColors.success,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {

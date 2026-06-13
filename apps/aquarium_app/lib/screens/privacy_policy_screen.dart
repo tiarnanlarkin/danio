@@ -124,8 +124,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildHighlight(
-              'Supabase Auth — Cloud Sync (currently dormant)',
-              'The app includes code for optional cloud sync via Supabase. This feature is not currently active. When activated in future, it will store your email and password in Supabase (EU region), encrypted in transit using TLS 1.3. We will update this policy and request explicit consent before activation.',
+              'Cloud Sync & Accounts',
+              'Cloud sync and account login are not active in this local build. Danio does not upload tank records, photos, logs, or backups to a Danio server.',
               Icons.cloud_off,
             ),
 
@@ -181,7 +181,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             _buildRightCard(
               'Right to Erasure',
-              'You can delete local data in Settings, delete your cloud account from Offline Data when signed in, or email larkintiarnanbizz@gmail.com',
+              'You can delete local app data in Settings or email larkintiarnanbizz@gmail.com for privacy requests',
               Icons.delete,
               context,
             ),
@@ -209,8 +209,8 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'In-app: Settings > Account > Delete Data — permanently removes all local data',
-              'In-app: Settings > Offline Data > Delete Account — permanently removes your cloud account, synced cloud rows, and cloud backups while preserving local data',
+              'In-app: Settings > Clear All Data — permanently removes all local tank, log, task, and photo data',
+              'In-app: Settings > Delete My Data — removes local tanks, progress, achievements, and onboarding state',
               'Email request: Contact larkintiarnanbizz@gmail.com and we will delete all data we hold within 30 days',
               'Uninstall: Removing the app deletes all local data from your device',
               'Crash report opt-out: Disabling Crash Reports in Settings stops further crash diagnostic collection',
@@ -222,10 +222,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'All network transmissions use HTTPS/TLS encryption',
-              'Supabase connections use TLS 1.3',
+              'Optional online services use HTTPS/TLS encryption',
               'Local data is protected by your device\'s security (lock screen, encryption)',
-              'No sensitive personal data ( passwords, financial info) is collected',
+              'No sensitive personal data, such as passwords or financial information, is collected in the local build',
             ], context),
 
             _buildSection(
@@ -314,7 +313,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             'Fish ID sends metadata-stripped photos to OpenAI for identification',
           ),
           _buildSummaryItem(
-            'Cloud sync code exists but is not currently active',
+            'Cloud sync and account login are not active in this local build',
           ),
           _buildSummaryItem('You can delete all data in-app or by emailing us'),
           _buildSummaryItem('Crash reports can be toggled off in Settings'),
