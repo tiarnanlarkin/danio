@@ -43,8 +43,8 @@ class _FishIdScreenState extends ConsumerState<FishIdScreen> {
   String? _error;
 
   static const _systemPrompt =
-      'You are Danio AI, an expert aquarist and marine biologist with 20+ years '
-      'of experience in freshwater and marine fishkeeping. You identify species '
+      'You are Danio AI, an expert freshwater aquarist with 20+ years '
+      'of experience in tropical, coldwater, planted, shrimp, and nano fishkeeping. You identify species '
       'from photos with high accuracy and provide practical, hobbyist-friendly '
       'care information. If you are uncertain about the species, say so and '
       'provide your best guess with a confidence note. Always prioritise the '

@@ -12,8 +12,9 @@
 > optional AI while local checks remain available. Shop Street and Privacy copy
 > now describe current local features instead of planned upgrades or dormant
 > cloud implementation details. The normal app shell no longer mounts debug sync
-> diagnostics, and tank setup/settings present Freshwater as the supported local
-> scope instead of disabled marine setup choices.
+> diagnostics, and tank setup/settings, guide copy, mascot prompts, and optional
+> AI prompts present Freshwater as the supported local scope instead of disabled
+> or implied marine setup choices.
 
 **Updated:** 2026-06-13
 **Rule:** Every feature listed with honest status. Updated every wave.

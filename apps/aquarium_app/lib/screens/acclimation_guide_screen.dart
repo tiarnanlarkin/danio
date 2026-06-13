@@ -85,7 +85,7 @@ class AcclimationGuideScreen extends StatelessWidget {
       Text('Method 2: Drip Acclimation', style: AppTypography.headlineMedium),
       const SizedBox(height: AppSpacing.sm),
       Text(
-        'Best for: Sensitive fish, shrimp, marine fish, large pH/hardness differences',
+        'Best for: Sensitive fish, shrimp, wild-caught fish, large pH/hardness differences',
         style: AppTypography.bodySmall,
       ),
       const SizedBox(height: AppSpacing.md),
@@ -204,9 +204,9 @@ class AcclimationGuideScreen extends StatelessWidget {
             ),
             const Divider(),
             _SensitiveItem(
-              species: 'Marine fish',
+              species: 'Delicate species',
               note:
-                  'Salinity and pH critical. Drip acclimate all marine species.',
+                  'Parameter swings can be hard on delicate fish. Drip acclimate and keep the room calm.',
             ),
             const Divider(),
             _SensitiveItem(

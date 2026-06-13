@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1322 tests.
+- `flutter test`: pass, 1324 tests.
 - `flutter analyze --no-pub`: pass, no issues.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
 - `flutter test test/services/shop_service_test.dart
@@ -137,6 +137,10 @@ Fixed:
   product instead of offering disabled "Marine not available" setup choices.
   Tank Settings uses a read-only Freshwater field and always shows the supported
   tropical/coldwater water profile controls.
+- Acclimation, equipment, substrate, mascot onboarding prompts, and optional AI
+  system prompts now stay aligned to the freshwater local scope. A focused copy
+  contract protects those scoped surfaces without removing legitimate brackish
+  biology facts from species/lesson content.
 
 Remaining CL-P0-003 audit targets:
 
@@ -161,7 +165,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, unsupported marine setup choices, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
+| CL-P0-003 | In progress | Local/offline account copy, reward/shop honesty, Shop Street planning copy, Privacy local-build copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, unsupported marine setup choices/scope copy, and Smart optional-AI copy fixed and tested; deeper debug/help and remaining future-facing copy still need the audit pass. |
 | CL-P0-004 | Not started | Onboarding needs final shape: guided but skippable, better personalization, region/units, tank stage/goals, and sample/demo handoff. |
 | CL-P0-005 | Not started | Tank daily loop needs final next-best action, care priority, and quick action polish. |
 | CL-P0-006 | Not started | Emergency workflows need first-class entry and task/action handling. |

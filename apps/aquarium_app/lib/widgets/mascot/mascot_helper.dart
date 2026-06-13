@@ -191,7 +191,7 @@ class MascotHelper {
     ],
     MascotContext.tankTypeQuestion: [
       "What kind of underwater world do you have?",
-      "Freshwater, saltwater, or planted?",
+      "Tropical, coldwater, or planted?",
       "Every tank type is an adventure!",
     ],
     MascotContext.goalsQuestion: [

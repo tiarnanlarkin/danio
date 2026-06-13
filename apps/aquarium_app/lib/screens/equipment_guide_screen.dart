@@ -178,7 +178,7 @@ class EquipmentGuideScreen extends StatelessWidget {
             description: 'Creates water movement without surface disruption.',
             pros: ['Good flow', 'No CO2 loss', 'Prevents dead spots'],
             cons: ['Can stress slow swimmers', 'Uses electricity'],
-            bestFor: 'Planted tanks, reef tanks',
+            bestFor: 'Planted tanks, river-style tanks',
             maintenance: 'Clean impeller monthly.',
           ),
         ],

@@ -123,7 +123,7 @@ class SubstrateGuideScreen extends StatelessWidget {
           'Good for hard water fish',
         ],
         cons: ['Not for soft water fish', 'Not for most plants', 'Sharp edges'],
-        bestFor: 'African cichlids, livebearers, marine tanks',
+        bestFor: 'African cichlids, livebearers, hard-water setups',
         size: '2-5mm',
         depth: '5-8cm (2-3 inches)',
       ),

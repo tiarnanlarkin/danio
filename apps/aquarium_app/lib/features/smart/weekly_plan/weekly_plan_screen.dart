@@ -148,7 +148,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             role: 'system',
             content:
                 'You are Danio AI, an expert aquarium maintenance planner '
-                'with deep knowledge of freshwater and marine fishkeeping. '
+                'with deep knowledge of freshwater fishkeeping, planted tanks, shrimp care, and goldfish/coldwater systems. '
                 'Create practical, tailored maintenance schedules based on the '
                 'specific tanks, species, and bioload provided. Consider tank '
                 'maturity, stocking density, and species-specific needs. '
