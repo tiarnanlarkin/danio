@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/models.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/search_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
@@ -18,12 +19,17 @@ import 'package:danio/utils/navigation_throttle.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() {
+Widget _wrap({
+  List<Tank> tanks = const [],
+  Map<String, List<LogEntry>> logsByTankId = const {},
+}) {
   final memStorage = InMemoryStorageService();
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
-      tanksProvider.overrideWith((ref) async => []),
+      tanksProvider.overrideWith((ref) async => tanks),
+      for (final entry in logsByTankId.entries)
+        allLogsProvider(entry.key).overrideWith((ref) async => entry.value),
     ],
     child: const MaterialApp(home: SearchScreen()),
   );
@@ -33,6 +39,39 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 500));
   await tester.pump(const Duration(milliseconds: 500));
+}
+
+Tank _tank({String id = 'tank-1', String name = 'River Tank'}) {
+  final now = DateTime(2026, 6, 13);
+  return Tank(
+    id: id,
+    name: name,
+    type: TankType.freshwater,
+    volumeLitres: 120,
+    startDate: now,
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+LogEntry _log({
+  String id = 'log-1',
+  required String tankId,
+  required String title,
+  required String notes,
+  LogType type = LogType.observation,
+}) {
+  final now = DateTime(2026, 6, 13, 9);
+  return LogEntry(
+    id: id,
+    tankId: tankId,
+    type: type,
+    timestamp: now,
+    title: title,
+    notes: notes,
+    createdAt: now,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -101,6 +140,84 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(EmergencyGuideScreen), findsOneWidget);
+    });
+
+    testWidgets('backup searches find app destinations', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'backup');
+      await _advance(tester);
+
+      expect(find.text('App'), findsOneWidget);
+      expect(find.text('Backup & Restore'), findsOneWidget);
+      expect(
+        find.text('Export, import, and protect local aquarium backups'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('tool searches find calculator destinations', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'unit converter');
+      await _advance(tester);
+
+      expect(find.text('Tools'), findsOneWidget);
+      expect(find.text('Unit Converter'), findsOneWidget);
+      expect(
+        find.text('Convert litres, gallons, cm, inches, and temperature'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('learning searches find lesson path destinations', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'nitrogen cycle');
+      await _advance(tester);
+
+      expect(find.text('Learning'), findsOneWidget);
+      expect(find.text('The Nitrogen Cycle'), findsOneWidget);
+      expect(
+        find.text(
+          'The #1 thing every fishkeeper must understand. Master this and your fish will thrive.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('log searches find matching tank history', (tester) async {
+      final tank = _tank();
+      await tester.pumpWidget(
+        _wrap(
+          tanks: [tank],
+          logsByTankId: {
+            tank.id: [
+              _log(
+                tankId: tank.id,
+                title: 'Brown algae on glass',
+                notes: 'Diatoms spreading near the filter outlet',
+              ),
+            ],
+          },
+        ),
+      );
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'diatoms');
+      await _advance(tester);
+
+      expect(find.text('Logs'), findsOneWidget);
+      expect(find.text('Brown algae on glass'), findsOneWidget);
+      expect(
+        find.text('River Tank - Diatoms spreading near the filter outlet'),
+        findsOneWidget,
+      );
     });
   });
 }

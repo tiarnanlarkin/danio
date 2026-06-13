@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1525 tests.
+- `flutter test`: pass, 1529 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -935,6 +935,22 @@ CL-P1-010A Tank Settings water-profile copy:
 - Focused coverage verifies the visible labels and guards the screen source
   against non-ASCII artifacts.
 
+### CL-P1-011A Global Destination And Log Search
+
+- Global search now indexes app destinations, calculators, guides, learning
+  paths, settings/privacy/backup destinations, species database results,
+  livestock/equipment matches, and local tank log history.
+- Search results are grouped into App, Tools, Learning, Guides, Tanks, Logs,
+  Livestock, Equipment, and Species Database sections so it stays a contextual
+  finder rather than becoming another bottom navigation surface.
+- App/tool results route to the existing destination screens, using the first
+  local tank for tools that benefit from tank context and falling back to the
+  relevant hub when no tank exists.
+- Log results search tank name, log type, display title, summary, fallback copy,
+  title, and notes, then route back to the owning tank detail screen.
+- Focused coverage verifies Backup & Restore, Unit Converter, Nitrogen Cycle
+  learning, and local log-note search results.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -993,6 +1009,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Tank Settings water-profile labels are now readable and source-safe.
   Remaining profile/preferences work is centralising reset/edit controls for
   all onboarding preferences, AI, privacy, reminders, motion, and haptics.
+- Global search now has first complete-local coverage for app destinations,
+  tools, learning paths, guides, settings/privacy/backup, species, equipment,
+  livestock, and local logs. Remaining search work is Android phone/tablet
+  walkthrough QA and any future direct-per-lesson deep links.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
@@ -1005,7 +1025,8 @@ Continue CL-P1-007/CL-P1-008 remaining local depth while Android transport is
 reserved by other sessions:
 
 - Expand richer tool-result/AI-note/milestone timeline handoffs, polish
-  multi-tank switching, continue CL-P1-009 data-safety hardening, and continue
-  CL-P1-010 preference centralisation.
+  multi-tank switching, continue CL-P1-009 data-safety hardening, continue
+  CL-P1-010 preference centralisation, and keep CL-P1-011 direct-per-lesson
+  search/deep links as optional polish if walkthroughs show users need it.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.
