@@ -10,11 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/log_entry.dart';
 import '../../../models/task.dart';
+import '../../../providers/storage_provider.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../providers/spaced_repetition_provider.dart';
 import '../../../providers/user_profile_provider.dart';
 import '../../../services/tank_care_priority_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/danio_snack_bar.dart';
 import '../../add_log_screen.dart';
 import '../../emergency_guide_screen.dart';
 import '../../tasks_screen.dart';
@@ -91,6 +93,8 @@ class TodayBoardCard extends ConsumerWidget {
                 _CarePriorityStrip(priority: priority, tankId: tankId),
                 const SizedBox(height: AppSpacing.xs),
               ],
+              _QuickCareRail(tankId: tankId),
+              const SizedBox(height: AppSpacing.xs),
               _buildEmptyState(context, ref),
               const SizedBox(height: AppSpacing.xs),
               const _DailyGoalBar(),
@@ -105,6 +109,8 @@ class TodayBoardCard extends ConsumerWidget {
               _CarePriorityStrip(priority: priority, tankId: tankId),
               const SizedBox(height: AppSpacing.xs),
             ],
+            _QuickCareRail(tankId: tankId),
+            const SizedBox(height: AppSpacing.xs),
             _TodayBoardContent(tankId: tankId, tasks: combined),
             const SizedBox(height: AppSpacing.xs),
             const _DailyGoalBar(),
@@ -173,6 +179,158 @@ class TodayBoardCard extends ConsumerWidget {
               ),
               Icon(Icons.arrow_forward, size: 16, color: context.textSecondary),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickCareRail extends ConsumerWidget {
+  final String tankId;
+
+  const _QuickCareRail({required this.tankId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.xs2),
+      decoration: BoxDecoration(
+        color: AppOverlays.white88,
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(color: AppOverlays.white50),
+        boxShadow: AppShadows.soft,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _QuickCareAction(
+              icon: Icons.restaurant_rounded,
+              label: 'Feed',
+              semanticsLabel: 'Feed',
+              color: DanioColors.coralAccent,
+              onTap: () => _logFeeding(context, ref),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs2),
+          Expanded(
+            child: _QuickCareAction(
+              icon: Icons.science_rounded,
+              label: 'Test',
+              semanticsLabel: 'Water test',
+              color: AppColors.primary,
+              onTap: () => _openLog(context, LogType.waterTest),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs2),
+          Expanded(
+            child: _QuickCareAction(
+              icon: Icons.water_drop_rounded,
+              label: 'Change',
+              semanticsLabel: 'Water change',
+              color: AppColors.accent,
+              onTap: () => _openLog(context, LogType.waterChange),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs2),
+          Expanded(
+            child: _QuickCareAction(
+              icon: Icons.checklist_rounded,
+              label: 'Tasks',
+              semanticsLabel: 'Tasks',
+              color: AppColors.success,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => TasksScreen(tankId: tankId)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _logFeeding(BuildContext context, WidgetRef ref) async {
+    try {
+      final now = DateTime.now();
+      final storage = ref.read(storageServiceProvider);
+      await storage.saveLog(
+        LogEntry(
+          id: 'quick-feed-${now.microsecondsSinceEpoch}',
+          tankId: tankId,
+          type: LogType.feeding,
+          timestamp: now,
+          title: 'Fed fish',
+          createdAt: now,
+        ),
+      );
+
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(allLogsProvider(tankId));
+
+      if (!context.mounted) return;
+      DanioSnackBar.success(context, 'Feeding logged. Keep portions tiny.');
+    } catch (_) {
+      if (!context.mounted) return;
+      DanioSnackBar.error(context, 'Couldn\'t save that feeding. Try again.');
+    }
+  }
+
+  void _openLog(BuildContext context, LogType type) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AddLogScreen(tankId: tankId, initialType: type),
+      ),
+    );
+  }
+}
+
+class _QuickCareAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String semanticsLabel;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _QuickCareAction({
+    required this.icon,
+    required this.label,
+    required this.semanticsLabel,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Quick care action: $semanticsLabel',
+      button: true,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: AppRadius.smallRadius,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 54),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs2,
+              vertical: AppSpacing.xs,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 19, color: color),
+                const SizedBox(height: AppSpacing.xs2),
+                Text(
+                  label,
+                  style: AppTypography.labelSmall.copyWith(
+                    color: context.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ),
       ),

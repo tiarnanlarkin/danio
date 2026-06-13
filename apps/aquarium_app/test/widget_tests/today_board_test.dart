@@ -5,11 +5,14 @@ import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/models/task.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
+import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
+import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/home/widgets/today_board.dart';
 import 'package:danio/screens/tasks_screen.dart';
+import 'package:danio/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,10 +21,12 @@ Widget _wrap({
   required DailyGoal dailyGoal,
   required List<Task> tasks,
   List<LogEntry>? logs,
+  StorageService? storage,
 }) {
   final resolvedLogs = logs ?? [_waterTest(), _feeding()];
   return ProviderScope(
     overrides: [
+      if (storage != null) storageServiceProvider.overrideWithValue(storage),
       todaysDailyGoalProvider.overrideWithValue(dailyGoal),
       tasksProvider('tank-1').overrideWith((ref) async => tasks),
       logsProvider('tank-1').overrideWith((ref) async => resolvedLogs),
@@ -67,6 +72,25 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
   _FakeSrNotifier(ReviewStats stats)
     : super(SpacedRepetitionState(cards: const [], stats: stats));
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _LogOnlyStorageService implements StorageService {
+  final List<LogEntry> savedLogs = [];
+
+  @override
+  Future<void> saveLog(LogEntry log) async => savedLogs.add(log);
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) async {
+    return savedLogs.where((log) => log.tankId == tankId).toList();
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -139,6 +163,58 @@ void main() {
     expect(find.text('Water Change'), findsOneWidget);
     expect(find.text('Daily goal complete!'), findsOneWidget);
     expect(find.textContaining(String.fromCharCode(0x1F389)), findsNothing);
+  });
+
+  testWidgets('shows visible Tank care action rail', (tester) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _wrap(dailyGoal: _completedGoal(), tasks: [_task()]),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.bySemanticsLabel('Quick care action: Feed'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Quick care action: Water test'),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel('Quick care action: Water change'),
+        findsOneWidget,
+      );
+      expect(find.bySemanticsLabel('Quick care action: Tasks'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('Feed quick care action saves a feeding log directly', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final storage = _LogOnlyStorageService();
+
+    try {
+      await tester.pumpWidget(
+        _wrap(
+          dailyGoal: _completedGoal(),
+          tasks: [_task()],
+          logs: [_waterTest()],
+          storage: storage,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel('Quick care action: Feed'));
+      await tester.pump();
+
+      final logs = await storage.getLogsForTank('tank-1');
+      expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
+      expect(find.textContaining('Feeding logged'), findsOneWidget);
+      expect(find.byType(AddLogScreen), findsNothing);
+    } finally {
+      semantics.dispose();
+    }
   });
 
   testWidgets('tank task rows open the task list instead of no-op navigation', (
