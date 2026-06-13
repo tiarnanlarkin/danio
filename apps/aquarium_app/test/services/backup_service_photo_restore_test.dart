@@ -160,5 +160,43 @@ void main() {
         ),
       );
     });
+
+    for (final childCollection in const [
+      'logs',
+      'livestock',
+      'equipment',
+      'tasks',
+    ]) {
+      test(
+        'getBackupData rejects $childCollection for unknown tank ids',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            childCollection: [
+              {'id': '$childCollection-1', 'tankId': 'missing-tank'},
+            ],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: $childCollection entries reference unknown tank id',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }

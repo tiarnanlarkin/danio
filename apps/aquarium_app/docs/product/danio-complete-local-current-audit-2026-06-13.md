@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1545 tests.
+- `flutter test`: pass, 1549 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -979,6 +979,16 @@ CL-P1-009D Backup duplicate tank-ID validation:
 - Focused coverage verifies duplicate `tank-1` entries fail with
   `Invalid format: duplicate tank id`.
 
+CL-P1-009E Backup child tank-relationship validation:
+
+- Backup preview/import now rejects logs, livestock, equipment, and tasks whose
+  `tankId` does not match any tank in the backup before preview, photo
+  resolution, or restore proceeds.
+- The guard lives in the shared backup-data reader, so users do not confirm an
+  import that will silently drop orphaned child records during tank-ID remap.
+- Focused coverage verifies each tank-scoped child collection fails with
+  `Invalid format: <collection> entries reference unknown tank id`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1130,9 +1140,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   as AI Note entries. Remaining timeline work is any richer
   tool-result/AI-note/milestone detail cards found in walkthroughs.
 - Backup & Restore now has clearer import safety copy and validates required
-  backup JSON, malformed tank entries, and duplicate tank IDs before
-  preview/import. Remaining backup/data work is deeper import validation UX,
-  edit/delete/undo coverage, and restore/migration walkthrough QA.
+  backup JSON, malformed tank entries, duplicate tank IDs, and orphaned
+  tank-scoped child records before preview/import. Remaining backup/data work is
+  deeper import validation UX, edit/delete/undo coverage, and restore/migration
+  walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

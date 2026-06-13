@@ -240,7 +240,45 @@ class BackupService {
       }
     }
 
+    for (final collectionName in const [
+      'logs',
+      'livestock',
+      'equipment',
+      'tasks',
+    ]) {
+      _validateTankScopedCollection(data, collectionName, seenTankIds);
+    }
+
     return data;
+  }
+
+  void _validateTankScopedCollection(
+    Map<String, dynamic> data,
+    String collectionName,
+    Set<String> tankIds,
+  ) {
+    final entries = data[collectionName];
+    if (entries == null || entries is! List) return;
+
+    for (final entry in entries) {
+      if (entry is! Map) {
+        throw Exception(
+          'Invalid format: $collectionName entries must be objects',
+        );
+      }
+      final tankId = entry['tankId'];
+      if (tankId is! String || tankId.trim().isEmpty) {
+        throw Exception(
+          'Invalid format: $collectionName entries must include a tankId',
+        );
+      }
+      final normalizedTankId = tankId.trim();
+      if (!tankIds.contains(normalizedTankId)) {
+        throw Exception(
+          'Invalid format: $collectionName entries reference unknown tank id "$normalizedTankId"',
+        );
+      }
+    }
   }
 
   Future<Archive> _decodeZip(String zipPath) async {
