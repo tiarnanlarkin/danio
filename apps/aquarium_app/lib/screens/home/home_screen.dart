@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
+import '../../providers/storage_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -252,6 +253,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         page: AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
       ),
     );
+  }
+
+  Future<void> _quickLogFeeding(
+    BuildContext context,
+    WidgetRef ref,
+    Tank tank,
+    List<LogEntry> currentLogs,
+  ) async {
+    try {
+      final now = DateTime.now();
+      final storage = ref.read(storageServiceProvider);
+      await storage.saveLog(
+        LogEntry(
+          id: now.microsecondsSinceEpoch.toString(),
+          tankId: tank.id,
+          type: LogType.feeding,
+          timestamp: now,
+          title: 'Fed fish',
+          createdAt: now,
+        ),
+      );
+
+      ref.invalidate(logsProvider(tank.id));
+      ref.invalidate(allLogsProvider(tank.id));
+
+      if (!context.mounted) return;
+      final feedingsToday = _feedingsToday(currentLogs, now) + 1;
+      final message = feedingsToday >= 3
+          ? 'Feeding logged. $feedingsToday feedings today - keep portions tiny.'
+          : 'Feeding logged. Keep portions tiny.';
+      DanioSnackBar.success(context, message);
+    } catch (e, st) {
+      logError(
+        'HomeScreen: quick feeding save failed: $e',
+        stackTrace: st,
+        tag: 'HomeScreen',
+      );
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Couldn\'t save that feeding. Try again.');
+      }
+    }
+  }
+
+  int _feedingsToday(List<LogEntry> logs, DateTime now) {
+    return logs
+        .where(
+          (log) =>
+              log.type == LogType.feeding &&
+              log.timestamp.year == now.year &&
+              log.timestamp.month == now.month &&
+              log.timestamp.day == now.day,
+        )
+        .length;
   }
 
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
@@ -719,7 +773,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   showStatsInfo(context, currentLogs, currentTank.id),
               onWaterChange: () => _navigateToWaterChange(context, currentTank),
               onFeed: () =>
-                  showFeedingInfo(context, currentLogs, currentTank.id),
+                  _quickLogFeeding(context, ref, currentTank, currentLogs),
               onQuickTest: () => showQuickLogSheet(context, ref, currentTank),
               onAddTank: () => _navigateToCreateTank(context),
             ),

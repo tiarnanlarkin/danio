@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/models.dart';
 import 'package:danio/screens/home/home_screen.dart';
+import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/room_theme_provider.dart';
@@ -33,24 +34,26 @@ Widget _wrap() {
   );
 }
 
-Widget _wrapWithTank() {
-  final memStorage = InMemoryStorageService();
+Widget _wrapWithTank({Tank? tank, InMemoryStorageService? storage}) {
+  final memStorage = storage ?? InMemoryStorageService();
   final now = DateTime(2026, 1, 1);
-  final tank = Tank(
-    id: 'tank-1',
-    name: 'Test Tank',
-    type: TankType.freshwater,
-    volumeLitres: 100,
-    startDate: now,
-    targets: WaterTargets.freshwaterTropical(),
-    createdAt: now,
-    updatedAt: now,
-  );
+  final resolvedTank =
+      tank ??
+      Tank(
+        id: 'tank-1',
+        name: 'Test Tank',
+        type: TankType.freshwater,
+        volumeLitres: 100,
+        startDate: now,
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+      );
 
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
-      tanksProvider.overrideWith((ref) async => [tank]),
+      tanksProvider.overrideWith((ref) async => [resolvedTank]),
       currentRoomThemeProvider.overrideWith((ref) => RoomTheme.ocean),
     ],
     child: const MaterialApp(home: HomeScreen()),
@@ -130,6 +133,46 @@ void main() {
       } finally {
         semantics.dispose();
       }
+    });
+
+    testWidgets('main Tank Feed quick action saves a feeding log', (
+      tester,
+    ) async {
+      suppressLayoutErrors();
+      final storage = InMemoryStorageService();
+      final now = DateTime(2026, 1, 1);
+      final tank = Tank(
+        id: 'quick-feed-${DateTime.now().microsecondsSinceEpoch}',
+        name: 'Quick Feed Tank',
+        type: TankType.freshwater,
+        volumeLitres: 100,
+        startDate: now,
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      await tester.pumpWidget(_wrapWithTank(tank: tank, storage: storage));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 5));
+
+      await tester.tap(find.bySemanticsLabel('Open action menu'));
+      await tester.pump(const Duration(milliseconds: 800));
+      final feedTapTarget = tester.widget<GestureDetector>(
+        find
+            .ancestor(
+              of: find.text('Feed'),
+              matching: find.byType(GestureDetector),
+            )
+            .first,
+      );
+      feedTapTarget.onTap!();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      final logs = await storage.getLogsForTank(tank.id);
+      expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
+      expect(find.textContaining('Feeding logged'), findsOneWidget);
+      expect(find.byType(AddLogScreen), findsNothing);
     });
   });
 }

@@ -51,4 +51,18 @@ void main() {
     expect(source, contains("label = icon == Icons.add ? 'Open action menu'"));
     expect(source, isNot(contains('const SizedBox.shrink()')));
   });
+
+  test('main Tank Feed action is a direct care log with safety copy', () {
+    final source = File('lib/screens/home/home_screen.dart').readAsStringSync();
+
+    expect(source, contains('Future<void> _quickLogFeeding'));
+    expect(source, contains('type: LogType.feeding'));
+    expect(source, contains("title: 'Fed fish'"));
+    expect(source, contains('Feeding logged. Keep portions tiny.'));
+    expect(source, contains('feedings today - keep portions tiny.'));
+    expect(
+      source,
+      contains('_quickLogFeeding(context, ref, currentTank, currentLogs)'),
+    );
+  });
 }
