@@ -1,7 +1,7 @@
-/// League ranking and week period models
+/// Local weekly progress tier and week period models
 library;
 
-/// League tier for competitive ranking
+/// Local XP tier for the user's weekly learning momentum.
 enum League {
   bronze,
   silver,
@@ -11,13 +11,13 @@ enum League {
   String get displayName {
     switch (this) {
       case League.bronze:
-        return 'Bronze League';
+        return 'Bronze Tier';
       case League.silver:
-        return 'Silver League';
+        return 'Silver Tier';
       case League.gold:
-        return 'Gold League';
+        return 'Gold Tier';
       case League.diamond:
-        return 'Diamond League';
+        return 'Diamond Tier';
     }
   }
 
@@ -47,7 +47,7 @@ enum League {
     }
   }
 
-  /// XP threshold to enter this league
+  /// XP threshold to enter this local weekly tier.
   int get minWeeklyXP {
     switch (this) {
       case League.bronze:
@@ -71,7 +71,7 @@ enum League {
   }
 }
 
-/// Weekly competition period
+/// Local weekly progress period
 class WeekPeriod {
   final DateTime start;
   final DateTime end;

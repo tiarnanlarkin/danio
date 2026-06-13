@@ -513,9 +513,9 @@ class AchievementDefinitions {
 
   static const leagueClimber = Achievement(
     id: 'league_climber',
-    name: 'League Climber',
+    name: 'Weekly Climber',
     description:
-        'You climbed to Gold league! Your competitive spirit shines bright.',
+        'You reached the Gold weekly tier! Your study rhythm is shining.',
     icon: '🥇',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.special,

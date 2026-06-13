@@ -559,16 +559,16 @@ class AnalyticsService {
         }
       }
 
-      // Predict league promotion (if weekly XP trending up)
+      // Predict local weekly tier progress (if weekly XP is trending up).
       if (profile.weeklyXP > 0 && profile.league != League.diamond) {
         final leagueThreshold = _getLeagueThreshold(profile.league);
         if (profile.weeklyXP >= leagueThreshold * 0.7) {
           predictions.add(
             Prediction(
               message:
-                  'Likely to promote to ${_getNextLeague(profile.league).displayName} this week',
+                  'Likely to reach ${_getNextLeague(profile.league).displayName} this week',
               confidence: 0.75,
-              recommendation: 'Keep earning XP to secure your promotion!',
+              recommendation: 'Keep earning XP to reach the next weekly tier.',
             ),
           );
         }
