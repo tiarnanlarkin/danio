@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final equipmentPath = LearningPath(
   id: 'equipment',
@@ -22,6 +23,23 @@ final equipmentPath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Choose a filter type that matches tank size, livestock, and maintenance style.',
+          'Protect biological media so the filter supports the nitrogen cycle.',
+        ],
+        scenario:
+            'A beginner is setting up a 75L tropical tank and is choosing between a cartridge HOB, sponge filter, and small internal filter.',
+        careDrill: [
+          'Match the filter to livestock needs, including gentle flow for shrimp or fry.',
+          'Plan reusable sponge or bio-media before relying on disposable cartridges.',
+        ],
+        sources: [
+          lessonSourceInjafNitrogenCycle,
+          lessonSourceRspcaWaterQuality,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -200,6 +218,23 @@ final equipmentPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['eq_filters'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Select heater wattage and placement for stable tropical temperatures.',
+          'Use independent temperature checks to catch heater failure early.',
+        ],
+        scenario:
+            'A tropical community tank drops to 20C overnight in winter, then swings above target when the room warms.',
+        careDrill: [
+          'Size the heater for tank volume and room temperature, then place it near flow.',
+          'Check the heater setting against a separate thermometer for 24 hours.',
+        ],
+        sources: [
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceMerckHomeForFish,
+          lessonSourceMerckWaterRanges,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -363,6 +398,23 @@ final equipmentPath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['eq_heaters'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Set lighting for fish behaviour, plant needs, and algae control.',
+          'Use duration and timers before chasing brightness.',
+        ],
+        scenario:
+            'A fish-only tank has algae on the glass and nervous fish hiding whenever the light turns on.',
+        careDrill: [
+          'Set a consistent 6-8 hour photoperiod before replacing the light.',
+          'Dim, shade, or add cover if fish behaviour shows stress under bright light.',
+        ],
+        sources: [
+          lessonSourceRspcaFishEnvironment,
+          lessonSourceTropicaCare,
+          lessonSourceInjafAquariumPlants,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,

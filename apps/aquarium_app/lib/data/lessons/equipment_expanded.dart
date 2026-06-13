@@ -3,6 +3,7 @@
 library;
 
 import '../../models/learning.dart';
+import '../lesson_sources.dart';
 
 final equipmentExpandedLessons = [
   // EQ-4: Test Kits (moved earlier — essential gear before advanced topics)
@@ -15,6 +16,23 @@ final equipmentExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 5,
     prerequisites: ['nc_testing'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Choose test equipment that is reliable enough for cycling and diagnosis.',
+        'Know when strips, liquid kits, or digital meters are appropriate.',
+      ],
+      scenario:
+          'A new tank shows odd fish behaviour, but the only available reading is a vague strip result from an opened tube.',
+      careDrill: [
+        'Use a liquid kit for ammonia, nitrite, nitrate, and pH during cycling or illness.',
+        'Check expiry dates and storage conditions before trusting reagent results.',
+      ],
+      sources: [
+        lessonSourceMerckWaterQuality,
+        lessonSourceMerckWaterRanges,
+        lessonSourceRspcaWaterQuality,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -129,6 +147,23 @@ final equipmentExpandedLessons = [
     xpReward: 75,
     estimatedMinutes: 8,
     prerequisites: ['eq_filters', 'eq_heaters', 'eq_lighting', 'eq_test_kits'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Set up equipment in an order that protects livestock and the cycle.',
+        'Recognise why fish should wait until the tank is biologically ready.',
+      ],
+      scenario:
+          'A starter kit is assembled on Saturday and the shop offers fish to take home the same day.',
+      careDrill: [
+        'Build the setup checklist before buying livestock.',
+        'Start the cycle and test ammonia/nitrite daily before adding fish.',
+      ],
+      sources: [
+        lessonSourceMerckHomeForFish,
+        lessonSourceInjafNitrogenCycle,
+        lessonSourceRspcaWaterQuality,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -326,6 +361,23 @@ final equipmentExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_filters', 'eq_setup_guide'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Clean filter media without removing the bacteria that process waste.',
+        'Identify flow and media-replacement problems before they crash the cycle.',
+      ],
+      scenario:
+          'A mature filter has weak flow and the cartridge packaging says to replace all media monthly.',
+      careDrill: [
+        'Rinse clogged media in removed tank water, not tap water.',
+        'Replace media in small staggered stages only when it is physically breaking down.',
+      ],
+      sources: [
+        lessonSourceInjafNitrogenCycle,
+        lessonSourceRspcaWaterQuality,
+        lessonSourceMerckWaterQuality,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -468,6 +520,23 @@ final equipmentExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_setup_guide'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Prepare water-change equipment that prevents contamination and shock.',
+        'Use siphons and buckets in a way that makes routine maintenance repeatable.',
+      ],
+      scenario:
+          'Weekly changes are being skipped because the siphon is awkward and the only bucket was previously used for household cleaning.',
+      careDrill: [
+        'Label aquarium-only buckets and keep conditioner with the water-change kit.',
+        'Match temperature and dechlorinate before refilling the tank.',
+      ],
+      sources: [
+        lessonSourceRspcaWaterQuality,
+        lessonSourceRspcaTropicalFishCare,
+        lessonSourceMerckWaterRanges,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -573,7 +642,8 @@ final equipmentExpandedLessons = [
       questions: [
         const QuizQuestion(
           id: 'eq_wcg_q1',
-          question: 'What are the two critical conditions for safe water changes?',
+          question:
+              'What are the two critical conditions for safe water changes?',
           options: [
             'pH match and mineral match',
             'Temperature match and dechlorination',
@@ -624,6 +694,23 @@ final equipmentExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_filters'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Explain how surface movement supports oxygen exchange.',
+        'Know when air pumps, sponge filters, or backup aeration matter most.',
+      ],
+      scenario:
+          'Fish gasp near the surface before the lights come on during a warm week in a heavily planted tank.',
+      careDrill: [
+        'Increase surface agitation immediately if fish are gasping.',
+        'Add a check valve and battery backup plan for air-driven equipment.',
+      ],
+      sources: [
+        lessonSourceMerckWaterQuality,
+        lessonSourceRspcaFishEnvironment,
+        lessonSourceTropicaCare,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -689,7 +776,8 @@ final equipmentExpandedLessons = [
       questions: [
         const QuizQuestion(
           id: 'eq_air_q1',
-          question: 'Why should you always install a check valve on an air pump?',
+          question:
+              'Why should you always install a check valve on an air pump?',
           options: [
             'To make bubbles larger and more visible',
             'To prevent water siphoning back through the tubing if power fails',
@@ -742,6 +830,23 @@ final equipmentExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 7,
     prerequisites: ['eq_lighting', 'planted_co2'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Compare CO2 hardware options by stability, risk, and planted-tank goals.',
+        'Use timers, solenoids, and visual checks to keep fish safe.',
+      ],
+      scenario:
+          'A high-light planted tank is being upgraded from DIY yeast CO2 to a pressurised system.',
+      careDrill: [
+        'Pair pressurised CO2 with a solenoid that shuts off before lights out.',
+        'Watch fish breathing and drop-checker colour while adjusting bubble rate.',
+      ],
+      sources: [
+        lessonSourceTropicaCare,
+        lessonSourceInjafAquariumPlants,
+        lessonSourceMerckWaterQuality,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -853,6 +958,23 @@ final equipmentExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_lighting'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Select aquascaping tools and hardscape that support clean, safe layout work.',
+        'Screen rocks, wood, and plant placement for livestock and water-chemistry risks.',
+      ],
+      scenario:
+          'A user wants to add collected rocks, new driftwood, and several stem plants before a weekend rescape.',
+      careDrill: [
+        'Use aquarium-safe tools and test hardscape before it enters the tank.',
+        'Plan hardscape stability and open swimming space before planting.',
+      ],
+      sources: [
+        lessonSourceTropicaPlants,
+        lessonSourceInjafAquariumPlants,
+        lessonSourceRspcaFishEnvironment,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -941,7 +1063,8 @@ final equipmentExpandedLessons = [
         ),
         const QuizQuestion(
           id: 'eq_aqt_q2',
-          question: 'Why should you soak driftwood before adding it to your tank?',
+          question:
+              'Why should you soak driftwood before adding it to your tank?',
           options: [
             'To sterilise it and kill any bacteria living in the wood',
             'To reduce tannin release and help it sink rather than float',
@@ -980,6 +1103,23 @@ final equipmentExpandedLessons = [
     xpReward: 50,
     estimatedMinutes: 6,
     prerequisites: ['eq_filters'],
+    guide: const LessonLearningGuide(
+      outcomes: [
+        'Choose substrate based on fish behaviour, plant roots, and water chemistry.',
+        'Recognise substrate changes that require extra testing or a full teardown plan.',
+      ],
+      scenario:
+          'A community tank with Corydoras is being planned with sharp coloured gravel and future live plants.',
+      careDrill: [
+        'Match substrate texture to bottom-dwelling fish before choosing the look.',
+        'Check whether the substrate is inert, nutrient-rich, or carbonate-based before filling.',
+      ],
+      sources: [
+        lessonSourceTropicaPlants,
+        lessonSourceInjafAquariumPlants,
+        lessonSourceMerckWaterRanges,
+      ],
+    ),
     sections: [
       const LessonSection(
         type: LessonSectionType.heading,
@@ -1092,5 +1232,4 @@ final equipmentExpandedLessons = [
       ],
     ),
   ),
-
 ];

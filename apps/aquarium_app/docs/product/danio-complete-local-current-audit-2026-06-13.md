@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1464 tests.
+- `flutter test`: pass, 1465 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -568,6 +568,19 @@ CL-P1-004E Planted Tanks guide coverage:
   outcomes, a real-tank scenario, at least two care drill steps, and an HTTPS
   source reference.
 
+CL-P1-004F Equipment guide coverage:
+
+- Equipment now has structured guide metadata across all 11 merged lessons:
+  filters, heaters, lighting, test kits, first setup, filter maintenance,
+  water-change equipment, aeration, CO2 systems, aquascaping tools, and
+  substrate.
+- The guide content turns equipment choices into practical outcomes,
+  realistic setup/maintenance scenarios, and care drills using the existing
+  shared INJAF, Merck, RSPCA, and Tropica source references.
+- A focused data contract verifies every merged Equipment lesson has at least
+  two outcomes, a real-tank scenario, at least two care drill steps, and an
+  HTTPS source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -601,8 +614,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   species request guidance, and source trails. Future species work is content
   database depth and visual asset quality, not missing core page actions.
 - Learning depth is now started with structured guide metadata plus Nitrogen
-  Cycle, Water Parameters, First Fish, Maintenance, and Planted Tanks path
-  enrichment.
+  Cycle, Water Parameters, First Fish, Maintenance, Planted Tanks, and
+  Equipment path enrichment.
   Remaining learning work is expanding that guide depth, source references,
   visuals, and practice drills across the full catalog.
 - Tablet verification is not yet current.
