@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../models/log_entry.dart';
 import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
+import '../../services/tank_progress_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/room_themes.dart';
@@ -38,6 +39,7 @@ class ThemedAquarium extends StatelessWidget {
   final int feedingPulse;
   final TankAquascapeVisualState? aquascapeVisualState;
   final TankLivestockVisualState? livestockVisualState;
+  final TankProgressVisualState? progressVisualState;
 
   const ThemedAquarium({
     super.key,
@@ -52,6 +54,7 @@ class ThemedAquarium extends StatelessWidget {
     this.feedingPulse = 0,
     this.aquascapeVisualState,
     this.livestockVisualState,
+    this.progressVisualState,
   });
 
   @override
@@ -186,6 +189,11 @@ class ThemedAquarium extends StatelessWidget {
                 ),
               ),
             ),
+
+            if (progressVisualState != null && progressVisualState!.hasOverlay)
+              Positioned.fill(
+                child: _TankProgressVisualOverlay(progressVisualState!),
+              ),
 
             if (feedingPulse > 0)
               Positioned.fill(child: _FeedingPulseOverlay(pulse: feedingPulse)),
@@ -591,6 +599,114 @@ class _LivestockCuePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _LivestockCuePainter oldDelegate) {
     return color != oldDelegate.color || condition != oldDelegate.condition;
+  }
+}
+
+class _TankProgressVisualOverlay extends StatelessWidget {
+  final TankProgressVisualState state;
+
+  const _TankProgressVisualOverlay(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: state.semanticsLabel,
+      excludeSemantics: true,
+      child: IgnorePointer(
+        child: CustomPaint(
+          key: Key('tank-progress-overlay-${state.condition.name}'),
+          painter: _ProgressCuePainter(condition: state.condition),
+          child: const SizedBox.expand(),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProgressCuePainter extends CustomPainter {
+  final TankProgressVisualCondition condition;
+
+  const _ProgressCuePainter({required this.condition});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty || condition == TankProgressVisualCondition.clear) {
+      return;
+    }
+
+    final strong = condition == TankProgressVisualCondition.collectionGrowing;
+    final glow = Paint()
+      ..color = const Color(0xFFFFD982).withValues(alpha: strong ? 0.28 : 0.18)
+      ..style = PaintingStyle.fill;
+    final stroke = Paint()
+      ..color = const Color(0xFFFFF2BE).withValues(alpha: strong ? 0.68 : 0.48)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = math.max(1.2, size.shortestSide * 0.006);
+
+    final points = strong
+        ? const [
+            Offset(0.20, 0.30),
+            Offset(0.34, 0.20),
+            Offset(0.52, 0.27),
+            Offset(0.67, 0.18),
+            Offset(0.78, 0.38),
+            Offset(0.43, 0.46),
+          ]
+        : const [Offset(0.28, 0.26), Offset(0.55, 0.20), Offset(0.72, 0.36)];
+
+    for (var i = 0; i < points.length; i++) {
+      final point = Offset(
+        points[i].dx * size.width,
+        points[i].dy * size.height,
+      );
+      final radius = size.shortestSide * (strong && i.isEven ? 0.018 : 0.014);
+      canvas.drawCircle(point, radius * 1.7, glow);
+      _drawSparkle(canvas, point, radius, stroke);
+    }
+
+    if (strong) {
+      final ringPaint = Paint()
+        ..color = const Color(0xFFB8E8FF).withValues(alpha: 0.22)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = math.max(1.0, size.shortestSide * 0.004);
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(size.width * 0.50, size.height * 0.72),
+          width: size.width * 0.55,
+          height: size.height * 0.12,
+        ),
+        ringPaint,
+      );
+    }
+  }
+
+  void _drawSparkle(Canvas canvas, Offset center, double radius, Paint paint) {
+    canvas.drawLine(
+      center.translate(0, -radius),
+      center.translate(0, radius),
+      paint,
+    );
+    canvas.drawLine(
+      center.translate(-radius, 0),
+      center.translate(radius, 0),
+      paint,
+    );
+    canvas.drawLine(
+      center.translate(-radius * 0.55, -radius * 0.55),
+      center.translate(radius * 0.55, radius * 0.55),
+      paint,
+    );
+    canvas.drawLine(
+      center.translate(radius * 0.55, -radius * 0.55),
+      center.translate(-radius * 0.55, radius * 0.55),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _ProgressCuePainter oldDelegate) {
+    return condition != oldDelegate.condition;
   }
 }
 

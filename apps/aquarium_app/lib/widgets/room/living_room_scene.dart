@@ -5,6 +5,7 @@ import '../../models/log_entry.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
+import '../../services/tank_progress_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
 import '../../theme/room_themes.dart';
 import '../ambient/ambient_overlay.dart';
@@ -30,6 +31,7 @@ class LivingRoomScene extends ConsumerWidget {
   final int feedingPulse;
   final TankAquascapeVisualState? aquascapeVisualState;
   final TankLivestockVisualState? livestockVisualState;
+  final TankProgressVisualState? progressVisualState;
   final RoomTheme theme;
   final VoidCallback? onTankTap;
   final VoidCallback? onTestKitTap;
@@ -59,6 +61,7 @@ class LivingRoomScene extends ConsumerWidget {
     this.feedingPulse = 0,
     this.aquascapeVisualState,
     this.livestockVisualState,
+    this.progressVisualState,
     this.onTankTap,
     this.onTestKitTap,
     this.onFoodTap,
@@ -155,6 +158,7 @@ class LivingRoomScene extends ConsumerWidget {
                       feedingPulse: feedingPulse,
                       aquascapeVisualState: aquascapeVisualState,
                       livestockVisualState: livestockVisualState,
+                      progressVisualState: progressVisualState,
                     ),
                   ),
                 ),

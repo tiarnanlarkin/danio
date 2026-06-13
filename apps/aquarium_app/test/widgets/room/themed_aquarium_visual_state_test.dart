@@ -3,6 +3,7 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/services/tank_aquascape_visual_service.dart';
 import 'package:danio/services/tank_livestock_visual_service.dart';
+import 'package:danio/services/tank_progress_visual_service.dart';
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/widgets/room/themed_aquarium.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ Widget _wrap(
   int feedingPulse = 0,
   TankAquascapeVisualState? aquascapeVisualState,
   TankLivestockVisualState? livestockVisualState,
+  TankProgressVisualState? progressVisualState,
 }) {
   return ProviderScope(
     overrides: [
@@ -33,6 +35,7 @@ Widget _wrap(
               feedingPulse: feedingPulse,
               aquascapeVisualState: aquascapeVisualState,
               livestockVisualState: livestockVisualState,
+              progressVisualState: progressVisualState,
             ),
           ),
         ),
@@ -173,6 +176,36 @@ void main() {
       expect(
         find.bySemanticsLabel(
           'Tank aquascape visual state: planted and decorated',
+        ),
+        findsOneWidget,
+      );
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('shows progression cue when provided', (tester) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _wrap(
+          null,
+          progressVisualState: const TankProgressVisualState(
+            condition: TankProgressVisualCondition.collectionGrowing,
+            semanticsLabel:
+                'Tank progression visual state: growing species collection',
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('tank-progress-overlay-collectionGrowing')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(
+          'Tank progression visual state: growing species collection',
         ),
         findsOneWidget,
       );

@@ -2,12 +2,15 @@
 //
 // Run: flutter test test/widget_tests/home_screen_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/data/species_unlock_map.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/screens/home/home_screen.dart';
 import 'package:danio/screens/add_log_screen.dart';
@@ -375,6 +378,40 @@ void main() {
 
       expect(
         find.byKey(const Key('tank-aquascape-overlay-plantedDecorated')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Tank aquarium reflects earned species progression visually', (
+      tester,
+    ) async {
+      suppressLayoutErrors();
+      SharedPreferences.setMockInitialValues({
+        'unlocked_species_v1': jsonEncode([
+          ...defaultUnlockedSpecies,
+          'betta',
+          'molly',
+          'platy',
+        ]),
+      });
+      final now = DateTime(2026, 6, 13);
+      final tank = Tank(
+        id: 'progress-cue-${now.microsecondsSinceEpoch}',
+        name: 'Progress Cue Tank',
+        type: TankType.freshwater,
+        volumeLitres: 100,
+        startDate: now,
+        targets: WaterTargets.freshwaterTropical(),
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      await tester.pumpWidget(_wrapWithTank(tank: tank));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 5));
+
+      expect(
+        find.byKey(const Key('tank-progress-overlay-collectionGrowing')),
         findsOneWidget,
       );
     });

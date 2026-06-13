@@ -6,11 +6,13 @@ import '../../providers/tank_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/tank_visual_event_provider.dart';
+import '../../providers/species_unlock_provider.dart';
 import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/guidance_service.dart';
 import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
+import '../../services/tank_progress_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_states.dart';
@@ -438,6 +440,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ref.watch(livestockProvider(currentTank.id)).valueOrNull ?? [];
         final currentEquipment =
             ref.watch(equipmentProvider(currentTank.id)).valueOrNull ?? [];
+        final unlockedSpecies = ref.watch(speciesUnlockProvider);
         final tankVisualState = TankVisualStateService.fromLogs(currentLogs);
         final aquascapeVisualState = TankAquascapeVisualService.fromEquipment(
           currentEquipment,
@@ -446,6 +449,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           tank: currentTank,
           livestock: currentLivestock,
         );
+        final progressVisualState =
+            TankProgressVisualService.fromUnlockedSpecies(unlockedSpecies);
         final feedingPulse = ref.watch(
           tankFeedingPulseProvider(currentTank.id),
         );
@@ -463,6 +468,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     feedingPulse: feedingPulse,
                     aquascapeVisualState: aquascapeVisualState,
                     livestockVisualState: livestockVisualState,
+                    progressVisualState: progressVisualState,
                     isNewUser: _isNewUser(ref),
                     onTankTap: () =>
                         _navigateToTankDetail(context, currentTank),

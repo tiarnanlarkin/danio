@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1418 tests.
+- `flutter test`: pass, 1423 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -373,6 +373,15 @@ CL-P1-001E Living tank aquascape cue progress:
 - This is intentionally an honest cue layer over current data, not a claim
   that Danio has a complete dedicated plant/decor inventory model yet.
 
+CL-P1-001F Living tank progression cue progress:
+
+- The central Tank aquarium now derives a progression visual cue from the
+  existing species unlock state. Starter species stay visually normal, while
+  lesson-earned species unlocks add subtle collectible sparkle/ripple accents.
+- The cue uses the real `speciesUnlockProvider` and `defaultUnlockedSpecies`
+  boundary, so it reflects earned lesson/species progression without inventing
+  unavailable room, decoration, or tank-theme cosmetics.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -398,8 +407,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 - AI is still OpenAI-first rather than provider-aware.
 - Living Tank visuals now react to latest water-test state, old water-change
-  logs, feeding events, and livestock health/compatibility cues, but do not yet
-  include a dedicated plant/decor inventory model or progression unlocks.
+  logs, feeding events, livestock health/compatibility cues, aquascape equipment
+  cues, and earned species progression, but do not yet include a dedicated
+  plant/decor inventory model.
 - Species and plant data are broad but not yet final content-rich guide pages
   with sources, tank actions, and missing-species request flow.
 - Tablet verification is not yet current.
