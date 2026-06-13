@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1438 tests.
+- `flutter test`: pass, 1443 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -408,6 +408,15 @@ CL-P1-002C Achievement cosmetic reward feedback:
 - Single-achievement and batch achievement dialogs both summarize earned room
   vibes using the existing theme names and a controlled palette icon, without
   adding fake inventory, currency, or cloud/premium promises.
+
+CL-P1-002D Achievement tank cosmetic cue:
+
+- The central aquarium now derives a small achievement cosmetic overlay from
+  the real local profile achievement IDs. One or more earned achievements show
+  a subtle badge shelf; five or more show a stronger trophy shelf cue.
+- The cue is text-free, non-interactive, and labelled for accessibility, making
+  achievements affect the emotional Tank surface without inventing a full
+  decoration inventory yet.
 
 Current Android device state:
 

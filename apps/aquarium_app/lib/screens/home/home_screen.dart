@@ -11,6 +11,7 @@ import '../../providers/guidance_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/guidance_service.dart';
 import '../../services/tank_aquascape_visual_service.dart';
+import '../../services/tank_achievement_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_progress_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
@@ -441,6 +442,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final currentEquipment =
             ref.watch(equipmentProvider(currentTank.id)).valueOrNull ?? [];
         final unlockedSpecies = ref.watch(speciesUnlockProvider);
+        final userProfile = ref.watch(userProfileProvider).valueOrNull;
         final tankVisualState = TankVisualStateService.fromLogs(currentLogs);
         final aquascapeVisualState = TankAquascapeVisualService.fromEquipment(
           currentEquipment,
@@ -451,6 +453,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
         final progressVisualState =
             TankProgressVisualService.fromUnlockedSpecies(unlockedSpecies);
+        final achievementVisualState = TankAchievementVisualService.fromProfile(
+          userProfile,
+        );
         final feedingPulse = ref.watch(
           tankFeedingPulseProvider(currentTank.id),
         );
@@ -469,6 +474,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     aquascapeVisualState: aquascapeVisualState,
                     livestockVisualState: livestockVisualState,
                     progressVisualState: progressVisualState,
+                    achievementVisualState: achievementVisualState,
                     isNewUser: _isNewUser(ref),
                     onTankTap: () =>
                         _navigateToTankDetail(context, currentTank),

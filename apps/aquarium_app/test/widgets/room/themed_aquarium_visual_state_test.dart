@@ -2,6 +2,7 @@ import 'package:danio/models/log_entry.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/services/tank_aquascape_visual_service.dart';
+import 'package:danio/services/tank_achievement_visual_service.dart';
 import 'package:danio/services/tank_livestock_visual_service.dart';
 import 'package:danio/services/tank_progress_visual_service.dart';
 import 'package:danio/theme/room_themes.dart';
@@ -16,6 +17,7 @@ Widget _wrap(
   TankAquascapeVisualState? aquascapeVisualState,
   TankLivestockVisualState? livestockVisualState,
   TankProgressVisualState? progressVisualState,
+  TankAchievementVisualState? achievementVisualState,
 }) {
   return ProviderScope(
     overrides: [
@@ -36,6 +38,7 @@ Widget _wrap(
               aquascapeVisualState: aquascapeVisualState,
               livestockVisualState: livestockVisualState,
               progressVisualState: progressVisualState,
+              achievementVisualState: achievementVisualState,
             ),
           ),
         ),
@@ -206,6 +209,36 @@ void main() {
       expect(
         find.bySemanticsLabel(
           'Tank progression visual state: growing species collection',
+        ),
+        findsOneWidget,
+      );
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('shows achievement cosmetic cue when provided', (tester) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _wrap(
+          null,
+          achievementVisualState: const TankAchievementVisualState(
+            condition: TankAchievementVisualCondition.trophyShelf,
+            semanticsLabel:
+                'Tank achievement cosmetic state: trophy shelf visible',
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('tank-achievement-overlay-trophyShelf')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(
+          'Tank achievement cosmetic state: trophy shelf visible',
         ),
         findsOneWidget,
       );

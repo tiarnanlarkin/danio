@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/log_entry.dart';
 import '../../services/tank_aquascape_visual_service.dart';
+import '../../services/tank_achievement_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_progress_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
@@ -40,6 +41,7 @@ class ThemedAquarium extends StatelessWidget {
   final TankAquascapeVisualState? aquascapeVisualState;
   final TankLivestockVisualState? livestockVisualState;
   final TankProgressVisualState? progressVisualState;
+  final TankAchievementVisualState? achievementVisualState;
 
   const ThemedAquarium({
     super.key,
@@ -55,6 +57,7 @@ class ThemedAquarium extends StatelessWidget {
     this.aquascapeVisualState,
     this.livestockVisualState,
     this.progressVisualState,
+    this.achievementVisualState,
   });
 
   @override
@@ -193,6 +196,12 @@ class ThemedAquarium extends StatelessWidget {
             if (progressVisualState != null && progressVisualState!.hasOverlay)
               Positioned.fill(
                 child: _TankProgressVisualOverlay(progressVisualState!),
+              ),
+
+            if (achievementVisualState != null &&
+                achievementVisualState!.hasOverlay)
+              Positioned.fill(
+                child: _TankAchievementVisualOverlay(achievementVisualState!),
               ),
 
             if (feedingPulse > 0)
@@ -706,6 +715,203 @@ class _ProgressCuePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _ProgressCuePainter oldDelegate) {
+    return condition != oldDelegate.condition;
+  }
+}
+
+class _TankAchievementVisualOverlay extends StatelessWidget {
+  final TankAchievementVisualState state;
+
+  const _TankAchievementVisualOverlay(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: state.semanticsLabel,
+      excludeSemantics: true,
+      child: IgnorePointer(
+        child: CustomPaint(
+          key: Key('tank-achievement-overlay-${state.condition.name}'),
+          painter: _AchievementCuePainter(condition: state.condition),
+          child: const SizedBox.expand(),
+        ),
+      ),
+    );
+  }
+}
+
+class _AchievementCuePainter extends CustomPainter {
+  final TankAchievementVisualCondition condition;
+
+  const _AchievementCuePainter({required this.condition});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty || condition == TankAchievementVisualCondition.clear) {
+      return;
+    }
+
+    final strong = condition == TankAchievementVisualCondition.trophyShelf;
+    final badgeFill = Paint()
+      ..color = const Color(0xFFFFD56B).withValues(alpha: strong ? 0.92 : 0.74)
+      ..style = PaintingStyle.fill;
+    final badgeStroke = Paint()
+      ..color = const Color(0xFFFFF0B0).withValues(alpha: strong ? 0.9 : 0.64)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = math.max(1.2, size.shortestSide * 0.006);
+    final ribbonPaint = Paint()
+      ..color = const Color(0xFFE88A6A).withValues(alpha: strong ? 0.78 : 0.52)
+      ..style = PaintingStyle.fill;
+
+    final badgeRadius = size.shortestSide * (strong ? 0.042 : 0.034);
+    final shelfY = size.height * 0.82;
+    final badgeCenters = strong
+        ? const [0.18, 0.27, 0.36, 0.45]
+        : const [0.22, 0.31];
+
+    for (final xFactor in badgeCenters) {
+      _drawBadge(
+        canvas,
+        Offset(size.width * xFactor, shelfY),
+        badgeRadius,
+        badgeFill,
+        badgeStroke,
+        ribbonPaint,
+      );
+    }
+
+    if (strong) {
+      _drawTrophy(
+        canvas,
+        Offset(size.width * 0.78, size.height * 0.79),
+        size.shortestSide * 0.09,
+        badgeFill,
+        badgeStroke,
+        ribbonPaint,
+      );
+    }
+  }
+
+  void _drawBadge(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    Paint fill,
+    Paint stroke,
+    Paint ribbonPaint,
+  ) {
+    final ribbonPath = Path()
+      ..moveTo(center.dx - radius * 0.45, center.dy + radius * 0.55)
+      ..lineTo(center.dx - radius * 0.10, center.dy + radius * 1.35)
+      ..lineTo(center.dx, center.dy + radius * 0.92)
+      ..lineTo(center.dx + radius * 0.10, center.dy + radius * 1.35)
+      ..lineTo(center.dx + radius * 0.45, center.dy + radius * 0.55)
+      ..close();
+    canvas.drawPath(ribbonPath, ribbonPaint);
+
+    canvas.drawCircle(center, radius, fill);
+    canvas.drawCircle(center, radius * 0.72, stroke);
+    _drawStar(canvas, center, radius * 0.42, stroke);
+  }
+
+  void _drawTrophy(
+    Canvas canvas,
+    Offset center,
+    double size,
+    Paint fill,
+    Paint stroke,
+    Paint accent,
+  ) {
+    final cupRect = Rect.fromCenter(
+      center: center.translate(0, -size * 0.12),
+      width: size * 0.82,
+      height: size * 0.62,
+    );
+    final cupPath = Path()
+      ..moveTo(cupRect.left, cupRect.top)
+      ..quadraticBezierTo(
+        cupRect.center.dx,
+        cupRect.bottom + size * 0.18,
+        cupRect.right,
+        cupRect.top,
+      )
+      ..close();
+    canvas.drawPath(cupPath, fill);
+    canvas.drawPath(cupPath, stroke);
+
+    final handleStroke = Paint()
+      ..color = stroke.color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke.strokeWidth
+      ..strokeCap = StrokeCap.round;
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: cupRect.centerLeft.translate(-size * 0.10, size * 0.02),
+        width: size * 0.45,
+        height: size * 0.42,
+      ),
+      -math.pi / 2,
+      math.pi,
+      false,
+      handleStroke,
+    );
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: cupRect.centerRight.translate(size * 0.10, size * 0.02),
+        width: size * 0.45,
+        height: size * 0.42,
+      ),
+      math.pi / 2,
+      math.pi,
+      false,
+      handleStroke,
+    );
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: center.translate(0, size * 0.34),
+          width: size * 0.30,
+          height: size * 0.36,
+        ),
+        Radius.circular(size * 0.05),
+      ),
+      accent,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: center.translate(0, size * 0.58),
+          width: size * 0.70,
+          height: size * 0.20,
+        ),
+        Radius.circular(size * 0.05),
+      ),
+      fill,
+    );
+  }
+
+  void _drawStar(Canvas canvas, Offset center, double radius, Paint paint) {
+    final path = Path();
+    for (var i = 0; i < 10; i++) {
+      final angle = -math.pi / 2 + (i * math.pi / 5);
+      final pointRadius = i.isEven ? radius : radius * 0.42;
+      final point = Offset(
+        center.dx + math.cos(angle) * pointRadius,
+        center.dy + math.sin(angle) * pointRadius,
+      );
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _AchievementCuePainter oldDelegate) {
     return condition != oldDelegate.condition;
   }
 }
