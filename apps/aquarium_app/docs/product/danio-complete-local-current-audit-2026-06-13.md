@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1465 tests.
+- `flutter test`: pass, 1466 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -581,6 +581,18 @@ CL-P1-004F Equipment guide coverage:
   two outcomes, a real-tank scenario, at least two care drill steps, and an
   HTTPS source reference.
 
+CL-P1-004G Fish Health guide coverage:
+
+- Fish Health now has structured guide metadata across all seven lessons:
+  prevention, ich, fin rot, fungal infections, parasites, safe medication
+  dosing, and hospital tank setup.
+- Shared lesson references now include official Merck Veterinary Manual fish
+  disease and aquarium-fish management pages, RSPCA fish health guidance, and
+  CDC fish health/safe-handling guidance for hospital and isolation context.
+- A focused data contract verifies every Fish Health lesson has at least two
+  outcomes, a real-tank scenario, at least two care drill steps, and an HTTPS
+  source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -614,8 +626,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   species request guidance, and source trails. Future species work is content
   database depth and visual asset quality, not missing core page actions.
 - Learning depth is now started with structured guide metadata plus Nitrogen
-  Cycle, Water Parameters, First Fish, Maintenance, Planted Tanks, and
-  Equipment path enrichment.
+  Cycle, Water Parameters, First Fish, Maintenance, Planted Tanks, Equipment,
+  and Fish Health path enrichment.
   Remaining learning work is expanding that guide depth, source references,
   visuals, and practice drills across the full catalog.
 - Tablet verification is not yet current.

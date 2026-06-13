@@ -4,6 +4,7 @@ library;
 
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
+import '../lesson_sources.dart';
 
 final fishHealthPath = LearningPath(
   id: 'fish_health',
@@ -26,6 +27,23 @@ final fishHealthPath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 5,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Link disease prevention to water quality, stress reduction, diet, and quarantine.',
+          'Use observation and testing before illness becomes an emergency.',
+        ],
+        scenario:
+            'A healthy-looking new fish is ready to join the display tank, but the main tank already has a settled community.',
+        careDrill: [
+          'Set up a quarantine period and watch appetite, breathing, skin, fins, and waste.',
+          'Test water and check temperature before assuming symptoms are random disease.',
+        ],
+        sources: [
+          lessonSourceMerckFishDiseases,
+          lessonSourceMerckRoutineFishHealth,
+          lessonSourceRspcaFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -86,6 +104,23 @@ final fishHealthPath = LearningPath(
       orderIndex: 1,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Recognise ich as a parasite with treatable free-swimming stages.',
+          'Adjust treatment choices for tropical, coldwater, scaleless, planted, or invertebrate tanks.',
+        ],
+        scenario:
+            'Several fish show salt-like white spots two days after a new fish was added without quarantine.',
+        careDrill: [
+          'Confirm species temperature tolerance before using any heat-based approach.',
+          'Remove activated carbon and complete the full treatment course after spots disappear.',
+        ],
+        sources: [
+          lessonSourceMerckFishDiseases,
+          lessonSourceMerckAquariumFishManagement,
+          lessonSourceRspcaFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -140,7 +175,8 @@ final fishHealthPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'fh_ich_q1',
-            question: 'Which stage of the Ich life cycle can you treat with medication?',
+            question:
+                'Which stage of the Ich life cycle can you treat with medication?',
             options: [
               'Trophont (embedded in fish)',
               'Tomont (attached to surfaces)',
@@ -153,7 +189,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_ich_q2',
-            question: 'What temperature should you raise a TROPICAL fish tank to when treating Ich?',
+            question:
+                'What temperature should you raise a TROPICAL fish tank to when treating Ich?',
             options: [
               '24°C (75°F)',
               '27°C (80°F)',
@@ -166,20 +203,17 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_ich_q3',
-            question: 'How long should you continue Ich treatment after the last spot disappears?',
-            options: [
-              'Stop immediately',
-              '2-3 days',
-              '7-10 days',
-              '30 days',
-            ],
+            question:
+                'How long should you continue Ich treatment after the last spot disappears?',
+            options: ['Stop immediately', '2-3 days', '7-10 days', '30 days'],
             correctIndex: 2,
             explanation:
                 'Continue for 7-10 days after the last visible spot. Stopping early is the most common treatment failure.',
           ),
           const QuizQuestion(
             id: 'fh_ich_q4',
-            question: 'Why should you remove carbon from your filter during Ich treatment?',
+            question:
+                'Why should you remove carbon from your filter during Ich treatment?',
             options: [
               'It lowers the temperature',
               'It absorbs the medication',
@@ -202,6 +236,23 @@ final fishHealthPath = LearningPath(
       orderIndex: 2,
       xpReward: 50,
       estimatedMinutes: 5,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Treat fin rot as a warning to check water quality and stress first.',
+          'Distinguish bacterial fin damage from tankmate fin-nipping patterns.',
+        ],
+        scenario:
+            'A betta has ragged fin edges after missed water changes and a visible ammonia reading.',
+        careDrill: [
+          'Test ammonia, nitrite, nitrate, and temperature before choosing medication.',
+          'Correct water quality and remove fin-nipping pressure before escalating treatment.',
+        ],
+        sources: [
+          lessonSourceMerckFishDiseases,
+          lessonSourceRspcaFishHealth,
+          lessonSourceMerckWaterQuality,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -247,7 +298,8 @@ final fishHealthPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'fh_finrot_q1',
-            question: 'Which bacteria families are most commonly responsible for fin rot?',
+            question:
+                'Which bacteria families are most commonly responsible for fin rot?',
             options: [
               'Saprolegnia and Achlya',
               'Aeromonas and Pseudomonas',
@@ -273,7 +325,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_finrot_q3',
-            question: 'How can you tell fin rot apart from fin-nipping by tank mates?',
+            question:
+                'How can you tell fin rot apart from fin-nipping by tank mates?',
             options: [
               'Fin rot is always black, nipping is always red',
               'Fin rot starts at the edges and is usually symmetrical; nipping is irregular',
@@ -286,13 +339,9 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_finrot_q4',
-            question: 'How long does it take for new fin tissue to start growing back?',
-            options: [
-              '24 hours',
-              '1-2 days',
-              '1-2 weeks',
-              '1-2 months',
-            ],
+            question:
+                'How long does it take for new fin tissue to start growing back?',
+            options: ['24 hours', '1-2 days', '1-2 weeks', '1-2 months'],
             correctIndex: 2,
             explanation:
                 'Fin regrowth is slow — expect 1-2 weeks before you see new tissue. Be patient and maintain good water quality throughout.',
@@ -309,6 +358,23 @@ final fishHealthPath = LearningPath(
       orderIndex: 3,
       xpReward: 50,
       estimatedMinutes: 5,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Identify cotton-like fungal growth as usually secondary to injury or poor conditions.',
+          'Address the underlying stressor while completing an appropriate treatment course.',
+        ],
+        scenario:
+            'A fish develops white fluffy growth on a scrape after being chased around sharp decor.',
+        careDrill: [
+          'Remove the injury source or aggressor and improve water quality immediately.',
+          'Move the fish to a treatment tank if medication would harm plants, invertebrates, or filter bacteria.',
+        ],
+        sources: [
+          lessonSourceMerckFishDiseases,
+          lessonSourceMerckAquariumFishManagement,
+          lessonSourceRspcaFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -354,7 +420,8 @@ final fishHealthPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'fh_fungal_q1',
-            question: 'Which two genera cause most fungal infections in aquarium fish?',
+            question:
+                'Which two genera cause most fungal infections in aquarium fish?',
             options: [
               'Aeromonas and Pseudomonas',
               'Saprolegnia and Achlya',
@@ -380,7 +447,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_fungal_q3',
-            question: 'What does a fungal infection typically look like on a fish?',
+            question:
+                'What does a fungal infection typically look like on a fish?',
             options: [
               'White salt-like spots',
               'Cotton-wool or fluffy white growths',
@@ -393,7 +461,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_fungal_q4',
-            question: 'What should you do FIRST when treating a fungal infection?',
+            question:
+                'What should you do FIRST when treating a fungal infection?',
             options: [
               'Add antifungal medication immediately',
               'Raise temperature to 35°C',
@@ -416,6 +485,23 @@ final fishHealthPath = LearningPath(
       orderIndex: 4,
       xpReward: 50,
       estimatedMinutes: 6,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Connect flashing, scratching, weight loss, and visible worms to possible parasite groups.',
+          'Use quarantine and symptom patterning before choosing a parasite treatment.',
+        ],
+        scenario:
+            'A recently purchased fish starts flashing against decor while another clamps its fins near the filter.',
+        careDrill: [
+          'Separate affected fish when possible and record visible signs before dosing.',
+          'Check whether plants, shrimp, snails, or scaleless fish make the chosen treatment unsafe.',
+        ],
+        sources: [
+          lessonSourceMerckFishDiseases,
+          lessonSourceMerckAquariumFishManagement,
+          lessonSourceRspcaFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -478,7 +564,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_para_q2',
-            question: 'Which medication is the best all-rounder for treating flukes?',
+            question:
+                'Which medication is the best all-rounder for treating flukes?',
             options: [
               'Methylene blue',
               'Copper sulphate',
@@ -491,7 +578,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_para_q3',
-            question: 'How are parasites most commonly introduced to an aquarium?',
+            question:
+                'How are parasites most commonly introduced to an aquarium?',
             options: [
               'Through tap water',
               'Via new fish or plants that weren\'t quarantined',
@@ -504,7 +592,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_para_q4',
-            question: 'Which parasite is visible as a thread-like worm protruding from the fish?',
+            question:
+                'Which parasite is visible as a thread-like worm protruding from the fish?',
             options: [
               'Gill flukes',
               'Anchor worm (Lernea)',
@@ -527,6 +616,23 @@ final fishHealthPath = LearningPath(
       orderIndex: 5,
       xpReward: 75,
       estimatedMinutes: 8,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Dose medication from actual water volume and label instructions, not fertiliser tools.',
+          'Prepare the tank so medication remains effective and fish keep enough oxygen.',
+        ],
+        scenario:
+            'A display tank with shrimp, carbon in the filter, and a UV steriliser needs treatment for suspected parasites.',
+        careDrill: [
+          'Calculate actual water volume after substrate and decor before measuring medication.',
+          'Remove carbon, switch off UV, increase aeration, and check species/invertebrate cautions.',
+        ],
+        sources: [
+          lessonSourceMerckAquariumFishManagement,
+          lessonSourceMerckFishDiseases,
+          lessonSourceRspcaFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -613,7 +719,8 @@ final fishHealthPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'fh_med_q1',
-            question: 'Can you use the Dosing Calculator in the Tools section for medication doses?',
+            question:
+                'Can you use the Dosing Calculator in the Tools section for medication doses?',
             options: [
               'Yes, it works for all aquarium chemicals',
               'Yes, but only for antibacterials',
@@ -639,7 +746,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_med_q3',
-            question: 'Why must UV sterilisers be switched off during medication treatment?',
+            question:
+                'Why must UV sterilisers be switched off during medication treatment?',
             options: [
               'UV light heats the water',
               'UV light makes the medication toxic',
@@ -665,7 +773,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_med_q5',
-            question: 'After a partial water change during treatment, what should you do?',
+            question:
+                'After a partial water change during treatment, what should you do?',
             options: [
               'Nothing — the medication in the tank is still effective',
               'Stop treatment as the water change restarts the clock',
@@ -688,6 +797,23 @@ final fishHealthPath = LearningPath(
       orderIndex: 6,
       xpReward: 50,
       estimatedMinutes: 5,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Set up a hospital tank that isolates illness without harming the display tank.',
+          'Use separate tools, seeded filtration, and simple decor for safer treatment.',
+        ],
+        scenario:
+            'One fish needs medication, but the display tank contains live plants, shrimp, and a mature filter colony.',
+        careDrill: [
+          'Keep a spare seeded sponge filter available before emergencies happen.',
+          'Label hospital-only nets, siphons, and buckets so pathogens do not move back to the display tank.',
+        ],
+        sources: [
+          lessonSourceMerckAquariumFishManagement,
+          lessonSourceCdcFishHealth,
+          lessonSourceMerckRoutineFishHealth,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -733,7 +859,8 @@ final fishHealthPath = LearningPath(
         questions: [
           const QuizQuestion(
             id: 'fh_hosp_q1',
-            question: 'What is the minimum recommended size for a hospital tank?',
+            question:
+                'What is the minimum recommended size for a hospital tank?',
             options: [
               '5 litres (1 gallon)',
               '10 litres (2.5 gallons)',
@@ -746,7 +873,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_hosp_q2',
-            question: 'Why should a hospital tank have a bare bottom with no substrate?',
+            question:
+                'Why should a hospital tank have a bare bottom with no substrate?',
             options: [
               'Substrate makes the tank too heavy',
               'Fish hide in substrate making treatment harder',
@@ -772,7 +900,8 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_hosp_q4',
-            question: 'How do you keep a hospital tank cycled and ready for emergencies?',
+            question:
+                'How do you keep a hospital tank cycled and ready for emergencies?',
             options: [
               'Add bottled bacteria when needed',
               'Keep a sponge filter running in your main tank to seed bacteria',

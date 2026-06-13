@@ -237,6 +237,10 @@ void main() {
       _expectStructuredGuides('Equipment', _mergedEquipmentPath.lessons);
     });
 
+    test('every fish health lesson has a structured guide', () {
+      _expectStructuredGuides('Fish Health', fishHealthPath.lessons);
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {

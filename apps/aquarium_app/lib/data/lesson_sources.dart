@@ -91,3 +91,34 @@ const lessonSourceInjafAquariumPlants = LessonSource(
       'https://injaf.org/articles-guides/beginners-guides/beginners-guide-to-aquarium-plants/',
   note: 'Beginner plant choices, planting, and care guidance.',
 );
+
+const lessonSourceMerckFishDiseases = LessonSource(
+  title: 'Disorders and Diseases of Fish',
+  publisher: 'Merck Veterinary Manual',
+  url:
+      'https://www.merckvetmanual.com/all-other-pets/fish/disorders-and-diseases-of-fish',
+  note: 'Stress, water quality, quarantine, and common fish disease context.',
+);
+
+const lessonSourceMerckAquariumFishManagement = LessonSource(
+  title: 'Management of Aquarium Fish',
+  publisher: 'Merck Veterinary Manual',
+  url:
+      'https://www.merckvetmanual.com/exotic-and-laboratory-animals/aquarium-fish/management-of-aquarium-fish',
+  note:
+      'Quarantine, treatment isolation, salinity, and disease-management context.',
+);
+
+const lessonSourceRspcaFishHealth = LessonSource(
+  title: 'Pet fish health',
+  publisher: 'RSPCA',
+  url: 'https://www.rspca.org.uk/adviceandwelfare/pets/fish/health',
+  note: 'Fish illness signs and water-quality-first health guidance.',
+);
+
+const lessonSourceCdcFishHealth = LessonSource(
+  title: 'Fish',
+  publisher: 'CDC Healthy Pets, Healthy People',
+  url: 'https://www.cdc.gov/healthy-pets/about/fish.html',
+  note: 'Sick-fish separation, observation, and safe handling guidance.',
+);
