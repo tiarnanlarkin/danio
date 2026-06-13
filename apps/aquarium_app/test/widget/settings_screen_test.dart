@@ -125,6 +125,48 @@ void main() {
     });
   });
 
+  group('_UnitsTile', () {
+    testWidgets('shows Units tile with metric subtitle by default', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Units'), 500.0);
+      expect(find.text('Units'), findsOneWidget);
+      expect(find.text('Metric (litres, cm, C)'), findsOneWidget);
+    });
+
+    testWidgets('opens units picker on tap', (tester) async {
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Units'), 500.0);
+      await tester.tap(find.text('Units'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Choose Units'), findsOneWidget);
+      expect(find.text('US units'), findsOneWidget);
+    });
+
+    testWidgets('selecting US units updates the visible subtitle', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Units'), 500.0);
+      await tester.tap(find.text('Units'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('US units'));
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(find.text('Units'), 500.0);
+      expect(find.text('US units (gallons, inches, F)'), findsOneWidget);
+    });
+  });
+
   group('_AmbientLightingToggle', () {
     testWidgets('shows Day/Night Ambiance tile', (tester) async {
       await tester.pumpWidget(_wrap(const SettingsScreen()));

@@ -26,6 +26,7 @@ class UserProfile {
   final String? name;
   final ExperienceLevel experienceLevel;
   final TankType primaryTankType;
+  final String? regionCode;
   final List<UserGoal> goals;
 
   // Gamification
@@ -104,6 +105,7 @@ class UserProfile {
     this.name,
     this.experienceLevel = ExperienceLevel.beginner,
     this.primaryTankType = TankType.freshwater,
+    this.regionCode,
     this.goals = const [UserGoal.keepFishAlive],
     this.totalXp = 0,
     this.currentStreak = 0,
@@ -278,6 +280,7 @@ class UserProfile {
     String? name,
     ExperienceLevel? experienceLevel,
     TankType? primaryTankType,
+    String? regionCode,
     List<UserGoal>? goals,
     int? totalXp,
     int? currentStreak,
@@ -324,6 +327,7 @@ class UserProfile {
       name: name ?? this.name,
       experienceLevel: experienceLevel ?? this.experienceLevel,
       primaryTankType: primaryTankType ?? this.primaryTankType,
+      regionCode: regionCode ?? this.regionCode,
       goals: goals ?? this.goals,
       totalXp: totalXp ?? this.totalXp,
       currentStreak: currentStreak ?? this.currentStreak,
@@ -378,6 +382,7 @@ class UserProfile {
     'name': name,
     'experienceLevel': experienceLevel.name,
     'primaryTankType': primaryTankType.name,
+    'regionCode': regionCode,
     'goals': goals.map((g) => g.name).toList(),
     'totalXp': totalXp,
     'currentStreak': currentStreak,
@@ -434,6 +439,7 @@ class UserProfile {
         (e) => e.name == json['primaryTankType'],
         orElse: () => TankType.freshwater,
       ),
+      regionCode: json['regionCode'] as String?,
       goals: (json['goals'] is List)
           ? (json['goals'] as List)
                 .whereType<String>()

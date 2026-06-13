@@ -85,6 +85,7 @@ class SettingsScreen extends ConsumerWidget {
       (_) => const _SectionHeader(title: 'App Settings'),
       (_) => const _ThemeModeTile(),
       (_) => const _RoomThemeTile(),
+      (_) => const _UnitsTile(),
       (_) => NavListTile(
         icon: Icons.tune,
         title: 'Difficulty Settings',
@@ -424,6 +425,72 @@ class _ThemeModeTile extends ConsumerWidget {
       title: 'Light/Dark Mode',
       subtitle: _themeModeLabel(themeMode),
       onTap: () => _showThemePicker(context, ref, themeMode),
+    );
+  }
+}
+
+String _unitsLabel(bool useMetric) {
+  return useMetric ? 'Metric (litres, cm, C)' : 'US units (gallons, inches, F)';
+}
+
+void _showUnitsPicker(BuildContext context, WidgetRef ref, bool useMetric) {
+  showAppDragSheet(
+    context: context,
+    builder: (ctx) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Text(
+              'Choose Units',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          AppListTile(
+            leading: const Icon(Icons.straighten),
+            title: 'Metric',
+            subtitle: 'Litres, centimetres, Celsius',
+            isSelected: useMetric,
+            trailing: useMetric
+                ? const Icon(Icons.check, color: AppColors.primary)
+                : null,
+            onTap: () {
+              ref.read(settingsProvider.notifier).setUseMetric(true);
+              Navigator.maybePop(ctx);
+            },
+          ),
+          AppListTile(
+            leading: const Icon(Icons.speed),
+            title: 'US units',
+            subtitle: 'Gallons, inches, Fahrenheit',
+            isSelected: !useMetric,
+            trailing: !useMetric
+                ? const Icon(Icons.check, color: AppColors.primary)
+                : null,
+            onTap: () {
+              ref.read(settingsProvider.notifier).setUseMetric(false);
+              Navigator.maybePop(ctx);
+            },
+          ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ),
+    ),
+  );
+}
+
+class _UnitsTile extends ConsumerWidget {
+  const _UnitsTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final useMetric = ref.watch(settingsProvider.select((s) => s.useMetric));
+    return NavListTile(
+      icon: Icons.straighten,
+      title: 'Units',
+      subtitle: _unitsLabel(useMetric),
+      onTap: () => _showUnitsPicker(context, ref, useMetric),
     );
   }
 }

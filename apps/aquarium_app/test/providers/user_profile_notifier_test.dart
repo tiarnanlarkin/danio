@@ -183,11 +183,13 @@ void main() {
       // Profile should be null before creation.
       expect(container.read(userProfileProvider).value, isNull);
 
-      await container.read(userProfileProvider.notifier).createProfile(
-        experienceLevel: ExperienceLevel.intermediate,
-        primaryTankType: TankType.freshwater,
-        goals: [UserGoal.keepFishAlive, UserGoal.learnTheScience],
-      );
+      await container
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: ExperienceLevel.intermediate,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive, UserGoal.learnTheScience],
+          );
       await _settle();
 
       final state = container.read(userProfileProvider);
@@ -197,6 +199,29 @@ void main() {
       expect(profile.experienceLevel, equals(ExperienceLevel.intermediate));
       expect(profile.goals, contains(UserGoal.learnTheScience));
       expect(profile.id, isNotEmpty);
+    });
+
+    test('stores region code during profile creation', () async {
+      SharedPreferences.setMockInitialValues({});
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      container.read(userProfileProvider);
+      await _settle();
+
+      await container
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: ExperienceLevel.beginner,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive],
+            regionCode: 'us',
+          );
+      await _settle();
+
+      final profile = container.read(userProfileProvider).value!;
+      expect(profile.regionCode, 'us');
     });
   });
 
@@ -210,10 +235,7 @@ void main() {
 
   group('UserProfileNotifier - completeLesson', () {
     test('does not double-count an already completed lesson', () async {
-      final json = _profileJson(
-        totalXp: 100,
-        completedLessons: ['nc_intro'],
-      );
+      final json = _profileJson(totalXp: 100, completedLessons: ['nc_intro']);
       SharedPreferences.setMockInitialValues({
         'user_profile': jsonEncode(json),
       });
@@ -342,10 +364,9 @@ void main() {
       container.read(userProfileProvider);
       await _settle();
 
-      await container.read(userProfileProvider.notifier).updateProfile(
-        dailyXpGoal: 100,
-        hasSeenTutorial: true,
-      );
+      await container
+          .read(userProfileProvider.notifier)
+          .updateProfile(dailyXpGoal: 100, hasSeenTutorial: true);
       await _settle();
 
       final profile = container.read(userProfileProvider).value!;
@@ -353,6 +374,28 @@ void main() {
       expect(profile.hasSeenTutorial, isTrue);
       // Unchanged field should be preserved.
       expect(profile.totalXp, equals(200));
+    });
+
+    test('updates region code while preserving progress', () async {
+      final json = _profileJson(totalXp: 200);
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(json),
+      });
+
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      container.read(userProfileProvider);
+      await _settle();
+
+      await container
+          .read(userProfileProvider.notifier)
+          .updateProfile(regionCode: 'europe');
+      await _settle();
+
+      final profile = container.read(userProfileProvider).value!;
+      expect(profile.regionCode, 'europe');
+      expect(profile.totalXp, 200);
     });
   });
 }

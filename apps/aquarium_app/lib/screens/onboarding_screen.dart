@@ -8,10 +8,12 @@ import '../models/user_profile.dart';
 import '../models/tank.dart';
 import '../models/livestock.dart';
 import '../providers/onboarding_provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/onboarding_service.dart';
 import 'onboarding/welcome_screen.dart';
+import 'onboarding/region_units_screen.dart';
 import 'onboarding/experience_level_screen.dart';
 import 'onboarding/tank_status_screen.dart';
 import 'onboarding/micro_lesson_screen.dart';
@@ -28,25 +30,25 @@ import '../providers/species_unlock_provider.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 
-/// Orchestrates the 10-screen onboarding flow.
+/// Orchestrates the 11-screen onboarding flow.
 ///
 /// Uses a [PageView] with [NeverScrollableScrollPhysics] so navigation is
 /// purely programmatic (no swiping). State collected across screens is held
 /// in this widget and passed down to each child.
 ///
 /// Current flow:
-///   Welcome → Experience Level → Tank Status → Micro Lesson → XP Celebration
-///   → Fish Select → Aha Moment → Feature Summary → Push Permission → Warm Entry
-///   → (creates profile + tank) → Home
+///   Welcome -> Region & Units -> Experience Level -> Tank Status -> Micro
+///   Lesson -> XP Celebration -> Fish Select -> Aha Moment -> Feature Summary
+///   -> Push Permission -> Warm Entry -> (creates profile + tank) -> Home
 ///
 /// Intentionally skipped (with rationale):
 ///   - Placement quiz: The placement test system exists (PlacementChallengeCard
 ///     on LearnScreen) but is designed as a post-onboarding feature for
-///     intermediate/expert users, not part of the initial 10-screen flow.
+///     intermediate/expert users, not part of the initial 11-screen flow.
 ///     New users start at the beginning of all learning paths regardless.
 ///   - Tutorial: hasSeenTutorial is set to false after onboarding. The
 ///     "tutorial" concept is distributed — first-visit tooltips on each
-///     tab, the micro-lesson on Page 3, and the stage panel hint on home.
+///     tab, the micro-lesson on Page 4, and the stage panel hint on home.
 ///     A dedicated tutorial overlay would add friction to an already
 ///     long flow.
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -60,12 +62,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
 
   // State collected across screens
+  String? _regionCode;
+  bool _useMetricUnits = true;
   ExperienceLevel? _experienceLevel;
   String? _tankStatus; // 'planning' | 'cycling' | 'active'
   SpeciesInfo? _selectedFish;
   String? _userName;
 
-  static const _totalPages = 10;
+  static const _totalPages = 11;
   int _currentPage = 0;
 
   @override
@@ -134,10 +138,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       final service = await OnboardingService.getInstance();
       final level = _experienceLevel ?? ExperienceLevel.beginner;
 
+      await ref.read(settingsProvider.notifier).setUseMetric(_useMetricUnits);
+
       if (existingProfile == null) {
         await profileNotifier.createProfile(
           experienceLevel: level,
           primaryTankType: TankType.freshwater,
+          regionCode: _regionCode,
           goals: [_deriveGoal()],
           name: _userName,
           tankStatus: _tankStatus,
@@ -146,6 +153,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       } else {
         await profileNotifier.updateProfile(
           experienceLevel: level,
+          regionCode: _regionCode,
           goals: [_deriveGoal()],
           tankStatus: _tankStatus,
           firstFishSpeciesId: _selectedFish?.commonName,
@@ -379,7 +387,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   // Page 0: Welcome
                   WelcomeScreen(onNext: _nextPage, onLogin: _quickStart),
 
-                  // Page 1: Experience Level
+                  // Page 1: Region & Units
+                  RegionUnitsScreen(
+                    onContinue: (choice) {
+                      setState(() {
+                        _regionCode = choice.regionCode;
+                        _useMetricUnits = choice.useMetric;
+                      });
+                      _nextPage();
+                    },
+                    onSkip: _quickStart,
+                  ),
+
+                  // Page 2: Experience Level
                   ExperienceLevelScreen(
                     onSelected: (level) {
                       setState(() => _experienceLevel = level);
@@ -388,7 +408,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     onSkip: _quickStart,
                   ),
 
-                  // Page 2: Tank Status
+                  // Page 3: Tank Status
                   TankStatusScreen(
                     onSelected: (status) {
                       setState(() => _tankStatus = status);
@@ -396,7 +416,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
 
-                  // Page 3: Micro Lesson
+                  // Page 4: Micro Lesson
                   // experienceLevel may be null if user somehow reaches here without
                   // selecting — default to beginner.
                   MicroLessonScreen(
@@ -405,10 +425,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     onComplete: _nextPage,
                   ),
 
-                  // Page 4: XP Celebration
+                  // Page 5: XP Celebration
                   XpCelebrationScreen(onNext: _nextPage),
 
-                  // Page 5: Fish Select
+                  // Page 6: Fish Select
                   FishSelectScreen(
                     tankStatus: _tankStatus ?? 'planning',
                     onFishSelected: (fish) {
@@ -417,7 +437,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
 
-                  // Page 6: Aha Moment
+                  // Page 7: Aha Moment
                   // Uses a Builder to defer construction until state is available.
                   Builder(
                     builder: (context) {
@@ -425,7 +445,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           _experienceLevel == null ||
                           _tankStatus == null) {
                         return _OnboardingFallback(
-                          onGoBack: () => _goToStep(5),
+                          onGoBack: () => _goToStep(6),
                         );
                       }
                       return AhaMomentScreen(
@@ -437,36 +457,36 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
 
-                  // Page 7: Feature Summary
+                  // Page 8: Feature Summary
                   Builder(
                     builder: (context) {
                       if (_selectedFish == null) {
                         return _OnboardingFallback(
-                          onGoBack: () => _goToStep(5),
+                          onGoBack: () => _goToStep(6),
                         );
                       }
                       return FeatureSummaryScreen(
                         selectedFish: _selectedFish!,
-                        onComplete: () => _goToStep(8),
-                        onSkip: () => _goToStep(8),
+                        onComplete: () => _goToStep(9),
+                        onSkip: () => _goToStep(9),
                       );
                     },
                   ),
 
-                  // Page 8: Push Permission
+                  // Page 9: Push Permission
                   PushPermissionScreen(
                     onAllow: _handleNotificationAllow,
                     onSkip: _nextPage,
                   ),
 
-                  // Page 9: Warm Entry
+                  // Page 10: Warm Entry
                   Builder(
                     builder: (context) {
                       if (_selectedFish == null ||
                           _experienceLevel == null ||
                           _tankStatus == null) {
                         return _OnboardingFallback(
-                          onGoBack: () => _goToStep(5),
+                          onGoBack: () => _goToStep(6),
                         );
                       }
                       return WarmEntryScreen(

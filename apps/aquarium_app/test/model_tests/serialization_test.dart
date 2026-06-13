@@ -28,6 +28,7 @@ UserProfile _testProfile() {
     name: 'Ada',
     experienceLevel: ExperienceLevel.intermediate,
     primaryTankType: TankType.freshwater,
+    regionCode: 'gb_ie',
     goals: [UserGoal.breeding, UserGoal.learnTheScience],
     totalXp: 750,
     currentStreak: 5,
@@ -209,6 +210,7 @@ void main() {
         expect(restored.name, original.name);
         expect(restored.experienceLevel, original.experienceLevel);
         expect(restored.primaryTankType, original.primaryTankType);
+        expect(restored.regionCode, original.regionCode);
         expect(restored.goals, original.goals);
         expect(restored.totalXp, original.totalXp);
         expect(restored.currentStreak, original.currentStreak);
@@ -449,6 +451,7 @@ void main() {
         expect(profile.name, isNull);
         expect(profile.experienceLevel, ExperienceLevel.beginner);
         expect(profile.primaryTankType, TankType.freshwater);
+        expect(profile.regionCode, isNull);
         expect(profile.goals, isEmpty);
         expect(profile.totalXp, 0);
         expect(profile.currentStreak, 0);
