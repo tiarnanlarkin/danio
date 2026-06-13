@@ -30,14 +30,19 @@ Widget _wrap(Widget child) {
   return ProviderScope(child: MaterialApp(home: child));
 }
 
-Map<String, dynamic> _profileJson({String? regionCode, String? tankStatus}) {
+Map<String, dynamic> _profileJson({
+  String? regionCode,
+  String? tankStatus,
+  String experienceLevel = 'beginner',
+  List<String> goals = const ['keepFishAlive'],
+}) {
   final now = DateTime.now().toIso8601String();
   return {
     'id': 'settings-test-user',
-    'experienceLevel': 'beginner',
+    'experienceLevel': experienceLevel,
     'primaryTankType': 'freshwater',
     'regionCode': regionCode,
-    'goals': ['keepFishAlive'],
+    'goals': goals,
     'tankStatus': tankStatus,
     'totalXp': 0,
     'currentStreak': 0,
@@ -65,6 +70,17 @@ Map<String, dynamic> _profileJson({String? regionCode, String? tankStatus}) {
     'createdAt': now,
     'updatedAt': now,
   };
+}
+
+Future<void> _dragUntilTextVisible(WidgetTester tester, String text) async {
+  final scrollable = find.byType(Scrollable).first;
+  for (var i = 0; i < 30 && find.text(text).evaluate().isEmpty; i++) {
+    await tester.drag(scrollable, const Offset(0, -120));
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  expect(find.text(text), findsOneWidget);
+  await tester.ensureVisible(find.text(text));
+  await tester.pump();
 }
 
 // ---------------------------------------------------------------------------
@@ -222,6 +238,27 @@ void main() {
       expect(find.text('Not set - helps tune care prompts'), findsOneWidget);
     });
 
+    testWidgets('shows experience and goals in Preferences', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(
+          _profileJson(
+            experienceLevel: 'intermediate',
+            goals: const ['learnTheScience', 'beautifulDisplay'],
+          ),
+        ),
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(find.text('Region'), 500.0);
+      expect(find.text('Experience level'), findsOneWidget);
+      expect(find.text('Some experience'), findsOneWidget);
+      await _dragUntilTextVisible(tester, 'Goals');
+      expect(find.text('Learn the science, Beautiful display'), findsOneWidget);
+    });
+
     testWidgets('region picker updates the visible profile region', (
       tester,
     ) async {
@@ -242,6 +279,59 @@ void main() {
 
       await tester.scrollUntilVisible(find.text('Region'), 500.0);
       expect(find.text('UK & Ireland'), findsOneWidget);
+    });
+
+    testWidgets('experience picker updates the visible profile level', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(_profileJson()),
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(find.text('Region'), 500.0);
+      await tester.tap(find.text('Experience level'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Experienced aquarist'));
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(find.text('Region'), 500.0);
+      expect(find.text('Experienced aquarist'), findsOneWidget);
+    });
+
+    testWidgets('goals picker saves multiple visible profile goals', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(_profileJson(goals: const [])),
+      });
+
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await _dragUntilTextVisible(tester, 'Goals');
+      await tester.tap(find.text('Goals'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.widgetWithText(CheckboxListTile, 'Beautiful display'),
+      );
+      await tester.pump();
+      await tester.tap(
+        find.widgetWithText(CheckboxListTile, 'Learn the science'),
+      );
+      await tester.pump();
+      await tester.tap(find.text('Save goals'));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
+
+      await _dragUntilTextVisible(tester, 'Goals');
+      expect(find.text('Learn the science, Beautiful display'), findsOneWidget);
     });
   });
 

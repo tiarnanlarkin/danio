@@ -11,6 +11,7 @@ import '../learn_screen.dart';
 import '../onboarding/consent_screen.dart';
 import '../../navigation/app_routes.dart';
 import '../../models/adaptive_difficulty.dart';
+import '../../models/user_profile.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/reduced_motion_provider.dart';
 import '../../providers/settings_provider.dart';
@@ -89,6 +90,8 @@ class SettingsScreen extends ConsumerWidget {
       (_) => const _SectionHeader(title: 'Setup Details'),
       (_) => const _RegionProfileTile(),
       (_) => const _TankStageProfileTile(),
+      (_) => const _ExperienceLevelProfileTile(),
+      (_) => const _GoalsProfileTile(),
       (_) => NavListTile(
         icon: Icons.tune,
         title: 'Difficulty Settings',
@@ -461,6 +464,26 @@ String _tankStageLabel(String? tankStatus) {
   return _tankStageLabels[tankStatus] ?? 'Not set - helps tune care prompts';
 }
 
+String _experienceLabel(ExperienceLevel level) => level.displayName;
+
+const _goalOrder = [
+  UserGoal.keepFishAlive,
+  UserGoal.learnTheScience,
+  UserGoal.beautifulDisplay,
+  UserGoal.relaxation,
+  UserGoal.breeding,
+  UserGoal.competition,
+  UserGoal.masterTheHobby,
+];
+
+String _goalsLabel(List<UserGoal> goals) {
+  if (goals.isEmpty) return 'Not set - helps personalise guidance';
+  final ordered = _goalOrder.where(goals.contains).toList(growable: false);
+  final visible = ordered.take(2).map((goal) => goal.displayName).join(', ');
+  final extra = ordered.length - 2;
+  return extra > 0 ? '$visible +$extra more' : visible;
+}
+
 void _showUnitsPicker(BuildContext context, WidgetRef ref, bool useMetric) {
   showAppDragSheet(
     context: context,
@@ -603,6 +626,117 @@ void _showTankStagePicker(
   );
 }
 
+void _showExperiencePicker(
+  BuildContext context,
+  WidgetRef ref,
+  ExperienceLevel currentLevel,
+) {
+  showAppDragSheet(
+    context: context,
+    builder: (ctx) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Text(
+              'Choose Experience Level',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          for (final level in ExperienceLevel.values)
+            AppListTile(
+              leading: const Icon(Icons.school_outlined),
+              title: level.displayName,
+              subtitle: level.description,
+              isSelected: currentLevel == level,
+              trailing: currentLevel == level
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              onTap: () {
+                ref
+                    .read(userProfileProvider.notifier)
+                    .updateProfile(experienceLevel: level);
+                Navigator.maybePop(ctx);
+              },
+            ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ),
+    ),
+  );
+}
+
+void _showGoalsPicker(
+  BuildContext context,
+  WidgetRef ref,
+  List<UserGoal> currentGoals,
+) {
+  final selectedGoals = currentGoals.toSet();
+  showAppDragSheet(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (context, setSheetState) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Text(
+                'Choose Goals',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.55,
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final goal in _goalOrder)
+                    CheckboxListTile(
+                      secondary: const Icon(Icons.flag_outlined),
+                      title: Text(goal.displayName),
+                      value: selectedGoals.contains(goal),
+                      onChanged: (checked) {
+                        setSheetState(() {
+                          if (checked ?? false) {
+                            selectedGoals.add(goal);
+                          } else {
+                            selectedGoals.remove(goal);
+                          }
+                        });
+                      },
+                    ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: AppButton(
+                label: 'Save goals',
+                isFullWidth: true,
+                onPressed: selectedGoals.isEmpty
+                    ? null
+                    : () {
+                        final orderedGoals = _goalOrder
+                            .where(selectedGoals.contains)
+                            .toList(growable: false);
+                        ref
+                            .read(userProfileProvider.notifier)
+                            .updateProfile(goals: orderedGoals);
+                        Navigator.maybePop(ctx);
+                      },
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class _RegionProfileTile extends ConsumerWidget {
   const _RegionProfileTile();
 
@@ -633,6 +767,45 @@ class _TankStageProfileTile extends ConsumerWidget {
       title: 'Tank stage',
       subtitle: _tankStageLabel(tankStage),
       onTap: () => _showTankStagePicker(context, ref, tankStage),
+    );
+  }
+}
+
+class _ExperienceLevelProfileTile extends ConsumerWidget {
+  const _ExperienceLevelProfileTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final experienceLevel = ref.watch(
+      userProfileProvider.select(
+        (profile) =>
+            profile.valueOrNull?.experienceLevel ?? ExperienceLevel.beginner,
+      ),
+    );
+    return NavListTile(
+      icon: Icons.school_outlined,
+      title: 'Experience level',
+      subtitle: _experienceLabel(experienceLevel),
+      onTap: () => _showExperiencePicker(context, ref, experienceLevel),
+    );
+  }
+}
+
+class _GoalsProfileTile extends ConsumerWidget {
+  const _GoalsProfileTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goals = ref.watch(
+      userProfileProvider.select(
+        (profile) => profile.valueOrNull?.goals ?? const <UserGoal>[],
+      ),
+    );
+    return NavListTile(
+      icon: Icons.flag_outlined,
+      title: 'Goals',
+      subtitle: _goalsLabel(goals),
+      onTap: () => _showGoalsPicker(context, ref, goals),
     );
   }
 }

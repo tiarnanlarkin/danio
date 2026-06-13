@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1531 tests.
+- `flutter test`: pass, 1534 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -948,6 +948,17 @@ CL-P1-010A Tank Settings water-profile copy:
 - Focused coverage verifies the visible labels and guards the screen source
   against non-ASCII artifacts.
 
+CL-P1-010B Preferences setup editing:
+
+- Preferences now lets users edit experience level and goals alongside existing
+  units, region, and tank stage controls, so skipped or changed onboarding
+  context can be repaired locally.
+- Experience level uses a single-choice sheet with the existing beginner,
+  intermediate, and expert labels. Goals use a local multi-select sheet ordered
+  like onboarding and save through `userProfileProvider.updateProfile`.
+- Focused widget coverage verifies the visible profile summaries and both
+  picker update paths.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -1030,9 +1041,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   backup JSON before preview/import. Remaining backup/data work is deeper
   import validation UX, edit/delete/undo coverage, and restore/migration
   walkthrough QA.
-- Tank Settings water-profile labels are now readable and source-safe.
-  Remaining profile/preferences work is centralising reset/edit controls for
-  all onboarding preferences, AI, privacy, reminders, motion, and haptics.
+- Profile/preferences now centralises units, region, tank stage, experience
+  level, and goals. Tank Settings water-profile labels are readable and
+  source-safe. Remaining profile/preferences work is centralising reset/edit
+  controls for AI, privacy, reminders, motion, and haptics.
 - Global search now has first complete-local coverage for app destinations,
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, and local logs. Remaining search work is Android phone/tablet
