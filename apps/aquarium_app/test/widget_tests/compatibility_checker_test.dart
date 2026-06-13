@@ -7,19 +7,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:danio/screens/compatibility_checker_screen.dart';
-import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/screens/add_log_screen.dart';
+import 'package:danio/screens/compatibility_checker_screen.dart';
+import 'package:danio/services/storage_service.dart';
 import 'package:danio/theme/app_theme.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-Widget _wrap({List<Override> overrides = const []}) {
+Widget _wrap({
+  List<Override> overrides = const [],
+  String? tankId,
+  InMemoryStorageService? storage,
+}) {
   return ProviderScope(
-    overrides: overrides,
-    child: const MaterialApp(home: CompatibilityCheckerScreen()),
+    overrides: [
+      if (storage != null) storageServiceProvider.overrideWithValue(storage),
+      ...overrides,
+    ],
+    child: MaterialApp(home: CompatibilityCheckerScreen(tankId: tankId)),
   );
 }
 
@@ -38,7 +45,32 @@ Widget _wrapWithGestureInset({List<Override> overrides = const []}) {
   );
 }
 
-/// Mock tanks provider that returns no tanks (empty list).
+Tank _makeTank({String id = 'tank-1', double volumeLitres = 72}) => Tank(
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: volumeLitres,
+  startDate: DateTime(2026, 1, 1),
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: DateTime(2026, 1, 1),
+  updatedAt: DateTime(2026, 1, 1),
+);
+
+Future<void> _addSpecies(WidgetTester tester, String query) async {
+  await tester.enterText(find.byType(TextField), query);
+  await tester.pump(const Duration(milliseconds: 350));
+  final addBtn = find.byIcon(Icons.add_circle_outline);
+  expect(addBtn, findsWidgets);
+  await tester.tap(addBtn.first);
+  await tester.pump();
+}
+
+Future<void> _clearStorage() async {
+  final storage = InMemoryStorageService();
+  final tanks = await storage.getAllTanks();
+  await storage.deleteAllTanks(tanks.map((tank) => tank.id).toList());
+}
+
 final _emptyTanksProvider = tanksProvider.overrideWith((ref) async => []);
 
 final _smallTankProvider = tanksProvider.overrideWith(
@@ -56,16 +88,14 @@ final _smallTankProvider = tanksProvider.overrideWith(
   ],
 );
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
-
 void main() {
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
+    await _clearStorage();
   });
 
-  group('CompatibilityCheckerScreen — smoke', () {
+  group('CompatibilityCheckerScreen - smoke', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
       await tester.pump();
@@ -96,19 +126,15 @@ void main() {
     });
   });
 
-  group('CompatibilityCheckerScreen — search', () {
+  group('CompatibilityCheckerScreen - search', () {
     testWidgets('typing in search field updates state', (tester) async {
       await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
       await tester.pump();
 
       await tester.enterText(find.byType(TextField), 'Neon');
-      // Wait for the 300ms debounce to fire before checking results.
       await tester.pump(const Duration(milliseconds: 350));
 
-      // Search results should appear if species match
-      // The database has Neon Tetra — results should show
       final listTiles = find.byType(ListTile);
-      // At minimum, the list should contain search results
       expect(listTiles.evaluate().length, greaterThan(0));
     });
 
@@ -119,13 +145,11 @@ void main() {
       await tester.enterText(find.byType(TextField), 'Neon');
       await tester.pump(const Duration(milliseconds: 350));
 
-      // Find and tap the first search result (add button)
       final addButtons = find.byIcon(Icons.add_circle_outline);
       if (addButtons.evaluate().isNotEmpty) {
         await tester.tap(addButtons.first);
         await tester.pump();
 
-        // A chip with species name should appear
         expect(find.byType(Chip), findsWidgets);
         final chip = tester.widget<Chip>(find.byType(Chip).first);
         expect((chip.label as Text).style?.color, AppColors.textPrimary);
@@ -137,58 +161,35 @@ void main() {
     });
   });
 
-  group('CompatibilityCheckerScreen — species management', () {
+  group('CompatibilityCheckerScreen - species management', () {
     testWidgets('removing a species chip updates the list', (tester) async {
       await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
       await tester.pump();
 
-      // Add a species
-      await tester.enterText(find.byType(TextField), 'Neon');
-      await tester.pump(const Duration(milliseconds: 350));
+      await _addSpecies(tester, 'Neon');
 
-      final addButtons = find.byIcon(Icons.add_circle_outline);
-      if (addButtons.evaluate().isNotEmpty) {
-        await tester.tap(addButtons.first);
+      final chipsBefore = find.byType(Chip).evaluate().length;
+      expect(chipsBefore, greaterThan(0));
+
+      final deleteIcons = find.byIcon(Icons.close);
+      if (deleteIcons.evaluate().isNotEmpty) {
+        await tester.tap(deleteIcons.first);
         await tester.pump();
 
-        final chipsBefore = find.byType(Chip).evaluate().length;
-        expect(chipsBefore, greaterThan(0));
-
-        // Remove via the delete icon on the chip
-        final deleteIcons = find.byIcon(Icons.close);
-        if (deleteIcons.evaluate().isNotEmpty) {
-          await tester.tap(deleteIcons.first);
-          await tester.pump();
-
-          final chipsAfter = find.byType(Chip).evaluate().length;
-          expect(chipsAfter, lessThan(chipsBefore));
-        }
+        final chipsAfter = find.byType(Chip).evaluate().length;
+        expect(chipsAfter, lessThan(chipsBefore));
       }
     });
   });
 
-  group('CompatibilityCheckerScreen — verdict display', () {
+  group('CompatibilityCheckerScreen - verdict display', () {
     testWidgets('verdict card appears with 2+ species', (tester) async {
       await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
       await tester.pump();
 
-      // Add first species
-      await tester.enterText(find.byType(TextField), 'Neon');
-      await tester.pump(const Duration(milliseconds: 350));
-      final addButtons1 = find.byIcon(Icons.add_circle_outline);
-      if (addButtons1.evaluate().isEmpty) return;
-      await tester.tap(addButtons1.first);
-      await tester.pump();
+      await _addSpecies(tester, 'Neon');
+      await _addSpecies(tester, 'Guppy');
 
-      // Add second species
-      await tester.enterText(find.byType(TextField), 'Guppy');
-      await tester.pump(const Duration(milliseconds: 350));
-      final addButtons2 = find.byIcon(Icons.add_circle_outline);
-      if (addButtons2.evaluate().isEmpty) return;
-      await tester.tap(addButtons2.first);
-      await tester.pump();
-
-      // Should show verdict: Good Match, Proceed with Caution, or Not Recommended
       final verdicts = [
         'Good Match!',
         'Proceed with Caution',
@@ -210,20 +211,49 @@ void main() {
       await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
       await tester.pump();
 
-      // Add two species
-      for (final query in ['Neon', 'Guppy']) {
-        await tester.enterText(find.byType(TextField), query);
-        await tester.pump(const Duration(milliseconds: 350));
-        final addBtn = find.byIcon(Icons.add_circle_outline);
-        if (addBtn.evaluate().isEmpty) return;
-        await tester.tap(addBtn.first);
-        await tester.pump();
-      }
+      await _addSpecies(tester, 'Neon');
+      await _addSpecies(tester, 'Guppy');
 
-      // Should show "Recommended Setup" header
       await tester.drag(find.byType(ListView).last, const Offset(0, -300));
       await tester.pump();
       expect(find.text('Recommended Setup'), findsOneWidget);
+    });
+
+    testWidgets('guided action opens an observation log with verdict summary', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+
+      await tester.pumpWidget(_wrap(tankId: 'tank-1', storage: storage));
+      await tester.pump();
+
+      await _addSpecies(tester, 'Neon');
+      await _addSpecies(tester, 'Guppy');
+
+      await tester.scrollUntilVisible(
+        find.text('Log compatibility check'),
+        300,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.ensureVisible(find.text('Log compatibility check'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Log compatibility check'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddLogScreen), findsOneWidget);
+      expect(find.text('Observation'), findsWidgets);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is TextFormField &&
+              (widget.initialValue ?? '').contains('Compatibility check') &&
+              (widget.initialValue ?? '').contains('Verdict:') &&
+              (widget.initialValue ?? '').contains('Neon Tetra') &&
+              (widget.initialValue ?? '').contains('Guppy'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Betta and Neon Tetra are shown as a cautious match', (
@@ -232,14 +262,8 @@ void main() {
       await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
       await tester.pump();
 
-      for (final query in ['Betta', 'Neon Tetra']) {
-        await tester.enterText(find.byType(TextField), query);
-        await tester.pump(const Duration(milliseconds: 350));
-        final addBtn = find.byIcon(Icons.add_circle_outline);
-        expect(addBtn, findsWidgets);
-        await tester.tap(addBtn.first);
-        await tester.pump();
-      }
+      await _addSpecies(tester, 'Betta');
+      await _addSpecies(tester, 'Neon Tetra');
 
       expect(find.text('Proceed with Caution'), findsOneWidget);
       expect(find.textContaining('Betta temperament varies'), findsOneWidget);
@@ -251,14 +275,8 @@ void main() {
       await tester.pumpWidget(_wrap(overrides: [_smallTankProvider]));
       await tester.pump();
 
-      for (final query in ['Common Goldfish', 'Neon Tetra']) {
-        await tester.enterText(find.byType(TextField), query);
-        await tester.pump(const Duration(milliseconds: 350));
-        final addBtn = find.byIcon(Icons.add_circle_outline);
-        expect(addBtn, findsWidgets);
-        await tester.tap(addBtn.first);
-        await tester.pump();
-      }
+      await _addSpecies(tester, 'Common Goldfish');
+      await _addSpecies(tester, 'Neon Tetra');
 
       expect(find.text('Common Goldfish +'), findsNothing);
       expect(find.text('Common Goldfish'), findsWidgets);
@@ -270,14 +288,8 @@ void main() {
       await tester.pumpWidget(_wrap(overrides: [_smallTankProvider]));
       await tester.pump();
 
-      for (final query in ['Common Goldfish', 'Neon Tetra']) {
-        await tester.enterText(find.byType(TextField), query);
-        await tester.pump(const Duration(milliseconds: 350));
-        final addBtn = find.byIcon(Icons.add_circle_outline);
-        expect(addBtn, findsWidgets);
-        await tester.tap(addBtn.first);
-        await tester.pump();
-      }
+      await _addSpecies(tester, 'Common Goldfish');
+      await _addSpecies(tester, 'Neon Tetra');
 
       await tester.drag(find.byType(ListView).last, const Offset(0, -300));
       await tester.pump();
@@ -305,14 +317,8 @@ void main() {
       );
       await tester.pump();
 
-      for (final query in ['Neon', 'Guppy']) {
-        await tester.enterText(find.byType(TextField), query);
-        await tester.pump(const Duration(milliseconds: 350));
-        final addBtn = find.byIcon(Icons.add_circle_outline);
-        expect(addBtn, findsWidgets);
-        await tester.tap(addBtn.first);
-        await tester.pump();
-      }
+      await _addSpecies(tester, 'Neon');
+      await _addSpecies(tester, 'Guppy');
 
       final listViewRect = tester.getRect(find.byType(ListView).last);
       expect(listViewRect.bottom, lessThanOrEqualTo(viewport.height - 34));

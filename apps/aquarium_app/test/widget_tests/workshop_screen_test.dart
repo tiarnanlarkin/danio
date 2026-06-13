@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/co2_calculator_screen.dart';
+import 'package:danio/screens/compatibility_checker_screen.dart';
 import 'package:danio/screens/dosing_calculator_screen.dart';
 import 'package:danio/screens/lighting_schedule_screen.dart';
 import 'package:danio/screens/stocking_calculator_screen.dart';
@@ -253,6 +254,41 @@ void main() {
       await tester.pump();
 
       expect(find.text('Log stocking check'), findsOneWidget);
+    });
+
+    testWidgets('opens Compatibility with current tank context', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Compatibility'), 300);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Compatibility'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CompatibilityCheckerScreen), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField), 'Neon');
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.tap(find.byIcon(Icons.add_circle_outline).first);
+      await tester.pump();
+
+      await tester.enterText(find.byType(TextField), 'Guppy');
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.tap(find.byIcon(Icons.add_circle_outline).first);
+      await tester.pump();
+
+      await tester.scrollUntilVisible(
+        find.text('Log compatibility check'),
+        300,
+        scrollable: find.byType(Scrollable).last,
+      );
+
+      expect(find.text('Log compatibility check'), findsOneWidget);
     });
 
     testWidgets('shows multiple calculator tools in grid', (tester) async {

@@ -3,13 +3,19 @@ import '../utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../models/log_entry.dart';
+import '../models/tank.dart';
 import '../widgets/core/app_text_field.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
+import 'add_log_screen.dart';
 
 class CompatibilityCheckerScreen extends ConsumerStatefulWidget {
-  const CompatibilityCheckerScreen({super.key});
+  final String? tankId;
+
+  const CompatibilityCheckerScreen({super.key, this.tankId});
 
   @override
   ConsumerState<CompatibilityCheckerScreen> createState() =>
@@ -63,7 +69,23 @@ class _CompatibilityCheckerScreenState
         : '${issue.species1} + ${issue.species2}';
   }
 
-  List<_CompatibilityIssue> get _issues {
+  Tank? _tankReference(List<Tank>? tanks) {
+    if (tanks == null || tanks.isEmpty) return null;
+
+    final tankId = widget.tankId;
+    if (tankId != null) {
+      for (final tank in tanks) {
+        if (tank.id == tankId) return tank;
+      }
+    }
+
+    return tanks.reduce(
+      (largest, tank) =>
+          largest.volumeLitres >= tank.volumeLitres ? largest : tank,
+    );
+  }
+
+  List<_CompatibilityIssue> _issuesForTanks(List<Tank>? tanks) {
     final issues = <_CompatibilityIssue>[];
 
     for (var i = 0; i < _selectedSpecies.length; i++) {
@@ -147,8 +169,8 @@ class _CompatibilityCheckerScreenState
               severity: _Severity.bad,
               reason:
                   'Temperature ranges don\'t overlap: '
-                  '${a.commonName} (${a.minTempC}-${a.maxTempC}°C) vs '
-                  '${b.commonName} (${b.minTempC}-${b.maxTempC}°C)',
+                  '${a.commonName} (${a.minTempC}-${a.maxTempC} deg C) vs '
+                  '${b.commonName} (${b.minTempC}-${b.maxTempC} deg C)',
             ),
           );
         }
@@ -189,22 +211,18 @@ class _CompatibilityCheckerScreenState
       }
     }
 
-    // Tank size check: warn if any species needs a bigger tank than user has
-    final tanks = ref.watch(tanksProvider).valueOrNull;
-    if (tanks != null && tanks.isNotEmpty && _selectedSpecies.isNotEmpty) {
-      // Use the largest tank the user owns as reference
-      final largestTankVolume = tanks
-          .map((t) => t.volumeLitres)
-          .reduce((a, b) => a > b ? a : b);
+    // Tank size check: selected tank if supplied, otherwise largest owned tank.
+    final tankReference = _tankReference(tanks);
+    if (tankReference != null && _selectedSpecies.isNotEmpty) {
       for (final species in _selectedSpecies) {
-        if (species.minTankLitres > largestTankVolume) {
+        if (species.minTankLitres > tankReference.volumeLitres) {
           issues.add(
             _CompatibilityIssue(
               species1: species.commonName,
               species2: '',
               severity: _Severity.warning,
               reason:
-                  '${species.commonName} requires at least ${species.minTankLitres.toStringAsFixed(0)} litres - your tank may be too small',
+                  '${species.commonName} requires at least ${species.minTankLitres.toStringAsFixed(0)} litres - ${tankReference.name} may be too small',
             ),
           );
         }
@@ -243,9 +261,62 @@ class _CompatibilityCheckerScreenState
     return (minPh, maxPh);
   }
 
+  String _verdictFor(List<_CompatibilityIssue> issues) {
+    final badIssues = issues.where((i) => i.severity == _Severity.bad).length;
+    final warningIssues = issues
+        .where((i) => i.severity == _Severity.warning)
+        .length;
+
+    if (badIssues > 0) return 'Not Recommended';
+    if (warningIssues > 0) return 'Proceed with Caution';
+    return 'Good Match!';
+  }
+
+  String _formatTankReference(Tank? tank) {
+    if (tank == null) return 'No tank selected';
+    return '${tank.name} (${tank.volumeLitres.toStringAsFixed(0)} L)';
+  }
+
+  String get _compatibilitySummary {
+    final tanks = ref.read(tanksProvider).valueOrNull;
+    final issues = _issuesForTanks(tanks);
+    final issueLines = issues.isEmpty
+        ? 'No issues found by the local checker.'
+        : issues
+              .map((issue) => '- ${_issueTitle(issue)}: ${issue.reason}')
+              .join('\n');
+
+    return 'Compatibility check\n'
+        'Tank reference: ${_formatTankReference(_tankReference(tanks))}\n'
+        'Species: ${_selectedSpecies.map((s) => s.commonName).join(', ')}\n'
+        'Verdict: ${_verdictFor(issues)}\n'
+        'Minimum tank: ${_minTankSize.toStringAsFixed(0)}+ litres\n'
+        'Temperature: ${_tempRange.$1 <= _tempRange.$2 ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)} deg C' : 'No overlap'}\n'
+        'pH range: ${_phRange.$1 <= _phRange.$2 ? '${_phRange.$1.toStringAsFixed(1)}-${_phRange.$2.toStringAsFixed(1)}' : 'No overlap'}\n'
+        'Issues:\n'
+        '$issueLines\n'
+        'This is educational planning guidance. Watch actual behaviour, provide cover and group sizes, and separate fish if stress or aggression appears.';
+  }
+
+  void _logCompatibilityCheck() {
+    final tankId = widget.tankId;
+    if (tankId == null || _selectedSpecies.length < 2) return;
+
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(
+        tankId: tankId,
+        initialType: LogType.observation,
+        initialNotes: _compatibilitySummary,
+      ),
+      rootNavigator: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final issues = _issues;
+    final tanks = ref.watch(tanksProvider).valueOrNull;
+    final issues = _issuesForTanks(tanks);
     final badIssues = issues.where((i) => i.severity == _Severity.bad).length;
     final warningIssues = issues
         .where((i) => i.severity == _Severity.warning)
@@ -471,7 +542,7 @@ class _CompatibilityCheckerScreenState
                               icon: Icons.thermostat,
                               label: 'Temperature',
                               value: _tempRange.$1 <= _tempRange.$2
-                                  ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)}°C'
+                                  ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)} deg C'
                                   : 'No overlap!',
                               valueColor: _tempRange.$1 > _tempRange.$2
                                   ? AppColors.error
@@ -490,6 +561,52 @@ class _CompatibilityCheckerScreenState
                           ],
                         ),
                       ),
+                      if (widget.tankId != null) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        AppCard(
+                          backgroundColor: AppOverlays.info10,
+                          padding: AppCardPadding.standard,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.route_outlined,
+                                    color: AppColors.info,
+                                    size: AppIconSizes.sm,
+                                  ),
+                                  const SizedBox(width: AppSpacing.sm2),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Guided next step',
+                                          style: AppTypography.labelLarge,
+                                        ),
+                                        const SizedBox(height: AppSpacing.xs),
+                                        Text(
+                                          'Save this compatibility check to the tank journal before you buy or move fish.',
+                                          style: AppTypography.bodySmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              FilledButton.icon(
+                                onPressed: _logCompatibilityCheck,
+                                icon: const Icon(Icons.edit_note_rounded),
+                                label: const Text('Log compatibility check'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ],
                   ],
 

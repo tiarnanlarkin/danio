@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1510 tests.
+- `flutter test`: pass, 1512 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -823,6 +823,22 @@ CL-P1-006F Stocking guided workflow:
   artifacts in headings, filter label, and stock math copy.
 - Focused coverage verifies direct Stocking handoff into AddLog and Workshop
   Stocking context routing.
+
+CL-P1-006G Compatibility guided workflow:
+
+- The Compatibility Checker can now launch with selected tank context from
+  Workshop.
+- Tank-context checks now use the selected tank as the size reference instead
+  of silently falling back to the largest owned tank.
+- Two-or-more-species checks now include a guided next-step card with
+  `Log compatibility check`.
+- The guided action opens `AddLogScreen` as an observation with a prefilled note
+  covering selected species, verdict, issue details, recommended tank/
+  temperature/pH context, selected tank reference, and an educational caveat.
+- The touched Compatibility screen and test were cleaned of mojibake/non-ASCII
+  artifacts in headings and temperature copy.
+- Focused coverage verifies direct Compatibility handoff into AddLog and
+  Workshop Compatibility context routing.
 
 Current Android device state:
 
