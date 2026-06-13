@@ -70,5 +70,27 @@ void main() {
         expect(await File(resolvedPhotoPath).readAsString(), 'backup photo');
       },
     );
+
+    test('getBackupData rejects backups without a tanks array', () async {
+      final service = BackupService(
+        getDocumentsDirectory: () async => sourceDocs,
+        getTemporaryDirectory: () async => tempDir,
+      );
+      final zipPath = await service.createBackup({
+        'version': 3,
+        'logs': const [],
+      });
+
+      await expectLater(
+        service.getBackupData(zipPath),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('Invalid format: missing tanks array'),
+          ),
+        ),
+      );
+    });
   });
 }

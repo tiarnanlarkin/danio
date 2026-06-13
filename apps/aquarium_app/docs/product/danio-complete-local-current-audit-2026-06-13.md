@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1522 tests.
+- `flutter test`: pass, 1523 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -917,6 +917,15 @@ CL-P1-009A Backup import safety copy:
 - Focused coverage verifies the visible import-safety copy and guards the
   backup screen source against non-ASCII/mojibake artifacts.
 
+CL-P1-009B Backup data validation:
+
+- Backup preview/import now uses the same required-data validation as restore
+  before resolving portable photo references.
+- `BackupService.getBackupData` now rejects backup JSON that does not contain a
+  `tanks` array instead of returning malformed data to the import UI.
+- Focused coverage verifies malformed backup ZIP data fails with
+  `Invalid format: missing tanks array`.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -968,9 +977,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   types, and Compare Tanks now surfaces recent history across tanks. Remaining
   timeline work is richer tool-result history, accepted AI notes, and
   milestones.
-- Backup & Restore now has clearer import safety copy. Remaining backup/data
-  work is deeper import validation UX, edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+- Backup & Restore now has clearer import safety copy and validates required
+  backup JSON before preview/import. Remaining backup/data work is deeper
+  import validation UX, edit/delete/undo coverage, and restore/migration
+  walkthrough QA.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.

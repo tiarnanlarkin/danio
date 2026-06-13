@@ -143,17 +143,7 @@ class BackupService {
 
     _updateProgress('Extracting data...', 0.1);
 
-    final jsonFile = archive.findFile(_jsonFileName);
-    if (jsonFile == null) {
-      throw Exception('Invalid backup: missing $_jsonFileName');
-    }
-
-    final jsonString = utf8.decode(jsonFile.content as List<int>);
-    final data = jsonDecode(jsonString) as Map<String, dynamic>;
-
-    if (data['tanks'] == null || data['tanks'] is! List) {
-      throw Exception('Invalid format: missing tanks array');
-    }
+    final data = _readValidatedBackupData(archive);
 
     _updateProgress('Restoring photos...', 0.2);
 
@@ -211,16 +201,30 @@ class BackupService {
 
     final archive = await _decodeZip(zipPath);
 
+    final data = _readValidatedBackupData(archive);
+
+    // Resolve any photo refs to current device paths.
+    return _resolvePhotoRefsToAbsolute(data, zipPath: zipPath);
+  }
+
+  Map<String, dynamic> _readValidatedBackupData(Archive archive) {
     final jsonFile = archive.findFile(_jsonFileName);
     if (jsonFile == null) {
       throw Exception('Invalid backup: missing $_jsonFileName');
     }
 
     final jsonString = utf8.decode(jsonFile.content as List<int>);
-    final data = jsonDecode(jsonString) as Map<String, dynamic>;
+    final decoded = jsonDecode(jsonString);
+    if (decoded is! Map) {
+      throw Exception('Invalid format: backup data must be a JSON object');
+    }
 
-    // Resolve any photo refs to current device paths.
-    return _resolvePhotoRefsToAbsolute(data, zipPath: zipPath);
+    final data = Map<String, dynamic>.from(decoded);
+    if (data['tanks'] == null || data['tanks'] is! List) {
+      throw Exception('Invalid format: missing tanks array');
+    }
+
+    return data;
   }
 
   Future<Archive> _decodeZip(String zipPath) async {
