@@ -10,6 +10,7 @@ import '../utils/debouncer.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
 import 'emergency_guide_screen.dart';
 
@@ -160,6 +161,14 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                           ),
                           textAlign: TextAlign.center,
                         ),
+                        const SizedBox(height: AppSpacing.lg),
+                        AppButton(
+                          label: 'Request species',
+                          leadingIcon: Icons.outgoing_mail,
+                          onPressed: () => _showSpeciesRequestDialog(context),
+                          variant: AppButtonVariant.secondary,
+                          size: AppButtonSize.small,
+                        ),
                       ],
                     ),
                   )
@@ -174,6 +183,50 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showSpeciesRequestDialog(BuildContext context) {
+    final searchedName = _searchQuery.trim();
+    final requestedName = searchedName.isEmpty ? 'this species' : searchedName;
+
+    showAppDialog<void>(
+      context: context,
+      title: 'Request Species',
+      icon: Icons.outgoing_mail,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'We could not find "$requestedName" in the local fish database.',
+          ),
+          const SizedBox(height: AppSpacing.md),
+          const Text(
+            'Email larkintiarnanbizz@gmail.com with the common name, '
+            'scientific name if you know it, and any care source or photo '
+            'that would help us verify the entry.',
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Danio does not send this automatically in this local build.',
+            style: AppTypography.bodySmall.copyWith(
+              color: context.textSecondary,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        AppButton(
+          label: 'Done',
+          onPressed: () {
+            if (Navigator.canPop(context)) Navigator.pop(context);
+          },
+          variant: AppButtonVariant.primary,
+          isFullWidth: true,
+        ),
+      ],
     );
   }
 

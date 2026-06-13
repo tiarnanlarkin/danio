@@ -103,5 +103,35 @@ void main() {
         expect(find.textContaining(String.fromCharCode(0x1F50D)), findsNothing);
       },
     );
+
+    testWidgets('empty search opens species request guidance', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'blue dragon tetra');
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      expect(find.text('Request species'), findsOneWidget);
+
+      await tester.tap(find.text('Request species'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Request Species'), findsOneWidget);
+      expect(
+        find.text(
+          'We could not find "blue dragon tetra" in the local fish database.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('larkintiarnanbizz@gmail.com'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Danio does not send this automatically'),
+        findsOneWidget,
+      );
+    });
   });
 }

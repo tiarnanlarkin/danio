@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1443 tests.
+- `flutter test`: pass, 1444 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -417,6 +417,14 @@ CL-P1-002D Achievement tank cosmetic cue:
 - The cue is text-free, non-interactive, and labelled for accessibility, making
   achievements affect the emotional Tank surface without inventing a full
   decoration inventory yet.
+
+CL-P1-003A Missing species request path:
+
+- Fish Database empty search now offers a Request Species action instead of a
+  dead end when the local species database has no match.
+- The request dialog keeps the local build honest: it shows the searched name,
+  tells users what details to email, provides the contact address, and clarifies
+  that Danio does not send anything automatically.
 
 Current Android device state:
 
