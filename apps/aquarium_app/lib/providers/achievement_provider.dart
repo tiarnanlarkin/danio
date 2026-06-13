@@ -314,7 +314,6 @@ class AchievementChecker {
         currentStreak: stats.currentStreak,
         totalXp: stats.totalXp,
         perfectScores: stats.perfectScores,
-        friendsCount: stats.friendsCount,
         dailyTipsRead: stats.dailyTipsRead,
         practiceSessions: stats.practiceSessions,
         shopVisits: stats.shopVisits,
@@ -484,22 +483,6 @@ class AchievementChecker {
     final userProfileAsync = ref.read(userProfileProvider);
     final stats = AchievementStats(
       practiceSessions: practiceSessions,
-      totalXp: userProfileAsync.value?.totalXp ?? 0,
-      currentStreak: userProfileAsync.value?.currentStreak ?? 0,
-      hasCompletedPlacementTest:
-          userProfileAsync.value?.hasCompletedPlacementTest ?? false,
-    );
-
-    return await checkAchievements(stats);
-  }
-
-  /// Check after friend added
-  Future<List<AchievementUnlockResult>> checkAfterFriendAdded({
-    required int friendsCount,
-  }) async {
-    final userProfileAsync = ref.read(userProfileProvider);
-    final stats = AchievementStats(
-      friendsCount: friendsCount,
       totalXp: userProfileAsync.value?.totalXp ?? 0,
       currentStreak: userProfileAsync.value?.currentStreak ?? 0,
       hasCompletedPlacementTest:

@@ -17,7 +17,6 @@ enum GemEarnReason {
   achievementUnlock, // Unlocked an achievement
   placementTest, // Completed placement test
   weeklyBonus, // Weekly active user bonus
-  referralBonus, // Referred a friend
   promotional, // Special event/promotion
 }
 

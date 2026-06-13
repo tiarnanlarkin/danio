@@ -13,7 +13,6 @@ class AchievementStats {
   final int currentStreak;
   final int totalXp;
   final int perfectScores;
-  final int friendsCount;
   final int dailyTipsRead;
   final int practiceSessions;
   final int shopVisits;
@@ -35,7 +34,6 @@ class AchievementStats {
     this.currentStreak = 0,
     this.totalXp = 0,
     this.perfectScores = 0,
-    this.friendsCount = 0,
     this.dailyTipsRead = 0,
     this.practiceSessions = 0,
     this.shopVisits = 0,
@@ -143,8 +141,7 @@ class AchievementService {
         // Intermediate paths: maintenance, planted, equipment
         final intermediateIds = LessonProvider.allPathMetadata
             .where(
-              (p) =>
-                  ['maintenance', 'planted', 'equipment'].contains(p.id),
+              (p) => ['maintenance', 'planted', 'equipment'].contains(p.id),
             )
             .expand((p) => p.lessonIds)
             .toSet();
@@ -343,11 +340,6 @@ class AchievementService {
               .inDays;
           shouldUnlock = daysSinceLastActivity >= 30;
         }
-        break;
-
-      case 'social_butterfly':
-        newCount = stats.friendsCount;
-        shouldUnlock = stats.friendsCount >= 10;
         break;
 
       case 'teachers_pet':

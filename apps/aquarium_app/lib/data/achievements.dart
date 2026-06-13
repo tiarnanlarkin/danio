@@ -366,17 +366,6 @@ class AchievementDefinitions {
     category: AchievementCategory.special,
   );
 
-  static const socialButterfly = Achievement(
-    id: 'social_butterfly',
-    name: 'Social Butterfly',
-    description: 'Ten friends and counting! Fishkeeping is better together.',
-    icon: '🦋',
-    rarity: AchievementRarity.silver,
-    category: AchievementCategory.special,
-    targetCount: 10,
-    isHidden: true, // Hidden: friends feature behind CA-002
-  );
-
   static const teachersPet = Achievement(
     id: 'teachers_pet',
     name: "Teacher's Pet",
@@ -723,14 +712,13 @@ class AchievementDefinitions {
     xp25000,
     xp50000,
 
-    // Special (12)
+    // Special (11)
     earlyBird,
     nightOwl,
     perfectionist,
     speedDemon,
     marathonLearner,
     comeback,
-    socialButterfly,
     teachersPet,
     completionist,
     midnightScholar,

@@ -37,7 +37,6 @@ class GemRewards {
   // Bonuses
   static const int weeklyActive = 10; // Logged in 5+ days this week
   static const int perfectWeek = 25; // Met daily goal all 7 days
-  static const int referralBonus = 50; // Friend completes onboarding
 
   /// Calculate gems for streak milestone
   static int getStreakMilestoneReward(int streakDays) {
