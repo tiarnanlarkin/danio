@@ -7,6 +7,7 @@ import 'package:danio/models/task.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
+import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/home/widgets/today_board.dart';
 import 'package:danio/screens/tasks_screen.dart';
 import 'package:flutter/material.dart';
@@ -167,6 +168,22 @@ void main() {
 
     expect(find.text('Unsafe water detected'), findsOneWidget);
     expect(find.text('Water Change'), findsOneWidget);
+  });
+
+  testWidgets('unsafe water priority opens Emergency Guide', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        dailyGoal: _completedGoal(),
+        tasks: [_task()],
+        logs: [_waterTest(ammonia: 0.5), _feeding()],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Unsafe water detected'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(EmergencyGuideScreen), findsOneWidget);
   });
 
   testWidgets('shows water-test priority when no water tests are logged', (

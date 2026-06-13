@@ -16,6 +16,7 @@ import '../../../providers/user_profile_provider.dart';
 import '../../../services/tank_care_priority_service.dart';
 import '../../../theme/app_theme.dart';
 import '../../add_log_screen.dart';
+import '../../emergency_guide_screen.dart';
 import '../../tasks_screen.dart';
 import '../../../../screens/tab_navigator.dart';
 
@@ -260,6 +261,8 @@ class _CarePriorityStrip extends StatelessWidget {
 
   IconData get _icon {
     switch (priority.action) {
+      case TankCarePriorityAction.emergencyGuide:
+        return Icons.emergency_rounded;
       case TankCarePriorityAction.waterChange:
         return Icons.water_drop_rounded;
       case TankCarePriorityAction.waterTest:
@@ -289,6 +292,8 @@ class _CarePriorityStrip extends StatelessWidget {
   void _handleTap(BuildContext context) {
     Widget? destination;
     switch (priority.action) {
+      case TankCarePriorityAction.emergencyGuide:
+        destination = const EmergencyGuideScreen();
       case TankCarePriorityAction.waterChange:
         destination = AddLogScreen(
           tankId: tankId,

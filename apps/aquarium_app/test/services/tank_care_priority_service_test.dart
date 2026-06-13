@@ -49,26 +49,28 @@ Task _task({required String id, bool overdue = false, bool enabled = true}) {
 
 void main() {
   group('TankCarePriorityService.evaluate', () {
-    test('ammonia above 0.25 returns emergency water-change priority', () {
+    test('ammonia above 0.25 returns emergency guide priority', () {
       final priority = TankCarePriorityService.evaluate(
         tasks: [_task(id: 'task-1', overdue: true)],
         logs: [_waterTest(ammonia: 0.5), _feeding()],
       );
 
       expect(priority.level, TankCarePriorityLevel.emergency);
-      expect(priority.action, TankCarePriorityAction.waterChange);
+      expect(priority.action, TankCarePriorityAction.emergencyGuide);
       expect(priority.title, 'Unsafe water detected');
+      expect(priority.subtitle, contains('emergency steps'));
     });
 
-    test('nitrite above 0.25 returns emergency water-change priority', () {
+    test('nitrite above 0.25 returns emergency guide priority', () {
       final priority = TankCarePriorityService.evaluate(
         tasks: const [],
         logs: [_waterTest(nitrite: 0.5), _feeding()],
       );
 
       expect(priority.level, TankCarePriorityLevel.emergency);
-      expect(priority.action, TankCarePriorityAction.waterChange);
+      expect(priority.action, TankCarePriorityAction.emergencyGuide);
       expect(priority.title, 'Unsafe water detected');
+      expect(priority.subtitle, contains('emergency steps'));
     });
 
     test('overdue enabled task returns task priority without emergency', () {

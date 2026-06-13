@@ -3,7 +3,14 @@ import '../models/task.dart';
 
 enum TankCarePriorityLevel { emergency, due, suggested, clear }
 
-enum TankCarePriorityAction { waterChange, waterTest, feeding, tasks, none }
+enum TankCarePriorityAction {
+  emergencyGuide,
+  waterChange,
+  waterTest,
+  feeding,
+  tasks,
+  none,
+}
 
 class TankCarePriority {
   final TankCarePriorityLevel level;
@@ -35,11 +42,10 @@ class TankCarePriorityService {
     if (_hasUnsafeNitrogen(latestWaterTest?.waterTest)) {
       return const TankCarePriority(
         level: TankCarePriorityLevel.emergency,
-        action: TankCarePriorityAction.waterChange,
+        action: TankCarePriorityAction.emergencyGuide,
         title: 'Unsafe water detected',
-        subtitle: 'Log a water change, then retest before adding livestock.',
-        semanticsLabel:
-            'Unsafe water detected. Log a water change, then retest.',
+        subtitle: 'Open emergency steps, then log the water change.',
+        semanticsLabel: 'Unsafe water detected. Open emergency steps.',
       );
     }
 
