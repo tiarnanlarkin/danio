@@ -129,6 +129,27 @@ void main() {
       expect(find.text('6'), findsOneWidget);
     });
 
+    testWidgets('species detail saves fish to wishlist', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Save to wishlist'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save to wishlist'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedItems = prefs.getString('wishlist_items') ?? '';
+
+      expect(savedItems, contains('Neon Tetra'));
+      expect(savedItems, contains('Paracheirodon innesi'));
+      expect(find.text('Saved to wishlist'), findsOneWidget);
+    });
+
     testWidgets(
       'empty search state uses iconography instead of raw emoji text',
       (tester) async {

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1447 tests.
+- `flutter test`: pass, 1448 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -440,6 +440,14 @@ CL-P1-003C Species stocking handoff:
   the Stocking Calculator with that species prefilled.
 - The calculator seeds the selected species at its minimum group size so
   schooling fish start from a realistic planning count instead of a single fish.
+
+CL-P1-003D Species wishlist save:
+
+- Fish species detail sheets now let users save the species to the existing
+  local fish wishlist.
+- The saved item keeps the common name, scientific name, realistic starting
+  quantity, and a short planning note without pretending the fish has been
+  added to an active tank.
 
 Current Android device state:
 

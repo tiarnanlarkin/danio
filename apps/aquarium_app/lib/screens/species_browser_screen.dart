@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../models/wishlist.dart';
+import '../providers/wishlist_provider.dart';
 import '../widgets/core/app_text_field.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
@@ -12,6 +14,7 @@ import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../widgets/danio_snack_bar.dart';
 import 'emergency_guide_screen.dart';
 import 'stocking_calculator_screen.dart';
 
@@ -645,13 +648,21 @@ class _SpeciesDetailSheet extends StatelessWidget {
   }
 }
 
-class _CareActionsCard extends StatelessWidget {
+class _CareActionsCard extends ConsumerWidget {
   final SpeciesInfo species;
 
   const _CareActionsCard({required this.species});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isSaved = ref
+        .watch(fishWishlistProvider)
+        .any(
+          (item) =>
+              item.name.toLowerCase() == species.commonName.toLowerCase() ||
+              item.species?.toLowerCase() ==
+                  species.scientificName.toLowerCase(),
+        );
     final actions = <_CareAction>[
       _CareAction(
         icon: Icons.home_work_outlined,
@@ -703,20 +714,61 @@ class _CareActionsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
-          AppButton(
-            label: 'Plan stocking fit',
-            leadingIcon: Icons.calculate_outlined,
-            variant: AppButtonVariant.secondary,
-            size: AppButtonSize.small,
-            onPressed: () => NavigationThrottle.push(
-              context,
-              StockingCalculatorScreen(initialSpecies: species),
-              rootNavigator: true,
-            ),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              AppButton(
+                label: isSaved ? 'Saved to wishlist' : 'Save to wishlist',
+                leadingIcon: isSaved
+                    ? Icons.bookmark_added_outlined
+                    : Icons.bookmark_add_outlined,
+                variant: AppButtonVariant.secondary,
+                size: AppButtonSize.small,
+                onPressed: isSaved
+                    ? null
+                    : () async => _saveToWishlist(context, ref),
+              ),
+              AppButton(
+                label: 'Plan stocking fit',
+                leadingIcon: Icons.calculate_outlined,
+                variant: AppButtonVariant.secondary,
+                size: AppButtonSize.small,
+                onPressed: () => NavigationThrottle.push(
+                  context,
+                  StockingCalculatorScreen(initialSpecies: species),
+                  rootNavigator: true,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _saveToWishlist(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref
+          .read(wishlistProvider.notifier)
+          .addItem(
+            WishlistItem(
+              category: WishlistCategory.fish,
+              name: species.commonName,
+              species: species.scientificName,
+              notes:
+                  'Saved from Species Guide. Minimum group: ${species.minSchoolSize}. Minimum tank: ${species.minTankLitres.toStringAsFixed(0)} L.',
+              quantity: species.minSchoolSize > 0 ? species.minSchoolSize : 1,
+            ),
+          );
+      if (context.mounted) {
+        DanioSnackBar.success(context, '${species.commonName} saved');
+      }
+    } catch (_) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Could not save ${species.commonName}');
+      }
+    }
   }
 
   String _format(double value) {
