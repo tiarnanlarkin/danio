@@ -9,6 +9,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../navigation/app_routes.dart';
+import 'emergency_guide_screen.dart';
 import 'livestock_detail_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/app_bottom_sheet.dart';
@@ -50,7 +51,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             controller: _searchController,
             autofocus: true,
             decoration: const InputDecoration(
-              hintText: 'Search tanks, fish, equipment...',
+              hintText: 'Search tanks, fish, equipment, guides...',
               border: InputBorder.none,
               filled: false,
             ),
@@ -101,7 +102,7 @@ class _EmptySearchState extends StatelessWidget {
           Text('Search your aquarium data', style: AppTypography.bodyMedium),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Find tanks, fish, equipment, or browse species',
+            'Find tanks, fish, equipment, guides, or browse species',
             style: AppTypography.bodySmall,
           ),
         ],
@@ -124,6 +125,24 @@ class _SearchResults extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final results = <_SearchResult>[];
+
+    if (_matchesEmergencyQuery(query)) {
+      results.add(
+        _SearchResult(
+          type: _ResultType.guide,
+          title: 'Emergency Guide',
+          subtitle:
+              'Urgent steps for water spikes, gasping, illness, injury, and equipment failure',
+          icon: Icons.emergency_outlined,
+          color: AppColors.error,
+          onTap: () => NavigationThrottle.push(
+            context,
+            const EmergencyGuideScreen(),
+            rootNavigator: true,
+          ),
+        ),
+      );
+    }
 
     // Search tanks
     for (final tank in tanks) {
@@ -220,6 +239,9 @@ class _SearchResults extends StatelessWidget {
     }
 
     // Group results by type
+    final guideResults = results
+        .where((r) => r.type == _ResultType.guide)
+        .toList();
     final tankResults = results
         .where((r) => r.type == _ResultType.tank)
         .toList();
@@ -235,6 +257,14 @@ class _SearchResults extends StatelessWidget {
 
     // Build flat list of items for ListView.builder
     final items = <_SearchListItem>[];
+
+    if (guideResults.isNotEmpty) {
+      items.add(
+        _SearchListItem.header(title: 'Guides', count: guideResults.length),
+      );
+      items.addAll(guideResults.map((r) => _SearchListItem.result(r)));
+      items.add(_SearchListItem.spacer());
+    }
 
     if (tankResults.isNotEmpty) {
       items.add(
@@ -294,6 +324,30 @@ class _SearchResults extends StatelessWidget {
         }
       },
     );
+  }
+
+  bool _matchesEmergencyQuery(String query) {
+    const terms = [
+      'emergency',
+      'urgent',
+      'ammonia',
+      'nitrite',
+      'toxic',
+      'spike',
+      'gasping',
+      'heater',
+      'filter',
+      'ich',
+      'injury',
+      'injured',
+      'poison',
+      'poisoning',
+      'sick',
+      'disease',
+      'dying',
+    ];
+
+    return terms.any(query.contains);
   }
 
   void _showSpeciesInfo(BuildContext context, SpeciesInfo species) {
@@ -382,13 +436,14 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
-enum _ResultType { tank, livestock, equipment, species }
+enum _ResultType { guide, tank, livestock, equipment, species }
 
 class _SearchResult {
   final _ResultType type;
   final String title;
   final String subtitle;
   final IconData icon;
+  final Color color;
   final VoidCallback onTap;
 
   const _SearchResult({
@@ -396,6 +451,7 @@ class _SearchResult {
     required this.title,
     required this.subtitle,
     required this.icon,
+    this.color = AppColors.primary,
     required this.onTap,
   });
 }
@@ -457,12 +513,8 @@ class _ResultTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppOverlays.primary10,
-          child: Icon(
-            result.icon,
-            color: AppColors.primary,
-            size: AppIconSizes.sm,
-          ),
+          backgroundColor: result.color.withValues(alpha: 0.1),
+          child: Icon(result.icon, color: result.color, size: AppIconSizes.sm),
         ),
         title: Text(result.title),
         subtitle: Text(result.subtitle, style: AppTypography.bodySmall),
