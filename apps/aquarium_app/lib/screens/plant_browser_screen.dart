@@ -3,13 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../utils/app_constants.dart';
 import '../utils/debouncer.dart';
 import '../data/plant_database.dart';
+import '../models/wishlist.dart';
+import '../providers/wishlist_provider.dart';
 import '../widgets/core/app_text_field.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/app_bottom_sheet.dart';
+import '../widgets/danio_snack_bar.dart';
 
 class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});
@@ -442,6 +446,10 @@ class _PlantDetailSheet extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg2),
 
+            _PlantCareActionsCard(plant: plant),
+
+            const SizedBox(height: AppSpacing.lg2),
+
             // Details
             _DetailSection(
               title: 'Details',
@@ -489,6 +497,129 @@ class _PlantDetailSheet extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PlantCareActionsCard extends ConsumerWidget {
+  final PlantInfo plant;
+
+  const _PlantCareActionsCard({required this.plant});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isSaved = ref
+        .watch(plantWishlistProvider)
+        .any(
+          (item) =>
+              item.name.toLowerCase() == plant.commonName.toLowerCase() ||
+              item.species?.toLowerCase() == plant.scientificName.toLowerCase(),
+        );
+    final actions = <_PlantCareAction>[
+      _PlantCareAction(
+        icon: Icons.layers_outlined,
+        text: 'Use as a ${plant.placement.toLowerCase()} plant.',
+      ),
+      _PlantCareAction(
+        icon: Icons.wb_sunny_outlined,
+        text: 'Give ${plant.lightLevel.toLowerCase()} light.',
+      ),
+      _PlantCareAction(
+        icon: plant.needsCO2
+            ? Icons.bubble_chart_outlined
+            : Icons.check_circle_outline,
+        text: plant.needsCO2
+            ? 'Plan CO2 support before planting.'
+            : 'No CO2 setup needed for this plant.',
+      ),
+      _PlantCareAction(
+        icon: Icons.call_split_outlined,
+        text: 'Propagate by ${plant.propagation.toLowerCase()}.',
+      ),
+    ];
+
+    return AppCard(
+      padding: AppCardPadding.compact,
+      backgroundColor: AppOverlays.success10,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.checklist_outlined, color: AppColors.success),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Care Actions', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          ...actions.map(
+            (action) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _PlantCareActionRow(action: action),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          AppButton(
+            label: isSaved ? 'Saved to wishlist' : 'Save to wishlist',
+            leadingIcon: isSaved
+                ? Icons.bookmark_added_outlined
+                : Icons.bookmark_add_outlined,
+            variant: AppButtonVariant.secondary,
+            size: AppButtonSize.small,
+            onPressed: isSaved
+                ? null
+                : () async => _saveToWishlist(context, ref),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _saveToWishlist(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref
+          .read(wishlistProvider.notifier)
+          .addItem(
+            WishlistItem(
+              category: WishlistCategory.plant,
+              name: plant.commonName,
+              species: plant.scientificName,
+              notes:
+                  'Saved from Plant Guide. Placement: ${plant.placement}. Light: ${plant.lightLevel}. CO2: ${plant.needsCO2 ? 'needed' : 'not needed'}.',
+            ),
+          );
+      if (context.mounted) {
+        DanioSnackBar.success(context, '${plant.commonName} saved');
+      }
+    } catch (_) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Could not save ${plant.commonName}');
+      }
+    }
+  }
+}
+
+class _PlantCareAction {
+  final IconData icon;
+  final String text;
+
+  const _PlantCareAction({required this.icon, required this.text});
+}
+
+class _PlantCareActionRow extends StatelessWidget {
+  final _PlantCareAction action;
+
+  const _PlantCareActionRow({required this.action});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(action.icon, size: 18, color: AppColors.success),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(child: Text(action.text, style: AppTypography.bodyMedium)),
+      ],
     );
   }
 }

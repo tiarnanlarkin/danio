@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1448 tests.
+- `flutter test`: pass, 1450 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -448,6 +448,13 @@ CL-P1-003D Species wishlist save:
 - The saved item keeps the common name, scientific name, realistic starting
   quantity, and a short planning note without pretending the fish has been
   added to an active tank.
+
+CL-P1-003E Plant care actions and wishlist save:
+
+- Plant detail sheets now include data-derived Care Actions for placement,
+  light level, CO2 setup, and propagation.
+- Plant detail sheets can save plants into the existing local plant wishlist
+  with common/scientific name and a short setup note.
 
 Current Android device state:
 

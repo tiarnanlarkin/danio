@@ -66,6 +66,41 @@ void main() {
       expect(find.text('Medium'), findsWidgets);
     });
 
+    testWidgets('plant detail shows actionable care plan', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Anubias Barteri'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Care Actions'), findsOneWidget);
+      expect(find.text('Use as a midground plant.'), findsOneWidget);
+      expect(find.text('Give low light.'), findsOneWidget);
+      expect(find.text('No CO2 setup needed for this plant.'), findsOneWidget);
+      expect(find.text('Propagate by rhizome division.'), findsOneWidget);
+    });
+
+    testWidgets('plant detail saves plant to wishlist', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Anubias Barteri'));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Save to wishlist'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save to wishlist'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedItems = prefs.getString('wishlist_items') ?? '';
+
+      expect(savedItems, contains('Anubias Barteri'));
+      expect(savedItems, contains('Anubias barteri var. barteri'));
+      expect(find.text('Saved to wishlist'), findsOneWidget);
+    });
+
     testWidgets('empty search state explains no matches', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
