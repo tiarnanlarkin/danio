@@ -337,7 +337,7 @@ P0 status:
 | CL-P0-004 | In progress | CL-P0-004A completed region/units capture, profile persistence, and Preferences unit reset. CL-P0-004B completed quick-start sample handoff. CL-P0-004C completed explicit multi-goal capture after tank stage. CL-P0-004D completed setup-context Preferences repair and Smart nudge. Remaining first-run work: final Android phone/tablet screen QA. |
 | CL-P0-005 | In progress | CL-P0-005A adds care priority and next-best action from water logs/tasks. CL-P0-005B makes the main Tank Feed action a direct log with safety feedback. Remaining: richer quick action polish, visual QA, and tighter integration with emergency workflows. |
 | CL-P0-006 | Done | Emergency Guide is now directly reachable from Tank top bar, unsafe-water Tank alerts, Smart Hub, global search, More, LessonScreen, species detail sheets, and unsafe water-test save flows. |
-| CL-P0-007 | In progress | CL-P0-007A adds the local Aquarium Intelligence rule engine and Smart section for risks, care actions, compatibility signals, anomaly history, and reasons without an AI key. CL-P0-007B adds a full local review screen with care-plan actions and checked-reason explanations. Remaining: richer per-tank drill-downs and save/apply flows. |
+| CL-P0-007 | Done | Smart now works as a no-AI Aquarium Intelligence hub: local rules surface risks, suggestions, compatibility signals, care-plan actions, anomaly history, equipment maintenance, and checked reasons, with a full review screen and action routes. Richer per-tank/save-apply depth belongs to P1 guided workflows. |
 
 High-confidence P1/P2 gaps from code/docs evidence:
 
@@ -347,9 +347,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.
-- Smart now has the first no-AI Aquarium Intelligence layer and a full local
-  review screen, but CL-P0-007 still needs richer per-tank drill-downs and
-  save/apply flows before Smart is finished.
+- Richer per-tank intelligence drill-downs and save/apply flows remain useful
+  future depth, but the P0 no-AI Smart hub acceptance is now covered.
 
 ## 6. Next Execution Step
 
