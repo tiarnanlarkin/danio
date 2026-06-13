@@ -304,11 +304,11 @@ git commit -m "feat: show local aquarium intelligence in smart"
 - Modify: `apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
 - Modify: `docs/superpowers/plans/2026-06-13-local-aquarium-intelligence.md`
 
-- [ ] **Step 1: Update product tracking**
+- [x] **Step 1: Update product tracking**
 
 Record `CL-P0-007A Local Aquarium Intelligence foundation` and mark CL-P0-007 as in progress with local risk/care/compatibility/anomaly/reason coverage started.
 
-- [ ] **Step 2: Format changed Dart files**
+- [x] **Step 2: Format changed Dart files**
 
 Run:
 
@@ -317,7 +317,7 @@ cd apps/aquarium_app
 dart format lib/features/smart/intelligence/aquarium_intelligence_service.dart lib/features/smart/intelligence/aquarium_intelligence_section.dart lib/features/smart/smart_providers.dart lib/screens/smart_screen.dart test/services/aquarium_intelligence_service_test.dart test/widget_tests/smart_screen_test.dart
 ```
 
-- [ ] **Step 3: Run focused tests**
+- [x] **Step 3: Run focused tests**
 
 Run:
 
@@ -326,7 +326,7 @@ cd apps/aquarium_app
 flutter test test/services/aquarium_intelligence_service_test.dart test/widget_tests/smart_screen_test.dart
 ```
 
-- [ ] **Step 4: Run analyzer**
+- [x] **Step 4: Run analyzer**
 
 Run:
 
@@ -335,7 +335,7 @@ cd apps/aquarium_app
 flutter analyze
 ```
 
-- [ ] **Step 5: Check diff**
+- [x] **Step 5: Check diff**
 
 Run:
 
@@ -344,7 +344,7 @@ git diff --check
 git diff -- apps/aquarium_app/lib/features/smart/intelligence/aquarium_intelligence_service.dart apps/aquarium_app/lib/features/smart/intelligence/aquarium_intelligence_section.dart apps/aquarium_app/lib/features/smart/smart_providers.dart apps/aquarium_app/lib/screens/smart_screen.dart apps/aquarium_app/test/services/aquarium_intelligence_service_test.dart apps/aquarium_app/test/widget_tests/smart_screen_test.dart apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md docs/superpowers/plans/2026-06-13-local-aquarium-intelligence.md
 ```
 
-- [ ] **Step 6: Commit docs/verification slice**
+- [x] **Step 6: Commit docs/verification slice**
 
 Run:
 
