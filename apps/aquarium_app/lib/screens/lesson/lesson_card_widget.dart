@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/learning.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_card.dart';
+import '../../widgets/danio_snack_bar.dart';
 
 /// Renders the lesson content card (text, sections) and the "Take Quiz"
 /// / "Complete Lesson" bottom action.  Pure display widget — all behaviour
@@ -20,8 +23,11 @@ class LessonCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final guide = lesson.guide;
+    final hasGuide = guide != null && !guide.isEmpty;
     // Calculate total items: title + spacing + time row + spacing + sections + final spacing
-    final totalItems = 4 + lesson.sections.length + 1;
+    final totalItems = 4 + (hasGuide ? 1 : 0) + lesson.sections.length + 1;
+    final sectionsStartIndex = hasGuide ? 5 : 4;
 
     return Column(
       children: [
@@ -79,9 +85,16 @@ class LessonCardWidget extends StatelessWidget {
                 return const SizedBox(height: AppSpacing.lg);
               }
 
+              if (hasGuide && index == 4) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                  child: _LessonGuideCard(guide: guide),
+                );
+              }
+
               // Lesson sections
-              if (index < 4 + lesson.sections.length) {
-                final sectionIndex = index - 4;
+              if (index < sectionsStartIndex + lesson.sections.length) {
+                final sectionIndex = index - sectionsStartIndex;
                 final section = lesson.sections[sectionIndex];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -388,5 +401,229 @@ class LessonCardWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _LessonGuideCard extends StatelessWidget {
+  final LessonLearningGuide guide;
+
+  const _LessonGuideCard({required this.guide});
+
+  @override
+  Widget build(BuildContext context) {
+    final outcomes = _cleanItems(guide.outcomes);
+    final drill = _cleanItems(guide.careDrill);
+    final scenario = guide.scenario.trim();
+    final sources = guide.sources.where((source) {
+      return source.title.trim().isNotEmpty &&
+          source.publisher.trim().isNotEmpty;
+    }).toList();
+
+    return AppCard(
+      variant: AppCardVariant.filled,
+      padding: AppCardPadding.standard,
+      backgroundColor: AppOverlays.primary10,
+      border: Border.all(color: AppOverlays.primary30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _GuideSectionTitle(
+            icon: Icons.route_outlined,
+            title: 'You\'ll learn',
+            color: AppColors.primary,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          ...outcomes.map(
+            (outcome) => _GuideBullet(icon: Icons.check_circle, text: outcome),
+          ),
+          if (scenario.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            _GuideSectionTitle(
+              icon: Icons.psychology_alt_outlined,
+              title: 'Real tank scenario',
+              color: AppColors.info,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              scenario,
+              style: AppTypography.bodyMedium.copyWith(height: 1.45),
+            ),
+          ],
+          if (drill.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            _GuideSectionTitle(
+              icon: Icons.fact_check_outlined,
+              title: 'Care drill',
+              color: AppColors.success,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            for (var i = 0; i < drill.length; i++)
+              _GuideNumberedStep(index: i + 1, text: drill[i]),
+          ],
+          if (sources.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            _GuideSectionTitle(
+              icon: Icons.verified_outlined,
+              title: 'References',
+              color: AppColors.accentAlt,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ...sources.map((source) => _LessonSourceRow(source: source)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static List<String> _cleanItems(List<String> items) {
+    return items.map((item) => item.trim()).where((item) {
+      return item.isNotEmpty;
+    }).toList();
+  }
+}
+
+class _GuideSectionTitle extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Color color;
+
+  const _GuideSectionTitle({
+    required this.icon,
+    required this.title,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, color: color, size: AppIconSizes.sm),
+        const SizedBox(width: AppSpacing.sm),
+        Text(title, style: AppTypography.titleSmall),
+      ],
+    );
+  }
+}
+
+class _GuideBullet extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _GuideBullet({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: AppIconSizes.sm, color: AppColors.primary),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTypography.bodyMedium.copyWith(height: 1.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GuideNumberedStep extends StatelessWidget {
+  final int index;
+  final String text;
+
+  const _GuideNumberedStep({required this.index, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              color: AppColors.success,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '$index',
+              style: AppTypography.labelSmall.copyWith(color: Colors.white),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTypography.bodyMedium.copyWith(height: 1.4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LessonSourceRow extends StatelessWidget {
+  final LessonSource source;
+
+  const _LessonSourceRow({required this.source});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface.withAlpha(184),
+        borderRadius: AppRadius.smallRadius,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(source.title, style: AppTypography.labelLarge),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  '${source.publisher} - ${source.note}',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: context.textSecondary,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          AppButton(
+            label: 'Open',
+            leadingIcon: Icons.open_in_new,
+            variant: AppButtonVariant.secondary,
+            size: AppButtonSize.small,
+            onPressed: () => _openSource(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openSource(BuildContext context) async {
+    final opened = await launchUrl(
+      Uri.parse(source.url),
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened && context.mounted) {
+      DanioSnackBar.error(context, 'Could not open source');
+    }
   }
 }

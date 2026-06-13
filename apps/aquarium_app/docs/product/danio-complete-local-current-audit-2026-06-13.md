@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1458 tests.
+- `flutter test`: pass, 1460 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -507,6 +507,19 @@ CL-P1-003K Care profile cards:
   have profiles, actions, watch-outs, wishlist saves, tank/task handoffs, missing
   species request guidance, and source trails.
 
+CL-P1-004A Structured lesson guides:
+
+- Lessons can now carry structured guide metadata: learning outcomes, a
+  real-tank scenario, care drill steps, and source references.
+- Lesson pages render that guide before the main lesson body, keeping practical
+  context, drills, and subtle references close to the learning flow without
+  replacing the existing bite-sized sections and quizzes.
+- All six Nitrogen Cycle lessons now include guide metadata using broad
+  references from INJAF, Merck Veterinary Manual, and RSPCA aquarium water
+  quality guidance.
+- A data contract verifies every Nitrogen Cycle lesson has at least two
+  outcomes, a scenario, at least two drill steps, and a source reference.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -535,8 +548,13 @@ High-confidence P1/P2 gaps from code/docs evidence:
   logs, feeding events, livestock health/compatibility cues, aquascape equipment
   cues, and earned species progression, but do not yet include a dedicated
   plant/decor inventory model.
-- Species and plant data are broad but not yet final content-rich guide pages
-  with sources, tank actions, and missing-species request flow.
+- Species and plant detail pages now have the first complete local guide pass:
+  profiles, actions, watch-outs, wishlist saves, tank/task handoffs, missing
+  species request guidance, and source trails. Future species work is content
+  database depth and visual asset quality, not missing core page actions.
+- Learning depth is now started with structured guide metadata and Nitrogen
+  Cycle path enrichment. Remaining learning work is expanding that guide depth,
+  source references, visuals, and practice drills across the full catalog.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit is blocked until Android target is stable.

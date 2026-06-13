@@ -5,6 +5,30 @@ library;
 import '../../models/learning.dart';
 import '../../models/user_profile.dart';
 
+const _injafNitrogenCycleSource = LessonSource(
+  title: 'The Nitrogen Cycle and the Fishless Cycle',
+  publisher: 'INJAF',
+  url:
+      'https://injaf.org/articles-guides/beginners-guides/the-nitrogen-cycle-and-the-fishless-cycle-getting-your-aquarium-ready-for-fish/',
+  note: 'Beginner cycling sequence and fishless cycle guidance.',
+);
+
+const _merckWaterQualitySource = LessonSource(
+  title: 'Environmental diseases and water quality',
+  publisher: 'Merck Veterinary Manual',
+  url:
+      'https://www.merckvetmanual.com/exotic-and-laboratory-animals/aquatic-systems/environmental-diseases-of-aquatic-animals-in-aquatic-systems',
+  note: 'Water-quality risks including ammonia and oxygen stress.',
+);
+
+const _rspcaWaterQualitySource = LessonSource(
+  title: 'Why water quality matters when setting up an aquarium',
+  publisher: 'RSPCA Australia',
+  url:
+      'https://kb.rspca.org.au/categories/companion-animals/fish/why-is-water-quality-important-when-setting-up-a-fish-aquarium',
+  note: 'Aquarium setup, nitrogen cycle, and nitrate control context.',
+);
+
 final nitrogenCyclePath = LearningPath(
   id: 'nitrogen_cycle',
   title: 'The Nitrogen Cycle',
@@ -23,6 +47,23 @@ final nitrogenCyclePath = LearningPath(
       orderIndex: 0,
       xpReward: 50,
       estimatedMinutes: 4,
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Explain why clear water can still be unsafe in a new tank.',
+          'Name cycling as the step that grows bacteria before fish are added.',
+        ],
+        scenario:
+            'A new aquarium looks clear on day four, but the first fish are hiding and breathing fast.',
+        careDrill: [
+          'Test ammonia and nitrite before adding fish or feeding heavily.',
+          'Delay new livestock until ammonia and nitrite both read zero.',
+        ],
+        sources: [
+          _injafNitrogenCycleSource,
+          _merckWaterQualitySource,
+          _rspcaWaterQualitySource,
+        ],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -125,6 +166,19 @@ final nitrogenCyclePath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['nc_intro'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Read ammonia, nitrite, and nitrate as one connected sequence.',
+          'Know why nitrate still needs water changes even though it is safer.',
+        ],
+        scenario:
+            'Your ammonia test finally reads zero, but nitrite is high and nitrate is starting to appear.',
+        careDrill: [
+          'Compare all three nitrogen results before deciding the tank is safe.',
+          'Treat any nitrite reading as a stop signal for new livestock.',
+        ],
+        sources: [_injafNitrogenCycleSource, _merckWaterQualitySource],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -240,6 +294,19 @@ final nitrogenCyclePath = LearningPath(
       xpReward: 75,
       estimatedMinutes: 6,
       prerequisites: ['nc_stages'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Set up a fishless cycle without exposing fish to ammonia spikes.',
+          'Recognise the test pattern that shows a tank is ready for fish.',
+        ],
+        scenario:
+            'An empty tank has a running filter and added ammonia, but nitrite is still showing after two weeks.',
+        careDrill: [
+          'Keep the filter running and dose ammonia only to a controlled, testable level.',
+          'Wait for ammonia and nitrite to return to zero before the stocking water change.',
+        ],
+        sources: [_injafNitrogenCycleSource, _rspcaWaterQualitySource],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -359,6 +426,19 @@ final nitrogenCyclePath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['nc_how_to'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Choose testing habits that catch invisible water-quality problems early.',
+          'Use a log to spot cycling trends instead of relying on water clarity.',
+        ],
+        scenario:
+            'Your water looks clear after adding fish, but one fish is clamped and less active than yesterday.',
+        careDrill: [
+          'Log the date, ammonia, nitrite, nitrate, and pH after every test.',
+          'Retest before acting if a result does not match fish behaviour or recent care events.',
+        ],
+        sources: [_merckWaterQualitySource, _rspcaWaterQualitySource],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -507,6 +587,19 @@ final nitrogenCyclePath = LearningPath(
       xpReward: 75,
       estimatedMinutes: 5,
       prerequisites: ['nc_testing'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Triage ammonia or nitrite spikes with immediate, fish-safe actions.',
+          'Separate emergency dilution from longer-term cycle recovery.',
+        ],
+        scenario:
+            'Ammonia reads 1 ppm, fish are breathing fast, and the tank was fed heavily yesterday.',
+        careDrill: [
+          'Stop feeding and change temperature-matched, dechlorinated water first.',
+          'Retest after the water change and keep aeration high while the filter catches up.',
+        ],
+        sources: [_merckWaterQualitySource, _rspcaWaterQualitySource],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,
@@ -659,6 +752,19 @@ final nitrogenCyclePath = LearningPath(
       xpReward: 50,
       estimatedMinutes: 5,
       prerequisites: ['nc_spikes'],
+      guide: const LessonLearningGuide(
+        outcomes: [
+          'Identify mini-cycle triggers that damage beneficial bacteria.',
+          'Protect filter bacteria during cleaning, medication, and power outages.',
+        ],
+        scenario:
+            'A mature tank shows nitrite the day after the filter sponge was rinsed under tap water.',
+        careDrill: [
+          'Rinse filter media only in removed tank water, never chlorinated tap water.',
+          'Test daily after medication, power outages, or major filter cleaning.',
+        ],
+        sources: [_injafNitrogenCycleSource, _merckWaterQualitySource],
+      ),
       sections: [
         const LessonSection(
           type: LessonSectionType.heading,

@@ -140,7 +140,8 @@ void main() {
               seedableSectionTypes.contains(section.type) &&
               section.content.trim().isNotEmpty,
         );
-        final hasQuizQuestion = lesson.quiz?.questions.any(
+        final hasQuizQuestion =
+            lesson.quiz?.questions.any(
               (question) => question.question.trim().isNotEmpty,
             ) ??
             false;
@@ -154,13 +155,69 @@ void main() {
       }
     });
 
+    test('every nitrogen cycle lesson has a structured guide', () {
+      for (final lesson in nitrogenCyclePath.lessons) {
+        final guide = lesson.guide;
+
+        expect(
+          guide,
+          isNotNull,
+          reason: 'Lesson "${lesson.id}" has no structured guide',
+        );
+        expect(
+          guide!.outcomes.length,
+          greaterThanOrEqualTo(2),
+          reason: 'Lesson "${lesson.id}" needs at least two outcomes',
+        );
+        expect(
+          guide.scenario.trim(),
+          isNotEmpty,
+          reason: 'Lesson "${lesson.id}" needs a real tank scenario',
+        );
+        expect(
+          guide.careDrill.length,
+          greaterThanOrEqualTo(2),
+          reason: 'Lesson "${lesson.id}" needs at least two care drill steps',
+        );
+        expect(
+          guide.sources,
+          isNotEmpty,
+          reason: 'Lesson "${lesson.id}" needs at least one source',
+        );
+
+        for (final source in guide.sources) {
+          expect(
+            source.title.trim(),
+            isNotEmpty,
+            reason: 'Lesson "${lesson.id}" has a source with no title',
+          );
+          expect(
+            source.publisher.trim(),
+            isNotEmpty,
+            reason: 'Lesson "${lesson.id}" has a source with no publisher',
+          );
+          expect(
+            source.url.trim(),
+            startsWith('https://'),
+            reason: 'Lesson "${lesson.id}" has a source without an https URL',
+          );
+          expect(
+            source.note.trim(),
+            isNotEmpty,
+            reason: 'Lesson "${lesson.id}" has a source with no note',
+          );
+        }
+      }
+    });
+
     test('lesson content has no stale image placeholders', () {
       for (final lesson in _allLessons) {
         for (final section in lesson.sections) {
           expect(
             section.content,
             isNot(contains('Visual guide on the way')),
-            reason: 'Lesson "${lesson.id}" still contains image placeholder copy',
+            reason:
+                'Lesson "${lesson.id}" still contains image placeholder copy',
           );
           if (section.type == LessonSectionType.image) {
             expect(

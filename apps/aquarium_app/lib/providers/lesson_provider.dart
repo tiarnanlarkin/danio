@@ -532,6 +532,7 @@ class LessonProvider extends StateNotifier<LessonState> {
       estimatedMinutes: firstLesson.estimatedMinutes,
       sections: sections,
       quiz: firstLesson.quiz,
+      guide: firstLesson.guide,
       prerequisites: firstLesson.prerequisites,
     );
 

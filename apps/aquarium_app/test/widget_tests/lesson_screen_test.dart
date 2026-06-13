@@ -202,6 +202,72 @@ void main() {
       );
     });
 
+    testWidgets('shows structured lesson guide', (tester) async {
+      final lesson = Lesson(
+        id: 'lesson-guide',
+        pathId: 'path-1',
+        title: 'Guided Lesson',
+        description: 'A lesson with structured guide content.',
+        orderIndex: 1,
+        sections: _testLesson.sections,
+        guide: const LessonLearningGuide(
+          outcomes: [
+            'Explain why ammonia is dangerous before fish show symptoms.',
+            'Know the first safe action when a new tank tests unsafe.',
+          ],
+          scenario:
+              'Your new tank looks clear, but fish are gasping near the surface.',
+          careDrill: [
+            'Test ammonia and nitrite before feeding again.',
+            'Use a water change plan before adding more fish.',
+          ],
+          sources: [
+            LessonSource(
+              title: 'Water quality and fish health',
+              publisher: 'Merck Veterinary Manual',
+              url:
+                  'https://www.merckvetmanual.com/exotic-and-laboratory-animals/aquatic-systems/environmental-diseases-of-aquatic-animals-in-aquatic-systems',
+              note: 'Water quality risks and emergency context.',
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpWidget(_wrap(lesson: lesson));
+      await _advance(tester);
+
+      expect(find.text('You\'ll learn'), findsOneWidget);
+      expect(
+        find.text(
+          'Explain why ammonia is dangerous before fish show symptoms.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Know the first safe action when a new tank tests unsafe.'),
+        findsOneWidget,
+      );
+      expect(find.text('Real tank scenario'), findsOneWidget);
+      expect(
+        find.text(
+          'Your new tank looks clear, but fish are gasping near the surface.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Care drill'), findsOneWidget);
+      expect(
+        find.text('Test ammonia and nitrite before feeding again.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Use a water change plan before adding more fish.'),
+        findsOneWidget,
+      );
+      expect(find.text('References'), findsOneWidget);
+      expect(find.text('Water quality and fish health'), findsOneWidget);
+      expect(find.textContaining('Merck Veterinary Manual'), findsOneWidget);
+    });
+
     testWidgets('opens the first lesson without blocking energy explainer', (
       tester,
     ) async {

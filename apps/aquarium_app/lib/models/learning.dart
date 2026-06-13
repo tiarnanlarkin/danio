@@ -72,6 +72,7 @@ class Lesson {
   final int estimatedMinutes;
   final List<LessonSection> sections;
   final Quiz? quiz;
+  final LessonLearningGuide? guide;
   final List<String> prerequisites; // Lesson IDs that must be completed first
 
   const Lesson({
@@ -84,6 +85,7 @@ class Lesson {
     this.estimatedMinutes = 5,
     required this.sections,
     this.quiz,
+    this.guide,
     this.prerequisites = const [],
   });
 
@@ -102,7 +104,61 @@ class Lesson {
     'estimatedMinutes': estimatedMinutes,
     'sections': sections.map((section) => section.toJson()).toList(),
     if (quiz != null) 'quiz': quiz!.toJson(),
+    if (guide != null) 'guide': guide!.toJson(),
     'prerequisites': prerequisites,
+  };
+}
+
+/// Structured guidance shown before lesson body content.
+@immutable
+class LessonLearningGuide {
+  final List<String> outcomes;
+  final String scenario;
+  final List<String> careDrill;
+  final List<LessonSource> sources;
+
+  const LessonLearningGuide({
+    this.outcomes = const [],
+    this.scenario = '',
+    this.careDrill = const [],
+    this.sources = const [],
+  });
+
+  bool get isEmpty {
+    return outcomes.every((item) => item.trim().isEmpty) &&
+        scenario.trim().isEmpty &&
+        careDrill.every((item) => item.trim().isEmpty) &&
+        sources.isEmpty;
+  }
+
+  Map<String, dynamic> toJson() => {
+    'outcomes': outcomes,
+    'scenario': scenario,
+    'careDrill': careDrill,
+    'sources': sources.map((source) => source.toJson()).toList(),
+  };
+}
+
+/// A lightweight source reference attached to lesson guide content.
+@immutable
+class LessonSource {
+  final String title;
+  final String publisher;
+  final String url;
+  final String note;
+
+  const LessonSource({
+    required this.title,
+    required this.publisher,
+    required this.url,
+    required this.note,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'title': title,
+    'publisher': publisher,
+    'url': url,
+    'note': note,
   };
 }
 
