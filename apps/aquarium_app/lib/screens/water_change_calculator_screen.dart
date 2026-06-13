@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../models/log_entry.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_text_field.dart';
+import 'add_log_screen.dart';
 
 class WaterChangeCalculatorScreen extends StatefulWidget {
-  const WaterChangeCalculatorScreen({super.key});
+  final String? tankId;
+  final double? initialTankVolumeLitres;
+
+  const WaterChangeCalculatorScreen({
+    super.key,
+    this.tankId,
+    this.initialTankVolumeLitres,
+  });
 
   @override
   State<WaterChangeCalculatorScreen> createState() =>
@@ -26,6 +36,10 @@ class _WaterChangeCalculatorScreenState
   @override
   void initState() {
     super.initState();
+    final initialTankVolumeLitres = widget.initialTankVolumeLitres;
+    if (initialTankVolumeLitres != null && initialTankVolumeLitres > 0) {
+      _tankVolumeController.text = _formatInputNumber(initialTankVolumeLitres);
+    }
     _calculate();
   }
 
@@ -164,6 +178,36 @@ class _WaterChangeCalculatorScreenState
     });
   }
 
+  String _formatInputNumber(double value) {
+    if (value == value.truncateToDouble()) {
+      return value.toStringAsFixed(0);
+    }
+    return value.toStringAsFixed(1);
+  }
+
+  bool get _canLogSuggestedWaterChange {
+    final changePercent = _changePercent;
+    return widget.tankId != null && changePercent != null && changePercent > 0;
+  }
+
+  void _logSuggestedWaterChange() {
+    final tankId = widget.tankId;
+    final changePercent = _changePercent;
+    if (tankId == null || changePercent == null || changePercent <= 0) {
+      return;
+    }
+
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(
+        tankId: tankId,
+        initialType: LogType.waterChange,
+        suggestedWaterChangePercent: changePercent.round().clamp(1, 100),
+      ),
+      rootNavigator: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
@@ -295,6 +339,52 @@ class _WaterChangeCalculatorScreenState
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(_recommendation!, style: AppTypography.bodyMedium),
+              ),
+            ],
+          ),
+        ),
+      ],
+
+      if (_canLogSuggestedWaterChange) ...[
+        const SizedBox(height: AppSpacing.md),
+        AppCard(
+          backgroundColor: AppOverlays.info10,
+          padding: AppCardPadding.standard,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.route_outlined,
+                    color: AppColors.info,
+                    size: AppIconSizes.sm,
+                  ),
+                  const SizedBox(width: AppSpacing.sm2),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Guided next step',
+                          style: AppTypography.labelLarge,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Save this as a water-change log so Danio can keep your care history and reminders aligned.',
+                          style: AppTypography.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              FilledButton.icon(
+                onPressed: _logSuggestedWaterChange,
+                icon: const Icon(Icons.edit_note_rounded),
+                label: const Text('Log this water change'),
               ),
             ],
           ),

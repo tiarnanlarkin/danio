@@ -36,12 +36,17 @@ Widget _wrap({
   InMemoryStorageService? storage,
   LogType type = LogType.waterTest,
   String tankId = 'tank-1',
+  int? suggestedWaterChangePercent,
 }) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(svc)],
     child: MaterialApp(
-      home: AddLogScreen(tankId: tankId, initialType: type),
+      home: AddLogScreen(
+        tankId: tankId,
+        initialType: type,
+        suggestedWaterChangePercent: suggestedWaterChangePercent,
+      ),
     ),
   );
 }
@@ -330,6 +335,34 @@ void main() {
       expect(find.text('Discard changes?'), findsNothing);
       expect(find.byType(AddLogScreen), findsNothing);
       expect(find.text('Open log form'), findsOneWidget);
+    });
+
+    testWidgets('prefills suggested water change percentage before saving', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'suggested-water-change-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(
+        _wrap(
+          storage: svc,
+          tankId: tankId,
+          type: LogType.waterChange,
+          suggestedWaterChangePercent: 57,
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.widgetWithText(TextFormField, '57'), findsOneWidget);
+
+      await tester.tap(find.text('Save'));
+      await _advance(tester);
+
+      final logs = await svc.getLogsForTank(tankId);
+      expect(logs, hasLength(1));
+      expect(logs.single.type, LogType.waterChange);
+      expect(logs.single.waterChangePercent, 57);
     });
   });
 

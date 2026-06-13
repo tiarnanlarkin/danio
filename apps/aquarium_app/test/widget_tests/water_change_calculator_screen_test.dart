@@ -3,16 +3,41 @@
 // Run: flutter test test/widget_tests/water_change_calculator_screen_test.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/models.dart';
+import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/water_change_calculator_screen.dart';
+import 'package:danio/services/storage_service.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() {
-  return const MaterialApp(home: WaterChangeCalculatorScreen());
+final _now = DateTime.now();
+
+Tank _makeTank({String id = 'tank-1'}) => Tank(
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+Widget _wrap({String? tankId, InMemoryStorageService? storage}) {
+  final child = MaterialApp(home: WaterChangeCalculatorScreen(tankId: tankId));
+  if (storage == null) return child;
+
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: child,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -20,6 +45,10 @@ Widget _wrap() {
 // ---------------------------------------------------------------------------
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
+
   group('WaterChangeCalculatorScreen — rendering', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
@@ -92,6 +121,31 @@ void main() {
 
       expect(find.text('Water Change Needed'), findsNothing);
       expect(find.text('Please fill in all fields'), findsOneWidget);
+    });
+
+    testWidgets('guided action opens a prefilled water-change log', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+
+      await tester.pumpWidget(_wrap(tankId: 'tank-1', storage: storage));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(
+        find.text('Guided next step'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      expect(find.text('Log this water change'), findsOneWidget);
+
+      await tester.tap(find.text('Log this water change'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddLogScreen), findsOneWidget);
+      expect(find.widgetWithText(TextFormField, '57'), findsOneWidget);
     });
   });
 }

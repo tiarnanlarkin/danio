@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/models.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import 'co2_calculator_screen.dart';
@@ -28,6 +29,51 @@ class WorkshopScreen extends ConsumerStatefulWidget {
 class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
   void _openTankTab() {
     ref.read(currentTabProvider.notifier).state = 2;
+  }
+
+  /// Open Water Change with tank context when it is available.
+  Future<void> _openWaterChangeCalculator() async {
+    final tanks = await ref.read(tanksProvider.future);
+    if (!mounted) return;
+
+    if (tanks.isEmpty) {
+      NavigationThrottle.push(
+        context,
+        const WaterChangeCalculatorScreen(),
+        rootNavigator: true,
+      );
+      return;
+    }
+
+    Tank? tank;
+    if (tanks.length == 1) {
+      tank = tanks.first;
+    } else {
+      tank = await showDialog<Tank>(
+        context: context,
+        builder: (ctx) => SimpleDialog(
+          title: const Text('Choose a Tank'),
+          children: tanks
+              .map(
+                (tank) => SimpleDialogOption(
+                  onPressed: () => Navigator.pop(ctx, tank),
+                  child: Text(tank.name),
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
+
+    if (tank == null || !mounted) return;
+    NavigationThrottle.push(
+      context,
+      WaterChangeCalculatorScreen(
+        tankId: tank.id,
+        initialTankVolumeLitres: tank.volumeLitres,
+      ),
+      rootNavigator: true,
+    );
   }
 
   /// Pick a tank, then navigate to the Cycling Assistant for that tank.
@@ -134,11 +180,7 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
                       title: 'Water Change',
                       subtitle: 'Calculate changes',
                       color: DanioColors.tealWater,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const WaterChangeCalculatorScreen(),
-                        rootNavigator: true,
-                      ),
+                      onTap: _openWaterChangeCalculator,
                     ),
                     _ToolCard(
                       icon: Icons.pool,

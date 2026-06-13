@@ -7,14 +7,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/models.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/screens/water_change_calculator_screen.dart';
 import 'package:danio/screens/workshop_screen.dart';
 import 'package:danio/services/storage_service.dart';
+import 'package:danio/utils/navigation_throttle.dart';
 
-Widget _wrap() {
+final _now = DateTime.now();
+
+Tank _makeTank({String id = 'tank-1', double volumeLitres = 72}) => Tank(
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: volumeLitres,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+Widget _wrap({InMemoryStorageService? storage}) {
   return ProviderScope(
     overrides: [
-      storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+      storageServiceProvider.overrideWithValue(
+        storage ?? InMemoryStorageService(),
+      ),
     ],
     child: const MaterialApp(home: WorkshopScreen()),
   );
@@ -26,9 +44,17 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 1));
 }
 
+Future<void> _clearStorage() async {
+  final storage = InMemoryStorageService();
+  final tanks = await storage.getAllTanks();
+  await storage.deleteAllTanks(tanks.map((tank) => tank.id).toList());
+}
+
 void main() {
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    NavigationThrottle.reset();
+    await _clearStorage();
   });
 
   group('WorkshopScreen', () {
@@ -56,6 +82,29 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.text('Water Change'), findsOneWidget);
+    });
+
+    testWidgets('opens Water Change with current tank context', (tester) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.tap(find.text('Water Change'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(WaterChangeCalculatorScreen), findsOneWidget);
+      expect(find.widgetWithText(TextField, '72'), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('Guided next step'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      expect(find.text('Log this water change'), findsOneWidget);
     });
 
     testWidgets('tool cards expose one concise screen reader label', (

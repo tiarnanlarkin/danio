@@ -36,12 +36,14 @@ class AddLogScreen extends ConsumerStatefulWidget {
   final String tankId;
   final LogType initialType;
   final LogEntry? existingLog;
+  final int? suggestedWaterChangePercent;
 
   const AddLogScreen({
     super.key,
     required this.tankId,
     this.initialType = LogType.waterTest,
     this.existingLog,
+    this.suggestedWaterChangePercent,
   });
 
   @override
@@ -155,6 +157,12 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
     } else {
       _type = widget.initialType;
+      if (_type == LogType.waterChange) {
+        final suggested = widget.suggestedWaterChangePercent;
+        if (suggested != null && suggested > 0 && suggested <= 100) {
+          _waterChangePercent = suggested;
+        }
+      }
       // Pre-fill last values for new logs
       _loadLastValues();
     }
@@ -188,7 +196,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
 
       // Pre-fill last water change percentage
-      if (_type == LogType.waterChange) {
+      if (_type == LogType.waterChange && _waterChangePercent == null) {
         final lastWaterChange = logs
             .where(
               (l) =>

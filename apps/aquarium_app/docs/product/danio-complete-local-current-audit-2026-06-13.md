@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1496 tests.
+- `flutter test`: pass, 1499 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -741,6 +741,22 @@ CL-P1-005G Practice tank-context recommendations:
 - Focused coverage verifies service ordering/hints and visible Practice Hub
   context copy for an unsafe-water tank.
 
+CL-P1-006A Water Change guided workflow:
+
+- The Water Change Calculator can now launch with tank context from Workshop,
+  including the selected tank ID and tank volume.
+- Workshop opens Water Change as a standalone calculator when there are no
+  tanks, automatically passes context when there is one tank, and asks the user
+  to choose a tank when multiple tanks exist.
+- Valid water-change results now include a guided next-step card explaining why
+  saving the result matters, with a `Log this water change` action.
+- The guided action opens `AddLogScreen` as a water-change log with the
+  calculated percentage prefilled while still reusing the existing log-save path
+  and validation.
+- Focused coverage verifies AddLog suggested-percent persistence, calculator
+  handoff into AddLog, Workshop tank-volume prefill, safe-area coverage, and
+  Workshop tool text encoding.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -793,10 +809,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Begin CL-P1-006 guided tools while Android transport is reserved by other
+Continue CL-P1-006 guided tools while Android transport is reserved by other
 sessions:
 
-- Convert the first high-value calculator/workshop flow into a guided workflow
-  with explanation, warnings, save/apply, and confirmation.
+- Convert the remaining high-value calculator/workshop flows into guided
+  workflows with explanation, warnings, save/apply, and confirmation.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.
