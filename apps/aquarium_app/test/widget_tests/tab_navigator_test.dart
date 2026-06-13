@@ -376,7 +376,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('Smart offline cards start clear of the bottom dock', (
+    testWidgets('Smart local intelligence starts clear of the bottom dock', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(1080, 2400);
@@ -389,19 +389,19 @@ void main() {
       await tester.pumpWidget(_wrap(initialTab: 3));
       await _advance(tester);
 
-      final compatibilityFinder = find.text('Workshop Compatibility Checker');
-      final anomalyFinder = find.text('Anomaly History');
+      final intelligenceFinder = find.text('Aquarium Intelligence');
+      final emergencyFinder = find.text('Emergency Guide');
       final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
-      expect(compatibilityFinder, findsOneWidget);
-      expect(anomalyFinder, findsOneWidget);
+      expect(intelligenceFinder, findsOneWidget);
+      expect(emergencyFinder, findsOneWidget);
       expect(dockFinder, findsOneWidget);
 
-      final compatibilityRect = tester.getRect(compatibilityFinder);
-      final anomalyRect = tester.getRect(anomalyFinder);
+      final intelligenceRect = tester.getRect(intelligenceFinder);
+      final emergencyRect = tester.getRect(emergencyFinder);
       final dockRect = tester.getRect(dockFinder);
 
-      expect(compatibilityRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
-      expect(anomalyRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(intelligenceRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(emergencyRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(tester.takeException(), isNull);
     });
 
@@ -448,11 +448,7 @@ void main() {
       });
 
       await tester.pumpWidget(
-        _wrap(
-          profile: _profile(),
-          learnGuidanceSeen: false,
-          initialTab: 0,
-        ),
+        _wrap(profile: _profile(), learnGuidanceSeen: false, initialTab: 0),
       );
       await _advance(tester);
 
