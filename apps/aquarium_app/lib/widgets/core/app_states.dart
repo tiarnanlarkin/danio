@@ -144,8 +144,7 @@ class AppEmptyState extends StatelessWidget {
       key: key,
       icon: Icons.error_outline,
       title: 'Oops! Something went wrong',
-      message:
-          message ?? 'Couldn\'t load your data. Pull down to refresh.',
+      message: message ?? 'Couldn\'t load your data. Pull down to refresh.',
       actionLabel: 'Try Again',
       onAction: onRetry,
       iconColor: AppColors.error,
@@ -207,10 +206,7 @@ class AppEmptyState extends StatelessWidget {
             // Actions
             if (actionLabel != null) ...[
               SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
-              AppButton(
-                onPressed: onAction,
-                label: actionLabel!,
-              ),
+              AppButton(onPressed: onAction, label: actionLabel!),
             ],
 
             if (secondaryActionLabel != null) ...[
@@ -488,8 +484,9 @@ class AppErrorState extends StatelessWidget {
     return AppErrorState(
       key: key,
       icon: Icons.cloud_off,
-      title: 'Server Error',
-      message: 'Our servers are taking a quick break. Try again in a moment!',
+      title: 'Online service unavailable',
+      message:
+          'This online feature is unavailable right now. Try again in a moment.',
       onRetry: onRetry,
       showReportLink: onReport != null,
       onReport: onReport,
