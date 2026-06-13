@@ -7,8 +7,8 @@ import '../../widgets/core/app_button.dart';
 
 /// Screen 8 — Feature Summary
 ///
-/// Shows users what Danio offers — all features available, no paywall.
-/// Honest v1: no subscription, no trial, no fake pricing.
+/// Shows users what Danio offers in the local build.
+/// Honest v1: no paid gate, fake monetization copy, or disabled CTA.
 class FeatureSummaryScreen extends StatefulWidget {
   final SpeciesInfo selectedFish;
   final VoidCallback onComplete;

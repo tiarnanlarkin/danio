@@ -258,14 +258,8 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         subtitle: 'Drain all hearts',
         onTap: () => _setEnergy(context, ref, full: false),
       ),
-      _DebugTile(
-        title: 'Set XP: 0',
-        onTap: () => _setXp(context, ref, 0),
-      ),
-      _DebugTile(
-        title: 'Set XP: 500',
-        onTap: () => _setXp(context, ref, 500),
-      ),
+      _DebugTile(title: 'Set XP: 0', onTap: () => _setXp(context, ref, 0)),
+      _DebugTile(title: 'Set XP: 500', onTap: () => _setXp(context, ref, 500)),
       _DebugTile(
         title: 'Set XP: 5000',
         onTap: () => _setXp(context, ref, 5000),
@@ -369,7 +363,8 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         subtitle: DebugStateOverrides.forceLoading ? '🔴 ACTIVE' : 'Off',
         onTap: () {
           setState(() {
-            DebugStateOverrides.forceLoading = !DebugStateOverrides.forceLoading;
+            DebugStateOverrides.forceLoading =
+                !DebugStateOverrides.forceLoading;
           });
         },
       ),
@@ -415,10 +410,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         title: 'Workshop',
         onTap: () => _push(context, const WorkshopScreen()),
       ),
-      _DebugTile(
-        title: 'FAQ',
-        onTap: () => _push(context, const FaqScreen()),
-      ),
+      _DebugTile(title: 'FAQ', onTap: () => _push(context, const FaqScreen())),
       _DebugTile(
         title: 'Glossary',
         onTap: () => _push(context, const GlossaryScreen()),
@@ -442,11 +434,13 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       _DebugTile(
         title: 'Unlock Celebration',
         subtitle: 'Test with zebra_danio',
-        onTap: () =>
-            _push(context, const UnlockCelebrationScreen(speciesId: 'zebra_danio')),
+        onTap: () => _push(
+          context,
+          const UnlockCelebrationScreen(speciesId: 'zebra_danio'),
+        ),
       ),
       _DebugTile(
-        title: 'Paywall Stub',
+        title: 'Feature Summary',
         onTap: () => _push(
           context,
           FeatureSummaryScreen(
@@ -479,9 +473,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         subtitle: 'Privacy consent (resets analytics pref first)',
         onTap: () => _push(
           context,
-          ConsentScreen(
-            onConsentGiven: () => Navigator.of(context).pop(),
-          ),
+          ConsentScreen(onConsentGiven: () => Navigator.of(context).pop()),
         ),
       ),
       const Divider(),
@@ -500,9 +492,9 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     return Theme(
       data: Theme.of(context).copyWith(
         colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: Colors.orange,
-              secondary: Colors.deepOrange,
-            ),
+          primary: Colors.orange,
+          secondary: Colors.deepOrange,
+        ),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -573,7 +565,9 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
 
       if (context.mounted) {
         DanioSnackBar.success(
-            context, 'Demo tank seeded: QA Test Tank (60L, 5 fish)');
+          context,
+          'Demo tank seeded: QA Test Tank (60L, 5 fish)',
+        );
       }
     } catch (e) {
       if (context.mounted) {
@@ -582,8 +576,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     }
   }
 
-  Future<void> _setEnergy(BuildContext context, WidgetRef ref,
-      {required bool full}) async {
+  Future<void> _setEnergy(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool full,
+  }) async {
     try {
       final notifier = ref.read(userProfileProvider.notifier);
       await notifier.updateHearts(
@@ -592,10 +589,14 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       );
       if (context.mounted) {
         DanioSnackBar.success(
-            context, full ? 'Energy set to full (5)' : 'Energy drained (0)');
+          context,
+          full ? 'Energy set to full (5)' : 'Energy drained (0)',
+        );
       }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Set energy failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Set energy failed: $e');
+      }
     }
   }
 
@@ -603,29 +604,43 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     try {
       final current = ref.read(userProfileProvider).value;
       if (current == null) {
-        if (context.mounted) DanioSnackBar.info(context, 'No profile loaded yet');
+        if (context.mounted) {
+          DanioSnackBar.info(context, 'No profile loaded yet');
+        }
         return;
       }
       final prefs = await ref.read(sharedPreferencesProvider.future);
       final updated = current.copyWith(totalXp: xp, updatedAt: DateTime.now());
       await prefs.setString('user_profile', jsonEncode(updated.toJson()));
       ref.invalidate(userProfileProvider);
-      if (context.mounted) DanioSnackBar.success(context, 'XP set to $xp');
+      if (context.mounted) {
+        DanioSnackBar.success(context, 'XP set to $xp');
+      }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Set XP failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Set XP failed: $e');
+      }
     }
   }
 
-  Future<void> _setStreak(BuildContext context, WidgetRef ref, int streak) async {
+  Future<void> _setStreak(
+    BuildContext context,
+    WidgetRef ref,
+    int streak,
+  ) async {
     try {
       final current = ref.read(userProfileProvider).value;
       if (current == null) {
-        if (context.mounted) DanioSnackBar.info(context, 'No profile loaded yet');
+        if (context.mounted) {
+          DanioSnackBar.info(context, 'No profile loaded yet');
+        }
         return;
       }
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      final updated =
-          current.copyWith(currentStreak: streak, updatedAt: DateTime.now());
+      final updated = current.copyWith(
+        currentStreak: streak,
+        updatedAt: DateTime.now(),
+      );
       await prefs.setString('user_profile', jsonEncode(updated.toJson()));
       ref.invalidate(userProfileProvider);
       if (context.mounted) {
@@ -652,12 +667,16 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         DanioSnackBar.success(context, 'All species unlocked');
       }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Unlock all failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Unlock all failed: $e');
+      }
     }
   }
 
   Future<void> _resetSpeciesToDefaults(
-      BuildContext context, WidgetRef ref) async {
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
       await prefs.setString(
@@ -683,7 +702,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     }
   }
 
-  Future<void> _switchTab(BuildContext context, WidgetRef ref, int index) async {
+  Future<void> _switchTab(
+    BuildContext context,
+    WidgetRef ref,
+    int index,
+  ) async {
     ref.read(currentTabProvider.notifier).state = index;
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
@@ -718,7 +741,8 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     final confirmed = await showAppDestructiveDialog(
       context: context,
       title: '⚠️ Clear All Data',
-      message: 'This will clear all SharedPreferences and reset app state.\n\n'
+      message:
+          'This will clear all SharedPreferences and reset app state.\n\n'
           'The app should be restarted after this.',
       destructiveLabel: 'Clear',
     );
@@ -753,7 +777,9 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         DanioSnackBar.success(context, 'Learning progress cleared');
       }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Reset learning failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Reset learning failed: $e');
+      }
     }
   }
 
@@ -769,7 +795,9 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         DanioSnackBar.success(context, 'Practice (SR) data cleared');
       }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Reset practice failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Reset practice failed: $e');
+      }
     }
   }
 
@@ -791,7 +819,9 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         DanioSnackBar.success(context, 'Achievements cleared');
       }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Reset achievements failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Reset achievements failed: $e');
+      }
     }
   }
 
@@ -815,10 +845,15 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       await prefs.setString('user_profile', jsonEncode(json));
       ref.invalidate(userProfileProvider);
       if (context.mounted) {
-        DanioSnackBar.success(context, 'Gamification reset (XP, streak, energy)');
+        DanioSnackBar.success(
+          context,
+          'Gamification reset (XP, streak, energy)',
+        );
       }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Reset gamification failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Reset gamification failed: $e');
+      }
     }
   }
 
@@ -831,10 +866,15 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       }
       ref.invalidate(tanksProvider);
       if (context.mounted) {
-        DanioSnackBar.success(context, 'All tank data deleted (${tanks.length} tanks)');
+        DanioSnackBar.success(
+          context,
+          'All tank data deleted (${tanks.length} tanks)',
+        );
       }
     } catch (e) {
-      if (context.mounted) DanioSnackBar.error(context, 'Reset tank data failed: $e');
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Reset tank data failed: $e');
+      }
     }
   }
 
@@ -880,7 +920,9 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
 
       if (context.mounted) {
         DanioSnackBar.success(
-            context, 'All ${allLessonIds.length} lessons marked complete');
+          context,
+          'All ${allLessonIds.length} lessons marked complete',
+        );
       }
     } catch (e) {
       if (context.mounted) {
@@ -891,14 +933,19 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
 
   /// Set N SR cards to be due now by backdating their nextReview timestamp.
   Future<void> _forceSrCardsDue(
-      BuildContext context, WidgetRef ref, int count) async {
+    BuildContext context,
+    WidgetRef ref,
+    int count,
+  ) async {
     try {
       final srState = ref.read(spacedRepetitionProvider);
 
       if (srState.cards.isEmpty) {
         if (context.mounted) {
-          DanioSnackBar.info(context,
-              'No SR cards exist yet. Complete some lessons first.');
+          DanioSnackBar.info(
+            context,
+            'No SR cards exist yet. Complete some lessons first.',
+          );
         }
         return;
       }
@@ -918,8 +965,9 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
 
       // Persist directly via SharedPreferences (same key the provider uses)
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      final cardsJson =
-          jsonEncode(updatedCards.map((c) => c.toJson()).toList());
+      final cardsJson = jsonEncode(
+        updatedCards.map((c) => c.toJson()).toList(),
+      );
       await prefs.setString('spaced_repetition_cards', cardsJson);
       ref.invalidate(spacedRepetitionProvider);
 
@@ -1000,7 +1048,12 @@ class _AppStateSnapshot extends ConsumerWidget {
       initiallyExpanded: false,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.sm2),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            0,
+            AppSpacing.md,
+            AppSpacing.sm2,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1034,13 +1087,17 @@ class _AppStateSnapshot extends ConsumerWidget {
             width: 160,
             child: Text(
               '$label:',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textHint,
+              ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
+              style: AppTypography.bodySmall.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],
@@ -1059,14 +1116,18 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md, AppSpacing.sm2, AppSpacing.md, AppSpacing.xs),
+        AppSpacing.md,
+        AppSpacing.sm2,
+        AppSpacing.md,
+        AppSpacing.xs,
+      ),
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Colors.orange.shade800,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
-            ),
+          color: Colors.orange.shade800,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }

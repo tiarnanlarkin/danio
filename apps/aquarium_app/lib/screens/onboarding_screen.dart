@@ -36,7 +36,7 @@ import '../widgets/core/app_dialog.dart';
 ///
 /// Current flow:
 ///   Welcome → Experience Level → Tank Status → Micro Lesson → XP Celebration
-///   → Fish Select → Aha Moment → Paywall Stub → Push Permission → Warm Entry
+///   → Fish Select → Aha Moment → Feature Summary → Push Permission → Warm Entry
 ///   → (creates profile + tank) → Home
 ///
 /// Intentionally skipped (with rationale):
@@ -437,7 +437,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
 
-                  // Page 7: Paywall Stub
+                  // Page 7: Feature Summary
                   Builder(
                     builder: (context) {
                       if (_selectedFish == null) {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 // Widget tests for FeatureSummaryScreen.
 //
 // Run: flutter test test/widget_tests/feature_summary_screen_test.dart
@@ -45,6 +47,26 @@ Widget _wrap({VoidCallback? onComplete, VoidCallback? onSkip}) {
 // ---------------------------------------------------------------------------
 
 void main() {
+  test('onboarding feature summary has no stale paywall naming', () {
+    final files = [
+      'lib/screens/onboarding_screen.dart',
+      'lib/screens/debug_menu_screen.dart',
+      'lib/screens/onboarding/feature_summary_screen.dart',
+    ];
+    final stalePaywallCopy = RegExp(
+      r'Paywall Stub|free trial|subscribe now|pricing',
+      caseSensitive: false,
+    );
+
+    for (final path in files) {
+      expect(
+        File(path).readAsStringSync(),
+        isNot(contains(stalePaywallCopy)),
+        reason: path,
+      );
+    }
+  });
+
   group('FeatureSummaryScreen — rendering', () {
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
