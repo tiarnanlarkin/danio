@@ -344,9 +344,18 @@ class EquipmentScreen extends ConsumerWidget {
       onConfirm: () async {
         try {
           final storage = ref.read(storageServiceProvider);
+          final maintenanceTaskId = _maintenanceTaskId(equipment.id);
+          final tasks = await storage.getTasksForTank(tankId);
+          Task? maintenanceTask;
+          for (final task in tasks) {
+            if (task.id == maintenanceTaskId) {
+              maintenanceTask = task;
+              break;
+            }
+          }
           await storage.deleteEquipment(equipment.id);
           // Remove auto maintenance task (if any)
-          await storage.deleteTask(_maintenanceTaskId(equipment.id));
+          await storage.deleteTask(maintenanceTaskId);
           ref.invalidate(equipmentProvider(tankId));
           ref.invalidate(tasksProvider(tankId));
           if (context.mounted) {
@@ -357,6 +366,9 @@ class EquipmentScreen extends ConsumerWidget {
               actionLabel: 'Undo',
               onAction: () async {
                 await storage.saveEquipment(equipment);
+                if (maintenanceTask != null) {
+                  await storage.saveTask(maintenanceTask);
+                }
                 ref.invalidate(equipmentProvider(tankId));
                 ref.invalidate(tasksProvider(tankId));
               },

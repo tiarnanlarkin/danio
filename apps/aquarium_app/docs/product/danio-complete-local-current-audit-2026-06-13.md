@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1674 tests.
+- `flutter test`: pass, 1675 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1376,6 +1376,15 @@ CL-P1-009AS Task delete undo resilience:
 - Focused widget coverage verifies the task disappears after deletion and
   returns when Undo is tapped.
 
+CL-P1-009AT Equipment undo maintenance-task restore:
+
+- Equipment removal already deleted the linked auto-maintenance task and offered
+  Undo for the equipment record.
+- Undo now restores the linked maintenance-task snapshot as well as the
+  equipment record, preserving scheduled maintenance after accidental removal.
+- Focused widget coverage verifies equipment and task removal, then confirms
+  both records return when Undo is tapped.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1573,9 +1582,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   payloads before import. Observation and medication backup logs now require
   notes or photos before import. Generated task/equipment/livestock timeline
   logs now require their backing relationship IDs before import. Task deletion
-  now has a 5-second undo snackbar that restores the deleted task. Remaining
-  backup/data work is deeper import validation UX, broader edit/delete/undo
-  coverage, and restore/migration walkthrough QA.
+  now has a 5-second undo snackbar that restores the deleted task. Equipment
+  removal undo now restores the linked auto-maintenance task as well as the
+  equipment record. Remaining backup/data work is deeper import validation UX,
+  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
