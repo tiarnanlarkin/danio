@@ -350,6 +350,14 @@ class BackupService {
           );
         }
       }
+      for (final field in _integerChildFields(collectionName)) {
+        final value = entry[field];
+        if (value != null && value is! int) {
+          throw Exception(
+            'Invalid format: $collectionName $field values must be whole numbers',
+          );
+        }
+      }
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
       }
@@ -421,6 +429,19 @@ class BackupService {
     return switch (collectionName) {
       'logs' => const ['waterChangePercent'],
       'livestock' => const ['count', 'sizeCm', 'maxSizeCm'],
+      'equipment' => const [
+        'maintenanceIntervalDays',
+        'expectedLifespanMonths',
+      ],
+      'tasks' => const ['intervalDays', 'completionCount'],
+      _ => const [],
+    };
+  }
+
+  List<String> _integerChildFields(String collectionName) {
+    return switch (collectionName) {
+      'logs' => const ['waterChangePercent'],
+      'livestock' => const ['count'],
       'equipment' => const [
         'maintenanceIntervalDays',
         'expectedLifespanMonths',

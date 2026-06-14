@@ -678,6 +678,64 @@ void main() {
         },
       );
     }
+
+    for (final scenario in [
+      (
+        collection: 'logs',
+        field: 'waterChangePercent',
+        entry: {
+          ..._validChildEntry('logs', 'log-1'),
+          'waterChangePercent': 12.5,
+        },
+      ),
+      (
+        collection: 'livestock',
+        field: 'count',
+        entry: {..._validChildEntry('livestock', 'livestock-1'), 'count': 2.5},
+      ),
+      (
+        collection: 'equipment',
+        field: 'expectedLifespanMonths',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'expectedLifespanMonths': 24.5,
+        },
+      ),
+      (
+        collection: 'tasks',
+        field: 'completionCount',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'completionCount': 1.5},
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with decimal ${scenario.field} integers',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must be whole numbers',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }
 

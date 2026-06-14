@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1583 tests.
+- `flutter test`: pass, 1587 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1087,6 +1087,16 @@ CL-P1-009O Backup photo archive filename validation:
 - This prevents malformed external backups from making multiple photo
   references point at the same restored file or silently skipping one image.
 
+CL-P1-009P Backup integer child-field validation:
+
+- Backup preview/import now rejects decimal values for child fields parsed as
+  integers during restore.
+- Covered fields include log `waterChangePercent`, livestock `count`,
+  equipment `maintenanceIntervalDays`/`expectedLifespanMonths`, and task
+  `intervalDays`/`completionCount`.
+- This prevents backups from passing preview with numeric values that later
+  fail model parsing because the app expects whole numbers.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1246,9 +1256,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   rejects non-numeric nested water-test readings, rejects invalid required log
   and livestock dates, rejects invalid optional equipment/task dates, rejects
   non-numeric child fields, rejects duplicate restored photo archive filenames,
-  and optional cloud restore now skips child records whose tanks are not present
-  locally or in the backup. Remaining backup/data work is deeper import
-  validation UX, edit/delete/undo coverage, and
+  rejects decimal values for integer-only child fields, and optional cloud
+  restore now skips child records whose tanks are not present locally or in the
+  backup. Remaining backup/data work is deeper import validation UX,
+  edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
