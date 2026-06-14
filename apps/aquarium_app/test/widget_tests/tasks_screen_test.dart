@@ -252,6 +252,30 @@ void main() {
       expect(find.text('Water Change'), findsOneWidget);
     });
 
+    testWidgets('adding a task shows success feedback', (tester) async {
+      const tankId = 'tank-task-add-feedback';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byTooltip('Add a new task'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Rinse prefilter',
+      );
+      await tester.tap(find.text('Add').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final tasks = await svc.getTasksForTank(tankId);
+      expect(tasks.single.title, 'Rinse prefilter');
+      expect(find.text('Rinse prefilter added.'), findsOneWidget);
+    });
+
     testWidgets('deleting a task shows undo and restores the task', (
       tester,
     ) async {

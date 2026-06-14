@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1690 tests.
+- `flutter test`: pass, 1691 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1534,6 +1534,16 @@ CL-P1-009BI Task snooze success feedback:
   due date changes, and checks for `Rinse prefilter snoozed for 1 day.`
   feedback.
 
+CL-P1-009BJ Task add success feedback:
+
+- Adding a task from the Tasks screen now shows normal success feedback after
+  the local task save succeeds.
+- This keeps the add-task sheet from closing silently after a new local care
+  task is created.
+- Focused widget coverage adds `Rinse prefilter` through the visible add-task
+  flow, verifies the task is saved, and checks for `Rinse prefilter added.`
+  feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1752,8 +1762,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   keep the saved task unchanged and show normal error feedback. Task delete
   undo failures now keep the task deleted and show normal error feedback from
   a stable screen context. Successful task snooze now gives normal success
-  feedback after the saved due date changes. Remaining backup/data work is
-  deeper import validation UX, broader edit/delete/undo coverage, and
+  feedback after the saved due date changes. Adding a task now gives normal
+  success feedback after the local save succeeds. Remaining backup/data work
+  is deeper import validation UX, broader edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and

@@ -941,6 +941,14 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       await storage.saveTask(task);
       widget.ref.invalidate(tasksProvider(widget.tankId));
 
+      if (mounted) {
+        AppFeedback.showSuccess(
+          context,
+          widget.existing != null
+              ? '${task.title} saved.'
+              : '${task.title} added.',
+        );
+      }
       if (mounted) Navigator.maybePop(context);
     } catch (e, st) {
       logError(
