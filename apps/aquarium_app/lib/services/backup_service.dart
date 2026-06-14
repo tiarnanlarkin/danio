@@ -502,18 +502,25 @@ class BackupService {
 
   List<String> _requiredChildFields(String collectionName) {
     return switch (collectionName) {
-      'logs' => const ['timestamp'],
-      'livestock' => const ['commonName', 'dateAdded'],
-      'equipment' => const ['name'],
-      'tasks' => const ['title'],
+      'logs' => const ['timestamp', 'createdAt'],
+      'livestock' => const [
+        'commonName',
+        'dateAdded',
+        'createdAt',
+        'updatedAt',
+      ],
+      'equipment' => const ['name', 'createdAt', 'updatedAt'],
+      'tasks' => const ['title', 'createdAt', 'updatedAt'],
       _ => const [],
     };
   }
 
   List<String> _dateChildFields(String collectionName) {
     return switch (collectionName) {
-      'logs' => const ['timestamp'],
-      'livestock' => const ['dateAdded'],
+      'logs' => const ['timestamp', 'createdAt'],
+      'livestock' => const ['dateAdded', 'createdAt', 'updatedAt'],
+      'equipment' => const ['createdAt', 'updatedAt'],
+      'tasks' => const ['createdAt', 'updatedAt'],
       _ => const [],
     };
   }

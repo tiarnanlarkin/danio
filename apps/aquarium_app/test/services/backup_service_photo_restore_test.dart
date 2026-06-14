@@ -493,6 +493,109 @@ void main() {
       );
     }
 
+    for (final scenario in const [
+      (
+        collection: 'logs',
+        missingField: 'createdAt',
+        entry: {
+          'id': 'log-1',
+          'tankId': 'tank-1',
+          'timestamp': '2026-06-14T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'livestock',
+        missingField: 'createdAt',
+        entry: {
+          'id': 'livestock-1',
+          'tankId': 'tank-1',
+          'commonName': 'Neon tetra',
+          'dateAdded': '2026-06-14T09:00:00.000',
+          'updatedAt': '2026-06-14T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'livestock',
+        missingField: 'updatedAt',
+        entry: {
+          'id': 'livestock-1',
+          'tankId': 'tank-1',
+          'commonName': 'Neon tetra',
+          'dateAdded': '2026-06-14T09:00:00.000',
+          'createdAt': '2026-06-14T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'equipment',
+        missingField: 'createdAt',
+        entry: {
+          'id': 'equipment-1',
+          'tankId': 'tank-1',
+          'name': 'Filter',
+          'updatedAt': '2026-06-14T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'equipment',
+        missingField: 'updatedAt',
+        entry: {
+          'id': 'equipment-1',
+          'tankId': 'tank-1',
+          'name': 'Filter',
+          'createdAt': '2026-06-14T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'tasks',
+        missingField: 'createdAt',
+        entry: {
+          'id': 'task-1',
+          'tankId': 'tank-1',
+          'title': 'Test water',
+          'updatedAt': '2026-06-14T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'tasks',
+        missingField: 'updatedAt',
+        entry: {
+          'id': 'task-1',
+          'tankId': 'tank-1',
+          'title': 'Test water',
+          'createdAt': '2026-06-14T09:00:00.000',
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries without required ${scenario.missingField} metadata',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} entries must include ${scenario.missingField}',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     for (final scenario in [
       (
         field: 'waterTest',
@@ -902,16 +1005,18 @@ Future<void> _writeBackupZip(
 }
 
 Map<String, String> _validChildEntry(String collectionName, String id) {
-  final base = {'id': id, 'tankId': 'tank-1'};
+  const timestamp = '2026-06-14T09:00:00.000';
+  final base = {'id': id, 'tankId': 'tank-1', 'createdAt': timestamp};
   return switch (collectionName) {
-    'logs' => {...base, 'timestamp': '2026-06-14T09:00:00.000'},
+    'logs' => {...base, 'timestamp': timestamp},
     'livestock' => {
       ...base,
       'commonName': 'Neon tetra',
-      'dateAdded': '2026-06-14T09:00:00.000',
+      'dateAdded': timestamp,
+      'updatedAt': timestamp,
     },
-    'equipment' => {...base, 'name': 'Filter'},
-    'tasks' => {...base, 'title': 'Test water'},
+    'equipment' => {...base, 'name': 'Filter', 'updatedAt': timestamp},
+    'tasks' => {...base, 'title': 'Test water', 'updatedAt': timestamp},
     _ => base,
   };
 }
