@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1696 tests.
+- `flutter test`: pass, 1697 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1591,6 +1591,16 @@ CL-P1-009BO Shop budget save feedback:
 - Focused widget coverage saves a `150` monthly budget, verifies the saved
   `shop_budget` value, and checks for `Monthly budget saved.` feedback.
 
+CL-P1-009BP Wishlist add feedback:
+
+- Adding a fish wishlist item now enables the save action as soon as the user
+  enters a name.
+- The sheet waits for the local wishlist save before closing, then shows
+  item-named success feedback from a stable screen messenger.
+- Failed saves keep the sheet open with normal error feedback.
+- Focused widget coverage adds `Neon Tetra`, verifies the saved wishlist item,
+  and checks for `Neon Tetra added.` feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1816,9 +1826,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   count copy. Adding a local fish shop now enables save after name entry,
   waits for the local save, and gives normal success feedback. Saving the Shop
   Street monthly budget now waits for the local preference write and gives
-  normal success/error feedback. Remaining backup/data work is deeper import
-  validation UX, broader edit/delete/undo coverage, and restore/migration
-  walkthrough QA.
+  normal success/error feedback. Adding a wishlist item now enables save after
+  name entry, waits for the local save, and gives normal success/error
+  feedback. Remaining backup/data work is deeper import validation UX, broader
+  edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

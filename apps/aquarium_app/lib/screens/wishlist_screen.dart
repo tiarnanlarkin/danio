@@ -108,21 +108,24 @@ class WishlistScreen extends ConsumerWidget {
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {
+    final messenger = ScaffoldMessenger.of(context);
     showAppBottomSheet(
       context: context,
       padding: EdgeInsets.zero,
       child: _AddEditItemSheet(
         category: category,
         accentColor: _accentColor,
-        onSave: (item) {
-          ref.read(wishlistProvider.notifier).addItem(item);
-          Navigator.maybePop(context);
+        feedbackMessenger: messenger,
+        successMessage: (item) => '${item.name} added.',
+        onSave: (item) async {
+          await ref.read(wishlistProvider.notifier).addItem(item);
         },
       ),
     );
   }
 
   void _showEditDialog(BuildContext context, WidgetRef ref, WishlistItem item) {
+    final messenger = ScaffoldMessenger.of(context);
     showAppBottomSheet(
       context: context,
       padding: EdgeInsets.zero,
@@ -130,9 +133,10 @@ class WishlistScreen extends ConsumerWidget {
         category: category,
         accentColor: _accentColor,
         existingItem: item,
-        onSave: (updated) {
-          ref.read(wishlistProvider.notifier).updateItem(updated);
-          Navigator.maybePop(context);
+        feedbackMessenger: messenger,
+        successMessage: (updated) => '${updated.name} saved.',
+        onSave: (updated) async {
+          await ref.read(wishlistProvider.notifier).updateItem(updated);
         },
       ),
     );
@@ -335,12 +339,16 @@ class _AddEditItemSheet extends StatefulWidget {
   final WishlistCategory category;
   final Color accentColor;
   final WishlistItem? existingItem;
-  final Function(WishlistItem) onSave;
+  final ScaffoldMessengerState feedbackMessenger;
+  final String Function(WishlistItem) successMessage;
+  final Future<void> Function(WishlistItem) onSave;
 
   const _AddEditItemSheet({
     required this.category,
     required this.accentColor,
     this.existingItem,
+    required this.feedbackMessenger,
+    required this.successMessage,
     required this.onSave,
   });
 
@@ -422,6 +430,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                 hintText: _getNameHint(),
               ),
               textCapitalization: TextCapitalization.words,
+              onChanged: (_) => setState(() {}),
               inputFormatters: [LengthLimitingTextInputFormatter(500)],
             ),
             const SizedBox(height: AppSpacing.md),
@@ -538,7 +547,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
     }
   }
 
-  void _save() {
+  Future<void> _save() async {
     final item = WishlistItem(
       id: widget.existingItem?.id,
       category: widget.category,
@@ -553,6 +562,22 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
       quantity: _quantity,
       createdAt: widget.existingItem?.createdAt,
     );
-    widget.onSave(item);
+    final navigator = Navigator.of(context);
+    try {
+      await widget.onSave(item);
+      if (!mounted || !navigator.mounted) return;
+      await navigator.maybePop();
+      if (!widget.feedbackMessenger.mounted) return;
+      AppFeedback.showSuccessViaMessenger(
+        widget.feedbackMessenger,
+        widget.successMessage(item),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      AppFeedback.showError(
+        context,
+        'Could not save that wishlist item. Try again in a moment.',
+      );
+    }
   }
 }

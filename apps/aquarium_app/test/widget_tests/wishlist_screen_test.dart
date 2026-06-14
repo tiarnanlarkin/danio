@@ -62,6 +62,43 @@ void main() {
       await _advance(tester);
       expect(find.text('Add Item'), findsWidgets);
     });
+
+    testWidgets('adding a wishlist item saves it and confirms the add', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.text('Add Item').first);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Fish name'),
+        'Neon Tetra',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Scientific name (optional)'),
+        'Paracheirodon innesi',
+      );
+      await tester.enterText(find.byType(TextField).at(2), '2.50');
+
+      await tester.tap(find.text('Add to Wishlist').last);
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Neon Tetra'), findsOneWidget);
+      expect(find.text('Neon Tetra added.'), findsOneWidget);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedItems =
+          jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+      final savedItem = savedItems.single as Map<String, dynamic>;
+      expect(savedItem['name'], 'Neon Tetra');
+      expect(savedItem['species'], 'Paracheirodon innesi');
+      expect(savedItem['estimatedPrice'], 2.5);
+      expect(savedItem['category'], 'fish');
+    });
   });
 
   group('WishlistScreen — different categories', () {
