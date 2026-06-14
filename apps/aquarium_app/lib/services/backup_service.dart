@@ -294,7 +294,25 @@ class BackupService {
           'Invalid format: $collectionName entries reference unknown tank id "$normalizedTankId"',
         );
       }
+      for (final field in _requiredChildFields(collectionName)) {
+        final value = entry[field];
+        if (value is! String || value.trim().isEmpty) {
+          throw Exception(
+            'Invalid format: $collectionName entries must include $field',
+          );
+        }
+      }
     }
+  }
+
+  List<String> _requiredChildFields(String collectionName) {
+    return switch (collectionName) {
+      'logs' => const ['timestamp'],
+      'livestock' => const ['commonName', 'dateAdded'],
+      'equipment' => const ['name'],
+      'tasks' => const ['title'],
+      _ => const [],
+    };
   }
 
   Future<Archive> _decodeZip(String zipPath) async {

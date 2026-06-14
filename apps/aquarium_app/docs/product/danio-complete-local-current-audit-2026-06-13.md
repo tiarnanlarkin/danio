@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1561 tests.
+- `flutter test`: pass, 1566 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1010,6 +1010,16 @@ CL-P1-009G Backup child record ID validation:
   `Invalid format: <collection> entries must include an id` or
   `Invalid format: duplicate <collection> id`.
 
+CL-P1-009H Backup child required-field validation:
+
+- Backup preview/import now rejects child records that have valid IDs but are
+  missing fields required by the import parser: log `timestamp`, livestock
+  `commonName` and `dateAdded`, equipment `name`, and task `title`.
+- The guard lives in the shared backup-data reader, so users do not confirm an
+  import whose child records will fail later during local model parsing.
+- Focused coverage verifies each required field fails with
+  `Invalid format: <collection> entries must include <field>`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1164,8 +1174,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   backup JSON, malformed tank entries, duplicate tank IDs, and orphaned
   tank-scoped child records, plus non-array tank-scoped child collections,
   missing child record IDs, and duplicate child record IDs before
-  preview/import. Remaining backup/data work is deeper import validation UX,
-  edit/delete/undo coverage, and restore/migration walkthrough QA.
+  preview/import. It also rejects child records missing import-required fields
+  before preview/import. Remaining backup/data work is deeper import validation
+  UX, edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

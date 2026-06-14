@@ -277,8 +277,8 @@ void main() {
             {'id': 'tank-1', 'name': 'Main tank'},
           ],
           childCollection: [
-            {'id': '$childCollection-1', 'tankId': 'tank-1'},
-            {'id': '$childCollection-1', 'tankId': 'tank-1'},
+            _validChildEntry(childCollection, '$childCollection-1'),
+            _validChildEntry(childCollection, '$childCollection-1'),
           ],
         });
 
@@ -294,5 +294,81 @@ void main() {
         );
       });
     }
+
+    for (final scenario in const [
+      (
+        collection: 'logs',
+        missingField: 'timestamp',
+        entry: {'id': 'log-1', 'tankId': 'tank-1'},
+      ),
+      (
+        collection: 'livestock',
+        missingField: 'commonName',
+        entry: {'id': 'livestock-1', 'tankId': 'tank-1'},
+      ),
+      (
+        collection: 'livestock',
+        missingField: 'dateAdded',
+        entry: {
+          'id': 'livestock-1',
+          'tankId': 'tank-1',
+          'commonName': 'Neon tetra',
+        },
+      ),
+      (
+        collection: 'equipment',
+        missingField: 'name',
+        entry: {'id': 'equipment-1', 'tankId': 'tank-1'},
+      ),
+      (
+        collection: 'tasks',
+        missingField: 'title',
+        entry: {'id': 'task-1', 'tankId': 'tank-1'},
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries without ${scenario.missingField}',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} entries must include ${scenario.missingField}',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
+}
+
+Map<String, String> _validChildEntry(String collectionName, String id) {
+  final base = {'id': id, 'tankId': 'tank-1'};
+  return switch (collectionName) {
+    'logs' => {...base, 'timestamp': '2026-06-14T09:00:00.000'},
+    'livestock' => {
+      ...base,
+      'commonName': 'Neon tetra',
+      'dateAdded': '2026-06-14T09:00:00.000',
+    },
+    'equipment' => {...base, 'name': 'Filter'},
+    'tasks' => {...base, 'title': 'Test water'},
+    _ => base,
+  };
 }
