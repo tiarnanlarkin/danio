@@ -1213,6 +1213,61 @@ void main() {
       });
     }
 
+    for (final scenario in [
+      (
+        label: 'task-completion log without task relationship',
+        entry: {..._validChildEntry('logs', 'log-1'), 'type': 'taskCompleted'},
+        field: 'relatedTaskId',
+      ),
+      (
+        label: 'equipment-maintenance log without equipment relationship',
+        entry: {
+          ..._validChildEntry('logs', 'log-1'),
+          'type': 'equipmentMaintenance',
+        },
+        field: 'relatedEquipmentId',
+      ),
+      (
+        label: 'livestock-added log without livestock relationship',
+        entry: {..._validChildEntry('logs', 'log-1'), 'type': 'livestockAdded'},
+        field: 'relatedLivestockId',
+      ),
+      (
+        label: 'livestock-removed log without livestock relationship',
+        entry: {
+          ..._validChildEntry('logs', 'log-1'),
+          'type': 'livestockRemoved',
+        },
+        field: 'relatedLivestockId',
+      ),
+    ]) {
+      test('getBackupData rejects ${scenario.label}', () async {
+        final service = BackupService(
+          getDocumentsDirectory: () async => sourceDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+        final zipPath = await service.createBackup({
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [scenario.entry],
+        });
+
+        await expectLater(
+          service.getBackupData(zipPath),
+          throwsA(
+            isA<Exception>().having(
+              (error) => error.toString(),
+              'message',
+              contains(
+                'Invalid format: logs ${scenario.entry['type']} entries must include ${scenario.field}',
+              ),
+            ),
+          ),
+        );
+      });
+    }
+
     test(
       'getBackupData rejects equipment settings that are not objects',
       () async {

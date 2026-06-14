@@ -827,6 +827,16 @@ class BackupService {
       );
     }
 
+    final requiredRelationshipField = _requiredLogRelationshipField(type);
+    if (requiredRelationshipField != null) {
+      final value = entry[requiredRelationshipField];
+      if (value is! String || value.trim().isEmpty) {
+        throw Exception(
+          'Invalid format: logs $type entries must include $requiredRelationshipField',
+        );
+      }
+    }
+
     final photoUrls = entry['photoUrls'];
     if (photoUrls != null &&
         (photoUrls is! List || photoUrls.any((value) => value is! String))) {
@@ -841,6 +851,15 @@ class BackupService {
         'Invalid format: logs $type entries must include notes or photos',
       );
     }
+  }
+
+  String? _requiredLogRelationshipField(Object? type) {
+    return switch (type) {
+      'taskCompleted' => 'relatedTaskId',
+      'equipmentMaintenance' => 'relatedEquipmentId',
+      'livestockAdded' || 'livestockRemoved' => 'relatedLivestockId',
+      _ => null,
+    };
   }
 
   void _validateWaterTestReading(String field, num value) {
