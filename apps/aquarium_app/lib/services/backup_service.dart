@@ -550,47 +550,47 @@ class BackupService {
   }
 
   void _validateChildRelationshipTargets(Map<String, dynamic> data) {
-    final equipmentIds = _childRecordIds(data, 'equipment');
-    final livestockIds = _childRecordIds(data, 'livestock');
-    final taskIds = _childRecordIds(data, 'tasks');
+    final equipmentTankIds = _childRecordTankIds(data, 'equipment');
+    final livestockTankIds = _childRecordTankIds(data, 'livestock');
+    final taskTankIds = _childRecordTankIds(data, 'tasks');
 
     _validateRelationshipTarget(
       data,
       sourceCollection: 'logs',
       field: 'relatedEquipmentId',
-      targetIds: equipmentIds,
+      targetTankIds: equipmentTankIds,
     );
     _validateRelationshipTarget(
       data,
       sourceCollection: 'logs',
       field: 'relatedLivestockId',
-      targetIds: livestockIds,
+      targetTankIds: livestockTankIds,
     );
     _validateRelationshipTarget(
       data,
       sourceCollection: 'logs',
       field: 'relatedTaskId',
-      targetIds: taskIds,
+      targetTankIds: taskTankIds,
     );
     _validateRelationshipTarget(
       data,
       sourceCollection: 'tasks',
       field: 'relatedEquipmentId',
-      targetIds: equipmentIds,
+      targetTankIds: equipmentTankIds,
     );
   }
 
-  Set<String> _childRecordIds(
+  Map<String, String> _childRecordTankIds(
     Map<String, dynamic> data,
     String collectionName,
   ) {
     final entries = data[collectionName];
-    if (entries is! List) return const <String>{};
+    if (entries is! List) return const <String, String>{};
 
     return {
       for (final entry in entries)
-        if (entry is Map && entry['id'] is String)
-          (entry['id'] as String).trim(),
+        if (entry is Map && entry['id'] is String && entry['tankId'] is String)
+          (entry['id'] as String).trim(): (entry['tankId'] as String).trim(),
     };
   }
 
@@ -598,7 +598,7 @@ class BackupService {
     Map<String, dynamic> data, {
     required String sourceCollection,
     required String field,
-    required Set<String> targetIds,
+    required Map<String, String> targetTankIds,
   }) {
     final entries = data[sourceCollection];
     if (entries is! List) return;
@@ -608,9 +608,17 @@ class BackupService {
       final value = entry[field];
       if (value is! String || value.trim().isEmpty) continue;
 
-      if (!targetIds.contains(value.trim())) {
+      final targetTankId = targetTankIds[value.trim()];
+      if (targetTankId == null) {
         throw Exception(
           'Invalid format: $sourceCollection $field values must reference existing backup records',
+        );
+      }
+
+      final sourceTankId = entry['tankId'];
+      if (sourceTankId is! String || targetTankId != sourceTankId.trim()) {
+        throw Exception(
+          'Invalid format: $sourceCollection $field values must reference records in the same backup tank',
         );
       }
     }

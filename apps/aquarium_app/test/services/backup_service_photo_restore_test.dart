@@ -994,6 +994,92 @@ void main() {
 
     for (final scenario in [
       (
+        collection: 'logs',
+        field: 'relatedEquipmentId',
+        source: {
+          ..._validChildEntry('logs', 'log-1'),
+          'relatedEquipmentId': 'equipment-other-tank',
+        },
+        targetCollection: 'equipment',
+        target: {
+          ..._validChildEntry('equipment', 'equipment-other-tank'),
+          'tankId': 'tank-2',
+        },
+      ),
+      (
+        collection: 'logs',
+        field: 'relatedLivestockId',
+        source: {
+          ..._validChildEntry('logs', 'log-1'),
+          'relatedLivestockId': 'livestock-other-tank',
+        },
+        targetCollection: 'livestock',
+        target: {
+          ..._validChildEntry('livestock', 'livestock-other-tank'),
+          'tankId': 'tank-2',
+        },
+      ),
+      (
+        collection: 'logs',
+        field: 'relatedTaskId',
+        source: {
+          ..._validChildEntry('logs', 'log-1'),
+          'relatedTaskId': 'task-other-tank',
+        },
+        targetCollection: 'tasks',
+        target: {
+          ..._validChildEntry('tasks', 'task-other-tank'),
+          'tankId': 'tank-2',
+        },
+      ),
+      (
+        collection: 'tasks',
+        field: 'relatedEquipmentId',
+        source: {
+          ..._validChildEntry('tasks', 'task-1'),
+          'relatedEquipmentId': 'equipment-other-tank',
+        },
+        targetCollection: 'equipment',
+        target: {
+          ..._validChildEntry('equipment', 'equipment-other-tank'),
+          'tankId': 'tank-2',
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with cross-tank ${scenario.field} targets',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+              {'id': 'tank-2', 'name': 'Other tank'},
+            ],
+            scenario.collection: [scenario.source],
+            scenario.targetCollection: [scenario.target],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must reference records in the same backup tank',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
         field: 'isEnabled',
         entry: {..._validChildEntry('tasks', 'task-1'), 'isEnabled': 'yes'},
       ),
