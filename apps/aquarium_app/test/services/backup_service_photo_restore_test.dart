@@ -374,6 +374,36 @@ void main() {
       );
     }
 
+    test(
+      'getBackupData ignores malformed non-exportable sharedPreferences values',
+      () async {
+        final service = BackupService(
+          getDocumentsDirectory: () async => sourceDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+        final zipPath = await service.createBackup({
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'sharedPreferences': {
+            'entries': {
+              'theme_mode': 1,
+              'user_openai_api_key': {'ignored': true},
+              'flutter.internal': ['ignored', 9],
+            },
+          },
+        });
+
+        final data = await service.getBackupData(zipPath);
+
+        final prefs = data['sharedPreferences'] as Map<String, dynamic>;
+        final entries = prefs['entries'] as Map<String, dynamic>;
+        expect(entries['theme_mode'], 1);
+        expect(entries['user_openai_api_key'], {'ignored': true});
+        expect(entries['flutter.internal'], ['ignored', 9]);
+      },
+    );
+
     for (final scenario in [
       (
         field: 'name',

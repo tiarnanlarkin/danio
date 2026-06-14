@@ -162,6 +162,8 @@ class SharedPreferencesBackup {
 
   /// Check whether a given SharedPreferences key should be included in
   /// backups.
+  static bool isExportableKey(String key) => _isExportable(key);
+
   static bool _isExportable(String key) {
     // Skip our own metadata key.
     if (key == _metadataKey) return false;

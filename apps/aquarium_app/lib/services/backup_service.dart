@@ -5,6 +5,7 @@ import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../utils/logger.dart';
+import 'shared_preferences_backup.dart';
 
 /// Service for creating and restoring backups with photos bundled.
 ///
@@ -272,7 +273,13 @@ class BackupService {
       );
     }
 
-    for (final value in entries.values) {
+    for (final entry in entries.entries) {
+      final key = entry.key;
+      if (key is! String || !SharedPreferencesBackup.isExportableKey(key)) {
+        continue;
+      }
+
+      final value = entry.value;
       if (value is List) {
         if (value.any((item) => item is! String)) {
           throw Exception(

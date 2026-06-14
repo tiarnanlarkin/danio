@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1627 tests.
+- `flutter test`: pass, 1628 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1201,6 +1201,16 @@ CL-P1-009AA Backup profile/preferences restore preflight:
 - This protects direct restore callers and keeps the lower-level restore helper
   aligned with Backup & Restore preview validation.
 
+CL-P1-009AB Backup non-exportable preference validation:
+
+- Backup preview/import now applies preference entry-value validation only to
+  keys that `SharedPreferencesBackup` can actually restore.
+- Unknown, internal, or secret-like preference keys remain ignored by restore,
+  so malformed values on those keys no longer reject an otherwise restorable
+  local backup.
+- This keeps preview validation strict for restorable app state while avoiding
+  false failures for data that Danio intentionally does not import.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1374,9 +1384,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   preview/import. Malformed profile/preferences payloads now reject before
   preview/import. Malformed profile/preferences entry values now reject before
   preview/import. Direct profile/preferences restore now validates values before
-  clearing existing local preferences. Remaining backup/data work is deeper
-  import validation UX, edit/delete/undo coverage, and restore/migration
-  walkthrough QA.
+  clearing existing local preferences. Non-exportable profile/preferences
+  entries no longer cause false preview failures when their values are malformed.
+  Remaining backup/data work is deeper import validation UX, edit/delete/undo
+  coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
