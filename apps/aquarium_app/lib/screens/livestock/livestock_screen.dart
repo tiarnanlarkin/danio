@@ -8,6 +8,7 @@ import '../../models/models.dart';
 import '../../providers/inventory_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/tank_provider.dart';
+import '../../providers/tank_visual_event_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/xp_animation_service.dart';
 import '../../theme/app_theme.dart';
@@ -580,6 +581,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       );
 
       ref.invalidate(logsProvider(widget.tankId));
+      ref.read(tankFeedingPulseProvider(widget.tankId).notifier).state += 1;
 
       final isBoostActive = ref.read(xpBoostActiveProvider);
       await ref

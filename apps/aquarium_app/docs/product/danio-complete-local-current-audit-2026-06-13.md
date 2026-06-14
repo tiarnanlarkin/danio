@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1717 tests.
+- `flutter test`: pass, 1718 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -390,6 +390,15 @@ CL-P1-001G Tank Detail feeding pulse handoff:
   feedback system instead of making Tank Detail feeding feel detached.
 - Focused Tank Detail widget coverage verifies the real QuickAdd FAB feeding
   action saves a feeding log and emits `tankFeedingPulseProvider`.
+
+CL-P1-001H Livestock feeding pulse handoff:
+
+- The Livestock screen Feed action now increments the same per-tank feeding
+  pulse event after a successful local feeding log save.
+- This keeps feeding from the livestock management area connected to the living
+  aquarium feedback system instead of only updating journal data.
+- Focused Livestock widget coverage verifies the real Feed action saves a
+  feeding log and emits `tankFeedingPulseProvider`.
 
 CL-P1-002A Room vibe unlock progress:
 

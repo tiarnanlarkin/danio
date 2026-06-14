@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/livestock/livestock_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_visual_event_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 
@@ -81,6 +82,30 @@ Widget _wrapWithStorage({
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
     child: MaterialApp(home: LivestockScreen(tankId: tankId)),
+  );
+}
+
+Widget _wrapWithPulseProbe({
+  required StorageService storage,
+  required String tankId,
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      home: Stack(
+        children: [
+          LivestockScreen(tankId: tankId),
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Consumer(
+              builder: (context, ref, _) =>
+                  Text('pulse ${ref.watch(tankFeedingPulseProvider(tankId))}'),
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }
 
@@ -207,6 +232,41 @@ void main() {
         expect(find.text('1x Amano Shrimp added.'), findsOneWidget);
       },
     );
+  });
+
+  group('LivestockScreen - quick feeding', () {
+    testWidgets('successful feeding log emits a tank feeding pulse', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-feed-pulse-tank';
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Community Tank'));
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: 'livestock-feed-pulse-neons',
+          tankId: tankId,
+          name: 'Neon Tetra',
+          count: 8,
+        ),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithPulseProbe(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('pulse 0'), findsOneWidget);
+
+      await tester.tap(find.text('Feed'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final logs = await storage.getLogsForTank(tankId);
+      expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
+      expect(find.text('pulse 1'), findsOneWidget);
+    });
   });
 
   group('LivestockScreen - bulk move', () {
