@@ -136,6 +136,37 @@ void main() {
       expect(find.text('Neon Tetras x6'), findsOneWidget);
     });
 
+    testWidgets('saving expense confirms local add and persists it', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Add First Expense'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Description'),
+        'Frozen food',
+      );
+      await tester.enterText(find.widgetWithText(TextField, 'Amount'), '7.50');
+
+      await tester.tap(find.text('Save Expense'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Frozen food'), findsOneWidget);
+      expect(find.text('Frozen food added.'), findsOneWidget);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedExpenses =
+          jsonDecode(prefs.getString('cost_tracker_expenses')!)
+              as List<dynamic>;
+      expect(savedExpenses.single['description'], 'Frozen food');
+      expect(savedExpenses.single['amount'], 7.5);
+    });
+
     testWidgets('empty expense form shows validation guidance', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();

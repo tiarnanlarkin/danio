@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1693 tests.
+- `flutter test`: pass, 1694 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1563,6 +1563,15 @@ CL-P1-009BL Livestock add feedback and log copy:
 - Focused widget coverage adds `Amano Shrimp` through the visible add-livestock
   flow, verifies the saved livestock record, verifies the readable timeline
   log title, and checks for `1x Amano Shrimp added.` feedback.
+
+CL-P1-009BM Cost Tracker add feedback:
+
+- Adding a Cost Tracker expense now waits for the local expense save before
+  closing the sheet and showing normal success feedback.
+- This keeps the expense-add flow from silently returning to the list after a
+  local finance record is created.
+- Focused widget coverage adds `Frozen food`, verifies the saved expense
+  record, and checks for `Frozen food added.` feedback.
 
 CL-P1-010A Tank Settings water-profile copy:
 

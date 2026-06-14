@@ -103,11 +103,13 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
       context: context,
       builder: (ctx) => _AddExpenseSheet(
         currency: _currency,
-        onSave: (expense) {
+        onSave: (expense) async {
           setState(() {
             _expenses.insert(0, expense);
           });
-          _saveExpenses();
+          await _saveExpenses();
+          if (!mounted) return;
+          AppFeedback.showSuccess(context, '${expense.description} added.');
         },
       ),
     );
@@ -628,7 +630,7 @@ class _ExpenseTile extends StatelessWidget {
 
 class _AddExpenseSheet extends StatefulWidget {
   final String currency;
-  final Function(_Expense) onSave;
+  final Future<void> Function(_Expense) onSave;
 
   const _AddExpenseSheet({required this.currency, required this.onSave});
 
@@ -769,7 +771,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
           const SizedBox(height: AppSpacing.md),
           AppButton(
             label: 'Save Expense',
-            onPressed: () {
+            onPressed: () async {
               final description = _descController.text.trim();
               final amount = double.tryParse(_amountController.text);
               if (description.isEmpty || amount == null) {
@@ -791,7 +793,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                 return;
               }
 
-              widget.onSave(
+              final navigator = Navigator.of(context);
+              await widget.onSave(
                 _Expense(
                   id: DateTime.now().millisecondsSinceEpoch.toString(),
                   description: description,
@@ -800,7 +803,8 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   date: _date,
                 ),
               );
-              Navigator.maybePop(context);
+              if (!mounted) return;
+              await navigator.maybePop();
             },
             variant: AppButtonVariant.primary,
             isFullWidth: true,
