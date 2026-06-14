@@ -216,6 +216,86 @@ class _SaveEquipmentFailsStorage implements StorageService {
   Future<void> saveTask(Task task) => _delegate.saveTask(task);
 }
 
+class _SaveLogFailsStorage implements StorageService {
+  _SaveLogFailsStorage(this._delegate, {required this.failingLogType});
+
+  final InMemoryStorageService _delegate;
+  final LogType failingLogType;
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) =>
+      _delegate.deleteAllTanks(ids);
+
+  @override
+  Future<void> deleteEquipment(String id) => _delegate.deleteEquipment(id);
+
+  @override
+  Future<void> deleteLivestock(String id) => _delegate.deleteLivestock(id);
+
+  @override
+  Future<void> deleteLog(String id) => _delegate.deleteLog(id);
+
+  @override
+  Future<void> deleteTank(String id) => _delegate.deleteTank(id);
+
+  @override
+  Future<void> deleteTask(String id) => _delegate.deleteTask(id);
+
+  @override
+  Future<List<Tank>> getAllTanks() => _delegate.getAllTanks();
+
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) =>
+      _delegate.getEquipmentForTank(tankId);
+
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) =>
+      _delegate.getLatestWaterTest(tankId);
+
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) =>
+      _delegate.getLivestockForTank(tankId);
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) => _delegate.getLogsForTank(tankId, limit: limit, after: after);
+
+  @override
+  Future<Tank?> getTank(String id) => _delegate.getTank(id);
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) =>
+      _delegate.getTasksForTank(tankId);
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) =>
+      _delegate.saveEquipment(equipment);
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) =>
+      _delegate.saveLivestock(livestock);
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    if (log.type == failingLogType) {
+      throw StateError('log save failed');
+    }
+    await _delegate.saveLog(log);
+  }
+
+  @override
+  Future<void> saveTank(Tank tank) => _delegate.saveTank(tank);
+
+  @override
+  Future<void> saveTanks(List<Tank> tanks) => _delegate.saveTanks(tanks);
+
+  @override
+  Future<void> saveTask(Task task) => _delegate.saveTask(task);
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -477,6 +557,52 @@ void main() {
       );
       expect(
         find.text('Couldn\'t remove that equipment. Give it another go!'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('failed service log keeps equipment unchanged', (tester) async {
+      const tankId = 'tank-equipment-service-failure';
+      const equipmentId = 'equip-service-failure';
+      final lastServiced = _now.subtract(const Duration(days: 30));
+      final delegate = InMemoryStorageService();
+      final storage = _SaveLogFailsStorage(
+        delegate,
+        failingLogType: LogType.equipmentMaintenance,
+      );
+      await delegate.saveTank(_makeTank(id: tankId));
+      final equipment = Equipment(
+        id: equipmentId,
+        tankId: tankId,
+        type: EquipmentType.filter,
+        name: 'Canister filter',
+        maintenanceIntervalDays: 14,
+        lastServiced: lastServiced,
+        createdAt: _now.subtract(const Duration(days: 60)),
+        updatedAt: _now.subtract(const Duration(days: 30)),
+      );
+      await delegate.saveEquipment(equipment);
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Mark Serviced'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      final savedEquipment = (await delegate.getEquipmentForTank(
+        tankId,
+      )).single;
+      expect(savedEquipment.lastServiced, lastServiced);
+      expect(
+        find.text(
+          'Could not mark Canister filter as serviced. Try again in a moment.',
+        ),
         findsOneWidget,
       );
     });

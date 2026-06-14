@@ -270,62 +270,98 @@ class EquipmentScreen extends ConsumerWidget {
   ) async {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
-
     final updated = equipment.copyWith(lastServiced: now, updatedAt: now);
-    await storage.saveEquipment(updated);
 
-    // Log the maintenance event.
-    await storage.saveLog(
-      LogEntry(
-        id: _uuid.v4(),
-        tankId: tankId,
-        type: LogType.equipmentMaintenance,
-        timestamp: now,
-        title: 'Serviced ${equipment.name}',
-        notes: equipment.typeName,
-        relatedEquipmentId: equipment.id,
-        createdAt: now,
-      ),
-    );
+    var equipmentSaved = false;
+    try {
+      await storage.saveEquipment(updated);
+      equipmentSaved = true;
 
-    // Keep the auto maintenance task in sync and mark it completed.
-    await _syncEquipmentMaintenanceTask(storage, updated);
-    final tasks = await storage.getTasksForTank(tankId);
-    final taskId = _maintenanceTaskId(equipment.id);
-    Task? maintenanceTask;
-    for (final t in tasks) {
-      if (t.id == taskId) {
-        maintenanceTask = t;
-        break;
-      }
-    }
-
-    if (maintenanceTask != null) {
-      final completedTask = maintenanceTask.complete().copyWith(updatedAt: now);
-      await storage.saveTask(completedTask);
-
+      // Log the maintenance event.
       await storage.saveLog(
         LogEntry(
           id: _uuid.v4(),
           tankId: tankId,
-          type: LogType.taskCompleted,
+          type: LogType.equipmentMaintenance,
           timestamp: now,
-          title: maintenanceTask.title,
-          notes: maintenanceTask.description,
-          relatedTaskId: maintenanceTask.id,
+          title: 'Serviced ${equipment.name}',
+          notes: equipment.typeName,
           relatedEquipmentId: equipment.id,
           createdAt: now,
         ),
       );
-    }
 
-    ref.invalidate(equipmentProvider(tankId));
-    ref.invalidate(tasksProvider(tankId));
-    ref.invalidate(logsProvider(tankId));
-    ref.invalidate(allLogsProvider(tankId));
+      // Keep the auto maintenance task in sync and mark it completed.
+      await _syncEquipmentMaintenanceTask(storage, updated);
+      final tasks = await storage.getTasksForTank(tankId);
+      final taskId = _maintenanceTaskId(equipment.id);
+      Task? maintenanceTask;
+      for (final t in tasks) {
+        if (t.id == taskId) {
+          maintenanceTask = t;
+          break;
+        }
+      }
 
-    if (context.mounted) {
-      AppFeedback.showSuccess(context, '${equipment.name} marked as serviced');
+      if (maintenanceTask != null) {
+        final completedTask = maintenanceTask.complete().copyWith(
+          updatedAt: now,
+        );
+        await storage.saveTask(completedTask);
+
+        await storage.saveLog(
+          LogEntry(
+            id: _uuid.v4(),
+            tankId: tankId,
+            type: LogType.taskCompleted,
+            timestamp: now,
+            title: maintenanceTask.title,
+            notes: maintenanceTask.description,
+            relatedTaskId: maintenanceTask.id,
+            relatedEquipmentId: equipment.id,
+            createdAt: now,
+          ),
+        );
+      }
+
+      ref.invalidate(equipmentProvider(tankId));
+      ref.invalidate(tasksProvider(tankId));
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(allLogsProvider(tankId));
+
+      if (context.mounted) {
+        AppFeedback.showSuccess(
+          context,
+          '${equipment.name} marked as serviced',
+        );
+      }
+    } catch (e, st) {
+      if (equipmentSaved) {
+        try {
+          await storage.saveEquipment(equipment);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'EquipmentScreen: service rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'EquipmentScreen',
+          );
+        }
+      }
+      ref.invalidate(equipmentProvider(tankId));
+      ref.invalidate(tasksProvider(tankId));
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(allLogsProvider(tankId));
+      logError(
+        'EquipmentScreen: mark serviced failed: $e',
+        stackTrace: st,
+        tag: 'EquipmentScreen',
+      );
+      if (context.mounted) {
+        AppFeedback.showError(
+          context,
+          'Could not mark ${equipment.name} as serviced. Try again in a moment.',
+        );
+      }
     }
   }
 
