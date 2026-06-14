@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/wishlist_screen_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,9 +18,7 @@ import 'package:danio/models/wishlist.dart';
 
 Widget _wrap({WishlistCategory category = WishlistCategory.fish}) {
   return ProviderScope(
-    child: MaterialApp(
-      home: WishlistScreen(category: category),
-    ),
+    child: MaterialApp(home: WishlistScreen(category: category)),
   );
 }
 
@@ -65,15 +65,18 @@ void main() {
   });
 
   group('WishlistScreen — different categories', () {
-    testWidgets('shows plant wishlist title for plant category', (tester) async {
+    testWidgets('shows plant wishlist title for plant category', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(category: WishlistCategory.plant));
       await _advance(tester);
       expect(find.text('Plant Wishlist'), findsOneWidget);
       expect(find.textContaining('🌿'), findsNothing);
     });
 
-    testWidgets('shows equipment wishlist title for equipment category',
-        (tester) async {
+    testWidgets('shows equipment wishlist title for equipment category', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(category: WishlistCategory.equipment));
       await _advance(tester);
       expect(find.text('Equipment Wishlist'), findsOneWidget);
@@ -92,6 +95,47 @@ void main() {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.text('Neon Tetra'), findsOneWidget);
+    });
+
+    testWidgets('deleting a wishlist item shows undo and restores it', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'wishlist_items':
+            '[{"id":"wishlist-undo","name":"Neon Tetra","category":"fish",'
+            '"species":"Paracheirodon innesi","notes":null,'
+            '"estimatedPrice":2.5,"imageUrl":null,"quantity":6,'
+            '"purchased":false,'
+            '"createdAt":"${DateTime.now().toIso8601String()}",'
+            '"purchasedAt":null}]',
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.byIcon(Icons.delete_outline));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove Item'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Neon Tetra'), findsNothing);
+      expect(find.text('Neon Tetra removed'), findsOneWidget);
+      expect(find.text('Undo'), findsOneWidget);
+
+      await tester.tap(find.text('Undo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Neon Tetra'), findsOneWidget);
+
+      final prefs = await SharedPreferences.getInstance();
+      final restoredItems =
+          jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+      final restoredItem = restoredItems.single as Map<String, dynamic>;
+      expect(restoredItem['id'], 'wishlist-undo');
+      expect(restoredItem['category'], 'fish');
+      expect(restoredItem['quantity'], 6);
     });
   });
 }

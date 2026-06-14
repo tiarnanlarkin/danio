@@ -158,7 +158,21 @@ class WishlistScreen extends ConsumerWidget {
       message: 'Remove "${item.name}" from your wishlist?',
       destructiveLabel: 'Remove Item',
       cancelLabel: 'Keep',
-      onConfirm: () => ref.read(wishlistProvider.notifier).removeItem(item.id),
+      onConfirm: () async {
+        final wishlist = ref.read(wishlistProvider.notifier);
+        await wishlist.removeItem(item.id);
+        if (context.mounted) {
+          AppFeedback.show(
+            context,
+            '${item.name} removed',
+            duration: const Duration(seconds: 5),
+            actionLabel: 'Undo',
+            onAction: () async {
+              await wishlist.addItem(item);
+            },
+          );
+        }
+      },
     );
   }
 
@@ -230,76 +244,77 @@ class _WishlistItemCard extends StatelessWidget {
     return Semantics(
       button: true,
       child: Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppRadius.mediumRadius,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: accentColor.withAlpha(38),
-                  borderRadius: AppRadius.mediumRadius,
+        margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppRadius.mediumRadius,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: accentColor.withAlpha(38),
+                    borderRadius: AppRadius.mediumRadius,
+                  ),
+                  child: Icon(_getCategoryIcon(), color: accentColor),
                 ),
-                child: Icon(_getCategoryIcon(), color: accentColor),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(item.name, style: AppTypography.labelLarge),
-                    if (item.species != null)
-                      Text(
-                        item.species!,
-                        style: AppTypography.bodySmall.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: context.textSecondary,
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.name, style: AppTypography.labelLarge),
+                      if (item.species != null)
+                        Text(
+                          item.species!,
+                          style: AppTypography.bodySmall.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: context.textSecondary,
+                          ),
                         ),
-                      ),
-                    if (item.estimatedPrice != null || item.quantity > 1)
-                      Row(
-                        children: [
-                          if (item.estimatedPrice != null)
-                            Text(
-                              '£${item.estimatedPrice!.toStringAsFixed(2)}',
-                              style: AppTypography.bodySmall.copyWith(
-                                color: accentColor,
-                                fontWeight: FontWeight.w600,
+                      if (item.estimatedPrice != null || item.quantity > 1)
+                        Row(
+                          children: [
+                            if (item.estimatedPrice != null)
+                              Text(
+                                '£${item.estimatedPrice!.toStringAsFixed(2)}',
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: accentColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                          if (item.estimatedPrice != null && item.quantity > 1)
-                            Text(' × ', style: AppTypography.bodySmall),
-                          if (item.quantity > 1)
-                            Text(
-                              '${item.quantity}',
-                              style: AppTypography.bodySmall,
-                            ),
-                        ],
-                      ),
-                  ],
+                            if (item.estimatedPrice != null &&
+                                item.quantity > 1)
+                              Text(' × ', style: AppTypography.bodySmall),
+                            if (item.quantity > 1)
+                              Text(
+                                '${item.quantity}',
+                                style: AppTypography.bodySmall,
+                              ),
+                          ],
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.check_circle_outline),
-                color: AppColors.success,
-                tooltip: 'Mark as purchased',
-                onPressed: onPurchased,
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                color: context.textHint,
-                tooltip: 'Remove from wishlist',
-                onPressed: onDelete,
-              ),
-            ],
+                IconButton(
+                  icon: const Icon(Icons.check_circle_outline),
+                  color: AppColors.success,
+                  tooltip: 'Mark as purchased',
+                  onPressed: onPurchased,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  color: context.textHint,
+                  tooltip: 'Remove from wishlist',
+                  onPressed: onDelete,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }
@@ -369,7 +384,10 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
     return Container(
       margin: const EdgeInsets.all(AppSpacing.md),
       padding: EdgeInsets.only(
-        bottom: max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom),
+        bottom: max(
+          MediaQuery.of(context).viewInsets.bottom,
+          MediaQuery.of(context).viewPadding.bottom,
+        ),
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
