@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1581 tests.
+- `flutter test`: pass, 1583 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1077,6 +1077,16 @@ CL-P1-009N Backup numeric child-field validation:
 - This prevents malformed child records from passing preview and then being
   skipped during local import parsing.
 
+CL-P1-009O Backup photo archive filename validation:
+
+- Backup preview/import now rejects ZIP photo entries that would restore to the
+  same local filename after Danio applies its import prefix.
+- Photo entry basename handling now normalizes slash and backslash separators,
+  so Windows-style photo archive entries keep the same restore behavior as
+  standard `photos/...` entries.
+- This prevents malformed external backups from making multiple photo
+  references point at the same restored file or silently skipping one image.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1235,9 +1245,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   before preview/import, rejects malformed nested log water-test/photo data,
   rejects non-numeric nested water-test readings, rejects invalid required log
   and livestock dates, rejects invalid optional equipment/task dates, rejects
-  non-numeric child fields, and optional cloud restore now skips child records
-  whose tanks are not present locally or in the backup. Remaining backup/data
-  work is deeper import validation UX, edit/delete/undo coverage, and
+  non-numeric child fields, rejects duplicate restored photo archive filenames,
+  and optional cloud restore now skips child records whose tanks are not present
+  locally or in the backup. Remaining backup/data work is deeper import
+  validation UX, edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and

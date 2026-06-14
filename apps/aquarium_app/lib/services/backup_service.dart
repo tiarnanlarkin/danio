@@ -212,6 +212,7 @@ class BackupService {
     if (jsonFile == null) {
       throw Exception('Invalid backup: missing $_jsonFileName');
     }
+    _validatePhotoArchiveEntries(archive);
 
     final jsonString = utf8.decode(jsonFile.content as List<int>);
     final decoded = jsonDecode(jsonString);
@@ -250,6 +251,28 @@ class BackupService {
     }
 
     return data;
+  }
+
+  void _validatePhotoArchiveEntries(Archive archive) {
+    final seenPhotoFilenames = <String>{};
+    for (final file in archive.files) {
+      if (!file.isFile) continue;
+
+      final normalizedName = file.name.replaceAll(r'\', '/');
+      if (!normalizedName.startsWith('$_photosFolder/')) continue;
+
+      final filename = _photoEntryFilename(file.name);
+      if (filename.isEmpty) {
+        throw Exception(
+          'Invalid backup: photo entries must include a filename',
+        );
+      }
+
+      final normalizedFilename = filename.toLowerCase();
+      if (!seenPhotoFilenames.add(normalizedFilename)) {
+        throw Exception('Invalid backup: duplicate photo filename "$filename"');
+      }
+    }
   }
 
   void _validateTankScopedCollection(
@@ -432,7 +455,11 @@ class BackupService {
   }
 
   String _restoredPhotoFilename(String restorePrefix, String photoRef) {
-    return '${restorePrefix}_${p.basename(photoRef)}';
+    return '${restorePrefix}_${_photoEntryFilename(photoRef)}';
+  }
+
+  String _photoEntryFilename(String photoRef) {
+    return photoRef.replaceAll(r'\', '/').split('/').last;
   }
 
   Future<Directory> _getDocumentsDirectory() async {

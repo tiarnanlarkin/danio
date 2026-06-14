@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:archive/archive_io.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
@@ -68,6 +70,71 @@ void main() {
 
         expect(await existingLocalPhoto.readAsString(), 'local photo');
         expect(await File(resolvedPhotoPath).readAsString(), 'backup photo');
+      },
+    );
+
+    test(
+      'restoreBackup restores Windows-style photo archive entries',
+      () async {
+        final zipPath = p.join(tempDir.path, 'windows_photo_backup.zip');
+        await _writeBackupZip(
+          zipPath,
+          data: {
+            'tanks': [
+              {'id': 'tank-1', 'imageUrl': r'photos\fish.jpg'},
+            ],
+          },
+          files: {r'photos\fish.jpg': 'backup photo'},
+        );
+
+        final restoreService = BackupService(
+          getDocumentsDirectory: () async => restoreDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+
+        final resolvedData = await restoreService.getBackupData(zipPath);
+        final resolvedPhotoPath =
+            (resolvedData['tanks'] as List).first['imageUrl'] as String;
+
+        await restoreService.restoreBackup(zipPath);
+
+        expect(await File(resolvedPhotoPath).readAsString(), 'backup photo');
+      },
+    );
+
+    test(
+      'getBackupData rejects photo entries with duplicate restored filenames',
+      () async {
+        final zipPath = p.join(tempDir.path, 'duplicate_photo_backup.zip');
+        await _writeBackupZip(
+          zipPath,
+          data: {
+            'tanks': [
+              {'id': 'tank-1', 'imageUrl': 'photos/left/fish.jpg'},
+              {'id': 'tank-2', 'imageUrl': 'photos/right/fish.jpg'},
+            ],
+          },
+          files: {
+            'photos/left/fish.jpg': 'left photo',
+            'photos/right/fish.jpg': 'right photo',
+          },
+        );
+
+        final restoreService = BackupService(
+          getDocumentsDirectory: () async => restoreDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+
+        await expectLater(
+          restoreService.getBackupData(zipPath),
+          throwsA(
+            isA<Exception>().having(
+              (error) => error.toString(),
+              'message',
+              contains('Invalid backup: duplicate photo filename "fish.jpg"'),
+            ),
+          ),
+        );
       },
     );
 
@@ -612,6 +679,27 @@ void main() {
       );
     }
   });
+}
+
+Future<void> _writeBackupZip(
+  String zipPath, {
+  required Map<String, dynamic> data,
+  Map<String, String> files = const {},
+}) async {
+  final archive = Archive()
+    ..addFile(
+      ArchiveFile.string(
+        'backup.json',
+        const JsonEncoder.withIndent('  ').convert(data),
+      ),
+    );
+
+  for (final entry in files.entries) {
+    archive.addFile(ArchiveFile.string(entry.key, entry.value));
+  }
+
+  final zipBytes = ZipEncoder().encode(archive)!;
+  await File(zipPath).writeAsBytes(zipBytes);
 }
 
 Map<String, String> _validChildEntry(String collectionName, String id) {
