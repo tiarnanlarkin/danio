@@ -310,6 +310,15 @@ class BackupService {
           );
         }
       }
+      for (final field in _optionalDateChildFields(collectionName)) {
+        final value = entry[field];
+        if (value == null) continue;
+        if (value is! String || DateTime.tryParse(value) == null) {
+          throw Exception(
+            'Invalid format: $collectionName $field values must be valid dates',
+          );
+        }
+      }
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
       }
@@ -365,6 +374,14 @@ class BackupService {
     return switch (collectionName) {
       'logs' => const ['timestamp'],
       'livestock' => const ['dateAdded'],
+      _ => const [],
+    };
+  }
+
+  List<String> _optionalDateChildFields(String collectionName) {
+    return switch (collectionName) {
+      'equipment' => const ['lastServiced', 'installedDate', 'purchaseDate'],
+      'tasks' => const ['dueDate', 'lastCompletedAt'],
       _ => const [],
     };
   }

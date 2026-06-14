@@ -478,6 +478,75 @@ void main() {
         },
       );
     }
+
+    for (final scenario in [
+      (
+        collection: 'equipment',
+        field: 'lastServiced',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'lastServiced': 'not-date',
+        },
+      ),
+      (
+        collection: 'equipment',
+        field: 'installedDate',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'installedDate': 'not-date',
+        },
+      ),
+      (
+        collection: 'equipment',
+        field: 'purchaseDate',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'purchaseDate': 'not-date',
+        },
+      ),
+      (
+        collection: 'tasks',
+        field: 'dueDate',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'dueDate': 'not-date'},
+      ),
+      (
+        collection: 'tasks',
+        field: 'lastCompletedAt',
+        entry: {
+          ..._validChildEntry('tasks', 'task-1'),
+          'lastCompletedAt': 'not-date',
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with invalid optional ${scenario.field} dates',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must be valid dates',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }
 
