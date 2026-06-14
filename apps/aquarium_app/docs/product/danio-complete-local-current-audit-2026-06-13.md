@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1636 tests.
+- `flutter test`: pass, 1639 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1262,6 +1262,16 @@ CL-P1-009AG Backup livestock count validation:
 - Focused coverage verifies missing livestock `count` fails before preview,
   photo restore, or import proceeds.
 
+CL-P1-009AH Backup required enum-field validation:
+
+- Backup preview/import now rejects logs missing `type`, equipment missing
+  `type`, and tasks missing `recurrence` instead of letting import silently
+  default those records to generic categories or one-time tasks.
+- Existing known-value validators still handle malformed enum values when the
+  fields are present.
+- Focused coverage verifies these required enum-like fields fail before
+  preview, photo restore, or import proceeds.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1445,8 +1455,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   preview/import. Backup export now rejects missing referenced local photo
   files before creating an invalid ZIP. Backup preview/import now rejects
   livestock records missing required quantity data before silently defaulting
-  counts. Remaining backup/data work is deeper import validation UX,
-  edit/delete/undo coverage, and restore/migration walkthrough QA.
+  counts. Backup preview/import now rejects missing required log, equipment,
+  and task enum-like fields before silently defaulting them. Remaining
+  backup/data work is deeper import validation UX, edit/delete/undo coverage,
+  and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

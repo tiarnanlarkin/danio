@@ -509,6 +509,16 @@ class BackupService {
           );
         }
       }
+      for (final field in _requiredEnumChildFields(collectionName)) {
+        final value = entry[field];
+        if (!entry.containsKey(field) ||
+            value == null ||
+            (value is String && value.trim().isEmpty)) {
+          throw Exception(
+            'Invalid format: $collectionName entries must include $field',
+          );
+        }
+      }
       for (final field in _dateChildFields(collectionName)) {
         final value = entry[field] as String;
         if (DateTime.tryParse(value) == null) {
@@ -722,6 +732,15 @@ class BackupService {
   List<String> _requiredValueChildFields(String collectionName) {
     return switch (collectionName) {
       'livestock' => const ['count'],
+      _ => const [],
+    };
+  }
+
+  List<String> _requiredEnumChildFields(String collectionName) {
+    return switch (collectionName) {
+      'logs' => const ['type'],
+      'equipment' => const ['type'],
+      'tasks' => const ['recurrence'],
       _ => const [],
     };
   }
