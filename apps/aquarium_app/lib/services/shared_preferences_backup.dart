@@ -95,6 +95,8 @@ class SharedPreferencesBackup {
       throw const FormatException('Invalid backup: missing entries map');
     }
 
+    _validateRestorableEntries(entries);
+
     final prefs = await SharedPreferences.getInstance();
 
     // Clear all existing exportable keys first so stale data from an older
@@ -130,6 +132,32 @@ class SharedPreferencesBackup {
     }
 
     return restored;
+  }
+
+  static void _validateRestorableEntries(Map<String, dynamic> entries) {
+    for (final entry in entries.entries) {
+      final key = entry.key;
+      final value = entry.value;
+      if (!_isExportable(key)) continue;
+
+      if (value is List) {
+        if (value.any((item) => item is! String)) {
+          throw FormatException(
+            'Invalid backup: string list preference $key contains non-string values',
+          );
+        }
+        continue;
+      }
+
+      if (value is! bool &&
+          value is! int &&
+          value is! double &&
+          value is! String) {
+        throw FormatException(
+          'Invalid backup: unsupported preference value for $key',
+        );
+      }
+    }
   }
 
   /// Check whether a given SharedPreferences key should be included in

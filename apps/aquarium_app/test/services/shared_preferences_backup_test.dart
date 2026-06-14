@@ -85,5 +85,46 @@ void main() {
       expect(prefs.getString('user_openai_api_key'), isNull);
       expect(prefs.getString('flutter.internal'), isNull);
     });
+
+    for (final scenario in [
+      (
+        label: 'object value',
+        entries: {
+          'theme_mode': {'mode': 1},
+        },
+        message: 'Invalid backup: unsupported preference value for theme_mode',
+      ),
+      (
+        label: 'mixed string list',
+        entries: {
+          'aquarium_reminders': ['morning', 9],
+        },
+        message:
+            'Invalid backup: string list preference aquarium_reminders contains non-string values',
+      ),
+    ]) {
+      test(
+        'restore rejects ${scenario.label} before clearing existing preferences',
+        () async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('theme_mode', 2);
+
+          await expectLater(
+            SharedPreferencesBackup.restoreFromJson({
+              'entries': scenario.entries,
+            }),
+            throwsA(
+              isA<FormatException>().having(
+                (error) => error.message,
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+
+          expect(prefs.getInt('theme_mode'), 2);
+        },
+      );
+    }
   });
 }
