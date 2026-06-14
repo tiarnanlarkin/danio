@@ -417,6 +417,40 @@ void main() {
       expect(find.text('Rinse prefilter completed!'), findsNothing);
     });
 
+    testWidgets('snoozing a task shows success feedback', (tester) async {
+      const tankId = 'tank-task-snooze-feedback';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-snooze-feedback',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Snooze').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('1 day'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final storedTask = (await svc.getTasksForTank(tankId)).single;
+      expect(storedTask.dueDate, isNot(task.dueDate));
+      expect(storedTask.dueDate!.isAfter(task.dueDate!), isTrue);
+      expect(find.text('Rinse prefilter snoozed for 1 day.'), findsOneWidget);
+    });
+
     testWidgets('failed snooze keeps task unchanged with error feedback', (
       tester,
     ) async {

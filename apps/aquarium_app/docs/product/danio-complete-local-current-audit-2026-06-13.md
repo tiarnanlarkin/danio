@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1689 tests.
+- `flutter test`: pass, 1690 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1524,6 +1524,16 @@ CL-P1-009BH Task delete undo failure feedback:
   fail, and verifies local storage remains unchanged with
   `Couldn't restore that task. Try again.` feedback.
 
+CL-P1-009BI Task snooze success feedback:
+
+- Successful task snooze now shows normal success feedback after the local task
+  save succeeds.
+- The feedback names the task and the chosen snooze duration, keeping the
+  previously silent local data change understandable.
+- Focused widget coverage snoozes a saved task for 1 day, verifies the saved
+  due date changes, and checks for `Rinse prefilter snoozed for 1 day.`
+  feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1741,9 +1751,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   task if the required completion log write fails. Task snooze failures now
   keep the saved task unchanged and show normal error feedback. Task delete
   undo failures now keep the task deleted and show normal error feedback from
-  a stable screen context. Remaining backup/data work is deeper import
-  validation UX, broader edit/delete/undo coverage, and restore/migration
-  walkthrough QA.
+  a stable screen context. Successful task snooze now gives normal success
+  feedback after the saved due date changes. Remaining backup/data work is
+  deeper import validation UX, broader edit/delete/undo coverage, and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

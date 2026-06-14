@@ -362,6 +362,12 @@ class TasksScreen extends ConsumerWidget {
     try {
       await storage.saveTask(snoozed);
       ref.invalidate(tasksProvider(tankId));
+      if (context.mounted) {
+        DanioSnackBar.success(
+          context,
+          '${task.title} snoozed for ${_snoozeDurationLabel(days)}.',
+        );
+      }
     } catch (e, st) {
       logError(
         'TasksScreen: task snooze failed: $e',
@@ -373,6 +379,12 @@ class TasksScreen extends ConsumerWidget {
         DanioSnackBar.error(context, 'Couldn\'t snooze that task. Try again.');
       }
     }
+  }
+
+  String _snoozeDurationLabel(int days) {
+    if (days == 1) return '1 day';
+    if (days == 7) return '1 week';
+    return '$days days';
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {
