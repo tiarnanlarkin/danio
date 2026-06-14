@@ -198,5 +198,18 @@ void main() {
       expect(await storage.getTasksForTank(missingTankId), isEmpty);
       expect(result.changedTankIds, isNot(contains(missingTankId)));
     });
+
+    test('restore reports malformed SharedPreferences payloads', () async {
+      final storage = InMemoryStorageService();
+
+      final result = await CloudBackupService.instance.importDataForTesting(
+        storage,
+        {'tanks': const [], 'sharedPreferences': 'not-preferences'},
+      );
+
+      expect(result.preferenceEntriesRestored, 0);
+      expect(result.preferencesRestoreFailed, isTrue);
+      expect(result.restoredPreferences, isFalse);
+    });
   });
 }

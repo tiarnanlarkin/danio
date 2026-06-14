@@ -268,6 +268,12 @@ class CloudBackupService {
           tag: 'CloudBackupService',
         );
       }
+    } else if (prefsData != null) {
+      preferencesRestoreFailed = true;
+      appLog(
+        '[CloudBackup] SharedPreferences restore warning: invalid preferences payload',
+        tag: 'CloudBackupService',
+      );
     }
 
     return CloudBackupRestoreResult(
