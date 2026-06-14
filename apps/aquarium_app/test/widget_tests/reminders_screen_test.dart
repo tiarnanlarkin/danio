@@ -8,11 +8,14 @@
 
 import 'dart:io';
 
+import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/reminders_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -21,6 +24,76 @@ import 'package:danio/screens/reminders_screen.dart';
 
 Widget _wrap() {
   return const ProviderScope(child: MaterialApp(home: RemindersScreen()));
+}
+
+Widget _wrapWithFailingPrefs({
+  required Map<String, Object> initialValues,
+  required bool Function(String key, Object value) shouldFail,
+}) {
+  return ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWith((ref) async {
+        SharedPreferences.setMockInitialValues(initialValues);
+        final prefs = await SharedPreferences.getInstance();
+        return _ThrowingSetStringPrefs(prefs, shouldFail);
+      }),
+    ],
+    child: const MaterialApp(home: RemindersScreen()),
+  );
+}
+
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _MockNotificationsPlatform extends FlutterLocalNotificationsPlatform
+    with MockPlatformInterfaceMixin {
+  Future<bool?> initialize(
+    dynamic settings, {
+    dynamic onDidReceiveNotificationResponse,
+    dynamic onDidReceiveBackgroundNotificationResponse,
+  }) async => true;
+
+  @override
+  Future<void> cancel(int id) async {}
+
+  @override
+  Future<void> cancelAll() async {}
+
+  @override
+  Future<NotificationAppLaunchDetails?>
+  getNotificationAppLaunchDetails() async => null;
+
+  @override
+  Future<void> show(
+    int id,
+    String? title,
+    String? body, {
+    String? payload,
+  }) async {}
 }
 
 /// Advance far enough for async prefs load and animations to settle.
@@ -40,6 +113,7 @@ Future<void> _advance(WidgetTester tester) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    FlutterLocalNotificationsPlatform.instance = _MockNotificationsPlatform();
   });
 
   group('RemindersScreen — rendering', () {
@@ -140,5 +214,45 @@ void main() {
 
       expect(find.text('Water Change'), findsOneWidget);
     });
+
+    testWidgets(
+      'undo restore failure shows feedback and keeps reminder deleted',
+      (tester) async {
+        final due = DateTime.now().add(const Duration(days: 2));
+        final savedReminders =
+            '[{"id":"1","title":"Water Change","notes":null,'
+            '"category":"water","nextDue":"${due.toIso8601String()}",'
+            '"lastCompleted":null,"isRecurring":true,"frequency":"weekly"}]';
+
+        await tester.pumpWidget(
+          _wrapWithFailingPrefs(
+            initialValues: {'aquarium_reminders': savedReminders},
+            shouldFail: (key, value) =>
+                key == 'aquarium_reminders' && value != '[]',
+          ),
+        );
+        await _advance(tester);
+
+        await tester.drag(find.byType(Dismissible), const Offset(-800, 0));
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.text('Deleted: Water Change'), findsOneWidget);
+        expect(find.widgetWithText(SnackBarAction, 'Undo'), findsOneWidget);
+
+        tester
+            .widget<SnackBarAction>(find.widgetWithText(SnackBarAction, 'Undo'))
+            .onPressed();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Water Change'), findsNothing);
+        expect(
+          find.text("Couldn't restore that reminder. Try again in a moment."),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

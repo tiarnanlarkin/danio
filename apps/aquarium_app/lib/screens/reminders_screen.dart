@@ -9,6 +9,7 @@ import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_button.dart';
 import '../utils/app_feedback.dart';
+import '../utils/logger.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/danio_bottom_dock.dart';
@@ -55,6 +56,57 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(_reminders.map((r) => r.toJson()).toList());
     await prefs.setString('aquarium_reminders', json);
+  }
+
+  Future<bool> _saveRemindersWithRollback({
+    required List<_Reminder> rollbackReminders,
+    required String errorMessage,
+    required String logMessage,
+  }) async {
+    try {
+      await _saveReminders();
+      return true;
+    } catch (error, stackTrace) {
+      logError(
+        '$logMessage: $error',
+        stackTrace: stackTrace,
+        tag: 'RemindersScreen',
+      );
+      if (!mounted) return false;
+      setState(() => _reminders = List<_Reminder>.from(rollbackReminders));
+      DanioSnackBar.dismiss(context);
+      AppFeedback.showError(context, errorMessage);
+      return false;
+    }
+  }
+
+  Future<void> _cancelReminderNotification(_Reminder reminder) async {
+    try {
+      await NotificationService().cancelReminderNotification(reminder.id);
+    } catch (error, stackTrace) {
+      logError(
+        'Failed to cancel reminder notification ${reminder.id}: $error',
+        stackTrace: stackTrace,
+        tag: 'RemindersScreen',
+      );
+    }
+  }
+
+  Future<void> _scheduleReminderNotification(_Reminder reminder) async {
+    try {
+      await NotificationService().scheduleReminderNotification(
+        reminderId: reminder.id,
+        title: reminder.title,
+        notes: reminder.notes,
+        scheduledAt: reminder.nextDue,
+      );
+    } catch (error, stackTrace) {
+      logError(
+        'Failed to schedule reminder notification ${reminder.id}: $error',
+        stackTrace: stackTrace,
+        tag: 'RemindersScreen',
+      );
+    }
   }
 
   void _addReminder() {
@@ -147,32 +199,46 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     }
   }
 
-  void _deleteReminder(int index) {
+  Future<void> _deleteReminder(int index) async {
     final reminder = _reminders[index];
-    // FB-H7: Cancel OS notification for the deleted reminder
-    NotificationService().cancelReminderNotification(reminder.id);
+    final previousReminders = List<_Reminder>.from(_reminders);
     setState(() {
       _reminders.removeAt(index);
     });
-    _saveReminders();
+    final saved = await _saveRemindersWithRollback(
+      rollbackReminders: previousReminders,
+      errorMessage: "Couldn't delete that reminder. Try again in a moment.",
+      logMessage: 'Failed to persist deleted reminder',
+    );
+    if (!saved || !mounted) return;
+
+    // FB-H7: Cancel OS notification only after the local delete is durable.
+    await _cancelReminderNotification(reminder);
+    if (!mounted) return;
 
     DanioSnackBar.show(
       context,
       'Deleted: ${reminder.title}',
       actionLabel: 'Undo',
-      onAction: () {
+      onAction: () async {
+        final previousReminders = List<_Reminder>.from(_reminders);
         setState(() {
-          _reminders.insert(index, reminder);
+          final restoreIndex = index > _reminders.length
+              ? _reminders.length
+              : index;
+          _reminders.insert(restoreIndex, reminder);
           _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
         });
-        _saveReminders();
-        // FB-H7: Reschedule the notification when undoing a delete
-        NotificationService().scheduleReminderNotification(
-          reminderId: reminder.id,
-          title: reminder.title,
-          notes: reminder.notes,
-          scheduledAt: reminder.nextDue,
+        final saved = await _saveRemindersWithRollback(
+          rollbackReminders: previousReminders,
+          errorMessage:
+              "Couldn't restore that reminder. Try again in a moment.",
+          logMessage: 'Failed to persist restored reminder',
         );
+        if (!saved) return;
+
+        // FB-H7: Reschedule notification only after undo is locally durable.
+        await _scheduleReminderNotification(reminder);
       },
     );
   }

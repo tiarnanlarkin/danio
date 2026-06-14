@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1723 tests.
+- `flutter test`: pass, 1724 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1798,6 +1798,17 @@ CL-P1-009CF Cost Tracker undo-restore failure feedback:
   async widget exception.
 - Focused Cost Tracker widget coverage simulates a failed clear-all undo
   restore write and verifies the user sees restore-failure feedback.
+
+CL-P1-009CG Reminder delete/undo failure feedback:
+
+- Reminder deletion now saves the local reminder list before cancelling the OS
+  notification, so a failed local delete rolls the visible reminder back instead
+  of cancelling a still-visible reminder.
+- Reminder delete undo now saves the local restore before rescheduling the OS
+  notification; failed undo restores roll back to the deleted state and show
+  immediate local error feedback.
+- Focused Reminders widget coverage simulates a failed undo restore preference
+  write and verifies the reminder stays deleted with restore-failure feedback.
 
 CL-P1-010A Tank Settings water-profile copy:
 
