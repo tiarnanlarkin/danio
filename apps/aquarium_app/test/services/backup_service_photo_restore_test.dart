@@ -30,6 +30,31 @@ void main() {
       }
     });
 
+    test('createBackup rejects missing referenced photo files', () async {
+      final missingPhoto = File(p.join(sourceDocs.path, 'photos', 'gone.jpg'));
+      final service = BackupService(
+        getDocumentsDirectory: () async => sourceDocs,
+        getTemporaryDirectory: () async => tempDir,
+      );
+
+      await expectLater(
+        service.createBackup({
+          'tanks': [
+            {'id': 'tank-1', 'imageUrl': missingPhoto.path},
+          ],
+        }),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains(
+              'Cannot create backup: referenced photo "gone.jpg" was not found',
+            ),
+          ),
+        ),
+      );
+    });
+
     test(
       'restores same-basename photos without overwriting local files',
       () async {
@@ -795,6 +820,13 @@ void main() {
             getDocumentsDirectory: () async => sourceDocs,
             getTemporaryDirectory: () async => tempDir,
           );
+          if (scenario.field == 'photoUrls') {
+            final sourcePhotos = Directory(p.join(sourceDocs.path, 'photos'));
+            await sourcePhotos.create(recursive: true);
+            await File(
+              p.join(sourcePhotos.path, 'fish.jpg'),
+            ).writeAsBytes([1, 2, 3]);
+          }
           final zipPath = await service.createBackup({
             'tanks': [
               {'id': 'tank-1', 'name': 'Main tank'},

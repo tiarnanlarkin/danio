@@ -84,6 +84,7 @@ class BackupService {
     final encoder = ZipFileEncoder();
     encoder.create(zipPath, level: ZipFileEncoder.GZIP);
 
+    var archiveClosed = false;
     try {
       // Add JSON as backup.json (streamed).
       await encoder.addFile(jsonTempFile, _jsonFileName);
@@ -99,10 +100,14 @@ class BackupService {
         for (var i = 0; i < total; i++) {
           final photoRef = photosList[i];
           final file = await _resolvePhotoRefToLocalFile(photoRef);
-          if (file != null && await file.exists()) {
-            final filename = p.basename(file.path);
-            await encoder.addFile(file, '$_photosFolder/$filename');
+          if (file == null || !await file.exists()) {
+            throw Exception(
+              'Cannot create backup: referenced photo "${p.basename(photoRef)}" was not found',
+            );
           }
+
+          final filename = p.basename(file.path);
+          await encoder.addFile(file, '$_photosFolder/$filename');
 
           final progress = 0.3 + ((i + 1) / total * 0.5);
           _updateProgress('Adding photos... (${i + 1}/$total)', progress);
@@ -111,10 +116,29 @@ class BackupService {
 
       _updateProgress('Finalizing backup...', 0.9);
       await encoder.close();
+      archiveClosed = true;
 
       _updateProgress('Backup complete!', 1.0);
       return zipPath;
     } finally {
+      if (!archiveClosed) {
+        try {
+          await encoder.close();
+        } catch (_) {
+          // Best effort: the encoder may already be closed or not fully opened.
+        }
+        try {
+          final partialZip = File(zipPath);
+          if (await partialZip.exists()) {
+            await partialZip.delete();
+          }
+        } catch (e) {
+          logError(
+            'Error cleaning up partial backup: $e',
+            tag: 'BackupService',
+          );
+        }
+      }
       // Best-effort cleanup of temp JSON.
       try {
         if (await jsonTempFile.exists()) {
