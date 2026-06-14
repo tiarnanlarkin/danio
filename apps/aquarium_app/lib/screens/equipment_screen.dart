@@ -271,16 +271,30 @@ class EquipmentScreen extends ConsumerWidget {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
     final updated = equipment.copyWith(lastServiced: now, updatedAt: now);
+    final taskId = _maintenanceTaskId(equipment.id);
 
     var equipmentSaved = false;
+    var maintenanceLogSaved = false;
+    var maintenanceTaskChanged = false;
+    String? maintenanceLogId;
+    Task? originalMaintenanceTask;
     try {
+      final originalTasks = await storage.getTasksForTank(tankId);
+      for (final task in originalTasks) {
+        if (task.id == taskId) {
+          originalMaintenanceTask = task;
+          break;
+        }
+      }
+
       await storage.saveEquipment(updated);
       equipmentSaved = true;
 
       // Log the maintenance event.
+      maintenanceLogId = _uuid.v4();
       await storage.saveLog(
         LogEntry(
-          id: _uuid.v4(),
+          id: maintenanceLogId,
           tankId: tankId,
           type: LogType.equipmentMaintenance,
           timestamp: now,
@@ -290,11 +304,12 @@ class EquipmentScreen extends ConsumerWidget {
           createdAt: now,
         ),
       );
+      maintenanceLogSaved = true;
 
       // Keep the auto maintenance task in sync and mark it completed.
       await _syncEquipmentMaintenanceTask(storage, updated);
+      maintenanceTaskChanged = true;
       final tasks = await storage.getTasksForTank(tankId);
-      final taskId = _maintenanceTaskId(equipment.id);
       Task? maintenanceTask;
       for (final t in tasks) {
         if (t.id == taskId) {
@@ -336,6 +351,32 @@ class EquipmentScreen extends ConsumerWidget {
         );
       }
     } catch (e, st) {
+      if (maintenanceTaskChanged) {
+        try {
+          if (originalMaintenanceTask != null) {
+            await storage.saveTask(originalMaintenanceTask);
+          } else {
+            await storage.deleteTask(taskId);
+          }
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'EquipmentScreen: service task rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'EquipmentScreen',
+          );
+        }
+      }
+      if (maintenanceLogSaved && maintenanceLogId != null) {
+        try {
+          await storage.deleteLog(maintenanceLogId);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'EquipmentScreen: service log rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'EquipmentScreen',
+          );
+        }
+      }
       if (equipmentSaved) {
         try {
           await storage.saveEquipment(equipment);

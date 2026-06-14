@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1705 tests.
+- `flutter test`: pass, 1706 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1648,6 +1648,15 @@ CL-P1-009BU Equipment service failure rollback:
 - Focused widget coverage verifies failed service logging keeps a
   `Canister filter` unchanged and shows normal error feedback.
 
+CL-P1-009BV Equipment service task-log rollback:
+
+- Equipment "Mark Serviced" now restores the linked maintenance task when the
+  later task-completion log save fails after service logging succeeds.
+- The generated service log is removed during rollback, so a failed service
+  attempt does not leave timeline and task data half-written.
+- Focused widget coverage verifies failed task-completion logging keeps a
+  `Canister filter` and its maintenance task unchanged.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1880,7 +1889,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   unchanged with normal error feedback. Failed wishlist, local fish shop, and
   equipment delete/delete-undo saves now show normal error feedback while
   keeping local data consistent. Failed Equipment service logging now rolls
-  back the saved serviced timestamp and shows normal error feedback. Remaining
+  back the saved serviced timestamp, linked maintenance-task changes, and
+  generated service log with normal error feedback. Remaining
   backup/data work is deeper import validation UX, broader edit/delete/undo
   coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
