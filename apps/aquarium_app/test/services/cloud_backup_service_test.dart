@@ -140,5 +140,63 @@ void main() {
       );
       expect(result.changedTankIds, contains(tankId));
     });
+
+    test('restore skips child records for unknown tank ids', () async {
+      final storage = InMemoryStorageService();
+      final now = DateTime(2026, 1, 2);
+      const prefix = 'cloud-orphan-skip';
+      final missingTankId = '$prefix-missing-tank';
+
+      final orphanLivestock = Livestock(
+        id: '$prefix-fish',
+        tankId: missingTankId,
+        commonName: 'Orphan Fish',
+        count: 1,
+        dateAdded: now,
+        createdAt: now,
+        updatedAt: now,
+      );
+      final orphanEquipment = Equipment(
+        id: '$prefix-equipment',
+        tankId: missingTankId,
+        type: EquipmentType.filter,
+        name: 'Orphan Filter',
+        createdAt: now,
+        updatedAt: now,
+      );
+      final orphanLog = LogEntry(
+        id: '$prefix-log',
+        tankId: missingTankId,
+        type: LogType.observation,
+        timestamp: now,
+        notes: 'orphan log',
+        createdAt: now,
+      );
+      final orphanTask = Task(
+        id: '$prefix-task',
+        tankId: missingTankId,
+        title: 'Orphan Task',
+        recurrence: RecurrenceType.none,
+        createdAt: now,
+        updatedAt: now,
+      );
+
+      final result = await CloudBackupService.instance.importDataForTesting(
+        storage,
+        {
+          'tanks': const [],
+          'livestock': [orphanLivestock.toJson()],
+          'equipment': [orphanEquipment.toJson()],
+          'logs': [orphanLog.toJson()],
+          'tasks': [orphanTask.toJson()],
+        },
+      );
+
+      expect(await storage.getLivestockForTank(missingTankId), isEmpty);
+      expect(await storage.getEquipmentForTank(missingTankId), isEmpty);
+      expect(await storage.getLogsForTank(missingTankId), isEmpty);
+      expect(await storage.getTasksForTank(missingTankId), isEmpty);
+      expect(result.changedTankIds, isNot(contains(missingTankId)));
+    });
   });
 }

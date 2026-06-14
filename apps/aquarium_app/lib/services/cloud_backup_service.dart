@@ -175,6 +175,9 @@ class CloudBackupService {
     Map<String, dynamic> data,
   ) async {
     final changedTankIds = <String>{};
+    final knownTankIds = {
+      for (final tank in await storage.getAllTanks()) tank.id,
+    };
     var preferenceEntriesRestored = 0;
     var preferencesRestoreFailed = false;
 
@@ -187,6 +190,7 @@ class CloudBackupService {
       if (existing == null) {
         final tank = Tank.fromJson(map);
         await storage.saveTank(tank);
+        knownTankIds.add(tank.id);
         changedTankIds.add(tank.id);
       }
     }
@@ -196,6 +200,9 @@ class CloudBackupService {
     for (final lJson in livestockJson) {
       final map = lJson as Map<String, dynamic>;
       final livestock = Livestock.fromJson(map);
+      if (!knownTankIds.contains(livestock.tankId)) {
+        continue;
+      }
       if (await _livestockExists(storage, livestock.tankId, livestock.id)) {
         continue;
       }
@@ -208,6 +215,9 @@ class CloudBackupService {
     for (final eJson in equipmentJson) {
       final map = eJson as Map<String, dynamic>;
       final equipment = Equipment.fromJson(map);
+      if (!knownTankIds.contains(equipment.tankId)) {
+        continue;
+      }
       if (await _equipmentExists(storage, equipment.tankId, equipment.id)) {
         continue;
       }
@@ -220,6 +230,9 @@ class CloudBackupService {
     for (final logJson in logsJson) {
       final map = logJson as Map<String, dynamic>;
       final log = LogEntry.fromJson(map);
+      if (!knownTankIds.contains(log.tankId)) {
+        continue;
+      }
       if (await _logExists(storage, log.tankId, log.id)) {
         continue;
       }
@@ -232,11 +245,14 @@ class CloudBackupService {
     for (final taskJson in tasksJson) {
       final map = taskJson as Map<String, dynamic>;
       final task = Task.fromJson(map);
+      final tankId = task.tankId;
+      if (tankId != null && !knownTankIds.contains(tankId)) {
+        continue;
+      }
       if (await _taskExists(storage, task.tankId, task.id)) {
         continue;
       }
       await storage.saveTask(task);
-      final tankId = task.tankId;
       if (tankId != null) changedTankIds.add(tankId);
     }
 
