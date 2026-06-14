@@ -376,5 +376,45 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('equipment without a maintenance task removes cleanly', (
+      tester,
+    ) async {
+      const tankId = 'tank-equipment-no-task';
+      const equipmentId = 'equip-no-task';
+      const taskId = 'equip_equip-no-task_maintenance';
+      final delegate = InMemoryStorageService();
+      final storage = _DeleteTaskFailsStorage(delegate, failingTaskId: taskId);
+      await delegate.saveTank(_makeTank(id: tankId));
+      final equipment = Equipment(
+        id: equipmentId,
+        tankId: tankId,
+        type: EquipmentType.light,
+        name: 'Plant light',
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await delegate.saveEquipment(equipment);
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove Equipment'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(await delegate.getEquipmentForTank(tankId), isEmpty);
+      expect(find.text('Plant light removed'), findsOneWidget);
+      expect(
+        find.text('Couldn\'t remove that equipment. Give it another go!'),
+        findsNothing,
+      );
+    });
   });
 }

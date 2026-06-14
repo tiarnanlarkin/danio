@@ -358,8 +358,10 @@ class EquipmentScreen extends ConsumerWidget {
           await storage.deleteEquipment(equipment.id);
           equipmentDeleted = true;
           // Remove auto maintenance task (if any)
-          await storage.deleteTask(maintenanceTaskId);
-          maintenanceTaskDeleted = true;
+          if (maintenanceTask != null) {
+            await storage.deleteTask(maintenanceTaskId);
+            maintenanceTaskDeleted = true;
+          }
           ref.invalidate(equipmentProvider(tankId));
           ref.invalidate(tasksProvider(tankId));
           if (context.mounted) {

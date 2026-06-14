@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1684 tests.
+- `flutter test`: pass, 1685 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1472,6 +1472,17 @@ CL-P1-009BC Equipment removal rollback:
 - Focused widget coverage simulates linked maintenance-task deletion failure and
   verifies the equipment record remains saved.
 
+CL-P1-009BD Equipment removal without stale task delete:
+
+- Equipment removal now only deletes a linked auto-maintenance task when that
+  task actually exists in local storage.
+- This keeps equipment removal successful for equipment with no maintenance
+  schedule or stale/missing task record, instead of treating a missing related
+  task as a failed equipment delete.
+- Focused widget coverage uses stricter storage behavior to verify equipment
+  without a maintenance task is removed cleanly and shows normal success
+  feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1683,9 +1694,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   bulk move now reports the real moved count after clearing selection mode.
   Bulk livestock removal now writes local removal timeline logs after the undo
   window expires. Equipment removal now rolls back partial local deletes if the
-  linked maintenance-task delete fails. Remaining backup/data work is deeper
-  import validation UX, broader edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+  linked maintenance-task delete fails, and skips stale task deletion when no
+  linked task exists. Remaining backup/data work is deeper import validation UX,
+  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
