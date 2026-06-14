@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1716 tests.
+- `flutter test`: pass, 1717 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -381,6 +381,15 @@ CL-P1-001F Living tank progression cue progress:
 - The cue uses the real `speciesUnlockProvider` and `defaultUnlockedSpecies`
   boundary, so it reflects earned lesson/species progression without inventing
   unavailable room, decoration, or tank-theme cosmetics.
+
+CL-P1-001G Tank Detail feeding pulse handoff:
+
+- Tank Detail QuickAdd feeding now increments the same per-tank feeding pulse
+  event used by the main Tank feed action and Today Board Feed action.
+- This keeps successful feeding logs visually connected to the central aquarium
+  feedback system instead of making Tank Detail feeding feel detached.
+- Focused Tank Detail widget coverage verifies the real QuickAdd FAB feeding
+  action saves a feeding log and emits `tankFeedingPulseProvider`.
 
 CL-P1-002A Room vibe unlock progress:
 

@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import '../../models/models.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/tank_provider.dart';
+import '../../providers/tank_visual_event_provider.dart';
 import '../../services/stocking_calculator.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
@@ -1251,6 +1252,7 @@ class TankDetailScreen extends ConsumerWidget {
 
     ref.invalidate(logsProvider(tankId));
     ref.invalidate(allLogsProvider(tankId));
+    ref.read(tankFeedingPulseProvider(tankId).notifier).state += 1;
 
     if (context.mounted) {
       AppHaptics.success();

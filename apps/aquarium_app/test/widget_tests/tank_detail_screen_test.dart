@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/tank_detail/tank_detail_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_visual_event_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 
@@ -44,6 +45,29 @@ Widget _wrapWithStorage(String tankId, {required StorageService storage}) {
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
     child: MaterialApp(home: TankDetailScreen(tankId: tankId)),
+  );
+}
+
+Widget _wrapWithPulseProbe(String tankId, {required StorageService storage}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      home: Stack(
+        children: [
+          TankDetailScreen(tankId: tankId),
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Consumer(
+              builder: (context, ref, _) => Text(
+                'pulse ${ref.watch(tankFeedingPulseProvider(tankId))}',
+                textDirection: TextDirection.ltr,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }
 
@@ -241,6 +265,33 @@ void main() {
   });
 
   group('TankDetailScreen - quick feeding', () {
+    testWidgets('successful feeding log emits a tank feeding pulse', (
+      tester,
+    ) async {
+      const tankId = 'tank-detail-feed-pulse';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrapWithPulseProbe(tankId, storage: svc));
+      await _advance(tester);
+
+      expect(find.text('pulse 0'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Quick actions menu'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.byTooltip('Log Feeding'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final logs = await svc.getLogsForTank(tankId);
+      expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
+      expect(find.text('pulse 1'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(milliseconds: 300));
+    });
+
     testWidgets('failed feeding log write shows normal error feedback', (
       tester,
     ) async {
