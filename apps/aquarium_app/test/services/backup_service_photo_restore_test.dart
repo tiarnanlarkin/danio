@@ -1619,6 +1619,84 @@ void main() {
         },
       );
     }
+
+    for (final scenario in [
+      (
+        collection: 'logs',
+        field: 'waterChangePercent',
+        entry: {..._validChildEntry('logs', 'log-1'), 'waterChangePercent': 0},
+        message:
+            'Invalid format: logs waterChangePercent values must be between 1 and 100',
+      ),
+      (
+        collection: 'logs',
+        field: 'waterChangePercent',
+        entry: {
+          ..._validChildEntry('logs', 'log-1'),
+          'waterChangePercent': 101,
+        },
+        message:
+            'Invalid format: logs waterChangePercent values must be between 1 and 100',
+      ),
+      (
+        collection: 'livestock',
+        field: 'count',
+        entry: {..._validChildEntry('livestock', 'livestock-1'), 'count': 0},
+        message:
+            'Invalid format: livestock count values must be between 1 and 9999',
+      ),
+      (
+        collection: 'livestock',
+        field: 'sizeCm',
+        entry: {..._validChildEntry('livestock', 'livestock-1'), 'sizeCm': -1},
+        message:
+            'Invalid format: livestock sizeCm values must be zero or greater',
+      ),
+      (
+        collection: 'equipment',
+        field: 'maintenanceIntervalDays',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'maintenanceIntervalDays': -7,
+        },
+        message:
+            'Invalid format: equipment maintenanceIntervalDays values must be zero or greater',
+      ),
+      (
+        collection: 'tasks',
+        field: 'completionCount',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'completionCount': -1},
+        message:
+            'Invalid format: tasks completionCount values must be zero or greater',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with out-of-range ${scenario.field} values',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }
 

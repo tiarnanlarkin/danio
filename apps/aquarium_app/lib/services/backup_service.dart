@@ -584,6 +584,7 @@ class BackupService {
           );
         }
       }
+      _validateChildNumericRanges(collectionName, entry);
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
       }
@@ -739,6 +740,92 @@ class BackupService {
     if (value < 0) {
       throw Exception(
         'Invalid format: logs waterTest $field values must be zero or greater',
+      );
+    }
+  }
+
+  void _validateChildNumericRanges(
+    String collectionName,
+    Map<dynamic, dynamic> entry,
+  ) {
+    switch (collectionName) {
+      case 'logs':
+        _validateNumberBetween(
+          collectionName: collectionName,
+          field: 'waterChangePercent',
+          value: entry['waterChangePercent'],
+          min: 1,
+          max: 100,
+        );
+        return;
+      case 'livestock':
+        _validateNumberBetween(
+          collectionName: collectionName,
+          field: 'count',
+          value: entry['count'],
+          min: 1,
+          max: 9999,
+        );
+        _validateNumberAtLeastZero(
+          collectionName: collectionName,
+          field: 'sizeCm',
+          value: entry['sizeCm'],
+        );
+        _validateNumberAtLeastZero(
+          collectionName: collectionName,
+          field: 'maxSizeCm',
+          value: entry['maxSizeCm'],
+        );
+        return;
+      case 'equipment':
+        _validateNumberAtLeastZero(
+          collectionName: collectionName,
+          field: 'maintenanceIntervalDays',
+          value: entry['maintenanceIntervalDays'],
+        );
+        _validateNumberAtLeastZero(
+          collectionName: collectionName,
+          field: 'expectedLifespanMonths',
+          value: entry['expectedLifespanMonths'],
+        );
+        return;
+      case 'tasks':
+        _validateNumberAtLeastZero(
+          collectionName: collectionName,
+          field: 'intervalDays',
+          value: entry['intervalDays'],
+        );
+        _validateNumberAtLeastZero(
+          collectionName: collectionName,
+          field: 'completionCount',
+          value: entry['completionCount'],
+        );
+        return;
+    }
+  }
+
+  void _validateNumberBetween({
+    required String collectionName,
+    required String field,
+    required dynamic value,
+    required num min,
+    required num max,
+  }) {
+    if (value is num && (value < min || value > max)) {
+      throw Exception(
+        'Invalid format: $collectionName $field values must be between $min and $max',
+      );
+    }
+  }
+
+  void _validateNumberAtLeastZero({
+    required String collectionName,
+    required String field,
+    required dynamic value,
+  }) {
+    if (value is num && value < 0) {
+      throw Exception(
+        'Invalid format: $collectionName $field values must be zero or greater',
       );
     }
   }

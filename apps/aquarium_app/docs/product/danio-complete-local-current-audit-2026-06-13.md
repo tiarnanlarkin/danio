@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1642 tests.
+- `flutter test`: pass, 1648 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1281,6 +1281,17 @@ CL-P1-009AI Backup water-test range validation:
 - Focused coverage verifies out-of-range temperature, pH, and ammonia fail
   before preview, photo restore, or import proceeds.
 
+CL-P1-009AJ Backup child numeric range validation:
+
+- Backup preview/import now rejects child numeric values outside the ranges
+  used by local app flows instead of accepting misleading records.
+- Water-change percentages must stay between 1 and 100, livestock counts must
+  stay between 1 and 9999, and optional livestock size, equipment interval,
+  equipment lifespan, and task counter fields cannot be negative.
+- Focused coverage verifies out-of-range water-change percentages, livestock
+  count/size, equipment maintenance interval, and task completion count fail
+  before preview, photo restore, or import proceeds.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1466,8 +1477,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   livestock records missing required quantity data before silently defaulting
   counts. Backup preview/import now rejects missing required log, equipment,
   and task enum-like fields before silently defaulting them. Out-of-range
-  water-test readings now reject before import can silently clamp them.
-  Remaining backup/data work is deeper import validation UX,
+  water-test readings now reject before import can silently clamp them. Child
+  numeric ranges now reject impossible water-change percentages, counts, sizes,
+  maintenance intervals, lifespan values, interval days, and completion counts
+  before import. Remaining backup/data work is deeper import validation UX,
   edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
