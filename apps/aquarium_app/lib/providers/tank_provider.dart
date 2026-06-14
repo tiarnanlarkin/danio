@@ -119,19 +119,28 @@ class TankActions {
   ///
   /// Used by Settings and first-run quick-start flows.
   Future<Tank> addDemoTank() async {
-    final existingDemoTankIds = (await _storage.getAllTanks())
+    final storage = _storage;
+    final existingDemoTankIds = (await storage.getAllTanks())
         .where((tank) => tank.isDemoTank)
         .map((tank) => tank.id)
         .toList(growable: false);
+    final previousDemoTanks = <Tank>[];
+    final previousDemoLivestock = <Livestock>[];
+    final previousDemoEquipment = <Equipment>[];
+    final previousDemoLogs = <LogEntry>[];
+    final previousDemoTasks = <Task>[];
 
-    if (existingDemoTankIds.isNotEmpty) {
-      await _storage.deleteAllTanks(existingDemoTankIds);
+    for (final tankId in existingDemoTankIds) {
+      final tank = await storage.getTank(tankId);
+      if (tank == null) continue;
+      previousDemoTanks.add(tank);
+      previousDemoLivestock.addAll(await storage.getLivestockForTank(tankId));
+      previousDemoEquipment.addAll(await storage.getEquipmentForTank(tankId));
+      previousDemoLogs.addAll(await storage.getLogsForTank(tankId));
+      previousDemoTasks.addAll(await storage.getTasksForTank(tankId));
     }
 
-    final tank = await SampleData.addFreshwaterDemoTank(_storage);
-
-    _ref.invalidate(tanksProvider);
-    for (final tankId in existingDemoTankIds) {
+    void invalidateTankData(String tankId) {
       _ref.invalidate(tankProvider(tankId));
       _ref.invalidate(livestockProvider(tankId));
       _ref.invalidate(equipmentProvider(tankId));
@@ -139,14 +148,115 @@ class TankActions {
       _ref.invalidate(allLogsProvider(tankId));
       _ref.invalidate(tasksProvider(tankId));
     }
-    _ref.invalidate(tankProvider(tank.id));
-    _ref.invalidate(livestockProvider(tank.id));
-    _ref.invalidate(equipmentProvider(tank.id));
-    _ref.invalidate(logsProvider(tank.id));
-    _ref.invalidate(allLogsProvider(tank.id));
-    _ref.invalidate(tasksProvider(tank.id));
 
-    return tank;
+    try {
+      if (existingDemoTankIds.isNotEmpty) {
+        await storage.deleteAllTanks(existingDemoTankIds);
+      }
+
+      final tank = await SampleData.addFreshwaterDemoTank(storage);
+
+      _ref.invalidate(tanksProvider);
+      for (final tankId in existingDemoTankIds) {
+        invalidateTankData(tankId);
+      }
+      invalidateTankData(tank.id);
+
+      return tank;
+    } catch (e, st) {
+      final partialDemoTankIds = <String>[];
+      try {
+        partialDemoTankIds.addAll(
+          (await storage.getAllTanks())
+              .where(
+                (tank) =>
+                    tank.isDemoTank && !existingDemoTankIds.contains(tank.id),
+              )
+              .map((tank) => tank.id),
+        );
+        if (partialDemoTankIds.isNotEmpty) {
+          await storage.deleteAllTanks(partialDemoTankIds);
+        }
+      } catch (rollbackError, rollbackStack) {
+        logError(
+          'TankProvider.addDemoTank partial cleanup failed: $rollbackError',
+          stackTrace: rollbackStack,
+          tag: 'TankProvider',
+        );
+      }
+
+      for (final tank in previousDemoTanks) {
+        try {
+          await storage.saveTank(tank);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankProvider.addDemoTank demo tank restore failed for '
+            '${tank.id}: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankProvider',
+          );
+        }
+      }
+      for (final livestock in previousDemoLivestock) {
+        try {
+          await storage.saveLivestock(livestock);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankProvider.addDemoTank demo livestock restore failed for '
+            '${livestock.id}: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankProvider',
+          );
+        }
+      }
+      for (final equipment in previousDemoEquipment) {
+        try {
+          await storage.saveEquipment(equipment);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankProvider.addDemoTank demo equipment restore failed for '
+            '${equipment.id}: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankProvider',
+          );
+        }
+      }
+      for (final log in previousDemoLogs) {
+        try {
+          await storage.saveLog(log);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankProvider.addDemoTank demo log restore failed for '
+            '${log.id}: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankProvider',
+          );
+        }
+      }
+      for (final task in previousDemoTasks) {
+        try {
+          await storage.saveTask(task);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankProvider.addDemoTank demo task restore failed for '
+            '${task.id}: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankProvider',
+          );
+        }
+      }
+
+      _ref.invalidate(tanksProvider);
+      for (final tankId in {...existingDemoTankIds, ...partialDemoTankIds}) {
+        invalidateTankData(tankId);
+      }
+      logError(
+        'TankProvider.addDemoTank failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
+      rethrow;
+    }
   }
 
   /// Create a new tank

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1711 tests.
+- `flutter test`: pass, 1712 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1686,6 +1686,15 @@ CL-P1-009BY Livestock bulk-move rollback:
 - Focused provider coverage simulates a failed second move save and verifies
   source/target livestock data remains unchanged.
 
+CL-P1-009BZ Demo tank replacement rollback:
+
+- Sample tank reset now snapshots existing demo tank, livestock, equipment,
+  log, and task data before removing old demo records.
+- If creating the replacement sample tank fails mid-flow, partial replacement
+  demo data is removed and the previous demo records are restored.
+- Focused provider coverage simulates a failed replacement livestock save and
+  verifies the real tank plus the previous demo tank and child records remain.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1922,7 +1931,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   generated service log with normal error feedback. Failed tank and livestock
   soft-delete expiry now restores visibility when permanent local delete writes
   fail. Failed new-tank default-task creation now rolls back partial tank/task
-  data. Failed livestock bulk moves now roll back earlier moved records.
+  data. Failed livestock bulk moves now roll back earlier moved records. Failed
+  sample-tank replacement now restores the previous demo tank and child data.
   Remaining
   backup/data work is deeper import validation UX, broader edit/delete/undo
   coverage, and restore/migration walkthrough QA.

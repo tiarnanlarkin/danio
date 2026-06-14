@@ -177,6 +177,28 @@ class _BulkMoveLivestockSaveFailsStorage extends _TestStorageService {
   }
 }
 
+class _AddDemoTankLivestockSaveFailsStorage extends _TestStorageService {
+  _AddDemoTankLivestockSaveFailsStorage({required this.previousDemoTankId});
+
+  final String previousDemoTankId;
+  bool failNewDemoLivestockSaves = false;
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) async {
+    for (final id in ids) {
+      await super.deleteTank(id);
+    }
+  }
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    if (failNewDemoLivestockSaves && livestock.tankId != previousDemoTankId) {
+      throw StateError('demo livestock save failed');
+    }
+    await super.saveLivestock(livestock);
+  }
+}
+
 /// Creates an isolated ProviderContainer with a fresh storage service.
 ProviderContainer _makeContainer({StorageService? storage}) {
   return ProviderContainer(
@@ -372,6 +394,109 @@ void main() {
       expect(demoTanks, hasLength(1));
       expect(demoTanks.single.id, demoTank.id);
       expect(demoTank.id, isNot('old-demo'));
+    });
+
+    test('restores previous demo data if replacement creation fails', () async {
+      const realTankId = 'real-tank';
+      const oldDemoTankId = 'old-demo';
+      const oldLivestockId = 'old-demo-fish';
+      const oldEquipmentId = 'old-demo-filter';
+      const oldLogId = 'old-demo-log';
+      const oldTaskId = 'old-demo-task';
+      final storage = _AddDemoTankLivestockSaveFailsStorage(
+        previousDemoTankId: oldDemoTankId,
+      );
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      final now = DateTime.now();
+      await storage.saveTank(_makeTank(id: realTankId, name: 'Real Tank'));
+      await storage.saveTank(
+        _makeTank(
+          id: oldDemoTankId,
+          name: 'Old Demo',
+        ).copyWith(isDemoTank: true),
+      );
+      await storage.saveLivestock(
+        Livestock(
+          id: oldLivestockId,
+          tankId: oldDemoTankId,
+          commonName: 'Cherry Barb',
+          count: 6,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.saveEquipment(
+        Equipment(
+          id: oldEquipmentId,
+          tankId: oldDemoTankId,
+          type: EquipmentType.filter,
+          name: 'Old Demo Filter',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.saveLog(
+        LogEntry(
+          id: oldLogId,
+          tankId: oldDemoTankId,
+          type: LogType.observation,
+          timestamp: now,
+          notes: 'Existing demo note',
+          createdAt: now,
+        ),
+      );
+      await storage.saveTask(
+        Task(
+          id: oldTaskId,
+          tankId: oldDemoTankId,
+          title: 'Existing demo task',
+          recurrence: RecurrenceType.weekly,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await _settle();
+
+      storage.failNewDemoLivestockSaves = true;
+
+      await expectLater(
+        container.read(tankActionsProvider).addDemoTank(),
+        throwsA(isA<StateError>()),
+      );
+      await _settle();
+
+      final tanks = await storage.getAllTanks();
+      final demoTanks = tanks.where((tank) => tank.isDemoTank).toList();
+      expect(tanks.map((tank) => tank.id), contains(realTankId));
+      expect(demoTanks, hasLength(1));
+      expect(demoTanks.single.id, oldDemoTankId);
+      expect(
+        (await storage.getLivestockForTank(
+          oldDemoTankId,
+        )).map((entry) => entry.id),
+        contains(oldLivestockId),
+      );
+      expect(
+        (await storage.getEquipmentForTank(
+          oldDemoTankId,
+        )).map((entry) => entry.id),
+        contains(oldEquipmentId),
+      );
+      expect(
+        (await storage.getLogsForTank(oldDemoTankId)).map((entry) => entry.id),
+        contains(oldLogId),
+      );
+      expect(
+        (await storage.getTasksForTank(oldDemoTankId)).map((entry) => entry.id),
+        contains(oldTaskId),
+      );
+      expect(
+        (await container.read(tanksProvider.future)).map((tank) => tank.id),
+        containsAll([realTankId, oldDemoTankId]),
+      );
     });
   });
 
