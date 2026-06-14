@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../utils/app_constants.dart';
 import 'gem_shop_screen.dart';
@@ -322,8 +323,21 @@ class ShopStreetScreen extends ConsumerWidget {
       message: 'Remove "${shop.name}" from your saved shops?',
       destructiveLabel: 'Remove Shop',
       cancelLabel: 'Keep',
-      onConfirm: () =>
-          ref.read(localShopsProvider.notifier).removeShop(shop.id),
+      onConfirm: () async {
+        final shops = ref.read(localShopsProvider.notifier);
+        await shops.removeShop(shop.id);
+        if (context.mounted) {
+          AppFeedback.show(
+            context,
+            '${shop.name} removed',
+            duration: const Duration(seconds: 5),
+            actionLabel: 'Undo',
+            onAction: () async {
+              await shops.addShop(shop);
+            },
+          );
+        }
+      },
     );
   }
 }

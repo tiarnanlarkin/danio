@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1676 tests.
+- `flutter test`: pass, 1677 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1393,6 +1393,14 @@ CL-P1-009AU Wishlist delete undo:
 - Focused widget coverage verifies the wishlist item disappears after deletion
   and returns when Undo is tapped.
 
+CL-P1-009AV Local shop delete undo:
+
+- Local fish shop deletion now shows a 5-second snackbar with an `Undo` action.
+- Undo restores the same saved shop, preserving the shop id, distance, notes,
+  and planning details.
+- Focused widget coverage verifies the shop disappears after deletion and
+  returns when Undo is tapped.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1593,9 +1601,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   now has a 5-second undo snackbar that restores the deleted task. Equipment
   removal undo now restores the linked auto-maintenance task as well as the
   equipment record. Wishlist item deletion now has a 5-second undo snackbar
-  that restores the same local planning item. Remaining backup/data work is
-  deeper import validation UX, broader edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+  that restores the same local planning item. Local fish shop deletion now has
+  a 5-second undo snackbar that restores the same saved shop. Remaining
+  backup/data work is deeper import validation UX, broader edit/delete/undo
+  coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
