@@ -210,110 +210,32 @@ class ShopStreetScreen extends ConsumerWidget {
     WidgetRef ref,
     LocalShop? existingShop,
   ) {
-    final nameController = TextEditingController(
-      text: existingShop?.name ?? '',
-    );
-    final addressController = TextEditingController(
-      text: existingShop?.address ?? '',
-    );
-    final distanceController = TextEditingController(
-      text: existingShop?.distanceMiles?.toStringAsFixed(1) ?? '',
-    );
-    final notesController = TextEditingController(
-      text: existingShop?.notes ?? '',
-    );
+    final parentContext = context;
 
     showAppBottomSheet<void>(
-      context: context,
+      context: parentContext,
       padding: EdgeInsets.zero,
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                existingShop == null ? 'Add Local Shop' : 'Edit Shop',
-                style: AppTypography.headlineSmall,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Shop name',
-                  hintText: 'e.g., Aquatic World',
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: 'Address (optional)',
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                controller: distanceController,
-                decoration: const InputDecoration(
-                  labelText: 'Distance (miles)',
-                ),
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                controller: notesController,
-                decoration: const InputDecoration(
-                  labelText: 'Notes (optional)',
-                ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              AppButton(
-                onPressed: nameController.text.trim().isNotEmpty
-                    ? () {
-                        final shop = LocalShop(
-                          id: existingShop?.id,
-                          name: nameController.text.trim(),
-                          address: addressController.text.trim().isEmpty
-                              ? null
-                              : addressController.text.trim(),
-                          distanceMiles: double.tryParse(
-                            distanceController.text,
-                          ),
-                          notes: notesController.text.trim().isEmpty
-                              ? null
-                              : notesController.text.trim(),
-                        );
-
-                        if (existingShop == null) {
-                          ref.read(localShopsProvider.notifier).addShop(shop);
-                        } else {
-                          ref
-                              .read(localShopsProvider.notifier)
-                              .updateShop(shop);
-                        }
-                        Navigator.maybePop(context);
-                      }
-                    : null,
-                label: existingShop == null ? 'Add Shop' : 'Save Changes',
-                isFullWidth: true,
-              ),
-            ],
-          ),
-        ),
+      child: _ShopEditorSheet(
+        existingShop: existingShop,
+        onSave: (shop) async {
+          final shops = ref.read(localShopsProvider.notifier);
+          if (existingShop == null) {
+            await shops.addShop(shop);
+          } else {
+            await shops.updateShop(shop);
+          }
+        },
+        onSaved: (shop) {
+          if (!parentContext.mounted) return;
+          AppFeedback.showSuccess(
+            parentContext,
+            existingShop == null
+                ? '${shop.name} added.'
+                : '${shop.name} saved.',
+          );
+        },
       ),
-    ).whenComplete(() {
-      nameController.dispose();
-      addressController.dispose();
-      distanceController.dispose();
-      notesController.dispose();
-    });
+    );
   }
 
   void _deleteShop(BuildContext context, WidgetRef ref, LocalShop shop) {
@@ -338,6 +260,146 @@ class ShopStreetScreen extends ConsumerWidget {
           );
         }
       },
+    );
+  }
+}
+
+class _ShopEditorSheet extends StatefulWidget {
+  final LocalShop? existingShop;
+  final Future<void> Function(LocalShop shop) onSave;
+  final void Function(LocalShop shop) onSaved;
+
+  const _ShopEditorSheet({
+    required this.existingShop,
+    required this.onSave,
+    required this.onSaved,
+  });
+
+  @override
+  State<_ShopEditorSheet> createState() => _ShopEditorSheetState();
+}
+
+class _ShopEditorSheetState extends State<_ShopEditorSheet> {
+  late final TextEditingController _nameController;
+  late final TextEditingController _addressController;
+  late final TextEditingController _distanceController;
+  late final TextEditingController _notesController;
+
+  @override
+  void initState() {
+    super.initState();
+    final existingShop = widget.existingShop;
+    _nameController = TextEditingController(text: existingShop?.name ?? '');
+    _addressController = TextEditingController(
+      text: existingShop?.address ?? '',
+    );
+    _distanceController = TextEditingController(
+      text: existingShop?.distanceMiles?.toStringAsFixed(1) ?? '',
+    );
+    _notesController = TextEditingController(text: existingShop?.notes ?? '');
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _distanceController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  bool get _canSave => _nameController.text.trim().isNotEmpty;
+
+  Future<void> _save() async {
+    final existingShop = widget.existingShop;
+    final shop = LocalShop(
+      id: existingShop?.id,
+      name: _nameController.text.trim(),
+      address: _addressController.text.trim().isEmpty
+          ? null
+          : _addressController.text.trim(),
+      distanceMiles: double.tryParse(_distanceController.text),
+      notes: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(),
+      createdAt: existingShop?.createdAt,
+    );
+    final navigator = Navigator.of(context);
+    final onSaved = widget.onSaved;
+
+    try {
+      await widget.onSave(shop);
+    } catch (_) {
+      if (!mounted) return;
+      AppFeedback.showError(
+        context,
+        'Could not save that shop. Try again in a moment.',
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    await navigator.maybePop();
+    onSaved(shop);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final existingShop = widget.existingShop;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              existingShop == null ? 'Add Local Shop' : 'Edit Shop',
+              style: AppTypography.headlineSmall,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            TextField(
+              controller: _nameController,
+              onChanged: (_) => setState(() {}),
+              decoration: const InputDecoration(
+                labelText: 'Shop name',
+                hintText: 'e.g., Aquatic World',
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            TextField(
+              controller: _addressController,
+              decoration: const InputDecoration(
+                labelText: 'Address (optional)',
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            TextField(
+              controller: _distanceController,
+              decoration: const InputDecoration(labelText: 'Distance (miles)'),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            TextField(
+              controller: _notesController,
+              decoration: const InputDecoration(labelText: 'Notes (optional)'),
+              maxLines: 2,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            AppButton(
+              onPressed: _canSave ? _save : null,
+              label: existingShop == null ? 'Add Shop' : 'Save Changes',
+              isFullWidth: true,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

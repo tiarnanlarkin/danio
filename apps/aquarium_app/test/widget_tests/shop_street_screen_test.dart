@@ -78,6 +78,51 @@ void main() {
       expect(find.textContaining('coming soon'), findsNothing);
     });
 
+    testWidgets('adding a local shop saves it and confirms the add', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+      await tester.scrollUntilVisible(
+        find.text('Local Fish Shops'),
+        500,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Add a shop'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Shop name'),
+        'Coral Corner',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Address (optional)'),
+        '4 Reef Lane',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Distance (miles)'),
+        '2.4',
+      );
+
+      await tester.tap(find.text('Add Shop'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Coral Corner'), findsOneWidget);
+      expect(find.text('2.4 miles'), findsOneWidget);
+      expect(find.text('Coral Corner added.'), findsOneWidget);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedShops =
+          jsonDecode(prefs.getString('local_shops')!) as List<dynamic>;
+      final savedShop = savedShops.single as Map<String, dynamic>;
+      expect(savedShop['name'], 'Coral Corner');
+      expect(savedShop['address'], '4 Reef Lane');
+      expect(savedShop['distanceMiles'], 2.4);
+    });
+
     testWidgets('deleting a local shop shows undo and restores it', (
       tester,
     ) async {
