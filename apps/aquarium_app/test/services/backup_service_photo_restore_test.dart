@@ -787,6 +787,93 @@ void main() {
 
     for (final scenario in [
       (
+        collection: 'logs',
+        field: 'relatedEquipmentId',
+        data: {
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [
+            {
+              ..._validChildEntry('logs', 'log-1'),
+              'relatedEquipmentId': 'missing-equipment',
+            },
+          ],
+        },
+      ),
+      (
+        collection: 'logs',
+        field: 'relatedLivestockId',
+        data: {
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [
+            {
+              ..._validChildEntry('logs', 'log-1'),
+              'relatedLivestockId': 'missing-livestock',
+            },
+          ],
+        },
+      ),
+      (
+        collection: 'logs',
+        field: 'relatedTaskId',
+        data: {
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [
+            {
+              ..._validChildEntry('logs', 'log-1'),
+              'relatedTaskId': 'missing-task',
+            },
+          ],
+        },
+      ),
+      (
+        collection: 'tasks',
+        field: 'relatedEquipmentId',
+        data: {
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'tasks': [
+            {
+              ..._validChildEntry('tasks', 'task-1'),
+              'relatedEquipmentId': 'missing-equipment',
+            },
+          ],
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with missing ${scenario.field} targets',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup(scenario.data);
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must reference existing backup records',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
         field: 'isEnabled',
         entry: {..._validChildEntry('tasks', 'task-1'), 'isEnabled': 'yes'},
       ),

@@ -250,6 +250,7 @@ class BackupService {
     ]) {
       _validateTankScopedCollection(data, collectionName, seenTankIds);
     }
+    _validateChildRelationshipTargets(data);
     _validateReferencedPhotoEntries(data, archive);
 
     return data;
@@ -503,6 +504,73 @@ class BackupService {
       }
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
+      }
+    }
+  }
+
+  void _validateChildRelationshipTargets(Map<String, dynamic> data) {
+    final equipmentIds = _childRecordIds(data, 'equipment');
+    final livestockIds = _childRecordIds(data, 'livestock');
+    final taskIds = _childRecordIds(data, 'tasks');
+
+    _validateRelationshipTarget(
+      data,
+      sourceCollection: 'logs',
+      field: 'relatedEquipmentId',
+      targetIds: equipmentIds,
+    );
+    _validateRelationshipTarget(
+      data,
+      sourceCollection: 'logs',
+      field: 'relatedLivestockId',
+      targetIds: livestockIds,
+    );
+    _validateRelationshipTarget(
+      data,
+      sourceCollection: 'logs',
+      field: 'relatedTaskId',
+      targetIds: taskIds,
+    );
+    _validateRelationshipTarget(
+      data,
+      sourceCollection: 'tasks',
+      field: 'relatedEquipmentId',
+      targetIds: equipmentIds,
+    );
+  }
+
+  Set<String> _childRecordIds(
+    Map<String, dynamic> data,
+    String collectionName,
+  ) {
+    final entries = data[collectionName];
+    if (entries is! List) return const <String>{};
+
+    return {
+      for (final entry in entries)
+        if (entry is Map && entry['id'] is String)
+          (entry['id'] as String).trim(),
+    };
+  }
+
+  void _validateRelationshipTarget(
+    Map<String, dynamic> data, {
+    required String sourceCollection,
+    required String field,
+    required Set<String> targetIds,
+  }) {
+    final entries = data[sourceCollection];
+    if (entries is! List) return;
+
+    for (final entry in entries) {
+      if (entry is! Map) continue;
+      final value = entry[field];
+      if (value is! String || value.trim().isEmpty) continue;
+
+      if (!targetIds.contains(value.trim())) {
+        throw Exception(
+          'Invalid format: $sourceCollection $field values must reference existing backup records',
+        );
       }
     }
   }
