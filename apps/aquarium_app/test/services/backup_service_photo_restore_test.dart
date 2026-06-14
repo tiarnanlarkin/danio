@@ -286,6 +286,46 @@ void main() {
 
     for (final scenario in [
       (
+        field: 'root',
+        sharedPreferences: 'not-preferences',
+        message: 'Invalid format: sharedPreferences must be an object',
+      ),
+      (
+        field: 'entries',
+        sharedPreferences: {'entries': 'not-entries'},
+        message: 'Invalid format: sharedPreferences entries must be an object',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects invalid sharedPreferences ${scenario.field} data',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            'sharedPreferences': scenario.sharedPreferences,
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
         field: 'name',
         tank: {'id': 'tank-1', 'name': 42},
         message: 'Invalid format: tank name values must be strings',

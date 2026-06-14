@@ -242,6 +242,8 @@ class BackupService {
       _validateTankFields(tank);
     }
 
+    _validateSharedPreferencesBackup(data);
+
     for (final collectionName in const [
       'logs',
       'livestock',
@@ -254,6 +256,21 @@ class BackupService {
     _validateReferencedPhotoEntries(data, archive);
 
     return data;
+  }
+
+  void _validateSharedPreferencesBackup(Map<String, dynamic> data) {
+    final prefs = data['sharedPreferences'];
+    if (prefs == null) return;
+    if (prefs is! Map) {
+      throw Exception('Invalid format: sharedPreferences must be an object');
+    }
+
+    final entries = prefs['entries'];
+    if (entries is! Map) {
+      throw Exception(
+        'Invalid format: sharedPreferences entries must be an object',
+      );
+    }
   }
 
   void _validateTankFields(Map<dynamic, dynamic> tank) {
