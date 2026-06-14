@@ -302,6 +302,14 @@ class BackupService {
           );
         }
       }
+      for (final field in _dateChildFields(collectionName)) {
+        final value = entry[field] as String;
+        if (DateTime.tryParse(value) == null) {
+          throw Exception(
+            'Invalid format: $collectionName $field values must be valid dates',
+          );
+        }
+      }
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
       }
@@ -349,6 +357,14 @@ class BackupService {
       'livestock' => const ['commonName', 'dateAdded'],
       'equipment' => const ['name'],
       'tasks' => const ['title'],
+      _ => const [],
+    };
+  }
+
+  List<String> _dateChildFields(String collectionName) {
+    return switch (collectionName) {
+      'logs' => const ['timestamp'],
+      'livestock' => const ['dateAdded'],
       _ => const [],
     };
   }

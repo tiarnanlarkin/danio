@@ -433,6 +433,51 @@ void main() {
         );
       },
     );
+
+    for (final scenario in [
+      (
+        collection: 'logs',
+        field: 'timestamp',
+        entry: {..._validChildEntry('logs', 'log-1'), 'timestamp': 'not-date'},
+      ),
+      (
+        collection: 'livestock',
+        field: 'dateAdded',
+        entry: {
+          ..._validChildEntry('livestock', 'livestock-1'),
+          'dateAdded': 'not-date',
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with invalid ${scenario.field} dates',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must be valid dates',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }
 
