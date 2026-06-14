@@ -391,6 +391,26 @@ void main() {
   // --- TankActions.addDemoTank ---
 
   group('TankActions - demo tank', () {
+    test('cleans up partial first-run demo data if seeding fails', () async {
+      const demoTankId = 'demo-tank-1';
+      final storage = _SaveDefaultTaskFailsStorage(failOnSaveNumber: 1);
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      await expectLater(
+        container.read(tankActionsProvider).seedDemoTankIfEmpty(),
+        throwsA(isA<StateError>()),
+      );
+      await _settle();
+
+      expect(await storage.getAllTanks(), isEmpty);
+      expect(await storage.getLivestockForTank(demoTankId), isEmpty);
+      expect(await storage.getEquipmentForTank(demoTankId), isEmpty);
+      expect(await storage.getLogsForTank(demoTankId), isEmpty);
+      expect(await storage.getTasksForTank(demoTankId), isEmpty);
+      expect(await container.read(tanksProvider.future), isEmpty);
+    });
+
     test('replaces existing demo tanks without removing real tanks', () async {
       final storage = _TestStorageService();
       final container = _makeContainer(storage: storage);

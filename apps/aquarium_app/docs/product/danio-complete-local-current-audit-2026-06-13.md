@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1713 tests.
+- `flutter test`: pass, 1714 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1704,6 +1704,15 @@ CL-P1-009CA Tank reorder rollback:
 - Focused provider coverage simulates a failed second sort-order write and
   verifies all tank ordering remains unchanged.
 
+CL-P1-009CB First-run demo seed rollback:
+
+- First-run demo seeding now removes partial demo data when sample tank creation
+  fails after writing tank, livestock, equipment, or log records.
+- Cleanup deletes the partial demo tank through the normal tank delete path so
+  local child records are removed with it.
+- Focused provider coverage simulates a failed demo default-task save and
+  verifies no partial demo tank or child data remains.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1942,7 +1951,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   fail. Failed new-tank default-task creation now rolls back partial tank/task
   data. Failed livestock bulk moves now roll back earlier moved records. Failed
   sample-tank replacement now restores the previous demo tank and child data.
-  Failed tank reorders now restore partial sort-order writes. Remaining
+  Failed tank reorders now restore partial sort-order writes. Failed first-run
+  demo seeding now removes partial demo data. Remaining
   backup/data work is deeper import validation UX, broader edit/delete/undo
   coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience

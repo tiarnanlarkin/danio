@@ -101,18 +101,54 @@ class TankActions {
 
   /// Seed a demo tank (only if the user has no tanks yet)
   Future<Tank> seedDemoTankIfEmpty() async {
-    final tank = await SampleData.seedFreshwaterDemo(_storage);
+    final storage = _storage;
 
-    // Invalidate relevant providers.
-    _ref.invalidate(tanksProvider);
-    _ref.invalidate(tankProvider(tank.id));
-    _ref.invalidate(livestockProvider(tank.id));
-    _ref.invalidate(equipmentProvider(tank.id));
-    _ref.invalidate(logsProvider(tank.id));
-    _ref.invalidate(allLogsProvider(tank.id));
-    _ref.invalidate(tasksProvider(tank.id));
+    void invalidateTankData(String tankId) {
+      _ref.invalidate(tankProvider(tankId));
+      _ref.invalidate(livestockProvider(tankId));
+      _ref.invalidate(equipmentProvider(tankId));
+      _ref.invalidate(logsProvider(tankId));
+      _ref.invalidate(allLogsProvider(tankId));
+      _ref.invalidate(tasksProvider(tankId));
+    }
 
-    return tank;
+    try {
+      final tank = await SampleData.seedFreshwaterDemo(storage);
+
+      // Invalidate relevant providers.
+      _ref.invalidate(tanksProvider);
+      invalidateTankData(tank.id);
+
+      return tank;
+    } catch (e, st) {
+      final partialDemoTankIds = <String>[];
+      try {
+        partialDemoTankIds.addAll(
+          (await storage.getAllTanks())
+              .where((tank) => tank.isDemoTank)
+              .map((tank) => tank.id),
+        );
+        for (final tankId in partialDemoTankIds) {
+          await storage.deleteTank(tankId);
+        }
+      } catch (rollbackError, rollbackStack) {
+        logError(
+          'TankProvider.seedDemoTankIfEmpty cleanup failed: $rollbackError',
+          stackTrace: rollbackStack,
+          tag: 'TankProvider',
+        );
+      }
+      _ref.invalidate(tanksProvider);
+      for (final tankId in partialDemoTankIds) {
+        invalidateTankData(tankId);
+      }
+      logError(
+        'TankProvider.seedDemoTankIfEmpty failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
+      rethrow;
+    }
   }
 
   /// Add or reset the sample/demo tank without touching real user tanks.
