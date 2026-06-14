@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/cost_tracker_screen.dart';
 
 // ---------------------------------------------------------------------------
@@ -17,6 +18,49 @@ import 'package:danio/screens/cost_tracker_screen.dart';
 
 Widget _wrap() {
   return const ProviderScope(child: MaterialApp(home: CostTrackerScreen()));
+}
+
+Widget _wrapWithFailingPrefs({
+  required Map<String, Object> initialValues,
+  required bool Function(String key, Object value) shouldFail,
+}) {
+  return ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWith((ref) async {
+        SharedPreferences.setMockInitialValues(initialValues);
+        final prefs = await SharedPreferences.getInstance();
+        return _ThrowingSetStringPrefs(prefs, shouldFail);
+      }),
+    ],
+    child: const MaterialApp(home: CostTrackerScreen()),
+  );
+}
+
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 // ---------------------------------------------------------------------------
@@ -315,5 +359,46 @@ void main() {
         expect(restoredExpenses.map((e) => e['id']), ['1', '2']);
       },
     );
+
+    testWidgets('undo restore failure shows local feedback without throwing', (
+      tester,
+    ) async {
+      const savedExpenses =
+          '[{"id":"1","description":"Filter","amount":35.0,'
+          '"category":"Equipment","date":"2025-01-15T12:00:00.000"},'
+          '{"id":"2","description":"Plant food","amount":8.5,'
+          '"category":"Food","date":"2025-01-16T12:00:00.000"}]';
+
+      await tester.pumpWidget(
+        _wrapWithFailingPrefs(
+          initialValues: {
+            'cost_tracker_expenses': savedExpenses,
+            'cost_tracker_currency': '\u00A3',
+          },
+          shouldFail: (key, value) =>
+              key == 'cost_tracker_expenses' && value != '[]',
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.byTooltip('Cost tracker settings'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Delete expense'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Clear All'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.tap(find.widgetWithText(SnackBarAction, 'Undo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(
+        find.text("Couldn't restore those expenses. Try again in a moment."),
+        findsOneWidget,
+      );
+    });
   });
 }

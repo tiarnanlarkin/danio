@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1722 tests.
+- `flutter test`: pass, 1723 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1788,6 +1788,16 @@ CL-P1-009CE Log Detail undo-restore failure feedback:
   error can still be shown after the detail route has been popped.
 - Focused Log Detail widget coverage simulates a failed undo restore write and
   verifies the user sees restore-failure feedback.
+
+CL-P1-009CF Cost Tracker undo-restore failure feedback:
+
+- Cost Tracker expense deletion and clear-all undo actions now wait for local
+  preference writes before treating the restore as durable.
+- Failed undo restore writes roll the visible expense list back to the
+  pre-undo state and show normal local error feedback instead of surfacing an
+  async widget exception.
+- Focused Cost Tracker widget coverage simulates a failed clear-all undo
+  restore write and verifies the user sees restore-failure feedback.
 
 CL-P1-010A Tank Settings water-profile copy:
 

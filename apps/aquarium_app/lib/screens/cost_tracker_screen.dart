@@ -98,6 +98,27 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     await prefs.setString('cost_tracker_currency', _currency);
   }
 
+  Future<bool> _saveExpensesWithRollback({
+    required List<_Expense> rollbackExpenses,
+    required String errorMessage,
+    required String logMessage,
+  }) async {
+    try {
+      await _saveExpenses();
+      return true;
+    } catch (error, stackTrace) {
+      logError(
+        '$logMessage: $error',
+        stackTrace: stackTrace,
+        tag: 'CostTrackerScreen',
+      );
+      if (!mounted) return false;
+      setState(() => _expenses = List<_Expense>.from(rollbackExpenses));
+      AppFeedback.showError(context, errorMessage);
+      return false;
+    }
+  }
+
   void _addExpense() {
     showAppDragSheet(
       context: context,
@@ -115,22 +136,36 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     );
   }
 
-  void _deleteExpense(int index) {
+  Future<void> _deleteExpense(int index) async {
     final expense = _expenses[index];
+    final previousExpenses = List<_Expense>.from(_expenses);
     setState(() {
       _expenses.removeAt(index);
     });
-    _saveExpenses();
+    final saved = await _saveExpensesWithRollback(
+      rollbackExpenses: previousExpenses,
+      errorMessage: "Couldn't delete that expense. Try again in a moment.",
+      logMessage: 'Failed to persist deleted expense',
+    );
+    if (!saved || !mounted) return;
 
     DanioSnackBar.show(
       context,
       'Deleted: ${expense.description}',
       actionLabel: 'Undo',
-      onAction: () {
+      onAction: () async {
+        final previousExpenses = List<_Expense>.from(_expenses);
+        final restoreIndex = index > _expenses.length
+            ? _expenses.length
+            : index;
         setState(() {
-          _expenses.insert(index, expense);
+          _expenses.insert(restoreIndex, expense);
         });
-        _saveExpenses();
+        await _saveExpensesWithRollback(
+          rollbackExpenses: previousExpenses,
+          errorMessage: "Couldn't restore that expense. Try again in a moment.",
+          logMessage: 'Failed to persist restored expense',
+        );
       },
     );
   }
@@ -372,18 +407,28 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
 
     final clearedExpenses = List<_Expense>.from(_expenses);
     setState(() => _expenses = []);
-    await _saveExpenses();
+    final saved = await _saveExpensesWithRollback(
+      rollbackExpenses: clearedExpenses,
+      errorMessage: "Couldn't clear expenses. Try again in a moment.",
+      logMessage: 'Failed to persist cleared expenses',
+    );
 
-    if (!mounted) return;
+    if (!saved || !mounted) return;
 
     DanioSnackBar.show(
       context,
       'Expenses cleared',
       duration: const Duration(seconds: 5),
       actionLabel: 'Undo',
-      onAction: () {
-        setState(() => _expenses = clearedExpenses);
-        _saveExpenses();
+      onAction: () async {
+        final previousExpenses = List<_Expense>.from(_expenses);
+        setState(() => _expenses = List<_Expense>.from(clearedExpenses));
+        await _saveExpensesWithRollback(
+          rollbackExpenses: previousExpenses,
+          errorMessage:
+              "Couldn't restore those expenses. Try again in a moment.",
+          logMessage: 'Failed to persist restored expenses',
+        );
       },
     );
   }
