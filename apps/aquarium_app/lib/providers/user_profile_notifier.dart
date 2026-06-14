@@ -235,8 +235,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final current = state.value;
     if (current == null) return;
     final updated = current.copyWith(hasSkippedPlacementTest: true);
+    await _saveImmediate(updated);
     state = AsyncValue.data(updated);
-    await _save(updated);
   }
 
   /// Get today's XP progress

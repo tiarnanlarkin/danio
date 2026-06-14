@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1728 tests.
+- `flutter test`: pass, 1729 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1846,6 +1846,15 @@ CL-P1-009CK Profile edit save failure feedback:
   previous profile visible instead of showing unsaved edits.
 - Focused provider coverage simulates a failed `user_profile` preference write
   during `updateProfile` and verifies stored JSON stays unchanged.
+
+CL-P1-009CL Placement skip save failure feedback:
+
+- Placement-test skip now uses the immediate local save path before exposing
+  the skipped placement state.
+- Failed `user_profile` skip writes now surface to the caller and keep the
+  previous placement state visible instead of showing an unsaved skip.
+- Focused provider coverage simulates a failed `user_profile` preference write
+  during `skipPlacementTest` and verifies stored JSON stays unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 

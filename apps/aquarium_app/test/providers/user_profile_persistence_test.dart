@@ -41,7 +41,7 @@ Future<void> _waitForProfileLoad(ProviderContainer container) async {
   }
 }
 
-UserProfile _profile({String? name}) {
+UserProfile _profile({String? name, bool hasSkippedPlacementTest = false}) {
   final now = DateTime.now();
   return UserProfile(
     id: 'profile-1',
@@ -49,6 +49,7 @@ UserProfile _profile({String? name}) {
     experienceLevel: ExperienceLevel.beginner,
     primaryTankType: TankType.freshwater,
     goals: [UserGoal.keepFishAlive],
+    hasSkippedPlacementTest: hasSkippedPlacementTest,
     createdAt: now,
     updatedAt: now,
   );
@@ -122,6 +123,43 @@ void main() {
 
         final profileState = container.read(userProfileProvider);
         expect(profileState.value?.name, 'Existing keeper');
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
+      },
+    );
+
+    test(
+      'skipPlacementTest surfaces local save failures before exposing skip',
+      () async {
+        final originalProfile = _profile();
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'user_profile',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(
+          notifier.skipPlacementTest(),
+          throwsA(isA<StateError>()),
+        );
+
+        final profileState = container.read(userProfileProvider);
+        expect(profileState.value?.hasSkippedPlacementTest, isFalse);
         expect(
           prefs.getString('user_profile'),
           jsonEncode(originalProfile.toJson()),
