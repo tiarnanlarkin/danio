@@ -547,6 +547,70 @@ void main() {
         },
       );
     }
+
+    for (final scenario in [
+      (
+        collection: 'logs',
+        field: 'waterChangePercent',
+        entry: {
+          ..._validChildEntry('logs', 'log-1'),
+          'waterChangePercent': 'half',
+        },
+      ),
+      (
+        collection: 'livestock',
+        field: 'count',
+        entry: {
+          ..._validChildEntry('livestock', 'livestock-1'),
+          'count': 'many',
+        },
+      ),
+      (
+        collection: 'equipment',
+        field: 'maintenanceIntervalDays',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'maintenanceIntervalDays': 'weekly',
+        },
+      ),
+      (
+        collection: 'tasks',
+        field: 'intervalDays',
+        entry: {
+          ..._validChildEntry('tasks', 'task-1'),
+          'intervalDays': 'weekly',
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with invalid ${scenario.field} numbers',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must be numbers',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }
 

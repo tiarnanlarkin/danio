@@ -319,6 +319,14 @@ class BackupService {
           );
         }
       }
+      for (final field in _numericChildFields(collectionName)) {
+        final value = entry[field];
+        if (value != null && value is! num) {
+          throw Exception(
+            'Invalid format: $collectionName $field values must be numbers',
+          );
+        }
+      }
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
       }
@@ -382,6 +390,19 @@ class BackupService {
     return switch (collectionName) {
       'equipment' => const ['lastServiced', 'installedDate', 'purchaseDate'],
       'tasks' => const ['dueDate', 'lastCompletedAt'],
+      _ => const [],
+    };
+  }
+
+  List<String> _numericChildFields(String collectionName) {
+    return switch (collectionName) {
+      'logs' => const ['waterChangePercent'],
+      'livestock' => const ['count', 'sizeCm', 'maxSizeCm'],
+      'equipment' => const [
+        'maintenanceIntervalDays',
+        'expectedLifespanMonths',
+      ],
+      'tasks' => const ['intervalDays', 'completionCount'],
       _ => const [],
     };
   }
