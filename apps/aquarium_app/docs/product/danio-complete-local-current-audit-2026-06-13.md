@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1715 tests.
+- `flutter test`: pass, 1716 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1723,6 +1723,16 @@ CL-P1-009CC Tank Detail task-completion rollback:
 - Focused Tank Detail widget coverage simulates a failed completion-log write
   and verifies the task remains incomplete with no success feedback.
 
+CL-P1-009CD Tank Detail quick-feeding failure feedback:
+
+- Quick feeding from Tank Detail now catches local feeding-log save failures,
+  logs the failure for diagnosis, and shows normal error feedback instead of a
+  widget exception.
+- Failed quick-feeding saves leave the local journal unchanged and do not show
+  success feedback.
+- Focused Tank Detail widget coverage uses the real QuickAdd FAB feeding action
+  and simulates a failed feeding-log write.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1963,9 +1973,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   sample-tank replacement now restores the previous demo tank and child data.
   Failed tank reorders now restore partial sort-order writes. Failed first-run
   demo seeding now removes partial demo data. Failed Tank Detail task
-  completions now roll back partial task/log/equipment writes. Remaining
-  backup/data work is deeper import validation UX, broader edit/delete/undo
-  coverage, and restore/migration walkthrough QA.
+  completions now roll back partial task/log/equipment writes. Failed Tank
+  Detail quick-feeding saves now show normal error feedback without changing
+  the local journal. Remaining backup/data work is deeper import validation UX,
+  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

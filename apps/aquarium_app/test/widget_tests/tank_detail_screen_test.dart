@@ -142,6 +142,18 @@ class _CompletionLogFailsStorage extends _DelegatingStorageService {
   }
 }
 
+class _FeedingLogFailsStorage extends _DelegatingStorageService {
+  _FeedingLogFailsStorage(super.delegate);
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    if (log.type == LogType.feeding) {
+      throw StateError('feeding log failed');
+    }
+    await super.saveLog(log);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -225,6 +237,37 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Rinse prefilter completed!'), findsNothing);
+    });
+  });
+
+  group('TankDetailScreen - quick feeding', () {
+    testWidgets('failed feeding log write shows normal error feedback', (
+      tester,
+    ) async {
+      const tankId = 'tank-detail-feed-failure';
+      final svc = InMemoryStorageService();
+      final failingStorage = _FeedingLogFailsStorage(svc);
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(
+        _wrapWithStorage(tankId, storage: failingStorage),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byTooltip('Quick actions menu'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.byTooltip('Log Feeding'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t save that feeding. Try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('Feeding logged.'), findsNothing);
     });
   });
 }

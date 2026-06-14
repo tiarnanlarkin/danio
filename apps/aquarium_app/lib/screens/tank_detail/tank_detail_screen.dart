@@ -1223,16 +1223,31 @@ class TankDetailScreen extends ConsumerWidget {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
 
-    await storage.saveLog(
-      LogEntry(
-        id: _uuid.v4(),
-        tankId: tankId,
-        type: LogType.feeding,
-        timestamp: now,
-        title: 'Fed fish',
-        createdAt: now,
-      ),
-    );
+    try {
+      await storage.saveLog(
+        LogEntry(
+          id: _uuid.v4(),
+          tankId: tankId,
+          type: LogType.feeding,
+          timestamp: now,
+          title: 'Fed fish',
+          createdAt: now,
+        ),
+      );
+    } catch (e, st) {
+      logError(
+        'TankDetailScreen: quick feeding failed: $e',
+        stackTrace: st,
+        tag: 'TankDetailScreen',
+      );
+      if (context.mounted) {
+        AppFeedback.showError(
+          context,
+          'Couldn\'t save that feeding. Try again.',
+        );
+      }
+      return;
+    }
 
     ref.invalidate(logsProvider(tankId));
     ref.invalidate(allLogsProvider(tankId));
