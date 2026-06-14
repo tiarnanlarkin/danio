@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1729 tests.
+- `flutter test`: pass, 1730 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1855,6 +1855,15 @@ CL-P1-009CL Placement skip save failure feedback:
   previous placement state visible instead of showing an unsaved skip.
 - Focused provider coverage simulates a failed `user_profile` preference write
   during `skipPlacementTest` and verifies stored JSON stays unchanged.
+
+CL-P1-009CM Streak-freeze grant save failure feedback:
+
+- Streak-freeze grant now uses the immediate local save path before exposing the
+  granted freeze in profile state.
+- Failed `user_profile` freeze writes now surface to the caller and keep the
+  previous streak-freeze state visible instead of showing an unsaved reward.
+- Focused provider coverage simulates a failed `user_profile` preference write
+  during `addStreakFreeze` and verifies stored JSON stays unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 

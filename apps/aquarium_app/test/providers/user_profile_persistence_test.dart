@@ -50,6 +50,7 @@ UserProfile _profile({String? name, bool hasSkippedPlacementTest = false}) {
     primaryTankType: TankType.freshwater,
     goals: [UserGoal.keepFishAlive],
     hasSkippedPlacementTest: hasSkippedPlacementTest,
+    hasStreakFreeze: false,
     createdAt: now,
     updatedAt: now,
   );
@@ -160,6 +161,43 @@ void main() {
 
         final profileState = container.read(userProfileProvider);
         expect(profileState.value?.hasSkippedPlacementTest, isFalse);
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
+      },
+    );
+
+    test(
+      'addStreakFreeze surfaces local save failures before exposing freeze',
+      () async {
+        final originalProfile = _profile();
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'user_profile',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(
+          notifier.addStreakFreeze(),
+          throwsA(isA<StateError>()),
+        );
+
+        final profileState = container.read(userProfileProvider);
+        expect(profileState.value?.hasStreakFreeze, isFalse);
         expect(
           prefs.getString('user_profile'),
           jsonEncode(originalProfile.toJson()),
