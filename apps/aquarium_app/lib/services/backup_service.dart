@@ -271,6 +271,23 @@ class BackupService {
         'Invalid format: sharedPreferences entries must be an object',
       );
     }
+
+    for (final value in entries.values) {
+      if (value is List) {
+        if (value.any((item) => item is! String)) {
+          throw Exception(
+            'Invalid format: sharedPreferences string-list values must contain only strings',
+          );
+        }
+        continue;
+      }
+
+      if (value is! String && value is! num && value is! bool) {
+        throw Exception(
+          'Invalid format: sharedPreferences entry values must be strings, numbers, booleans, or string arrays',
+        );
+      }
+    }
   }
 
   void _validateTankFields(Map<dynamic, dynamic> tank) {

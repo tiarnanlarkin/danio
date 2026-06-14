@@ -326,6 +326,56 @@ void main() {
 
     for (final scenario in [
       (
+        field: 'object',
+        sharedPreferences: {
+          'entries': {
+            'theme_mode': {'mode': 1},
+          },
+        },
+        message:
+            'Invalid format: sharedPreferences entry values must be strings, numbers, booleans, or string arrays',
+      ),
+      (
+        field: 'mixed list',
+        sharedPreferences: {
+          'entries': {
+            'aquarium_reminders': ['morning', 9],
+          },
+        },
+        message:
+            'Invalid format: sharedPreferences string-list values must contain only strings',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects invalid sharedPreferences ${scenario.field} entry values',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            'sharedPreferences': scenario.sharedPreferences,
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
         field: 'name',
         tank: {'id': 'tank-1', 'name': 42},
         message: 'Invalid format: tank name values must be strings',

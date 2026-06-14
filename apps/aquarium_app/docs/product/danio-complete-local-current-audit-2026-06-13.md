@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1623 tests.
+- `flutter test`: pass, 1625 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1181,6 +1181,17 @@ CL-P1-009Y Backup profile/preferences payload validation:
 - This prevents backups from promising profile/preference restore in the preview
   while the actual import would skip or warn after confirmation.
 
+CL-P1-009Z Backup profile/preferences entry-value validation:
+
+- Backup preview/import now rejects malformed values inside
+  `sharedPreferences.entries`.
+- Supported entry values are strings, numbers, booleans, and arrays containing
+  only strings, matching the value types that `SharedPreferencesBackup` can
+  restore safely.
+- This prevents profile/preferences restore from silently dropping unsupported
+  objects or coercing mixed arrays into string lists after the user confirms an
+  import.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1352,6 +1363,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
   preview/import. Equipment settings now reject non-object values before
   preview/import. Child relationship IDs now reject missing backup targets before
   preview/import. Malformed profile/preferences payloads now reject before
+  preview/import. Malformed profile/preferences entry values now reject before
   preview/import. Remaining backup/data work is deeper import validation UX,
   edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
