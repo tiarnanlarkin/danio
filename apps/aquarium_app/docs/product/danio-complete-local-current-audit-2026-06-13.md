@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1732 tests.
+- `flutter test`: pass, 1733 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1882,6 +1882,15 @@ CL-P1-009CO Energy save failure feedback:
   silently scheduling a debounced write and showing unsaved energy state.
 - Focused provider coverage simulates a failed `user_profile` preference write
   during `updateHearts` and verifies stored JSON stays unchanged.
+
+CL-P1-009CP Story progress save failure feedback:
+
+- Story progress updates now use the immediate local save path before exposing
+  story-progress or completed-story changes in profile state.
+- Failed `user_profile` story writes now surface to the caller instead of
+  silently scheduling a debounced write and showing unsaved story state.
+- Focused provider coverage simulates a failed `user_profile` preference write
+  during `updateStoryProgress` and verifies stored JSON stays unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 

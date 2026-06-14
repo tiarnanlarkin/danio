@@ -21,8 +21,6 @@ import '../models/shop_item.dart'; // For InventoryItem
 import 'lesson_provider.dart';
 import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
-import '../utils/debouncer.dart';
-import '../utils/app_constants.dart';
 import '../utils/logger.dart';
 
 /// Shared provider for SharedPreferences. All providers and services should
@@ -51,21 +49,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   static const _key = 'user_profile';
   late final _ProfileLifecycleListener _lifecycleListener;
 
-  /// Debouncer collapses rapid successive saves (e.g. lesson complete → XP → gems)
-  /// into a single disk write after 200ms of inactivity.
-  final _saveDebouncer = Debouncer(delay: kProfileSaveDebounce);
-
-  /// The latest profile pending a debounced write.
-  UserProfile? _pendingSave;
-
-  /// Save the current pending profile immediately on app pause/detach.
-  /// The debouncer's flush() only starts the async save but doesn't await it,
-  /// so we save directly to prevent data loss if the OS kills the app.
+  /// Save the current profile immediately on app pause/detach.
   void _onLifecyclePause() {
-    _saveDebouncer.cancel(); // Cancel any pending debounced save
-    final toSave = _pendingSave ?? state.value;
+    final toSave = state.value;
     if (toSave == null) return;
-    _pendingSave = null;
     _trimXpHistory(toSave);
     // Access already-resolved SharedPreferences synchronously to minimise
     // the window between lifecycle pause and the native write queue.
@@ -105,24 +92,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
   }
 
-  Future<void> _save(UserProfile profile) async {
-    _pendingSave = profile;
-    _saveDebouncer.run(() async {
-      final toSave = _pendingSave;
-      if (toSave == null) return;
-      _pendingSave = null;
-      // Cap dailyXpHistory to last 365 days before persisting
-      _trimXpHistory(toSave);
-      final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.setString(_key, jsonEncode(toSave.toJson()));
-    });
-  }
-
-  /// Save immediately, bypassing debounce. Use for critical state changes
-  /// (XP, streaks, lesson completions, achievements) that must not be lost.
+  /// Save profile changes before exposing user-visible progress.
   Future<void> _saveImmediate(UserProfile profile) async {
-    _pendingSave = null;
-    _saveDebouncer.cancel();
     // Cap dailyXpHistory to last 365 days before persisting
     _trimXpHistory(profile);
     final prefs = await ref.read(sharedPreferencesProvider.future);
@@ -142,7 +113,6 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(_lifecycleListener);
-    _saveDebouncer.dispose();
     super.dispose();
   }
 
@@ -1062,7 +1032,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       updatedAt: DateTime.now(),
     );
 
-    await _save(updated);
+    await _saveImmediate(updated);
     state = AsyncValue.data(updated);
 
     // Award XP if newly completed

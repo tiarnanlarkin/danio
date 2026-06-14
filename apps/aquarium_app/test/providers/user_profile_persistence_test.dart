@@ -285,5 +285,48 @@ void main() {
         );
       },
     );
+
+    test(
+      'updateStoryProgress surfaces local save failures before exposing story',
+      () async {
+        final originalProfile = _profile();
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'user_profile',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(
+          notifier.updateStoryProgress(
+            storyId: 'cycling_basics_story',
+            progressData: {'step': 2, 'choice': 'water_test_first'},
+          ),
+          throwsA(isA<StateError>()),
+        );
+
+        final profileState = container.read(userProfileProvider);
+        expect(
+          profileState.value?.storyProgress.containsKey('cycling_basics_story'),
+          isFalse,
+        );
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
+      },
+    );
   });
 }
