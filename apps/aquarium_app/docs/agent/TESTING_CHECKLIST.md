@@ -4,7 +4,7 @@ Use this checklist before committing Danio changes. It is local-first and no-cos
 
 ## Before Editing
 
-- Run `git status --short`.
+- Run `git status --short -uall`.
 - Identify unrelated dirty files and leave them alone.
 - Read the relevant source and nearby tests before changing code.
 - For behavior changes, write or update a focused failing test first.
@@ -93,6 +93,27 @@ apps/aquarium_app/docs/qa/screenshots/<date-or-branch>/<slice>/
 - Avoid uploading screenshots to external services.
 - Include enough context to reproduce the state.
 - Do not commit temporary screenshots unless they are useful QA evidence.
+
+## Optional Local Maestro CLI
+
+Maestro is optional. Use it only as a local smoke-flow aid when it is already
+installed or the user explicitly approves a local install.
+
+Allowed:
+
+```powershell
+maestro test .\maestro\some_flow.yaml
+```
+
+Not allowed:
+
+- Maestro Cloud.
+- Hosted device farms.
+- Remote uploads.
+- Account setup.
+
+If device ownership is unclear, skip Maestro and rely on Flutter tests,
+`flutter analyze`, and the local debug APK build.
 
 ## Design And Visual Baseline Checks
 

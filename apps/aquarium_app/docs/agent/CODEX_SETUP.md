@@ -50,6 +50,9 @@ Rules:
   separate commits.
 - After each committed slice, run `git status --short -uall` and continue only
   when the worktree is clean or the remaining dirt is explicitly understood.
+- For setup/doc slices, edit only `AGENTS.md`, `docs/agent/**`, or the exact
+  setup files named by the user. Do not restage or rewrite parallel design
+  setup files unless the current slice explicitly owns that update.
 
 ## Windows Environment
 
@@ -187,6 +190,7 @@ Not allowed:
 - Account setup.
 
 If Maestro is not installed, do not block ordinary Flutter verification on it.
+If it is installed, use it only after confirming emulator/device ownership.
 
 ## Product Rules For Agents
 

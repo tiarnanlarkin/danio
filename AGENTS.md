@@ -20,6 +20,8 @@ This repo is developed local-first. Agents must keep work no-cost, offline-capab
 ## Dirty Worktree Protection
 
 - Run `git status --short -uall` before editing and before staging.
+- Use `-uall` so untracked screenshots, generated docs, or other-agent files
+  are visible before you choose a working area.
 - Never revert, delete, or overwrite user changes you did not make.
 - If unrelated files are dirty, leave them alone.
 - If files you need are dirty, inspect them and work with the changes.
