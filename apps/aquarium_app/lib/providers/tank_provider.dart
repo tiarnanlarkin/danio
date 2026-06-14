@@ -487,15 +487,16 @@ class TankActions {
     String fromTankId,
     String toTankId,
   ) async {
+    final storage = _storage;
+    final movedOriginals = <Livestock>[];
+
     try {
-      final storage = _storage;
       final allLivestock = await storage.getLivestockForTank(fromTankId);
 
       for (final id in livestockIds) {
+        late final Livestock livestock;
         try {
-          final livestock = allLivestock.firstWhere((l) => l.id == id);
-          final moved = livestock.copyWith(tankId: toTankId);
-          await storage.saveLivestock(moved);
+          livestock = allLivestock.firstWhere((l) => l.id == id);
         } on StateError {
           appLog(
             'bulkMoveLivestock: skipping missing livestock $id',
@@ -503,11 +504,29 @@ class TankActions {
           );
           continue;
         }
+
+        final moved = livestock.copyWith(tankId: toTankId);
+        await storage.saveLivestock(moved);
+        movedOriginals.add(livestock);
       }
 
       _ref.invalidate(livestockProvider(fromTankId));
       _ref.invalidate(livestockProvider(toTankId));
     } catch (e, st) {
+      for (final original in movedOriginals.reversed) {
+        try {
+          await storage.saveLivestock(original);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankProvider.bulkMoveLivestock rollback failed for '
+            '${original.id}: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankProvider',
+          );
+        }
+      }
+      _ref.invalidate(livestockProvider(fromTankId));
+      _ref.invalidate(livestockProvider(toTankId));
       logError(
         'TankProvider.bulkMoveLivestock failed: $e',
         stackTrace: st,

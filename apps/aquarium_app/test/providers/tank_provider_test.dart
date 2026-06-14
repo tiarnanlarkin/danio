@@ -158,6 +158,25 @@ class _SaveDefaultTaskFailsStorage extends _TestStorageService {
   }
 }
 
+class _BulkMoveLivestockSaveFailsStorage extends _TestStorageService {
+  _BulkMoveLivestockSaveFailsStorage({
+    required this.failingLivestockId,
+    required this.targetTankId,
+  });
+
+  final String failingLivestockId;
+  final String targetTankId;
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) async {
+    if (livestock.id == failingLivestockId &&
+        livestock.tankId == targetTankId) {
+      throw StateError('livestock save failed');
+    }
+    await super.saveLivestock(livestock);
+  }
+}
+
 /// Creates an isolated ProviderContainer with a fresh storage service.
 ProviderContainer _makeContainer({StorageService? storage}) {
   return ProviderContainer(
@@ -634,6 +653,68 @@ void main() {
 
       final stored = await storage.getTank('tank-perm');
       expect(stored, isNull);
+    });
+  });
+
+  group('TankActions - bulkMoveLivestock', () {
+    test('rolls back earlier moves when a later save fails', () async {
+      const sourceTankId = 'bulk-move-rollback-source';
+      const targetTankId = 'bulk-move-rollback-target';
+      const firstLivestockId = 'bulk-move-rollback-neons';
+      const failingLivestockId = 'bulk-move-rollback-corys';
+      final storage = _BulkMoveLivestockSaveFailsStorage(
+        failingLivestockId: failingLivestockId,
+        targetTankId: targetTankId,
+      );
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      final now = DateTime.now();
+      await storage.saveTank(_makeTank(id: sourceTankId, name: 'Source Tank'));
+      await storage.saveTank(_makeTank(id: targetTankId, name: 'Target Tank'));
+      await storage.saveLivestock(
+        Livestock(
+          id: firstLivestockId,
+          tankId: sourceTankId,
+          commonName: 'Neon Tetra',
+          count: 8,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.saveLivestock(
+        Livestock(
+          id: failingLivestockId,
+          tankId: sourceTankId,
+          commonName: 'Corydoras',
+          count: 5,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await _settle();
+
+      await expectLater(
+        container
+            .read(tankActionsProvider)
+            .bulkMoveLivestock(
+              [firstLivestockId, failingLivestockId],
+              sourceTankId,
+              targetTankId,
+            ),
+        throwsA(isA<StateError>()),
+      );
+      await _settle();
+
+      final sourceLivestock = await storage.getLivestockForTank(sourceTankId);
+      final targetLivestock = await storage.getLivestockForTank(targetTankId);
+      expect(
+        sourceLivestock.map((livestock) => livestock.id),
+        containsAll([firstLivestockId, failingLivestockId]),
+      );
+      expect(targetLivestock, isEmpty);
     });
   });
 }
