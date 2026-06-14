@@ -95,7 +95,7 @@ class WishlistScreen extends ConsumerWidget {
                   accentColor: _accentColor,
                   onTap: () => _showEditDialog(context, ref, item),
                   onPurchased: () => _markPurchased(screenContext, ref, item),
-                  onDelete: () => _deleteItem(context, ref, item),
+                  onDelete: () => _deleteItem(screenContext, ref, item),
                 );
               },
             ),
@@ -190,18 +190,34 @@ class WishlistScreen extends ConsumerWidget {
       cancelLabel: 'Keep',
       onConfirm: () async {
         final wishlist = ref.read(wishlistProvider.notifier);
-        await wishlist.removeItem(item.id);
-        if (context.mounted) {
-          AppFeedback.show(
+        try {
+          await wishlist.removeItem(item.id);
+        } catch (_) {
+          if (!context.mounted) return;
+          AppFeedback.showError(
             context,
-            '${item.name} removed',
-            duration: const Duration(seconds: 5),
-            actionLabel: 'Undo',
-            onAction: () async {
-              await wishlist.addItem(item);
-            },
+            'Could not remove ${item.name}. Try again in a moment.',
           );
+          return;
         }
+        if (!context.mounted) return;
+        AppFeedback.show(
+          context,
+          '${item.name} removed',
+          duration: const Duration(seconds: 5),
+          actionLabel: 'Undo',
+          onAction: () async {
+            try {
+              await wishlist.addItem(item);
+            } catch (_) {
+              if (!context.mounted) return;
+              AppFeedback.showError(
+                context,
+                'Could not restore ${item.name}. Try again in a moment.',
+              );
+            }
+          },
+        );
       },
     );
   }

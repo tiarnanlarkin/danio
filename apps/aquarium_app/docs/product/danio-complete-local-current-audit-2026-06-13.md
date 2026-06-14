@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1699 tests.
+- `flutter test`: pass, 1701 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1610,6 +1610,16 @@ CL-P1-009BQ Wishlist purchase feedback resilience:
 - Focused widget coverage verifies both the successful purchased/budget write
   path and the failed purchase rollback/error path for `Neon Tetra`.
 
+CL-P1-009BR Wishlist delete failure feedback:
+
+- Wishlist item deletion now catches failed local remove saves and keeps the
+  item visible with normal error feedback instead of surfacing a widget
+  exception.
+- Failed delete-undo restores now keep the item deleted and show normal error
+  feedback from a stable screen context.
+- Focused widget coverage verifies both the failed delete path and the failed
+  undo-restore path for `Neon Tetra`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1839,9 +1849,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   name entry, waits for the local save, and gives normal success/error
   feedback. Marking a wishlist item as purchased now waits for the local item
   save before applying budget spend, and failed purchase saves leave local data
-  unchanged with normal error feedback. Remaining backup/data work is deeper
-  import validation UX, broader edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+  unchanged with normal error feedback. Failed wishlist delete and delete-undo
+  saves now show normal error feedback while keeping local data consistent.
+  Remaining backup/data work is deeper import validation UX, broader
+  edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

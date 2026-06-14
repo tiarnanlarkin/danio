@@ -42,6 +42,24 @@ class _FailingMarkPurchasedWishlistNotifier extends WishlistNotifier {
   }
 }
 
+class _FailingRemoveWishlistNotifier extends WishlistNotifier {
+  _FailingRemoveWishlistNotifier(super.ref);
+
+  @override
+  Future<void> removeItem(String id) async {
+    throw StateError('remove save failed');
+  }
+}
+
+class _FailingUndoWishlistNotifier extends WishlistNotifier {
+  _FailingUndoWishlistNotifier(super.ref);
+
+  @override
+  Future<void> addItem(WishlistItem item) async {
+    throw StateError('restore save failed');
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -187,6 +205,102 @@ void main() {
       expect(restoredItem['id'], 'wishlist-undo');
       expect(restoredItem['category'], 'fish');
       expect(restoredItem['quantity'], 6);
+    });
+
+    testWidgets('failed delete keeps item visible with error feedback', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'wishlist_items':
+            '[{"id":"wishlist-delete-failure","name":"Neon Tetra",'
+            '"category":"fish","species":"Paracheirodon innesi",'
+            '"notes":null,"estimatedPrice":2.5,"imageUrl":null,'
+            '"quantity":6,"purchased":false,'
+            '"createdAt":"${DateTime.now().toIso8601String()}",'
+            '"purchasedAt":null}]',
+      });
+
+      await tester.pumpWidget(
+        _wrap(
+          overrides: [
+            wishlistProvider.overrideWith(
+              (ref) => _FailingRemoveWishlistNotifier(ref),
+            ),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byIcon(Icons.delete_outline));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove Item'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Neon Tetra'), findsOneWidget);
+      expect(
+        find.text('Could not remove Neon Tetra. Try again in a moment.'),
+        findsOneWidget,
+      );
+      expect(find.text('Neon Tetra removed'), findsNothing);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedItems =
+          jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+      final savedItem = savedItems.single as Map<String, dynamic>;
+      expect(savedItem['id'], 'wishlist-delete-failure');
+      expect(savedItem['purchased'], isFalse);
+    });
+
+    testWidgets('failed delete undo keeps item deleted with error feedback', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'wishlist_items':
+            '[{"id":"wishlist-undo-failure","name":"Neon Tetra",'
+            '"category":"fish","species":"Paracheirodon innesi",'
+            '"notes":null,"estimatedPrice":2.5,"imageUrl":null,'
+            '"quantity":6,"purchased":false,'
+            '"createdAt":"${DateTime.now().toIso8601String()}",'
+            '"purchasedAt":null}]',
+      });
+
+      await tester.pumpWidget(
+        _wrap(
+          overrides: [
+            wishlistProvider.overrideWith(
+              (ref) => _FailingUndoWishlistNotifier(ref),
+            ),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byIcon(Icons.delete_outline));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove Item'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Neon Tetra'), findsNothing);
+      expect(find.text('Undo'), findsOneWidget);
+
+      await tester.tap(find.text('Undo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Neon Tetra'), findsNothing);
+      expect(
+        find.text('Could not restore Neon Tetra. Try again in a moment.'),
+        findsOneWidget,
+      );
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedItems =
+          jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+      expect(savedItems, isEmpty);
     });
 
     testWidgets('marking an item purchased saves it and updates budget', (
