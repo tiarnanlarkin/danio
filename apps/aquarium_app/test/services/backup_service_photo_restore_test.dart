@@ -1902,13 +1902,18 @@ void main() {
     for (final scenario in [
       (
         label: 'missing interval',
-        entry: {..._validChildEntry('tasks', 'task-1'), 'recurrence': 'custom'},
+        entry: {
+          ..._validChildEntry('tasks', 'task-1'),
+          'recurrence': 'custom',
+          'dueDate': '2026-06-14T09:00:00.000Z',
+        },
       ),
       (
         label: 'zero interval',
         entry: {
           ..._validChildEntry('tasks', 'task-1'),
           'recurrence': 'custom',
+          'dueDate': '2026-06-14T09:00:00.000Z',
           'intervalDays': 0,
         },
       ),
@@ -1935,6 +1940,50 @@ void main() {
                 'message',
                 contains(
                   'Invalid format: tasks custom recurrence entries must include positive intervalDays',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
+        label: 'daily',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'recurrence': 'daily'},
+      ),
+      (
+        label: 'custom',
+        entry: {
+          ..._validChildEntry('tasks', 'task-1'),
+          'recurrence': 'custom',
+          'intervalDays': 3,
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.label} recurring task without dueDate',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            'tasks': [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: tasks recurring entries must include dueDate',
                 ),
               ),
             ),

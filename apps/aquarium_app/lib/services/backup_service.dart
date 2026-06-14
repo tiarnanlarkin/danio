@@ -676,7 +676,14 @@ class BackupService {
   }
 
   void _validateTaskRecurrenceRules(Map<dynamic, dynamic> entry) {
-    if (entry['recurrence'] != 'custom') return;
+    final recurrence = entry['recurrence'];
+    if (recurrence != 'none' && entry['dueDate'] == null) {
+      throw Exception(
+        'Invalid format: tasks recurring entries must include dueDate',
+      );
+    }
+
+    if (recurrence != 'custom') return;
 
     final intervalDays = entry['intervalDays'];
     if (intervalDays is int && intervalDays > 0) return;
