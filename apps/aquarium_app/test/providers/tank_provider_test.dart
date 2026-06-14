@@ -199,6 +199,22 @@ class _AddDemoTankLivestockSaveFailsStorage extends _TestStorageService {
   }
 }
 
+class _SaveTanksPartiallyFailsStorage extends _TestStorageService {
+  _SaveTanksPartiallyFailsStorage({required this.failOnSaveNumber});
+
+  final int failOnSaveNumber;
+
+  @override
+  Future<void> saveTanks(List<Tank> tanks) async {
+    for (var i = 0; i < tanks.length; i++) {
+      if (i + 1 == failOnSaveNumber) {
+        throw StateError('bulk tank save failed');
+      }
+      await super.saveTank(tanks[i]);
+    }
+  }
+}
+
 /// Creates an isolated ProviderContainer with a fresh storage service.
 ProviderContainer _makeContainer({StorageService? storage}) {
   return ProviderContainer(
@@ -761,6 +777,47 @@ void main() {
   });
 
   // ── TankActions.permanentlyDeleteTank ───────────────────────────────────────
+
+  group('TankActions - reorderTanks', () {
+    test('rolls back partial sort-order writes if bulk save fails', () async {
+      final storage = _SaveTanksPartiallyFailsStorage(failOnSaveNumber: 2);
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      final first = _makeTank(
+        id: 'tank-reorder-first',
+        name: 'First',
+      ).copyWith(sortOrder: 0);
+      final second = _makeTank(
+        id: 'tank-reorder-second',
+        name: 'Second',
+      ).copyWith(sortOrder: 1);
+      final third = _makeTank(
+        id: 'tank-reorder-third',
+        name: 'Third',
+      ).copyWith(sortOrder: 2);
+      await storage.saveTank(first);
+      await storage.saveTank(second);
+      await storage.saveTank(third);
+      await _settle();
+
+      await expectLater(
+        container.read(tankActionsProvider).reorderTanks([
+          third,
+          second,
+          first,
+        ]),
+        throwsA(isA<StateError>()),
+      );
+      await _settle();
+
+      expect((await storage.getTank(first.id))!.sortOrder, first.sortOrder);
+      expect((await storage.getTank(second.id))!.sortOrder, second.sortOrder);
+      expect((await storage.getTank(third.id))!.sortOrder, third.sortOrder);
+      final tanks = await container.read(tanksProvider.future);
+      expect(tanks.map((tank) => tank.id), [first.id, second.id, third.id]);
+    });
+  });
 
   group('TankActions - permanentlyDeleteTank', () {
     test('removes tank from storage', () async {

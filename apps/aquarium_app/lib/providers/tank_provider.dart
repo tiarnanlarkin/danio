@@ -451,20 +451,39 @@ class TankActions {
   /// Reorder tanks - updates sortOrder for all tanks based on new positions
   /// Single persist call for all updated tanks.
   Future<void> reorderTanks(List<Tank> reorderedTanks) async {
+    final storage = _storage;
+    final originalsById = <String, Tank>{};
+
     try {
       final now = DateTime.now();
       final updates = <Tank>[];
       for (int i = 0; i < reorderedTanks.length; i++) {
         final tank = reorderedTanks[i];
         if (tank.sortOrder != i) {
+          originalsById[tank.id] = tank;
           updates.add(tank.copyWith(sortOrder: i, updatedAt: now));
         }
       }
       if (updates.isNotEmpty) {
-        await _storage.saveTanks(updates);
+        await storage.saveTanks(updates);
       }
       _ref.invalidate(tanksProvider);
     } catch (e, st) {
+      if (originalsById.isNotEmpty) {
+        for (final original in originalsById.values) {
+          try {
+            await storage.saveTank(original);
+          } catch (rollbackError, rollbackStack) {
+            logError(
+              'TankProvider.reorderTanks rollback failed for '
+              '${original.id}: $rollbackError',
+              stackTrace: rollbackStack,
+              tag: 'TankProvider',
+            );
+          }
+        }
+        _ref.invalidate(tanksProvider);
+      }
       logError(
         'TankProvider.reorderTanks failed: $e',
         stackTrace: st,
