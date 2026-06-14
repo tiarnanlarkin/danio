@@ -384,6 +384,7 @@ class BackupService {
         );
       }
     }
+    _validateUpdatedAtOnOrAfterCreatedAt(tank, collectionName: 'tank');
 
     final targets = tank['targets'];
     if (targets == null) return;
@@ -591,6 +592,10 @@ class BackupService {
           );
         }
       }
+      _validateUpdatedAtOnOrAfterCreatedAt(
+        entry,
+        collectionName: collectionName,
+      );
       for (final field in _optionalStringChildFields(collectionName)) {
         final value = entry[field];
         if (value != null && value is! String) {
@@ -644,6 +649,27 @@ class BackupService {
         _validateLogNestedFields(entry);
       }
     }
+  }
+
+  void _validateUpdatedAtOnOrAfterCreatedAt(
+    Map<dynamic, dynamic> entry, {
+    required String collectionName,
+  }) {
+    final createdAtValue = entry['createdAt'];
+    final updatedAtValue = entry['updatedAt'];
+    if (createdAtValue is! String || updatedAtValue is! String) return;
+
+    final createdAt = DateTime.tryParse(createdAtValue);
+    final updatedAt = DateTime.tryParse(updatedAtValue);
+    if (createdAt == null ||
+        updatedAt == null ||
+        !updatedAt.isBefore(createdAt)) {
+      return;
+    }
+
+    throw Exception(
+      'Invalid format: $collectionName updatedAt values must be on or after createdAt',
+    );
   }
 
   void _validateChildRelationshipTargets(Map<String, dynamic> data) {

@@ -309,6 +309,36 @@ void main() {
       );
     });
 
+    test('getBackupData rejects tank entries updated before creation', () async {
+      final service = BackupService(
+        getDocumentsDirectory: () async => sourceDocs,
+        getTemporaryDirectory: () async => tempDir,
+      );
+      final zipPath = await service.createBackup({
+        'tanks': [
+          {
+            'id': 'tank-1',
+            'name': 'Main tank',
+            'createdAt': '2026-06-14T09:00:00.000',
+            'updatedAt': '2026-06-13T09:00:00.000',
+          },
+        ],
+      });
+
+      await expectLater(
+        service.getBackupData(zipPath),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains(
+              'Invalid format: tank updatedAt values must be on or after createdAt',
+            ),
+          ),
+        ),
+      );
+    });
+
     for (final scenario in [
       (
         field: 'root',
@@ -916,6 +946,62 @@ void main() {
                 'message',
                 contains(
                   'Invalid format: ${scenario.collection} entries must include ${scenario.missingField}',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
+        collection: 'livestock',
+        entry: {
+          ..._validChildEntry('livestock', 'livestock-1'),
+          'createdAt': '2026-06-14T09:00:00.000',
+          'updatedAt': '2026-06-13T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'equipment',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'createdAt': '2026-06-14T09:00:00.000',
+          'updatedAt': '2026-06-13T09:00:00.000',
+        },
+      ),
+      (
+        collection: 'tasks',
+        entry: {
+          ..._validChildEntry('tasks', 'task-1'),
+          'createdAt': '2026-06-14T09:00:00.000',
+          'updatedAt': '2026-06-13T09:00:00.000',
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries updated before creation',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} updatedAt values must be on or after createdAt',
                 ),
               ),
             ),
