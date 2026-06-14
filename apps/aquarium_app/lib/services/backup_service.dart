@@ -261,6 +261,12 @@ class BackupService {
         throw Exception('Invalid format: tank $field values must be strings');
       }
     }
+    _validateKnownValue(
+      collectionName: 'tank',
+      field: 'type',
+      value: tank['type'],
+      allowedValues: const {'freshwater', 'marine'},
+    );
 
     for (final field in const [
       'volumeLitres',
@@ -415,6 +421,14 @@ class BackupService {
           );
         }
       }
+      for (final enumField in _enumChildFields(collectionName).entries) {
+        _validateKnownValue(
+          collectionName: collectionName,
+          field: enumField.key,
+          value: entry[enumField.key],
+          allowedValues: enumField.value,
+        );
+      }
       for (final field in _numericChildFields(collectionName)) {
         final value = entry[field];
         if (value != null && value is! num) {
@@ -434,6 +448,20 @@ class BackupService {
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
       }
+    }
+  }
+
+  void _validateKnownValue({
+    required String collectionName,
+    required String field,
+    required dynamic value,
+    required Set<String> allowedValues,
+  }) {
+    if (value == null) return;
+    if (value is! String || !allowedValues.contains(value)) {
+      throw Exception(
+        'Invalid format: $collectionName $field values must be known values',
+      );
     }
   }
 
@@ -495,6 +523,55 @@ class BackupService {
       'equipment' => const ['lastServiced', 'installedDate', 'purchaseDate'],
       'tasks' => const ['dueDate', 'lastCompletedAt'],
       _ => const [],
+    };
+  }
+
+  Map<String, Set<String>> _enumChildFields(String collectionName) {
+    return switch (collectionName) {
+      'logs' => const {
+        'type': {
+          'waterTest',
+          'waterChange',
+          'feeding',
+          'medication',
+          'observation',
+          'livestockAdded',
+          'livestockRemoved',
+          'equipmentMaintenance',
+          'taskCompleted',
+          'other',
+        },
+      },
+      'livestock' => const {
+        'temperament': {'peaceful', 'semiAggressive', 'aggressive'},
+        'healthStatus': {'healthy', 'sick', 'quarantine'},
+      },
+      'equipment' => const {
+        'type': {
+          'filter',
+          'heater',
+          'light',
+          'airPump',
+          'co2System',
+          'autoFeeder',
+          'thermometer',
+          'wavemaker',
+          'skimmer',
+          'other',
+        },
+      },
+      'tasks' => const {
+        'recurrence': {
+          'none',
+          'daily',
+          'weekly',
+          'biweekly',
+          'monthly',
+          'custom',
+        },
+        'priority': {'low', 'normal', 'high'},
+      },
+      _ => const {},
     };
   }
 

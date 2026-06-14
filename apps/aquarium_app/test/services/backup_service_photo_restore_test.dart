@@ -235,6 +235,11 @@ void main() {
         message: 'Invalid format: tank name values must be strings',
       ),
       (
+        field: 'type',
+        tank: {'id': 'tank-1', 'type': 'brackish'},
+        message: 'Invalid format: tank type values must be known values',
+      ),
+      (
         field: 'volumeLitres',
         tank: {'id': 'tank-1', 'volumeLitres': 'large'},
         message: 'Invalid format: tank volumeLitres values must be numbers',
@@ -672,6 +677,77 @@ void main() {
                 'message',
                 contains(
                   'Invalid format: ${scenario.collection} ${scenario.field} values must be valid dates',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
+        collection: 'logs',
+        field: 'type',
+        entry: {..._validChildEntry('logs', 'log-1'), 'type': 'mystery'},
+      ),
+      (
+        collection: 'livestock',
+        field: 'temperament',
+        entry: {
+          ..._validChildEntry('livestock', 'livestock-1'),
+          'temperament': 'spiky',
+        },
+      ),
+      (
+        collection: 'livestock',
+        field: 'healthStatus',
+        entry: {
+          ..._validChildEntry('livestock', 'livestock-1'),
+          'healthStatus': 'missing',
+        },
+      ),
+      (
+        collection: 'equipment',
+        field: 'type',
+        entry: {
+          ..._validChildEntry('equipment', 'equipment-1'),
+          'type': 'reactor',
+        },
+      ),
+      (
+        collection: 'tasks',
+        field: 'recurrence',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'recurrence': 'often'},
+      ),
+      (
+        collection: 'tasks',
+        field: 'priority',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'priority': 'urgent'},
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with invalid ${scenario.field} enum values',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must be known values',
                 ),
               ),
             ),

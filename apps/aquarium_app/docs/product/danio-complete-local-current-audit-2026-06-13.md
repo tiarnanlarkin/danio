@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1594 tests.
+- `flutter test`: pass, 1601 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1108,6 +1108,15 @@ CL-P1-009Q Backup tank field validation:
 - This prevents malformed tank records from passing preview and then failing
   restore parsing or silently defaulting important tank setup values.
 
+CL-P1-009R Backup enum validation:
+
+- Backup preview/import now rejects invalid enum values before restore parsing
+  can silently default them.
+- Covered fields include tank `type`, log `type`, livestock `temperament` and
+  `healthStatus`, equipment `type`, and task `recurrence`/`priority`.
+- This keeps imported records honest instead of quietly changing unknown
+  backup values into default care, task, equipment, or tank categories.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1270,8 +1279,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   rejects decimal values for integer-only child fields, and optional cloud
   restore now skips child records whose tanks are not present locally or in the
   backup. Tank records now also validate text, numeric, integer, boolean, date,
-  and water-target field shapes before preview/import. Remaining backup/data
-  work is deeper import validation UX, edit/delete/undo coverage, and
+  and water-target field shapes before preview/import. Backup enum fields now
+  reject unknown values instead of silently defaulting during import. Remaining
+  backup/data work is deeper import validation UX, edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
