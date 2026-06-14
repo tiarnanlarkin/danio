@@ -502,6 +502,13 @@ class BackupService {
           );
         }
       }
+      for (final field in _requiredValueChildFields(collectionName)) {
+        if (!entry.containsKey(field) || entry[field] == null) {
+          throw Exception(
+            'Invalid format: $collectionName entries must include $field',
+          );
+        }
+      }
       for (final field in _dateChildFields(collectionName)) {
         final value = entry[field] as String;
         if (DateTime.tryParse(value) == null) {
@@ -708,6 +715,13 @@ class BackupService {
       ],
       'equipment' => const ['name', 'createdAt', 'updatedAt'],
       'tasks' => const ['title', 'createdAt', 'updatedAt'],
+      _ => const [],
+    };
+  }
+
+  List<String> _requiredValueChildFields(String collectionName) {
+    return switch (collectionName) {
+      'livestock' => const ['count'],
       _ => const [],
     };
   }

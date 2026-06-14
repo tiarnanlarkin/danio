@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1635 tests.
+- `flutter test`: pass, 1636 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1253,6 +1253,15 @@ CL-P1-009AF Backup export missing-photo guard:
 - Focused coverage verifies missing tank `imageUrl` photo references fail
   during `createBackup`.
 
+CL-P1-009AG Backup livestock count validation:
+
+- Backup preview/import now rejects livestock records that are missing `count`
+  instead of letting import silently default the livestock quantity to `1`.
+- The existing numeric and whole-number validators still handle malformed or
+  decimal livestock counts, so the new guard only covers absent count data.
+- Focused coverage verifies missing livestock `count` fails before preview,
+  photo restore, or import proceeds.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1434,9 +1443,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   letting one bad child record abort valid sibling imports. Backup relationship
   validation now rejects cross-tank log/task relationship targets before
   preview/import. Backup export now rejects missing referenced local photo
-  files before creating an invalid ZIP. Remaining backup/data work is deeper
-  import validation UX, edit/delete/undo coverage, and restore/migration
-  walkthrough QA.
+  files before creating an invalid ZIP. Backup preview/import now rejects
+  livestock records missing required quantity data before silently defaulting
+  counts. Remaining backup/data work is deeper import validation UX,
+  edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

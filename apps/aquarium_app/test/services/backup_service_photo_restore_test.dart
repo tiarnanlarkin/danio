@@ -654,6 +654,18 @@ void main() {
         },
       ),
       (
+        collection: 'livestock',
+        missingField: 'count',
+        entry: {
+          'id': 'livestock-1',
+          'tankId': 'tank-1',
+          'commonName': 'Neon tetra',
+          'dateAdded': '2026-06-14T09:00:00.000',
+          'createdAt': '2026-06-14T09:00:00.000',
+          'updatedAt': '2026-06-14T09:00:00.000',
+        },
+      ),
+      (
         collection: 'equipment',
         missingField: 'name',
         entry: {'id': 'equipment-1', 'tankId': 'tank-1'},
@@ -1514,7 +1526,7 @@ Future<void> _writeBackupZip(
   await File(zipPath).writeAsBytes(zipBytes);
 }
 
-Map<String, String> _validChildEntry(String collectionName, String id) {
+Map<String, dynamic> _validChildEntry(String collectionName, String id) {
   const timestamp = '2026-06-14T09:00:00.000';
   final base = {'id': id, 'tankId': 'tank-1', 'createdAt': timestamp};
   return switch (collectionName) {
@@ -1522,6 +1534,7 @@ Map<String, String> _validChildEntry(String collectionName, String id) {
     'livestock' => {
       ...base,
       'commonName': 'Neon tetra',
+      'count': 6,
       'dateAdded': timestamp,
       'updatedAt': timestamp,
     },
