@@ -302,6 +302,24 @@ class BackupService {
           );
         }
       }
+      if (collectionName == 'logs') {
+        _validateLogNestedFields(entry);
+      }
+    }
+  }
+
+  void _validateLogNestedFields(Map<dynamic, dynamic> entry) {
+    final waterTest = entry['waterTest'];
+    if (waterTest != null && waterTest is! Map) {
+      throw Exception('Invalid format: logs waterTest values must be objects');
+    }
+
+    final photoUrls = entry['photoUrls'];
+    if (photoUrls != null &&
+        (photoUrls is! List || photoUrls.any((value) => value is! String))) {
+      throw Exception(
+        'Invalid format: logs photoUrls values must be arrays of strings',
+      );
     }
   }
 

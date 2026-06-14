@@ -355,6 +355,50 @@ void main() {
         },
       );
     }
+
+    for (final scenario in [
+      (
+        field: 'waterTest',
+        entry: {..._validChildEntry('logs', 'log-1'), 'waterTest': 'unsafe'},
+        message: 'Invalid format: logs waterTest values must be objects',
+      ),
+      (
+        field: 'photoUrls',
+        entry: {
+          ..._validChildEntry('logs', 'log-1'),
+          'photoUrls': ['photos/fish.jpg', 42],
+        },
+        message:
+            'Invalid format: logs photoUrls values must be arrays of strings',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects log entries with invalid ${scenario.field}',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            'logs': [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }
 
