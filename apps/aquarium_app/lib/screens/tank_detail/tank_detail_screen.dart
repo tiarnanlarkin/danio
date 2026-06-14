@@ -13,6 +13,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/haptic_feedback.dart';
+import '../../utils/logger.dart';
 import '../../navigation/app_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../../utils/skeleton_placeholders.dart';
@@ -22,6 +23,7 @@ import '../../widgets/core/app_card.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/cycling_status_card.dart';
+import '../../widgets/danio_snack_bar.dart';
 import '../../widgets/danio_daily_card.dart';
 import '../charts_screen.dart';
 import '../cycling_assistant_screen.dart';
@@ -214,51 +216,133 @@ class TankDetailScreen extends ConsumerWidget {
     final now = DateTime.now();
 
     final completed = task.complete();
-    await storage.saveTask(completed);
+    var taskSaved = false;
+    var completionLogSaved = false;
+    var equipmentSaved = false;
+    var equipmentLogSaved = false;
+    Equipment? originalEquipment;
+    final completionLogId = _uuid.v4();
+    final equipmentLogId = _uuid.v4();
 
-    // Also add a log entry so completions show up in Recent Activity.
-    await storage.saveLog(
-      LogEntry(
-        id: _uuid.v4(),
-        tankId: tankId,
-        type: LogType.taskCompleted,
-        timestamp: now,
-        title: task.title,
-        notes: task.description,
-        relatedTaskId: task.id,
-        relatedEquipmentId: task.relatedEquipmentId,
-        createdAt: now,
-      ),
-    );
+    try {
+      await storage.saveTask(completed);
+      taskSaved = true;
 
-    // If this task is tied to equipment maintenance, update equipment + log it.
-    if (task.relatedEquipmentId != null) {
-      final equipment = await storage.getEquipmentForTank(tankId);
-      Equipment? e;
-      for (final x in equipment) {
-        if (x.id == task.relatedEquipmentId) {
-          e = x;
-          break;
+      // Also add a log entry so completions show up in Recent Activity.
+      await storage.saveLog(
+        LogEntry(
+          id: completionLogId,
+          tankId: tankId,
+          type: LogType.taskCompleted,
+          timestamp: now,
+          title: task.title,
+          notes: task.description,
+          relatedTaskId: task.id,
+          relatedEquipmentId: task.relatedEquipmentId,
+          createdAt: now,
+        ),
+      );
+      completionLogSaved = true;
+
+      // If this task is tied to equipment maintenance, update equipment + log it.
+      if (task.relatedEquipmentId != null) {
+        final equipment = await storage.getEquipmentForTank(tankId);
+        Equipment? e;
+        for (final x in equipment) {
+          if (x.id == task.relatedEquipmentId) {
+            e = x;
+            break;
+          }
+        }
+        if (e != null) {
+          originalEquipment = e;
+          await storage.saveEquipment(
+            e.copyWith(lastServiced: now, updatedAt: now),
+          );
+          equipmentSaved = true;
+          await storage.saveLog(
+            LogEntry(
+              id: equipmentLogId,
+              tankId: tankId,
+              type: LogType.equipmentMaintenance,
+              timestamp: now,
+              title: 'Serviced ${e.name}',
+              notes: e.typeName,
+              relatedEquipmentId: e.id,
+              relatedTaskId: task.id,
+              createdAt: now,
+            ),
+          );
+          equipmentLogSaved = true;
         }
       }
-      if (e != null) {
-        await storage.saveEquipment(
-          e.copyWith(lastServiced: now, updatedAt: now),
-        );
-        await storage.saveLog(
-          LogEntry(
-            id: _uuid.v4(),
-            tankId: tankId,
-            type: LogType.equipmentMaintenance,
-            timestamp: now,
-            title: 'Serviced ${e.name}',
-            notes: e.typeName,
-            relatedEquipmentId: e.id,
-            relatedTaskId: task.id,
-            createdAt: now,
-          ),
+    } catch (e, st) {
+      logError(
+        'TankDetailScreen: task completion failed: $e',
+        stackTrace: st,
+        tag: 'TankDetailScreen',
+      );
+
+      if (equipmentLogSaved) {
+        try {
+          await storage.deleteLog(equipmentLogId);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankDetailScreen: equipment log rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankDetailScreen',
+          );
+        }
+      }
+
+      if (equipmentSaved && originalEquipment != null) {
+        try {
+          await storage.saveEquipment(originalEquipment);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankDetailScreen: equipment rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankDetailScreen',
+          );
+        }
+      }
+
+      if (completionLogSaved) {
+        try {
+          await storage.deleteLog(completionLogId);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankDetailScreen: completion log rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankDetailScreen',
+          );
+        }
+      }
+
+      if (taskSaved) {
+        try {
+          await storage.saveTask(task);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankDetailScreen: task rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankDetailScreen',
+          );
+        }
+      }
+
+      ref.invalidate(tasksProvider(tankId));
+      ref.invalidate(equipmentProvider(tankId));
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(allLogsProvider(tankId));
+
+      if (context.mounted) {
+        DanioSnackBar.error(
+          context,
+          'Couldn\'t complete that task. Try again.',
         );
       }
+      return;
     }
 
     ref.invalidate(tasksProvider(tankId));

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1714 tests.
+- `flutter test`: pass, 1715 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1713,6 +1713,16 @@ CL-P1-009CB First-run demo seed rollback:
 - Focused provider coverage simulates a failed demo default-task save and
   verifies no partial demo tank or child data remains.
 
+CL-P1-009CC Tank Detail task-completion rollback:
+
+- Completing a task from Tank Detail now rolls back partial local writes if the
+  completion log or equipment-maintenance side effects fail.
+- The rollback restores the original task state, removes any generated logs,
+  restores the previous equipment state when needed, refreshes local providers,
+  and shows normal error feedback instead of surfacing a widget exception.
+- Focused Tank Detail widget coverage simulates a failed completion-log write
+  and verifies the task remains incomplete with no success feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1952,7 +1962,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   data. Failed livestock bulk moves now roll back earlier moved records. Failed
   sample-tank replacement now restores the previous demo tank and child data.
   Failed tank reorders now restore partial sort-order writes. Failed first-run
-  demo seeding now removes partial demo data. Remaining
+  demo seeding now removes partial demo data. Failed Tank Detail task
+  completions now roll back partial task/log/equipment writes. Remaining
   backup/data work is deeper import validation UX, broader edit/delete/undo
   coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
