@@ -11,13 +11,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/wishlist_screen.dart';
 import 'package:danio/models/wishlist.dart';
+import 'package:danio/providers/wishlist_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({WishlistCategory category = WishlistCategory.fish}) {
+Widget _wrap({
+  WishlistCategory category = WishlistCategory.fish,
+  List<Override> overrides = const [],
+}) {
   return ProviderScope(
+    overrides: overrides,
     child: MaterialApp(home: WishlistScreen(category: category)),
   );
 }
@@ -26,6 +31,15 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 500));
   await tester.pump(const Duration(milliseconds: 500));
+}
+
+class _FailingMarkPurchasedWishlistNotifier extends WishlistNotifier {
+  _FailingMarkPurchasedWishlistNotifier(super.ref);
+
+  @override
+  Future<void> markPurchased(String id) async {
+    throw StateError('purchase save failed');
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -173,6 +187,88 @@ void main() {
       expect(restoredItem['id'], 'wishlist-undo');
       expect(restoredItem['category'], 'fish');
       expect(restoredItem['quantity'], 6);
+    });
+
+    testWidgets('marking an item purchased saves it and updates budget', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'wishlist_items':
+            '[{"id":"wishlist-purchase","name":"Neon Tetra",'
+            '"category":"fish","species":"Paracheirodon innesi",'
+            '"notes":null,"estimatedPrice":2.5,"imageUrl":null,'
+            '"quantity":6,"purchased":false,'
+            '"createdAt":"${DateTime.now().toIso8601String()}",'
+            '"purchasedAt":null}]',
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.tap(find.byIcon(Icons.check_circle_outline));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Neon Tetra'), findsNothing);
+      expect(find.text('Neon Tetra marked as purchased!'), findsOneWidget);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedItems =
+          jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+      final savedItem = savedItems.single as Map<String, dynamic>;
+      expect(savedItem['purchased'], isTrue);
+      expect(savedItem['purchasedAt'], isNotNull);
+
+      final savedBudget =
+          jsonDecode(prefs.getString('shop_budget')!) as Map<String, dynamic>;
+      expect(savedBudget['spentThisMonth'], 15.0);
+    });
+
+    testWidgets('failed purchase keeps item unpurchased with error feedback', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'wishlist_items':
+            '[{"id":"wishlist-purchase-failure","name":"Neon Tetra",'
+            '"category":"fish","species":"Paracheirodon innesi",'
+            '"notes":null,"estimatedPrice":2.5,"imageUrl":null,'
+            '"quantity":6,"purchased":false,'
+            '"createdAt":"${DateTime.now().toIso8601String()}",'
+            '"purchasedAt":null}]',
+      });
+
+      await tester.pumpWidget(
+        _wrap(
+          overrides: [
+            wishlistProvider.overrideWith(
+              (ref) => _FailingMarkPurchasedWishlistNotifier(ref),
+            ),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byIcon(Icons.check_circle_outline));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Neon Tetra'), findsOneWidget);
+      expect(
+        find.text(
+          'Could not mark Neon Tetra as purchased. Try again in a moment.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Neon Tetra marked as purchased!'), findsNothing);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedItems =
+          jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+      final savedItem = savedItems.single as Map<String, dynamic>;
+      expect(savedItem['purchased'], isFalse);
+      expect(savedItem['purchasedAt'], isNull);
+      expect(prefs.getString('shop_budget'), isNull);
     });
   });
 }

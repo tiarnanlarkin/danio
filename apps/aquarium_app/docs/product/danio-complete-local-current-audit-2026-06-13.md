@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1697 tests.
+- `flutter test`: pass, 1699 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1601,6 +1601,15 @@ CL-P1-009BP Wishlist add feedback:
 - Focused widget coverage adds `Neon Tetra`, verifies the saved wishlist item,
   and checks for `Neon Tetra added.` feedback.
 
+CL-P1-009BQ Wishlist purchase feedback resilience:
+
+- Marking a wishlist item as purchased now waits for the local wishlist save
+  before applying the matching budget spend and showing success feedback.
+- Failed purchase saves keep the item unpurchased, avoid writing budget spend,
+  and show normal error feedback instead of surfacing a widget exception.
+- Focused widget coverage verifies both the successful purchased/budget write
+  path and the failed purchase rollback/error path for `Neon Tetra`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1828,8 +1837,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Street monthly budget now waits for the local preference write and gives
   normal success/error feedback. Adding a wishlist item now enables save after
   name entry, waits for the local save, and gives normal success/error
-  feedback. Remaining backup/data work is deeper import validation UX, broader
-  edit/delete/undo coverage, and restore/migration walkthrough QA.
+  feedback. Marking a wishlist item as purchased now waits for the local item
+  save before applying budget spend, and failed purchase saves leave local data
+  unchanged with normal error feedback. Remaining backup/data work is deeper
+  import validation UX, broader edit/delete/undo coverage, and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

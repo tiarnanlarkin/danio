@@ -42,6 +42,7 @@ class WishlistScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final screenContext = context;
     final allItems = ref.watch(wishlistProvider);
     final items =
         allItems
@@ -82,7 +83,7 @@ class WishlistScreen extends ConsumerWidget {
                       : 'equipment'} you want to get for your aquarium',
               mascotContext: MascotContext.encouragement,
               actionLabel: 'Add Item',
-              onAction: () => _showAddDialog(context, ref),
+              onAction: () => _showAddDialog(screenContext, ref),
             )
           : ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -93,7 +94,7 @@ class WishlistScreen extends ConsumerWidget {
                   item: item,
                   accentColor: _accentColor,
                   onTap: () => _showEditDialog(context, ref, item),
-                  onPurchased: () => _markPurchased(context, ref, item),
+                  onPurchased: () => _markPurchased(screenContext, ref, item),
                   onDelete: () => _deleteItem(context, ref, item),
                 );
               },
@@ -142,16 +143,41 @@ class WishlistScreen extends ConsumerWidget {
     );
   }
 
-  void _markPurchased(BuildContext context, WidgetRef ref, WishlistItem item) {
-    ref.read(wishlistProvider.notifier).markPurchased(item.id);
+  Future<void> _markPurchased(
+    BuildContext context,
+    WidgetRef ref,
+    WishlistItem item,
+  ) async {
+    final wishlist = ref.read(wishlistProvider.notifier);
+    var markedPurchased = false;
 
-    // Add to budget if price is set
-    if (item.estimatedPrice != null) {
-      ref
-          .read(budgetProvider.notifier)
-          .addPurchase(item.estimatedPrice! * item.quantity);
+    try {
+      await wishlist.markPurchased(item.id);
+      markedPurchased = true;
+
+      // Add to budget if price is set
+      if (item.estimatedPrice != null) {
+        await ref
+            .read(budgetProvider.notifier)
+            .addPurchase(item.estimatedPrice! * item.quantity);
+      }
+    } catch (_) {
+      if (markedPurchased) {
+        try {
+          await wishlist.updateItem(item);
+        } catch (_) {
+          // Leave provider rollback best-effort; the user-facing action failed.
+        }
+      }
+      if (!context.mounted) return;
+      AppFeedback.showError(
+        context,
+        'Could not mark ${item.name} as purchased. Try again in a moment.',
+      );
+      return;
     }
 
+    if (!context.mounted) return;
     AppFeedback.showSuccess(context, '${item.name} marked as purchased!');
   }
 
