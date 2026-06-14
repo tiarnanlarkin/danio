@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1648 tests.
+- `flutter test`: pass, 1652 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1292,6 +1292,16 @@ CL-P1-009AJ Backup child numeric range validation:
   count/size, equipment maintenance interval, and task completion count fail
   before preview, photo restore, or import proceeds.
 
+CL-P1-009AK Backup tank numeric range validation:
+
+- Backup preview/import now rejects out-of-range tank numeric fields when they
+  are present instead of accepting impossible tank setup values.
+- Tank volume must stay between 1 and 10000 litres, tank dimensions cannot be
+  negative, target temperature/GH/KH values cannot be negative, and target pH
+  values must stay between 0 and 14.
+- Focused coverage verifies malformed volume, dimension, temperature target,
+  and pH target values fail before preview, photo restore, or import proceeds.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1480,8 +1490,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   water-test readings now reject before import can silently clamp them. Child
   numeric ranges now reject impossible water-change percentages, counts, sizes,
   maintenance intervals, lifespan values, interval days, and completion counts
-  before import. Remaining backup/data work is deeper import validation UX,
-  edit/delete/undo coverage, and restore/migration walkthrough QA.
+  before import. Tank numeric ranges now reject impossible volume, dimension,
+  and water-target values before import. Remaining backup/data work is deeper
+  import validation UX, edit/delete/undo coverage, and restore/migration
+  walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

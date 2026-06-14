@@ -346,6 +346,20 @@ class BackupService {
         throw Exception('Invalid format: tank $field values must be numbers');
       }
     }
+    _validateNumberBetween(
+      collectionName: 'tank',
+      field: 'volumeLitres',
+      value: tank['volumeLitres'],
+      min: 1,
+      max: 10000,
+    );
+    for (final field in const ['lengthCm', 'widthCm', 'heightCm']) {
+      _validateNumberAtLeastZero(
+        collectionName: 'tank',
+        field: field,
+        value: tank[field],
+      );
+    }
 
     final sortOrder = tank['sortOrder'];
     if (sortOrder != null && sortOrder is! int) {
@@ -396,6 +410,29 @@ class BackupService {
           'Invalid format: tank targets $field values must be numbers',
         );
       }
+    }
+    for (final field in const [
+      'tempMin',
+      'tempMax',
+      'ghMin',
+      'ghMax',
+      'khMin',
+      'khMax',
+    ]) {
+      _validateNumberAtLeastZero(
+        collectionName: 'tank targets',
+        field: field,
+        value: targets[field],
+      );
+    }
+    for (final field in const ['phMin', 'phMax']) {
+      _validateNumberBetween(
+        collectionName: 'tank targets',
+        field: field,
+        value: targets[field],
+        min: 0,
+        max: 14,
+      );
     }
   }
 

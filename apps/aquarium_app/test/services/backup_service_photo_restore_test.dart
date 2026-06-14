@@ -499,6 +499,64 @@ void main() {
       );
     }
 
+    for (final scenario in [
+      (
+        field: 'volumeLitres',
+        tank: {'id': 'tank-1', 'name': 'Main tank', 'volumeLitres': 0},
+        message:
+            'Invalid format: tank volumeLitres values must be between 1 and 10000',
+      ),
+      (
+        field: 'lengthCm',
+        tank: {'id': 'tank-1', 'name': 'Main tank', 'lengthCm': -10},
+        message: 'Invalid format: tank lengthCm values must be zero or greater',
+      ),
+      (
+        field: 'targets.tempMin',
+        tank: {
+          'id': 'tank-1',
+          'name': 'Main tank',
+          'targets': {'tempMin': -1},
+        },
+        message:
+            'Invalid format: tank targets tempMin values must be zero or greater',
+      ),
+      (
+        field: 'targets.phMax',
+        tank: {
+          'id': 'tank-1',
+          'name': 'Main tank',
+          'targets': {'phMax': 15},
+        },
+        message:
+            'Invalid format: tank targets phMax values must be between 0 and 14',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects tank entries with out-of-range ${scenario.field}',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [scenario.tank],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     for (final childCollection in const [
       'logs',
       'livestock',
