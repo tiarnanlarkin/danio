@@ -1898,6 +1898,50 @@ void main() {
         },
       );
     }
+
+    for (final scenario in [
+      (
+        label: 'missing interval',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'recurrence': 'custom'},
+      ),
+      (
+        label: 'zero interval',
+        entry: {
+          ..._validChildEntry('tasks', 'task-1'),
+          'recurrence': 'custom',
+          'intervalDays': 0,
+        },
+      ),
+    ]) {
+      test(
+        'getBackupData rejects custom task recurrence with ${scenario.label}',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            'tasks': [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: tasks custom recurrence entries must include positive intervalDays',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   });
 }
 

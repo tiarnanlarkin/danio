@@ -645,6 +645,9 @@ class BackupService {
         }
       }
       _validateChildNumericRanges(collectionName, entry);
+      if (collectionName == 'tasks') {
+        _validateTaskRecurrenceRules(entry);
+      }
       if (collectionName == 'logs') {
         _validateLogNestedFields(entry);
       }
@@ -669,6 +672,17 @@ class BackupService {
 
     throw Exception(
       'Invalid format: $collectionName updatedAt values must be on or after createdAt',
+    );
+  }
+
+  void _validateTaskRecurrenceRules(Map<dynamic, dynamic> entry) {
+    if (entry['recurrence'] != 'custom') return;
+
+    final intervalDays = entry['intervalDays'];
+    if (intervalDays is int && intervalDays > 0) return;
+
+    throw Exception(
+      'Invalid format: tasks custom recurrence entries must include positive intervalDays',
     );
   }
 
