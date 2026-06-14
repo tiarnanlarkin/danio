@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1692 tests.
+- `flutter test`: pass, 1693 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1554,6 +1554,16 @@ CL-P1-009BK Equipment add success feedback:
   flow, verifies the equipment is saved, and checks for `Sponge filter added.`
   feedback.
 
+CL-P1-009BL Livestock add feedback and log copy:
+
+- Adding a single livestock entry now shows normal success feedback after the
+  local livestock save, added-log write, and XP activity write succeed.
+- The livestock-added timeline title now uses ASCII-safe count copy:
+  `Added 1x Amano Shrimp`.
+- Focused widget coverage adds `Amano Shrimp` through the visible add-livestock
+  flow, verifies the saved livestock record, verifies the readable timeline
+  log title, and checks for `1x Amano Shrimp added.` feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1774,9 +1784,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   a stable screen context. Successful task snooze now gives normal success
   feedback after the saved due date changes. Adding a task now gives normal
   success feedback after the local save succeeds. Adding equipment now gives
-  normal success feedback after the local equipment save succeeds. Remaining
-  backup/data work is deeper import validation UX, broader edit/delete/undo
-  coverage, and restore/migration walkthrough QA.
+  normal success feedback after the local equipment save succeeds. Adding
+  livestock now gives normal success feedback and writes ASCII-safe added-log
+  count copy. Remaining backup/data work is deeper import validation UX,
+  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

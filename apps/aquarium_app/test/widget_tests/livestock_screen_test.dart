@@ -171,6 +171,42 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       expect(find.byIcon(Icons.more_vert), findsOneWidget);
     });
+
+    testWidgets(
+      'adding livestock shows success feedback and readable timeline log',
+      (tester) async {
+        suppressAvatarError();
+        const tankId = 'livestock-add-feedback-tank';
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Shrimp Tank'));
+
+        await tester.pumpWidget(
+          _wrapWithStorage(storage: storage, tankId: tankId),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.tap(find.text('Add Livestock'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'Amano Shrimp',
+        );
+        await tester.tap(find.text('Add').last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(seconds: 1));
+
+        final livestock = await storage.getLivestockForTank(tankId);
+        expect(livestock.single.commonName, 'Amano Shrimp');
+        expect(livestock.single.count, 1);
+
+        final logs = await storage.getLogsForTank(tankId);
+        expect(logs.single.title, 'Added 1x Amano Shrimp');
+        expect(find.text('1x Amano Shrimp added.'), findsOneWidget);
+      },
+    );
   });
 
   group('LivestockScreen - bulk move', () {

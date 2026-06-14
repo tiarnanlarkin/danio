@@ -323,7 +323,7 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
             tankId: widget.tankId,
             type: LogType.livestockAdded,
             timestamp: now,
-            title: 'Added ${livestock.count}× ${livestock.commonName}',
+            title: 'Added ${livestock.count}x ${livestock.commonName}',
             relatedLivestockId: livestock.id,
             createdAt: now,
           ),
@@ -344,6 +344,14 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
 
       ref.invalidate(livestockProvider(widget.tankId));
 
+      if (mounted) {
+        AppFeedback.showSuccess(
+          context,
+          widget.existing != null
+              ? '${livestock.count}x ${livestock.commonName} saved.'
+              : '${livestock.count}x ${livestock.commonName} added.',
+        );
+      }
       if (mounted) Navigator.maybePop(context);
     } catch (e) {
       logError('Error saving livestock: $e', tag: 'LivestockAddDialog');
