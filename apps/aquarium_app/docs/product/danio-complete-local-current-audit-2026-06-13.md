@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1726 tests.
+- `flutter test`: pass, 1727 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1828,6 +1828,15 @@ CL-P1-009CI Reminder completion failure feedback:
 - Focused Reminders widget coverage simulates a failed completion preference
   write and verifies the reminder tile remains visible with no notification
   cancellation side effect.
+
+CL-P1-009CJ Profile creation save failure feedback:
+
+- First-run profile creation now uses the immediate local save path before
+  exposing the new profile in provider state.
+- Failed `user_profile` writes now surface to the caller and leave the profile
+  provider in an error state instead of making onboarding appear locally saved.
+- Focused provider coverage simulates a failed `user_profile` preference write
+  and verifies no profile JSON is stored.
 
 CL-P1-010A Tank Settings water-profile copy:
 
