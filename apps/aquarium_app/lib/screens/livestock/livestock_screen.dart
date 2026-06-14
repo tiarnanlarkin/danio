@@ -468,7 +468,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         .toList();
 
     final livestockNames = selectedLivestock
-        .map((l) => '${l.count}× ${l.commonName}')
+        .map((l) => '${l.count}x ${l.commonName}')
         .join(', ');
 
     final confirmed = await showAppDestructiveDialog(
@@ -665,7 +665,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               tankId: widget.tankId,
               type: LogType.livestockRemoved,
               timestamp: now,
-              title: 'Removed ${livestock.count}× ${livestock.commonName}',
+              title: 'Removed ${livestock.count}x ${livestock.commonName}',
               relatedLivestockId: livestock.id,
               createdAt: now,
             ),
@@ -684,7 +684,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     // Use pre-captured messenger; context may be deactivated in callbacks.
     AppFeedback.showNeutralViaMessenger(
       messenger,
-      '${livestock.count}× ${livestock.commonName} removed',
+      '${livestock.count}x ${livestock.commonName} removed',
       duration: kSnackbarDuration,
       actionLabel: 'Undo',
       onAction: () {

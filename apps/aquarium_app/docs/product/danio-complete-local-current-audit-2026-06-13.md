@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1680 tests.
+- `flutter test`: pass, 1681 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1434,6 +1434,17 @@ CL-P1-009AY Log deletion failure feedback:
   tester exception is exposed, feedback appears, and the original log content
   remains visible.
 
+CL-P1-009AZ Livestock removal count copy:
+
+- Livestock removal confirmation text, removal journal titles, and removal
+  snackbars now use ASCII-safe `x` count text instead of the multiplication
+  glyph.
+- This matches the existing bulk-add livestock copy standard and reduces the
+  risk of fragile count symbols rendering poorly in local Windows/Android
+  environments.
+- Focused copy coverage now guards both bulk-add and main Livestock removal
+  feedback against fragile count symbols.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1640,9 +1651,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   expense records. Bulk tank deletion now uses the same 5-second undo window as
   single-tank deletion instead of deleting tank storage immediately. Failed Log
   Detail deletion now stays on the log and shows normal error feedback instead
-  of surfacing a raw widget exception. Remaining backup/data work is deeper
-  import validation UX, broader edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+  of surfacing a raw widget exception. Livestock removal feedback now uses
+  ASCII-safe count text in confirmation, journal, and snackbar copy. Remaining
+  backup/data work is deeper import validation UX, broader edit/delete/undo
+  coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
