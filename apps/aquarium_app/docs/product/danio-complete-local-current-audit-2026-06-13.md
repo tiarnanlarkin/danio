@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1679 tests.
+- `flutter test`: pass, 1680 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1424,6 +1424,16 @@ CL-P1-009AX Bulk tank delete undo:
   `tanksProvider`, remain present in storage during the undo window, and return
   after undo.
 
+CL-P1-009AY Log deletion failure feedback:
+
+- Log Detail deletion now catches local storage failures instead of surfacing a
+  raw widget exception.
+- Failed deletion leaves the log detail visible and shows a normal Danio error
+  snackbar: `Couldn't delete that log. Try again in a moment.`
+- Focused widget coverage simulates a failed `deleteLog` call and verifies no
+  tester exception is exposed, feedback appears, and the original log content
+  remains visible.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1628,9 +1638,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   a 5-second undo snackbar that restores the same saved shop. Cost Tracker
   clear-all now has a 5-second undo snackbar that restores the same saved
   expense records. Bulk tank deletion now uses the same 5-second undo window as
-  single-tank deletion instead of deleting tank storage immediately. Remaining
-  backup/data work is deeper import validation UX, broader edit/delete/undo
-  coverage, and restore/migration walkthrough QA.
+  single-tank deletion instead of deleting tank storage immediately. Failed Log
+  Detail deletion now stays on the log and shows normal error feedback instead
+  of surfacing a raw widget exception. Remaining backup/data work is deeper
+  import validation UX, broader edit/delete/undo coverage, and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

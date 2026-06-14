@@ -11,6 +11,7 @@ import '../providers/tank_provider.dart';
 import '../services/image_cache_service.dart';
 import '../theme/app_theme.dart';
 import 'add_log_screen.dart';
+import '../utils/logger.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_dialog.dart';
 
@@ -158,7 +159,23 @@ class LogDetailScreen extends ConsumerWidget {
     if (ok != true) return;
 
     final storage = ref.read(storageServiceProvider);
-    await storage.deleteLog(log.id);
+    try {
+      await storage.deleteLog(log.id);
+    } catch (e, st) {
+      logError(
+        'LogDetailScreen: log delete failed: $e',
+        stackTrace: st,
+        tag: 'LogDetailScreen',
+      );
+      if (context.mounted) {
+        DanioSnackBar.error(
+          context,
+          "Couldn't delete that log. Try again in a moment.",
+        );
+      }
+      return;
+    }
+
     ref.invalidate(logsProvider(tankId));
     ref.invalidate(allLogsProvider(tankId));
 
