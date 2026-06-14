@@ -122,7 +122,7 @@ class TasksScreen extends ConsumerWidget {
               DanioBottomDock.contentClearance + AppSpacing.md,
             ),
             itemCount: items.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (_, index) {
               final item = items[index];
 
               if (item.isHeader) {
@@ -409,8 +409,23 @@ class TasksScreen extends ConsumerWidget {
               duration: const Duration(seconds: 5),
               actionLabel: 'Undo',
               onAction: () async {
-                await storage.saveTask(task);
-                ref.invalidate(tasksProvider(tankId));
+                try {
+                  await storage.saveTask(task);
+                  ref.invalidate(tasksProvider(tankId));
+                } catch (e, st) {
+                  logError(
+                    'TasksScreen: task restore failed: $e',
+                    stackTrace: st,
+                    tag: 'TasksScreen',
+                  );
+                  ref.invalidate(tasksProvider(tankId));
+                  if (context.mounted) {
+                    DanioSnackBar.error(
+                      context,
+                      'Couldn\'t restore that task. Try again.',
+                    );
+                  }
+                }
               },
             );
           }
