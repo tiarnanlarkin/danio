@@ -228,6 +228,71 @@ void main() {
       );
     });
 
+    for (final scenario in [
+      (
+        field: 'name',
+        tank: {'id': 'tank-1', 'name': 42},
+        message: 'Invalid format: tank name values must be strings',
+      ),
+      (
+        field: 'volumeLitres',
+        tank: {'id': 'tank-1', 'volumeLitres': 'large'},
+        message: 'Invalid format: tank volumeLitres values must be numbers',
+      ),
+      (
+        field: 'sortOrder',
+        tank: {'id': 'tank-1', 'sortOrder': 1.5},
+        message: 'Invalid format: tank sortOrder values must be whole numbers',
+      ),
+      (
+        field: 'isDemoTank',
+        tank: {'id': 'tank-1', 'isDemoTank': 'yes'},
+        message: 'Invalid format: tank isDemoTank values must be booleans',
+      ),
+      (
+        field: 'startDate',
+        tank: {'id': 'tank-1', 'startDate': 'not-date'},
+        message: 'Invalid format: tank startDate values must be valid dates',
+      ),
+      (
+        field: 'targets',
+        tank: {'id': 'tank-1', 'targets': 'soft'},
+        message: 'Invalid format: tank targets values must be objects',
+      ),
+      (
+        field: 'targets.tempMin',
+        tank: {
+          'id': 'tank-1',
+          'targets': {'tempMin': 'warm'},
+        },
+        message: 'Invalid format: tank targets tempMin values must be numbers',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects tank entries with invalid ${scenario.field}',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [scenario.tank],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     for (final childCollection in const [
       'logs',
       'livestock',

@@ -239,6 +239,7 @@ class BackupService {
       if (!seenTankIds.add(normalizedId)) {
         throw Exception('Invalid format: duplicate tank id "$normalizedId"');
       }
+      _validateTankFields(tank);
     }
 
     for (final collectionName in const [
@@ -251,6 +252,78 @@ class BackupService {
     }
 
     return data;
+  }
+
+  void _validateTankFields(Map<dynamic, dynamic> tank) {
+    for (final field in const ['name', 'type', 'notes', 'imageUrl']) {
+      final value = tank[field];
+      if (value != null && value is! String) {
+        throw Exception('Invalid format: tank $field values must be strings');
+      }
+    }
+
+    for (final field in const [
+      'volumeLitres',
+      'lengthCm',
+      'widthCm',
+      'heightCm',
+    ]) {
+      final value = tank[field];
+      if (value != null && value is! num) {
+        throw Exception('Invalid format: tank $field values must be numbers');
+      }
+    }
+
+    final sortOrder = tank['sortOrder'];
+    if (sortOrder != null && sortOrder is! int) {
+      throw Exception(
+        'Invalid format: tank sortOrder values must be whole numbers',
+      );
+    }
+
+    final isDemoTank = tank['isDemoTank'];
+    if (isDemoTank != null && isDemoTank is! bool) {
+      throw Exception(
+        'Invalid format: tank isDemoTank values must be booleans',
+      );
+    }
+
+    for (final field in const ['startDate', 'createdAt', 'updatedAt']) {
+      final value = tank[field];
+      if (value == null) continue;
+      if (value is! String || DateTime.tryParse(value) == null) {
+        throw Exception(
+          'Invalid format: tank $field values must be valid dates',
+        );
+      }
+    }
+
+    final targets = tank['targets'];
+    if (targets == null) return;
+    if (targets is! Map) {
+      throw Exception('Invalid format: tank targets values must be objects');
+    }
+    _validateTankTargets(targets);
+  }
+
+  void _validateTankTargets(Map<dynamic, dynamic> targets) {
+    for (final field in const [
+      'tempMin',
+      'tempMax',
+      'phMin',
+      'phMax',
+      'ghMin',
+      'ghMax',
+      'khMin',
+      'khMax',
+    ]) {
+      final value = targets[field];
+      if (value != null && value is! num) {
+        throw Exception(
+          'Invalid format: tank targets $field values must be numbers',
+        );
+      }
+    }
   }
 
   void _validatePhotoArchiveEntries(Archive archive) {

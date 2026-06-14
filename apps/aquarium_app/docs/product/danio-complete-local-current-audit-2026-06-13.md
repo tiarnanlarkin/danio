@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1587 tests.
+- `flutter test`: pass, 1594 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1097,6 +1097,17 @@ CL-P1-009P Backup integer child-field validation:
 - This prevents backups from passing preview with numeric values that later
   fail model parsing because the app expects whole numbers.
 
+CL-P1-009Q Backup tank field validation:
+
+- Backup preview/import now rejects malformed tank root fields before import
+  parsing: non-string text fields, non-numeric volume/dimension fields,
+  decimal/non-integer `sortOrder`, non-boolean `isDemoTank`, and invalid tank
+  date strings.
+- Tank `targets` must now be an object when present, and known target range
+  fields such as `tempMin`, `phMax`, `ghMin`, and `khMax` must be numbers.
+- This prevents malformed tank records from passing preview and then failing
+  restore parsing or silently defaulting important tank setup values.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1258,8 +1269,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   non-numeric child fields, rejects duplicate restored photo archive filenames,
   rejects decimal values for integer-only child fields, and optional cloud
   restore now skips child records whose tanks are not present locally or in the
-  backup. Remaining backup/data work is deeper import validation UX,
-  edit/delete/undo coverage, and
+  backup. Tank records now also validate text, numeric, integer, boolean, date,
+  and water-target field shapes before preview/import. Remaining backup/data
+  work is deeper import validation UX, edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
