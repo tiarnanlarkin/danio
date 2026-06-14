@@ -250,6 +250,7 @@ class BackupService {
     ]) {
       _validateTankScopedCollection(data, collectionName, seenTankIds);
     }
+    _validateReferencedPhotoEntries(data, archive);
 
     return data;
   }
@@ -350,6 +351,37 @@ class BackupService {
       final normalizedFilename = filename.toLowerCase();
       if (!seenPhotoFilenames.add(normalizedFilename)) {
         throw Exception('Invalid backup: duplicate photo filename "$filename"');
+      }
+    }
+  }
+
+  void _validateReferencedPhotoEntries(
+    Map<String, dynamic> data,
+    Archive archive,
+  ) {
+    final archivedPhotoFilenames = <String>{};
+    for (final file in archive.files) {
+      if (!file.isFile) continue;
+
+      final normalizedName = file.name.replaceAll(r'\', '/');
+      if (!normalizedName.startsWith('$_photosFolder/')) continue;
+
+      final filename = _photoEntryFilename(file.name);
+      if (filename.isNotEmpty) {
+        archivedPhotoFilenames.add(filename.toLowerCase());
+      }
+    }
+
+    final referencedPhotoRefs = <String>{};
+    _extractPhotoPaths(data, referencedPhotoRefs);
+    for (final photoRef in referencedPhotoRefs) {
+      final filename = _photoEntryFilename(photoRef);
+      if (filename.isEmpty) continue;
+
+      if (!archivedPhotoFilenames.contains(filename.toLowerCase())) {
+        throw Exception(
+          'Invalid backup: referenced photo "$filename" is missing from archive',
+        );
       }
     }
   }
@@ -667,6 +699,8 @@ class BackupService {
       for (final item in data) {
         _extractPhotoPaths(item, paths);
       }
+    } else if (data is String && _isPhotoRef(data)) {
+      paths.add(data);
     }
   }
 

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1608 tests.
+- `flutter test`: pass, 1610 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1125,6 +1125,15 @@ CL-P1-009S Backup child metadata-date validation:
   equipment `createdAt`/`updatedAt`, and task `createdAt`/`updatedAt`.
 - These metadata fields are also validated as dates before import.
 
+CL-P1-009T Backup referenced-photo validation:
+
+- Backup preview/import now rejects JSON photo references when the matching
+  bundled photo file is missing from the archive.
+- This covers tank `imageUrl` refs and log `photoUrls` refs, preventing import
+  from writing records that point at local photo files that were never restored.
+- The shared photo-ref scanner now also finds strings inside lists, so list-based
+  photo references are handled consistently.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1290,7 +1299,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   and water-target field shapes before preview/import. Backup enum fields now
   reject unknown values instead of silently defaulting during import. Child
   records now reject missing import-required metadata dates before preview.
-  Remaining backup/data work is deeper import validation UX, edit/delete/undo coverage, and
+  Backup JSON photo references now reject missing bundled archive files before
+  preview/import. Remaining backup/data work is deeper import validation UX, edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and

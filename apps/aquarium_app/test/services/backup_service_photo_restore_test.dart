@@ -138,6 +138,62 @@ void main() {
       },
     );
 
+    for (final scenario in [
+      (
+        field: 'tank imageUrl',
+        data: {
+          'tanks': [
+            {'id': 'tank-1', 'imageUrl': 'photos/missing-tank.jpg'},
+          ],
+        },
+        message:
+            'Invalid backup: referenced photo "missing-tank.jpg" is missing from archive',
+      ),
+      (
+        field: 'log photoUrls',
+        data: {
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [
+            {
+              ..._validChildEntry('logs', 'log-1'),
+              'photoUrls': ['photos/missing-log.jpg'],
+            },
+          ],
+        },
+        message:
+            'Invalid backup: referenced photo "missing-log.jpg" is missing from archive',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.field} refs without archive files',
+        () async {
+          final zipPath = p.join(
+            tempDir.path,
+            '${scenario.field.replaceAll(' ', '_')}_missing_photo.zip',
+          );
+          await _writeBackupZip(zipPath, data: scenario.data);
+
+          final restoreService = BackupService(
+            getDocumentsDirectory: () async => restoreDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+
+          await expectLater(
+            restoreService.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     test('getBackupData rejects backups without a tanks array', () async {
       final service = BackupService(
         getDocumentsDirectory: () async => sourceDocs,
