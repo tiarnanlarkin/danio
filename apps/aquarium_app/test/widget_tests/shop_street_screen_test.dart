@@ -9,20 +9,43 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/wishlist.dart';
+import 'package:danio/providers/wishlist_provider.dart';
 import 'package:danio/screens/shop_street_screen.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() {
-  return const ProviderScope(child: MaterialApp(home: ShopStreetScreen()));
+Widget _wrap({List<Override> overrides = const []}) {
+  return ProviderScope(
+    overrides: overrides,
+    child: const MaterialApp(home: ShopStreetScreen()),
+  );
 }
 
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
   await tester.pump(const Duration(seconds: 1));
+}
+
+class _FailingRemoveLocalShopsNotifier extends LocalShopsNotifier {
+  _FailingRemoveLocalShopsNotifier(super.ref);
+
+  @override
+  Future<void> removeShop(String id) async {
+    throw StateError('remove shop save failed');
+  }
+}
+
+class _FailingUndoLocalShopsNotifier extends LocalShopsNotifier {
+  _FailingUndoLocalShopsNotifier(super.ref);
+
+  @override
+  Future<void> addShop(LocalShop shop) async {
+    throw StateError('restore shop save failed');
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -201,5 +224,112 @@ void main() {
       expect(restoredShop['distanceMiles'], 3.5);
       expect(restoredShop['notes'], 'Good plant section');
     });
+
+    testWidgets('failed delete keeps local shop visible with error feedback', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'local_shops':
+            '[{"id":"shop-delete-failure","name":"Aquatic World",'
+            '"address":"12 River Road","phone":null,"website":null,'
+            '"distanceMiles":3.5,"rating":4.5,'
+            '"notes":"Good plant section",'
+            '"createdAt":"${DateTime.now().toIso8601String()}"}]',
+      });
+
+      await tester.pumpWidget(
+        _wrap(
+          overrides: [
+            localShopsProvider.overrideWith(
+              (ref) => _FailingRemoveLocalShopsNotifier(ref),
+            ),
+          ],
+        ),
+      );
+      await _advance(tester);
+      await tester.scrollUntilVisible(
+        find.text('Local Fish Shops'),
+        500,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Close'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove Shop'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Aquatic World'), findsOneWidget);
+      expect(
+        find.text('Could not remove Aquatic World. Try again in a moment.'),
+        findsOneWidget,
+      );
+      expect(find.text('Aquatic World removed'), findsNothing);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedShops =
+          jsonDecode(prefs.getString('local_shops')!) as List<dynamic>;
+      final savedShop = savedShops.single as Map<String, dynamic>;
+      expect(savedShop['id'], 'shop-delete-failure');
+      expect(savedShop['distanceMiles'], 3.5);
+    });
+
+    testWidgets(
+      'failed delete undo keeps local shop deleted with error feedback',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'local_shops':
+              '[{"id":"shop-undo-failure","name":"Aquatic World",'
+              '"address":"12 River Road","phone":null,"website":null,'
+              '"distanceMiles":3.5,"rating":4.5,'
+              '"notes":"Good plant section",'
+              '"createdAt":"${DateTime.now().toIso8601String()}"}]',
+        });
+
+        await tester.pumpWidget(
+          _wrap(
+            overrides: [
+              localShopsProvider.overrideWith(
+                (ref) => _FailingUndoLocalShopsNotifier(ref),
+              ),
+            ],
+          ),
+        );
+        await _advance(tester);
+        await tester.scrollUntilVisible(
+          find.text('Local Fish Shops'),
+          500,
+          scrollable: find.byType(Scrollable),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byTooltip('Close'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Remove Shop'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(find.text('Aquatic World'), findsNothing);
+        expect(find.text('Undo'), findsOneWidget);
+
+        await tester.tap(find.text('Undo'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Aquatic World'), findsNothing);
+        expect(
+          find.text('Could not restore Aquatic World. Try again in a moment.'),
+          findsOneWidget,
+        );
+
+        final prefs = await SharedPreferences.getInstance();
+        final savedShops =
+            jsonDecode(prefs.getString('local_shops')!) as List<dynamic>;
+        expect(savedShops, isEmpty);
+      },
+    );
   });
 }

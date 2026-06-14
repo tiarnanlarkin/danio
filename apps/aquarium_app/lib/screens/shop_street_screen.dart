@@ -259,18 +259,34 @@ class ShopStreetScreen extends ConsumerWidget {
       cancelLabel: 'Keep',
       onConfirm: () async {
         final shops = ref.read(localShopsProvider.notifier);
-        await shops.removeShop(shop.id);
-        if (context.mounted) {
-          AppFeedback.show(
+        try {
+          await shops.removeShop(shop.id);
+        } catch (_) {
+          if (!context.mounted) return;
+          AppFeedback.showError(
             context,
-            '${shop.name} removed',
-            duration: const Duration(seconds: 5),
-            actionLabel: 'Undo',
-            onAction: () async {
-              await shops.addShop(shop);
-            },
+            'Could not remove ${shop.name}. Try again in a moment.',
           );
+          return;
         }
+        if (!context.mounted) return;
+        AppFeedback.show(
+          context,
+          '${shop.name} removed',
+          duration: const Duration(seconds: 5),
+          actionLabel: 'Undo',
+          onAction: () async {
+            try {
+              await shops.addShop(shop);
+            } catch (_) {
+              if (!context.mounted) return;
+              AppFeedback.showError(
+                context,
+                'Could not restore ${shop.name}. Try again in a moment.',
+              );
+            }
+          },
+        );
       },
     );
   }
