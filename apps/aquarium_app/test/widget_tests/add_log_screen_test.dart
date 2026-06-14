@@ -129,13 +129,18 @@ Widget _wrapWithLatestTemperatureHarness({
 Widget _wrapWithFeedingPulseProbe({
   required InMemoryStorageService storage,
   required String tankId,
+  LogEntry? existingLog,
 }) {
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
     child: MaterialApp(
       home: Stack(
         children: [
-          AddLogScreen(tankId: tankId, initialType: LogType.feeding),
+          AddLogScreen(
+            tankId: tankId,
+            initialType: LogType.feeding,
+            existingLog: existingLog,
+          ),
           Positioned(
             left: 0,
             top: 0,
@@ -257,6 +262,42 @@ void main() {
       final logs = await svc.getLogsForTank(tankId);
       expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
       expect(find.text('pulse 1'), findsOneWidget);
+    });
+
+    testWidgets('editing an existing feeding log does not emit a new pulse', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'add-log-feeding-edit-pulse-tank';
+      final now = DateTime(2026, 6, 14, 12);
+      final existingLog = LogEntry(
+        id: 'existing-feeding-log',
+        tankId: tankId,
+        type: LogType.feeding,
+        timestamp: now,
+        notes: 'Morning feed',
+        createdAt: now,
+      );
+      await svc.saveTank(_makeTank(id: tankId));
+      await svc.saveLog(existingLog);
+
+      await tester.pumpWidget(
+        _wrapWithFeedingPulseProbe(
+          storage: svc,
+          tankId: tankId,
+          existingLog: existingLog,
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.text('pulse 0'), findsOneWidget);
+
+      await tester.tap(find.text('Save'));
+      await _advance(tester);
+
+      final logs = await svc.getLogsForTank(tankId);
+      expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
+      expect(find.text('pulse 0'), findsOneWidget);
     });
   });
 

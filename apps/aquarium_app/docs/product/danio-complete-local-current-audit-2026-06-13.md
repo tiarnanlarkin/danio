@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1720 tests.
+- `flutter test`: pass, 1721 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -409,6 +409,15 @@ CL-P1-001I Add Log feeding pulse handoff:
   Livestock Feed entry points.
 - Focused Add Log widget coverage verifies saving a feeding entry emits
   `tankFeedingPulseProvider`.
+
+CL-P1-001J Add Log feeding edit guard:
+
+- Add Log only emits the feeding pulse for newly-created feeding entries, not
+  edits to existing feeding logs.
+- This avoids replaying a "fed now" aquarium animation when a user is only
+  correcting or reviewing a historical feeding record.
+- Focused Add Log widget coverage verifies editing an existing feeding log does
+  not increment `tankFeedingPulseProvider`.
 
 CL-P1-002A Room vibe unlock progress:
 

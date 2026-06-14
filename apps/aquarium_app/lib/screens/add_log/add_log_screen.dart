@@ -1078,7 +1078,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       // Invalidate logs providers
       ref.invalidate(logsProvider(widget.tankId));
       ref.invalidate(allLogsProvider(widget.tankId));
-      if (log.type == LogType.feeding) {
+      if (existing == null && log.type == LogType.feeding) {
         ref.read(tankFeedingPulseProvider(widget.tankId).notifier).state += 1;
       }
       if (log.type == LogType.waterTest) {
