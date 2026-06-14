@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1682 tests.
+- `flutter test`: pass, 1683 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1454,6 +1454,15 @@ CL-P1-009BA Livestock bulk-move count feedback:
 - Focused widget coverage selects two livestock, moves them to another local
   tank, and verifies the snackbar says `Moved 2 livestock to Bedroom Tank`.
 
+CL-P1-009BB Bulk livestock removal timeline logs:
+
+- Bulk livestock removal now writes the same local `livestockRemoved` timeline
+  logs as single livestock removal after the 5-second undo window expires.
+- The shared removal-log helper keeps single and bulk removal titles, related
+  livestock IDs, log type, and timeline refresh behavior aligned.
+- Focused widget coverage selects two livestock, confirms bulk removal, lets
+  the undo window expire, and verifies two local removal logs are saved.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1663,8 +1672,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   of surfacing a raw widget exception. Livestock removal feedback now uses
   ASCII-safe count text in confirmation, journal, and snackbar copy. Livestock
   bulk move now reports the real moved count after clearing selection mode.
-  Remaining backup/data work is deeper import validation UX, broader
-  edit/delete/undo coverage, and restore/migration walkthrough QA.
+  Bulk livestock removal now writes local removal timeline logs after the undo
+  window expires. Remaining backup/data work is deeper import validation UX,
+  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

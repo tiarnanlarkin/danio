@@ -485,9 +485,20 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
     try {
       final actions = ref.read(tankActionsProvider);
+      final removedAt = DateTime.now();
       final deletedIds = List<String>.from(_selectedLivestockIds);
+      final livestockById = {
+        for (final livestock in selectedLivestock) livestock.id: livestock,
+      };
       for (final id in deletedIds) {
-        actions.softDeleteLivestock(id, widget.tankId);
+        final livestock = livestockById[id];
+        actions.softDeleteLivestock(
+          id,
+          widget.tankId,
+          onUndoExpired: livestock == null
+              ? null
+              : () => _saveLivestockRemovalLog(ref, livestock, removedAt),
+        );
       }
 
       if (context.mounted) {
@@ -520,6 +531,34 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           'Couldn\'t remove that. Give it another go.',
         );
       }
+    }
+  }
+
+  Future<void> _saveLivestockRemovalLog(
+    WidgetRef ref,
+    Livestock livestock,
+    DateTime timestamp,
+  ) async {
+    final storage = ref.read(storageServiceProvider);
+    try {
+      await storage.saveLog(
+        LogEntry(
+          id: _uuid.v4(),
+          tankId: widget.tankId,
+          type: LogType.livestockRemoved,
+          timestamp: timestamp,
+          title: 'Removed ${livestock.count}x ${livestock.commonName}',
+          relatedLivestockId: livestock.id,
+          createdAt: timestamp,
+        ),
+      );
+      ref.invalidate(logsProvider(widget.tankId));
+      ref.invalidate(allLogsProvider(widget.tankId));
+    } catch (e) {
+      logError(
+        'Failed to create livestock-removal log: $e',
+        tag: 'LivestockScreen',
+      );
     }
   }
 
@@ -652,35 +691,13 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     Livestock livestock,
   ) async {
     final actions = ref.read(tankActionsProvider);
-    final storage = ref.read(storageServiceProvider);
     final messenger = ScaffoldMessenger.of(context);
     final now = DateTime.now();
 
     actions.softDeleteLivestock(
       livestock.id,
       widget.tankId,
-      onUndoExpired: () async {
-        try {
-          await storage.saveLog(
-            LogEntry(
-              id: _uuid.v4(),
-              tankId: widget.tankId,
-              type: LogType.livestockRemoved,
-              timestamp: now,
-              title: 'Removed ${livestock.count}x ${livestock.commonName}',
-              relatedLivestockId: livestock.id,
-              createdAt: now,
-            ),
-          );
-          ref.invalidate(logsProvider(widget.tankId));
-          ref.invalidate(allLogsProvider(widget.tankId));
-        } catch (e) {
-          logError(
-            'Failed to create livestock-removal log: $e',
-            tag: 'LivestockScreen',
-          );
-        }
-      },
+      onUndoExpired: () => _saveLivestockRemovalLog(ref, livestock, now),
     );
 
     // Use pre-captured messenger; context may be deactivated in callbacks.

@@ -229,4 +229,67 @@ void main() {
       expect(find.text('Moved 0 livestock to Bedroom Tank'), findsNothing);
     });
   });
+
+  group('LivestockScreen - bulk delete', () {
+    testWidgets('expired bulk removal writes timeline logs', (tester) async {
+      suppressAvatarError();
+      const tankId = 'bulk-delete-log-tank';
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Timeline Tank'));
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: 'bulk-delete-neons',
+          tankId: tankId,
+          name: 'Neon Tetra',
+          count: 8,
+        ),
+      );
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: 'bulk-delete-corys',
+          tankId: tankId,
+          name: 'Corydoras',
+          count: 5,
+        ),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byIcon(Icons.more_vert),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select multiple'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select All'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove Livestock'));
+      await tester.pump();
+
+      expect(find.text('2 livestock removed'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pump();
+
+      final logs = await storage.getLogsForTank(tankId);
+      final removalLogs = logs
+          .where((log) => log.type == LogType.livestockRemoved)
+          .toList();
+
+      expect(removalLogs, hasLength(2));
+      expect(
+        removalLogs.map((log) => log.title),
+        containsAll(<String>['Removed 8x Neon Tetra', 'Removed 5x Corydoras']),
+      );
+    });
+  });
 }
