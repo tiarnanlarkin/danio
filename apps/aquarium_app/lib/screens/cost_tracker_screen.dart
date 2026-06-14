@@ -337,9 +337,10 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
             trailing: IconButton(
               tooltip: 'Delete expense',
               icon: Icon(Icons.delete, color: AppColors.error),
-              onPressed: () {
-                Navigator.maybePop(context);
-                _confirmClear();
+              onPressed: () async {
+                await Navigator.maybePop(context);
+                if (!mounted) return;
+                await _confirmClear();
               },
             ),
           ),
@@ -356,14 +357,30 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     );
   }
 
-  void _confirmClear() {
-    showAppDestructiveDialog(
+  Future<void> _confirmClear() async {
+    final ok = await showAppDestructiveDialog(
       context: context,
       title: 'Clear All Expenses?',
-      message: 'This cannot be undone.',
+      message:
+          'This clears your saved expenses. You can undo within 5 seconds.',
       destructiveLabel: 'Clear All',
-      onConfirm: () {
-        setState(() => _expenses = []);
+    );
+
+    if (ok != true || !mounted) return;
+
+    final clearedExpenses = List<_Expense>.from(_expenses);
+    setState(() => _expenses = []);
+    await _saveExpenses();
+
+    if (!mounted) return;
+
+    DanioSnackBar.show(
+      context,
+      'Expenses cleared',
+      duration: const Duration(seconds: 5),
+      actionLabel: 'Undo',
+      onAction: () {
+        setState(() => _expenses = clearedExpenses);
         _saveExpenses();
       },
     );

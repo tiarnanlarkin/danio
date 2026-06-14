@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/cost_tracker_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -235,5 +237,52 @@ void main() {
       expect(find.text('Currency'), findsOneWidget);
       expect(find.text('CHF'), findsOneWidget);
     });
+
+    testWidgets(
+      'clearing all expenses shows undo and restores saved expenses',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'cost_tracker_expenses':
+              '[{"id":"1","description":"Filter","amount":35.0,'
+              '"category":"Equipment","date":"2025-01-15T12:00:00.000"},'
+              '{"id":"2","description":"Plant food","amount":8.5,'
+              '"category":"Food","date":"2025-01-16T12:00:00.000"}]',
+          'cost_tracker_currency': '\u00A3',
+        });
+
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.text('Filter'), findsOneWidget);
+        expect(find.text('Plant food'), findsOneWidget);
+
+        await tester.tap(find.byTooltip('Cost tracker settings'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byTooltip('Delete expense'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Clear All'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(find.text('Filter'), findsNothing);
+        expect(find.text('Plant food'), findsNothing);
+        expect(find.text('Expenses cleared'), findsOneWidget);
+        expect(find.text('Undo'), findsOneWidget);
+
+        await tester.tap(find.widgetWithText(SnackBarAction, 'Undo'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(find.text('Filter'), findsOneWidget);
+        expect(find.text('Plant food'), findsOneWidget);
+
+        final prefs = await SharedPreferences.getInstance();
+        final restoredExpenses =
+            jsonDecode(prefs.getString('cost_tracker_expenses')!)
+                as List<dynamic>;
+        expect(restoredExpenses.map((e) => e['id']), ['1', '2']);
+      },
+    );
   });
 }
