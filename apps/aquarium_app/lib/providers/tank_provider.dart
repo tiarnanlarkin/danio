@@ -235,15 +235,24 @@ class TankActions {
     }
   }
 
-  /// Bulk delete tanks (with confirmation).
-  /// Uses a single batch write so a crash mid-iteration cannot leave
-  /// inconsistent state — either all tanks are removed or none are.
+  /// Bulk soft delete tanks (with confirmation).
+  /// Marks all selected tanks as hidden for the same 5-second undo window used
+  /// by single-tank deletion; permanent deletion happens only after expiry.
   Future<void> bulkDeleteTanks(List<String> ids) async {
     try {
-      await _storage.deleteAllTanks(ids);
+      final softDelete = _ref.read(_softDeleteStateProvider);
+      for (final id in ids.toSet()) {
+        softDelete.markDeleted(id, () {
+          permanentlyDeleteTank(id);
+        });
+      }
       _ref.invalidate(tanksProvider);
     } catch (e, st) {
-      logError('TankProvider.bulkDeleteTanks failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.bulkDeleteTanks failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }

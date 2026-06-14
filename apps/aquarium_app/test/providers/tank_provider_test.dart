@@ -372,6 +372,41 @@ void main() {
         reason: 'Tank should remain in storage during soft-delete window',
       );
     });
+
+    test(
+      'bulk delete hides tanks but keeps them recoverable for undo',
+      () async {
+        final storage = _TestStorageService();
+        final container = _makeContainer(storage: storage);
+        addTearDown(container.dispose);
+
+        await storage.saveTank(_makeTank(id: 'tank-bulk-1', name: 'Bulk One'));
+        await storage.saveTank(_makeTank(id: 'tank-bulk-2', name: 'Bulk Two'));
+        await storage.saveTank(_makeTank(id: 'tank-keep', name: 'Keep Me'));
+        await _settle();
+
+        final actions = container.read(tankActionsProvider);
+        await actions.bulkDeleteTanks(['tank-bulk-1', 'tank-bulk-2']);
+        await _settle();
+
+        var tanks = await container.read(tanksProvider.future);
+        expect(tanks.map((tank) => tank.id), contains('tank-keep'));
+        expect(tanks.map((tank) => tank.id), isNot(contains('tank-bulk-1')));
+        expect(tanks.map((tank) => tank.id), isNot(contains('tank-bulk-2')));
+        expect(await storage.getTank('tank-bulk-1'), isNotNull);
+        expect(await storage.getTank('tank-bulk-2'), isNotNull);
+
+        actions.undoDeleteTank('tank-bulk-1');
+        actions.undoDeleteTank('tank-bulk-2');
+        await _settle();
+
+        tanks = await container.read(tanksProvider.future);
+        expect(
+          tanks.map((tank) => tank.id),
+          containsAll(['tank-bulk-1', 'tank-bulk-2']),
+        );
+      },
+    );
   });
 
   // ── TankActions.updateTank ─────────────────────────────────────────────────

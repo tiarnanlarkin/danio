@@ -327,31 +327,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final selectedTanks = allTanks
         .where((t) => _selectedTankIds.contains(t.id))
         .toList();
+    final selectedTankIds = selectedTanks.map((tank) => tank.id).toList();
     final tankNames = selectedTanks.map((t) => t.name).join(', ');
     final confirmed = await showAppDestructiveDialog(
       context: context,
       title:
           'Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?',
       message:
-          'Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.',
+          'Tanks to delete:\n\n$tankNames\n\nThis will remove these tanks from your view. You can undo within 5 seconds.',
       destructiveLabel:
           'Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}',
       cancelLabel: 'Keep',
     );
     if (confirmed != true || !mounted) return;
     try {
-      await ref
-          .read(tankActionsProvider)
-          .bulkDeleteTanks(_selectedTankIds.toList());
+      await ref.read(tankActionsProvider).bulkDeleteTanks(selectedTankIds);
       if (context.mounted) {
         setState(() {
           _isSelectMode = false;
           _selectedTankIds.clear();
           _currentTankIndex = 0;
         });
-        DanioSnackBar.success(
+        final actions = ref.read(tankActionsProvider);
+        DanioSnackBar.show(
           context,
           '${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted',
+          duration: const Duration(seconds: 5),
+          actionLabel: 'Undo All',
+          onAction: () {
+            for (final id in selectedTankIds) {
+              actions.undoDeleteTank(id);
+            }
+          },
         );
       }
     } catch (e, st) {
