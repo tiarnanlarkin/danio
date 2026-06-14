@@ -186,5 +186,34 @@ void main() {
       expect(restoredTasks.single.id, task.id);
       expect(find.text('Rinse prefilter'), findsOneWidget);
     });
+
+    testWidgets('completing a task shows success feedback', (tester) async {
+      const tankId = 'tank-task-complete-feedback';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-complete-feedback',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byTooltip('Toggle task'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final completedTasks = await svc.getTasksForTank(tankId);
+      expect(completedTasks.single.completionCount, 1);
+      expect(find.text('Rinse prefilter completed!'), findsOneWidget);
+    });
   });
 }

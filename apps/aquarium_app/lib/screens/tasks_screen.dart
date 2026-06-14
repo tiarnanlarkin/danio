@@ -137,7 +137,7 @@ class TasksScreen extends ConsumerWidget {
                 final t = item.task!;
                 return _TaskCard(
                   task: t,
-                  onComplete: () => _completeTask(ref, t),
+                  onComplete: () => _completeTask(context, ref, t),
                   onSnooze: () => _showSnoozeDialog(context, ref, t),
                   onEdit: () => _showEditDialog(context, ref, t),
                   onDelete: () => _confirmDelete(context, ref, t),
@@ -161,7 +161,11 @@ class TasksScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _completeTask(WidgetRef ref, Task task) async {
+  Future<void> _completeTask(
+    BuildContext context,
+    WidgetRef ref,
+    Task task,
+  ) async {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
 
@@ -226,6 +230,10 @@ class TasksScreen extends ConsumerWidget {
     ref.invalidate(equipmentProvider(tankId));
     ref.invalidate(logsProvider(tankId));
     ref.invalidate(allLogsProvider(tankId));
+
+    if (context.mounted) {
+      AppFeedback.showSuccess(context, '${task.title} completed!');
+    }
   }
 
   void _showSnoozeDialog(BuildContext context, WidgetRef ref, Task task) {

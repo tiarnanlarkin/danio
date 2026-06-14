@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1685 tests.
+- `flutter test`: pass, 1686 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1483,6 +1483,16 @@ CL-P1-009BD Equipment removal without stale task delete:
   without a maintenance task is removed cleanly and shows normal success
   feedback.
 
+CL-P1-009BE Task completion feedback:
+
+- Completing a task from the Tasks screen now shows the same clear success
+  feedback already used when completing tasks from Tank Detail.
+- This removes a silent local action after completion logs, XP, task refresh,
+  and equipment refresh succeed.
+- Focused widget coverage completes a saved task through the Tasks screen,
+  verifies the saved completion count increments, and checks for
+  `Rinse prefilter completed!` feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1695,8 +1705,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Bulk livestock removal now writes local removal timeline logs after the undo
   window expires. Equipment removal now rolls back partial local deletes if the
   linked maintenance-task delete fails, and skips stale task deletion when no
-  linked task exists. Remaining backup/data work is deeper import validation UX,
-  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
+  linked task exists. Task completion from the Tasks screen now gives normal
+  success feedback after local writes succeed. Remaining backup/data work is
+  deeper import validation UX, broader edit/delete/undo coverage, and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
