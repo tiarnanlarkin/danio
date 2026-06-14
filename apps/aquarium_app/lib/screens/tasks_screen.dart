@@ -329,21 +329,21 @@ class TasksScreen extends ConsumerWidget {
             title: const Text('1 day'),
             onTap: () {
               Navigator.maybePop(context);
-              _snoozeTask(ref, task, 1);
+              _snoozeTask(context, ref, task, 1);
             },
           ),
           ListTile(
             title: const Text('3 days'),
             onTap: () {
               Navigator.maybePop(context);
-              _snoozeTask(ref, task, 3);
+              _snoozeTask(context, ref, task, 3);
             },
           ),
           ListTile(
             title: const Text('1 week'),
             onTap: () {
               Navigator.maybePop(context);
-              _snoozeTask(ref, task, 7);
+              _snoozeTask(context, ref, task, 7);
             },
           ),
         ],
@@ -351,11 +351,28 @@ class TasksScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _snoozeTask(WidgetRef ref, Task task, int days) async {
+  Future<void> _snoozeTask(
+    BuildContext context,
+    WidgetRef ref,
+    Task task,
+    int days,
+  ) async {
     final storage = ref.read(storageServiceProvider);
     final snoozed = task.snooze(days);
-    await storage.saveTask(snoozed);
-    ref.invalidate(tasksProvider(tankId));
+    try {
+      await storage.saveTask(snoozed);
+      ref.invalidate(tasksProvider(tankId));
+    } catch (e, st) {
+      logError(
+        'TasksScreen: task snooze failed: $e',
+        stackTrace: st,
+        tag: 'TasksScreen',
+      );
+      ref.invalidate(tasksProvider(tankId));
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Couldn\'t snooze that task. Try again.');
+      }
+    }
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {

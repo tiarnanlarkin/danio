@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1687 tests.
+- `flutter test`: pass, 1688 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1502,6 +1502,16 @@ CL-P1-009BF Task completion rollback:
 - Focused widget coverage simulates a failed task-completion log write and
   verifies the saved task stays uncompleted with normal error feedback.
 
+CL-P1-009BG Task snooze failure feedback:
+
+- Task snooze now catches failed local task saves instead of surfacing a raw
+  widget exception.
+- Failed snooze refreshes the task provider and shows normal error feedback,
+  leaving the original saved task unchanged.
+- Focused widget coverage simulates a failed snooze save and verifies the
+  stored due date is unchanged with `Couldn't snooze that task. Try again.`
+  feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1716,9 +1726,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   linked maintenance-task delete fails, and skips stale task deletion when no
   linked task exists. Task completion from the Tasks screen now gives normal
   success feedback after local writes succeed, and rolls back the completed
-  task if the required completion log write fails. Remaining backup/data work
-  is deeper import validation UX, broader edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+  task if the required completion log write fails. Task snooze failures now
+  keep the saved task unchanged and show normal error feedback. Remaining
+  backup/data work is deeper import validation UX, broader edit/delete/undo
+  coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

@@ -55,8 +55,8 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 1));
 }
 
-class _CompletionLogFailsStorage implements StorageService {
-  _CompletionLogFailsStorage(this._delegate);
+class _DelegatingStorageService implements StorageService {
+  _DelegatingStorageService(this._delegate);
 
   final InMemoryStorageService _delegate;
 
@@ -117,12 +117,7 @@ class _CompletionLogFailsStorage implements StorageService {
       _delegate.saveLivestock(livestock);
 
   @override
-  Future<void> saveLog(LogEntry log) async {
-    if (log.type == LogType.taskCompleted) {
-      throw StateError('task completion log failed');
-    }
-    await _delegate.saveLog(log);
-  }
+  Future<void> saveLog(LogEntry log) => _delegate.saveLog(log);
 
   @override
   Future<void> saveTank(Tank tank) => _delegate.saveTank(tank);
@@ -132,6 +127,32 @@ class _CompletionLogFailsStorage implements StorageService {
 
   @override
   Future<void> saveTask(Task task) => _delegate.saveTask(task);
+}
+
+class _CompletionLogFailsStorage extends _DelegatingStorageService {
+  _CompletionLogFailsStorage(super.delegate);
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    if (log.type == LogType.taskCompleted) {
+      throw StateError('task completion log failed');
+    }
+    await super.saveLog(log);
+  }
+}
+
+class _TaskSaveFailsStorage extends _DelegatingStorageService {
+  _TaskSaveFailsStorage(super.delegate, {required this.failingTaskId});
+
+  final String failingTaskId;
+
+  @override
+  Future<void> saveTask(Task task) async {
+    if (task.id == failingTaskId) {
+      throw StateError('task save failed');
+    }
+    await super.saveTask(task);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -343,6 +364,51 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Rinse prefilter completed!'), findsNothing);
+    });
+
+    testWidgets('failed snooze keeps task unchanged with error feedback', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-snooze-failure';
+      final svc = InMemoryStorageService();
+      final failingStorage = _TaskSaveFailsStorage(
+        svc,
+        failingTaskId: 'task-snooze-failure',
+      );
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-snooze-failure',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: failingStorage, tankId: tankId),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Snooze').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('1 day'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      final storedTask = (await svc.getTasksForTank(tankId)).single;
+      expect(storedTask.dueDate, task.dueDate);
+      expect(
+        find.text('Couldn\'t snooze that task. Try again.'),
+        findsOneWidget,
+      );
     });
   });
 }
