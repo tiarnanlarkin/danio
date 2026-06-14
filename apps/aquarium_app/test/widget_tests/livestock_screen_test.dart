@@ -109,6 +109,39 @@ Widget _wrapWithPulseProbe({
   );
 }
 
+Widget _wrapWithTimelineProbe({
+  required StorageService storage,
+  required String tankId,
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      home: Stack(
+        children: [
+          LivestockScreen(tankId: tankId),
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Consumer(
+              builder: (context, ref, _) {
+                final feedingCount = ref
+                    .watch(allLogsProvider(tankId))
+                    .maybeWhen(
+                      data: (logs) => logs
+                          .where((log) => log.type == LogType.feeding)
+                          .length,
+                      orElse: () => -1,
+                    );
+                return Text('timeline feedings $feedingCount');
+              },
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -266,6 +299,39 @@ void main() {
       final logs = await storage.getLogsForTank(tankId);
       expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
       expect(find.text('pulse 1'), findsOneWidget);
+    });
+
+    testWidgets('successful feeding log refreshes all-log timeline data', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-feed-timeline-tank';
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Timeline Tank'));
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: 'livestock-feed-timeline-corys',
+          tankId: tankId,
+          name: 'Corydoras',
+          count: 6,
+        ),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithTimelineProbe(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('timeline feedings 0'), findsOneWidget);
+
+      await tester.tap(find.text('Feed'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final logs = await storage.getLogsForTank(tankId);
+      expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
+      expect(find.text('timeline feedings 1'), findsOneWidget);
     });
   });
 

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1718 tests.
+- `flutter test`: pass, 1719 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -957,6 +957,15 @@ CL-P1-008E Saved AI-note timeline labels:
   timeline event.
 - Focused coverage verifies a saved Symptom Triage journal result appears with
   `AI Note` metadata and the saved guidance body.
+
+CL-P1-008F Livestock feeding timeline refresh:
+
+- Livestock screen feeding now invalidates both recent and all-log providers
+  after a successful local feeding log save.
+- This keeps timeline-style surfaces that watch `allLogsProvider` fresh when a
+  user logs feeding from the livestock management area.
+- Focused Livestock widget coverage verifies the real Feed action refreshes
+  all-log timeline data after saving the feeding log.
 
 CL-P1-009A Backup import safety copy:
 

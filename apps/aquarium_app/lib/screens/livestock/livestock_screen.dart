@@ -581,6 +581,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       );
 
       ref.invalidate(logsProvider(widget.tankId));
+      ref.invalidate(allLogsProvider(widget.tankId));
       ref.read(tankFeedingPulseProvider(widget.tankId).notifier).state += 1;
 
       final isBoostActive = ref.read(xpBoostActiveProvider);
