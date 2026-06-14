@@ -11,6 +11,7 @@ import '../providers/tank_provider.dart';
 import '../services/image_cache_service.dart';
 import '../theme/app_theme.dart';
 import 'add_log_screen.dart';
+import '../utils/app_feedback.dart';
 import '../utils/logger.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_dialog.dart';
@@ -180,15 +181,28 @@ class LogDetailScreen extends ConsumerWidget {
     ref.invalidate(allLogsProvider(tankId));
 
     if (context.mounted) {
+      final messenger = ScaffoldMessenger.of(context);
       DanioSnackBar.show(
         context,
         'Log deleted',
         duration: const Duration(seconds: 5),
         actionLabel: 'Undo',
         onAction: () async {
-          await storage.saveLog(log);
-          ref.invalidate(logsProvider(tankId));
-          ref.invalidate(allLogsProvider(tankId));
+          try {
+            await storage.saveLog(log);
+            ref.invalidate(logsProvider(tankId));
+            ref.invalidate(allLogsProvider(tankId));
+          } catch (e, st) {
+            logError(
+              'LogDetailScreen: log restore failed: $e',
+              stackTrace: st,
+              tag: 'LogDetailScreen',
+            );
+            AppFeedback.showErrorViaMessenger(
+              messenger,
+              "Couldn't restore that log. Try again in a moment.",
+            );
+          }
         },
       );
       Navigator.maybePop(context);

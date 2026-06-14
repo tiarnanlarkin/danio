@@ -86,6 +86,16 @@ class _ThrowingLogDeleteStorage implements StorageService {
   Future<void> deleteTask(String id) => _delegate.deleteTask(id);
 }
 
+class _ThrowingLogRestoreStorage extends _ThrowingLogDeleteStorage {
+  @override
+  Future<void> deleteLog(String id) => _delegate.deleteLog(id);
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    throw StateError('local log restore unavailable');
+  }
+}
+
 Widget _wrap({List<LogEntry>? logs, StorageService? storage}) {
   final memStorage = storage ?? InMemoryStorageService();
   return ProviderScope(
@@ -163,6 +173,29 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Changed 30% of water'), findsOneWidget);
+    });
+
+    testWidgets('undo restore failure shows feedback without throwing', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(storage: _ThrowingLogRestoreStorage()));
+      await _advance(tester);
+
+      await tester.tap(find.byIcon(Icons.delete_outline));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete Log'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.tap(find.text('Undo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(
+        find.text("Couldn't restore that log. Try again in a moment."),
+        findsOneWidget,
+      );
     });
   });
 }

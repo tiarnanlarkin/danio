@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1721 tests.
+- `flutter test`: pass, 1722 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1778,6 +1778,16 @@ CL-P1-009CD Tank Detail quick-feeding failure feedback:
   success feedback.
 - Focused Tank Detail widget coverage uses the real QuickAdd FAB feeding action
   and simulates a failed feeding-log write.
+
+CL-P1-009CE Log Detail undo-restore failure feedback:
+
+- Log Detail delete undo now catches local restore-write failures, logs the
+  failure for diagnosis, and shows normal error feedback instead of surfacing a
+  widget exception from the snackbar action.
+- The restore feedback uses a pre-captured `ScaffoldMessengerState`, so the
+  error can still be shown after the detail route has been popped.
+- Focused Log Detail widget coverage simulates a failed undo restore write and
+  verifies the user sees restore-failure feedback.
 
 CL-P1-010A Tank Settings water-profile copy:
 
