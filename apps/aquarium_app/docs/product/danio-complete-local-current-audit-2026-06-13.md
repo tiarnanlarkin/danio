@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1629 tests.
+- `flutter test`: pass, 1630 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1221,6 +1221,17 @@ CL-P1-009AC Optional-restore preference failure reporting:
 - This keeps optional restore reporting aligned with the local Backup & Restore
   validation path without adding any cloud setup or external dependency.
 
+CL-P1-009AD Optional-restore malformed child-record guard:
+
+- Optional cloud-backup restore now skips malformed tank, livestock, equipment,
+  log, and task records instead of letting one bad record abort valid sibling
+  imports.
+- The optional restore importer still keeps local records winning on conflict
+  and still skips child records whose tanks are not present locally or in the
+  incoming backup.
+- Focused coverage verifies malformed child entries do not stop valid remote
+  livestock, equipment, logs, tasks, or their tank from restoring.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1397,9 +1408,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   clearing existing local preferences. Non-exportable profile/preferences
   entries no longer cause false preview failures when their values are malformed.
   Optional restore now reports malformed preference payloads as preference
-  restore failures instead of silently skipping them. Remaining backup/data work
-  is deeper import validation UX, edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+  restore failures instead of silently skipping them. Optional restore also
+  skips malformed tank, livestock, equipment, log, and task records instead of
+  letting one bad child record abort valid sibling imports. Remaining
+  backup/data work is deeper import validation UX, edit/delete/undo coverage,
+  and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

@@ -199,6 +199,90 @@ void main() {
       expect(result.changedTankIds, isNot(contains(missingTankId)));
     });
 
+    test(
+      'restore skips malformed child entries without aborting valid imports',
+      () async {
+        final storage = InMemoryStorageService();
+        final now = DateTime(2026, 1, 3);
+        const prefix = 'cloud-malformed-child-skip';
+        final tankId = '$prefix-tank';
+
+        final tank = Tank(
+          id: tankId,
+          name: 'Remote Tank',
+          type: TankType.freshwater,
+          volumeLitres: 90,
+          startDate: now,
+          targets: WaterTargets.freshwaterTropical(),
+          createdAt: now,
+          updatedAt: now,
+        );
+        final validLivestock = Livestock(
+          id: '$prefix-fish',
+          tankId: tankId,
+          commonName: 'Valid Remote Fish',
+          count: 3,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        );
+        final validEquipment = Equipment(
+          id: '$prefix-equipment',
+          tankId: tankId,
+          type: EquipmentType.filter,
+          name: 'Valid Remote Filter',
+          createdAt: now,
+          updatedAt: now,
+        );
+        final validLog = LogEntry(
+          id: '$prefix-log',
+          tankId: tankId,
+          type: LogType.observation,
+          timestamp: now,
+          notes: 'valid remote log',
+          createdAt: now,
+        );
+        final validTask = Task(
+          id: '$prefix-task',
+          tankId: tankId,
+          title: 'Valid Remote Task',
+          recurrence: RecurrenceType.none,
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        final result = await CloudBackupService.instance.importDataForTesting(
+          storage,
+          {
+            'tanks': [tank.toJson()],
+            'livestock': ['not-livestock', validLivestock.toJson()],
+            'equipment': ['not-equipment', validEquipment.toJson()],
+            'logs': ['not-log', validLog.toJson()],
+            'tasks': ['not-task', validTask.toJson()],
+          },
+        );
+
+        expect((await storage.getTank(tankId))?.name, tank.name);
+        expect(
+          (await storage.getLivestockForTank(tankId)).map((item) => item.id),
+          contains(validLivestock.id),
+        );
+        expect(
+          (await storage.getEquipmentForTank(tankId)).map((item) => item.id),
+          contains(validEquipment.id),
+        );
+        expect(
+          (await storage.getLogsForTank(tankId)).map((item) => item.id),
+          contains(validLog.id),
+        );
+        expect(
+          (await storage.getTasksForTank(tankId)).map((item) => item.id),
+          contains(validTask.id),
+        );
+        expect(result.changedTankIds, contains(tankId));
+      },
+    );
+
     test('restore reports malformed SharedPreferences payloads', () async {
       final storage = InMemoryStorageService();
 

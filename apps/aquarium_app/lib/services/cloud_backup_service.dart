@@ -16,7 +16,8 @@ import '../utils/logger.dart';
 /// AES-256 using a key derived from the user's UID + a salt, and uploads to
 /// Supabase Storage.
 ///
-/// Restore flow: download → decrypt → merge with local (local wins on conflict).
+/// Restore flow: download -> decrypt -> merge with local (local wins on
+/// conflict).
 class CloudBackupService {
   CloudBackupService._();
   static final CloudBackupService instance = CloudBackupService._();
@@ -36,7 +37,7 @@ class CloudBackupService {
   }
 
   // ---------------------------------------------------------------------------
-  // Backup: serialise → encrypt → upload
+  // Backup: serialise -> encrypt -> upload
   // ---------------------------------------------------------------------------
 
   /// Create an encrypted backup of all local data and upload to Supabase.
@@ -75,13 +76,13 @@ class CloudBackupService {
         .uploadBinary(path, blob, fileOptions: const FileOptions(upsert: true));
 
     appLog(
-      '[CloudBackup] Uploaded ${blob.length} bytes → $path',
+      '[CloudBackup] Uploaded ${blob.length} bytes -> $path',
       tag: 'CloudBackupService',
     );
   }
 
   // ---------------------------------------------------------------------------
-  // Restore: download → decrypt → merge
+  // Restore: download -> decrypt -> merge
   // ---------------------------------------------------------------------------
 
   /// Download the encrypted backup and merge into local storage.
@@ -182,13 +183,17 @@ class CloudBackupService {
     var preferencesRestoreFailed = false;
 
     // Import tanks - skip if already exists locally (local wins)
-    final tanksJson = data['tanks'] as List<dynamic>? ?? [];
-    for (final tJson in tanksJson) {
-      final map = tJson as Map<String, dynamic>;
-      final id = map['id'] as String;
+    for (final map in _backupRecordMaps(data, 'tanks')) {
+      final id = map['id'];
+      if (id is! String || id.isEmpty) {
+        continue;
+      }
       final existing = await storage.getTank(id);
       if (existing == null) {
-        final tank = Tank.fromJson(map);
+        final tank = _parseBackupRecord(() => Tank.fromJson(map));
+        if (tank == null) {
+          continue;
+        }
         await storage.saveTank(tank);
         knownTankIds.add(tank.id);
         changedTankIds.add(tank.id);
@@ -196,10 +201,11 @@ class CloudBackupService {
     }
 
     // Import livestock - skip existing ids (local wins)
-    final livestockJson = data['livestock'] as List<dynamic>? ?? [];
-    for (final lJson in livestockJson) {
-      final map = lJson as Map<String, dynamic>;
-      final livestock = Livestock.fromJson(map);
+    for (final map in _backupRecordMaps(data, 'livestock')) {
+      final livestock = _parseBackupRecord(() => Livestock.fromJson(map));
+      if (livestock == null) {
+        continue;
+      }
       if (!knownTankIds.contains(livestock.tankId)) {
         continue;
       }
@@ -211,10 +217,11 @@ class CloudBackupService {
     }
 
     // Import equipment - skip existing ids (local wins)
-    final equipmentJson = data['equipment'] as List<dynamic>? ?? [];
-    for (final eJson in equipmentJson) {
-      final map = eJson as Map<String, dynamic>;
-      final equipment = Equipment.fromJson(map);
+    for (final map in _backupRecordMaps(data, 'equipment')) {
+      final equipment = _parseBackupRecord(() => Equipment.fromJson(map));
+      if (equipment == null) {
+        continue;
+      }
       if (!knownTankIds.contains(equipment.tankId)) {
         continue;
       }
@@ -226,10 +233,11 @@ class CloudBackupService {
     }
 
     // Import logs (append missing entries only - same ids stay local)
-    final logsJson = data['logs'] as List<dynamic>? ?? [];
-    for (final logJson in logsJson) {
-      final map = logJson as Map<String, dynamic>;
-      final log = LogEntry.fromJson(map);
+    for (final map in _backupRecordMaps(data, 'logs')) {
+      final log = _parseBackupRecord(() => LogEntry.fromJson(map));
+      if (log == null) {
+        continue;
+      }
       if (!knownTankIds.contains(log.tankId)) {
         continue;
       }
@@ -241,10 +249,11 @@ class CloudBackupService {
     }
 
     // Import tasks - skip existing ids (local wins)
-    final tasksJson = data['tasks'] as List<dynamic>? ?? [];
-    for (final taskJson in tasksJson) {
-      final map = taskJson as Map<String, dynamic>;
-      final task = Task.fromJson(map);
+    for (final map in _backupRecordMaps(data, 'tasks')) {
+      final task = _parseBackupRecord(() => Task.fromJson(map));
+      if (task == null) {
+        continue;
+      }
       final tankId = task.tankId;
       if (tankId != null && !knownTankIds.contains(tankId)) {
         continue;
@@ -281,6 +290,36 @@ class CloudBackupService {
       preferenceEntriesRestored: preferenceEntriesRestored,
       preferencesRestoreFailed: preferencesRestoreFailed,
     );
+  }
+
+  Iterable<Map<String, dynamic>> _backupRecordMaps(
+    Map<String, dynamic> data,
+    String collectionName,
+  ) sync* {
+    final records = data[collectionName];
+    if (records is! List) {
+      return;
+    }
+
+    for (final record in records) {
+      if (record is Map<String, dynamic>) {
+        yield record;
+      } else if (record is Map) {
+        try {
+          yield Map<String, dynamic>.from(record);
+        } catch (_) {
+          continue;
+        }
+      }
+    }
+  }
+
+  T? _parseBackupRecord<T>(T Function() parse) {
+    try {
+      return parse();
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<bool> _livestockExists(
