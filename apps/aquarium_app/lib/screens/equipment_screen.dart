@@ -854,6 +854,14 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       widget.ref.invalidate(equipmentProvider(widget.tankId));
       widget.ref.invalidate(tasksProvider(widget.tankId));
 
+      if (mounted) {
+        AppFeedback.showSuccess(
+          context,
+          widget.existing != null
+              ? '${equipment.name} saved.'
+              : '${equipment.name} added.',
+        );
+      }
       if (mounted) Navigator.maybePop(context);
     } catch (e, st) {
       logError(

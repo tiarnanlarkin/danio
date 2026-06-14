@@ -203,6 +203,28 @@ void main() {
         expect(find.textContaining('Time to gear up! ⚙️'), findsNothing);
       },
     );
+
+    testWidgets('adding equipment shows success feedback', (tester) async {
+      const tankId = 'tank-equipment-add-feedback';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.text('Add Equipment'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(find.byType(TextFormField).first, 'Sponge filter');
+      await tester.tap(find.text('Add').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      final equipment = await svc.getEquipmentForTank(tankId);
+      expect(equipment.single.name, 'Sponge filter');
+      expect(find.text('Sponge filter added.'), findsOneWidget);
+    });
   });
 
   group('EquipmentScreen — with equipment', () {
