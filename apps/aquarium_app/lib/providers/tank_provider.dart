@@ -16,13 +16,19 @@ class SoftDeleteState {
 
   bool isDeleted(String id) => _deletedIds.contains(id);
 
-  void markDeleted(String id, void Function() onPermanentDelete) {
+  void markDeleted(
+    String id,
+    FutureOr<void> Function() onPermanentDelete, {
+    void Function()? onSettled,
+  }) {
     _deletedIds.add(id);
     _timers[id]?.cancel();
     _timers[id] = Timer(const Duration(seconds: 5), () {
-      onPermanentDelete();
-      _timers.remove(id);
-      _deletedIds.remove(id);
+      Future<void>.sync(onPermanentDelete).whenComplete(() {
+        _timers.remove(id);
+        _deletedIds.remove(id);
+        onSettled?.call();
+      });
     });
   }
 
@@ -190,7 +196,11 @@ class TankActions {
 
       return tank;
     } catch (e, st) {
-      logError('TankProvider.createTank failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.createTank failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -203,7 +213,11 @@ class TankActions {
       _ref.invalidate(tanksProvider);
       _ref.invalidate(tankProvider(tank.id));
     } catch (e, st) {
-      logError('TankProvider.updateTank failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.updateTank failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -211,10 +225,27 @@ class TankActions {
   /// Soft delete a tank (marks for deletion, can be undone within 5 seconds)
   /// Returns a callback to undo the deletion
   void softDeleteTank(String id, {void Function()? onUndoExpired}) {
-    _ref.read(_softDeleteStateProvider).markDeleted(id, () {
-      permanentlyDeleteTank(id);
-      onUndoExpired?.call();
-    });
+    _ref
+        .read(_softDeleteStateProvider)
+        .markDeleted(
+          id,
+          () async {
+            try {
+              await _storage.deleteTank(id);
+              onUndoExpired?.call();
+            } catch (e, st) {
+              logError(
+                'TankProvider.softDeleteTank permanent delete failed: $e',
+                stackTrace: st,
+                tag: 'TankProvider',
+              );
+            }
+          },
+          onSettled: () {
+            _ref.invalidate(tanksProvider);
+            _ref.invalidate(tankProvider(id));
+          },
+        );
     _ref.invalidate(tanksProvider);
   }
 
@@ -230,7 +261,11 @@ class TankActions {
       await _storage.deleteTank(id);
       _ref.invalidate(tanksProvider);
     } catch (e, st) {
-      logError('TankProvider.permanentlyDeleteTank failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.permanentlyDeleteTank failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -242,9 +277,24 @@ class TankActions {
     try {
       final softDelete = _ref.read(_softDeleteStateProvider);
       for (final id in ids.toSet()) {
-        softDelete.markDeleted(id, () {
-          permanentlyDeleteTank(id);
-        });
+        softDelete.markDeleted(
+          id,
+          () async {
+            try {
+              await _storage.deleteTank(id);
+            } catch (e, st) {
+              logError(
+                'TankProvider.bulkDeleteTanks permanent delete failed for $id: $e',
+                stackTrace: st,
+                tag: 'TankProvider',
+              );
+            }
+          },
+          onSettled: () {
+            _ref.invalidate(tanksProvider);
+            _ref.invalidate(tankProvider(id));
+          },
+        );
       }
       _ref.invalidate(tanksProvider);
     } catch (e, st) {
@@ -274,7 +324,11 @@ class TankActions {
       }
       _ref.invalidate(tanksProvider);
     } catch (e, st) {
-      logError('TankProvider.reorderTanks failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.reorderTanks failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -286,7 +340,11 @@ class TankActions {
       _ref.invalidate(livestockProvider(livestock.tankId));
       return livestock;
     } catch (e, st) {
-      logError('TankProvider.addLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.addLivestock failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -298,7 +356,11 @@ class TankActions {
       await _storage.saveLivestock(updated);
       _ref.invalidate(livestockProvider(livestock.tankId));
     } catch (e, st) {
-      logError('TankProvider.updateLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.updateLivestock failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -309,7 +371,11 @@ class TankActions {
       await _storage.deleteLivestock(id);
       _ref.invalidate(livestockProvider(tankId));
     } catch (e, st) {
-      logError('TankProvider.deleteLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.deleteLivestock failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -321,10 +387,26 @@ class TankActions {
     String tankId, {
     void Function()? onUndoExpired,
   }) {
-    _ref.read(_softDeleteLivestockStateProvider).markDeleted(id, () {
-      permanentlyDeleteLivestock(id, tankId);
-      onUndoExpired?.call();
-    });
+    _ref
+        .read(_softDeleteLivestockStateProvider)
+        .markDeleted(
+          id,
+          () async {
+            try {
+              await _storage.deleteLivestock(id);
+              onUndoExpired?.call();
+            } catch (e, st) {
+              logError(
+                'TankProvider.softDeleteLivestock permanent delete failed: $e',
+                stackTrace: st,
+                tag: 'TankProvider',
+              );
+            }
+          },
+          onSettled: () {
+            _ref.invalidate(livestockProvider(tankId));
+          },
+        );
     _ref.invalidate(livestockProvider(tankId));
   }
 
@@ -340,7 +422,11 @@ class TankActions {
       await _storage.deleteLivestock(id);
       _ref.invalidate(livestockProvider(tankId));
     } catch (e, st) {
-      logError('TankProvider.permanentlyDeleteLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.permanentlyDeleteLivestock failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -355,7 +441,11 @@ class TankActions {
       _ref.invalidate(livestockProvider(livestock.tankId));
       _ref.invalidate(livestockProvider(newTankId));
     } catch (e, st) {
-      logError('TankProvider.moveLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.moveLivestock failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -376,7 +466,10 @@ class TankActions {
           final moved = livestock.copyWith(tankId: toTankId);
           await storage.saveLivestock(moved);
         } on StateError {
-          appLog('bulkMoveLivestock: skipping missing livestock $id', tag: 'TankProvider');
+          appLog(
+            'bulkMoveLivestock: skipping missing livestock $id',
+            tag: 'TankProvider',
+          );
           continue;
         }
       }
@@ -384,7 +477,11 @@ class TankActions {
       _ref.invalidate(livestockProvider(fromTankId));
       _ref.invalidate(livestockProvider(toTankId));
     } catch (e, st) {
-      logError('TankProvider.bulkMoveLivestock failed: $e', stackTrace: st, tag: 'TankProvider');
+      logError(
+        'TankProvider.bulkMoveLivestock failed: $e',
+        stackTrace: st,
+        tag: 'TankProvider',
+      );
       rethrow;
     }
   }
@@ -416,7 +513,10 @@ class TankActions {
         // with updated tankId references if we wanted full import
       } catch (e) {
         // Skip tanks that fail to parse
-        logError('TankProvider: skipping tank that failed to parse: $e', tag: 'TankProvider');
+        logError(
+          'TankProvider: skipping tank that failed to parse: $e',
+          tag: 'TankProvider',
+        );
         continue;
       }
     }

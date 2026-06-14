@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1706 tests.
+- `flutter test`: pass, 1709 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1657,6 +1657,17 @@ CL-P1-009BV Equipment service task-log rollback:
 - Focused widget coverage verifies failed task-completion logging keeps a
   `Canister filter` and its maintenance task unchanged.
 
+CL-P1-009BW Soft-delete expiry failure resilience:
+
+- Tank and livestock soft-delete expiry now catches failed permanent local
+  delete writes instead of surfacing timer-driven async errors.
+- Failed expiry deletes settle the soft-delete state and refresh providers so
+  the still-saved tank or livestock record becomes visible again.
+- Undo-expired side effects, such as livestock removal timeline logs, are not
+  run when the underlying permanent delete fails.
+- Focused provider coverage verifies failed single-tank, bulk-tank, and
+  livestock permanent deletes after the undo window.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1890,7 +1901,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   equipment delete/delete-undo saves now show normal error feedback while
   keeping local data consistent. Failed Equipment service logging now rolls
   back the saved serviced timestamp, linked maintenance-task changes, and
-  generated service log with normal error feedback. Remaining
+  generated service log with normal error feedback. Failed tank and livestock
+  soft-delete expiry now restores visibility when permanent local delete writes
+  fail. Remaining
   backup/data work is deeper import validation UX, broader edit/delete/undo
   coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience

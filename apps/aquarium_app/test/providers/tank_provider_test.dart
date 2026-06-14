@@ -34,7 +34,8 @@ class _TestStorageService implements StorageService {
 
   @override
   Future<List<Tank>> getAllTanks() async =>
-      _tanks.values.toList()..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      _tanks.values.toList()
+        ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
   @override
   Future<Tank?> getTank(String id) async => _tanks[id];
   @override
@@ -45,6 +46,7 @@ class _TestStorageService implements StorageService {
       _tanks[t.id] = t;
     }
   }
+
   @override
   Future<void> deleteTank(String id) async {
     _tanks.remove(id);
@@ -53,6 +55,7 @@ class _TestStorageService implements StorageService {
     _logs.removeWhere((_, v) => v.tankId == id);
     _tasks.removeWhere((_, v) => v.tankId == id);
   }
+
   @override
   Future<void> deleteAllTanks(List<String> ids) async {
     final idSet = ids.toSet();
@@ -78,14 +81,20 @@ class _TestStorageService implements StorageService {
   Future<void> deleteEquipment(String id) async => _equipment.remove(id);
 
   @override
-  Future<List<LogEntry>> getLogsForTank(String tankId,
-      {int? limit, DateTime? after}) async {
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) async {
     var logs = _logs.values.where((l) => l.tankId == tankId).toList();
-    if (after != null) logs = logs.where((l) => l.timestamp.isAfter(after)).toList();
+    if (after != null) {
+      logs = logs.where((l) => l.timestamp.isAfter(after)).toList();
+    }
     logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     if (limit != null && logs.length > limit) logs = logs.take(limit).toList();
     return logs;
   }
+
   @override
   Future<LogEntry?> getLatestWaterTest(String tankId) async => null;
   @override
@@ -98,10 +107,39 @@ class _TestStorageService implements StorageService {
     if (tankId == null) return _tasks.values.toList();
     return _tasks.values.where((t) => t.tankId == tankId).toList();
   }
+
   @override
   Future<void> saveTask(Task task) async => _tasks[task.id] = task;
   @override
   Future<void> deleteTask(String id) async => _tasks.remove(id);
+}
+
+class _DeleteTankFailsStorage extends _TestStorageService {
+  _DeleteTankFailsStorage({required this.failingTankId});
+
+  final String failingTankId;
+
+  @override
+  Future<void> deleteTank(String id) async {
+    if (id == failingTankId) {
+      throw StateError('tank delete failed');
+    }
+    await super.deleteTank(id);
+  }
+}
+
+class _DeleteLivestockFailsStorage extends _TestStorageService {
+  _DeleteLivestockFailsStorage({required this.failingLivestockId});
+
+  final String failingLivestockId;
+
+  @override
+  Future<void> deleteLivestock(String id) async {
+    if (id == failingLivestockId) {
+      throw StateError('livestock delete failed');
+    }
+    await super.deleteLivestock(id);
+  }
 }
 
 /// Creates an isolated ProviderContainer with a fresh storage service.
@@ -405,6 +443,113 @@ void main() {
           tanks.map((tank) => tank.id),
           containsAll(['tank-bulk-1', 'tank-bulk-2']),
         );
+      },
+    );
+
+    test('failed permanent soft delete restores tank visibility', () async {
+      const tankId = 'tank-delete-failure';
+      final storage = _DeleteTankFailsStorage(failingTankId: tankId);
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      await storage.saveTank(_makeTank(id: tankId, name: 'Resilient Tank'));
+      await _settle();
+
+      final actions = container.read(tankActionsProvider);
+      var undoExpired = false;
+      actions.softDeleteTank(tankId, onUndoExpired: () => undoExpired = true);
+      await _settle();
+
+      var tanks = await container.read(tanksProvider.future);
+      expect(tanks.map((tank) => tank.id), isNot(contains(tankId)));
+
+      await Future<void>.delayed(const Duration(seconds: 6));
+      await _settle();
+
+      expect(await storage.getTank(tankId), isNotNull);
+      expect(undoExpired, isFalse);
+
+      tanks = await container.read(tanksProvider.future);
+      expect(tanks.map((tank) => tank.id), contains(tankId));
+    });
+
+    test(
+      'failed permanent bulk soft delete restores tank visibility',
+      () async {
+        const tankId = 'tank-bulk-delete-failure';
+        final storage = _DeleteTankFailsStorage(failingTankId: tankId);
+        final container = _makeContainer(storage: storage);
+        addTearDown(container.dispose);
+
+        await storage.saveTank(_makeTank(id: tankId, name: 'Bulk Resilient'));
+        await _settle();
+
+        final actions = container.read(tankActionsProvider);
+        await actions.bulkDeleteTanks([tankId]);
+        await _settle();
+
+        var tanks = await container.read(tanksProvider.future);
+        expect(tanks.map((tank) => tank.id), isNot(contains(tankId)));
+
+        await Future<void>.delayed(const Duration(seconds: 6));
+        await _settle();
+
+        expect(await storage.getTank(tankId), isNotNull);
+
+        tanks = await container.read(tanksProvider.future);
+        expect(tanks.map((tank) => tank.id), contains(tankId));
+      },
+    );
+
+    test(
+      'failed permanent livestock soft delete restores livestock visibility',
+      () async {
+        const tankId = 'tank-livestock-delete-failure';
+        const livestockId = 'livestock-delete-failure';
+        final storage = _DeleteLivestockFailsStorage(
+          failingLivestockId: livestockId,
+        );
+        final container = _makeContainer(storage: storage);
+        addTearDown(container.dispose);
+
+        final now = DateTime.now();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Livestock Tank'));
+        await storage.saveLivestock(
+          Livestock(
+            id: livestockId,
+            tankId: tankId,
+            commonName: 'Neon Tetra',
+            count: 6,
+            dateAdded: now,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+        await _settle();
+
+        final actions = container.read(tankActionsProvider);
+        var undoExpired = false;
+        actions.softDeleteLivestock(
+          livestockId,
+          tankId,
+          onUndoExpired: () => undoExpired = true,
+        );
+        await _settle();
+
+        var livestock = await container.read(livestockProvider(tankId).future);
+        expect(
+          livestock.map((entry) => entry.id),
+          isNot(contains(livestockId)),
+        );
+
+        await Future<void>.delayed(const Duration(seconds: 6));
+        await _settle();
+
+        expect(await storage.getLivestockForTank(tankId), isNotEmpty);
+        expect(undoExpired, isFalse);
+
+        livestock = await container.read(livestockProvider(tankId).future);
+        expect(livestock.map((entry) => entry.id), contains(livestockId));
       },
     );
   });
