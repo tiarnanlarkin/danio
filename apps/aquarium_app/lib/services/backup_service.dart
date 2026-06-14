@@ -783,10 +783,13 @@ class BackupService {
   }
 
   void _validateLogNestedFields(Map<dynamic, dynamic> entry) {
+    final type = entry['type'];
     final waterTest = entry['waterTest'];
     if (waterTest != null && waterTest is! Map) {
       throw Exception('Invalid format: logs waterTest values must be objects');
     }
+
+    var hasWaterTestReading = false;
     if (waterTest is Map) {
       for (final field in const [
         'temperature',
@@ -806,9 +809,22 @@ class BackupService {
           );
         }
         if (value is num) {
+          hasWaterTestReading = true;
           _validateWaterTestReading(field, value);
         }
       }
+    }
+
+    if (type == 'waterTest' && !hasWaterTestReading) {
+      throw Exception(
+        'Invalid format: logs waterTest entries must include at least one reading',
+      );
+    }
+
+    if (type == 'waterChange' && entry['waterChangePercent'] == null) {
+      throw Exception(
+        'Invalid format: logs waterChange entries must include waterChangePercent',
+      );
     }
 
     final photoUrls = entry['photoUrls'];

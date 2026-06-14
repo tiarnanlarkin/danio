@@ -1125,6 +1125,55 @@ void main() {
       );
     }
 
+    for (final scenario in [
+      (
+        label: 'water-test log without readings',
+        entry: {..._validChildEntry('logs', 'log-1'), 'type': 'waterTest'},
+        message:
+            'Invalid format: logs waterTest entries must include at least one reading',
+      ),
+      (
+        label: 'water-test log with empty readings',
+        entry: {
+          ..._validChildEntry('logs', 'log-1'),
+          'type': 'waterTest',
+          'waterTest': <String, dynamic>{},
+        },
+        message:
+            'Invalid format: logs waterTest entries must include at least one reading',
+      ),
+      (
+        label: 'water-change log without percent',
+        entry: {..._validChildEntry('logs', 'log-1'), 'type': 'waterChange'},
+        message:
+            'Invalid format: logs waterChange entries must include waterChangePercent',
+      ),
+    ]) {
+      test('getBackupData rejects ${scenario.label}', () async {
+        final service = BackupService(
+          getDocumentsDirectory: () async => sourceDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+        final zipPath = await service.createBackup({
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [scenario.entry],
+        });
+
+        await expectLater(
+          service.getBackupData(zipPath),
+          throwsA(
+            isA<Exception>().having(
+              (error) => error.toString(),
+              'message',
+              contains(scenario.message),
+            ),
+          ),
+        );
+      });
+    }
+
     test(
       'getBackupData rejects equipment settings that are not objects',
       () async {
