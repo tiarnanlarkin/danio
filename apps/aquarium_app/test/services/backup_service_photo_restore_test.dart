@@ -696,6 +696,40 @@ void main() {
       );
     }
 
+    test(
+      'getBackupData rejects equipment settings that are not objects',
+      () async {
+        final service = BackupService(
+          getDocumentsDirectory: () async => sourceDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+        final zipPath = await service.createBackup({
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'equipment': [
+            {
+              ..._validChildEntry('equipment', 'equipment-1'),
+              'settings': 'warm',
+            },
+          ],
+        });
+
+        await expectLater(
+          service.getBackupData(zipPath),
+          throwsA(
+            isA<Exception>().having(
+              (error) => error.toString(),
+              'message',
+              contains(
+                'Invalid format: equipment settings values must be objects',
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
     for (final scenario in [
       (
         collection: 'logs',

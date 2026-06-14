@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1616 tests.
+- `flutter test`: pass, 1617 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1153,6 +1153,15 @@ CL-P1-009V Backup optional task-boolean validation:
 - This prevents otherwise valid imported task records from being skipped after
   preview because an optional toggle had the wrong JSON type.
 
+CL-P1-009W Backup equipment settings validation:
+
+- Backup preview/import now rejects malformed equipment `settings` values before
+  the user confirms an import.
+- `settings` remains optional, but when present it must be a JSON object, matching
+  the restore conversion path that casts settings into a string-keyed map.
+- This prevents otherwise valid equipment records from being skipped after
+  preview because optional type-specific settings used the wrong JSON shape.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1321,6 +1330,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Backup JSON photo references now reject missing bundled archive files before
   preview/import. Optional child string fields now reject malformed values before
   preview/import. Optional task boolean fields now reject malformed values before
+  preview/import. Equipment settings now reject non-object values before
   preview/import. Remaining backup/data work is deeper import validation UX, edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
