@@ -434,6 +434,24 @@ class BackupService {
         max: 14,
       );
     }
+    _validateTargetMinMax(targets, minField: 'tempMin', maxField: 'tempMax');
+    _validateTargetMinMax(targets, minField: 'phMin', maxField: 'phMax');
+    _validateTargetMinMax(targets, minField: 'ghMin', maxField: 'ghMax');
+    _validateTargetMinMax(targets, minField: 'khMin', maxField: 'khMax');
+  }
+
+  void _validateTargetMinMax(
+    Map<dynamic, dynamic> targets, {
+    required String minField,
+    required String maxField,
+  }) {
+    final minValue = targets[minField];
+    final maxValue = targets[maxField];
+    if (minValue is num && maxValue is num && minValue > maxValue) {
+      throw Exception(
+        'Invalid format: tank targets $minField values must be less than or equal to $maxField',
+      );
+    }
   }
 
   void _validatePhotoArchiveEntries(Archive archive) {

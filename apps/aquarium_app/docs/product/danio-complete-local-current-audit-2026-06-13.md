@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1652 tests.
+- `flutter test`: pass, 1656 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1302,6 +1302,16 @@ CL-P1-009AK Backup tank numeric range validation:
 - Focused coverage verifies malformed volume, dimension, temperature target,
   and pH target values fail before preview, photo restore, or import proceeds.
 
+CL-P1-009AL Backup tank target ordering validation:
+
+- Backup preview/import now rejects inverted tank water-target ranges instead
+  of allowing import to create target profiles where minimum values are greater
+  than maximum values.
+- Covered target pairs are temperature, pH, GH, and KH, matching the
+  `WaterTargets` model contract.
+- Focused coverage verifies inverted temperature, pH, GH, and KH target ranges
+  fail before preview, photo restore, or import proceeds.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1491,7 +1501,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   numeric ranges now reject impossible water-change percentages, counts, sizes,
   maintenance intervals, lifespan values, interval days, and completion counts
   before import. Tank numeric ranges now reject impossible volume, dimension,
-  and water-target values before import. Remaining backup/data work is deeper
+  and water-target values before import. Tank target ranges now reject inverted
+  minimum/maximum pairs before import. Remaining backup/data work is deeper
   import validation UX, edit/delete/undo coverage, and restore/migration
   walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience

@@ -557,6 +557,63 @@ void main() {
       );
     }
 
+    for (final scenario in [
+      (
+        field: 'temperature',
+        targets: {'tempMin': 28, 'tempMax': 24},
+        message:
+            'Invalid format: tank targets tempMin values must be less than or equal to tempMax',
+      ),
+      (
+        field: 'pH',
+        targets: {'phMin': 8, 'phMax': 6.5},
+        message:
+            'Invalid format: tank targets phMin values must be less than or equal to phMax',
+      ),
+      (
+        field: 'GH',
+        targets: {'ghMin': 12, 'ghMax': 4},
+        message:
+            'Invalid format: tank targets ghMin values must be less than or equal to ghMax',
+      ),
+      (
+        field: 'KH',
+        targets: {'khMin': 8, 'khMax': 3},
+        message:
+            'Invalid format: tank targets khMin values must be less than or equal to khMax',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects tank entries with inverted ${scenario.field} target ranges',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {
+                'id': 'tank-1',
+                'name': 'Main tank',
+                'targets': scenario.targets,
+              },
+            ],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     for (final childCollection in const [
       'logs',
       'livestock',
