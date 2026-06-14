@@ -31,11 +31,11 @@ Tank _makeTank({String id = 'tank-1'}) => Tank(
   updatedAt: _now,
 );
 
-Widget _wrap({InMemoryStorageService? storage}) {
+Widget _wrap({InMemoryStorageService? storage, String tankId = 'tank-1'}) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(svc)],
-    child: const MaterialApp(home: TasksScreen(tankId: 'tank-1')),
+    child: MaterialApp(home: TasksScreen(tankId: tankId)),
   );
 }
 
@@ -140,6 +140,51 @@ void main() {
       await tester.pumpWidget(_wrap(storage: svc));
       await _advance(tester);
       expect(find.text('Water Change'), findsOneWidget);
+    });
+
+    testWidgets('deleting a task shows undo and restores the task', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-undo';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-undo',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete Task'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+      expect(find.text('Rinse prefilter'), findsNothing);
+      expect(find.text('Task deleted'), findsOneWidget);
+      expect(find.text('Undo'), findsOneWidget);
+
+      await tester.tap(find.text('Undo'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final restoredTasks = await svc.getTasksForTank(tankId);
+      expect(restoredTasks, hasLength(1));
+      expect(restoredTasks.single.id, task.id);
+      expect(find.text('Rinse prefilter'), findsOneWidget);
     });
   });
 }

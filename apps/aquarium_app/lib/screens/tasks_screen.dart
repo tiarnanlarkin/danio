@@ -286,13 +286,27 @@ class TasksScreen extends ConsumerWidget {
     showAppDestructiveDialog(
       context: context,
       title: 'Delete Task?',
-      message: 'Remove "${task.title}" from your task list?',
+      message:
+          'Remove "${task.title}" from your task list? You can undo within 5 seconds.',
       destructiveLabel: 'Delete Task',
       cancelLabel: 'Keep',
       onConfirm: () async {
         try {
-          await ref.read(storageServiceProvider).deleteTask(task.id);
+          final storage = ref.read(storageServiceProvider);
+          await storage.deleteTask(task.id);
           ref.invalidate(tasksProvider(tankId));
+          if (context.mounted) {
+            DanioSnackBar.show(
+              context,
+              'Task deleted',
+              duration: const Duration(seconds: 5),
+              actionLabel: 'Undo',
+              onAction: () async {
+                await storage.saveTask(task);
+                ref.invalidate(tasksProvider(tankId));
+              },
+            );
+          }
         } catch (e, st) {
           logError(
             'TasksScreen: task delete failed: $e',
