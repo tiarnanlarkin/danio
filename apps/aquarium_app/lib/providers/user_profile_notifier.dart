@@ -1021,7 +1021,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         );
       }
 
-      await _save(updated);
+      await _saveImmediate(updated);
       state = AsyncValue.data(updated);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

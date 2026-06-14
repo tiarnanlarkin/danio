@@ -245,5 +245,45 @@ void main() {
         );
       },
     );
+
+    test(
+      'updateHearts surfaces local save failures before exposing energy',
+      () async {
+        final originalProfile = _profile();
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'user_profile',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(
+          notifier.updateHearts(
+            hearts: 3,
+            lastHeartRefill: DateTime(2026, 6, 14, 12),
+          ),
+          throwsA(isA<StateError>()),
+        );
+
+        final profileState = container.read(userProfileProvider);
+        expect(profileState.asData?.value?.hearts, isNot(3));
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
+      },
+    );
   });
 }
