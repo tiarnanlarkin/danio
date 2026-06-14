@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1681 tests.
+- `flutter test`: pass, 1682 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1445,6 +1445,15 @@ CL-P1-009AZ Livestock removal count copy:
 - Focused copy coverage now guards both bulk-add and main Livestock removal
   feedback against fragile count symbols.
 
+CL-P1-009BA Livestock bulk-move count feedback:
+
+- Livestock bulk move now captures the selected livestock IDs and count before
+  clearing selection mode.
+- The success snackbar reports the real moved count instead of reading the
+  cleared selection set and showing `Moved 0 livestock ...`.
+- Focused widget coverage selects two livestock, moves them to another local
+  tank, and verifies the snackbar says `Moved 2 livestock to Bedroom Tank`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1652,9 +1661,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   single-tank deletion instead of deleting tank storage immediately. Failed Log
   Detail deletion now stays on the log and shows normal error feedback instead
   of surfacing a raw widget exception. Livestock removal feedback now uses
-  ASCII-safe count text in confirmation, journal, and snackbar copy. Remaining
-  backup/data work is deeper import validation UX, broader edit/delete/undo
-  coverage, and restore/migration walkthrough QA.
+  ASCII-safe count text in confirmation, journal, and snackbar copy. Livestock
+  bulk move now reports the real moved count after clearing selection mode.
+  Remaining backup/data work is deeper import validation UX, broader
+  edit/delete/undo coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

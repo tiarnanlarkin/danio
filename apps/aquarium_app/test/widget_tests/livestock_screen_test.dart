@@ -18,6 +18,33 @@ import 'package:danio/models/models.dart';
 // ---------------------------------------------------------------------------
 
 const _fakeTankId = 'tank-001';
+final _now = DateTime(2026, 6, 14, 12);
+
+Tank _makeTank({required String id, required String name}) => Tank(
+  id: id,
+  name: name,
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+Livestock _makeLivestock({
+  required String id,
+  required String tankId,
+  required String name,
+  int count = 1,
+}) => Livestock(
+  id: id,
+  tankId: tankId,
+  commonName: name,
+  count: count,
+  dateAdded: _now,
+  createdAt: _now,
+  updatedAt: _now,
+);
 
 Widget _wrap({AsyncValue<List<Livestock>>? livestockOverride}) {
   // Use in-memory storage so no real SQLite I/O occurs in tests.
@@ -44,6 +71,16 @@ Widget _wrap({AsyncValue<List<Livestock>>? livestockOverride}) {
   return ProviderScope(
     overrides: overrides,
     child: MaterialApp(home: LivestockScreen(tankId: _fakeTankId)),
+  );
+}
+
+Widget _wrapWithStorage({
+  required StorageService storage,
+  required String tankId,
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(home: LivestockScreen(tankId: tankId)),
   );
 }
 
@@ -133,6 +170,63 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       expect(find.byIcon(Icons.more_vert), findsOneWidget);
+    });
+  });
+
+  group('LivestockScreen - bulk move', () {
+    testWidgets('success feedback reports selected livestock count', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const sourceTankId = 'bulk-move-source';
+      const targetTankId = 'bulk-move-target';
+      final storage = InMemoryStorageService();
+      await storage.saveTank(
+        _makeTank(id: sourceTankId, name: 'Living Room Tank'),
+      );
+      await storage.saveTank(_makeTank(id: targetTankId, name: 'Bedroom Tank'));
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: 'bulk-move-neons',
+          tankId: sourceTankId,
+          name: 'Neon Tetra',
+          count: 8,
+        ),
+      );
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: 'bulk-move-corys',
+          tankId: sourceTankId,
+          name: 'Corydoras',
+          count: 5,
+        ),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: sourceTankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byIcon(Icons.more_vert),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select multiple'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Select All'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Move to Tank'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Bedroom Tank').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Moved 2 livestock to Bedroom Tank'), findsOneWidget);
+      expect(find.text('Moved 0 livestock to Bedroom Tank'), findsNothing);
     });
   });
 }
