@@ -142,6 +142,22 @@ class _DeleteLivestockFailsStorage extends _TestStorageService {
   }
 }
 
+class _SaveDefaultTaskFailsStorage extends _TestStorageService {
+  _SaveDefaultTaskFailsStorage({required this.failOnSaveNumber});
+
+  final int failOnSaveNumber;
+  int _saveTaskCount = 0;
+
+  @override
+  Future<void> saveTask(Task task) async {
+    _saveTaskCount += 1;
+    if (_saveTaskCount == failOnSaveNumber) {
+      throw StateError('task save failed');
+    }
+    await super.saveTask(task);
+  }
+}
+
 /// Creates an isolated ProviderContainer with a fresh storage service.
 ProviderContainer _makeContainer({StorageService? storage}) {
   return ProviderContainer(
@@ -288,6 +304,31 @@ void main() {
         throwsA(isA<ArgumentError>()),
       );
     });
+
+    test(
+      'rolls back tank and partial default tasks if default task save fails',
+      () async {
+        final storage = _SaveDefaultTaskFailsStorage(failOnSaveNumber: 2);
+        final container = _makeContainer(storage: storage);
+        addTearDown(container.dispose);
+
+        await expectLater(
+          container
+              .read(tankActionsProvider)
+              .createTank(
+                name: 'Partial Tank',
+                type: TankType.freshwater,
+                volumeLitres: 95,
+              ),
+          throwsA(isA<StateError>()),
+        );
+        await _settle();
+
+        expect(await storage.getAllTanks(), isEmpty);
+        expect(await storage.getTasksForTank(null), isEmpty);
+        expect(await container.read(tanksProvider.future), isEmpty);
+      },
+    );
   });
 
   // --- TankActions.addDemoTank ---

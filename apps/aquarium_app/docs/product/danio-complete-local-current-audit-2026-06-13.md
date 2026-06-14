@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1709 tests.
+- `flutter test`: pass, 1710 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1668,6 +1668,15 @@ CL-P1-009BW Soft-delete expiry failure resilience:
 - Focused provider coverage verifies failed single-tank, bulk-tank, and
   livestock permanent deletes after the undo window.
 
+CL-P1-009BX Tank creation default-task rollback:
+
+- New tank creation now rolls back the just-saved tank if any default care-task
+  save fails mid-flow.
+- Partial default tasks written before the failure are removed with the tank
+  rollback, keeping the local tank list and task list consistent.
+- Focused provider coverage simulates a failed second default-task save and
+  verifies no partial tank or task data remains visible.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1903,7 +1912,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   back the saved serviced timestamp, linked maintenance-task changes, and
   generated service log with normal error feedback. Failed tank and livestock
   soft-delete expiry now restores visibility when permanent local delete writes
-  fail. Remaining
+  fail. Failed new-tank default-task creation now rolls back partial tank/task
+  data. Remaining
   backup/data work is deeper import validation UX, broader edit/delete/undo
   coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience

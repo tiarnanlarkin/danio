@@ -164,6 +164,9 @@ class TankActions {
     if (volumeLitres <= 0) {
       throw ArgumentError('Tank volume must be positive');
     }
+    Tank? createdTank;
+    var tankSaved = false;
+    final savedDefaultTaskIds = <String>[];
     try {
       final now = DateTime.now();
       final tank = Tank(
@@ -180,13 +183,16 @@ class TankActions {
         createdAt: now,
         updatedAt: now,
       );
+      createdTank = tank;
 
       await _storage.saveTank(tank);
+      tankSaved = true;
 
       // Create default tasks for the new tank
       final defaultTasks = DefaultTasks.forNewTank(tank.id);
       for (final task in defaultTasks) {
         await _storage.saveTask(task);
+        savedDefaultTaskIds.add(task.id);
       }
 
       // Re-enabled after the P0-001 mounted-guard fix in HomeScreen's
@@ -196,6 +202,31 @@ class TankActions {
 
       return tank;
     } catch (e, st) {
+      if (tankSaved && createdTank != null) {
+        try {
+          await _storage.deleteTank(createdTank.id);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TankProvider.createTank rollback tank delete failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TankProvider',
+          );
+          for (final taskId in savedDefaultTaskIds) {
+            try {
+              await _storage.deleteTask(taskId);
+            } catch (taskRollbackError, taskRollbackStack) {
+              logError(
+                'TankProvider.createTank rollback task delete failed: $taskRollbackError',
+                stackTrace: taskRollbackStack,
+                tag: 'TankProvider',
+              );
+            }
+          }
+        }
+        _ref.invalidate(tanksProvider);
+        _ref.invalidate(tankProvider(createdTank.id));
+        _ref.invalidate(tasksProvider(createdTank.id));
+      }
       logError(
         'TankProvider.createTank failed: $e',
         stackTrace: st,
