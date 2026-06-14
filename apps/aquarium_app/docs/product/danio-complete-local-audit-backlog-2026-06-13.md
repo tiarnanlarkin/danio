@@ -115,6 +115,8 @@ Recent CL-P1-009 continuation note:
   `user_profile` save before exposing skipped placement state.
 - CL-P1-009CM makes streak-freeze grants wait for the immediate local
   `user_profile` save before exposing granted freeze state.
+- CL-P1-009CN makes achievement progress updates wait for the immediate local
+  `user_profile` save before exposing achievement/XP state.
 
 ## 7. P2 Work - Presentation System
 
@@ -154,8 +156,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the streak-freeze grant save failure slice
-on 2026-06-14, `flutter test` passes 1730 tests,
+Current verification note: as of the achievement progress save failure slice
+on 2026-06-14, `flutter test` passes 1731 tests,
 `flutter analyze` is clean, and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

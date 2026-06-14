@@ -204,5 +204,46 @@ void main() {
         );
       },
     );
+
+    test(
+      'updateAchievements surfaces local save failures before exposing progress',
+      () async {
+        final originalProfile = _profile();
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'user_profile',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(
+          notifier.updateAchievements(
+            achievements: ['first_water_test'],
+            xpToAdd: 25,
+          ),
+          throwsA(isA<StateError>()),
+        );
+
+        final profileState = container.read(userProfileProvider);
+        expect(profileState.value?.achievements, isEmpty);
+        expect(profileState.value?.totalXp, 0);
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
+      },
+    );
   });
 }

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1730 tests.
+- `flutter test`: pass, 1731 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1864,6 +1864,15 @@ CL-P1-009CM Streak-freeze grant save failure feedback:
   previous streak-freeze state visible instead of showing an unsaved reward.
 - Focused provider coverage simulates a failed `user_profile` preference write
   during `addStreakFreeze` and verifies stored JSON stays unchanged.
+
+CL-P1-009CN Achievement progress save failure feedback:
+
+- Achievement progress updates now use the immediate local save path before
+  exposing achievement and XP changes in profile state.
+- Failed `user_profile` achievement writes now surface to the caller and keep
+  previous achievement/XP state visible instead of showing unsaved progress.
+- Focused provider coverage simulates a failed `user_profile` preference write
+  during `updateAchievements` and verifies stored JSON stays unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 
