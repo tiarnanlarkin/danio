@@ -170,51 +170,133 @@ class TasksScreen extends ConsumerWidget {
     final now = DateTime.now();
 
     final completed = task.complete();
-    await storage.saveTask(completed);
+    var taskSaved = false;
+    var completionLogSaved = false;
+    var equipmentSaved = false;
+    var equipmentLogSaved = false;
+    Equipment? originalEquipment;
+    final completionLogId = _uuid.v4();
+    final equipmentLogId = _uuid.v4();
 
-    // Also add a log entry so completions show up in Recent Activity.
-    await storage.saveLog(
-      LogEntry(
-        id: _uuid.v4(),
-        tankId: tankId,
-        type: LogType.taskCompleted,
-        timestamp: now,
-        title: task.title,
-        notes: task.description,
-        relatedTaskId: task.id,
-        relatedEquipmentId: task.relatedEquipmentId,
-        createdAt: now,
-      ),
-    );
+    try {
+      await storage.saveTask(completed);
+      taskSaved = true;
 
-    // If this task is tied to equipment maintenance, update equipment + log it.
-    if (task.relatedEquipmentId != null) {
-      final equipment = await storage.getEquipmentForTank(tankId);
-      Equipment? e;
-      for (final x in equipment) {
-        if (x.id == task.relatedEquipmentId) {
-          e = x;
-          break;
+      // Also add a log entry so completions show up in Recent Activity.
+      await storage.saveLog(
+        LogEntry(
+          id: completionLogId,
+          tankId: tankId,
+          type: LogType.taskCompleted,
+          timestamp: now,
+          title: task.title,
+          notes: task.description,
+          relatedTaskId: task.id,
+          relatedEquipmentId: task.relatedEquipmentId,
+          createdAt: now,
+        ),
+      );
+      completionLogSaved = true;
+
+      // If this task is tied to equipment maintenance, update equipment + log it.
+      if (task.relatedEquipmentId != null) {
+        final equipment = await storage.getEquipmentForTank(tankId);
+        Equipment? e;
+        for (final x in equipment) {
+          if (x.id == task.relatedEquipmentId) {
+            e = x;
+            break;
+          }
+        }
+        if (e != null) {
+          originalEquipment = e;
+          await storage.saveEquipment(
+            e.copyWith(lastServiced: now, updatedAt: now),
+          );
+          equipmentSaved = true;
+          await storage.saveLog(
+            LogEntry(
+              id: equipmentLogId,
+              tankId: tankId,
+              type: LogType.equipmentMaintenance,
+              timestamp: now,
+              title: 'Serviced ${e.name}',
+              notes: e.typeName,
+              relatedEquipmentId: e.id,
+              relatedTaskId: task.id,
+              createdAt: now,
+            ),
+          );
+          equipmentLogSaved = true;
         }
       }
-      if (e != null) {
-        await storage.saveEquipment(
-          e.copyWith(lastServiced: now, updatedAt: now),
-        );
-        await storage.saveLog(
-          LogEntry(
-            id: _uuid.v4(),
-            tankId: tankId,
-            type: LogType.equipmentMaintenance,
-            timestamp: now,
-            title: 'Serviced ${e.name}',
-            notes: e.typeName,
-            relatedEquipmentId: e.id,
-            relatedTaskId: task.id,
-            createdAt: now,
-          ),
+    } catch (e, st) {
+      logError(
+        'TasksScreen: task completion failed: $e',
+        stackTrace: st,
+        tag: 'TasksScreen',
+      );
+
+      if (equipmentLogSaved) {
+        try {
+          await storage.deleteLog(equipmentLogId);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TasksScreen: equipment log rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TasksScreen',
+          );
+        }
+      }
+
+      if (equipmentSaved && originalEquipment != null) {
+        try {
+          await storage.saveEquipment(originalEquipment);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TasksScreen: equipment rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TasksScreen',
+          );
+        }
+      }
+
+      if (completionLogSaved) {
+        try {
+          await storage.deleteLog(completionLogId);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TasksScreen: completion log rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TasksScreen',
+          );
+        }
+      }
+
+      if (taskSaved) {
+        try {
+          await storage.saveTask(task);
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'TasksScreen: task rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'TasksScreen',
+          );
+        }
+      }
+
+      ref.invalidate(tasksProvider(tankId));
+      ref.invalidate(equipmentProvider(tankId));
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(allLogsProvider(tankId));
+
+      if (context.mounted) {
+        DanioSnackBar.error(
+          context,
+          'Couldn\'t complete that task. Try again.',
         );
       }
+      return;
     }
 
     // Award XP for completing a maintenance task (with boost if active)

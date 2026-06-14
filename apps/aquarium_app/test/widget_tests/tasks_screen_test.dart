@@ -39,10 +39,99 @@ Widget _wrap({InMemoryStorageService? storage, String tankId = 'tank-1'}) {
   );
 }
 
+Widget _wrapWithStorage({
+  required StorageService storage,
+  String tankId = 'tank-1',
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(home: TasksScreen(tankId: tankId)),
+  );
+}
+
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
   await tester.pump(const Duration(seconds: 1));
+}
+
+class _CompletionLogFailsStorage implements StorageService {
+  _CompletionLogFailsStorage(this._delegate);
+
+  final InMemoryStorageService _delegate;
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) =>
+      _delegate.deleteAllTanks(ids);
+
+  @override
+  Future<void> deleteEquipment(String id) => _delegate.deleteEquipment(id);
+
+  @override
+  Future<void> deleteLivestock(String id) => _delegate.deleteLivestock(id);
+
+  @override
+  Future<void> deleteLog(String id) => _delegate.deleteLog(id);
+
+  @override
+  Future<void> deleteTank(String id) => _delegate.deleteTank(id);
+
+  @override
+  Future<void> deleteTask(String id) => _delegate.deleteTask(id);
+
+  @override
+  Future<List<Tank>> getAllTanks() => _delegate.getAllTanks();
+
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) =>
+      _delegate.getEquipmentForTank(tankId);
+
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) =>
+      _delegate.getLatestWaterTest(tankId);
+
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) =>
+      _delegate.getLivestockForTank(tankId);
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) => _delegate.getLogsForTank(tankId, limit: limit, after: after);
+
+  @override
+  Future<Tank?> getTank(String id) => _delegate.getTank(id);
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) =>
+      _delegate.getTasksForTank(tankId);
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) =>
+      _delegate.saveEquipment(equipment);
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) =>
+      _delegate.saveLivestock(livestock);
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    if (log.type == LogType.taskCompleted) {
+      throw StateError('task completion log failed');
+    }
+    await _delegate.saveLog(log);
+  }
+
+  @override
+  Future<void> saveTank(Tank tank) => _delegate.saveTank(tank);
+
+  @override
+  Future<void> saveTanks(List<Tank> tanks) => _delegate.saveTanks(tanks);
+
+  @override
+  Future<void> saveTask(Task task) => _delegate.saveTask(task);
 }
 
 // ---------------------------------------------------------------------------
@@ -214,6 +303,46 @@ void main() {
       final completedTasks = await svc.getTasksForTank(tankId);
       expect(completedTasks.single.completionCount, 1);
       expect(find.text('Rinse prefilter completed!'), findsOneWidget);
+    });
+
+    testWidgets('failed completion log write rolls back task completion', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-complete-rollback';
+      final svc = InMemoryStorageService();
+      final failingStorage = _CompletionLogFailsStorage(svc);
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-complete-rollback',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: failingStorage, tankId: tankId),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.byTooltip('Toggle task'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      final storedTasks = await svc.getTasksForTank(tankId);
+      expect(storedTasks.single.completionCount, 0);
+      expect(storedTasks.single.lastCompletedAt, isNull);
+      expect(
+        find.text('Couldn\'t complete that task. Try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('Rinse prefilter completed!'), findsNothing);
     });
   });
 }
