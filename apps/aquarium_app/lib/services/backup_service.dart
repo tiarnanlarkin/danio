@@ -702,6 +702,9 @@ class BackupService {
             'Invalid format: logs waterTest $field values must be numbers',
           );
         }
+        if (value is num) {
+          _validateWaterTestReading(field, value);
+        }
       }
     }
 
@@ -710,6 +713,32 @@ class BackupService {
         (photoUrls is! List || photoUrls.any((value) => value is! String))) {
       throw Exception(
         'Invalid format: logs photoUrls values must be arrays of strings',
+      );
+    }
+  }
+
+  void _validateWaterTestReading(String field, num value) {
+    if (field == 'temperature') {
+      if (value < 0 || value > 50) {
+        throw Exception(
+          'Invalid format: logs waterTest temperature values must be between 0 and 50',
+        );
+      }
+      return;
+    }
+
+    if (field == 'ph') {
+      if (value < 0 || value > 14) {
+        throw Exception(
+          'Invalid format: logs waterTest ph values must be between 0 and 14',
+        );
+      }
+      return;
+    }
+
+    if (value < 0) {
+      throw Exception(
+        'Invalid format: logs waterTest $field values must be zero or greater',
       );
     }
   }

@@ -1262,6 +1262,59 @@ void main() {
 
     for (final scenario in [
       (
+        field: 'temperature',
+        value: 99,
+        message:
+            'Invalid format: logs waterTest temperature values must be between 0 and 50',
+      ),
+      (
+        field: 'ph',
+        value: 15,
+        message:
+            'Invalid format: logs waterTest ph values must be between 0 and 14',
+      ),
+      (
+        field: 'ammonia',
+        value: -0.25,
+        message:
+            'Invalid format: logs waterTest ammonia values must be zero or greater',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects out-of-range log waterTest ${scenario.field} readings',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            'logs': [
+              {
+                ..._validChildEntry('logs', 'log-1'),
+                'waterTest': {scenario.field: scenario.value},
+              },
+            ],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    for (final scenario in [
+      (
         collection: 'logs',
         field: 'timestamp',
         entry: {..._validChildEntry('logs', 'log-1'), 'timestamp': 'not-date'},
