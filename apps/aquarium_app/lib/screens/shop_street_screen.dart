@@ -181,16 +181,28 @@ class ShopStreetScreen extends ConsumerWidget {
         const SizedBox(height: AppSpacing.xs),
         AppButton(
           label: 'Save',
-          onPressed: () {
+          onPressed: () async {
             final amount = double.tryParse(controller.text) ?? 100;
-            ref.read(budgetProvider.notifier).setMonthlyBudget(amount);
-            Navigator.maybePop(context);
+            try {
+              await ref.read(budgetProvider.notifier).setMonthlyBudget(amount);
+            } catch (_) {
+              if (!context.mounted) return;
+              AppFeedback.showError(
+                context,
+                'Could not save monthly budget. Try again in a moment.',
+              );
+              return;
+            }
+            if (!context.mounted) return;
+            await Navigator.maybePop(context);
+            if (!context.mounted) return;
+            AppFeedback.showSuccess(context, 'Monthly budget saved.');
           },
           variant: AppButtonVariant.primary,
           isFullWidth: true,
         ),
       ],
-    ).whenComplete(() => controller.dispose());
+    );
   }
 
   void _showAddShopDialog(BuildContext context, WidgetRef ref) {

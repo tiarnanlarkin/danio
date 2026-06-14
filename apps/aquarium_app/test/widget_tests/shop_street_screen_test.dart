@@ -78,6 +78,37 @@ void main() {
       expect(find.textContaining('coming soon'), findsNothing);
     });
 
+    testWidgets('saving monthly budget persists it and confirms the save', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+      await tester.scrollUntilVisible(
+        find.text('Monthly Budget'),
+        500,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Monthly Budget'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Budget amount'),
+        '150',
+      );
+      await tester.tap(find.text('Save'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Monthly budget saved.'), findsOneWidget);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedBudget =
+          jsonDecode(prefs.getString('shop_budget')!) as Map<String, dynamic>;
+      expect(savedBudget['monthlyBudget'], 150.0);
+    });
+
     testWidgets('adding a local shop saves it and confirms the add', (
       tester,
     ) async {
