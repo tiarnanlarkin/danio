@@ -19,7 +19,7 @@ This repo is developed local-first. Agents must keep work no-cost, offline-capab
 
 ## Dirty Worktree Protection
 
-- Run `git status --short` before editing.
+- Run `git status --short -uall` before editing and before staging.
 - Never revert, delete, or overwrite user changes you did not make.
 - If unrelated files are dirty, leave them alone.
 - If files you need are dirty, inspect them and work with the changes.
@@ -55,10 +55,14 @@ For docs-only changes, at minimum run:
 
 ```powershell
 git diff --check
+flutter test test/copy/current_docs_local_truth_test.dart
+flutter analyze
 rg -n "paid|cloud|OpenAI API calls|Maestro Cloud|fake premium|fake social" AGENTS.md apps/aquarium_app/docs/agent
 ```
 
-Run Flutter/doc truth tests when docs assert current product behavior.
+Run Flutter/doc truth tests when docs assert current product behavior. A debug
+APK build is required for product behavior changes and for documentation updates
+that make new build/readiness claims.
 
 ## Android Emulator Discipline
 
@@ -90,6 +94,9 @@ Run Flutter/doc truth tests when docs assert current product behavior.
   social, fake cloud sync, or care claims that imply veterinary advice.
 - For visual changes, run the applicable Flutter/golden/screenshot checks from
   `apps/aquarium_app/docs/design/VISUAL_QA_CHECKLIST.md`.
+- Preserve design setup docs from parallel sessions. Extend them only when the
+  current slice explicitly owns that update, and keep design-baseline changes in
+  their own focused commit when practical.
 
 ## Documentation References
 

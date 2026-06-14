@@ -150,6 +150,25 @@ Flutter golden tests are local verification aids. Their reference images are
 platform-dependent and ignored by this repo, so use them for focused local
 regression checks rather than cross-machine visual truth.
 
+## Parallel Design Setup Coordination
+
+The design autonomy setup under `docs/design/` is treated as active project
+infrastructure. Do not overwrite those files while another session owns a
+design-baseline slice.
+
+For UI or visual work:
+
+- Start from the relevant design doc, screenshot, golden, mockup, or existing
+  in-app surface.
+- Keep screenshots and golden checks local-only.
+- Record the changed surfaces and verification evidence in the active QA or
+  agent docs.
+- Keep design-baseline updates separate from unrelated product behavior
+  commits when practical.
+
+For non-UI work, note that visual QA was not required instead of capturing
+unrelated screenshots.
+
 ## Optional Local-Only Maestro CLI Notes
 
 Maestro is optional and local-only for this repo.

@@ -55,12 +55,14 @@ For docs-only changes:
 ```powershell
 git diff --check
 flutter test test/copy/current_docs_local_truth_test.dart
+flutter analyze
 rg -n "Maestro Cloud|Vercel|Supabase|Sentry|OpenAI API calls|paid service|fake premium|fake social|fake cloud" AGENTS.md apps/aquarium_app/docs/agent
 ```
 
 Run `flutter test test/copy/current_docs_local_truth_test.dart` if the docs describe current app behavior.
 
-Docs-only setup changes do not require a full Flutter suite unless they alter product truth, test instructions, or launch/readiness claims.
+Docs-only setup changes do not require a full Flutter suite or debug APK build
+unless they alter product truth, test instructions, or launch/readiness claims.
 
 ## Android QA Discipline
 
