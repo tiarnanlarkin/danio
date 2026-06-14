@@ -11,6 +11,7 @@ import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/providers/tank_visual_event_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/utils/navigation_throttle.dart';
@@ -125,6 +126,30 @@ Widget _wrapWithLatestTemperatureHarness({
   );
 }
 
+Widget _wrapWithFeedingPulseProbe({
+  required InMemoryStorageService storage,
+  required String tankId,
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      home: Stack(
+        children: [
+          AddLogScreen(tankId: tankId, initialType: LogType.feeding),
+          Positioned(
+            left: 0,
+            top: 0,
+            child: Consumer(
+              builder: (context, ref, _) =>
+                  Text('pulse ${ref.watch(tankFeedingPulseProvider(tankId))}'),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
@@ -208,6 +233,30 @@ void main() {
 
       expect(find.text('Log Feeding'), findsOneWidget);
       expect(find.text('Feeding'), findsOneWidget);
+    });
+  });
+
+  group('AddLogScreen feeding feedback', () {
+    testWidgets('saving a feeding log emits a tank feeding pulse', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'add-log-feeding-pulse-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(
+        _wrapWithFeedingPulseProbe(storage: svc, tankId: tankId),
+      );
+      await _advance(tester);
+
+      expect(find.text('pulse 0'), findsOneWidget);
+
+      await tester.tap(find.text('Save'));
+      await _advance(tester);
+
+      final logs = await svc.getLogsForTank(tankId);
+      expect(logs.where((log) => log.type == LogType.feeding), hasLength(1));
+      expect(find.text('pulse 1'), findsOneWidget);
     });
   });
 

@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 import '../../models/models.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/tank_provider.dart';
+import '../../providers/tank_visual_event_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../providers/inventory_provider.dart';
 import '../../providers/achievement_provider.dart';
@@ -1077,6 +1078,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       // Invalidate logs providers
       ref.invalidate(logsProvider(widget.tankId));
       ref.invalidate(allLogsProvider(widget.tankId));
+      if (log.type == LogType.feeding) {
+        ref.read(tankFeedingPulseProvider(widget.tankId).notifier).state += 1;
+      }
       if (log.type == LogType.waterTest) {
         ref.invalidate(latestWaterTestProvider(widget.tankId));
         ref.invalidate(latestWaterTestEntryProvider(widget.tankId));
