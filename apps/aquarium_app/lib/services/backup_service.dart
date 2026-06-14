@@ -313,6 +313,26 @@ class BackupService {
     if (waterTest != null && waterTest is! Map) {
       throw Exception('Invalid format: logs waterTest values must be objects');
     }
+    if (waterTest is Map) {
+      for (final field in const [
+        'temperature',
+        'ph',
+        'ammonia',
+        'nitrite',
+        'nitrate',
+        'gh',
+        'kh',
+        'phosphate',
+        'co2',
+      ]) {
+        final value = waterTest[field];
+        if (value != null && value is! num) {
+          throw Exception(
+            'Invalid format: logs waterTest $field values must be numbers',
+          );
+        }
+      }
+    }
 
     final photoUrls = entry['photoUrls'];
     if (photoUrls != null &&

@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1569 tests.
+- `flutter test`: pass, 1570 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1040,6 +1040,15 @@ CL-P1-009J Backup nested log-shape validation:
 - Focused coverage verifies both malformed nested log shapes fail before the
   backup data is returned to the import flow.
 
+CL-P1-009K Backup water-test numeric validation:
+
+- Backup preview/import now checks known nested water-test fields and rejects
+  any present values that are not numeric.
+- This prevents a backup with values like `"ammonia": "high"` from passing
+  preview and later failing during local log parsing.
+- Focused coverage verifies non-numeric nested water-test readings fail with a
+  normal validation message before the backup data is returned.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1195,10 +1204,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   tank-scoped child records, plus non-array tank-scoped child collections,
   missing child record IDs, and duplicate child record IDs before
   preview/import. It also rejects child records missing import-required fields
-  before preview/import, rejects malformed nested log water-test/photo data, and
-  optional cloud restore now skips child records whose tanks are not present
-  locally or in the backup. Remaining backup/data work is deeper import
-  validation UX, edit/delete/undo coverage, and restore/migration walkthrough QA.
+  before preview/import, rejects malformed nested log water-test/photo data,
+  rejects non-numeric nested water-test readings, and optional cloud restore now
+  skips child records whose tanks are not present locally or in the backup.
+  Remaining backup/data work is deeper import validation UX, edit/delete/undo
+  coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

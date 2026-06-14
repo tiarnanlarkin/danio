@@ -399,6 +399,40 @@ void main() {
         },
       );
     }
+
+    test(
+      'getBackupData rejects log waterTest readings that are not numbers',
+      () async {
+        final service = BackupService(
+          getDocumentsDirectory: () async => sourceDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+        final zipPath = await service.createBackup({
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [
+            {
+              ..._validChildEntry('logs', 'log-1'),
+              'waterTest': {'ammonia': 'high'},
+            },
+          ],
+        });
+
+        await expectLater(
+          service.getBackupData(zipPath),
+          throwsA(
+            isA<Exception>().having(
+              (error) => error.toString(),
+              'message',
+              contains(
+                'Invalid format: logs waterTest ammonia values must be numbers',
+              ),
+            ),
+          ),
+        );
+      },
+    );
   });
 }
 
