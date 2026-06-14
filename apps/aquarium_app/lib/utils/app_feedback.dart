@@ -294,4 +294,35 @@ class AppFeedback {
       ),
     );
   }
+
+  /// Show an error snackbar via a pre-captured [ScaffoldMessengerState].
+  static void showErrorViaMessenger(
+    ScaffoldMessengerState messenger,
+    String message,
+  ) {
+    AppHaptics.error();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline, color: AppColors.onError, size: 20),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                message,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.onError,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 4),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+        margin: const EdgeInsets.all(AppSpacing.md),
+      ),
+    );
+  }
 }

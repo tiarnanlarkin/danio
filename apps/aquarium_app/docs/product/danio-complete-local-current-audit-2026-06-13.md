@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1703 tests.
+- `flutter test`: pass, 1704 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1630,6 +1630,15 @@ CL-P1-009BS Local shop delete failure feedback:
 - Focused widget coverage verifies both the failed delete path and the failed
   undo-restore path for `Aquatic World`.
 
+CL-P1-009BT Equipment delete-undo failure feedback:
+
+- Equipment delete undo now catches failed local equipment restore saves
+  instead of surfacing a snackbar-action exception.
+- Failed equipment restore keeps the equipment and linked maintenance task
+  deleted and shows normal error feedback through a captured screen messenger.
+- Focused widget coverage verifies the failed undo-restore path for a
+  `Canister filter`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1859,10 +1868,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   name entry, waits for the local save, and gives normal success/error
   feedback. Marking a wishlist item as purchased now waits for the local item
   save before applying budget spend, and failed purchase saves leave local data
-  unchanged with normal error feedback. Failed wishlist and local fish shop
-  delete/delete-undo saves now show normal error feedback while keeping local
-  data consistent. Remaining backup/data work is deeper import validation UX,
-  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
+  unchanged with normal error feedback. Failed wishlist, local fish shop, and
+  equipment delete/delete-undo saves now show normal error feedback while
+  keeping local data consistent. Remaining backup/data work is deeper import
+  validation UX, broader edit/delete/undo coverage, and restore/migration
+  walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
