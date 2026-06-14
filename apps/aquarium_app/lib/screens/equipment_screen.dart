@@ -342,11 +342,13 @@ class EquipmentScreen extends ConsumerWidget {
       destructiveLabel: 'Remove Equipment',
       cancelLabel: 'Keep',
       onConfirm: () async {
+        var equipmentDeleted = false;
+        var maintenanceTaskDeleted = false;
+        Task? maintenanceTask;
         try {
           final storage = ref.read(storageServiceProvider);
           final maintenanceTaskId = _maintenanceTaskId(equipment.id);
           final tasks = await storage.getTasksForTank(tankId);
-          Task? maintenanceTask;
           for (final task in tasks) {
             if (task.id == maintenanceTaskId) {
               maintenanceTask = task;
@@ -354,8 +356,10 @@ class EquipmentScreen extends ConsumerWidget {
             }
           }
           await storage.deleteEquipment(equipment.id);
+          equipmentDeleted = true;
           // Remove auto maintenance task (if any)
           await storage.deleteTask(maintenanceTaskId);
+          maintenanceTaskDeleted = true;
           ref.invalidate(equipmentProvider(tankId));
           ref.invalidate(tasksProvider(tankId));
           if (context.mounted) {
@@ -375,6 +379,31 @@ class EquipmentScreen extends ConsumerWidget {
             );
           }
         } catch (e, st) {
+          final storage = ref.read(storageServiceProvider);
+          if (equipmentDeleted) {
+            try {
+              await storage.saveEquipment(equipment);
+            } catch (rollbackError, rollbackStack) {
+              logError(
+                'EquipmentScreen: equipment delete rollback failed: $rollbackError',
+                stackTrace: rollbackStack,
+                tag: 'EquipmentScreen',
+              );
+            }
+          }
+          if (maintenanceTaskDeleted && maintenanceTask != null) {
+            try {
+              await storage.saveTask(maintenanceTask);
+            } catch (rollbackError, rollbackStack) {
+              logError(
+                'EquipmentScreen: maintenance task rollback failed: $rollbackError',
+                stackTrace: rollbackStack,
+                tag: 'EquipmentScreen',
+              );
+            }
+          }
+          ref.invalidate(equipmentProvider(tankId));
+          ref.invalidate(tasksProvider(tankId));
           logError(
             'EquipmentScreen: equipment delete failed: $e',
             stackTrace: st,

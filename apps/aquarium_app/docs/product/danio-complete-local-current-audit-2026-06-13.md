@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1683 tests.
+- `flutter test`: pass, 1684 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1463,6 +1463,15 @@ CL-P1-009BB Bulk livestock removal timeline logs:
 - Focused widget coverage selects two livestock, confirms bulk removal, lets
   the undo window expire, and verifies two local removal logs are saved.
 
+CL-P1-009BC Equipment removal rollback:
+
+- Equipment removal now rolls back any equipment or linked maintenance-task
+  deletion that already happened if a later delete step fails.
+- Failed equipment removal refreshes equipment and task providers before showing
+  normal error feedback, so the local screen and saved records stay consistent.
+- Focused widget coverage simulates linked maintenance-task deletion failure and
+  verifies the equipment record remains saved.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1673,8 +1682,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   ASCII-safe count text in confirmation, journal, and snackbar copy. Livestock
   bulk move now reports the real moved count after clearing selection mode.
   Bulk livestock removal now writes local removal timeline logs after the undo
-  window expires. Remaining backup/data work is deeper import validation UX,
-  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
+  window expires. Equipment removal now rolls back partial local deletes if the
+  linked maintenance-task delete fails. Remaining backup/data work is deeper
+  import validation UX, broader edit/delete/undo coverage, and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
