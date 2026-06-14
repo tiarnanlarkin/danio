@@ -8,15 +8,18 @@
 
 import 'dart:io';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart';
 
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/reminders_screen.dart';
+import 'package:danio/widgets/core/app_button.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -69,16 +72,23 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class _MockNotificationsPlatform extends FlutterLocalNotificationsPlatform
+class _MockNotificationsPlatform extends AndroidFlutterLocalNotificationsPlugin
     with MockPlatformInterfaceMixin {
-  Future<bool?> initialize(
-    dynamic settings, {
-    dynamic onDidReceiveNotificationResponse,
-    dynamic onDidReceiveBackgroundNotificationResponse,
+  int scheduledCount = 0;
+
+  @override
+  Future<bool> initialize(
+    AndroidInitializationSettings initializationSettings, {
+    DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,
+    DidReceiveBackgroundNotificationResponseCallback?
+    onDidReceiveBackgroundNotificationResponse,
   }) async => true;
 
   @override
-  Future<void> cancel(int id) async {}
+  Future<bool?> canScheduleExactNotifications() async => true;
+
+  @override
+  Future<void> cancel(int id, {String? tag}) async {}
 
   @override
   Future<void> cancelAll() async {}
@@ -92,8 +102,23 @@ class _MockNotificationsPlatform extends FlutterLocalNotificationsPlatform
     int id,
     String? title,
     String? body, {
+    AndroidNotificationDetails? notificationDetails,
     String? payload,
   }) async {}
+
+  @override
+  Future<void> zonedSchedule(
+    int id,
+    String? title,
+    String? body,
+    TZDateTime scheduledDate,
+    AndroidNotificationDetails? notificationDetails, {
+    required AndroidScheduleMode scheduleMode,
+    String? payload,
+    DateTimeComponents? matchDateTimeComponents,
+  }) async {
+    scheduledCount++;
+  }
 }
 
 /// Advance far enough for async prefs load and animations to settle.
@@ -110,10 +135,13 @@ Future<void> _advance(WidgetTester tester) async {
 // Tests
 // ---------------------------------------------------------------------------
 
+late _MockNotificationsPlatform _notificationsPlatform;
+
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
-    FlutterLocalNotificationsPlatform.instance = _MockNotificationsPlatform();
+    _notificationsPlatform = _MockNotificationsPlatform();
+    FlutterLocalNotificationsPlatform.instance = _notificationsPlatform;
   });
 
   group('RemindersScreen — rendering', () {
@@ -254,5 +282,41 @@ void main() {
         );
       },
     );
+
+    testWidgets('add save failure shows feedback and keeps reminder unsaved', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrapWithFailingPrefs(
+          initialValues: {},
+          shouldFail: (key, value) =>
+              key == 'aquarium_reminders' && value != '[]',
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.text('Add Reminder'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Title'),
+        'Clean prefilter',
+      );
+      final saveButton = find.widgetWithText(AppButton, 'Save Reminder');
+      await tester.ensureVisible(saveButton);
+      await tester.pump();
+      tester.widget<AppButton>(saveButton).onPressed!();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(tester.takeException(), isNull);
+      expect(find.widgetWithText(ListTile, 'Clean prefilter'), findsNothing);
+      expect(_notificationsPlatform.scheduledCount, 0);
+      expect(
+        find.text("Couldn't save that reminder. Try again in a moment."),
+        findsOneWidget,
+      );
+    });
   });
 }

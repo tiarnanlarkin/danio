@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1724 tests.
+- `flutter test`: pass, 1725 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1809,6 +1809,15 @@ CL-P1-009CG Reminder delete/undo failure feedback:
   immediate local error feedback.
 - Focused Reminders widget coverage simulates a failed undo restore preference
   write and verifies the reminder stays deleted with restore-failure feedback.
+
+CL-P1-009CH Reminder add failure feedback:
+
+- Reminder add now writes the candidate reminder list before changing the
+  visible list or scheduling the OS notification.
+- Failed add writes leave the reminder form open for retry, keep the reminder
+  out of the visible list, and show normal local error feedback.
+- Focused Reminders widget coverage simulates a failed add preference write and
+  verifies no reminder tile is created.
 
 CL-P1-010A Tank Settings water-profile copy:
 

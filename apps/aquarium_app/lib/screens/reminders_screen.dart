@@ -53,18 +53,23 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   }
 
   Future<void> _saveReminders() async {
+    await _saveReminderList(_reminders);
+  }
+
+  Future<void> _saveReminderList(List<_Reminder> reminders) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    final json = jsonEncode(_reminders.map((r) => r.toJson()).toList());
+    final json = jsonEncode(reminders.map((r) => r.toJson()).toList());
     await prefs.setString('aquarium_reminders', json);
   }
 
   Future<bool> _saveRemindersWithRollback({
+    List<_Reminder>? remindersToSave,
     required List<_Reminder> rollbackReminders,
     required String errorMessage,
     required String logMessage,
   }) async {
     try {
-      await _saveReminders();
+      await _saveReminderList(remindersToSave ?? _reminders);
       return true;
     } catch (error, stackTrace) {
       logError(
@@ -113,19 +118,23 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     showAppDragSheet(
       context: context,
       builder: (ctx) => _AddReminderSheet(
-        onSave: (reminder) {
-          setState(() {
-            _reminders.add(reminder);
-            _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
-          });
-          _saveReminders();
-          // FB-H7: Schedule OS notification for the new reminder
-          NotificationService().scheduleReminderNotification(
-            reminderId: reminder.id,
-            title: reminder.title,
-            notes: reminder.notes,
-            scheduledAt: reminder.nextDue,
+        onSave: (reminder) async {
+          final previousReminders = List<_Reminder>.from(_reminders);
+          final updatedReminders = [...previousReminders, reminder]
+            ..sort((a, b) => a.nextDue.compareTo(b.nextDue));
+          final saved = await _saveRemindersWithRollback(
+            remindersToSave: updatedReminders,
+            rollbackReminders: previousReminders,
+            errorMessage: "Couldn't save that reminder. Try again in a moment.",
+            logMessage: 'Failed to persist added reminder',
           );
+          if (!saved || !mounted) return false;
+
+          setState(() => _reminders = updatedReminders);
+
+          // FB-H7: Schedule OS notification only after local save succeeds.
+          await _scheduleReminderNotification(reminder);
+          return true;
         },
       ),
     );
@@ -632,7 +641,7 @@ class _ReminderTile extends StatelessWidget {
 }
 
 class _AddReminderSheet extends StatefulWidget {
-  final Function(_Reminder) onSave;
+  final Future<bool> Function(_Reminder) onSave;
 
   const _AddReminderSheet({required this.onSave});
 
@@ -853,7 +862,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
               label: 'Save Reminder',
               isFullWidth: true,
               variant: AppButtonVariant.primary,
-              onPressed: () {
+              onPressed: () async {
                 final title = _titleController.text.trim();
                 if (title.isEmpty) {
                   AppFeedback.showWarning(
@@ -886,7 +895,8 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                   return;
                 }
 
-                widget.onSave(
+                final navigator = Navigator.of(context);
+                final saved = await widget.onSave(
                   _Reminder(
                     id: DateTime.now().millisecondsSinceEpoch.toString(),
                     title: _titleController.text,
@@ -899,7 +909,8 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                     frequency: _isRecurring ? _frequency : 'once',
                   ),
                 );
-                Navigator.maybePop(context);
+                if (!mounted || !saved) return;
+                await navigator.maybePop();
               },
             ),
           ],
