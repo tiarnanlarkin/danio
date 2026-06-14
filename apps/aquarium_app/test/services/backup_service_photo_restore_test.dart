@@ -1174,6 +1174,45 @@ void main() {
       });
     }
 
+    for (final scenario in [
+      (
+        label: 'observation log without note or photo',
+        entry: {..._validChildEntry('logs', 'log-1'), 'type': 'observation'},
+        message:
+            'Invalid format: logs observation entries must include notes or photos',
+      ),
+      (
+        label: 'medication log without note or photo',
+        entry: {..._validChildEntry('logs', 'log-1'), 'type': 'medication'},
+        message:
+            'Invalid format: logs medication entries must include notes or photos',
+      ),
+    ]) {
+      test('getBackupData rejects ${scenario.label}', () async {
+        final service = BackupService(
+          getDocumentsDirectory: () async => sourceDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+        final zipPath = await service.createBackup({
+          'tanks': [
+            {'id': 'tank-1', 'name': 'Main tank'},
+          ],
+          'logs': [scenario.entry],
+        });
+
+        await expectLater(
+          service.getBackupData(zipPath),
+          throwsA(
+            isA<Exception>().having(
+              (error) => error.toString(),
+              'message',
+              contains(scenario.message),
+            ),
+          ),
+        );
+      });
+    }
+
     test(
       'getBackupData rejects equipment settings that are not objects',
       () async {
@@ -2068,7 +2107,7 @@ Map<String, dynamic> _validChildEntry(String collectionName, String id) {
   const timestamp = '2026-06-14T09:00:00.000';
   final base = {'id': id, 'tankId': 'tank-1', 'createdAt': timestamp};
   return switch (collectionName) {
-    'logs' => {...base, 'type': 'observation', 'timestamp': timestamp},
+    'logs' => {...base, 'type': 'feeding', 'timestamp': timestamp},
     'livestock' => {
       ...base,
       'commonName': 'Neon tetra',

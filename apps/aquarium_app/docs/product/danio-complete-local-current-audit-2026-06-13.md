@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1667 tests.
+- `flutter test`: pass, 1669 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1348,6 +1348,15 @@ CL-P1-009AP Backup log type payload validation:
 - This keeps imported journal/timeline records aligned with the app's own log
   creation rules instead of allowing empty type-specific care events.
 
+CL-P1-009AQ Backup journal log content validation:
+
+- Backup preview/import now rejects observation and medication logs that do not
+  include either notes or photo evidence.
+- The generic backup test fixture now uses a feeding log as the minimal valid
+  log shape, matching the app's own add-log content rules.
+- Focused coverage verifies empty observation and medication journal events fail
+  before preview, photo restore, or import proceeds.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1542,7 +1551,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   `updatedAt` values earlier than `createdAt` before import. Custom recurring
   backup tasks now require positive interval days and due dates before import.
   Water-test and water-change backup logs now require their type-specific
-  payloads before import. Remaining backup/data work is deeper import
+  payloads before import. Observation and medication backup logs now require
+  notes or photos before import. Remaining backup/data work is deeper import
   validation UX, edit/delete/undo coverage, and restore/migration walkthrough
   QA.
 - Profile/preferences now centralises units, region, tank stage, experience

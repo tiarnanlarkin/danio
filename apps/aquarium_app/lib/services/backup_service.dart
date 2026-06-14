@@ -834,6 +834,13 @@ class BackupService {
         'Invalid format: logs photoUrls values must be arrays of strings',
       );
     }
+
+    if ((type == 'observation' || type == 'medication') &&
+        !_hasLogNoteOrPhoto(entry)) {
+      throw Exception(
+        'Invalid format: logs $type entries must include notes or photos',
+      );
+    }
   }
 
   void _validateWaterTestReading(String field, num value) {
@@ -860,6 +867,14 @@ class BackupService {
         'Invalid format: logs waterTest $field values must be zero or greater',
       );
     }
+  }
+
+  bool _hasLogNoteOrPhoto(Map<dynamic, dynamic> entry) {
+    final notes = entry['notes'];
+    if (notes is String && notes.trim().isNotEmpty) return true;
+
+    final photoUrls = entry['photoUrls'];
+    return photoUrls is List && photoUrls.isNotEmpty;
   }
 
   void _validateChildNumericRanges(
