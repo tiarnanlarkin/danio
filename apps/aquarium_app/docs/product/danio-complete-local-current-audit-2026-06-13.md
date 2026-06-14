@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1727 tests.
+- `flutter test`: pass, 1728 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1837,6 +1837,15 @@ CL-P1-009CJ Profile creation save failure feedback:
   provider in an error state instead of making onboarding appear locally saved.
 - Focused provider coverage simulates a failed `user_profile` preference write
   and verifies no profile JSON is stored.
+
+CL-P1-009CK Profile edit save failure feedback:
+
+- Profile edits now use the immediate local save path before exposing edited
+  profile state.
+- Failed `user_profile` edit writes now surface to the caller and keep the
+  previous profile visible instead of showing unsaved edits.
+- Focused provider coverage simulates a failed `user_profile` preference write
+  during `updateProfile` and verifies stored JSON stays unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 

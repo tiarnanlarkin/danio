@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/providers/user_profile_persistence_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,6 +41,19 @@ Future<void> _waitForProfileLoad(ProviderContainer container) async {
   }
 }
 
+UserProfile _profile({String? name}) {
+  final now = DateTime.now();
+  return UserProfile(
+    id: 'profile-1',
+    name: name,
+    experienceLevel: ExperienceLevel.beginner,
+    primaryTankType: TankType.freshwater,
+    goals: [UserGoal.keepFishAlive],
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -74,6 +89,43 @@ void main() {
 
         expect(container.read(userProfileProvider).hasError, isTrue);
         expect(prefs.getString('user_profile'), isNull);
+      },
+    );
+
+    test(
+      'updateProfile surfaces local save failures before exposing edits',
+      () async {
+        final originalProfile = _profile(name: 'Existing keeper');
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'user_profile',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(
+          notifier.updateProfile(name: 'Edited keeper'),
+          throwsA(isA<StateError>()),
+        );
+
+        final profileState = container.read(userProfileProvider);
+        expect(profileState.value?.name, 'Existing keeper');
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
       },
     );
   });
