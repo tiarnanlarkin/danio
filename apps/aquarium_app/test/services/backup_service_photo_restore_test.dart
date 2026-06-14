@@ -696,6 +696,61 @@ void main() {
       );
     }
 
+    for (final scenario in [
+      (
+        collection: 'logs',
+        field: 'title',
+        entry: {..._validChildEntry('logs', 'log-1'), 'title': 42},
+      ),
+      (
+        collection: 'livestock',
+        field: 'scientificName',
+        entry: {
+          ..._validChildEntry('livestock', 'livestock-1'),
+          'scientificName': 42,
+        },
+      ),
+      (
+        collection: 'equipment',
+        field: 'brand',
+        entry: {..._validChildEntry('equipment', 'equipment-1'), 'brand': 42},
+      ),
+      (
+        collection: 'tasks',
+        field: 'description',
+        entry: {..._validChildEntry('tasks', 'task-1'), 'description': 42},
+      ),
+    ]) {
+      test(
+        'getBackupData rejects ${scenario.collection} entries with invalid optional ${scenario.field} strings',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            scenario.collection: [scenario.entry],
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(
+                  'Invalid format: ${scenario.collection} ${scenario.field} values must be strings',
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     test(
       'getBackupData rejects log waterTest readings that are not numbers',
       () async {

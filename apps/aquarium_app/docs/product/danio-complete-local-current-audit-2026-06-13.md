@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1610 tests.
+- `flutter test`: pass, 1614 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1134,6 +1134,16 @@ CL-P1-009T Backup referenced-photo validation:
 - The shared photo-ref scanner now also finds strings inside lists, so list-based
   photo references are handled consistently.
 
+CL-P1-009U Backup optional child-string validation:
+
+- Backup preview/import now rejects malformed optional string fields on child
+  records before the user confirms an import.
+- Covered families include log titles/notes/relationship IDs, livestock
+  scientific/source/notes/image fields, equipment brand/model/notes, and task
+  descriptions/equipment links.
+- This keeps import conversion from silently skipping otherwise valid records
+  because an optional field used the wrong JSON type.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -1300,6 +1310,7 @@ High-confidence P1/P2 gaps from code/docs evidence:
   reject unknown values instead of silently defaulting during import. Child
   records now reject missing import-required metadata dates before preview.
   Backup JSON photo references now reject missing bundled archive files before
+  preview/import. Optional child string fields now reject malformed values before
   preview/import. Remaining backup/data work is deeper import validation UX, edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience

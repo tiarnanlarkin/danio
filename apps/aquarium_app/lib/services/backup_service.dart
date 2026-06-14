@@ -453,6 +453,14 @@ class BackupService {
           );
         }
       }
+      for (final field in _optionalStringChildFields(collectionName)) {
+        final value = entry[field];
+        if (value != null && value is! String) {
+          throw Exception(
+            'Invalid format: $collectionName $field values must be strings',
+          );
+        }
+      }
       for (final enumField in _enumChildFields(collectionName).entries) {
         _validateKnownValue(
           collectionName: collectionName,
@@ -561,6 +569,22 @@ class BackupService {
     return switch (collectionName) {
       'equipment' => const ['lastServiced', 'installedDate', 'purchaseDate'],
       'tasks' => const ['dueDate', 'lastCompletedAt'],
+      _ => const [],
+    };
+  }
+
+  List<String> _optionalStringChildFields(String collectionName) {
+    return switch (collectionName) {
+      'logs' => const [
+        'title',
+        'notes',
+        'relatedEquipmentId',
+        'relatedLivestockId',
+        'relatedTaskId',
+      ],
+      'livestock' => const ['scientificName', 'source', 'notes', 'imageUrl'],
+      'equipment' => const ['brand', 'model', 'notes'],
+      'tasks' => const ['description', 'relatedEquipmentId'],
       _ => const [],
     };
   }
