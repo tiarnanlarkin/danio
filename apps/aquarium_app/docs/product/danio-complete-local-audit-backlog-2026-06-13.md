@@ -103,6 +103,11 @@ These establish the shape of the finished local product.
 | CL-P1-011 | Global search | Make search a top-bar/contextual/More feature, not a bottom tab. | Done for current complete-local search scope; CL-P1-011A adds grouped app, tool, learning-path, guide, settings/privacy/backup, species, equipment, livestock, and local log search results. Remaining: Android phone/tablet walkthrough QA and optional direct-per-lesson deep links if needed. |
 | CL-P1-012 | Demo mode | Provide one polished sample tank, resettable and separate from real data. | In progress; quick start and Settings can add the populated sample tank, clearly marked as demo data. CL-P1-012A makes sample-tank creation reset/replace existing demo tanks without touching real tanks. Remaining: final screen QA. |
 
+Recent CL-P1-009 continuation note:
+
+- CL-P1-009CI catches failed Reminder completion writes before visible-list
+  changes or notification side effects.
+
 ## 7. P2 Work - Presentation System
 
 | ID | Area | Work | Acceptance |
@@ -141,8 +146,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the Reminder add failure slice
-on 2026-06-14, `flutter test` passes 1725 tests,
+Current verification note: as of the Reminder completion failure slice
+on 2026-06-14, `flutter test` passes 1726 tests,
 `flutter analyze` is clean, and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

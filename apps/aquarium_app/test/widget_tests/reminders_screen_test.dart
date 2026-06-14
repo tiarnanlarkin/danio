@@ -74,6 +74,7 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
 
 class _MockNotificationsPlatform extends AndroidFlutterLocalNotificationsPlugin
     with MockPlatformInterfaceMixin {
+  int canceledCount = 0;
   int scheduledCount = 0;
 
   @override
@@ -88,7 +89,9 @@ class _MockNotificationsPlatform extends AndroidFlutterLocalNotificationsPlugin
   Future<bool?> canScheduleExactNotifications() async => true;
 
   @override
-  Future<void> cancel(int id, {String? tag}) async {}
+  Future<void> cancel(int id, {String? tag}) async {
+    canceledCount++;
+  }
 
   @override
   Future<void> cancelAll() async {}
@@ -318,5 +321,40 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'complete save failure shows feedback and keeps one-time reminder active',
+      (tester) async {
+        final due = DateTime.now().add(const Duration(days: 2));
+        final savedReminders =
+            '[{"id":"1","title":"Dose fertiliser","notes":null,'
+            '"category":"maintenance","nextDue":"${due.toIso8601String()}",'
+            '"lastCompleted":null,"isRecurring":false,"frequency":"once"}]';
+
+        await tester.pumpWidget(
+          _wrapWithFailingPrefs(
+            initialValues: {'aquarium_reminders': savedReminders},
+            shouldFail: (key, value) =>
+                key == 'aquarium_reminders' && value == '[]',
+          ),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.byTooltip('Mark reminder as done'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        expect(tester.takeException(), isNull);
+        expect(
+          find.widgetWithText(ListTile, 'Dose fertiliser'),
+          findsOneWidget,
+        );
+        expect(_notificationsPlatform.canceledCount, 0);
+        expect(
+          find.text("Couldn't complete that reminder. Try again in a moment."),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

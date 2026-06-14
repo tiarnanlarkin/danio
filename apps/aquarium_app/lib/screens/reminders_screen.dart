@@ -52,10 +52,6 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     }
   }
 
-  Future<void> _saveReminders() async {
-    await _saveReminderList(_reminders);
-  }
-
   Future<void> _saveReminderList(List<_Reminder> reminders) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(reminders.map((r) => r.toJson()).toList());
@@ -140,32 +136,40 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     );
   }
 
-  void _toggleReminder(int index) {
+  Future<void> _toggleReminder(int index) async {
+    if (index < 0 || index >= _reminders.length) return;
+
     final reminder = _reminders[index];
-    // FB-H7: Cancel current notification before updating
-    NotificationService().cancelReminderNotification(reminder.id);
-    setState(() {
-      if (reminder.isRecurring) {
-        // Mark as done and schedule next occurrence
-        final newReminder = reminder.copyWith(
-          lastCompleted: DateTime.now(),
-          nextDue: _calculateNextDue(reminder),
-        );
-        _reminders[index] = newReminder;
-        // FB-H7: Schedule notification for the next occurrence
-        NotificationService().scheduleReminderNotification(
-          reminderId: newReminder.id,
-          title: newReminder.title,
-          notes: newReminder.notes,
-          scheduledAt: newReminder.nextDue,
-        );
-      } else {
-        // One-time reminder - remove it (notification already cancelled above)
-        _reminders.removeAt(index);
-      }
-      _reminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
-    });
-    _saveReminders();
+    final previousReminders = List<_Reminder>.from(_reminders);
+    final updatedReminders = List<_Reminder>.from(_reminders);
+    _Reminder? nextReminder;
+
+    if (reminder.isRecurring) {
+      nextReminder = reminder.copyWith(
+        lastCompleted: DateTime.now(),
+        nextDue: _calculateNextDue(reminder),
+      );
+      updatedReminders[index] = nextReminder;
+    } else {
+      updatedReminders.removeAt(index);
+    }
+    updatedReminders.sort((a, b) => a.nextDue.compareTo(b.nextDue));
+
+    final saved = await _saveRemindersWithRollback(
+      remindersToSave: updatedReminders,
+      rollbackReminders: previousReminders,
+      errorMessage: "Couldn't complete that reminder. Try again in a moment.",
+      logMessage: 'Failed to persist completed reminder',
+    );
+    if (!saved || !mounted) return;
+
+    setState(() => _reminders = updatedReminders);
+
+    // FB-H7: Notification side effects only run after local completion saves.
+    await _cancelReminderNotification(reminder);
+    if (nextReminder != null) {
+      await _scheduleReminderNotification(nextReminder);
+    }
   }
 
   DateTime _calculateNextDue(_Reminder reminder) {

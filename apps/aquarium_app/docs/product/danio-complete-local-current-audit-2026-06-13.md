@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1725 tests.
+- `flutter test`: pass, 1726 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1818,6 +1818,16 @@ CL-P1-009CH Reminder add failure feedback:
   out of the visible list, and show normal local error feedback.
 - Focused Reminders widget coverage simulates a failed add preference write and
   verifies no reminder tile is created.
+
+CL-P1-009CI Reminder completion failure feedback:
+
+- Reminder completion now writes the candidate reminder list before changing the
+  visible list or cancelling/scheduling OS notifications.
+- Failed one-time completion writes keep the reminder visible and show normal
+  local error feedback instead of leaving the user with a vanished reminder.
+- Focused Reminders widget coverage simulates a failed completion preference
+  write and verifies the reminder tile remains visible with no notification
+  cancellation side effect.
 
 CL-P1-010A Tank Settings water-profile copy:
 
