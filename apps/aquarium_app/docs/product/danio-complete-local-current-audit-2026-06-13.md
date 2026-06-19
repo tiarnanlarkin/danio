@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1735 tests.
+- `flutter test`: pass, 1736 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1909,6 +1909,17 @@ CL-P1-009CR Gems grant save failure feedback:
   silently scheduling a debounced write and showing unsaved granted currency.
 - Focused provider coverage simulates a failed `gems_state` preference write
   during `grantGems` and verifies stored JSON stays unchanged.
+
+CL-P1-009CS Inventory effect save failure ordering:
+
+- Consumable inventory effects now save the item consumption locally before
+  applying profile or energy side effects.
+- If the `shop_inventory` consumption write fails, the effect is not applied,
+  so users do not receive an unsaved streak-freeze or energy effect while the
+  item remains in inventory.
+- Focused provider coverage simulates a failed `shop_inventory` preference
+  write during `useItem('streak_freeze')` and verifies the profile and
+  inventory JSON stay unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 

@@ -220,28 +220,54 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       return true;
     }
 
-    // Apply the effect first
-    final effectApplied = await _applyItemEffect(shopItem);
-    if (!effectApplied) return false;
-
     if (shopItem.isConsumable) {
-      // Decrease quantity
+      // Persist consumption before applying profile/energy side effects.
+      // If the side effect then fails, restore the inventory record.
+      final updated = List<InventoryItem>.from(currentInventory);
       if (item.quantity <= 1) {
-        // Remove item entirely
-        final updated = List<InventoryItem>.from(currentInventory)
-          ..removeAt(itemIndex);
-        await _save(updated);
-        state = AsyncValue.data(updated);
+        updated.removeAt(itemIndex);
       } else {
-        // Decrease quantity by 1
-        final updatedItem = item.copyWith(quantity: item.quantity - 1);
-        final updated = List<InventoryItem>.from(currentInventory);
-        updated[itemIndex] = updatedItem;
-        await _save(updated);
-        state = AsyncValue.data(updated);
+        updated[itemIndex] = item.copyWith(quantity: item.quantity - 1);
       }
+
+      var consumptionSaved = false;
+      try {
+        await _save(updated);
+        consumptionSaved = true;
+        state = AsyncValue.data(updated);
+
+        final effectApplied = await _applyItemEffect(shopItem);
+        if (!effectApplied) {
+          await _save(currentInventory);
+          state = AsyncValue.data(currentInventory);
+          return false;
+        }
+      } catch (e, st) {
+        if (consumptionSaved) {
+          try {
+            await _save(currentInventory);
+            state = AsyncValue.data(currentInventory);
+          } catch (rollbackError, rollbackStack) {
+            logError(
+              'InventoryProvider: failed to restore inventory after item effect failure: $rollbackError',
+              stackTrace: rollbackStack,
+              tag: 'InventoryProvider',
+            );
+          }
+        }
+        logError(
+          'InventoryProvider: useItem failed before applying a durable effect: $e',
+          stackTrace: st,
+          tag: 'InventoryProvider',
+        );
+        rethrow;
+      }
+
       return true;
     } else {
+      final effectApplied = await _applyItemEffect(shopItem);
+      if (!effectApplied) return false;
+
       // Permanent items can't be "used" in the traditional sense
       // But we can activate time-based effects
       if (shopItem.durationHours != null) {
