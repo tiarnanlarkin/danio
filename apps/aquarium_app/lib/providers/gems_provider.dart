@@ -58,6 +58,16 @@ class GemsState {
   }
 }
 
+class _GemsSaveException implements Exception {
+  const _GemsSaveException(this.cause, {required this.gemsStateWritten});
+
+  final Object cause;
+  final bool gemsStateWritten;
+
+  @override
+  String toString() => 'Failed to save gems data: $cause';
+}
+
 class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   final Ref ref;
   GemsNotifier(this.ref) : super(const AsyncValue.loading()) {
@@ -175,6 +185,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   }
 
   Future<void> _writeToDisk(GemsState gemsState) async {
+    var gemsStateWritten = false;
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
       List<GemTransaction> transactions = gemsState.transactions;
@@ -183,6 +194,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         gemsState = gemsState.copyWith(transactions: transactions);
       }
       await prefs.setString(_key, jsonEncode(gemsState.toJson()));
+      gemsStateWritten = true;
       await _saveCumulative(prefs);
       _pendingGemsState = null; // Mark as clean after successful write.
     } catch (e, st) {
@@ -191,7 +203,35 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         stackTrace: st,
         tag: 'GemsProvider',
       );
-      throw Exception('Failed to save gems data: $e');
+      throw _GemsSaveException(e, gemsStateWritten: gemsStateWritten);
+    }
+  }
+
+  Future<void> _restorePersistedGemsStateIfNeeded(
+    Object error,
+    GemsState gemsState,
+  ) async {
+    if (error is! _GemsSaveException || !error.gemsStateWritten) return;
+    await _restorePersistedGemsState(gemsState);
+  }
+
+  Future<void> _restorePersistedGemsState(GemsState gemsState) async {
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      List<GemTransaction> transactions = gemsState.transactions;
+      if (transactions.length > _maxTransactions) {
+        transactions = transactions.take(_maxTransactions).toList();
+        gemsState = gemsState.copyWith(transactions: transactions);
+      }
+      final rollbackJson = jsonEncode(gemsState.toJson());
+      if (prefs.getString(_key) == rollbackJson) return;
+      await prefs.setString(_key, rollbackJson);
+    } catch (e, st) {
+      logError(
+        'GemsProvider: rollback save failed: $e',
+        stackTrace: st,
+        tag: 'GemsProvider',
+      );
     }
   }
 
@@ -214,6 +254,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     if (_adding) return false;
     _adding = true;
     final originalCumulativeEarned = _cumulativeEarned;
+    GemsState? originalState;
 
     try {
       // Auto-initialize if state not loaded yet
@@ -226,6 +267,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         );
         state = AsyncValue.data(current);
       }
+      originalState = current;
 
       final now = DateTime.now();
       final newBalance = current.balance + amount;
@@ -257,6 +299,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       return true;
     } catch (e, st) {
       _cumulativeEarned = originalCumulativeEarned;
+      final rollbackState = originalState;
+      if (rollbackState != null) {
+        await _restorePersistedGemsStateIfNeeded(e, rollbackState);
+      }
       state = AsyncValue.error(e, st);
       rethrow;
     } finally {
@@ -334,6 +380,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         );
         // Rollback: restore original state
         _cumulativeSpent = originalCumulativeSpent;
+        await _restorePersistedGemsStateIfNeeded(e, originalState);
         state = AsyncValue.data(originalState);
         rethrow;
       }
@@ -354,6 +401,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     if (current == null) {
       throw Exception('Cannot refund gems: Gems state not loaded');
     }
+    final originalState = current;
 
     try {
       final now = DateTime.now();
@@ -383,6 +431,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       await _saveImmediate(updatedState);
       state = AsyncValue.data(updatedState);
     } catch (e, st) {
+      await _restorePersistedGemsStateIfNeeded(e, originalState);
       state = AsyncValue.error(e, st);
       rethrow;
     }
@@ -419,6 +468,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     if (current == null) {
       throw Exception('Cannot grant gems: Gems state not loaded');
     }
+    final originalState = current;
 
     try {
       final now = DateTime.now();
@@ -447,6 +497,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       await _saveImmediate(updatedState);
       state = AsyncValue.data(updatedState);
     } catch (e, st) {
+      await _restorePersistedGemsStateIfNeeded(e, originalState);
       state = AsyncValue.error(e, st);
       rethrow;
     }

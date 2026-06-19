@@ -131,6 +131,8 @@ Recent CL-P1-009 continuation note:
   `gems_state` spend write is attempted.
 - CL-P1-009CU rolls back in-memory gem cumulative earned/spent counters when
   immediate local `gems_state` saves fail.
+- CL-P1-009CV restores persisted `gems_state` after gem earn/spend/refund/grant
+  partial writes where `gems_cumulative` fails.
 
 ## 7. P2 Work - Presentation System
 
@@ -170,8 +172,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the gem cumulative rollback slice
-on 2026-06-19, `flutter test` passes 1739 tests,
+Current verification note: as of the gem partial-write rollback slice
+on 2026-06-19, `flutter test` passes 1743 tests,
 `flutter analyze` is clean, and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

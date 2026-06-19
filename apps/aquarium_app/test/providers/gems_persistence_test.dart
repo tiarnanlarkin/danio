@@ -167,6 +167,44 @@ void main() {
       );
     });
 
+    test(
+      'addGems restores persisted gem state when cumulative save fails',
+      () async {
+        final originalState = _gemsState();
+        final originalGemsJson = jsonEncode(originalState.toJson());
+        SharedPreferences.setMockInitialValues({
+          'gems_state': originalGemsJson,
+          'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_cumulative',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(
+          notifier.addGems(amount: 5, reason: GemEarnReason.lessonComplete),
+          throwsA(isA<Exception>()),
+        );
+
+        expect(prefs.getString('gems_state'), originalGemsJson);
+        expect(
+          prefs.getString('gems_cumulative'),
+          jsonEncode({'earned': 10, 'spent': 5}),
+        );
+      },
+    );
+
     test('spendGems rolls back total spent when the save fails', () async {
       final originalState = _gemsState(balance: 20);
       SharedPreferences.setMockInitialValues({
@@ -204,5 +242,127 @@ void main() {
         jsonEncode({'earned': 10, 'spent': 5}),
       );
     });
+
+    test(
+      'spendGems restores persisted gem state when cumulative save fails',
+      () async {
+        final originalState = _gemsState(balance: 20);
+        final originalGemsJson = jsonEncode(originalState.toJson());
+        SharedPreferences.setMockInitialValues({
+          'gems_state': originalGemsJson,
+          'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_cumulative',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(
+          notifier.spendGems(
+            amount: 5,
+            itemId: 'xp_boost_1h',
+            itemName: 'XP Boost',
+          ),
+          throwsA(isA<Exception>()),
+        );
+
+        expect(prefs.getString('gems_state'), originalGemsJson);
+        expect(
+          prefs.getString('gems_cumulative'),
+          jsonEncode({'earned': 10, 'spent': 5}),
+        );
+      },
+    );
+
+    test(
+      'refund restores persisted gem state when cumulative save fails',
+      () async {
+        final originalState = _gemsState();
+        final originalGemsJson = jsonEncode(originalState.toJson());
+        SharedPreferences.setMockInitialValues({
+          'gems_state': originalGemsJson,
+          'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_cumulative',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(
+          notifier.refund(
+            amount: 5,
+            itemId: 'xp_boost_1h',
+            itemName: 'XP Boost',
+          ),
+          throwsA(isA<Exception>()),
+        );
+
+        expect(prefs.getString('gems_state'), originalGemsJson);
+        expect(
+          prefs.getString('gems_cumulative'),
+          jsonEncode({'earned': 10, 'spent': 5}),
+        );
+      },
+    );
+
+    test(
+      'grantGems restores persisted gem state when cumulative save fails',
+      () async {
+        final originalState = _gemsState();
+        final originalGemsJson = jsonEncode(originalState.toJson());
+        SharedPreferences.setMockInitialValues({
+          'gems_state': originalGemsJson,
+          'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_cumulative',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(
+          notifier.grantGems(amount: 5, reason: 'Debug grant'),
+          throwsA(isA<Exception>()),
+        );
+
+        expect(prefs.getString('gems_state'), originalGemsJson);
+        expect(
+          prefs.getString('gems_cumulative'),
+          jsonEncode({'earned': 10, 'spent': 5}),
+        );
+      },
+    );
   });
 }

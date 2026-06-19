@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1739 tests.
+- `flutter test`: pass, 1743 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1940,6 +1940,17 @@ CL-P1-009CU Gem cumulative counter rollback:
 - Focused provider coverage simulates failed `gems_state` writes during
   `addGems` and `spendGems` and verifies `gems_cumulative` and the in-memory
   counters stay unchanged.
+
+CL-P1-009CV Gem partial-write rollback:
+
+- Gem earn, spend, refund, and grant operations now restore the previous
+  persisted `gems_state` if the main gem JSON writes successfully but the
+  following `gems_cumulative` write fails.
+- This prevents a failed two-key gem save from reappearing after restart as a
+  silently persisted balance or transaction change.
+- Focused provider coverage simulates failed `gems_cumulative` writes during
+  `addGems`, `spendGems`, `refund`, and `grantGems` and verifies both local gem
+  preference keys stay unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 
