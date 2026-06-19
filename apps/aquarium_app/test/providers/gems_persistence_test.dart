@@ -93,5 +93,43 @@ void main() {
         );
       },
     );
+
+    test(
+      'grantGems surfaces local save failures before exposing granted gems',
+      () async {
+        final originalState = _gemsState();
+        SharedPreferences.setMockInitialValues({
+          'gems_state': jsonEncode(originalState.toJson()),
+          'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_state',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(
+          notifier.grantGems(amount: 5, reason: 'Debug grant'),
+          throwsA(isA<Exception>()),
+        );
+
+        final gemsState = container.read(gemsProvider);
+        expect(gemsState.asData?.value.balance, isNot(15));
+        expect(
+          prefs.getString('gems_state'),
+          jsonEncode(originalState.toJson()),
+        );
+      },
+    );
   });
 }

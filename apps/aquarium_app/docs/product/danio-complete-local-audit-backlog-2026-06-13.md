@@ -123,6 +123,8 @@ Recent CL-P1-009 continuation note:
   `user_profile` save before exposing story-progress/completion state.
 - CL-P1-009CQ makes gem refunds wait for the immediate local `gems_state`
   save before exposing restored balance/transaction state.
+- CL-P1-009CR makes gem grants wait for the immediate local `gems_state`
+  save before exposing granted balance/transaction state.
 
 ## 7. P2 Work - Presentation System
 
@@ -162,8 +164,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the gems refund save failure slice
-on 2026-06-14, `flutter test` passes 1734 tests,
+Current verification note: as of the gems grant save failure slice
+on 2026-06-19, `flutter test` passes 1735 tests,
 `flutter analyze` is clean, and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.
