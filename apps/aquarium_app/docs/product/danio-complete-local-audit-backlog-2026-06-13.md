@@ -127,6 +127,8 @@ Recent CL-P1-009 continuation note:
   save before exposing granted balance/transaction state.
 - CL-P1-009CS makes consumable inventory effects wait for the local
   `shop_inventory` consumption save before applying profile/energy effects.
+- CL-P1-009CT rejects duplicate permanent shop-item purchases before any
+  `gems_state` spend write is attempted.
 
 ## 7. P2 Work - Presentation System
 
@@ -166,8 +168,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the inventory effect save-order slice
-on 2026-06-19, `flutter test` passes 1736 tests,
+Current verification note: as of the duplicate permanent purchase guard slice
+on 2026-06-19, `flutter test` passes 1737 tests,
 `flutter analyze` is clean, and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

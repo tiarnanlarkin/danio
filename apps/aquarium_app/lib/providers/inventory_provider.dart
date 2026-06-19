@@ -101,6 +101,10 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     final currentInventory = state.valueOrNull ?? [];
     final gemsNotifier = ref.read(gemsProvider.notifier);
 
+    if (!item.isConsumable && hasItem(item.id)) {
+      return false;
+    }
+
     // Try to spend gems
     final success = await gemsNotifier.spendGems(
       amount: item.gemCost,
@@ -148,17 +152,6 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
         }
       } else {
         // Permanent item (cosmetic, etc.)
-        // Check if already owned
-        if (hasItem(item.id)) {
-          // Refund - already owned
-          await gemsNotifier.refund(
-            amount: item.gemCost,
-            itemId: item.id,
-            itemName: item.name,
-          );
-          return false;
-        }
-
         inventoryItem = InventoryItem(
           itemId: item.id,
           quantity: 1,

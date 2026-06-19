@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/models/shop_item.dart';
 import 'package:danio/models/tank.dart';
 import 'package:danio/models/user_profile.dart';
+import 'package:danio/providers/gems_provider.dart';
 import 'package:danio/providers/inventory_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 
@@ -37,9 +38,14 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
 
 Future<void> _waitForLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
+    final gemsState = container.read(gemsProvider);
     final profileState = container.read(userProfileProvider);
     final inventoryState = container.read(inventoryProvider);
-    if (!profileState.isLoading && !inventoryState.isLoading) return;
+    if (!gemsState.isLoading &&
+        !profileState.isLoading &&
+        !inventoryState.isLoading) {
+      return;
+    }
     await Future<void>.delayed(Duration.zero);
   }
 }
@@ -54,6 +60,14 @@ UserProfile _profile({bool hasStreakFreeze = false}) {
     hasStreakFreeze: hasStreakFreeze,
     createdAt: now,
     updatedAt: now,
+  );
+}
+
+GemsState _gemsState({int balance = 100}) {
+  return GemsState(
+    balance: balance,
+    transactions: const [],
+    lastUpdated: DateTime(2026, 6, 19, 12),
   );
 }
 
@@ -103,6 +117,63 @@ void main() {
         expect(
           prefs.getString('user_profile'),
           jsonEncode(originalProfile.toJson()),
+        );
+        expect(prefs.getString('shop_inventory'), originalInventoryJson);
+      },
+    );
+
+    test(
+      'purchaseItem rejects owned permanent items before spending gems',
+      () async {
+        final ownedBadge = InventoryItem(
+          itemId: 'badge_early_bird',
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 12),
+        );
+        const duplicateBadge = ShopItem(
+          id: 'badge_early_bird',
+          name: 'Early Bird Badge',
+          description: 'Permanent badge',
+          emoji: 'AM',
+          category: ShopItemCategory.cosmetics,
+          type: ShopItemType.profileBadge,
+          gemCost: 10,
+          isConsumable: false,
+          orderIndex: 20,
+        );
+        final originalGems = _gemsState();
+        final originalInventoryJson = jsonEncode([ownedBadge.toJson()]);
+        SharedPreferences.setMockInitialValues({
+          'gems_state': jsonEncode(originalGems.toJson()),
+          'gems_cumulative': jsonEncode({'earned': 100, 'spent': 0}),
+          'shop_inventory': originalInventoryJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_state',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final sub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(sub.close);
+        await _waitForLoad(container);
+
+        final notifier = container.read(inventoryProvider.notifier);
+
+        final purchased = await notifier.purchaseItem(duplicateBadge);
+
+        expect(purchased, isFalse);
+        final gemsState = container.read(gemsProvider).asData?.value;
+        expect(gemsState?.balance, originalGems.balance);
+        expect(
+          prefs.getString('gems_state'),
+          jsonEncode(originalGems.toJson()),
         );
         expect(prefs.getString('shop_inventory'), originalInventoryJson);
       },

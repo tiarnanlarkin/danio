@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1736 tests.
+- `flutter test`: pass, 1737 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1920,6 +1920,16 @@ CL-P1-009CS Inventory effect save failure ordering:
 - Focused provider coverage simulates a failed `shop_inventory` preference
   write during `useItem('streak_freeze')` and verifies the profile and
   inventory JSON stay unchanged.
+
+CL-P1-009CT Duplicate permanent inventory purchase guard:
+
+- Permanent shop items now reject duplicate ownership before attempting to spend
+  gems, avoiding an unnecessary refund path for items the user already owns.
+- This keeps local currency untouched when a duplicate badge/theme purchase is
+  blocked, even if a later gem write would fail.
+- Focused provider coverage simulates a duplicate permanent badge purchase with
+  failing `gems_state` writes and verifies the gem and inventory JSON stay
+  unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 
