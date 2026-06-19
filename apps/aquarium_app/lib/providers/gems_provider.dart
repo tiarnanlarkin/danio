@@ -213,6 +213,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     // between the check and set). The `finally` block always resets `_adding`.
     if (_adding) return false;
     _adding = true;
+    final originalCumulativeEarned = _cumulativeEarned;
 
     try {
       // Auto-initialize if state not loaded yet
@@ -255,6 +256,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       state = AsyncValue.data(updatedState);
       return true;
     } catch (e, st) {
+      _cumulativeEarned = originalCumulativeEarned;
       state = AsyncValue.error(e, st);
       rethrow;
     } finally {
@@ -290,6 +292,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
 
       // Store original state for rollback
       final originalState = current;
+      final originalCumulativeSpent = _cumulativeSpent;
 
       try {
         final now = DateTime.now();
@@ -330,6 +333,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
           tag: 'GemsProvider',
         );
         // Rollback: restore original state
+        _cumulativeSpent = originalCumulativeSpent;
         state = AsyncValue.data(originalState);
         rethrow;
       }

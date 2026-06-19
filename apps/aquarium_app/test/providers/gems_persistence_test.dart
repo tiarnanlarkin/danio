@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/gem_transaction.dart';
 import 'package:danio/providers/gems_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 
@@ -131,5 +132,77 @@ void main() {
         );
       },
     );
+
+    test('addGems rolls back total earned when the save fails', () async {
+      final originalState = _gemsState();
+      SharedPreferences.setMockInitialValues({
+        'gems_state': jsonEncode(originalState.toJson()),
+        'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWith((ref) async {
+            return _ThrowingSetStringPrefs(
+              prefs,
+              (key, _) => key == 'gems_state',
+            );
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+      await _waitForGemsLoad(container);
+
+      final notifier = container.read(gemsProvider.notifier);
+
+      await expectLater(
+        notifier.addGems(amount: 5, reason: GemEarnReason.lessonComplete),
+        throwsA(isA<Exception>()),
+      );
+
+      expect(notifier.totalEarned, 10);
+      expect(
+        prefs.getString('gems_cumulative'),
+        jsonEncode({'earned': 10, 'spent': 5}),
+      );
+    });
+
+    test('spendGems rolls back total spent when the save fails', () async {
+      final originalState = _gemsState(balance: 20);
+      SharedPreferences.setMockInitialValues({
+        'gems_state': jsonEncode(originalState.toJson()),
+        'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWith((ref) async {
+            return _ThrowingSetStringPrefs(
+              prefs,
+              (key, _) => key == 'gems_state',
+            );
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+      await _waitForGemsLoad(container);
+
+      final notifier = container.read(gemsProvider.notifier);
+
+      await expectLater(
+        notifier.spendGems(
+          amount: 5,
+          itemId: 'xp_boost_1h',
+          itemName: 'XP Boost',
+        ),
+        throwsA(isA<Exception>()),
+      );
+
+      expect(notifier.totalSpent, 5);
+      expect(
+        prefs.getString('gems_cumulative'),
+        jsonEncode({'earned': 10, 'spent': 5}),
+      );
+    });
   });
 }

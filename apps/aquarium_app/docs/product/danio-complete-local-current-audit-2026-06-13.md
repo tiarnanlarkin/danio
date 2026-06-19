@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1737 tests.
+- `flutter test`: pass, 1739 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1930,6 +1930,16 @@ CL-P1-009CT Duplicate permanent inventory purchase guard:
 - Focused provider coverage simulates a duplicate permanent badge purchase with
   failing `gems_state` writes and verifies the gem and inventory JSON stay
   unchanged.
+
+CL-P1-009CU Gem cumulative counter rollback:
+
+- Gem earn/spend cumulative counters now restore their previous in-memory
+  values when the immediate local `gems_state` save fails.
+- This prevents Total Earned or Total Spent summaries from showing unsaved
+  cumulative progress after a failed local write.
+- Focused provider coverage simulates failed `gems_state` writes during
+  `addGems` and `spendGems` and verifies `gems_cumulative` and the in-memory
+  counters stay unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 
