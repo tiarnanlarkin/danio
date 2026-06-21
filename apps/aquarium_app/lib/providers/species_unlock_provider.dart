@@ -20,7 +20,8 @@ const _kUnlockedSpeciesKey = 'unlocked_species_v1';
 // ── State ───────────────────────────────────────────────────────────────────
 
 class SpeciesUnlockNotifier extends StateNotifier<Set<String>> {
-  SpeciesUnlockNotifier(this._ref) : super(Set.unmodifiable(defaultUnlockedSpecies)) {
+  SpeciesUnlockNotifier(this._ref)
+    : super(Set.unmodifiable(defaultUnlockedSpecies)) {
     _load();
   }
 
@@ -43,16 +44,28 @@ class SpeciesUnlockNotifier extends StateNotifier<Set<String>> {
         await _syncFromCompletedLessons();
       }
     } catch (e, st) {
-      logError('SpeciesUnlockProvider: load failed: $e', stackTrace: st, tag: 'SpeciesUnlockProvider');
+      logError(
+        'SpeciesUnlockProvider: load failed: $e',
+        stackTrace: st,
+        tag: 'SpeciesUnlockProvider',
+      );
     }
   }
 
-  Future<void> _save() async {
+  Future<bool> _save(Set<String> unlockedSpecies) async {
     try {
       final prefs = await _ref.read(sharedPreferencesProvider.future);
-      await prefs.setString(_kUnlockedSpeciesKey, jsonEncode(state.toList()));
+      return prefs.setString(
+        _kUnlockedSpeciesKey,
+        jsonEncode(unlockedSpecies.toList()),
+      );
     } catch (e, st) {
-      logError('SpeciesUnlockProvider: save failed: $e', stackTrace: st, tag: 'SpeciesUnlockProvider');
+      logError(
+        'SpeciesUnlockProvider: save failed: $e',
+        stackTrace: st,
+        tag: 'SpeciesUnlockProvider',
+      );
+      return false;
     }
   }
 
@@ -65,9 +78,11 @@ class SpeciesUnlockNotifier extends StateNotifier<Set<String>> {
   /// Returns true if this was a new unlock.
   Future<bool> unlockSpecies(String speciesId) async {
     if (state.contains(speciesId)) return false;
-    state = {...state, speciesId};
-    await _save();
-    return true;
+    final updated = {...state, speciesId};
+    final saved = await _save(updated);
+    if (!saved) return false;
+    state = updated;
+    return saved;
   }
 
   /// Check whether completing [lessonId] unlocks a new species.
@@ -86,18 +101,22 @@ class SpeciesUnlockNotifier extends StateNotifier<Set<String>> {
       final profile = _ref.read(userProfileProvider).value;
       if (profile == null) return;
 
-      bool changed = false;
+      final updated = {...state};
       for (final lessonId in profile.completedLessons) {
         final speciesId = speciesForLesson(lessonId);
-        if (speciesId != null && !state.contains(speciesId)) {
-          state = {...state, speciesId};
-          changed = true;
+        if (speciesId != null && !updated.contains(speciesId)) {
+          updated.add(speciesId);
         }
       }
-      if (changed) await _save();
+      if (updated.length != state.length && await _save(updated)) {
+        state = updated;
+      }
     } catch (e) {
       // Non-fatal — defaults are still set
-      logError('SpeciesUnlockProvider: _syncFromCompletedLessons failed: $e', tag: 'SpeciesUnlockProvider');
+      logError(
+        'SpeciesUnlockProvider: _syncFromCompletedLessons failed: $e',
+        tag: 'SpeciesUnlockProvider',
+      );
     }
   }
 }

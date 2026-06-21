@@ -139,6 +139,8 @@ Recent CL-P1-009 continuation note:
   preference writes before exposing added/removed/updated planning state.
 - CL-P1-009CY makes Shop Street budget and local shop changes wait for local
   SharedPreferences writes before exposing updated planning state.
+- CL-P1-009CZ makes earned species unlocks wait for local
+  `unlocked_species_v1` writes before exposing updated unlock state.
 
 ## 7. P2 Work - Presentation System
 

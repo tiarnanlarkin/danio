@@ -1987,6 +1987,17 @@ CL-P1-009CY Shop planning provider save ordering:
   verifying the visible budget and local shop list change only after local save
   completion.
 
+CL-P1-009CZ Species unlock save ordering:
+
+- Earned species unlocks now save the candidate `unlocked_species_v1` payload
+  before exposing the new species in `speciesUnlockProvider`.
+- If a species unlock save is pending or fails, the species remains locked in
+  visible provider state instead of appearing briefly and disappearing after an
+  app restart.
+- Focused provider coverage pauses and rejects `unlocked_species_v1` writes,
+  verifying successful unlocks appear only after local save completion and
+  failed unlocks return `false`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2220,17 +2231,19 @@ High-confidence P1/P2 gaps from code/docs evidence:
   equipment delete/delete-undo saves now show normal error feedback while
   keeping local data consistent. Shop Street budget and local shop provider
   changes now wait for local SharedPreferences writes before exposing updated
-  budget/shop state. Failed Equipment service logging now rolls back the saved
-  serviced timestamp, linked maintenance-task changes, and generated service
-  log with normal error feedback. Failed tank and livestock soft-delete expiry
-  now restores visibility when permanent local delete writes fail. Failed
-  new-tank default-task creation now rolls back partial tank/task data. Failed
-  livestock bulk moves now roll back earlier moved records. Failed sample-tank
-  replacement now restores the previous demo tank and child data. Failed tank
-  reorders now restore partial sort-order writes. Failed first-run demo seeding
-  now removes partial demo data. Failed Tank Detail task completions now roll
-  back partial task/log/equipment writes. Failed Tank Detail quick-feeding saves
-  now show normal error feedback without changing the local journal. Remaining
+  budget/shop state. Earned species unlocks now wait for the local
+  `unlocked_species_v1` write before appearing in visible unlock state. Failed
+  Equipment service logging now rolls back the saved serviced timestamp, linked
+  maintenance-task changes, and generated service log with normal error
+  feedback. Failed tank and livestock soft-delete expiry now restores
+  visibility when permanent local delete writes fail. Failed new-tank
+  default-task creation now rolls back partial tank/task data. Failed livestock
+  bulk moves now roll back earlier moved records. Failed sample-tank replacement
+  now restores the previous demo tank and child data. Failed tank reorders now
+  restore partial sort-order writes. Failed first-run demo seeding now removes
+  partial demo data. Failed Tank Detail task completions now roll back partial
+  task/log/equipment writes. Failed Tank Detail quick-feeding saves now show
+  normal error feedback without changing the local journal. Remaining
   backup/data work is deeper import validation UX, broader edit/delete/undo
   coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
