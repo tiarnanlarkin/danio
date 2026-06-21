@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1745 tests.
+- `flutter test`: pass, 1747 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1962,6 +1962,18 @@ CL-P1-009CW Settings preference save ordering:
 - Focused provider coverage simulates failed `use_metric` and `theme_mode`
   writes and verifies the in-memory settings and persisted preferences stay
   unchanged.
+
+CL-P1-009CX Wishlist provider save ordering:
+
+- Wishlist item add, update, remove, and purchase-mark operations now save the
+  candidate `wishlist_items` preference payload before exposing the changed
+  provider state.
+- If the local wishlist preference write is still pending or fails, normal
+  wishlist state stays on the last persisted item list instead of briefly
+  showing unsaved planning changes.
+- Focused provider coverage pauses `wishlist_items` writes during item add and
+  removal, verifying the visible provider list changes only after the local save
+  completes.
 
 CL-P1-010A Tank Settings water-profile copy:
 
