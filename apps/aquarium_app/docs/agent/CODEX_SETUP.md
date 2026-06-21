@@ -7,6 +7,8 @@ This setup is intentionally no-cost and local-first. It is for building, testing
 - Local Flutter, Dart, Android SDK, JDK, Gradle, Git, PowerShell, ripgrep, and local scripts.
 - Local Android emulator or physical device only when ownership is clear.
 - Local screenshots and local log capture.
+- The local Danio quality gate at
+  `scripts/quality_gates/run_local_quality_gate.ps1`.
 - Local-only Maestro CLI if already installed or if the user explicitly approves a local install.
 - Installed global Codex skills such as Playwright, screenshots, OpenAI docs lookup, and security review skills, provided they do not call paid services or require external accounts.
 - Installed no-cost design skills such as Figma, Product Design workflows, Playwright, and screenshots, provided they stay local/reference-only and do not require paid seats, secrets, uploads, or external accounts.
@@ -77,6 +79,19 @@ flutter analyze
 flutter build apk --debug --target lib/main.dart
 git diff --check
 ```
+
+The local wrapper can run the standard gates in consistent profiles:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Visual
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep
+```
+
+See `docs/agent/AUTONOMOUS_QUALITY_SETUP.md` for the autonomous workflow,
+optional local tool lane, and account-backed upgrade boundaries.
 
 Run focused tests for the changed area before the full suite:
 
@@ -221,3 +236,10 @@ flutter analyze
 The full Flutter suite and debug APK build are required when docs also assert a
 new product state, alter product behavior, or change test/build instructions
 that need end-to-end proof.
+
+When changing the quality gate itself, also run:
+
+```powershell
+flutter test test/scripts/local_quality_gate_script_test.dart
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
+```

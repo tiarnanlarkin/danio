@@ -43,6 +43,15 @@ flutter build apk --debug --target lib/main.dart
 git diff --check
 ```
 
+The local quality gate can run these checks in repeatable profiles:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Visual
+```
+
 Also run focused tests for changed areas before the full suite, especially
 focused widget tests for changed screens or settings flows:
 
@@ -104,5 +113,6 @@ that make new build/readiness claims.
 
 - Codex setup: `apps/aquarium_app/docs/agent/CODEX_SETUP.md`
 - Testing checklist: `apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md`
+- Autonomous quality setup: `apps/aquarium_app/docs/agent/AUTONOMOUS_QUALITY_SETUP.md`
 - Current local audit: `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
 - Backlog: `apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md`

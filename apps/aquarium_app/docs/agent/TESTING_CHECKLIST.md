@@ -28,6 +28,12 @@ Use the smallest focused test first, then broaden.
 For UI/settings/navigation changes, include the focused widget test that proves
 the visible flow can be reached and interacted with.
 
+The local quality gate gives Codex a repeatable default focused check:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
+```
+
 ## Standard Product Gates
 
 Run from `apps/aquarium_app`:
@@ -48,6 +54,12 @@ Expected:
 
 The debug APK build may report the known future Kotlin Gradle Plugin warning. That warning does not block the current local debug build unless it turns into a build failure.
 
+Equivalent local gate profile:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
+```
+
 ## Docs-Only Gates
 
 For docs-only changes:
@@ -57,6 +69,12 @@ git diff --check
 flutter test test/copy/current_docs_local_truth_test.dart
 flutter analyze
 rg -n "Maestro Cloud|Vercel|Supabase|Sentry|OpenAI API calls|paid service|fake premium|fake social|fake cloud" AGENTS.md apps/aquarium_app/docs/agent
+```
+
+Equivalent local gate profile:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
 ```
 
 Run `flutter test test/copy/current_docs_local_truth_test.dart` if the docs describe current app behavior.
@@ -128,6 +146,12 @@ flutter test test/golden_tests/mc_card_golden_test.dart
 flutter test test/golden_tests/empty_room_scene_golden_test.dart
 ```
 
+Equivalent local gate profile:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Visual
+```
+
 Regenerate ignored local golden references only when intentionally reviewing
 visual output:
 
@@ -157,3 +181,6 @@ Before committing product or docs changes, confirm:
 - `git status --short` contains only files intended for the commit.
 - Commit message is specific.
 - Push only after the requested verification passes.
+
+For the full autonomous setup rules, see
+`docs/agent/AUTONOMOUS_QUALITY_SETUP.md`.
