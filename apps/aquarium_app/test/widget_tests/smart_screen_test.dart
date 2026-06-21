@@ -361,6 +361,11 @@ void main() {
 
       expect(find.text('Aquarium Intelligence'), findsOneWidget);
       expect(find.text('Local care plan'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('What Danio checked'),
+        300,
+        scrollable: find.byType(Scrollable).last,
+      );
       expect(find.text('What Danio checked'), findsOneWidget);
       expect(find.text('Unsafe water detected'), findsOneWidget);
       expect(find.textContaining('Ammonia 0.50 ppm'), findsOneWidget);

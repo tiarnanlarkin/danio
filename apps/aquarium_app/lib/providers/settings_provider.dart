@@ -85,48 +85,61 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
         hapticFeedbackEnabled: hapticFeedbackEnabled,
       );
     } catch (e, stackTrace) {
-      logError('Failed to load app settings: $e\n$stackTrace', tag: 'SettingsProvider');
+      logError(
+        'Failed to load app settings: $e\n$stackTrace',
+        tag: 'SettingsProvider',
+      );
     }
   }
 
-  Future<void> _persist(String key, dynamic value) async {
+  Future<bool> _persist(String key, dynamic value) async {
     try {
       final prefs = await _ref.read(sharedPreferencesProvider.future);
       if (value is int) {
-        await prefs.setInt(key, value);
+        return prefs.setInt(key, value);
       } else if (value is bool) {
-        await prefs.setBool(key, value);
+        return prefs.setBool(key, value);
       } else if (value is String) {
-        await prefs.setString(key, value);
+        return prefs.setString(key, value);
       }
+      return false;
     } catch (e, stackTrace) {
-      logError('Failed to persist setting "$key": $e\n$stackTrace', tag: 'SettingsProvider');
+      logError(
+        'Failed to persist setting "$key": $e\n$stackTrace',
+        tag: 'SettingsProvider',
+      );
+      return false;
     }
   }
 
   Future<void> setThemeMode(AppThemeMode mode) async {
-    state = state.copyWith(themeMode: mode);
-    await _persist(_themeModeKey, mode.index);
+    if (await _persist(_themeModeKey, mode.index)) {
+      state = state.copyWith(themeMode: mode);
+    }
   }
 
   Future<void> setUseMetric(bool useMetric) async {
-    state = state.copyWith(useMetric: useMetric);
-    await _persist(_useMetricKey, useMetric);
+    if (await _persist(_useMetricKey, useMetric)) {
+      state = state.copyWith(useMetric: useMetric);
+    }
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
-    state = state.copyWith(notificationsEnabled: enabled);
-    await _persist(_notificationsKey, enabled);
+    if (await _persist(_notificationsKey, enabled)) {
+      state = state.copyWith(notificationsEnabled: enabled);
+    }
   }
 
   Future<void> setAmbientLightingEnabled(bool enabled) async {
-    state = state.copyWith(ambientLightingEnabled: enabled);
-    await _persist(_ambientLightingKey, enabled);
+    if (await _persist(_ambientLightingKey, enabled)) {
+      state = state.copyWith(ambientLightingEnabled: enabled);
+    }
   }
 
   Future<void> setHapticFeedbackEnabled(bool enabled) async {
-    state = state.copyWith(hapticFeedbackEnabled: enabled);
-    await _persist(_hapticFeedbackKey, enabled);
+    if (await _persist(_hapticFeedbackKey, enabled)) {
+      state = state.copyWith(hapticFeedbackEnabled: enabled);
+    }
   }
 }
 

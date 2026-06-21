@@ -133,6 +133,8 @@ Recent CL-P1-009 continuation note:
   immediate local `gems_state` saves fail.
 - CL-P1-009CV restores persisted `gems_state` after gem earn/spend/refund/grant
   partial writes where `gems_cumulative` fails.
+- CL-P1-009CW makes app settings wait for local preference writes before
+  exposing updated theme/unit/toggle state.
 
 ## 7. P2 Work - Presentation System
 
@@ -172,8 +174,8 @@ Current QA note: `danio_api36` exists and boots, but ADB transport dropped
 during blackbox and focused verification on 2026-06-13. See
 `danio-complete-local-current-audit-2026-06-13.md`.
 
-Current verification note: as of the gem partial-write rollback slice
-on 2026-06-19, `flutter test` passes 1743 tests,
+Current verification note: as of the settings preference save-ordering slice
+on 2026-06-21, `flutter test` passes 1745 tests,
 `flutter analyze` is clean, and a debug APK builds successfully.
 Android blackbox QA should only run after confirming emulator/device ownership
 because parallel Codex sessions may also be using Android targets.

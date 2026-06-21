@@ -16,7 +16,7 @@ Environment:
 
 Passing checks in this pass:
 
-- `flutter test`: pass, 1743 tests.
+- `flutter test`: pass, 1745 tests.
 - `flutter analyze`: pass, no issues.
 - `flutter test test/copy/current_docs_local_truth_test.dart`: pass.
 - `flutter test test/scripts/android_main_activity_test.dart`: pass.
@@ -1951,6 +1951,17 @@ CL-P1-009CV Gem partial-write rollback:
 - Focused provider coverage simulates failed `gems_cumulative` writes during
   `addGems`, `spendGems`, `refund`, and `grantGems` and verifies both local gem
   preference keys stay unchanged.
+
+CL-P1-009CW Settings preference save ordering:
+
+- App settings setters now wait for the local SharedPreferences write before
+  exposing updated theme or boolean preference state.
+- If a preference save fails, the previous visible setting remains in place and
+  the failed write is logged instead of showing an unsaved value that would be
+  lost after restart.
+- Focused provider coverage simulates failed `use_metric` and `theme_mode`
+  writes and verifies the in-memory settings and persisted preferences stay
+  unchanged.
 
 CL-P1-010A Tank Settings water-profile copy:
 
