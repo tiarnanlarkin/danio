@@ -53,6 +53,17 @@ Future<void> _waitForWishlistLoad(
   }
 }
 
+Future<void> _waitForLocalShopsLoad(
+  ProviderContainer container, {
+  int? expectedLength,
+}) async {
+  for (var i = 0; i < 20; i += 1) {
+    final shops = container.read(localShopsProvider);
+    if (expectedLength == null || shops.length == expectedLength) return;
+    await Future<void>.delayed(Duration.zero);
+  }
+}
+
 WishlistItem _wishlistItem({
   String id = 'wishlist-cardinal-tetra',
   String name = 'Cardinal tetra',
@@ -68,10 +79,23 @@ WishlistItem _wishlistItem({
   );
 }
 
+LocalShop _localShop({
+  String id = 'local-shop-cardiff-aquatics',
+  String name = 'Cardiff Aquatics',
+}) {
+  return LocalShop(
+    id: id,
+    name: name,
+    distanceMiles: 4.2,
+    notes: 'Good planted tank section',
+    createdAt: DateTime(2026, 6, 21, 14),
+  );
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('WishlistNotifier persistence', () {
+  group('Shop planning persistence', () {
     test('addItem waits for wishlist save before exposing the item', () async {
       final existing = _wishlistItem(
         id: 'wishlist-existing-guppy',
@@ -163,5 +187,92 @@ void main() {
         );
       },
     );
+
+    test(
+      'setMonthlyBudget waits for budget save before exposing amount',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final saveGate = Completer<bool>();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _DelayedSetStringPrefs(
+                delegate: prefs,
+                delayedKey: 'shop_budget',
+                gate: saveGate,
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final subscription = container.listen(budgetProvider, (_, __) {});
+        addTearDown(subscription.close);
+        final initialBudget = container.read(budgetProvider).monthlyBudget;
+
+        final save = container
+            .read(budgetProvider.notifier)
+            .setMonthlyBudget(150);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(container.read(budgetProvider).monthlyBudget, initialBudget);
+
+        saveGate.complete(true);
+        await save;
+
+        expect(container.read(budgetProvider).monthlyBudget, 150);
+        expect(
+          jsonDecode(prefs.getString('shop_budget')!) as Map<String, dynamic>,
+          containsPair('monthlyBudget', 150.0),
+        );
+      },
+    );
+
+    test('addShop waits for local shop save before exposing shop', () async {
+      final existing = _localShop(
+        id: 'local-shop-existing',
+        name: 'Existing Aquatics',
+      );
+      SharedPreferences.setMockInitialValues({
+        'local_shops': jsonEncode([existing.toJson()]),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final saveGate = Completer<bool>();
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWith((ref) async {
+            return _DelayedSetStringPrefs(
+              delegate: prefs,
+              delayedKey: 'local_shops',
+              gate: saveGate,
+            );
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+      final subscription = container.listen(localShopsProvider, (_, __) {});
+      addTearDown(subscription.close);
+      await _waitForLocalShopsLoad(container, expectedLength: 1);
+
+      final shop = _localShop();
+      final save = container.read(localShopsProvider.notifier).addShop(shop);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(container.read(localShopsProvider).map((entry) => entry.id), [
+        existing.id,
+      ]);
+
+      saveGate.complete(true);
+      await save;
+
+      expect(container.read(localShopsProvider).map((entry) => entry.id), [
+        existing.id,
+        shop.id,
+      ]);
+      expect(
+        jsonDecode(prefs.getString('local_shops')!) as List<dynamic>,
+        hasLength(2),
+      );
+    });
   });
 }

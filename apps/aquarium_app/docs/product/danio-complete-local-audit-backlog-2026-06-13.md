@@ -137,6 +137,8 @@ Recent CL-P1-009 continuation note:
   exposing updated theme/unit/toggle state.
 - CL-P1-009CX makes wishlist item changes wait for local `wishlist_items`
   preference writes before exposing added/removed/updated planning state.
+- CL-P1-009CY makes Shop Street budget and local shop changes wait for local
+  SharedPreferences writes before exposing updated planning state.
 
 ## 7. P2 Work - Presentation System
 

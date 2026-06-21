@@ -1975,6 +1975,18 @@ CL-P1-009CX Wishlist provider save ordering:
   removal, verifying the visible provider list changes only after the local save
   completes.
 
+CL-P1-009CY Shop planning provider save ordering:
+
+- Shop Street budget updates and local shop add/update/remove operations now
+  save the candidate SharedPreferences payload before exposing the changed
+  provider state.
+- If `shop_budget` or `local_shops` writes are still pending or fail, the
+  visible planning state stays on the last persisted budget/shop list instead
+  of briefly showing unsaved changes.
+- Focused provider coverage pauses `shop_budget` and `local_shops` writes,
+  verifying the visible budget and local shop list change only after local save
+  completion.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2206,19 +2218,21 @@ High-confidence P1/P2 gaps from code/docs evidence:
   save before applying budget spend, and failed purchase saves leave local data
   unchanged with normal error feedback. Failed wishlist, local fish shop, and
   equipment delete/delete-undo saves now show normal error feedback while
-  keeping local data consistent. Failed Equipment service logging now rolls
-  back the saved serviced timestamp, linked maintenance-task changes, and
-  generated service log with normal error feedback. Failed tank and livestock
-  soft-delete expiry now restores visibility when permanent local delete writes
-  fail. Failed new-tank default-task creation now rolls back partial tank/task
-  data. Failed livestock bulk moves now roll back earlier moved records. Failed
-  sample-tank replacement now restores the previous demo tank and child data.
-  Failed tank reorders now restore partial sort-order writes. Failed first-run
-  demo seeding now removes partial demo data. Failed Tank Detail task
-  completions now roll back partial task/log/equipment writes. Failed Tank
-  Detail quick-feeding saves now show normal error feedback without changing
-  the local journal. Remaining backup/data work is deeper import validation UX,
-  broader edit/delete/undo coverage, and restore/migration walkthrough QA.
+  keeping local data consistent. Shop Street budget and local shop provider
+  changes now wait for local SharedPreferences writes before exposing updated
+  budget/shop state. Failed Equipment service logging now rolls back the saved
+  serviced timestamp, linked maintenance-task changes, and generated service
+  log with normal error feedback. Failed tank and livestock soft-delete expiry
+  now restores visibility when permanent local delete writes fail. Failed
+  new-tank default-task creation now rolls back partial tank/task data. Failed
+  livestock bulk moves now roll back earlier moved records. Failed sample-tank
+  replacement now restores the previous demo tank and child data. Failed tank
+  reorders now restore partial sort-order writes. Failed first-run demo seeding
+  now removes partial demo data. Failed Tank Detail task completions now roll
+  back partial task/log/equipment writes. Failed Tank Detail quick-feeding saves
+  now show normal error feedback without changing the local journal. Remaining
+  backup/data work is deeper import validation UX, broader edit/delete/undo
+  coverage, and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

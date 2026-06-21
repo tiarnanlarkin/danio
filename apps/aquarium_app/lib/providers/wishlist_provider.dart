@@ -203,10 +203,16 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
     }
   }
 
-  Future<void> _saveToStorage() async {
+  Future<void> _saveToStorage(ShopBudget budget) async {
     try {
       final prefs = await _ref.read(sharedPreferencesProvider.future);
-      await prefs.setString(_budgetKey, json.encode(state.toJson()));
+      final saved = await prefs.setString(
+        _budgetKey,
+        json.encode(budget.toJson()),
+      );
+      if (!saved) {
+        throw StateError('SharedPreferences returned false for $_budgetKey');
+      }
     } catch (e, stackTrace) {
       logError(
         'Failed to save budget: $e\n$stackTrace',
@@ -221,54 +227,60 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
     if (now.month != state.lastReset.month ||
         now.year != state.lastReset.year) {
       // New month - reset spending
-      state = state.copyWith(spentThisMonth: 0, lastReset: now);
-      _saveToStorage().catchError((e) {
-        logError(e, tag: 'WishlistProvider');
-      });
+      final updated = state.copyWith(spentThisMonth: 0, lastReset: now);
+      _saveToStorage(updated)
+          .then((_) {
+            state = updated;
+          })
+          .catchError((e) {
+            logError(e, tag: 'WishlistProvider');
+          });
     }
   }
 
   Future<void> setMonthlyBudget(double amount) async {
-    final oldState = state;
-    state = state.copyWith(monthlyBudget: amount);
+    final updated = state.copyWith(monthlyBudget: amount);
     try {
-      await _saveToStorage();
+      await _saveToStorage(updated);
+      state = updated;
     } catch (e, stackTrace) {
       logError(
         'Failed to save monthly budget: $e\n$stackTrace',
         tag: 'WishlistProvider',
       );
-      state = oldState;
       rethrow;
     }
   }
 
   Future<void> addPurchase(double amount) async {
-    final oldState = state;
-    state = state.copyWith(spentThisMonth: state.spentThisMonth + amount);
+    final updated = state.copyWith(
+      spentThisMonth: state.spentThisMonth + amount,
+    );
     try {
-      await _saveToStorage();
+      await _saveToStorage(updated);
+      state = updated;
     } catch (e, stackTrace) {
       logError(
         'Failed to save after adding purchase: $e\n$stackTrace',
         tag: 'WishlistProvider',
       );
-      state = oldState;
       rethrow;
     }
   }
 
   Future<void> resetSpending() async {
-    final oldState = state;
-    state = state.copyWith(spentThisMonth: 0, lastReset: DateTime.now());
+    final updated = state.copyWith(
+      spentThisMonth: 0,
+      lastReset: DateTime.now(),
+    );
     try {
-      await _saveToStorage();
+      await _saveToStorage(updated);
+      state = updated;
     } catch (e, stackTrace) {
       logError(
         'Failed to save after resetting spending: $e\n$stackTrace',
         tag: 'WishlistProvider',
       );
-      state = oldState;
       rethrow;
     }
   }
@@ -299,11 +311,14 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
     }
   }
 
-  Future<void> _saveToStorage() async {
+  Future<void> _saveToStorage(List<LocalShop> shops) async {
     try {
       final prefs = await _ref.read(sharedPreferencesProvider.future);
-      final jsonString = json.encode(state.map((e) => e.toJson()).toList());
-      await prefs.setString(_shopsKey, jsonString);
+      final jsonString = json.encode(shops.map((e) => e.toJson()).toList());
+      final saved = await prefs.setString(_shopsKey, jsonString);
+      if (!saved) {
+        throw StateError('SharedPreferences returned false for $_shopsKey');
+      }
     } catch (e, stackTrace) {
       logError(
         'Failed to save local shops: $e\n$stackTrace',
@@ -314,46 +329,43 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
   }
 
   Future<void> addShop(LocalShop shop) async {
-    state = [...state, shop];
+    final updated = [...state, shop];
     try {
-      await _saveToStorage();
+      await _saveToStorage(updated);
+      state = updated;
     } catch (e, stackTrace) {
       logError(
         'Failed to save after adding shop: $e\n$stackTrace',
         tag: 'WishlistProvider',
       );
-      // Revert on failure
-      state = state.where((s) => s.id != shop.id).toList();
       rethrow;
     }
   }
 
   Future<void> updateShop(LocalShop shop) async {
-    final oldState = state;
-    state = state.map((e) => e.id == shop.id ? shop : e).toList();
+    final updated = state.map((e) => e.id == shop.id ? shop : e).toList();
     try {
-      await _saveToStorage();
+      await _saveToStorage(updated);
+      state = updated;
     } catch (e, stackTrace) {
       logError(
         'Failed to save after updating shop: $e\n$stackTrace',
         tag: 'WishlistProvider',
       );
-      state = oldState;
       rethrow;
     }
   }
 
   Future<void> removeShop(String id) async {
-    final oldState = state;
-    state = state.where((e) => e.id != id).toList();
+    final updated = state.where((e) => e.id != id).toList();
     try {
-      await _saveToStorage();
+      await _saveToStorage(updated);
+      state = updated;
     } catch (e, stackTrace) {
       logError(
         'Failed to save after removing shop: $e\n$stackTrace',
         tag: 'WishlistProvider',
       );
-      state = oldState;
       rethrow;
     }
   }
