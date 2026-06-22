@@ -63,7 +63,7 @@ void main() {
     },
   );
 
-  test('local quality gate keeps device and optional paid tooling opt-in', () {
+  test('local quality gate keeps device and optional external tooling opt-in', () {
     final source = File(scriptPath).readAsStringSync();
 
     expect(File('.cspell.json').existsSync(), isTrue);
@@ -72,9 +72,9 @@ void main() {
     expect(source, contains(r'[switch]$RunOptionalTools'));
     expect(source, contains(r'[switch]$StrictOptionalTools'));
     expect(source, contains('osv-scanner'));
-    expect(source, contains('dcm'));
     expect(source, contains('cspell'));
     expect(source, contains('vale'));
+    expect(source, isNot(contains('dcm')));
     expect(source, contains('Resolve-OsvScannerCommand'));
     expect(source, contains(r'Microsoft\WinGet\Packages'));
     expect(source, contains('Google.OSVScanner'));
@@ -127,18 +127,27 @@ void main() {
     expect(gateSource, contains('Resolve-ValeCommand'));
     expect(gateSource, contains('errata-ai.Vale'));
     expect(gateSource, contains('winget install --exact --id errata-ai.Vale'));
-    expect(gateSource, contains(r'$arguments = @("docs/agent", "docs/design")'));
+    expect(
+      gateSource,
+      contains(r'$arguments = @("docs/agent", "docs/design")'),
+    );
   });
 
   test('local lint setup includes strict and Danio-specific checks', () {
     final appPubspec = File('pubspec.yaml').readAsStringSync();
     final analysisOptions = File('analysis_options.yaml').readAsStringSync();
+    final dependencyValidatorConfig = File(
+      'dart_dependency_validator.yaml',
+    ).readAsStringSync();
     final gateSource = File(scriptPath).readAsStringSync();
 
     expect(appPubspec, contains('very_good_analysis:'));
     expect(appPubspec, contains('custom_lint:'));
-    expect(appPubspec, contains('dart_code_metrics_presets:'));
+    expect(appPubspec, contains('dependency_validator:'));
     expect(appPubspec, contains('danio_custom_lints:'));
+    expect(appPubspec, isNot(contains('dependency_validator:\n  exclude:')));
+    expect(dependencyValidatorConfig, contains('tool/danio_custom_lints/**'));
+    expect(dependencyValidatorConfig, contains('danio_custom_lints'));
 
     expect(
       analysisOptions,
@@ -146,11 +155,7 @@ void main() {
     );
     expect(analysisOptions, contains('plugins:'));
     expect(analysisOptions, contains('custom_lint'));
-    expect(analysisOptions, contains('dart_code_metrics:'));
-    expect(
-      analysisOptions,
-      contains('package:dart_code_metrics_presets/recommended.yaml'),
-    );
+    expect(analysisOptions, isNot(contains('dart_code_metrics:')));
 
     expect(
       File('tool/danio_custom_lints/pubspec.yaml').existsSync(),
@@ -161,10 +166,12 @@ void main() {
       isTrue,
     );
     expect(gateSource, contains('dart run custom_lint'));
+    expect(gateSource, contains('dart run dependency_validator'));
+    expect(gateSource, contains('Invoke-DependencyValidator'));
     expect(gateSource, contains('Clear-CustomLintGeneratedOutputs'));
     expect(gateSource, contains('danio_aquarium_lint_root'));
     expect(gateSource, contains(r'android\app\mnt'));
-    expect(gateSource, contains('dcm analyze lib'));
+    expect(gateSource, isNot(contains('dcm analyze lib')));
   });
 
   test('generated cleanup keeps robocopy output quiet but checks failures', () {

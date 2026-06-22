@@ -77,10 +77,11 @@ Run the local gate before committing product code changes:
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
 ```
 
-The Full profile covers `flutter test`, `dart run custom_lint`,
-`flutter analyze`, `flutter build apk --debug --target lib/main.dart`, and
-`git diff --check`. On this Windows path, the wrapper runs custom lint through a
-temporary no-space junction and clears generated Flutter folders first.
+The Full profile covers `flutter test`, `dart run dependency_validator`,
+`dart run custom_lint`, `flutter analyze`,
+`flutter build apk --debug --target lib/main.dart`, and `git diff --check`. On
+this Windows path, the wrapper runs custom lint through a temporary no-space
+junction and clears generated Flutter folders first.
 
 The local wrapper can run the standard gates in consistent profiles:
 
@@ -98,9 +99,9 @@ optional local tool lane, and account-backed upgrade boundaries.
 The static analysis stack is:
 
 - `very_good_analysis` as the Flutter/Dart analyzer baseline.
+- `dart run dependency_validator` for dependency hygiene.
 - `dart run custom_lint` for Danio-specific local lint rules, via the local
   quality gate on Windows paths with spaces.
-- Optional `dcm analyze lib` only when DCM is installed/licensed locally.
 
 Run focused tests for the changed area before the full suite:
 

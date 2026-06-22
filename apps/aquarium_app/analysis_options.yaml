@@ -152,15 +152,3 @@ linter:
     use_is_even_rather_than_modulo: false
     use_null_aware_elements: false
     use_raw_strings: false
-
-dart_code_metrics:
-  extends:
-    - package:dart_code_metrics_presets/recommended.yaml
-  metrics:
-    cyclomatic-complexity: 20
-    maximum-nesting-level: 5
-    number-of-parameters: 4
-  metrics-exclude:
-    - test/**
-    - integration_test/**
-    - tool/**

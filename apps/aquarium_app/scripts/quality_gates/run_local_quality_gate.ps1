@@ -326,6 +326,15 @@ function Invoke-CustomLint {
   }
 }
 
+function Invoke-DependencyValidator {
+  Invoke-Step -Name "Dependency validator" -Command {
+    & dart run dependency_validator
+    if ($global:LASTEXITCODE -ne 0) {
+      throw "dart run dependency_validator failed with exit code $global:LASTEXITCODE"
+    }
+  }
+}
+
 function Invoke-DebugApkBuild {
   if ($SkipApkBuild) {
     Add-WarningMessage "Skipping debug APK build because -SkipApkBuild was supplied."
@@ -385,8 +394,6 @@ function Invoke-OptionalTools {
       throw "osv-scanner $($arguments -join ' ') failed with exit code $global:LASTEXITCODE"
     }
   }
-  # Optional DCM Pro path: dcm analyze lib
-  Invoke-OptionalTool -CommandName "dcm" -Arguments @("analyze", "lib")
   Invoke-OptionalTool -CommandName "cspell" -Arguments @("--config", ".cspell.json", "--no-progress", "docs/agent", "docs/design")
   Invoke-Step -Name "Optional vale" -Optional -Command {
     $vale = Resolve-ValeCommand
@@ -495,11 +502,13 @@ switch ($Profile) {
   }
   "Docs" {
     Invoke-FocusedTests
+    Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-Analyze
   }
   "Full" {
     Invoke-FocusedTests
+    Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-FullTests
     Invoke-Analyze
@@ -507,12 +516,14 @@ switch ($Profile) {
   }
   "Visual" {
     Invoke-FocusedTests
+    Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-GoldenTests
     Invoke-Analyze
   }
   "AndroidPrep" {
     Invoke-FocusedTests
+    Invoke-DependencyValidator
     Invoke-CustomLint
     Invoke-Analyze
     Invoke-DebugApkBuild

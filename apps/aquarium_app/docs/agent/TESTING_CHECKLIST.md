@@ -58,6 +58,7 @@ Run from `apps/aquarium_app`:
 Expected:
 
 - `flutter test` passes.
+- `dart run dependency_validator` reports no dependency hygiene issues.
 - `dart run custom_lint` reports no Danio-specific lint violations through the
   local gate's Windows-safe temporary path.
 - `flutter analyze` reports no issues.
@@ -108,6 +109,13 @@ Do not add private registries, tokens, or paid package feeds to
 `.github/dependabot.yml` without a separate explicit request.
 
 ## Local Dependency Audit
+
+The standard non-focused local gate runs `dart run dependency_validator`.
+This catches missing, unused, under-promoted, and over-promoted packages without
+needing DCM, a cloud account, or a paid license. The current config excludes
+the nested local lint package and ignores the `danio_custom_lints` analyzer
+plugin path dependency in `dart_dependency_validator.yaml` because it is
+consumed through analyzer configuration.
 
 When `osv-scanner` is installed locally, run the optional dependency audit with:
 

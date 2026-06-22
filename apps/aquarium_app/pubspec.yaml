@@ -74,16 +74,15 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
   very_good_analysis: ^10.3.0
   custom_lint: ^0.8.1
-  dart_code_metrics_presets: ^2.32.0
   danio_custom_lints:
     path: tool/danio_custom_lints
   flutter_launcher_icons: ^0.14.3
   patrol: ^4.3.0
   flutter_local_notifications_platform_interface: ^8.0.0
   plugin_platform_interface: ^2.1.0
+  dependency_validator: ^5.0.5
 
 flutter:
   uses-material-design: true

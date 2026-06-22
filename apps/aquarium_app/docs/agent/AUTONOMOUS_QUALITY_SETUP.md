@@ -17,14 +17,15 @@ Profiles:
 - `Focused`: worktree visibility, whitespace diff check, current docs truth
   test, local content validation, visual baseline manifest validation, and the
   local gate contract test.
-- `Docs`: `Focused` plus Danio custom lint and `flutter analyze`.
-- `Full`: `Focused`, Danio custom lint, full `flutter test`,
+- `Docs`: `Focused` plus dependency validation, Danio custom lint, and
+  `flutter analyze`.
+- `Full`: `Focused`, dependency validation, Danio custom lint, full `flutter test`,
   `flutter analyze`, and debug APK build.
-- `Visual`: `Focused`, the current focused golden tests, and
-  `flutter analyze`, with Danio custom lint before visual checks.
-- `AndroidPrep`: `Focused`, Danio custom lint, `flutter analyze`, debug APK
-  build, and read-only `adb devices` visibility. It does not install, wipe,
-  tap, or capture device state.
+- `Visual`: `Focused`, dependency validation, Danio custom lint, the current
+  focused golden tests, and `flutter analyze`.
+- `AndroidPrep`: `Focused`, dependency validation, Danio custom lint,
+  `flutter analyze`, debug APK build, and read-only `adb devices` visibility.
+  It does not install, wipe, tap, or capture device state.
 
 Useful switches:
 
@@ -64,11 +65,12 @@ Verified on 2026-06-22:
 - `Full -SkipApkBuild` passed after the fresh AndroidPrep APK build.
 - `Docs -RunOptionalTools` passed after the Vale setup; OSV, cspell, and Vale
   ran successfully.
+- `dependency_validator 5.0.5` replaced the optional DCM path as the standard
+  no-cost dependency hygiene check in non-focused profiles.
 - `osv-scanner` and Vale resolve from their winget package folders when PATH
   has not refreshed.
 - `patrol_cli 4.2.0` is installed in the Dart pub cache and matches the app's
   current `patrol 4.3.0` range according to the Patrol compatibility table.
-- DCM remains optional and pending until a paid DCM CLI/license is available.
 - Firebase account setup is active for project `danio-b1b70`. Crashlytics is
   recognized for `com.tiarnanlarkin.danio`; Firebase Test Lab ran one
   Spark/no-cost Robo test on Pixel 5 API 30 and passed.
@@ -80,8 +82,7 @@ Verified on 2026-06-22:
 - Percy/BrowserStack tokens and account keys are intentionally not committed or
   stored in this repo. Use local shell/session secrets only when running an
   external build.
-- Sentry and Qodo are not configured. DCM remains optional and pending until a
-  paid DCM CLI/license is available.
+- Sentry and Qodo are not configured.
 
 ## Optional Local Tools
 
@@ -91,9 +92,6 @@ The gate can detect and run these tools when installed locally:
   for no-cost dependency vulnerability checks. This uses OSV's public
   vulnerability data and requires the local `osv-scanner` binary, but no
   account, key, or paid service.
-- `dcm analyze lib` for stricter Dart/Flutter quality rules. Keep this scoped
-  to production app code unless a DCM Teams or larger license is explicitly
-  provided; DCM Pro is currently the intended paid path.
 - `cspell --config .cspell.json --no-progress docs/agent docs/design` for
   scoped spelling checks on the authored agent/design guidance.
 - `vale docs/agent docs/design` for scoped prose linting of the authored
@@ -191,11 +189,15 @@ run the relevant local quality gate before merging any dependency update.
 Danio uses a layered local lint setup:
 
 - `flutter analyze` with `very_good_analysis` as the baseline lint package.
+- `dart run dependency_validator` for missing, unused, under-promoted, and
+  over-promoted dependency checks. Danio excludes the nested
+  `tool/danio_custom_lints/**` package and ignores the local
+  `danio_custom_lints` analyzer plugin path dependency because it is used by
+  analyzer configuration rather than normal imports. Keep that allowlist in
+  `dart_dependency_validator.yaml`.
 - `dart run custom_lint` for Danio-specific local rules that generic Flutter
   lints cannot know about.
 - Local `danio_custom_lints` rules under `tool/danio_custom_lints/`.
-- Optional DCM Pro support through the `dart_code_metrics` configuration in
-  `analysis_options.yaml` and the local gate's optional `dcm analyze lib` step.
 
 Use `scripts/quality_gates/run_local_quality_gate.ps1` for the custom-lint
 step on Windows. The wrapper clears generated Flutter output that can confuse
@@ -203,7 +205,8 @@ workspace discovery and runs `dart run custom_lint` through a temporary
 no-space junction because this local repo path contains spaces.
 
 Do not require a DCM license, CI key, dashboard, or cloud account for normal
-work. DCM Teams and hosted dashboards remain separate paid upgrades.
+work. DCM is not part of the active quality path; use dependency validation,
+Very Good Analysis, custom lint, and focused tests instead.
 
 ## Account-Backed Quality Lane
 
@@ -280,8 +283,8 @@ Checked on 2026-06-21:
   https://docs.maestro.dev/maestro-cli
 - OSV-Scanner:
   https://google.github.io/osv-scanner/
-- DCM:
-  https://dcm.dev/
+- Dependency Validator:
+  https://pub.dev/packages/dependency_validator
 - CodeRabbit:
   https://docs.coderabbit.ai/guides/code-review-overview
 - Qodo code review:
