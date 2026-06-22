@@ -43,6 +43,41 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
   }
 }
 
+class _AquariumUseCard extends StatelessWidget {
+  final String message;
+
+  const _AquariumUseCard({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      backgroundColor: AppOverlays.primary10,
+      padding: AppCardPadding.compact,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.tips_and_updates_outlined,
+            size: AppIconSizes.sm,
+            color: AppColors.primary,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Aquarium use', style: AppTypography.labelLarge),
+                const SizedBox(height: AppSpacing.xs),
+                Text(message, style: AppTypography.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _VolumeConverter extends StatefulWidget {
   @override
   State<_VolumeConverter> createState() => _VolumeConverterState();
@@ -75,6 +110,10 @@ class _VolumeConverterState extends State<_VolumeConverter> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const _AquariumUseCard(
+            message: 'Use for dosing, water changes, and tank capacity checks.',
+          ),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -142,6 +181,11 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const _AquariumUseCard(
+            message:
+                'Use for heater settings, livestock ranges, and acclimation notes.',
+          ),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -243,6 +287,10 @@ class _LengthConverterState extends State<_LengthConverter> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const _AquariumUseCard(
+            message: 'Use for tank dimensions, fish size, and equipment fit.',
+          ),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -319,6 +367,11 @@ class _HardnessConverterState extends State<_HardnessConverter> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const _AquariumUseCard(
+            message:
+                'Use for GH/KH targets and species water-parameter checks.',
+          ),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(

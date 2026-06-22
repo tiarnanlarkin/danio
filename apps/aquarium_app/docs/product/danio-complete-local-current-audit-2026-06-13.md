@@ -908,6 +908,17 @@ CL-P1-006J Cost Tracker currency/settings polish:
 - Focused coverage verifies opening settings with a custom saved `CHF`
   currency does not trigger a dropdown assertion and keeps `CHF` selectable.
 
+CL-P1-006K Unit Converter guided context:
+
+- Unit Converter now shows a compact `Aquarium use` card on Volume,
+  Temperature, Length, and Hardness tabs so the utility reads as an aquarium
+  care tool rather than a generic converter.
+- The guidance stays local-only and action-neutral: dosing/water changes,
+  heater/acclimation checks, tank dimensions/equipment fit, and GH/KH/species
+  parameter checks.
+- Focused coverage verifies aquarium-use guidance appears on every converter
+  tab while existing conversion calculations keep passing.
+
 CL-P1-007A Multi-tank priority strip:
 
 - Compare Tanks now evaluates all tanks for the priority insight, not only the
@@ -2155,7 +2166,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   lesson paths, filtered review sessions, scenario-style Parameter Reading,
   Diagnosis Practice, Compatibility Checks, Setup Planning, and Emergency
   Decisions questions, plus tank-context recommendation hints in Practice Hub.
-  Richer persisted tool-result context belongs with CL-P1-006 guided tools.
+- Guided tools now cover tank-context handoffs for the main calculators,
+  Cycling Assistant local actions, Cost Tracker currency resilience, and
+  aquarium-use guidance on every Unit Converter tab.
 - Multi-tank comparison now has a first all-tanks priority overview, recent
   all-tanks activity card, and accessible one-tap selected-tank swap action.
   Remaining multi-tank work is Android phone/tablet QA.
@@ -2287,12 +2300,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P1-006, CL-P1-009, and CL-P1-010 local depth while Android
-transport is reserved by other sessions:
+Continue CL-P1-009 and CL-P1-010 local depth while Android transport is
+reserved by other sessions:
 
-- Add broader guided-tool timeline/task handoffs, complete multi-tank and
-  timeline phone/tablet QA when device ownership is clear, continue CL-P1-009
-  data-safety hardening, continue CL-P1-010
+- Complete multi-tank/timeline/guided-tool phone/tablet QA when device
+  ownership is clear, continue CL-P1-009 data-safety hardening, continue
+  CL-P1-010
   preference centralisation, and keep CL-P1-011 direct-per-lesson search/deep
   links as optional polish if walkthroughs show users need it.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership

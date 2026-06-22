@@ -40,6 +40,39 @@ void main() {
       expect(find.byType(TextField), findsWidgets);
     });
 
+    testWidgets('shows aquarium-use guidance on every tab', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(
+        find.text('Use for dosing, water changes, and tank capacity checks.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Temp'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Use for heater settings, livestock ranges, and acclimation notes.',
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Length'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Use for tank dimensions, fish size, and equipment fit.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Hardness'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Use for GH/KH targets and species water-parameter checks.'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('Temperature tab uses plain unit labels', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
