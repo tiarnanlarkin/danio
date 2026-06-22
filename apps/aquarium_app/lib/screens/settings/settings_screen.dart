@@ -1266,17 +1266,19 @@ class _ReducedMotionToggle extends ConsumerWidget {
 // Privacy
 // ---------------------------------------------------------------------------
 
-class _AnalyticsConsentToggle extends StatefulWidget {
+class _AnalyticsConsentToggle extends ConsumerStatefulWidget {
   const _AnalyticsConsentToggle();
 
   @override
-  State<_AnalyticsConsentToggle> createState() =>
+  ConsumerState<_AnalyticsConsentToggle> createState() =>
       _AnalyticsConsentToggleState();
 }
 
-class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
+class _AnalyticsConsentToggleState
+    extends ConsumerState<_AnalyticsConsentToggle> {
   bool _enabled = false;
   bool _loaded = false;
+  bool _saving = false;
 
   @override
   void initState() {
@@ -1285,7 +1287,7 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
   }
 
   Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final consent = prefs.getBool(kGdprAnalyticsConsentKey) ?? false;
     if (mounted) {
       setState(() {
@@ -1296,10 +1298,40 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
   }
 
   Future<void> _toggle(bool value) async {
-    setState(() => _enabled = value);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(kGdprAnalyticsConsentKey, value);
-    await applyAnalyticsConsent(value);
+    if (_saving) return;
+
+    final previous = _enabled;
+    setState(() => _saving = true);
+
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final saved = await prefs.setBool(kGdprAnalyticsConsentKey, value);
+      if (!saved) {
+        throw StateError(
+          'SharedPreferences returned false for $kGdprAnalyticsConsentKey',
+        );
+      }
+      await applyAnalyticsConsent(value);
+      if (!mounted) return;
+      setState(() {
+        _enabled = value;
+        _saving = false;
+      });
+    } catch (e, stackTrace) {
+      appLog(
+        'SettingsScreen: crash report consent save failed: $e\n$stackTrace',
+        tag: 'SettingsScreen',
+      );
+      if (!mounted) return;
+      setState(() {
+        _enabled = previous;
+        _saving = false;
+      });
+      AppFeedback.showError(
+        context,
+        "Couldn't update crash reports. Try again.",
+      );
+    }
   }
 
   @override
@@ -1310,7 +1342,7 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
       title: const Text('Crash Reports'),
       subtitle: const Text('Share crash diagnostics to help fix bugs'),
       value: _enabled,
-      onChanged: _toggle,
+      onChanged: _saving ? null : _toggle,
     );
   }
 }

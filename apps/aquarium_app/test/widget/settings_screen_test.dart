@@ -214,6 +214,41 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('failed crash-report consent save keeps switch unchanged', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'gdpr_analytics_consent': false,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final throwingPrefs = _ThrowingPrefs(
+        prefs,
+        (key, _) => key == 'gdpr_analytics_consent',
+      );
+
+      await tester.pumpWidget(
+        _wrap(const SettingsScreen(), prefs: throwingPrefs),
+      );
+      await tester.pump();
+
+      await _dragUntilTextVisible(tester, 'Crash Reports');
+      final switchFinder = find.ancestor(
+        of: find.text('Crash Reports'),
+        matching: find.byType(SwitchListTile),
+      );
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isFalse);
+
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isFalse);
+      expect(prefs.getBool('gdpr_analytics_consent'), isFalse);
+      expect(
+        find.text("Couldn't update crash reports. Try again."),
+        findsOneWidget,
+      );
+    });
   });
 
   group('_ThemeModeTile — theme mode switching', () {

@@ -145,6 +145,8 @@ Recent CL-P1-009 continuation note:
   and keeps the entry sheet open for retry.
 - CL-P1-009DB catches failed Inventory item-use writes with normal retry
   feedback while keeping the owned item visible.
+- CL-P1-009DC catches failed Crash Reports consent writes from Preferences
+  before the visible switch changes or diagnostics consent is applied.
 
 ## 7. P2 Work - Presentation System
 

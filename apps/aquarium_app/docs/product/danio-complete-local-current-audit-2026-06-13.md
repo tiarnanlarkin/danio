@@ -2046,6 +2046,17 @@ CL-P1-009DB Inventory item-use failure feedback:
 - Focused widget coverage simulates a failed item-use save, confirms the
   normal retry snackbar, and verifies the item remains visible.
 
+CL-P1-009DC Preferences crash-report consent failure feedback:
+
+- Preferences Crash Reports consent now waits for the local
+  `gdpr_analytics_consent` write before changing the visible switch or applying
+  diagnostics consent.
+- Failed consent writes keep the switch on its previous value, log the failure,
+  and show normal retry feedback instead of making crash reporting look enabled
+  or disabled when the local preference was not saved.
+- Focused widget coverage simulates a failed consent preference write and
+  verifies the switch stays unchanged with retry feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2312,9 +2323,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   restore partial sort-order writes. Failed first-run demo seeding now removes
   partial demo data. Failed Tank Detail task completions now roll back partial
   task/log/equipment writes. Failed Tank Detail quick-feeding saves now show
-  normal error feedback without changing the local journal. Remaining
-  backup/data work is deeper import validation UX, broader edit/delete/undo
-  coverage, and restore/migration walkthrough QA.
+  normal error feedback without changing the local journal. Failed Inventory
+  item uses keep the owned item visible, and failed Crash Reports consent writes
+  keep the visible switch unchanged with retry feedback. Remaining backup/data
+  work is deeper import validation UX, broader edit/delete/undo coverage, and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
