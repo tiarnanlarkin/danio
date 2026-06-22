@@ -256,6 +256,33 @@ void main() {
       expect(find.text('Activity'), findsOneWidget);
     });
 
+    testWidgets('swaps compared tanks with one accessible action', (
+      tester,
+    ) async {
+      suppressErrors();
+      final tankA = _tank('t1', 'Tank A');
+      final tankB = _tank('t2', 'Tank B');
+
+      await tester.pumpWidget(_wrap(tanks: [tankA, tankB]));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      List<DropdownButtonFormField<String>> selectors() => tester
+          .widgetList<DropdownButtonFormField<String>>(
+            find.byType(DropdownButtonFormField<String>),
+          )
+          .toList();
+
+      expect(selectors()[0].initialValue, tankA.id);
+      expect(selectors()[1].initialValue, tankB.id);
+
+      await tester.tap(find.byTooltip('Swap compared tanks'));
+      await tester.pumpAndSettle();
+
+      expect(selectors()[0].initialValue, tankB.id);
+      expect(selectors()[1].initialValue, tankA.id);
+    });
+
     testWidgets('surfaces urgent unselected tanks in all-tanks overview', (
       tester,
     ) async {

@@ -91,9 +91,20 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                     excludeId: tank2.id,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-                  child: Icon(Icons.compare_arrows),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xs,
+                  ),
+                  child: IconButton(
+                    tooltip: 'Swap compared tanks',
+                    icon: const Icon(Icons.swap_horiz),
+                    onPressed: () {
+                      setState(() {
+                        _tank1Id = tank2.id;
+                        _tank2Id = tank1.id;
+                      });
+                    },
+                  ),
                 ),
                 Expanded(
                   child: _TankSelector(

@@ -943,6 +943,14 @@ CL-P1-007B / CL-P1-008B All-tanks activity timeline:
 - Focused coverage verifies recent activity across three tanks, including an
   unselected tank, appears in the comparison flow.
 
+CL-P1-007C Compare Tanks swap action:
+
+- Compare Tanks now turns the middle selector control into an accessible
+  one-tap swap action so users can flip the left/right selected tanks without
+  reopening dropdowns.
+- Focused coverage verifies the `Swap compared tanks` action switches the two
+  selected tank IDs in the comparison selectors.
+
 CL-P1-008C Saved tool-result timeline labels:
 
 - Tank Journal now recognises observation notes saved by guided tools and
@@ -2139,9 +2147,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Diagnosis Practice, Compatibility Checks, Setup Planning, and Emergency
   Decisions questions, plus tank-context recommendation hints in Practice Hub.
   Richer persisted tool-result context belongs with CL-P1-006 guided tools.
-- Multi-tank comparison now has a first all-tanks priority overview and recent
-  all-tanks activity card. Remaining multi-tank work is switching polish and
-  Android phone/tablet QA.
+- Multi-tank comparison now has a first all-tanks priority overview, recent
+  all-tanks activity card, and accessible one-tap selected-tank swap action.
+  Remaining multi-tank work is Android phone/tablet QA.
 - Tank Journal now has a first unified local timeline pass for current log
   types, saved guided-tool notes now appear as Tool Result entries, and Compare
   Tanks now surfaces recent history across tanks. Saved `Milestone:` journal
@@ -2269,11 +2277,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P1-007/CL-P1-008 remaining local depth while Android transport is
+Continue CL-P1-008 remaining local depth while Android transport is
 reserved by other sessions:
 
-- Expand accepted AI-note/milestone timeline handoffs, polish multi-tank
-  switching, continue CL-P1-009 data-safety hardening, continue CL-P1-010
+- Expand accepted AI-note/milestone timeline handoffs, complete multi-tank
+  phone/tablet QA when device ownership is clear, continue CL-P1-009
+  data-safety hardening, continue CL-P1-010
   preference centralisation, and keep CL-P1-011 direct-per-lesson search/deep
   links as optional polish if walkthroughs show users need it.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
