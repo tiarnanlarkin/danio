@@ -12,9 +12,10 @@ interact with the latest debug build, and give feedback on visible behavior.
 It does not replace focused tests, `flutter analyze`, debug APK builds,
 Patrol, screenshot checks, or the Full gate.
 
-Use the dedicated `danio_api36` emulator for Danio. Do not use whichever
-emulator happens to be connected, because other Codex sessions may be building
-other apps on the same machine.
+Use the dedicated `danio_api36` phone emulator for Danio phone preview and the
+dedicated `danio_tablet_api36` tablet emulator for tablet QA. Do not use
+whichever emulator happens to be connected, because other Codex sessions may be
+building other apps on the same machine.
 
 Only the coordinator or danio_android_qa_owner may control the live preview
 device. Read-only auditors and implementation workers must not run emulator,
@@ -40,6 +41,12 @@ Run commands from `apps/aquarium_app`.
 
    ```powershell
    .\scripts\run_danio_live_preview.ps1 -LaunchEmulator
+   ```
+
+   For tablet checks, use the dedicated tablet AVD:
+
+   ```powershell
+   .\scripts\run_danio_live_preview.ps1 -AvdName danio_tablet_api36 -LaunchEmulator
    ```
 
 4. Keep the emulator window visible for user testing.
@@ -96,9 +103,9 @@ Good feedback from the user includes:
 
 `run_danio_live_preview.ps1` must stop instead of taking over a device when:
 
-- Multiple devices are connected and no `danio_api36` match is found.
+- Multiple devices are connected and no selected Danio AVD match is found.
 - The selected device is focused on another non-Danio app package.
-- `danio_api36` is not running and `-LaunchEmulator` was not supplied.
+- The selected Danio AVD is not running and `-LaunchEmulator` was not supplied.
 - Flutter, ADB, or the Android emulator binary cannot be resolved.
 - `flutter run` exits with a non-zero code.
 

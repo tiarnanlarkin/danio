@@ -118,7 +118,16 @@ function Get-ForegroundPackage {
 function Assert-ForegroundSafe {
   param([Parameter(Mandatory = $true)][string]$Serial)
 
-  $package = Get-ForegroundPackage -Serial $Serial
+  try {
+    $package = Get-ForegroundPackage -Serial $Serial
+  }
+  catch {
+    if ($_.Exception.Message -match "Can't find service: window") {
+      throw "Android window service is not ready on $Serial."
+    }
+    throw
+  }
+
   $allowedSystemPackages = @(
     "",
     "android",
@@ -172,7 +181,18 @@ function Resolve-DanioDevice {
     }
 
     if ($matches.Count -eq 1) {
-      $foreground = Assert-ForegroundSafe -Serial $matches[0].Serial
+      try {
+        $foreground = Assert-ForegroundSafe -Serial $matches[0].Serial
+      }
+      catch {
+        if ($_.Exception.Message -match "Android window service is not ready") {
+          Write-Host "$($_.Exception.Message) Waiting..."
+          Start-Sleep -Seconds 2
+          continue
+        }
+        throw
+      }
+
       return [pscustomobject]@{
         Serial = $matches[0].Serial
         Avd = $matches[0].Avd

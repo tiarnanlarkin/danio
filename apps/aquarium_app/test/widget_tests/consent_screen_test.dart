@@ -94,6 +94,22 @@ void main() {
       expect(tester.getSize(under13Button).height, greaterThanOrEqualTo(48));
     });
 
+    testWidgets('tablet layout keeps privacy copy to a readable width', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final explanation = find.textContaining(
+        'Crash reports help us fix bugs',
+      );
+      expect(explanation, findsOneWidget);
+      expect(tester.getSize(explanation).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets('consent controls expose direct semantic tap actions', (
       tester,
     ) async {

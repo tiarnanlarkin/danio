@@ -43,6 +43,7 @@ void main() {
     expect(source, contains('mCurrentFocus'));
     expect(source, contains('mFocusedApp'));
     expect(source, contains('Refusing to take over'));
+    expect(source, contains('Android window service is not ready'));
     expect(source, contains('r hot reload'));
     expect(source, contains('R hot restart'));
     expect(source, contains('q quit'));
@@ -92,6 +93,7 @@ void main() {
     expect(workflow, contains('does not replace'));
     expect(workflow, contains('Full gate'));
     expect(workflow, contains('danio_api36'));
+    expect(workflow, contains('danio_tablet_api36'));
     expect(
       workflow,
       contains('Only the coordinator or danio_android_qa_owner'),
