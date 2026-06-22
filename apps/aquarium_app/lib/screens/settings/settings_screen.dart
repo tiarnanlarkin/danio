@@ -1547,6 +1547,18 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
           const SizedBox(height: AppSpacing.xs),
         ],
         AppButton(
+          label: 'Review AI privacy',
+          onPressed: _isBusy
+              ? null
+              : () => NavigationThrottle.push(
+                  context,
+                  const PrivacyPolicyScreen(),
+                ),
+          variant: AppButtonVariant.secondary,
+          isFullWidth: true,
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        AppButton(
           label: 'Close',
           onPressed: () {
             widget.onDismissed();

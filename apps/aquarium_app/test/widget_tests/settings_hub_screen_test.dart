@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/emergency_guide_screen.dart';
+import 'package:danio/screens/privacy_policy_screen.dart';
 import 'package:danio/screens/settings_hub_screen.dart';
 import 'package:danio/screens/settings_screen.dart';
 import 'package:danio/utils/navigation_throttle.dart';
@@ -293,6 +294,22 @@ void main() {
       await tester.pump();
 
       expect(find.text('Enter an OpenAI API key first.'), findsOneWidget);
+    });
+
+    testWidgets('Configure AI links directly to privacy policy', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrapPreferences());
+      await _advance(tester);
+
+      await _scrollUntilTextVisible(tester, 'Optional AI');
+      await tester.tap(find.text('Optional AI'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Review AI privacy'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PrivacyPolicyScreen), findsOneWidget);
     });
 
     testWidgets('More action tiles expose one concise semantics node', (

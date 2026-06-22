@@ -2097,6 +2097,15 @@ CL-P1-010G Optional AI disclosure reset:
 - Focused widget coverage verifies the reset action removes the saved local
   disclosure flag from SharedPreferences.
 
+CL-P1-010H Optional AI privacy route:
+
+- Preferences > Smart Hub > Optional AI now includes a direct `Review AI
+  privacy` action inside the setup dialog.
+- The action opens the existing Privacy Policy screen from the point where
+  users decide whether to add a custom key or review Optional AI data handling.
+- Focused widget coverage verifies the Optional AI dialog routes directly to
+  the local Privacy Policy screen.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -2283,9 +2292,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   haptics, the Reduce Motion preference now reaches descendant MediaQuery
   animation checks, Notification Settings now has guided reminder intensity
   presets, Preferences links directly to the Privacy Policy, and Optional AI
-  disclosure acceptance can be reset from Preferences. Remaining
-  profile/preferences work is any final AI/provider and privacy walkthrough
-  gaps.
+  disclosure acceptance can be reset from Preferences. Optional AI setup now
+  links directly to the Privacy Policy from the setup dialog. Remaining
+  profile/preferences work is any final AI/provider walkthrough gaps.
 - Global search now has first complete-local coverage for app destinations,
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, and local logs. Remaining search work is Android phone/tablet
@@ -2300,12 +2309,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P1-009 and CL-P1-010 local depth while Android transport is
-reserved by other sessions:
+Continue CL-P1-009 local depth while Android transport is reserved by other
+sessions:
 
 - Complete multi-tank/timeline/guided-tool phone/tablet QA when device
-  ownership is clear, continue CL-P1-009 data-safety hardening, continue
-  CL-P1-010
+  ownership is clear, continue CL-P1-009 data-safety hardening, keep CL-P1-010
   preference centralisation, and keep CL-P1-011 direct-per-lesson search/deep
   links as optional polish if walkthroughs show users need it.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
