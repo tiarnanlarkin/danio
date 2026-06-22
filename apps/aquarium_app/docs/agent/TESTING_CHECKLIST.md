@@ -226,6 +226,30 @@ For app-wide screenshot evidence, reuse committed local screenshot folders such
 as `docs/qa/screenshots/whole-app-map-2026-05-18/` and capture new local
 evidence only when device ownership is clear.
 
+## External Account Checks
+
+External checks are optional and must follow local gates. They are useful for
+release confidence, not a replacement for local verification.
+
+Configured account-side services:
+
+- Firebase project `danio-b1b70`.
+- Firebase Test Lab Spark/no-cost Robo smoke has passed once on Pixel 5 API 30.
+- Crashlytics recognizes `com.tiarnanlarkin.danio`.
+- Percy/App Percy project `Danio Aquarium Android` is linked to
+  `tiarnanlarkin/danio` through GitHub integration.
+- CodeRabbit setup was completed by the user; verify on the first PR review.
+
+Rules:
+
+- Do not commit Firebase, Percy, BrowserStack, CodeRabbit, or Qodo secrets.
+- Do not upgrade Firebase billing or start paid BrowserStack/Percy runs without
+  fresh explicit approval.
+- Do not add hosted CI workflow files unless the user separately approves hosted
+  builds.
+- Use `PERCY_TOKEN` only as a local shell/session environment variable when
+  running an external Percy build.
+
 ## Product Truth Checklist
 
 Before committing product or docs changes, confirm:

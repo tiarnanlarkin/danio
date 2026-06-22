@@ -69,9 +69,19 @@ Verified on 2026-06-22:
 - `patrol_cli 4.2.0` is installed in the Dart pub cache and matches the app's
   current `patrol 4.3.0` range according to the Patrol compatibility table.
 - DCM remains optional and pending until a paid DCM CLI/license is available.
-- Account-backed tools such as Firebase Test Lab, BrowserStack/Percy,
-  CodeRabbit/Qodo, Sentry, and Crashlytics are not configured in this local
-  setup. Add them only after explicit account/credential approval.
+- Firebase account setup is active for project `danio-b1b70`. Crashlytics is
+  recognized for `com.tiarnanlarkin.danio`; Firebase Test Lab ran one
+  Spark/no-cost Robo test on Pixel 5 API 30 and passed.
+- App Percy account setup is active for project `Danio Aquarium Android`.
+  The Percy GitHub integration is enabled, linked only to
+  `tiarnanlarkin/danio`, and its health check passed.
+- CodeRabbit GitHub app setup was completed by the user. Treat its first pull
+  request review as the practical verification point.
+- Percy/BrowserStack tokens and account keys are intentionally not committed or
+  stored in this repo. Use local shell/session secrets only when running an
+  external build.
+- Sentry and Qodo are not configured. DCM remains optional and pending until a
+  paid DCM CLI/license is available.
 
 ## Optional Local Tools
 
@@ -195,24 +205,53 @@ no-space junction because this local repo path contains spaces.
 Do not require a DCM license, CI key, dashboard, or cloud account for normal
 work. DCM Teams and hosted dashboards remain separate paid upgrades.
 
-## Account-Backed Upgrade Lane
+## Account-Backed Quality Lane
 
-No account-backed service is configured by this setup pass. If the user later
-approves a paid or external quality layer, keep it separate from the local core
-and do not commit secrets.
+Some account-backed services are now connected, but they remain outside the
+local core. Do not commit secrets, tokens, dashboard exports, generated account
+config, or paid-service workflow files without a separate explicit request.
 
-Recommended escalation order:
+Current account-side setup:
 
-- AI PR review: CodeRabbit or Qodo after changes are in pull requests.
-- Independent mobile CI: Codemagic or an equivalent mobile CI runner after the
-  user explicitly approves hosted builds.
-- Device matrix testing: Firebase Test Lab, BrowserStack, or a similar service
-  only after the user approves account setup and upload behavior.
-- Release telemetry: Crashlytics or Sentry only after the local app is polished
-  and the user explicitly approves runtime reporting.
+- Firebase project `danio-b1b70`
+  - Spark/no-cost plan during setup.
+  - Crashlytics recognized the Android app `com.tiarnanlarkin.danio`.
+  - Test Lab single-device Robo smoke passed on Pixel 5 API 30.
+- Percy / BrowserStack
+  - App project: `Danio Aquarium Android`.
+  - GitHub integration: enabled for `tiarnanlarkin/danio` only.
+  - Health check: successful.
+  - Project token: not stored in repo.
+- CodeRabbit
+  - GitHub app setup completed by the user.
+  - Verify on the first PR review before relying on it as a quality signal.
 
-These services can improve review coverage, but they do not replace the local
-Flutter gates. Danio must remain useful and testable locally.
+Use these services in this order:
+
+1. Local gates first: `Focused`, `Docs`, `Visual`, `AndroidPrep`, or `Full`.
+2. Firebase Test Lab for occasional device smoke or matrix checks after a local
+   APK build passes.
+3. CodeRabbit for pull-request review after the branch is pushed.
+4. Percy/App Percy only after local visual baselines are stable and a
+   `PERCY_TOKEN` has been supplied through a local shell/session secret.
+
+Do not upgrade Firebase billing, run paid BrowserStack device sessions, or add
+hosted CI without a fresh explicit request. These services can improve review
+coverage, but they do not replace the local Flutter gates. Danio must remain
+useful and testable locally.
+
+When running Percy locally, set the token outside Git, for the current shell
+only:
+
+```powershell
+$env:PERCY_TOKEN = "<token from Percy project settings>"
+```
+
+Remove it from the shell when finished:
+
+```powershell
+Remove-Item Env:PERCY_TOKEN
+```
 
 ## Product Rules Protected By The Gate
 
