@@ -75,6 +75,10 @@ Install OSV Scanner only as a local CLI binary. Do not add OSV GitHub Actions,
 hosted scans, dashboards, or account-backed security products unless the user
 explicitly asks for that external setup.
 
+On Windows, the local gate resolves `osv-scanner` from PATH first and then from
+the standard winget package folder for `Google.OSVScanner`. This keeps fresh
+Codex shells working even when winget installed the binary before PATH updated.
+
 ## Local Content Validation
 
 `test/quality/content_validation_test.dart` is part of the default focused

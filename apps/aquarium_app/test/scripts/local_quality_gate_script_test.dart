@@ -70,10 +70,13 @@ void main() {
     expect(source, contains('dcm'));
     expect(source, contains('cspell'));
     expect(source, contains('vale'));
+    expect(source, contains('Resolve-OsvScannerCommand'));
+    expect(source, contains(r'Microsoft\WinGet\Packages'));
+    expect(source, contains('Google.OSVScanner'));
     expect(
       source,
       contains(
-        'Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("scan", "source", "--format=vertical", "--verbosity=error", "--recursive", ".")',
+        '@("scan", "source", "--format=vertical", "--verbosity=error", "--recursive", ".")',
       ),
     );
     expect(

@@ -126,6 +126,29 @@ function Resolve-PatrolCommand {
   throw "patrol was not found. Install with: dart pub global activate patrol_cli"
 }
 
+function Resolve-OsvScannerCommand {
+  $command = Get-Command osv-scanner -ErrorAction SilentlyContinue
+  if ($command) {
+    return $command.Source
+  }
+
+  $wingetPackagesRoot = Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Packages"
+  if (Test-Path -LiteralPath $wingetPackagesRoot) {
+    $wingetMatches = @(
+      Get-ChildItem -LiteralPath $wingetPackagesRoot -Directory -Filter "Google.OSVScanner_*" -ErrorAction SilentlyContinue |
+        ForEach-Object { Join-Path $_.FullName "osv-scanner.exe" } |
+        Where-Object { Test-Path -LiteralPath $_ } |
+        Sort-Object
+    )
+
+    if ($wingetMatches.Count -gt 0) {
+      return $wingetMatches[-1]
+    }
+  }
+
+  throw "osv-scanner was not found. Install locally with: winget install --exact --id Google.OSVScanner"
+}
+
 function Get-AndroidDeviceIds {
   $adb = Resolve-AdbCommand
   $output = & $adb devices
@@ -329,7 +352,14 @@ function Invoke-OptionalTools {
     return
   }
 
-  Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("scan", "source", "--format=vertical", "--verbosity=error", "--recursive", ".")
+  Invoke-Step -Name "Optional osv-scanner" -Optional -Command {
+    $osvScanner = Resolve-OsvScannerCommand
+    $arguments = @("scan", "source", "--format=vertical", "--verbosity=error", "--recursive", ".")
+    & $osvScanner @arguments
+    if ($global:LASTEXITCODE -ne 0) {
+      throw "osv-scanner $($arguments -join ' ') failed with exit code $global:LASTEXITCODE"
+    }
+  }
   # Optional DCM Pro path: dcm analyze lib
   Invoke-OptionalTool -CommandName "dcm" -Arguments @("analyze", "lib")
   Invoke-OptionalTool -CommandName "cspell" -Arguments @(".")
