@@ -455,6 +455,16 @@ CL-P1-002D Achievement tank cosmetic cue:
   achievements affect the emotional Tank surface without inventing a full
   decoration inventory yet.
 
+CL-P1-002E Inventory room-vibe collectibles:
+
+- My Items > Permanent now shows earned room vibes from the same local unlock
+  rules as the theme picker, including visible locked requirement copy.
+- Unlocked room vibes can be applied directly from Inventory through the
+  existing local room-theme preference/provider, without adding fake premium,
+  social, or cloud inventory.
+- Focused widget coverage verifies the room-vibe collection appears without
+  shop purchases and applying an unlocked vibe updates `roomThemeProvider`.
+
 CL-P1-003A Missing species request path:
 
 - Fish Database empty search now offers a Request Species action instead of a
@@ -2212,6 +2222,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   logs, feeding events, livestock health/compatibility cues, aquascape equipment
   cues, and earned species progression, but do not yet include a dedicated
   plant/decor inventory model.
+- Rewards now include local room-vibe unlock rules, achievement celebration
+  feedback, a subtle achievement tank cosmetic cue, and Inventory access to
+  earned room vibes. Remaining reward work is deeper dedicated decoration
+  inventory and seasonal cosmetics.
 - Species and plant detail pages now have the first complete local guide pass:
   profiles, actions, watch-outs, wishlist saves, tank/task handoffs, missing
   species request guidance, and source trails. Future species work is content

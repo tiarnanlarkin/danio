@@ -13,8 +13,12 @@ import 'package:danio/data/shop_catalog.dart';
 import 'package:danio/models/shop_item.dart';
 import 'package:danio/models/tank.dart';
 import 'package:danio/models/user_profile.dart';
+import 'package:danio/providers/room_theme_provider.dart';
+import 'package:danio/providers/room_theme_unlock_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/inventory_screen.dart';
+import 'package:danio/services/room_theme_unlock_service.dart';
+import 'package:danio/theme/room_themes.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -65,11 +69,20 @@ UserProfile _profile() {
   );
 }
 
-Widget _wrap({SharedPreferences? prefs}) {
+Widget _wrap({
+  SharedPreferences? prefs,
+  RoomThemeType initialRoomTheme = RoomThemeType.golden,
+  Map<RoomThemeType, RoomThemeUnlockState>? roomVibeStates,
+}) {
   return ProviderScope(
     overrides: [
       if (prefs != null)
         sharedPreferencesProvider.overrideWith((ref) async => prefs),
+      roomThemeProvider.overrideWith(
+        (ref) => _TestRoomThemeNotifier(ref, initialRoomTheme),
+      ),
+      if (roomVibeStates != null)
+        roomThemeUnlockStatesProvider.overrideWith((ref) => roomVibeStates),
     ],
     child: const MaterialApp(home: InventoryScreen()),
   );
@@ -80,6 +93,32 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 100));
   await tester.pump(const Duration(milliseconds: 500));
   await tester.pump(const Duration(milliseconds: 500));
+}
+
+Map<RoomThemeType, RoomThemeUnlockState> _roomVibeStates({
+  RoomThemeType locked = RoomThemeType.aurora,
+}) {
+  return {
+    for (final type in RoomThemeType.values)
+      type: RoomThemeUnlockState(
+        type: type,
+        isUnlocked: type != locked,
+        requirementLabel: type == locked
+            ? 'Reach 2500 XP to unlock Aurora.'
+            : 'Unlocked from the start.',
+      ),
+  };
+}
+
+class _TestRoomThemeNotifier extends RoomThemeNotifier {
+  _TestRoomThemeNotifier(super.ref, RoomThemeType initial) {
+    state = initial;
+  }
+
+  @override
+  Future<void> setTheme(RoomThemeType theme) async {
+    state = theme;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -174,6 +213,60 @@ void main() {
       await _advance(tester);
 
       expect(find.text(hidden.name), findsNothing);
+    });
+
+    testWidgets(
+      'permanent tab shows earned room vibes without shop purchases',
+      (tester) async {
+        await tester.pumpWidget(_wrap(roomVibeStates: _roomVibeStates()));
+        await _advance(tester);
+
+        await tester.tap(find.text('Permanent'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 700));
+
+        expect(find.text('Room vibes'), findsOneWidget);
+        expect(find.text('Golden Hour'), findsOneWidget);
+        expect(find.text('Aurora'), findsOneWidget);
+        expect(find.text('Reach 2500 XP to unlock Aurora.'), findsOneWidget);
+        expect(
+          find.byKey(const ValueKey('apply-room-vibe-golden')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('locked-room-vibe-aurora')),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('applying an unlocked room vibe from inventory changes theme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          initialRoomTheme: RoomThemeType.ocean,
+          roomVibeStates: _roomVibeStates(),
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.text('Permanent'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 700));
+
+      final applyPastel = find.byKey(const ValueKey('apply-room-vibe-pastel'));
+      await tester.ensureVisible(applyPastel);
+      await tester.pump();
+      await tester.tap(applyPastel);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(InventoryScreen)),
+      );
+      expect(container.read(roomThemeProvider), RoomThemeType.pastel);
+      expect(find.text('Whimsical applied to your tank.'), findsOneWidget);
     });
 
     testWidgets(

@@ -8,7 +8,11 @@ import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/hearts_provider.dart';
+import '../providers/room_theme_provider.dart';
+import '../providers/room_theme_unlock_provider.dart';
+import '../services/room_theme_unlock_service.dart';
 import '../theme/danio_surface_visuals.dart';
+import '../theme/room_themes.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
@@ -49,6 +53,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
   Widget build(BuildContext context) {
     final inventoryAsync = ref.watch(inventoryProvider);
     final heartsState = ref.watch(heartsStateProvider);
+    final roomVibeStates = ref.watch(roomThemeUnlockStatesProvider);
+    final currentRoomTheme = ref.watch(roomThemeProvider);
 
     final gradientColors = (Theme.of(context).brightness == Brightness.dark
         ? [
@@ -154,11 +160,11 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   showUseButton: false,
                   showTimer: true,
                 ),
-                _InventoryGrid(
+                _PermanentInventoryView(
                   items: permanentItems,
-                  emptyTitle: 'No Permanent Items',
-                  emptyMessage: 'Buy badges and themes from the shop!',
-                  showUseButton: false,
+                  roomVibeStates: roomVibeStates,
+                  currentRoomTheme: currentRoomTheme,
+                  onApplyRoomVibe: _handleApplyRoomVibe,
                 ),
               ],
             );
@@ -201,6 +207,21 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     }
   }
 
+  Future<void> _handleApplyRoomVibe(RoomThemeType type) async {
+    final unlockState = ref.read(roomThemeUnlockStatesProvider)[type];
+    if (unlockState != null && !unlockState.isUnlocked) {
+      if (!mounted) return;
+      DanioSnackBar.info(context, unlockState.requirementLabel);
+      return;
+    }
+
+    await ref.read(roomThemeProvider.notifier).setTheme(type);
+    if (!mounted) return;
+
+    final theme = RoomTheme.fromType(type);
+    DanioSnackBar.success(context, '${theme.name} applied to your tank.');
+  }
+
   String _getUseSuccessMessage(ShopItem item) {
     switch (item.type) {
       case ShopItemType.heartsRefill:
@@ -228,6 +249,288 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           cancelLabel: 'Cancel',
         ) ??
         false;
+  }
+}
+
+class _PermanentInventoryView extends StatelessWidget {
+  final List<InventoryItem> items;
+  final Map<RoomThemeType, RoomThemeUnlockState> roomVibeStates;
+  final RoomThemeType currentRoomTheme;
+  final ValueChanged<RoomThemeType> onApplyRoomVibe;
+
+  const _PermanentInventoryView({
+    required this.items,
+    required this.roomVibeStates,
+    required this.currentRoomTheme,
+    required this.onApplyRoomVibe,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final roomVibes = RoomThemeType.values
+        .map((type) {
+          return roomVibeStates[type] ??
+              RoomThemeUnlockState(
+                type: type,
+                isUnlocked: true,
+                requirementLabel: 'Unlocked from the start.',
+              );
+        })
+        .toList(growable: false);
+
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      children: [
+        _SectionHeader(
+          title: 'Room vibes',
+          subtitle: 'Earn tank looks from lessons, streaks, and milestones.',
+        ),
+        const SizedBox(height: AppSpacing.sm2),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final unlockState in roomVibes) ...[
+                _RoomVibeCard(
+                  unlockState: unlockState,
+                  isCurrent: unlockState.type == currentRoomTheme,
+                  onApply: onApplyRoomVibe,
+                ),
+                const SizedBox(width: AppSpacing.sm2),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        _SectionHeader(
+          title: 'Permanent items',
+          subtitle: 'Badges and other earned keepsakes stay here.',
+        ),
+        const SizedBox(height: AppSpacing.sm2),
+        if (items.isEmpty)
+          const _PermanentItemsEmptyNote()
+        else
+          Wrap(
+            spacing: AppSpacing.sm2,
+            runSpacing: AppSpacing.sm2,
+            children: [
+              for (final item in items)
+                SizedBox(
+                  width: 180,
+                  height: 210,
+                  child: _InventoryItemCard(item: item),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+
+  const _SectionHeader({required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      header: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.textPrimaryDark,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs2),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textSecondaryDark,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RoomVibeCard extends StatelessWidget {
+  final RoomThemeUnlockState unlockState;
+  final bool isCurrent;
+  final ValueChanged<RoomThemeType> onApply;
+
+  const _RoomVibeCard({
+    required this.unlockState,
+    required this.isCurrent,
+    required this.onApply,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = RoomTheme.fromType(unlockState.type);
+    final isUnlocked = unlockState.isUnlocked;
+
+    return Semantics(
+      label: isUnlocked
+          ? '${theme.name} room vibe, unlocked'
+          : '${theme.name} room vibe, locked. ${unlockState.requirementLabel}',
+      button: isUnlocked,
+      child: Container(
+        key: ValueKey('room-vibe-card-${unlockState.type.name}'),
+        width: 206,
+        height: 188,
+        padding: const EdgeInsets.all(AppSpacing.sm2),
+        decoration: BoxDecoration(
+          color: AppColors.whiteAlpha15,
+          borderRadius: AppRadius.largeRadius,
+          border: Border.all(
+            color: isCurrent
+                ? DanioColors.topaz.withAlpha(220)
+                : AppColors.whiteAlpha35,
+            width: isCurrent ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _RoomVibeSwatch(theme: theme),
+                const Spacer(),
+                Icon(
+                  isUnlocked
+                      ? (isCurrent
+                            ? Icons.check_circle_rounded
+                            : Icons.palette_outlined)
+                      : Icons.lock_outline_rounded,
+                  color: isUnlocked
+                      ? DanioColors.topaz
+                      : AppColors.textSecondaryDark,
+                  size: AppIconSizes.md,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm2),
+            Text(
+              theme.name,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.textPrimaryDark,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Expanded(
+              child: Text(
+                isUnlocked ? theme.description : unlockState.requirementLabel,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.textSecondaryDark,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            FilledButton.icon(
+              key: ValueKey(
+                isUnlocked
+                    ? 'apply-room-vibe-${unlockState.type.name}'
+                    : 'locked-room-vibe-${unlockState.type.name}',
+              ),
+              onPressed: isUnlocked && !isCurrent
+                  ? () => onApply(unlockState.type)
+                  : null,
+              icon: Icon(
+                isCurrent ? Icons.check_rounded : Icons.palette_outlined,
+                size: 16,
+              ),
+              label: Text(
+                isCurrent ? 'Applied' : (isUnlocked ? 'Apply' : 'Locked'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RoomVibeSwatch extends StatelessWidget {
+  final RoomTheme theme;
+
+  const _RoomVibeSwatch({required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _SmallColorDot(color: theme.background1),
+        _SmallColorDot(color: theme.waterMid),
+        _SmallColorDot(color: theme.plantPrimary),
+        _SmallColorDot(color: theme.fish1),
+      ],
+    );
+  }
+}
+
+class _SmallColorDot extends StatelessWidget {
+  final Color color;
+
+  const _SmallColorDot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 16,
+      height: 16,
+      margin: const EdgeInsets.only(right: AppSpacing.xs),
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: AppOverlays.black12, width: 0.5),
+      ),
+    );
+  }
+}
+
+class _PermanentItemsEmptyNote extends StatelessWidget {
+  const _PermanentItemsEmptyNote();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.whiteAlpha10,
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(color: AppColors.whiteAlpha25),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.verified_outlined,
+            color: DanioColors.topaz,
+            size: AppIconSizes.md,
+          ),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: Text(
+              'Permanent badges and special keepsakes will appear as you earn or buy them.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondaryDark,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
