@@ -209,5 +209,31 @@ void main() {
       );
       expect(find.text('Your story starts here!'), findsNothing);
     });
+
+    testWidgets('shows saved special-entry detail strips', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          logs: [
+            _savedToolResultEntry(),
+            _savedMilestoneEntry(),
+            _savedAiNoteEntry(),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      expect(find.text('Saved tool result'), findsOneWidget);
+      expect(
+        find.text('Guided calculation saved to this tank.'),
+        findsOneWidget,
+      );
+      expect(find.text('Tank milestone'), findsOneWidget);
+      expect(
+        find.text('Meaningful moment saved to this timeline.'),
+        findsOneWidget,
+      );
+      expect(find.text('Saved optional AI note'), findsOneWidget);
+      expect(find.text('AI guidance saved for reference.'), findsOneWidget);
+    });
   });
 }

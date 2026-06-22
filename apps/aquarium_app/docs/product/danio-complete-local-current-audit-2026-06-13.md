@@ -994,6 +994,15 @@ CL-P1-008F Livestock feeding timeline refresh:
 - Focused Livestock widget coverage verifies the real Feed action refreshes
   all-log timeline data after saving the feeding log.
 
+CL-P1-008G Saved special-entry detail strips:
+
+- Tank Journal now gives saved tool results, tank milestones, and optional AI
+  notes a small contextual detail strip inside the timeline card.
+- The strips are display-only and keep the existing local `LogEntry` schema,
+  while making saved special entries easier to understand in normal language.
+- Focused coverage verifies the saved tool result, milestone, and optional AI
+  detail strips render in the timeline.
+
 CL-P1-009A Backup import safety copy:
 
 - Backup & Restore now explains import behavior in normal-user terms:
@@ -2153,9 +2162,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Tank Journal now has a first unified local timeline pass for current log
   types, saved guided-tool notes now appear as Tool Result entries, and Compare
   Tanks now surfaces recent history across tanks. Saved `Milestone:` journal
-  notes now appear as Milestone entries, and saved accepted AI notes now appear
-  as AI Note entries. Remaining timeline work is any richer
-  tool-result/AI-note/milestone detail cards found in walkthroughs.
+  notes now appear as Milestone entries, saved accepted AI notes now appear as
+  AI Note entries, and saved special entries now have contextual detail strips.
+  Remaining timeline work is final walkthrough QA and any source-specific
+  handoff gaps found there.
 - Backup & Restore now has clearer import safety copy and validates required
   backup JSON, malformed tank entries, duplicate tank IDs, and orphaned
   tank-scoped child records, plus non-array tank-scoped child collections,
@@ -2277,11 +2287,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
 
 ## 6. Next Execution Step
 
-Continue CL-P1-008 remaining local depth while Android transport is
-reserved by other sessions:
+Continue CL-P1-006, CL-P1-009, and CL-P1-010 local depth while Android
+transport is reserved by other sessions:
 
-- Expand accepted AI-note/milestone timeline handoffs, complete multi-tank
-  phone/tablet QA when device ownership is clear, continue CL-P1-009
+- Add broader guided-tool timeline/task handoffs, complete multi-tank and
+  timeline phone/tablet QA when device ownership is clear, continue CL-P1-009
   data-safety hardening, continue CL-P1-010
   preference centralisation, and keep CL-P1-011 direct-per-lesson search/deep
   links as optional polish if walkthroughs show users need it.

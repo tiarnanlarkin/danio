@@ -143,6 +143,7 @@ class _JournalEntryCard extends StatelessWidget {
         LogEntryDisplay.isMilestone(entry) || LogEntryDisplay.isAiNote(entry)
         ? null
         : rawNotes;
+    final timelineDetail = LogEntryDisplay.timelineDetailFor(entry);
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm2),
@@ -194,6 +195,10 @@ class _JournalEntryCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (timelineDetail != null) ...[
+              const SizedBox(height: AppSpacing.sm2),
+              _TimelineDetailStrip(detail: timelineDetail),
+            ],
             if (summary.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm2),
               Text(summary, style: AppTypography.bodyMedium),
@@ -230,6 +235,55 @@ class _JournalEntryCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _TimelineDetailStrip extends StatelessWidget {
+  final LogEntryTimelineDetail detail;
+
+  const _TimelineDetailStrip({required this.detail});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm2,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: AppOverlays.primary10,
+        borderRadius: AppRadius.smallRadius,
+        border: Border.all(color: AppColors.primaryAlpha20),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(detail.icon, size: AppIconSizes.xs, color: AppColors.primary),
+          const SizedBox(width: AppSpacing.xs),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  detail.label,
+                  style: AppTypography.labelMedium.copyWith(
+                    color: context.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  detail.body,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: context.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

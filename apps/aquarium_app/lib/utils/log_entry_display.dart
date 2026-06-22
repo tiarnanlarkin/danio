@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
+class LogEntryTimelineDetail {
+  final IconData icon;
+  final String label;
+  final String body;
+
+  const LogEntryTimelineDetail({
+    required this.icon,
+    required this.label,
+    required this.body,
+  });
+}
+
 class LogEntryDisplay {
   const LogEntryDisplay._();
 
@@ -74,6 +86,31 @@ class LogEntryDisplay {
     if (isAiNote(entry)) return 'AI Note';
     if (isMilestone(entry)) return 'Milestone';
     return entry.typeName;
+  }
+
+  static LogEntryTimelineDetail? timelineDetailFor(LogEntry entry) {
+    if (toolResultTitleFor(entry) != null) {
+      return const LogEntryTimelineDetail(
+        icon: Icons.calculate_outlined,
+        label: 'Saved tool result',
+        body: 'Guided calculation saved to this tank.',
+      );
+    }
+    if (isMilestone(entry)) {
+      return const LogEntryTimelineDetail(
+        icon: Icons.flag_outlined,
+        label: 'Tank milestone',
+        body: 'Meaningful moment saved to this timeline.',
+      );
+    }
+    if (isAiNote(entry)) {
+      return const LogEntryTimelineDetail(
+        icon: Icons.auto_awesome_outlined,
+        label: 'Saved optional AI note',
+        body: 'AI guidance saved for reference.',
+      );
+    }
+    return null;
   }
 
   static bool isMilestone(LogEntry entry) {
