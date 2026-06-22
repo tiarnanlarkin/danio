@@ -126,6 +126,12 @@ The optional spelling check is intentionally scoped:
 cspell --config .cspell.json --no-progress docs/agent docs/design
 ```
 
+The optional prose lint is also intentionally scoped:
+
+```powershell
+vale docs/agent docs/design
+```
+
 Do not replace it with a full-repo `cspell .` scan unless the dictionary and
 ignore paths are expanded deliberately; generated/platform files make that output
 too noisy to be useful today.

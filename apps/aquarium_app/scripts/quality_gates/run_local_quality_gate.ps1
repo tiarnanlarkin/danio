@@ -150,6 +150,29 @@ function Resolve-OsvScannerCommand {
   throw "osv-scanner was not found. Install locally with: winget install --exact --id Google.OSVScanner"
 }
 
+function Resolve-ValeCommand {
+  $command = Get-Command vale -ErrorAction SilentlyContinue
+  if ($command) {
+    return $command.Source
+  }
+
+  $wingetPackagesRoot = Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Packages"
+  if (Test-Path -LiteralPath $wingetPackagesRoot) {
+    $wingetMatches = @(
+      Get-ChildItem -LiteralPath $wingetPackagesRoot -Directory -Filter "errata-ai.Vale_*" -ErrorAction SilentlyContinue |
+        ForEach-Object { Join-Path $_.FullName "vale.exe" } |
+        Where-Object { Test-Path -LiteralPath $_ } |
+        Sort-Object
+    )
+
+    if ($wingetMatches.Count -gt 0) {
+      return $wingetMatches[-1]
+    }
+  }
+
+  throw "vale was not found. Install locally with: winget install --exact --id errata-ai.Vale"
+}
+
 function Get-AndroidDeviceIds {
   $adb = Resolve-AdbCommand
   $output = & $adb devices
@@ -365,7 +388,14 @@ function Invoke-OptionalTools {
   # Optional DCM Pro path: dcm analyze lib
   Invoke-OptionalTool -CommandName "dcm" -Arguments @("analyze", "lib")
   Invoke-OptionalTool -CommandName "cspell" -Arguments @("--config", ".cspell.json", "--no-progress", "docs/agent", "docs/design")
-  Invoke-OptionalTool -CommandName "vale" -Arguments @("docs")
+  Invoke-Step -Name "Optional vale" -Optional -Command {
+    $vale = Resolve-ValeCommand
+    $arguments = @("docs/agent", "docs/design")
+    & $vale @arguments
+    if ($global:LASTEXITCODE -ne 0) {
+      throw "vale $($arguments -join ' ') failed with exit code $global:LASTEXITCODE"
+    }
+  }
 }
 
 function Invoke-AndroidDeviceVisibility {

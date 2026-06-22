@@ -108,6 +108,28 @@ void main() {
     expect(source, isNot(contains('OpenAI API')));
   });
 
+  test('local prose lint has a narrow offline Vale configuration', () {
+    final valeConfig = File('.vale.ini');
+    final draftRule = File('.vale/styles/Danio/DraftLanguage.yml');
+    final gateSource = File(scriptPath).readAsStringSync();
+
+    expect(valeConfig.existsSync(), isTrue);
+    expect(draftRule.existsSync(), isTrue);
+
+    final configSource = valeConfig.readAsStringSync();
+    final ruleSource = draftRule.readAsStringSync();
+
+    expect(configSource, contains('StylesPath = .vale/styles'));
+    expect(configSource, contains('BasedOnStyles = Danio'));
+    expect(configSource, isNot(contains('Packages =')));
+    expect(ruleSource, contains('extends: existence'));
+    expect(ruleSource, contains('lorem ipsum'));
+    expect(gateSource, contains('Resolve-ValeCommand'));
+    expect(gateSource, contains('errata-ai.Vale'));
+    expect(gateSource, contains('winget install --exact --id errata-ai.Vale'));
+    expect(gateSource, contains(r'$arguments = @("docs/agent", "docs/design")'));
+  });
+
   test('local lint setup includes strict and Danio-specific checks', () {
     final appPubspec = File('pubspec.yaml').readAsStringSync();
     final analysisOptions = File('analysis_options.yaml').readAsStringSync();

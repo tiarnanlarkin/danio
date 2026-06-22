@@ -1,0 +1,10 @@
+extends: existence
+message: "Avoid draft placeholder language in committed Danio docs: '%s'."
+level: error
+ignorecase: true
+tokens:
+  - coming soon
+  - lorem ipsum
+  - todo
+  - tbd
+  - dummy content

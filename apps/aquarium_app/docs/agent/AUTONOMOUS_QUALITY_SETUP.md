@@ -68,7 +68,10 @@ The gate can detect and run these tools when installed locally:
   provided; DCM Pro is currently the intended paid path.
 - `cspell --config .cspell.json --no-progress docs/agent docs/design` for
   scoped spelling checks on the authored agent/design guidance.
-- `vale docs` for prose linting of documentation.
+- `vale docs/agent docs/design` for scoped prose linting of the authored
+  agent/design guidance. Danio keeps a narrow offline Vale config under
+  `.vale.ini` and `.vale/styles/Danio/`; do not add downloaded Vale packages or
+  hosted prose services without separate approval.
 
 These tools are optional. Missing tools must not block ordinary product work
 unless `-StrictOptionalTools` is explicitly supplied.
@@ -80,6 +83,8 @@ explicitly asks for that external setup.
 On Windows, the local gate resolves `osv-scanner` from PATH first and then from
 the standard winget package folder for `Google.OSVScanner`. This keeps fresh
 Codex shells working even when winget installed the binary before PATH updated.
+The same pattern is used for Vale through the winget package folder for
+`errata-ai.Vale`.
 
 ## Local Content Validation
 
