@@ -51,11 +51,54 @@ function Invoke-Adb {
     $base += @("-s", $Serial)
   }
 
-  $output = & $script:Adb @base @Arguments 2>&1
-  if ($LASTEXITCODE -ne 0) {
+  $adbArguments = @($base + $Arguments)
+  $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+  $startInfo.FileName = $script:Adb
+  $startInfo.Arguments = ($adbArguments | ForEach-Object {
+      ConvertTo-NativeArgument -Argument $_
+    }) -join " "
+  $startInfo.RedirectStandardError = $true
+  $startInfo.RedirectStandardOutput = $true
+  $startInfo.UseShellExecute = $false
+  $startInfo.CreateNoWindow = $true
+
+  $process = New-Object System.Diagnostics.Process
+  $process.StartInfo = $startInfo
+  [void]$process.Start()
+  $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+  $stderrTask = $process.StandardError.ReadToEndAsync()
+  $process.WaitForExit()
+
+  $output = @()
+  $output += Split-NativeOutput -Text $stdoutTask.Result
+  $output += Split-NativeOutput -Text $stderrTask.Result
+  if ($process.ExitCode -ne 0) {
     throw "adb $($Arguments -join ' ') failed for '$Serial': $($output -join ' ')"
   }
   return $output
+}
+
+function ConvertTo-NativeArgument {
+  param([Parameter(Mandatory = $true)][string]$Argument)
+
+  if ($Argument -notmatch '[\s"]') {
+    return $Argument
+  }
+
+  return '"' + ($Argument -replace '"', '\"') + '"'
+}
+
+function Split-NativeOutput {
+  param([string]$Text)
+
+  if (-not $Text) {
+    return @()
+  }
+
+  return @(
+    $Text -split "`r?`n" |
+      Where-Object { $_ -ne "" }
+  )
 }
 
 function Get-ReadyDevices {

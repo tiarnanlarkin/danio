@@ -70,6 +70,11 @@ void main() {
     expect(source, contains('mFocusedApp'));
     expect(source, contains('foreground package'));
     expect(source, contains('Refusing to write outside'));
+    expect(source, contains('ProcessStartInfo'));
+    expect(source, contains('RedirectStandardError'));
+    expect(source, contains('RedirectStandardOutput'));
+    expect(source, contains(r'$process.ExitCode'));
+    expect(source, isNot(contains(r'2>&1')));
   });
 
   test('docs make live preview observational and keep gates authoritative', () {
