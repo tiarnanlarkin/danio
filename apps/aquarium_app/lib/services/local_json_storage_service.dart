@@ -54,12 +54,21 @@ class StorageError {
   String toString() => 'StorageError[$state]: $message';
 }
 
+abstract class StorageRecoveryService {
+  StorageState get state;
+  StorageError? get lastError;
+  bool get hasError;
+  Future<void> retryLoad();
+  Future<void> recoverFromCorruption();
+}
+
 /// Local JSON-file persistence for MVP.
 ///
 /// Stores all entities in a single JSON file under app documents.
 /// This is intentionally simple (good enough for MVP) and can be
 /// swapped later for Hive/SQLite without changing the StorageService API.
-class LocalJsonStorageService implements StorageService {
+class LocalJsonStorageService
+    implements StorageService, StorageRecoveryService {
   // Singleton
   static final LocalJsonStorageService _instance = LocalJsonStorageService._();
   factory LocalJsonStorageService() => _instance;
@@ -81,9 +90,12 @@ class LocalJsonStorageService implements StorageService {
   Future<void>? _loadFuture;
 
   /// Public getters for UI to check service state
+  @override
   StorageState get state => _state;
+  @override
   StorageError? get lastError => _lastError;
   bool get isHealthy => _state == StorageState.loaded;
+  @override
   bool get hasError =>
       _state == StorageState.corrupted || _state == StorageState.ioError;
 
@@ -632,6 +644,7 @@ class LocalJsonStorageService implements StorageService {
 
   /// Recovery method: Attempt to reload data from disk
   /// Useful if corruption was temporary or file was manually fixed
+  @override
   Future<void> retryLoad() async {
     appLog(
       '🔄 Attempting to reload storage data...',
@@ -662,6 +675,7 @@ class LocalJsonStorageService implements StorageService {
 
   /// Recovery method: Delete corrupted file and start fresh
   /// This preserves the backup but allows the app to continue
+  @override
   Future<void> recoverFromCorruption() async {
     appLog(
       '🔧 Recovering from storage corruption...',

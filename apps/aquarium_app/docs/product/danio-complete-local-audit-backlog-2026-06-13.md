@@ -155,6 +155,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DF persists migrated local JSON schema stamps after loading v0/v1
   files, so restore and migration walkthroughs do not re-run the same migration
   on every launch.
+- CL-P1-009DG surfaces local JSON corruption recovery in Backup & Restore with
+  normal-user copy, retry, and confirmed start-fresh actions.
 
 ## 7. P2 Work - Presentation System
 

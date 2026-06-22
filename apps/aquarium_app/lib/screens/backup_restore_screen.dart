@@ -15,6 +15,7 @@ import '../providers/restore_invalidation.dart';
 import '../providers/tank_provider.dart';
 import '../services/backup_import_service.dart';
 import '../services/backup_service.dart';
+import '../services/local_json_storage_service.dart';
 import '../services/shared_preferences_backup.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart' show kAppVersion;
@@ -37,6 +38,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   String? _lastBackup;
   bool _isExporting = false;
   bool _isImporting = false;
+  bool _isRecoveringLocalData = false;
 
   String _progressStatus = '';
   double _progressValue = 0.0;
@@ -56,10 +58,11 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   @override
   Widget build(BuildContext context) {
     final tanksAsync = ref.watch(tanksProvider);
+    final storageRecovery = ref.watch(storageRecoveryProvider);
 
     // Build item list once - ListView.builder calls itemCount and itemBuilder
     // separately, so evaluating inside each callback would double the work.
-    final items = _buildItems(tanksAsync);
+    final items = _buildItems(tanksAsync, storageRecovery);
     return Scaffold(
       appBar: AppBar(title: const Text('Backup & Restore')),
       body: ListView.builder(
@@ -75,7 +78,12 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     );
   }
 
-  List<Widget> _buildItems(AsyncValue<List<dynamic>> tanksAsync) {
+  List<Widget> _buildItems(
+    AsyncValue<List<dynamic>> tanksAsync,
+    StorageRecoveryService? storageRecovery,
+  ) {
+    final showRecovery = _shouldShowStorageRecovery(storageRecovery);
+    final activeRecovery = showRecovery ? storageRecovery! : null;
     return [
       AppCard(
         backgroundColor: AppOverlays.info10,
@@ -100,15 +108,32 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
       const SizedBox(height: AppSpacing.lg),
 
+      if (showRecovery) ...[
+        _LocalStorageRecoveryCard(
+          isRecovering: _isRecoveringLocalData,
+          onRetry: () => _retryLocalStorageRecovery(activeRecovery!),
+          onStartFresh: () => _confirmStartFreshLocalStorage(activeRecovery!),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+      ],
+
       Text('Export Data', style: AppTypography.headlineSmall),
       const SizedBox(height: AppSpacing.sm2),
 
       tanksAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => AppErrorState(
-          message: "Couldn't load your tanks. Tap to try again.",
-          onRetry: () => ref.invalidate(tanksProvider),
-        ),
+        error: (e, _) {
+          if (showRecovery) {
+            return AppErrorState(
+              message: 'Recover local data before exporting a backup.',
+              onRetry: () => _retryLocalStorageRecovery(activeRecovery!),
+            );
+          }
+          return AppErrorState(
+            message: "Couldn't load your tanks. Tap to try again.",
+            onRetry: () => ref.invalidate(tanksProvider),
+          );
+        },
         data: (tanks) {
           final hasTanks = tanks.isNotEmpty;
           return Card(
@@ -344,6 +369,78 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
       const SizedBox(height: AppSpacing.xxl),
     ];
+  }
+
+  bool _shouldShowStorageRecovery(StorageRecoveryService? storageRecovery) {
+    return storageRecovery != null &&
+        storageRecovery.state == StorageState.corrupted;
+  }
+
+  Future<void> _retryLocalStorageRecovery(
+    StorageRecoveryService storageRecovery,
+  ) async {
+    if (_isRecoveringLocalData) return;
+    setState(() => _isRecoveringLocalData = true);
+
+    try {
+      await storageRecovery.retryLoad();
+      ref.invalidate(tanksProvider);
+      if (!mounted) return;
+      AppFeedback.showSuccess(context, 'Local data loaded successfully.');
+    } catch (e, st) {
+      logError(
+        'BackupRestoreScreen: local storage retry failed: $e',
+        stackTrace: st,
+        tag: 'BackupRestoreScreen',
+      );
+      if (!mounted) return;
+      AppFeedback.showError(
+        context,
+        'Danio still could not load this local data.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isRecoveringLocalData = false);
+      }
+    }
+  }
+
+  Future<void> _confirmStartFreshLocalStorage(
+    StorageRecoveryService storageRecovery,
+  ) async {
+    if (_isRecoveringLocalData) return;
+    final confirmed = await showAppDestructiveDialog(
+      context: context,
+      title: 'Start Fresh On This Device?',
+      message:
+          'This clears the damaged local aquarium data file on this device. Danio keeps the recovery copy it made before stopping the load.',
+      destructiveLabel: 'Start Fresh',
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isRecoveringLocalData = true);
+    try {
+      await storageRecovery.recoverFromCorruption();
+      ref.invalidate(tanksProvider);
+      if (!mounted) return;
+      AppFeedback.showSuccess(context, 'Started fresh on this device.');
+    } catch (e, st) {
+      logError(
+        'BackupRestoreScreen: local storage recovery failed: $e',
+        stackTrace: st,
+        tag: 'BackupRestoreScreen',
+      );
+      if (!mounted) return;
+      AppFeedback.showError(
+        context,
+        'Start fresh did not complete. Try again.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isRecoveringLocalData = false);
+      }
+    }
   }
 
   Future<void> _exportData(List<dynamic> tanks) async {
@@ -678,6 +775,78 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'createdAt': t.createdAt.toIso8601String(),
     'updatedAt': t.updatedAt.toIso8601String(),
   };
+}
+
+class _LocalStorageRecoveryCard extends StatelessWidget {
+  const _LocalStorageRecoveryCard({
+    required this.isRecovering,
+    required this.onRetry,
+    required this.onStartFresh,
+  });
+
+  final bool isRecovering;
+  final VoidCallback onRetry;
+  final VoidCallback onStartFresh;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      backgroundColor: AppOverlays.warning10,
+      padding: AppCardPadding.standard,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.warning_amber_rounded, color: AppColors.warning),
+              const SizedBox(width: AppSpacing.sm2),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Local Data Needs Attention',
+                      style: AppTypography.labelLarge,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Danio stopped loading this device because the local data file looks damaged. Danio kept a recovery copy on this device before offering these options.',
+                      style: AppTypography.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Try again if you repaired or replaced the local file. Start fresh only clears aquarium data on this device.',
+            style: AppTypography.bodySmall.copyWith(
+              color: context.textSecondary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: isRecovering ? 'Checking...' : 'Try Again',
+            onPressed: isRecovering ? null : onRetry,
+            isLoading: isRecovering,
+            leadingIcon: Icons.refresh,
+            isFullWidth: true,
+            variant: AppButtonVariant.secondary,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: 'Start Fresh On This Device',
+            onPressed: isRecovering ? null : onStartFresh,
+            leadingIcon: Icons.delete_outline,
+            isFullWidth: true,
+            variant: AppButtonVariant.destructive,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _ExportItem extends StatelessWidget {

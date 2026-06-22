@@ -2107,6 +2107,17 @@ CL-P1-009DF Local JSON migration persistence:
   public recovery path, verifies tank defaults are applied on read, and checks
   the file is stamped to schema version 2.
 
+CL-P1-009DG Backup & Restore local recovery surface:
+
+- Backup & Restore now surfaces a local recovery card when the local JSON
+  storage service reports corrupted data.
+- The card explains in normal-user language that Danio stopped loading damaged
+  local data and kept a recovery copy on this device before offering options.
+- Users can retry after repairing/replacing the file, or confirm Start Fresh On
+  This Device to clear the damaged local aquarium data file.
+- Focused widget coverage verifies the visible recovery copy, Try Again action,
+  and confirmed start-fresh action.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2387,9 +2398,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   service that remaps related IDs, preserves timeline relationships, and rolls
   back imported tanks and children if a later child save fails. Migrated local
   JSON files are now stamped back to the current schema version after successful
-  load so old files do not re-run the same migration on every launch. Remaining
-  backup/data work is broader edit/delete/undo coverage and restore/migration
-  walkthrough QA.
+  load so old files do not re-run the same migration on every launch. Backup &
+  Restore now surfaces corrupted local-data recovery with retry and confirmed
+  start-fresh actions. Remaining backup/data work is broader edit/delete/undo
+  coverage and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
