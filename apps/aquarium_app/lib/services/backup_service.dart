@@ -29,12 +29,36 @@ class BackupService {
   final Future<Directory> Function()? getDocumentsDirectoryOverride;
   final Future<Directory> Function()? getTemporaryDirectoryOverride;
 
+  var _lastRestoredPhotoPaths = <String>[];
+
   BackupService({
     this.onProgress,
     Future<Directory> Function()? getDocumentsDirectory,
     Future<Directory> Function()? getTemporaryDirectory,
   }) : getDocumentsDirectoryOverride = getDocumentsDirectory,
        getTemporaryDirectoryOverride = getTemporaryDirectory;
+
+  List<String> get lastRestoredPhotoPaths =>
+      List.unmodifiable(_lastRestoredPhotoPaths);
+
+  Future<void> cleanupLastRestoredPhotos() async {
+    final paths = List<String>.from(_lastRestoredPhotoPaths);
+    _lastRestoredPhotoPaths = [];
+
+    for (final path in paths.reversed) {
+      try {
+        final file = File(path);
+        if (await file.exists()) {
+          await file.delete();
+        }
+      } catch (e) {
+        logError(
+          'Error cleaning up restored photo "$path": $e',
+          tag: 'BackupService',
+        );
+      }
+    }
+  }
 
   /// Create a backup ZIP file from all app data.
   /// Returns the path to the created ZIP file.
@@ -157,6 +181,7 @@ class BackupService {
   ///
   /// Returns the number of tanks present in the backup (for UI messaging).
   Future<int> restoreBackup(String zipPath) async {
+    _lastRestoredPhotoPaths = [];
     _updateProgress('Reading backup...', 0.0);
 
     final zipFile = File(zipPath);
@@ -183,34 +208,43 @@ class BackupService {
         .toList();
 
     final totalPhotos = photoFiles.length;
-    if (totalPhotos == 0) {
-      _updateProgress('No photos found in backup', 0.9);
-      _updateProgress('Import complete!', 1.0);
-      return (data['tanks'] as List).length;
-    }
-
-    for (var i = 0; i < totalPhotos; i++) {
-      final file = photoFiles[i];
-      final filename = _restoredPhotoFilename(restorePrefix, file.name);
-      final destPath = p.join(photosDir.path, filename);
-      final destFile = File(destPath);
-
-      // Only copy if file doesn't exist (don't overwrite existing photos).
-      if (!await destFile.exists()) {
-        final output = OutputFileStream(destPath);
-        try {
-          file.writeContent(output);
-        } finally {
-          await output.close();
-        }
+    try {
+      if (totalPhotos == 0) {
+        _updateProgress('No photos found in backup', 0.9);
+        _updateProgress('Import complete!', 1.0);
+        return (data['tanks'] as List).length;
       }
 
-      final progress = 0.2 + ((i + 1) / totalPhotos * 0.7);
-      _updateProgress('Restoring photos... (${i + 1}/$totalPhotos)', progress);
-    }
+      for (var i = 0; i < totalPhotos; i++) {
+        final file = photoFiles[i];
+        final filename = _restoredPhotoFilename(restorePrefix, file.name);
+        final destPath = p.join(photosDir.path, filename);
+        final destFile = File(destPath);
 
-    _updateProgress('Import complete!', 1.0);
-    return (data['tanks'] as List).length;
+        // Only copy if file doesn't exist (don't overwrite existing photos).
+        if (!await destFile.exists()) {
+          _lastRestoredPhotoPaths.add(destPath);
+          final output = OutputFileStream(destPath);
+          try {
+            file.writeContent(output);
+          } finally {
+            await output.close();
+          }
+        }
+
+        final progress = 0.2 + ((i + 1) / totalPhotos * 0.7);
+        _updateProgress(
+          'Restoring photos... (${i + 1}/$totalPhotos)',
+          progress,
+        );
+      }
+
+      _updateProgress('Import complete!', 1.0);
+      return (data['tanks'] as List).length;
+    } catch (_) {
+      await cleanupLastRestoredPhotos();
+      rethrow;
+    }
   }
 
   /// Get the JSON data from a backup.

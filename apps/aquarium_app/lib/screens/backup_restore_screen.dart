@@ -568,6 +568,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       _progressValue = 0.0;
     });
 
+    BackupService? importBackupService;
+    var restoredPhotosForImport = false;
+
     try {
       // Pick ZIP file
       final result = await FilePicker.platform.pickFiles(
@@ -596,6 +599,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           }
         },
       );
+      importBackupService = backupService;
 
       // First, get backup data to show preview
       final backupData = await backupService.getBackupData(filePath);
@@ -620,8 +624,14 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
       // Restore photos first
       await backupService.restoreBackup(filePath);
+      restoredPhotosForImport = backupService.lastRestoredPhotoPaths.isNotEmpty;
 
-      if (!mounted) return;
+      if (!mounted) {
+        if (restoredPhotosForImport) {
+          await backupService.cleanupLastRestoredPhotos();
+        }
+        return;
+      }
 
       // Import all tank-scoped data with proper tankId remapping.
       // NOTE: BackupService.getBackupData() already resolves portable photo
@@ -671,6 +681,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         }
       }
     } catch (e, st) {
+      if (restoredPhotosForImport) {
+        await importBackupService?.cleanupLastRestoredPhotos();
+      }
       logError(
         'BackupRestoreScreen: backup import failed: $e',
         stackTrace: st,

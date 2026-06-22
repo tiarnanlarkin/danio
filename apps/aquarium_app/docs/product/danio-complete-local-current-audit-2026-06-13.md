@@ -2118,6 +2118,18 @@ CL-P1-009DG Backup & Restore local recovery surface:
 - Focused widget coverage verifies the visible recovery copy, Try Again action,
   and confirmed start-fresh action.
 
+CL-P1-009DH Backup restored-photo import rollback:
+
+- Backup photo restore now records only the local photo files it created during
+  the current restore attempt.
+- If photo extraction fails, tank-scoped backup import fails, or the import
+  screen unmounts before tank data is committed, those newly restored photos are
+  cleaned up instead of being left as orphaned local files.
+- Existing local photos with matching restored filenames are not overwritten and
+  are not removed by the cleanup path.
+- Focused service coverage verifies cleanup removes only newly restored photos,
+  and Backup & Restore screen coverage guards the import failure cleanup path.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2490,8 +2502,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   JSON files are now stamped back to the current schema version after successful
   load so old files do not re-run the same migration on every launch. Backup &
   Restore now surfaces corrupted local-data recovery with retry and confirmed
-  start-fresh actions. Remaining backup/data work is broader edit/delete/undo
-  coverage and restore/migration walkthrough QA.
+  start-fresh actions, and failed imports now clean up newly restored photo
+  files when tank data import does not commit. Remaining backup/data work is
+  broader edit/delete/undo coverage and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

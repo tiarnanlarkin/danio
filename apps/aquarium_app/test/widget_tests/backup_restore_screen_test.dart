@@ -223,6 +223,19 @@ void main() {
       expect(source, isNot(contains('cloud backup')));
       expect(source, isNot(contains('uploaded successfully')));
     });
+
+    test('import failure path cleans newly restored photos', () {
+      final source = File(
+        'lib/screens/backup_restore_screen.dart',
+      ).readAsStringSync();
+
+      expect(source, contains('restoredPhotosForImport'));
+      expect(source, contains('cleanupLastRestoredPhotos'));
+      expect(
+        source.indexOf('cleanupLastRestoredPhotos'),
+        lessThan(source.indexOf('BackupRestoreScreen: backup import failed')),
+      );
+    });
   });
 
   group('BackupRestoreScreen - local storage recovery', () {

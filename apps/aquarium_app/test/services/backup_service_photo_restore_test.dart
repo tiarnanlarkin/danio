@@ -128,6 +128,58 @@ void main() {
     );
 
     test(
+      'cleanupLastRestoredPhotos removes only newly restored photos',
+      () async {
+        final zipPath = p.join(tempDir.path, 'cleanup_photo_backup.zip');
+        await _writeBackupZip(
+          zipPath,
+          data: {
+            'tanks': [
+              {'id': 'tank-1', 'imageUrl': 'photos/new.jpg'},
+              {'id': 'tank-2', 'imageUrl': 'photos/existing.jpg'},
+            ],
+          },
+          files: {
+            'photos/new.jpg': 'new backup photo',
+            'photos/existing.jpg': 'existing backup photo',
+          },
+        );
+
+        final restoreService = BackupService(
+          getDocumentsDirectory: () async => restoreDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+
+        final resolvedData = await restoreService.getBackupData(zipPath);
+        final resolvedTanks = resolvedData['tanks'] as List;
+        final restoredNewPhoto = File(
+          resolvedTanks.first['imageUrl'] as String,
+        );
+        final preExistingPhoto = File(resolvedTanks.last['imageUrl'] as String);
+        await preExistingPhoto.parent.create(recursive: true);
+        await preExistingPhoto.writeAsString('keep existing local photo');
+
+        await restoreService.restoreBackup(zipPath);
+
+        expect(await restoredNewPhoto.readAsString(), 'new backup photo');
+        expect(
+          await preExistingPhoto.readAsString(),
+          'keep existing local photo',
+        );
+        expect(restoreService.lastRestoredPhotoPaths, [restoredNewPhoto.path]);
+
+        await restoreService.cleanupLastRestoredPhotos();
+
+        expect(await restoredNewPhoto.exists(), isFalse);
+        expect(
+          await preExistingPhoto.readAsString(),
+          'keep existing local photo',
+        );
+        expect(restoreService.lastRestoredPhotoPaths, isEmpty);
+      },
+    );
+
+    test(
       'getBackupData rejects photo entries with duplicate restored filenames',
       () async {
         final zipPath = p.join(tempDir.path, 'duplicate_photo_backup.zip');
