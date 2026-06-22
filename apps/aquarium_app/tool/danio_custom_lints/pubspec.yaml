@@ -1,0 +1,10 @@
+name: danio_custom_lints
+description: Local Danio-specific custom lint rules.
+publish_to: none
+
+environment:
+  sdk: ^3.10.8
+
+dependencies:
+  analyzer: ^8.4.0
+  custom_lint_builder: ^0.8.1

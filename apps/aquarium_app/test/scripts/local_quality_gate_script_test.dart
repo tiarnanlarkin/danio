@@ -75,4 +75,41 @@ void main() {
     expect(source, isNot(contains('Sentry')));
     expect(source, isNot(contains('OpenAI API')));
   });
+
+  test('local lint setup includes strict and Danio-specific checks', () {
+    final appPubspec = File('pubspec.yaml').readAsStringSync();
+    final analysisOptions = File('analysis_options.yaml').readAsStringSync();
+    final gateSource = File(scriptPath).readAsStringSync();
+
+    expect(appPubspec, contains('very_good_analysis:'));
+    expect(appPubspec, contains('custom_lint:'));
+    expect(appPubspec, contains('dart_code_metrics_presets:'));
+    expect(appPubspec, contains('danio_custom_lints:'));
+
+    expect(
+      analysisOptions,
+      contains('include: package:very_good_analysis/analysis_options.yaml'),
+    );
+    expect(analysisOptions, contains('plugins:'));
+    expect(analysisOptions, contains('custom_lint'));
+    expect(analysisOptions, contains('dart_code_metrics:'));
+    expect(
+      analysisOptions,
+      contains('package:dart_code_metrics_presets/recommended.yaml'),
+    );
+
+    expect(
+      File('tool/danio_custom_lints/pubspec.yaml').existsSync(),
+      isTrue,
+    );
+    expect(
+      File('tool/danio_custom_lints/lib/danio_custom_lints.dart').existsSync(),
+      isTrue,
+    );
+    expect(gateSource, contains('dart run custom_lint'));
+    expect(gateSource, contains('Clear-CustomLintGeneratedOutputs'));
+    expect(gateSource, contains('danio_aquarium_lint_root'));
+    expect(gateSource, contains(r'android\app\mnt'));
+    expect(gateSource, contains('dcm analyze lib'));
+  });
 }

@@ -1,36 +1,166 @@
-# This file configures the analyzer, which statically analyzes Dart code to
-# check for errors, warnings, and lints.
+# This file configures Flutter/Dart static analysis for Danio.
 #
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
-
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+# The baseline uses Very Good Analysis, then applies a small compatibility
+# layer so legacy app code can continue through `flutter analyze` while stricter
+# project-specific checks are added incrementally.
+include: package:very_good_analysis/analysis_options.yaml
 
 analyzer:
+  exclude:
+    - build/**
+    - .dart_tool/**
+    - tool/danio_custom_lints/**
+  language:
+    strict-casts: false
+    strict-inference: false
+    strict-raw-types: false
+  plugins:
+    - custom_lint
   errors:
-    # Style-only signals; don't block builds.
+    # Legacy compatibility baseline. Keep Very Good Analysis installed, but
+    # ratchet these rules on deliberately instead of blocking all product work.
     unnecessary_underscores: ignore
+    always_use_package_imports: ignore
+    always_put_required_named_parameters_first: ignore
+    avoid_bool_literals_in_conditional_expressions: ignore
+    avoid_catches_without_on_clauses: ignore
+    avoid_catching_errors: ignore
+    avoid_dynamic_calls: ignore
+    avoid_escaping_inner_quotes: ignore
+    avoid_multiple_declarations_per_line: ignore
+    avoid_positional_boolean_parameters: ignore
+    avoid_redundant_argument_values: ignore
+    avoid_slow_async_io: ignore
+    avoid_types_on_closure_parameters: ignore
+    avoid_unused_constructor_parameters: ignore
+    avoid_void_async: ignore
+    cascade_invocations: ignore
+    cast_nullable_to_non_nullable: ignore
+    combinators_ordering: ignore
+    comment_references: ignore
+    directives_ordering: ignore
+    discarded_futures: ignore
+    document_ignores: ignore
+    eol_at_end_of_file: ignore
+    inference_failure_on_collection_literal: ignore
+    inference_failure_on_function_invocation: ignore
+    inference_failure_on_function_return_type: ignore
+    inference_failure_on_instance_creation: ignore
+    inference_failure_on_untyped_parameter: ignore
+    join_return_with_assignment: ignore
+    lines_longer_than_80_chars: ignore
+    matching_super_parameters: ignore
+    missing_code_block_language_in_doc_comment: ignore
+    missing_whitespace_between_adjacent_strings: ignore
+    no_default_cases: ignore
+    no_literal_bool_comparisons: ignore
+    noop_primitive_operations: ignore
+    omit_local_variable_types: ignore
+    only_throw_errors: ignore
+    parameter_assignments: ignore
+    prefer_const_constructors: ignore
+    prefer_const_declarations: ignore
+    prefer_const_literals_to_create_immutables: ignore
+    prefer_constructors_over_static_methods: ignore
+    prefer_final_locals: ignore
+    prefer_foreach: ignore
+    prefer_if_elements_to_conditional_expressions: ignore
+    prefer_int_literals: ignore
+    prefer_single_quotes: ignore
+    public_member_api_docs: ignore
+    require_trailing_commas: ignore
+    simple_directive_paths: ignore
+    sort_pub_dependencies: ignore
+    strict_raw_type: ignore
+    sort_constructors_first: ignore
+    specify_nonobvious_property_types: ignore
+    unnecessary_await_in_return: ignore
+    unnecessary_breaks: ignore
+    unnecessary_ignore: ignore
+    unnecessary_lambdas: ignore
+    unnecessary_library_directive: ignore
+    unnecessary_null_checks: ignore
+    unnecessary_parenthesis: ignore
+    unnecessary_raw_strings: ignore
+    unawaited_futures: ignore
+    use_colored_box: ignore
+    use_is_even_rather_than_modulo: ignore
+    use_null_aware_elements: ignore
+    use_raw_strings: ignore
 
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
   rules:
-    # Async context safety - prevent use of BuildContext across async gaps
+    always_use_package_imports: false
+    always_put_required_named_parameters_first: false
+    avoid_bool_literals_in_conditional_expressions: false
+    avoid_catches_without_on_clauses: false
+    avoid_catching_errors: false
+    avoid_dynamic_calls: false
+    avoid_escaping_inner_quotes: false
+    avoid_multiple_declarations_per_line: false
+    avoid_positional_boolean_parameters: false
+    avoid_redundant_argument_values: false
+    avoid_slow_async_io: false
+    avoid_types_on_closure_parameters: false
+    avoid_unused_constructor_parameters: false
+    avoid_void_async: false
+    cascade_invocations: false
+    cast_nullable_to_non_nullable: false
+    combinators_ordering: false
+    comment_references: false
+    directives_ordering: false
+    discarded_futures: false
+    document_ignores: false
+    eol_at_end_of_file: false
+    join_return_with_assignment: false
+    lines_longer_than_80_chars: false
+    matching_super_parameters: false
+    missing_code_block_language_in_doc_comment: false
+    missing_whitespace_between_adjacent_strings: false
+    no_default_cases: false
+    no_literal_bool_comparisons: false
+    noop_primitive_operations: false
+    omit_local_variable_types: false
+    only_throw_errors: false
+    parameter_assignments: false
+    prefer_const_constructors: false
+    prefer_const_declarations: false
+    prefer_const_literals_to_create_immutables: false
+    prefer_constructors_over_static_methods: false
+    prefer_final_locals: false
+    prefer_foreach: false
+    prefer_if_elements_to_conditional_expressions: false
+    prefer_int_literals: false
+    prefer_single_quotes: false
+    public_member_api_docs: false
+    require_trailing_commas: false
+    simple_directive_paths: false
+    sort_pub_dependencies: false
+    sort_constructors_first: false
+    specify_nonobvious_property_types: false
+    unnecessary_await_in_return: false
+    unnecessary_breaks: false
+    unnecessary_ignore: false
+    unnecessary_lambdas: false
+    unnecessary_library_directive: false
+    unnecessary_null_checks: false
+    unnecessary_parenthesis: false
+    unnecessary_raw_strings: false
+    unawaited_futures: false
     use_build_context_synchronously: true
+    use_colored_box: false
+    use_is_even_rather_than_modulo: false
+    use_null_aware_elements: false
+    use_raw_strings: false
 
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
-
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+dart_code_metrics:
+  extends:
+    - package:dart_code_metrics_presets/recommended.yaml
+  metrics:
+    cyclomatic-complexity: 20
+    maximum-nesting-level: 5
+    number-of-parameters: 4
+  metrics-exclude:
+    - test/**
+    - integration_test/**
+    - tool/**

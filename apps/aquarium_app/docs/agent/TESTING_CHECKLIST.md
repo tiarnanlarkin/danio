@@ -39,15 +39,14 @@ The local quality gate gives Codex a repeatable default focused check:
 Run from `apps/aquarium_app`:
 
 ```powershell
-flutter test
-flutter analyze
-flutter build apk --debug --target lib/main.dart
-git diff --check
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
 ```
 
 Expected:
 
 - `flutter test` passes.
+- `dart run custom_lint` reports no Danio-specific lint violations through the
+  local gate's Windows-safe temporary path.
 - `flutter analyze` reports no issues.
 - Debug APK builds successfully.
 - `git diff --check` prints no whitespace errors.
@@ -67,7 +66,7 @@ For docs-only changes:
 ```powershell
 git diff --check
 flutter test test/copy/current_docs_local_truth_test.dart
-flutter analyze
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
 rg -n "Maestro Cloud|Vercel|Supabase|Sentry|OpenAI API calls|paid service|fake premium|fake social|fake cloud" AGENTS.md apps/aquarium_app/docs/agent
 ```
 

@@ -71,14 +71,16 @@ Do not write these paths into tracked files unless the user asks for machine set
 
 ## Standard Local Gates
 
-Run these before committing product code changes:
+Run the local gate before committing product code changes:
 
 ```powershell
-flutter test
-flutter analyze
-flutter build apk --debug --target lib/main.dart
-git diff --check
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
 ```
+
+The Full profile covers `flutter test`, `dart run custom_lint`,
+`flutter analyze`, `flutter build apk --debug --target lib/main.dart`, and
+`git diff --check`. On this Windows path, the wrapper runs custom lint through a
+temporary no-space junction and clears generated Flutter folders first.
 
 The local wrapper can run the standard gates in consistent profiles:
 
@@ -92,6 +94,13 @@ The local wrapper can run the standard gates in consistent profiles:
 
 See `docs/agent/AUTONOMOUS_QUALITY_SETUP.md` for the autonomous workflow,
 optional local tool lane, and account-backed upgrade boundaries.
+
+The static analysis stack is:
+
+- `very_good_analysis` as the Flutter/Dart analyzer baseline.
+- `dart run custom_lint` for Danio-specific local lint rules, via the local
+  quality gate on Windows paths with spaces.
+- Optional `dcm analyze lib` only when DCM is installed/licensed locally.
 
 Run focused tests for the changed area before the full suite:
 
@@ -230,7 +239,7 @@ For docs-only setup slices, verify at minimum:
 ```powershell
 git diff --check
 flutter test test/copy/current_docs_local_truth_test.dart
-flutter analyze
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs
 ```
 
 The full Flutter suite and debug APK build are required when docs also assert a

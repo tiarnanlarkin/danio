@@ -92,6 +92,91 @@ function Invoke-Flutter {
   }
 }
 
+function Remove-GeneratedDirectory {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$Path,
+
+    [string]$AllowedRoot = $AppRoot
+  )
+
+  if (-not (Test-Path -LiteralPath $Path)) {
+    return
+  }
+
+  $resolvedRoot = (Resolve-Path -LiteralPath $AllowedRoot).Path
+  $resolvedPath = (Resolve-Path -LiteralPath $Path).Path
+  $guard = $resolvedRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+  if (-not $resolvedPath.StartsWith($guard, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Refusing to remove generated path outside app root: $resolvedPath"
+  }
+
+  $links = @(Get-ChildItem -LiteralPath $resolvedPath -Force -Recurse -Attributes ReparsePoint -ErrorAction SilentlyContinue)
+  foreach ($link in $links) {
+    if (-not $link.FullName.StartsWith($guard, [System.StringComparison]::OrdinalIgnoreCase)) {
+      throw "Refusing to remove generated link outside app root: $($link.FullName)"
+    }
+    [System.IO.Directory]::Delete($link.FullName, $false)
+  }
+
+  try {
+    Remove-Item -LiteralPath $resolvedPath -Force -Recurse -ErrorAction Stop
+  } catch {
+    $emptyDir = Join-Path ([System.IO.Path]::GetTempPath()) "danio_empty_dir_for_cleanup"
+    if (-not (Test-Path -LiteralPath $emptyDir)) {
+      New-Item -ItemType Directory -Path $emptyDir | Out-Null
+    }
+
+    & robocopy $emptyDir $resolvedPath /MIR /R:0 /W:0 /NFL /NDL /NJH /NJS /NP
+    if ($global:LASTEXITCODE -gt 7) {
+      throw "robocopy cleanup failed for $resolvedPath with exit code $global:LASTEXITCODE"
+    }
+
+    Remove-Item -LiteralPath $resolvedPath -Force -ErrorAction Stop
+  }
+}
+
+function Clear-CustomLintGeneratedOutputs {
+  $paths = @(
+    "build",
+    "android\app\mnt",
+    "linux\flutter\ephemeral",
+    "macos\Flutter\ephemeral",
+    "windows\flutter\ephemeral"
+  )
+
+  foreach ($relativePath in $paths) {
+    Remove-GeneratedDirectory -Path (Join-Path $AppRoot $relativePath)
+  }
+}
+
+function New-CustomLintWorkingRoot {
+  $lintRoot = Join-Path ([System.IO.Path]::GetTempPath()) "danio_aquarium_lint_root"
+  if (Test-Path -LiteralPath $lintRoot) {
+    $existing = Get-Item -LiteralPath $lintRoot -Force
+    if (-not ($existing.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) {
+      throw "Temporary lint path exists and is not a reparse point: $lintRoot"
+    }
+    [System.IO.Directory]::Delete($lintRoot, $false)
+  }
+
+  New-Item -ItemType Junction -Path $lintRoot -Target $AppRoot | Out-Null
+  return $lintRoot
+}
+
+function Remove-CustomLintWorkingRoot {
+  param([string]$LintRoot)
+
+  if (-not (Test-Path -LiteralPath $LintRoot)) {
+    return
+  }
+
+  $existing = Get-Item -LiteralPath $LintRoot -Force
+  if ($existing.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+    [System.IO.Directory]::Delete($LintRoot, $false)
+  }
+}
+
 function Invoke-FocusedTests {
   Invoke-Step -Name "Focused Flutter tests" -Command {
     Invoke-Flutter -Arguments (@("test") + $FocusedTests + @("--reporter", "compact"))
@@ -107,6 +192,23 @@ function Invoke-FullTests {
 function Invoke-Analyze {
   Invoke-Step -Name "Flutter analyze" -Command {
     Invoke-Flutter -Arguments @("analyze")
+  }
+}
+
+function Invoke-CustomLint {
+  Invoke-Step -Name "Danio custom lint" -Command {
+    Clear-CustomLintGeneratedOutputs
+    $lintRoot = New-CustomLintWorkingRoot
+    try {
+      Push-Location -LiteralPath $lintRoot
+      & dart run custom_lint
+      if ($global:LASTEXITCODE -ne 0) {
+        throw "dart run custom_lint failed with exit code $global:LASTEXITCODE"
+      }
+    } finally {
+      Pop-Location
+      Remove-CustomLintWorkingRoot -LintRoot $lintRoot
+    }
   }
 }
 
@@ -162,7 +264,8 @@ function Invoke-OptionalTools {
   }
 
   Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("--offline", "--recursive", ".")
-  Invoke-OptionalTool -CommandName "dcm" -Arguments @("analyze", ".")
+  # Optional DCM Pro path: dcm analyze lib
+  Invoke-OptionalTool -CommandName "dcm" -Arguments @("analyze", "lib")
   Invoke-OptionalTool -CommandName "cspell" -Arguments @(".")
   Invoke-OptionalTool -CommandName "vale" -Arguments @("docs")
 }
@@ -228,21 +331,25 @@ switch ($Profile) {
   }
   "Docs" {
     Invoke-FocusedTests
+    Invoke-CustomLint
     Invoke-Analyze
   }
   "Full" {
     Invoke-FocusedTests
+    Invoke-CustomLint
     Invoke-FullTests
     Invoke-Analyze
     Invoke-DebugApkBuild
   }
   "Visual" {
     Invoke-FocusedTests
+    Invoke-CustomLint
     Invoke-GoldenTests
     Invoke-Analyze
   }
   "AndroidPrep" {
     Invoke-FocusedTests
+    Invoke-CustomLint
     Invoke-Analyze
     Invoke-DebugApkBuild
     Invoke-AndroidDeviceVisibility

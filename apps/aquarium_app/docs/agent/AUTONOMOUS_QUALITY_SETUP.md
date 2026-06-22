@@ -16,14 +16,14 @@ Profiles:
 
 - `Focused`: worktree visibility, whitespace diff check, current docs truth
   test, and the local gate contract test.
-- `Docs`: `Focused` plus `flutter analyze`.
-- `Full`: `Focused`, full `flutter test`, `flutter analyze`, and debug APK
-  build.
+- `Docs`: `Focused` plus Danio custom lint and `flutter analyze`.
+- `Full`: `Focused`, Danio custom lint, full `flutter test`,
+  `flutter analyze`, and debug APK build.
 - `Visual`: `Focused`, the current focused golden tests, and
-  `flutter analyze`.
-- `AndroidPrep`: `Focused`, `flutter analyze`, debug APK build, and read-only
-  `adb devices` visibility. It does not install, wipe, tap, or capture device
-  state.
+  `flutter analyze`, with Danio custom lint before visual checks.
+- `AndroidPrep`: `Focused`, Danio custom lint, `flutter analyze`, debug APK
+  build, and read-only `adb devices` visibility. It does not install, wipe,
+  tap, or capture device state.
 
 Useful switches:
 
@@ -54,12 +54,33 @@ The gate can detect and run these tools when installed locally:
 
 - `osv-scanner --offline --recursive .` for dependency vulnerability checks
   without a network lookup.
-- `dcm analyze .` for stricter Dart/Flutter quality rules.
+- `dcm analyze lib` for stricter Dart/Flutter quality rules. Keep this scoped
+  to production app code unless a DCM Teams or larger license is explicitly
+  provided; DCM Pro is currently the intended paid path.
 - `cspell .` for spelling checks across app copy and docs.
 - `vale docs` for prose linting of documentation.
 
 These tools are optional. Missing tools must not block ordinary product work
 unless `-StrictOptionalTools` is explicitly supplied.
+
+## Static Analysis Stack
+
+Danio uses a layered local lint setup:
+
+- `flutter analyze` with `very_good_analysis` as the baseline lint package.
+- `dart run custom_lint` for Danio-specific local rules that generic Flutter
+  lints cannot know about.
+- Local `danio_custom_lints` rules under `tool/danio_custom_lints/`.
+- Optional DCM Pro support through the `dart_code_metrics` configuration in
+  `analysis_options.yaml` and the local gate's optional `dcm analyze lib` step.
+
+Use `scripts/quality_gates/run_local_quality_gate.ps1` for the custom-lint
+step on Windows. The wrapper clears generated Flutter output that can confuse
+workspace discovery and runs `dart run custom_lint` through a temporary
+no-space junction because this local repo path contains spaces.
+
+Do not require a DCM license, CI key, dashboard, or cloud account for normal
+work. DCM Teams and hosted dashboards remain separate paid upgrades.
 
 ## Account-Backed Upgrade Lane
 
