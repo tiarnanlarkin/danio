@@ -989,6 +989,17 @@ CL-P1-007C Compare Tanks swap action:
 - Focused coverage verifies the `Swap compared tanks` action switches the two
   selected tank IDs in the comparison selectors.
 
+CL-P1-007D Multi-tank Android walkthrough:
+
+- Phone and tablet Android QA now covers the complete current multi-tank flow
+  under `docs/qa/screenshots/2026-06-22/cl-p1-007-multi-tank/`.
+- Evidence includes the three-tank `All tanks at a glance` priority overview,
+  `Recent activity across tanks`, and the `Swap compared tanks` after-state on
+  both `danio_api36` phone and `danio_tablet_api36` tablet emulators.
+- Tablet setup used the debug-only `Seed Demo Tank` action to add `QA Test Tank`
+  without clearing the existing `Neon Tetra Shoal` and `Sample Tank` data, so
+  the walkthrough exercises at least three local tanks while preserving logs.
+
 CL-P1-008C Saved tool-result timeline labels:
 
 - Tank Journal now recognises observation notes saved by guided tools and
@@ -2417,8 +2428,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Cycling Assistant local actions, Cost Tracker currency resilience, and
   aquarium-use guidance on every Unit Converter tab.
 - Multi-tank comparison now has a first all-tanks priority overview, recent
-  all-tanks activity card, and accessible one-tap selected-tank swap action.
-  Remaining multi-tank work is Android phone/tablet QA.
+  all-tanks activity card, accessible one-tap selected-tank swap action, and
+  final phone/tablet Android walkthrough evidence for the current local scope.
 - Tank Journal now has a first unified local timeline pass for current log
   types, saved guided-tool notes now appear as Tool Result entries, and Compare
   Tanks now surfaces recent history across tanks. Saved `Milestone:` journal
@@ -2566,9 +2577,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
 Continue CL-P1-009 local depth while Android transport is reserved by other
 sessions:
 
-- Complete multi-tank/timeline/guided-tool phone/tablet QA when device
-  ownership is clear, continue CL-P1-009 data-safety hardening, keep CL-P1-010
-  preference centralisation, and keep CL-P1-011 direct-per-lesson search/deep
-  links as optional polish if walkthroughs show users need it.
+- Continue remaining timeline/guided-tool phone/tablet QA when device ownership
+  is clear, continue CL-P1-009 data-safety hardening, keep CL-P1-010 preference
+  centralisation, and keep CL-P1-011 direct-per-lesson search/deep links as
+  optional polish if walkthroughs show users need it.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.
