@@ -582,6 +582,7 @@ class TankActions {
     String id,
     String tankId, {
     void Function()? onUndoExpired,
+    void Function()? onPermanentDeleteFailed,
   }) {
     _ref
         .read(_softDeleteLivestockStateProvider)
@@ -597,6 +598,7 @@ class TankActions {
                 stackTrace: st,
                 tag: 'TankProvider',
               );
+              onPermanentDeleteFailed?.call();
             }
           },
           onSettled: () {

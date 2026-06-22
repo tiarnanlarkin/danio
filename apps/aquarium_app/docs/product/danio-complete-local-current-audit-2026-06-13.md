@@ -2169,6 +2169,18 @@ CL-P1-009DI Profile/preferences restore rollback:
 - Focused service coverage verifies a mid-restore `use_metric` write failure
   keeps the previous theme, unit, room-theme, and non-exportable API-key values.
 
+CL-P1-009DJ Livestock single-delete expiry failure feedback:
+
+- Single livestock removal now passes a permanent-delete failure callback from
+  `TankActions.softDeleteLivestock` back to the Livestock screen.
+- If the undo window expires but the local livestock delete write fails, Danio
+  restores the item and replaces the stale undo snackbar with normal error
+  feedback: `Couldn't remove <fish>. Try again.`
+- The removal timeline log is still skipped on failed permanent deletes, so the
+  journal does not record a removal that did not commit locally.
+- Focused widget coverage verifies failed expiry restores the visible fish,
+  shows retry feedback, and writes no livestock-removal timeline log.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2570,8 +2582,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Equipment service logging now rolls back the saved serviced timestamp, linked
   maintenance-task changes, and generated service log with normal error
   feedback. Failed tank and livestock soft-delete expiry now restores
-  visibility when permanent local delete writes fail. Failed new-tank
-  default-task creation now rolls back partial tank/task data. Failed livestock
+  visibility when permanent local delete writes fail, and failed single
+  livestock removal expiry now shows normal retry feedback without writing a
+  false removal timeline log. Failed new-tank default-task creation now rolls
+  back partial tank/task data. Failed livestock
   bulk moves now roll back earlier moved records. Failed sample-tank replacement
   now restores the previous demo tank and child data. Failed tank reorders now
   restore partial sort-order writes. Failed first-run demo seeding now removes

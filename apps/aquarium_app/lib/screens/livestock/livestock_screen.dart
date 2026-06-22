@@ -701,6 +701,13 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       livestock.id,
       widget.tankId,
       onUndoExpired: () => _saveLivestockRemovalLog(ref, livestock, now),
+      onPermanentDeleteFailed: () {
+        messenger.removeCurrentSnackBar();
+        AppFeedback.showErrorViaMessenger(
+          messenger,
+          'Couldn\'t remove ${livestock.commonName}. Try again.',
+        );
+      },
     );
 
     // Use pre-captured messenger; context may be deactivated in callbacks.

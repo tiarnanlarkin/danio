@@ -78,10 +78,23 @@ Widget _wrap({AsyncValue<List<Livestock>>? livestockOverride}) {
 Widget _wrapWithStorage({
   required StorageService storage,
   required String tankId,
+  bool disableAnimations = false,
 }) {
+  final screen = LivestockScreen(tankId: tankId);
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
-    child: MaterialApp(home: LivestockScreen(tankId: tankId)),
+    child: MaterialApp(
+      home: disableAnimations
+          ? Builder(
+              builder: (context) => MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(disableAnimations: true),
+                child: screen,
+              ),
+            )
+          : screen,
+    ),
   );
 }
 
@@ -140,6 +153,86 @@ Widget _wrapWithTimelineProbe({
       ),
     ),
   );
+}
+
+class _FailingLivestockDeleteStorage implements StorageService {
+  _FailingLivestockDeleteStorage({required this.failingLivestockId});
+
+  final InMemoryStorageService _delegate = InMemoryStorageService();
+  final String failingLivestockId;
+
+  @override
+  Future<List<Tank>> getAllTanks() => _delegate.getAllTanks();
+
+  @override
+  Future<Tank?> getTank(String id) => _delegate.getTank(id);
+
+  @override
+  Future<void> saveTank(Tank tank) => _delegate.saveTank(tank);
+
+  @override
+  Future<void> saveTanks(List<Tank> tanks) => _delegate.saveTanks(tanks);
+
+  @override
+  Future<void> deleteTank(String id) => _delegate.deleteTank(id);
+
+  @override
+  Future<void> deleteAllTanks(List<String> ids) =>
+      _delegate.deleteAllTanks(ids);
+
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) =>
+      _delegate.getLivestockForTank(tankId);
+
+  @override
+  Future<void> saveLivestock(Livestock livestock) =>
+      _delegate.saveLivestock(livestock);
+
+  @override
+  Future<void> deleteLivestock(String id) async {
+    if (id == failingLivestockId) {
+      throw StateError('livestock delete failed');
+    }
+    await _delegate.deleteLivestock(id);
+  }
+
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) =>
+      _delegate.getEquipmentForTank(tankId);
+
+  @override
+  Future<void> saveEquipment(Equipment equipment) =>
+      _delegate.saveEquipment(equipment);
+
+  @override
+  Future<void> deleteEquipment(String id) => _delegate.deleteEquipment(id);
+
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) => _delegate.getLogsForTank(tankId, limit: limit, after: after);
+
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) =>
+      _delegate.getLatestWaterTest(tankId);
+
+  @override
+  Future<void> saveLog(LogEntry log) => _delegate.saveLog(log);
+
+  @override
+  Future<void> deleteLog(String id) => _delegate.deleteLog(id);
+
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) =>
+      _delegate.getTasksForTank(tankId);
+
+  @override
+  Future<void> saveTask(Task task) => _delegate.saveTask(task);
+
+  @override
+  Future<void> deleteTask(String id) => _delegate.deleteTask(id);
 }
 
 // ---------------------------------------------------------------------------
@@ -393,6 +486,72 @@ void main() {
   });
 
   group('LivestockScreen - bulk delete', () {
+    testWidgets('failed single removal expiry restores item with feedback', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'single-delete-failure-tank';
+      const livestockId = 'single-delete-failure-neons';
+      final storage = _FailingLivestockDeleteStorage(
+        failingLivestockId: livestockId,
+      );
+      await storage.saveTank(_makeTank(id: tankId, name: 'Community Tank'));
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: livestockId,
+          tankId: tankId,
+          name: 'Neon Tetra',
+          count: 8,
+        ),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithStorage(
+          storage: storage,
+          tankId: tankId,
+          disableAnimations: true,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Neon Tetra'), findsOneWidget);
+
+      final livestockTile = find.ancestor(
+        of: find.text('Neon Tetra'),
+        matching: find.byType(ListTile),
+      );
+      await tester.tap(
+        find.descendant(
+          of: livestockTile,
+          matching: find.byTooltip('Livestock actions'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Remove'));
+      await tester.pump();
+
+      expect(find.text('8x Neon Tetra removed'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pump();
+
+      expect(find.text('Neon Tetra'), findsOneWidget);
+      expect(
+        find.text('Couldn\'t remove Neon Tetra. Try again.'),
+        findsOneWidget,
+      );
+
+      final logs = await storage.getLogsForTank(tankId);
+      expect(
+        logs.where((log) => log.type == LogType.livestockRemoved),
+        isEmpty,
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+
     testWidgets('expired bulk removal writes timeline logs', (tester) async {
       suppressAvatarError();
       const tankId = 'bulk-delete-log-tank';

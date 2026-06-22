@@ -162,6 +162,9 @@ Recent CL-P1-009 continuation note:
   photos.
 - CL-P1-009DI rolls back previous exportable profile/preferences values if a
   platform preference write fails mid-restore.
+- CL-P1-009DJ shows normal retry feedback when single livestock removal expiry
+  restores the fish after the permanent local delete write fails, and avoids a
+  false removal timeline log.
 
 ## 7. P2 Work - Presentation System
 
