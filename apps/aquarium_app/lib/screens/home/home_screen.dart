@@ -614,6 +614,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: HeartIndicator(compact: true),
                     ),
                     IconButton(
+                      constraints: const BoxConstraints(
+                        minWidth: 48,
+                        minHeight: 48,
+                      ),
                       icon: const Icon(
                         Icons.emergency_outlined,
                         color: AppColors.error,
@@ -632,6 +636,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onTap: () =>
                           showTankToolbox(context, ref, currentTank.id),
                       child: IconButton(
+                        constraints: const BoxConstraints(
+                          minWidth: 48,
+                          minHeight: 48,
+                        ),
                         icon: const Icon(
                           Icons.build_outlined,
                           color: AppOverlays.white90,
@@ -642,6 +650,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                     IconButton(
+                      constraints: const BoxConstraints(
+                        minWidth: 48,
+                        minHeight: 48,
+                      ),
                       icon: const Icon(
                         Icons.settings_outlined,
                         color: AppOverlays.white90,
