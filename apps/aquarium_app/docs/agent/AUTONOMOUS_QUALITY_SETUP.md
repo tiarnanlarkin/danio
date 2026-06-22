@@ -55,6 +55,24 @@ Use this order for normal implementation slices:
 6. Commit only the intended files.
 7. Push after the relevant local gates pass.
 
+## Current Setup Status
+
+Verified on 2026-06-22:
+
+- `AndroidPrep` passed and built the debug APK locally.
+- `Visual` passed with the focused golden tests.
+- `Full -SkipApkBuild` passed after the fresh AndroidPrep APK build.
+- `Docs -RunOptionalTools` passed after the Vale setup; OSV, cspell, and Vale
+  ran successfully.
+- `osv-scanner` and Vale resolve from their winget package folders when PATH
+  has not refreshed.
+- `patrol_cli 4.2.0` is installed in the Dart pub cache and matches the app's
+  current `patrol 4.3.0` range according to the Patrol compatibility table.
+- DCM remains optional and pending until a paid DCM CLI/license is available.
+- Account-backed tools such as Firebase Test Lab, BrowserStack/Percy,
+  CodeRabbit/Qodo, Sentry, and Crashlytics are not configured in this local
+  setup. Add them only after explicit account/credential approval.
+
 ## Optional Local Tools
 
 The gate can detect and run these tools when installed locally:
