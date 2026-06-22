@@ -20,6 +20,7 @@ import 'package:danio/services/openai_service.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/theme/app_theme.dart';
 import 'package:danio/widgets/offline_indicator.dart';
 
 // ---------------------------------------------------------------------------
@@ -412,6 +413,34 @@ void main() {
       );
     });
 
+    testWidgets('setup-context nudge uses readable text on light card', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(_profileJson()),
+      });
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final title = tester.widget<Text>(
+        find.text('Complete setup details'),
+      );
+      final body = tester.widget<Text>(
+        find.text(
+          'Add your region and tank stage so Smart can tune risks, reminders, and care plans.',
+        ),
+      );
+
+      final titleColor = title.style?.color;
+      final bodyColor = body.style?.color;
+      expect(titleColor, AppColors.textPrimary);
+      expect(bodyColor, AppColors.textSecondary);
+      expect(_contrastRatio(titleColor!, AppColors.surface), greaterThan(4.5));
+      expect(_contrastRatio(bodyColor!, AppColors.surface), greaterThan(4.5));
+    });
+
     testWidgets('hides setup-context nudge when profile context is complete', (
       tester,
     ) async {
@@ -571,6 +600,18 @@ void main() {
       expect(find.text('Ask a fishkeeping question first.'), findsOneWidget);
     });
   });
+}
+
+double _contrastRatio(Color foreground, Color background) {
+  final foregroundLuminance = foreground.computeLuminance();
+  final backgroundLuminance = background.computeLuminance();
+  final lighter = foregroundLuminance > backgroundLuminance
+      ? foregroundLuminance
+      : backgroundLuminance;
+  final darker = foregroundLuminance > backgroundLuminance
+      ? backgroundLuminance
+      : foregroundLuminance;
+  return (lighter + 0.05) / (darker + 0.05);
 }
 
 Tank _makeTank({required String id, required DateTime now}) {

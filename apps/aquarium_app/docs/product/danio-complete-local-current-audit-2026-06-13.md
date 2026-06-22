@@ -2207,6 +2207,14 @@ CL-P1-010I Preferences Units save-failure feedback:
 - Focused widget coverage simulates a failed `use_metric` write and verifies
   the picker stays open with retry feedback.
 
+CL-P1-010J Smart setup-context nudge contrast:
+
+- The Smart setup-context nudge now uses explicit light-card text tokens for
+  its title and body copy instead of inheriting surrounding Smart-screen text
+  color.
+- Focused widget coverage verifies the nudge title/body colors and contrast
+  against the light setup-card surface.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -2236,9 +2244,8 @@ CL-P1-010I Preferences Units save-failure feedback:
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
-- A usable emulator is attached as `emulator-5554`, but it is currently
-  foregrounding `com.misescope.app`, so Danio blackbox screen QA remains
-  deferred to avoid interfering with another active Codex session.
+- The dedicated `danio_api36` emulator is attached as `emulator-5554` and is
+  foregrounding `com.tiarnanlarkin.danio` for local live preview.
 
 ## 5. Current Complete-Local Gap Map
 
@@ -2409,7 +2416,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   animation checks, Notification Settings now has guided reminder intensity
   presets, Preferences links directly to the Privacy Policy, and Optional AI
   disclosure acceptance can be reset from Preferences. Optional AI setup now
-  links directly to the Privacy Policy from the setup dialog. Remaining
+  links directly to the Privacy Policy from the setup dialog, and the Smart
+  setup-context nudge now uses readable light-card text colors. Remaining
   profile/preferences work is any final AI/provider walkthrough gaps.
 - Global search now has first complete-local coverage for app destinations,
   tools, learning paths, guides, settings/privacy/backup, species, equipment,
@@ -2419,7 +2427,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   demo data without deleting real tanks. Remaining demo work is final screen QA.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
-- Full local screen audit is blocked until Android target is stable.
+- Full local screen audit can continue while `danio_api36` remains dedicated to
+  Danio live preview.
 - Richer per-tank intelligence drill-downs and save/apply flows remain useful
   future depth, but the P0 no-AI Smart hub acceptance is now covered.
 
