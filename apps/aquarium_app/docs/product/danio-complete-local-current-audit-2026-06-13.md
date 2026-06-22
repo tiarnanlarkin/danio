@@ -1041,6 +1041,22 @@ CL-P1-008G Saved special-entry detail strips:
 - Focused coverage verifies the saved tool result, milestone, and optional AI
   detail strips render in the timeline.
 
+CL-P1-008H Timeline Android walkthrough:
+
+- Phone and tablet Android evidence is captured under
+  `docs/qa/screenshots/2026-06-22/cl-p1-008-timeline-walkthrough/`.
+- Phone Journal evidence verifies the unified timeline renders water-test and
+  water-change entries, month grouping, metadata, summaries, and a saved
+  `Milestone:` observation with the milestone label and contextual detail strip.
+- Phone Compare Tanks evidence verifies recent all-tanks activity surfaces the
+  milestone, feeding, water-test, and water-change entries, alongside the
+  three-tank `All tanks at a glance` overview and accessible swap action.
+- Tablet Journal evidence verifies the water-test and water-change timeline
+  layout remains readable with no obvious overflow on the wide tablet surface.
+- Real guided-tool and optional-AI note Android save handoffs were not exercised
+  in this walkthrough; those special labels remain covered by focused widget
+  tests unless a future device walkthrough targets the source flows directly.
+
 CL-P1-009A Backup import safety copy:
 
 - Backup & Restore now explains import behavior in normal-user terms:
@@ -2408,8 +2424,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Tanks now surfaces recent history across tanks. Saved `Milestone:` journal
   notes now appear as Milestone entries, saved accepted AI notes now appear as
   AI Note entries, and saved special entries now have contextual detail strips.
-  Remaining timeline work is final walkthrough QA and any source-specific
-  handoff gaps found there.
+  Phone/tablet Android walkthrough evidence now covers Journal water-test,
+  water-change, and milestone rendering plus all-tanks activity; remaining
+  timeline work is any future source-specific guided-tool or optional-AI Android
+  save handoff walkthrough beyond existing focused widget coverage.
 - Backup & Restore now has clearer import safety copy and validates required
   backup JSON, malformed tank entries, duplicate tank IDs, and orphaned
   tank-scoped child records, plus non-array tank-scoped child collections,
