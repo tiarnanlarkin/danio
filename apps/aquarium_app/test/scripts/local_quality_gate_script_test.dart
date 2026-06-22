@@ -70,6 +70,20 @@ void main() {
     expect(source, contains('dcm'));
     expect(source, contains('cspell'));
     expect(source, contains('vale'));
+    expect(
+      source,
+      contains(
+        'Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("scan", "source", "--format=vertical", "--verbosity=error", "--recursive", ".")',
+      ),
+    );
+    expect(
+      source,
+      isNot(
+        contains(
+          'Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("--offline", "--recursive", ".")',
+        ),
+      ),
+    );
     expect(source, isNot(contains('Maestro Cloud')));
     expect(source, isNot(contains('BrowserStack')));
     expect(source, isNot(contains('Firebase Test Lab')));

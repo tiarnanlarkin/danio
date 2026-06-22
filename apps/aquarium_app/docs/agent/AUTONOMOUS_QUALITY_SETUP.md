@@ -58,8 +58,10 @@ Use this order for normal implementation slices:
 
 The gate can detect and run these tools when installed locally:
 
-- `osv-scanner --offline --recursive .` for dependency vulnerability checks
-  without a network lookup.
+- `osv-scanner scan source --format=vertical --verbosity=error --recursive .`
+  for no-cost dependency vulnerability checks. This uses OSV's public
+  vulnerability data and requires the local `osv-scanner` binary, but no
+  account, key, or paid service.
 - `dcm analyze lib` for stricter Dart/Flutter quality rules. Keep this scoped
   to production app code unless a DCM Teams or larger license is explicitly
   provided; DCM Pro is currently the intended paid path.
@@ -68,6 +70,10 @@ The gate can detect and run these tools when installed locally:
 
 These tools are optional. Missing tools must not block ordinary product work
 unless `-StrictOptionalTools` is explicitly supplied.
+
+Install OSV Scanner only as a local CLI binary. Do not add OSV GitHub Actions,
+hosted scans, dashboards, or account-backed security products unless the user
+explicitly asks for that external setup.
 
 ## Local Content Validation
 

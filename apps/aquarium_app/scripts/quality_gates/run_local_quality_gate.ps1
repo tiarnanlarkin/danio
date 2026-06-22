@@ -329,7 +329,7 @@ function Invoke-OptionalTools {
     return
   }
 
-  Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("--offline", "--recursive", ".")
+  Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("scan", "source", "--format=vertical", "--verbosity=error", "--recursive", ".")
   # Optional DCM Pro path: dcm analyze lib
   Invoke-OptionalTool -CommandName "dcm" -Arguments @("analyze", "lib")
   Invoke-OptionalTool -CommandName "cspell" -Arguments @(".")

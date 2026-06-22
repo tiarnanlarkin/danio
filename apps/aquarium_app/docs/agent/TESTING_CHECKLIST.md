@@ -100,6 +100,19 @@ Before merging one, run the smallest relevant local gate:
 Do not add private registries, tokens, or paid package feeds to
 `.github/dependabot.yml` without a separate explicit request.
 
+## Local Dependency Audit
+
+When `osv-scanner` is installed locally, run the optional dependency audit with:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs -RunOptionalTools
+```
+
+The gate runs `osv-scanner scan source --format=vertical --verbosity=error
+--recursive .`. This is no-cost and does not need an account or API key, but it
+does query OSV public vulnerability data. Keep hosted scanners and paid security
+dashboards out of the repo unless separately approved.
+
 ## Android QA Discipline
 
 Use Android devices only when safe:
