@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/guidance_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/guidance_service.dart';
+import '../navigation/app_routes.dart';
 import '../theme/app_theme.dart';
 import '../theme/danio_surface_visuals.dart';
 import '../utils/app_constants.dart';
@@ -311,6 +312,26 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
               rootNavigator: true,
             );
           },
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.sm),
+
+      Semantics(
+        button: true,
+        excludeSemantics: true,
+        label: _tileSemanticLabel(
+          'Search',
+          'Find tanks, fish, guides, and logs',
+        ),
+        onTap: () => AppRoutes.toSearch(context),
+        child: PrimaryActionTile(
+          icon: Icons.search_rounded,
+          title: 'Search',
+          subtitle: 'Find tanks, fish, guides, and logs',
+          iconColor: AppColors.primary,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => AppRoutes.toSearch(context),
         ),
       ),
 

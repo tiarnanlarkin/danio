@@ -2270,6 +2270,23 @@ CL-P1-010J Smart setup-context nudge contrast:
 - Focused coverage verifies Backup & Restore, Unit Converter, Nitrogen Cycle
   learning, and local log-note search results.
 
+### CL-P1-011B Search Entry Points And Android Walkthrough
+
+- The Tank top bar and More hub now open global Search through
+  `AppRoutes.toSearch`, so search is available as a contextual feature instead
+  of a bottom navigation tab.
+- The Tank top-bar Search button keeps the same 48dp tap-target guardrail as
+  Emergency Guide, Tank Toolbox, and Tank Settings, with `Search` tooltip and
+  semantics.
+- The More hub now includes a Search tile under Tank Tools with the normal-user
+  subtitle `Find tanks, fish, guides, and logs`.
+- Focused widget and layout coverage verifies More-to-Search navigation,
+  Tank-top-bar navigation, and phone/tablet/large-text top-bar visibility.
+- Android evidence under
+  `docs/qa/screenshots/2026-06-22/cl-p1-011-global-search/` covers phone More
+  entry with sample tank/log results and tablet Tank top-bar entry with Backup
+  & Restore app results.
+
 ### CL-P1-012A Resettable Sample Tank
 
 - Settings now presents the sample-tank action as `Reset Sample Tank` and tells
@@ -2557,10 +2574,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
   links directly to the Privacy Policy from the setup dialog, and the Smart
   setup-context nudge now uses readable light-card text colors. Remaining
   profile/preferences work is any final AI/provider walkthrough gaps.
-- Global search now has first complete-local coverage for app destinations,
-  tools, learning paths, guides, settings/privacy/backup, species, equipment,
-  livestock, and local logs. Remaining search work is Android phone/tablet
-  walkthrough QA and any future direct-per-lesson deep links.
+- Global search now has complete-local coverage for app destinations, tools,
+  learning paths, guides, settings/privacy/backup, species, equipment,
+  livestock, local logs, real Tank top-bar and More entry points, and
+  phone/tablet Android walkthrough evidence. Remaining search work is only
+  optional direct-per-lesson deep links if future walkthroughs show users need
+  them.
 - Demo mode now has a resettable populated sample tank that replaces existing
   demo data without deleting real tanks, with final phone/tablet Android screen
   evidence captured under

@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/privacy_policy_screen.dart';
+import 'package:danio/screens/search_screen.dart';
 import 'package:danio/screens/settings_hub_screen.dart';
 import 'package:danio/screens/settings_screen.dart';
 import 'package:danio/utils/navigation_throttle.dart';
@@ -205,6 +206,7 @@ void main() {
         'Achievements',
         'Workshop',
         'Analytics',
+        'Search',
         'Preferences',
       ]) {
         await _scrollUntilTextVisible(tester, label);
@@ -225,6 +227,23 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(EmergencyGuideScreen), findsOneWidget);
+    });
+
+    testWidgets('opens Search from the More hub', (tester) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await _scrollUntilTextVisible(tester, 'Search');
+      expect(find.text('Find tanks, fish, guides, and logs'), findsOneWidget);
+
+      await tester.tap(find.text('Search'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SearchScreen), findsOneWidget);
+      expect(
+        find.text('Search tanks, fish, equipment, guides...'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Backup & Restore is described as local export and import', (

@@ -619,6 +619,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         minHeight: 48,
                       ),
                       icon: const Icon(
+                        Icons.search_rounded,
+                        color: AppOverlays.white90,
+                      ),
+                      tooltip: 'Search',
+                      onPressed: () => AppRoutes.toSearch(context),
+                    ),
+                    IconButton(
+                      constraints: const BoxConstraints(
+                        minWidth: 48,
+                        minHeight: 48,
+                      ),
+                      icon: const Icon(
                         Icons.emergency_outlined,
                         color: AppColors.error,
                       ),

@@ -136,6 +136,11 @@ void main() {
           );
           _expectVisibleTapTarget(
             tester,
+            find.byTooltip('Search'),
+            viewport: viewport,
+          );
+          _expectVisibleTapTarget(
+            tester,
             find.bySemanticsLabel('Tank Toolbox'),
             viewport: viewport,
           );
@@ -165,6 +170,11 @@ void main() {
       _expectVisibleTapTarget(
         tester,
         find.byTooltip('Emergency Guide'),
+        viewport: _phone,
+      );
+      _expectVisibleTapTarget(
+        tester,
+        find.byTooltip('Search'),
         viewport: _phone,
       );
       _expectVisibleTapTarget(

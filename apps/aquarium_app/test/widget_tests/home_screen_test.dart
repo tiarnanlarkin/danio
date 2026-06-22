@@ -15,6 +15,7 @@ import 'package:danio/models/models.dart';
 import 'package:danio/screens/home/home_screen.dart';
 import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
+import 'package:danio/screens/search_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/room_theme_provider.dart';
@@ -200,6 +201,29 @@ void main() {
 
       expect(find.byType(EmergencyGuideScreen), findsOneWidget);
       expect(find.text('Emergency Guide'), findsWidgets);
+    });
+
+    testWidgets('Tank top bar opens Search', (tester) async {
+      suppressLayoutErrors();
+
+      await tester.pumpWidget(_wrapWithTank());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 5));
+
+      expect(find.byTooltip('Search'), findsOneWidget);
+
+      final searchButton = tester.widget<IconButton>(
+        find.widgetWithIcon(IconButton, Icons.search_rounded),
+      );
+      searchButton.onPressed!();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byType(SearchScreen), findsOneWidget);
+      expect(
+        find.text('Search tanks, fish, equipment, guides...'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Tank aquarium reflects unsafe water logs visually', (

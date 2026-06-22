@@ -9,6 +9,7 @@ import '../screens/create_tank_screen.dart';
 import '../screens/debug_menu_screen.dart';
 import '../screens/gem_shop_screen.dart';
 import '../screens/lesson_screen.dart';
+import '../screens/search_screen.dart';
 import '../screens/smart_screen.dart';
 import '../screens/spaced_repetition_practice_screen.dart';
 import '../screens/story/story_browser_screen.dart';
@@ -61,6 +62,15 @@ class AppRoutes {
     NavigationThrottle.push(
       context,
       const WorkshopScreen(),
+      rootNavigator: true,
+    );
+  }
+
+  /// Navigate to the global search screen.
+  static void toSearch(BuildContext context) {
+    NavigationThrottle.push(
+      context,
+      const SearchScreen(),
       rootNavigator: true,
     );
   }
