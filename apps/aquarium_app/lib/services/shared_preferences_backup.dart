@@ -100,14 +100,40 @@ class SharedPreferencesBackup {
     _validateRestorableEntries(entries);
 
     final prefs = await SharedPreferences.getInstance();
+    final previousEntries = _currentExportableEntries(prefs);
 
-    // Clear all existing exportable keys first so stale data from an older
-    // profile or a backup with fewer keys cannot linger after restore.
+    try {
+      return await _replaceExportableEntries(prefs, entries);
+    } catch (error, stackTrace) {
+      await _replaceExportableEntries(prefs, previousEntries);
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
+
+  static Map<String, dynamic> _currentExportableEntries(
+    SharedPreferences prefs,
+  ) {
+    final snapshot = <String, dynamic>{};
+    for (final key in prefs.getKeys().where(_isExportable)) {
+      final value = prefs.get(key);
+      if (value == null) continue;
+      if (value is List<String>) {
+        snapshot[key] = value.toList();
+      } else {
+        snapshot[key] = value;
+      }
+    }
+    return snapshot;
+  }
+
+  static Future<int> _replaceExportableEntries(
+    SharedPreferences prefs,
+    Map<String, dynamic> entries,
+  ) async {
     for (final key in prefs.getKeys().where(_isExportable).toList()) {
-      await prefs.remove(key);
+      await _removePreference(prefs, key);
     }
 
-    // Write each entry with the correct type.
     var restored = 0;
     for (final entry in entries.entries) {
       final key = entry.key;
@@ -115,25 +141,43 @@ class SharedPreferencesBackup {
       if (!_isExportable(key)) continue;
       if (value == null) continue;
 
-      if (value is bool) {
-        await prefs.setBool(key, value);
-        restored++;
-      } else if (value is int) {
-        await prefs.setInt(key, value);
-        restored++;
-      } else if (value is double) {
-        await prefs.setDouble(key, value);
-        restored++;
-      } else if (value is String) {
-        await prefs.setString(key, value);
-        restored++;
-      } else if (value is List) {
-        await prefs.setStringList(key, value.map((e) => e.toString()).toList());
-        restored++;
-      }
+      await _writePreference(prefs, key, value);
+      restored++;
     }
 
     return restored;
+  }
+
+  static Future<void> _removePreference(
+    SharedPreferences prefs,
+    String key,
+  ) async {
+    final removed = await prefs.remove(key);
+    if (!removed) {
+      throw StateError('Could not clear preference $key');
+    }
+  }
+
+  static Future<void> _writePreference(
+    SharedPreferences prefs,
+    String key,
+    Object value,
+  ) async {
+    final saved = switch (value) {
+      bool() => await prefs.setBool(key, value),
+      int() => await prefs.setInt(key, value),
+      double() => await prefs.setDouble(key, value),
+      String() => await prefs.setString(key, value),
+      List() => await prefs.setStringList(
+        key,
+        value.map((item) => item.toString()).toList(),
+      ),
+      _ => throw StateError('Unsupported preference value for $key'),
+    };
+
+    if (!saved) {
+      throw StateError('Could not restore preference $key');
+    }
   }
 
   static void _validateRestorableEntries(Map<String, dynamic> entries) {

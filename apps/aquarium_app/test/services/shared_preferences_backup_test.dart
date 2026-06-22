@@ -2,8 +2,28 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'package:danio/services/shared_preferences_backup.dart';
+
+class _FailingSharedPreferencesStore extends InMemorySharedPreferencesStore {
+  _FailingSharedPreferencesStore.withData(
+    super.data, {
+    required this.failOnceOnKey,
+  }) : super.withData();
+
+  final String failOnceOnKey;
+  var _hasFailed = false;
+
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) {
+    if (!_hasFailed && key == failOnceOnKey) {
+      _hasFailed = true;
+      throw StateError('simulated preference write failure for $key');
+    }
+    return super.setValue(valueType, key, value);
+  }
+}
 
 void main() {
   group('SharedPreferencesBackup', () {
@@ -79,6 +99,37 @@ void main() {
         expect(prefs.getInt('room_theme'), isNull);
         expect(prefs.getString('unlocked_tank_decorations_v1'), isNull);
         expect(prefs.getString('equipped_tank_decoration_v1'), isNull);
+        expect(prefs.getString('user_openai_api_key'), 'secret');
+      },
+    );
+
+    test(
+      'restore rolls back previous preferences when a write fails mid-restore',
+      () async {
+        SharedPreferences.resetStatic();
+        SharedPreferencesStorePlatform.instance =
+            _FailingSharedPreferencesStore.withData({
+              'flutter.theme_mode': 2,
+              'flutter.use_metric': true,
+              'flutter.room_theme': 3,
+              'flutter.user_openai_api_key': 'secret',
+            }, failOnceOnKey: 'flutter.use_metric');
+
+        final prefs = await SharedPreferences.getInstance();
+
+        await expectLater(
+          SharedPreferencesBackup.restoreFromJson({
+            'entries': {
+              'theme_mode': 1,
+              'use_metric': false,
+            },
+          }),
+          throwsA(isA<StateError>()),
+        );
+
+        expect(prefs.getInt('theme_mode'), 2);
+        expect(prefs.getBool('use_metric'), true);
+        expect(prefs.getInt('room_theme'), 3);
         expect(prefs.getString('user_openai_api_key'), 'secret');
       },
     );

@@ -2157,6 +2157,18 @@ CL-P1-009DH Backup restored-photo import rollback:
 - Focused service coverage verifies cleanup removes only newly restored photos,
   and Backup & Restore screen coverage guards the import failure cleanup path.
 
+CL-P1-009DI Profile/preferences restore rollback:
+
+- `SharedPreferencesBackup.restoreFromJson` now snapshots existing exportable
+  profile/preferences values before applying a backup.
+- If an exportable preference write fails after restore has started, Danio
+  restores the previous exportable profile/preferences values before surfacing
+  the original write failure.
+- The restore helper now treats failed preference clear/write return values as
+  real restore failures instead of assuming the platform write succeeded.
+- Focused service coverage verifies a mid-restore `use_metric` write failure
+  keeps the previous theme, unit, room-theme, and non-exportable API-key values.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2479,8 +2491,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   preview/import. Malformed profile/preferences payloads now reject before
   preview/import. Malformed profile/preferences entry values now reject before
   preview/import. Direct profile/preferences restore now validates values before
-  clearing existing local preferences. Non-exportable profile/preferences
-  entries no longer cause false preview failures when their values are malformed.
+  clearing existing local preferences, then rolls back previous exportable
+  profile/preferences values if a platform write fails mid-restore.
+  Non-exportable profile/preferences entries no longer cause false preview failures
+  when their values are malformed.
   Optional restore now reports malformed preference payloads as preference
   restore failures instead of silently skipping them. Optional restore also
   skips malformed tank, livestock, equipment, log, and task records instead of

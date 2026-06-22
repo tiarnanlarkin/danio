@@ -82,6 +82,7 @@ dev_dependencies:
   patrol: ^4.3.0
   flutter_local_notifications_platform_interface: ^8.0.0
   path_provider_platform_interface: ^2.1.2
+  shared_preferences_platform_interface: ^2.4.1
   plugin_platform_interface: ^2.1.0
   dependency_validator: ^5.0.5
 
