@@ -194,6 +194,12 @@ function Resolve-OutputRoot {
   return $requestedRoot
 }
 
+function ConvertTo-SafeFileToken {
+  param([Parameter(Mandatory = $true)][string]$Value)
+
+  return ($Value -replace "[^A-Za-z0-9._-]", "_")
+}
+
 $device = Resolve-DanioDevice
 $foregroundPackage = Get-ForegroundPackage -Serial $device
 if (-not $AllowNotForeground -and $foregroundPackage -ne $AppId) {
@@ -202,14 +208,15 @@ if (-not $AllowNotForeground -and $foregroundPackage -ne $AppId) {
 
 $root = Resolve-OutputRoot
 $day = Get-Date -Format "yyyy-MM-dd"
-$timestamp = Get-Date -Format "HHmmss"
+$timestamp = Get-Date -Format "HHmmssfff"
+$safeDeviceId = ConvertTo-SafeFileToken -Value $device
 $outputDir = Join-Path $root $day
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 
-$screenPath = Join-Path $outputDir "screen-$timestamp.png"
-$focusPath = Join-Path $outputDir "focus-$timestamp.txt"
-$logcatPath = Join-Path $outputDir "logcat-$timestamp.txt"
-$deviceScreenPath = "/sdcard/danio-live-preview-$timestamp.png"
+$screenPath = Join-Path $outputDir "screen-$safeDeviceId-$timestamp.png"
+$focusPath = Join-Path $outputDir "focus-$safeDeviceId-$timestamp.txt"
+$logcatPath = Join-Path $outputDir "logcat-$safeDeviceId-$timestamp.txt"
+$deviceScreenPath = "/sdcard/danio-live-preview-$safeDeviceId-$timestamp.png"
 
 Invoke-Adb -Serial $device -Arguments @("shell", "screencap", "-p", $deviceScreenPath) | Out-Null
 Invoke-Adb -Serial $device -Arguments @("pull", $deviceScreenPath, $screenPath) | Out-Null

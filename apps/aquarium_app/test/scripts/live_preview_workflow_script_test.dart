@@ -75,6 +75,15 @@ void main() {
     expect(source, contains('RedirectStandardOutput'));
     expect(source, contains(r'$process.ExitCode'));
     expect(source, isNot(contains(r'2>&1')));
+    expect(source, contains(r'$safeDeviceId ='));
+    expect(source, contains('HHmmssfff'));
+    expect(source, contains(r'screen-$safeDeviceId-$timestamp.png'));
+    expect(source, contains(r'focus-$safeDeviceId-$timestamp.txt'));
+    expect(source, contains(r'logcat-$safeDeviceId-$timestamp.txt'));
+    expect(
+      source,
+      contains(r'danio-live-preview-$safeDeviceId-$timestamp.png'),
+    );
   });
 
   test('docs make live preview observational and keep gates authoritative', () {
