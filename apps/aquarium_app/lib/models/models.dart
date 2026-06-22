@@ -18,3 +18,4 @@ export 'gem_transaction.dart';
 export 'leaderboard.dart';
 export 'shop_item.dart';
 export 'spaced_repetition.dart';
+export 'tank_decoration.dart';

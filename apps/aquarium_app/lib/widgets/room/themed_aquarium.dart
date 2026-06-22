@@ -3,8 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../models/log_entry.dart';
+import '../../models/tank_decoration.dart';
 import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_achievement_visual_service.dart';
+import '../../services/tank_decoration_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_progress_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
@@ -42,6 +44,7 @@ class ThemedAquarium extends StatelessWidget {
   final TankLivestockVisualState? livestockVisualState;
   final TankProgressVisualState? progressVisualState;
   final TankAchievementVisualState? achievementVisualState;
+  final TankDecorationVisualState? decorationVisualState;
 
   const ThemedAquarium({
     super.key,
@@ -58,6 +61,7 @@ class ThemedAquarium extends StatelessWidget {
     this.livestockVisualState,
     this.progressVisualState,
     this.achievementVisualState,
+    this.decorationVisualState,
   });
 
   @override
@@ -175,6 +179,12 @@ class ThemedAquarium extends StatelessWidget {
                 aquascapeVisualState!.hasOverlay)
               Positioned.fill(
                 child: _TankAquascapeVisualOverlay(aquascapeVisualState!),
+              ),
+
+            if (decorationVisualState != null &&
+                decorationVisualState!.hasOverlay)
+              Positioned.fill(
+                child: _TankDecorationVisualOverlay(decorationVisualState!),
               ),
 
             // ── FISH — species sprites managed by TankFishManager ─────────
@@ -401,6 +411,189 @@ class _FoodParticle extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _TankDecorationVisualOverlay extends StatelessWidget {
+  final TankDecorationVisualState state;
+
+  const _TankDecorationVisualOverlay(this.state);
+
+  @override
+  Widget build(BuildContext context) {
+    final decoration = state.decoration;
+    if (decoration == null) return const SizedBox.shrink();
+
+    return Semantics(
+      label: state.semanticsLabel,
+      excludeSemantics: true,
+      child: IgnorePointer(
+        child: CustomPaint(
+          key: Key('tank-decoration-overlay-${decoration.name}'),
+          painter: _DecorationCuePainter(decoration: decoration),
+          child: const SizedBox.expand(),
+        ),
+      ),
+    );
+  }
+}
+
+class _DecorationCuePainter extends CustomPainter {
+  final TankDecorationType decoration;
+
+  const _DecorationCuePainter({required this.decoration});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+
+    switch (decoration) {
+      case TankDecorationType.riverStones:
+        _drawRiverStones(canvas, size);
+      case TankDecorationType.driftwoodArch:
+        _drawDriftwoodArch(canvas, size);
+      case TankDecorationType.mossyHide:
+        _drawMossyHide(canvas, size);
+      case TankDecorationType.ceramicShelter:
+        _drawCeramicShelter(canvas, size);
+    }
+  }
+
+  void _drawRiverStones(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF867F72).withValues(alpha: 0.64)
+      ..style = PaintingStyle.fill;
+    final highlight = Paint()
+      ..color = const Color(0xFFD8D0BF).withValues(alpha: 0.38)
+      ..style = PaintingStyle.fill;
+    final bottom = size.height * 0.88;
+    final stones = [
+      Rect.fromCenter(
+        center: Offset(size.width * 0.34, bottom),
+        width: size.width * 0.10,
+        height: size.height * 0.04,
+      ),
+      Rect.fromCenter(
+        center: Offset(size.width * 0.43, bottom + size.height * 0.01),
+        width: size.width * 0.13,
+        height: size.height * 0.045,
+      ),
+      Rect.fromCenter(
+        center: Offset(size.width * 0.54, bottom),
+        width: size.width * 0.09,
+        height: size.height * 0.035,
+      ),
+    ];
+
+    for (final rect in stones) {
+      canvas.drawOval(rect, paint);
+      canvas.drawOval(rect.deflate(rect.width * 0.28), highlight);
+    }
+  }
+
+  void _drawDriftwoodArch(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF805C38).withValues(alpha: 0.68)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = math.max(3, size.shortestSide * 0.018);
+    final moss = Paint()
+      ..color = const Color(0xFF5A8F58).withValues(alpha: 0.42)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = math.max(1.4, size.shortestSide * 0.007);
+
+    final path = Path()
+      ..moveTo(size.width * 0.28, size.height * 0.86)
+      ..quadraticBezierTo(
+        size.width * 0.45,
+        size.height * 0.72,
+        size.width * 0.62,
+        size.height * 0.86,
+      );
+    canvas.drawPath(path, paint);
+    canvas.drawLine(
+      Offset(size.width * 0.43, size.height * 0.78),
+      Offset(size.width * 0.35, size.height * 0.72),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.50, size.height * 0.78),
+      Offset(size.width * 0.58, size.height * 0.74),
+      moss,
+    );
+  }
+
+  void _drawMossyHide(Canvas canvas, Size size) {
+    final cave = Paint()
+      ..color = const Color(0xFF6D675E).withValues(alpha: 0.62)
+      ..style = PaintingStyle.fill;
+    final opening = Paint()
+      ..color = const Color(0xFF29424A).withValues(alpha: 0.45)
+      ..style = PaintingStyle.fill;
+    final moss = Paint()
+      ..color = const Color(0xFF4F9A62).withValues(alpha: 0.56)
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = math.max(1.4, size.shortestSide * 0.008);
+
+    final rect = Rect.fromCenter(
+      center: Offset(size.width * 0.72, size.height * 0.83),
+      width: size.width * 0.18,
+      height: size.height * 0.10,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, Radius.circular(size.shortestSide * 0.04)),
+      cave,
+    );
+    canvas.drawOval(rect.deflate(rect.width * 0.30), opening);
+    for (final xFactor in [0.66, 0.70, 0.74, 0.78]) {
+      final x = size.width * xFactor;
+      canvas.drawLine(
+        Offset(x, size.height * 0.77),
+        Offset(x + size.width * 0.015, size.height * 0.72),
+        moss,
+      );
+    }
+  }
+
+  void _drawCeramicShelter(Canvas canvas, Size size) {
+    final body = Paint()
+      ..color = const Color(0xFFB78368).withValues(alpha: 0.66)
+      ..style = PaintingStyle.fill;
+    final roof = Paint()
+      ..color = const Color(0xFFE0B078).withValues(alpha: 0.62)
+      ..style = PaintingStyle.fill;
+    final opening = Paint()
+      ..color = const Color(0xFF344E5A).withValues(alpha: 0.45)
+      ..style = PaintingStyle.fill;
+
+    final center = Offset(size.width * 0.26, size.height * 0.82);
+    final bodyRect = Rect.fromCenter(
+      center: center,
+      width: size.width * 0.15,
+      height: size.height * 0.10,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        bodyRect,
+        Radius.circular(size.shortestSide * 0.025),
+      ),
+      body,
+    );
+
+    final roofPath = Path()
+      ..moveTo(bodyRect.left - size.width * 0.01, bodyRect.top)
+      ..lineTo(center.dx, bodyRect.top - size.height * 0.045)
+      ..lineTo(bodyRect.right + size.width * 0.01, bodyRect.top)
+      ..close();
+    canvas.drawPath(roofPath, roof);
+    canvas.drawOval(bodyRect.deflate(bodyRect.width * 0.32), opening);
+  }
+
+  @override
+  bool shouldRepaint(covariant _DecorationCuePainter oldDelegate) {
+    return decoration != oldDelegate.decoration;
   }
 }
 

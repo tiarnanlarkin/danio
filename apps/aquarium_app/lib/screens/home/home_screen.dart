@@ -5,6 +5,7 @@ import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/room_theme_provider.dart';
+import '../../providers/tank_decoration_provider.dart';
 import '../../providers/tank_visual_event_provider.dart';
 import '../../providers/species_unlock_provider.dart';
 import '../../providers/guidance_provider.dart';
@@ -12,6 +13,7 @@ import '../../providers/user_profile_provider.dart';
 import '../../services/guidance_service.dart';
 import '../../services/tank_aquascape_visual_service.dart';
 import '../../services/tank_achievement_visual_service.dart';
+import '../../services/tank_decoration_visual_service.dart';
 import '../../services/tank_livestock_visual_service.dart';
 import '../../services/tank_progress_visual_service.dart';
 import '../../services/tank_visual_state_service.dart';
@@ -450,6 +452,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ref.watch(equipmentProvider(currentTank.id)).valueOrNull ?? [];
         final unlockedSpecies = ref.watch(speciesUnlockProvider);
         final userProfile = ref.watch(userProfileProvider).valueOrNull;
+        final equippedDecoration = ref.watch(equippedTankDecorationProvider);
         final tankVisualState = TankVisualStateService.fromLogs(currentLogs);
         final aquascapeVisualState = TankAquascapeVisualService.fromEquipment(
           currentEquipment,
@@ -462,6 +465,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             TankProgressVisualService.fromUnlockedSpecies(unlockedSpecies);
         final achievementVisualState = TankAchievementVisualService.fromProfile(
           userProfile,
+        );
+        final decorationVisualState = TankDecorationVisualService.fromEquipped(
+          equippedDecoration,
         );
         final feedingPulse = ref.watch(
           tankFeedingPulseProvider(currentTank.id),
@@ -482,6 +488,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     livestockVisualState: livestockVisualState,
                     progressVisualState: progressVisualState,
                     achievementVisualState: achievementVisualState,
+                    decorationVisualState: decorationVisualState,
                     isNewUser: _isNewUser(ref),
                     onTankTap: () =>
                         _navigateToTankDetail(context, currentTank),

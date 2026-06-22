@@ -21,6 +21,11 @@ void main() {
         await prefs.setBool('ambient_lighting_enabled', false);
         await prefs.setBool('haptic_feedback_enabled', false);
         await prefs.setInt('room_theme', 1);
+        await prefs.setString(
+          'unlocked_tank_decorations_v1',
+          '["riverStones"]',
+        );
+        await prefs.setString('equipped_tank_decoration_v1', 'riverStones');
         await prefs.setString('achievement_progress', '{"first":true}');
         await prefs.setString('unlocked_species_v1', '["betta"]');
         await prefs.setString('wishlist_items', '[]');
@@ -39,6 +44,8 @@ void main() {
         expect(entries['ambient_lighting_enabled'], false);
         expect(entries['haptic_feedback_enabled'], false);
         expect(entries['room_theme'], 1);
+        expect(entries['unlocked_tank_decorations_v1'], '["riverStones"]');
+        expect(entries['equipped_tank_decoration_v1'], 'riverStones');
         expect(entries['achievement_progress'], '{"first":true}');
         expect(entries['unlocked_species_v1'], '["betta"]');
         expect(entries['wishlist_items'], '[]');
@@ -54,6 +61,11 @@ void main() {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('spaced_repetition_streak', '{"streak":9}');
         await prefs.setInt('room_theme', 3);
+        await prefs.setString(
+          'unlocked_tank_decorations_v1',
+          '["riverStones"]',
+        );
+        await prefs.setString('equipped_tank_decoration_v1', 'riverStones');
         await prefs.setInt('theme_mode', 2);
         await prefs.setString('user_openai_api_key', 'secret');
 
@@ -65,6 +77,8 @@ void main() {
         expect(prefs.getInt('theme_mode'), 1);
         expect(prefs.getString('spaced_repetition_streak'), isNull);
         expect(prefs.getInt('room_theme'), isNull);
+        expect(prefs.getString('unlocked_tank_decorations_v1'), isNull);
+        expect(prefs.getString('equipped_tank_decoration_v1'), isNull);
         expect(prefs.getString('user_openai_api_key'), 'secret');
       },
     );

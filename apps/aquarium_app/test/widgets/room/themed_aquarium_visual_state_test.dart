@@ -1,8 +1,10 @@
 import 'package:danio/models/log_entry.dart';
+import 'package:danio/models/tank_decoration.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/services/tank_aquascape_visual_service.dart';
 import 'package:danio/services/tank_achievement_visual_service.dart';
+import 'package:danio/services/tank_decoration_visual_service.dart';
 import 'package:danio/services/tank_livestock_visual_service.dart';
 import 'package:danio/services/tank_progress_visual_service.dart';
 import 'package:danio/theme/room_themes.dart';
@@ -18,6 +20,7 @@ Widget _wrap(
   TankLivestockVisualState? livestockVisualState,
   TankProgressVisualState? progressVisualState,
   TankAchievementVisualState? achievementVisualState,
+  TankDecorationVisualState? decorationVisualState,
 }) {
   return ProviderScope(
     overrides: [
@@ -39,6 +42,7 @@ Widget _wrap(
               livestockVisualState: livestockVisualState,
               progressVisualState: progressVisualState,
               achievementVisualState: achievementVisualState,
+              decorationVisualState: decorationVisualState,
             ),
           ),
         ),
@@ -239,6 +243,34 @@ void main() {
       expect(
         find.bySemanticsLabel(
           'Tank achievement cosmetic state: trophy shelf visible',
+        ),
+        findsOneWidget,
+      );
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('shows equipped decoration cue when provided', (tester) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _wrap(
+          null,
+          decorationVisualState: TankDecorationVisualService.fromEquipped(
+            TankDecorationType.driftwoodArch,
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('tank-decoration-overlay-driftwoodArch')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(
+          'Tank decoration cosmetic state: Driftwood Arch equipped',
         ),
         findsOneWidget,
       );

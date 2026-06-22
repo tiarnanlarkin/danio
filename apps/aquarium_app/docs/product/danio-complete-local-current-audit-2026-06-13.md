@@ -465,6 +465,23 @@ CL-P1-002E Inventory room-vibe collectibles:
 - Focused widget coverage verifies the room-vibe collection appears without
   shop purchases and applying an unlocked vibe updates `roomThemeProvider`.
 
+CL-P1-002F Earned tank-decoration inventory:
+
+- My Items > Permanent now includes a Tank decorations section with locally
+  earned freshwater-appropriate decorations: river stones, driftwood arch,
+  mossy hide, and ceramic shelter.
+- Decoration unlocks are derived from local progress and persisted earned
+  decoration state. Equipped decoration state is saved locally before the
+  visible tank cosmetic changes.
+- The central aquarium renders the equipped decoration as a text-free
+  `CustomPaint` cue with accessibility semantics, using the same overlay
+  pattern as aquascape, progress, and achievement cosmetics.
+- Backup export/restore now includes earned and equipped decoration preference
+  keys so cosmetic progress survives local data transfer.
+- Focused service, provider, backup, widget, and Inventory tests cover unlock
+  rules, save-before-state equip behavior, backup inclusion, aquarium overlay
+  rendering, and Inventory equip feedback.
+
 CL-P1-003A Missing species request path:
 
 - Fish Database empty search now offers a Request Species action instead of a
@@ -2220,12 +2237,14 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - AI is still OpenAI-first rather than provider-aware.
 - Living Tank visuals now react to latest water-test state, old water-change
   logs, feeding events, livestock health/compatibility cues, aquascape equipment
-  cues, and earned species progression, but do not yet include a dedicated
-  plant/decor inventory model.
+  cues, earned species progression, and equipped earned decorations. Remaining
+  living-tank work is fuller plant inventory, seasonal variants, and final
+  phone/tablet visual QA.
 - Rewards now include local room-vibe unlock rules, achievement celebration
-  feedback, a subtle achievement tank cosmetic cue, and Inventory access to
-  earned room vibes. Remaining reward work is deeper dedicated decoration
-  inventory and seasonal cosmetics.
+  feedback, a subtle achievement tank cosmetic cue, Inventory access to earned
+  room vibes, and a local earned tank-decoration inventory with equip controls.
+  Remaining reward work is seasonal cosmetics and deeper plant/decor
+  collections.
 - Species and plant detail pages now have the first complete local guide pass:
   profiles, actions, watch-outs, wishlist saves, tank/task handoffs, missing
   species request guidance, and source trails. Future species work is content

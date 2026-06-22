@@ -11,13 +11,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/data/shop_catalog.dart';
 import 'package:danio/models/shop_item.dart';
+import 'package:danio/models/tank_decoration.dart';
 import 'package:danio/models/tank.dart';
 import 'package:danio/models/user_profile.dart';
 import 'package:danio/providers/room_theme_provider.dart';
 import 'package:danio/providers/room_theme_unlock_provider.dart';
+import 'package:danio/providers/tank_decoration_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/inventory_screen.dart';
 import 'package:danio/services/room_theme_unlock_service.dart';
+import 'package:danio/services/tank_decoration_unlock_service.dart';
 import 'package:danio/theme/room_themes.dart';
 
 // ---------------------------------------------------------------------------
@@ -73,6 +76,7 @@ Widget _wrap({
   SharedPreferences? prefs,
   RoomThemeType initialRoomTheme = RoomThemeType.golden,
   Map<RoomThemeType, RoomThemeUnlockState>? roomVibeStates,
+  Map<TankDecorationType, TankDecorationUnlockState>? decorationStates,
 }) {
   return ProviderScope(
     overrides: [
@@ -83,6 +87,10 @@ Widget _wrap({
       ),
       if (roomVibeStates != null)
         roomThemeUnlockStatesProvider.overrideWith((ref) => roomVibeStates),
+      if (decorationStates != null)
+        tankDecorationUnlockStatesProvider.overrideWith(
+          (ref) => decorationStates,
+        ),
     ],
     child: const MaterialApp(home: InventoryScreen()),
   );
@@ -105,6 +113,21 @@ Map<RoomThemeType, RoomThemeUnlockState> _roomVibeStates({
         isUnlocked: type != locked,
         requirementLabel: type == locked
             ? 'Reach 2500 XP to unlock Aurora.'
+            : 'Unlocked from the start.',
+      ),
+  };
+}
+
+Map<TankDecorationType, TankDecorationUnlockState> _decorationStates({
+  TankDecorationType locked = TankDecorationType.mossyHide,
+}) {
+  return {
+    for (final type in TankDecorationType.values)
+      type: TankDecorationUnlockState(
+        definition: TankDecorationDefinition.fromType(type),
+        isUnlocked: type != locked,
+        requirementLabel: type == locked
+            ? 'Complete 10 lessons to unlock Mossy Hide.'
             : 'Unlocked from the start.',
       ),
   };
@@ -267,6 +290,73 @@ void main() {
       );
       expect(container.read(roomThemeProvider), RoomThemeType.pastel);
       expect(find.text('Whimsical applied to your tank.'), findsOneWidget);
+    });
+
+    testWidgets('permanent tab shows earned tank decorations', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          roomVibeStates: _roomVibeStates(),
+          decorationStates: _decorationStates(),
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.text('Permanent'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 700));
+
+      expect(find.text('Tank decorations'), findsOneWidget);
+      expect(find.text('River Stones'), findsOneWidget);
+      expect(find.text('Mossy Hide'), findsOneWidget);
+      expect(
+        find.text('Complete 10 lessons to unlock Mossy Hide.'),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('equip-tank-decoration-riverStones')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('locked-tank-decoration-mossyHide')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('equipping a decoration from inventory updates tank cosmetic', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          roomVibeStates: _roomVibeStates(),
+          decorationStates: _decorationStates(),
+        ),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.text('Permanent'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 700));
+
+      final equipDriftwood = find.byKey(
+        const ValueKey('equip-tank-decoration-driftwoodArch'),
+      );
+      await tester.ensureVisible(equipDriftwood);
+      await tester.pump();
+      await tester.tap(equipDriftwood);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(InventoryScreen)),
+      );
+      expect(
+        container.read(equippedTankDecorationProvider),
+        TankDecorationType.driftwoodArch,
+      );
+      expect(
+        find.text('Driftwood Arch placed in your tank.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets(

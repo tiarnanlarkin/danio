@@ -34,6 +34,8 @@ class SharedPreferencesBackup {
     'streak_freeze',
     'achievement_progress',
     'room_theme',
+    'unlocked_tank_decorations_v1',
+    'equipped_tank_decoration_v1',
     'unlocked_species_v1',
     'wishlist_items',
     'shop_budget',

@@ -10,7 +10,10 @@ import '../providers/inventory_provider.dart';
 import '../providers/hearts_provider.dart';
 import '../providers/room_theme_provider.dart';
 import '../providers/room_theme_unlock_provider.dart';
+import '../providers/tank_decoration_provider.dart';
 import '../services/room_theme_unlock_service.dart';
+import '../services/tank_decoration_unlock_service.dart';
+import '../models/tank_decoration.dart';
 import '../theme/danio_surface_visuals.dart';
 import '../theme/room_themes.dart';
 import '../widgets/core/bubble_loader.dart';
@@ -55,6 +58,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     final heartsState = ref.watch(heartsStateProvider);
     final roomVibeStates = ref.watch(roomThemeUnlockStatesProvider);
     final currentRoomTheme = ref.watch(roomThemeProvider);
+    final decorationStates = ref.watch(tankDecorationUnlockStatesProvider);
+    final equippedDecoration = ref.watch(equippedTankDecorationProvider);
 
     final gradientColors = (Theme.of(context).brightness == Brightness.dark
         ? [
@@ -165,6 +170,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   roomVibeStates: roomVibeStates,
                   currentRoomTheme: currentRoomTheme,
                   onApplyRoomVibe: _handleApplyRoomVibe,
+                  decorationStates: decorationStates,
+                  equippedDecoration: equippedDecoration,
+                  onEquipDecoration: _handleEquipDecoration,
                 ),
               ],
             );
@@ -222,6 +230,36 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     DanioSnackBar.success(context, '${theme.name} applied to your tank.');
   }
 
+  Future<void> _handleEquipDecoration(TankDecorationType type) async {
+    final unlockState = ref.read(tankDecorationUnlockStatesProvider)[type];
+    if (unlockState != null && !unlockState.isUnlocked) {
+      if (!mounted) return;
+      DanioSnackBar.info(context, unlockState.requirementLabel);
+      return;
+    }
+
+    final current = ref.read(equippedTankDecorationProvider);
+    final next = current == type ? null : type;
+    final equipped = await ref
+        .read(equippedTankDecorationProvider.notifier)
+        .equipDecoration(next);
+    if (!mounted) return;
+
+    if (!equipped) {
+      DanioSnackBar.error(
+        context,
+        'Couldn\'t update that decoration. Try again.',
+      );
+      return;
+    }
+
+    final definition = TankDecorationDefinition.fromType(type);
+    final message = next == null
+        ? '${definition.name} returned to storage.'
+        : '${definition.name} placed in your tank.';
+    DanioSnackBar.success(context, message);
+  }
+
   String _getUseSuccessMessage(ShopItem item) {
     switch (item.type) {
       case ShopItemType.heartsRefill:
@@ -257,12 +295,18 @@ class _PermanentInventoryView extends StatelessWidget {
   final Map<RoomThemeType, RoomThemeUnlockState> roomVibeStates;
   final RoomThemeType currentRoomTheme;
   final ValueChanged<RoomThemeType> onApplyRoomVibe;
+  final Map<TankDecorationType, TankDecorationUnlockState> decorationStates;
+  final TankDecorationType? equippedDecoration;
+  final ValueChanged<TankDecorationType> onEquipDecoration;
 
   const _PermanentInventoryView({
     required this.items,
     required this.roomVibeStates,
     required this.currentRoomTheme,
     required this.onApplyRoomVibe,
+    required this.decorationStates,
+    required this.equippedDecoration,
+    required this.onEquipDecoration,
   });
 
   @override
@@ -296,6 +340,34 @@ class _PermanentInventoryView extends StatelessWidget {
                   unlockState: unlockState,
                   isCurrent: unlockState.type == currentRoomTheme,
                   onApply: onApplyRoomVibe,
+                ),
+                const SizedBox(width: AppSpacing.sm2),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        _SectionHeader(
+          title: 'Tank decorations',
+          subtitle: 'Place earned keepsakes into your aquarium scene.',
+        ),
+        const SizedBox(height: AppSpacing.sm2),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final definition in TankDecorationDefinition.all) ...[
+                _TankDecorationCard(
+                  unlockState:
+                      decorationStates[definition.type] ??
+                      TankDecorationUnlockState(
+                        definition: definition,
+                        isUnlocked: true,
+                        requirementLabel: 'Unlocked from the start.',
+                      ),
+                  isEquipped: definition.type == equippedDecoration,
+                  onEquip: onEquipDecoration,
                 ),
                 const SizedBox(width: AppSpacing.sm2),
               ],
@@ -456,6 +528,158 @@ class _RoomVibeCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TankDecorationCard extends StatelessWidget {
+  final TankDecorationUnlockState unlockState;
+  final bool isEquipped;
+  final ValueChanged<TankDecorationType> onEquip;
+
+  const _TankDecorationCard({
+    required this.unlockState,
+    required this.isEquipped,
+    required this.onEquip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final definition = unlockState.definition;
+    final isUnlocked = unlockState.isUnlocked;
+
+    return Semantics(
+      label: isUnlocked
+          ? '${definition.name} tank decoration, unlocked'
+          : '${definition.name} tank decoration, locked. ${unlockState.requirementLabel}',
+      button: isUnlocked,
+      child: Container(
+        key: ValueKey('tank-decoration-card-${definition.type.name}'),
+        width: 206,
+        height: 188,
+        padding: const EdgeInsets.all(AppSpacing.sm2),
+        decoration: BoxDecoration(
+          color: AppColors.whiteAlpha15,
+          borderRadius: AppRadius.largeRadius,
+          border: Border.all(
+            color: isEquipped
+                ? DanioColors.topaz.withAlpha(220)
+                : AppColors.whiteAlpha35,
+            width: isEquipped ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _DecorationIcon(type: definition.type),
+                const Spacer(),
+                Icon(
+                  isUnlocked
+                      ? (isEquipped
+                            ? Icons.check_circle_rounded
+                            : Icons.spa_outlined)
+                      : Icons.lock_outline_rounded,
+                  color: isUnlocked
+                      ? DanioColors.topaz
+                      : AppColors.textSecondaryDark,
+                  size: AppIconSizes.md,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm2),
+            Text(
+              definition.name,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.textPrimaryDark,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Expanded(
+              child: Text(
+                isUnlocked
+                    ? definition.description
+                    : unlockState.requirementLabel,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.textSecondaryDark,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            FilledButton.icon(
+              key: ValueKey(
+                isUnlocked
+                    ? (isEquipped
+                          ? 'equipped-tank-decoration-${definition.type.name}'
+                          : 'equip-tank-decoration-${definition.type.name}')
+                    : 'locked-tank-decoration-${definition.type.name}',
+              ),
+              onPressed: isUnlocked ? () => onEquip(definition.type) : null,
+              icon: Icon(
+                isEquipped ? Icons.check_rounded : Icons.add_rounded,
+                size: 16,
+              ),
+              label: Text(
+                isEquipped ? 'Placed' : (isUnlocked ? 'Place' : 'Locked'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DecorationIcon extends StatelessWidget {
+  final TankDecorationType type;
+
+  const _DecorationIcon({required this.type});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = switch (type) {
+      TankDecorationType.riverStones => (
+        const Color(0xFF8A8173),
+        const Color(0xFFD5CCBC),
+      ),
+      TankDecorationType.driftwoodArch => (
+        const Color(0xFF7A5738),
+        const Color(0xFF5D8C55),
+      ),
+      TankDecorationType.mossyHide => (
+        const Color(0xFF5F665C),
+        const Color(0xFF4C9860),
+      ),
+      TankDecorationType.ceramicShelter => (
+        const Color(0xFFB78368),
+        const Color(0xFFE0B078),
+      ),
+    };
+
+    return Container(
+      width: 42,
+      height: 32,
+      decoration: BoxDecoration(
+        color: colors.$1.withAlpha(210),
+        borderRadius: AppRadius.smallRadius,
+        border: Border.all(color: AppOverlays.black12, width: 0.5),
+      ),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: colors.$2.withAlpha(220),
+            borderRadius: AppRadius.xsRadius,
+          ),
         ),
       ),
     );
