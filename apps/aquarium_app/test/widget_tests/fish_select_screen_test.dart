@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:danio/widgets/core/app_button.dart';
 import 'package:danio/screens/onboarding/fish_select_screen.dart';
 import 'package:danio/data/species_database.dart';
 
@@ -22,6 +23,14 @@ Widget _wrap({
       onFishSelected: onFishSelected ?? (_) {},
     ),
   );
+}
+
+Future<void> _pumpAtSize(WidgetTester tester, Size size) async {
+  await tester.binding.setSurfaceSize(size);
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+
+  await tester.pumpWidget(_wrap());
+  await tester.pump(const Duration(seconds: 1));
 }
 
 // ---------------------------------------------------------------------------
@@ -104,6 +113,30 @@ void main() {
       expect(scientificNameText.maxLines, greaterThanOrEqualTo(2));
       expect(scientificNameText.softWrap, isTrue);
     });
+
+    testWidgets('tablet search input keeps a readable width', (tester) async {
+      await _pumpAtSize(tester, const Size(2000, 1200));
+
+      expect(
+        tester.getSize(find.byType(TextField).first).width,
+        lessThanOrEqualTo(720),
+      );
+    });
+
+    testWidgets('tablet popular grid uses compact multi-column tiles', (
+      tester,
+    ) async {
+      await _pumpAtSize(tester, const Size(2000, 1200));
+
+      final starterTile = find
+          .ancestor(
+            of: find.text('Neon Tetra').first,
+            matching: find.byType(GestureDetector),
+          )
+          .first;
+      expect(starterTile, findsOneWidget);
+      expect(tester.getSize(starterTile).width, lessThanOrEqualTo(260));
+    });
   });
 
   group('FishSelectScreen — search', () {
@@ -166,6 +199,19 @@ void main() {
       }
       expect(selected, isNotNull);
       expect(selected!.commonName, 'Neon Tetra');
+    });
+
+    testWidgets('tablet confirm tray keeps CTA readable after selection', (
+      tester,
+    ) async {
+      await _pumpAtSize(tester, const Size(2000, 1200));
+
+      await tester.tap(find.text('Neon Tetra').first);
+      await tester.pump(const Duration(milliseconds: 600));
+
+      final confirmButton = find.byType(AppButton).last;
+      expect(confirmButton, findsOneWidget);
+      expect(tester.getSize(confirmButton).width, lessThanOrEqualTo(320));
     });
   });
 }

@@ -4,6 +4,7 @@ import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 6 — Fish Selection
 ///
@@ -148,13 +149,14 @@ class _FishSelectScreenState extends State<FishSelectScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header
-                Padding(
+                OnboardingContentFrame(
                   padding: const EdgeInsets.fromLTRB(
                     AppSpacing.lg,
                     AppSpacing.lg,
                     AppSpacing.lg,
                     AppSpacing.xs,
                   ),
+                  alignment: Alignment.centerLeft,
                   child: Semantics(
                     header: true,
                     child: Text(
@@ -164,10 +166,8 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                  ),
+                OnboardingContentFrame(
+                  alignment: Alignment.centerLeft,
                   child: Text(
                     'Search or pick from popular choices below.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -179,10 +179,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                 const SizedBox(height: AppSpacing.md),
 
                 // Search bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                  ),
+                OnboardingContentFrame(
                   child: Semantics(
                     label: 'Search species',
                     textField: true,
@@ -283,22 +280,30 @@ class _FishSelectScreenState extends State<FishSelectScreen>
           ),
           const SizedBox(height: AppSpacing.sm),
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 0.72,
-              ),
-              itemCount: _popularFish.length,
-              itemBuilder: (context, index) {
-                final fish = _popularFish[index];
-                final isSelected = _selectedFish == fish;
-                return _PopularTile(
-                  fish: fish,
-                  isSelected: isSelected,
-                  onTap: () => _selectFish(fish),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final crossAxisCount = (constraints.maxWidth / 220)
+                    .floor()
+                    .clamp(3, 8);
+
+                return GridView.builder(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 0.72,
+                  ),
+                  itemCount: _popularFish.length,
+                  itemBuilder: (context, index) {
+                    final fish = _popularFish[index];
+                    final isSelected = _selectedFish == fish;
+                    return _PopularTile(
+                      fish: fish,
+                      isSelected: isSelected,
+                      onTap: () => _selectFish(fish),
+                    );
+                  },
                 );
               },
             ),
@@ -323,23 +328,22 @@ class _FishSelectScreenState extends State<FishSelectScreen>
       );
     }
 
-    return ListView.separated(
+    return OnboardingContentFrame(
       key: const ValueKey('list'),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.xs,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        itemCount: _searchResults.length,
+        separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+        itemBuilder: (context, index) {
+          final fish = _searchResults[index];
+          final isSelected = _selectedFish == fish;
+          return _SearchResultCard(
+            fish: fish,
+            isSelected: isSelected,
+            onTap: () => _selectFish(fish),
+          );
+        },
       ),
-      itemCount: _searchResults.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
-      itemBuilder: (context, index) {
-        final fish = _searchResults[index];
-        final isSelected = _selectedFish == fish;
-        return _SearchResultCard(
-          fish: fish,
-          isSelected: isSelected,
-          onTap: () => _selectFish(fish),
-        );
-      },
     );
   }
 
