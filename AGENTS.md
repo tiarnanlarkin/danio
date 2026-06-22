@@ -109,10 +109,22 @@ that make new build/readiness claims.
   current slice explicitly owns that update, and keep design-baseline changes in
   their own focused commit when practical.
 
+## Multi-Agent Workflow
+
+- Repo-local Codex agent roles live under `.codex/`.
+- Use `apps/aquarium_app/docs/agent/MULTI_AGENT_WORKFLOW.md` for the current
+  coordinator, auditor, reviewer, worker, and Android QA ownership rules.
+- Keep read-only auditors separate from implementation workers.
+- Implementation workers may edit only in explicitly assigned git worktrees with
+  disjoint file/module ownership.
+- Only one Android QA owner may control emulator, ADB, Patrol, Firebase Test
+  Lab, or Android screenshot evidence at a time.
+
 ## Documentation References
 
 - Codex setup: `apps/aquarium_app/docs/agent/CODEX_SETUP.md`
 - Testing checklist: `apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md`
 - Autonomous quality setup: `apps/aquarium_app/docs/agent/AUTONOMOUS_QUALITY_SETUP.md`
+- Multi-agent workflow: `apps/aquarium_app/docs/agent/MULTI_AGENT_WORKFLOW.md`
 - Current local audit: `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
 - Backlog: `apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md`

@@ -56,6 +56,28 @@ Rules:
   setup files named by the user. Do not restage or rewrite parallel design
   setup files unless the current slice explicitly owns that update.
 
+## Repo-Local Multi-Agent Setup
+
+Danio includes project-scoped Codex agent configuration under `.codex/`.
+Project sessions must trust the repo before Codex loads these project-local
+roles.
+
+Configured roles:
+
+- `danio_product_auditor`: read-only product/content completeness audit.
+- `danio_ui_auditor`: read-only UI, visual baseline, and accessibility audit.
+- `danio_quality_auditor`: read-only tests, scripts, gates, and verification
+  audit.
+- `danio_reviewer`: read-only post-slice review for regressions and missing
+  tests.
+- `danio_worker`: implementation worker for explicitly assigned git worktrees
+  and disjoint file/module ownership only.
+- `danio_android_qa_owner`: single owner for emulator, ADB, Patrol, Firebase
+  Test Lab, and Android screenshot evidence after ownership is clear.
+
+The project cap is six open agent threads with direct-child subagents only.
+See `docs/agent/MULTI_AGENT_WORKFLOW.md` for the operating model.
+
 ## Windows Environment
 
 If the shell cannot find Flutter, Java, or Android tools, set the local paths for the current PowerShell session:

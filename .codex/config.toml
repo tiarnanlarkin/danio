@@ -1,0 +1,33 @@
+[agents]
+max_threads = 6
+max_depth = 1
+
+[agents.danio_product_auditor]
+description = "Read-only Danio product/content completeness auditor for local-first finish-line work."
+config_file = "agents/danio_product_auditor.toml"
+nickname_candidates = ["Argus", "Pythia", "Atlas"]
+
+[agents.danio_ui_auditor]
+description = "Read-only Danio UI, visual baseline, accessibility, and design-system auditor."
+config_file = "agents/danio_ui_auditor.toml"
+nickname_candidates = ["Apollo", "Iris", "Nova"]
+
+[agents.danio_quality_auditor]
+description = "Read-only Danio tests, quality gates, dependency hygiene, and verification auditor."
+config_file = "agents/danio_quality_auditor.toml"
+nickname_candidates = ["Hephaestus", "Vega", "Delta"]
+
+[agents.danio_reviewer]
+description = "Read-only Danio slice reviewer focused on regressions, product truth, missing tests, and local-first rules."
+config_file = "agents/danio_reviewer.toml"
+nickname_candidates = ["Daedalus", "Echo", "Mira"]
+
+[agents.danio_worker]
+description = "Danio implementation worker for explicitly assigned git worktrees and disjoint file ownership only."
+config_file = "agents/danio_worker.toml"
+nickname_candidates = ["Orion", "Lyra", "Sable"]
+
+[agents.danio_android_qa_owner]
+description = "Danio Android QA owner for emulator, ADB, Patrol, and optional external device evidence after ownership is clear."
+config_file = "agents/danio_android_qa_owner.toml"
+nickname_candidates = ["Hermes", "Rhea", "Sol"]

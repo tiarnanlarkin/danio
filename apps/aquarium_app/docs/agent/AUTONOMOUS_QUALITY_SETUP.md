@@ -59,6 +59,23 @@ Use this order for normal implementation slices:
 7. Commit only the intended files.
 8. Push after the relevant local gates pass.
 
+## Multi-Agent Completion Flow
+
+For larger autonomous passes, keep one coordinator in the real checkout and use
+project-scoped agents from `.codex/` in this order:
+
+1. `danio_product_auditor` for product/content gaps.
+2. `danio_ui_auditor` for visual, accessibility, and baseline gaps.
+3. `danio_quality_auditor` for missing tests and gate coverage.
+4. `danio_worker` only for one bounded slice in an explicitly assigned git
+   worktree with disjoint file/module ownership.
+5. `danio_reviewer` after each completed slice.
+6. `danio_android_qa_owner` only when emulator/device ownership is clear.
+
+The coordinator remains responsible for integration, local gates, commits, and
+pushes. External-account services remain optional after local gates and must not
+receive committed secrets or billing upgrades.
+
 ## Current Setup Status
 
 Verified on 2026-06-22:

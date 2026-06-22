@@ -175,6 +175,20 @@ Store durable local evidence under:
 apps/aquarium_app/docs/qa/screenshots/<date-or-branch>/<slice>/
 ```
 
+## Multi-Agent Verification Handoff
+
+When subagents are used, the coordinator must keep verification ownership clear:
+
+- Read-only auditors may identify missing checks but must not edit files.
+- Implementation workers must report their assigned worktree, changed files,
+  focused tests, and local gate results.
+- `danio_reviewer` should review the final diff before staging when a worker
+  contributed code or docs.
+- `danio_android_qa_owner` is the only role that should run Android device
+  interaction, Patrol, Firebase Test Lab, or screenshot capture for a slice.
+- The coordinator must rerun the relevant local gate in the integration checkout
+  before committing.
+
 ## Local Screenshot Checklist
 
 - Use local capture only.
