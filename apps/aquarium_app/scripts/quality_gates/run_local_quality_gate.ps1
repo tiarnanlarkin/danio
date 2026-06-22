@@ -216,9 +216,10 @@ function Remove-GeneratedDirectory {
       New-Item -ItemType Directory -Path $emptyDir | Out-Null
     }
 
-    & robocopy $emptyDir $resolvedPath /MIR /R:0 /W:0 /NFL /NDL /NJH /NJS /NP
-    if ($global:LASTEXITCODE -gt 7) {
-      throw "robocopy cleanup failed for $resolvedPath with exit code $global:LASTEXITCODE"
+    & robocopy $emptyDir $resolvedPath /MIR /R:0 /W:0 /NFL /NDL /NJH /NJS /NP | Out-Null
+    $robocopyExitCode = $global:LASTEXITCODE
+    if ($robocopyExitCode -gt 7) {
+      throw "robocopy cleanup failed for $resolvedPath with exit code $robocopyExitCode"
     }
 
     Remove-Item -LiteralPath $resolvedPath -Force -ErrorAction Stop

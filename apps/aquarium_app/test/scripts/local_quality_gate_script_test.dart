@@ -141,6 +141,20 @@ void main() {
     expect(gateSource, contains('dcm analyze lib'));
   });
 
+  test('generated cleanup keeps robocopy output quiet but checks failures', () {
+    final source = File(scriptPath).readAsStringSync();
+
+    expect(
+      source,
+      contains(
+        r'& robocopy $emptyDir $resolvedPath /MIR /R:0 /W:0 /NFL /NDL /NJH /NJS /NP | Out-Null',
+      ),
+    );
+    expect(source, contains(r'$robocopyExitCode = $global:LASTEXITCODE'));
+    expect(source, contains(r'if ($robocopyExitCode -gt 7)'));
+    expect(source, contains(r'with exit code $robocopyExitCode'));
+  });
+
   test('dependabot setup monitors free public dependency ecosystems', () {
     final config = File('../../.github/dependabot.yml');
 
