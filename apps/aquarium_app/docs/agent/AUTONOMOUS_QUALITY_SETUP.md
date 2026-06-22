@@ -65,7 +65,8 @@ The gate can detect and run these tools when installed locally:
 - `dcm analyze lib` for stricter Dart/Flutter quality rules. Keep this scoped
   to production app code unless a DCM Teams or larger license is explicitly
   provided; DCM Pro is currently the intended paid path.
-- `cspell .` for spelling checks across app copy and docs.
+- `cspell --config .cspell.json --no-progress docs/agent docs/design` for
+  scoped spelling checks on the authored agent/design guidance.
 - `vale docs` for prose linting of documentation.
 
 These tools are optional. Missing tools must not block ordinary product work

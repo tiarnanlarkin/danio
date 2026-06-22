@@ -362,7 +362,7 @@ function Invoke-OptionalTools {
   }
   # Optional DCM Pro path: dcm analyze lib
   Invoke-OptionalTool -CommandName "dcm" -Arguments @("analyze", "lib")
-  Invoke-OptionalTool -CommandName "cspell" -Arguments @(".")
+  Invoke-OptionalTool -CommandName "cspell" -Arguments @("--config", ".cspell.json", "--no-progress", "docs/agent", "docs/design")
   Invoke-OptionalTool -CommandName "vale" -Arguments @("docs")
 }
 

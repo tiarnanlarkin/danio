@@ -62,6 +62,7 @@ void main() {
   test('local quality gate keeps device and optional paid tooling opt-in', () {
     final source = File(scriptPath).readAsStringSync();
 
+    expect(File('.cspell.json').existsSync(), isTrue);
     expect(source, contains(r'[switch]$RunAndroidSmoke'));
     expect(source, contains('scripts/run_android_blackbox_smoke.ps1'));
     expect(source, contains(r'[switch]$RunOptionalTools'));
@@ -85,6 +86,15 @@ void main() {
         contains(
           'Invoke-OptionalTool -CommandName "osv-scanner" -Arguments @("--offline", "--recursive", ".")',
         ),
+      ),
+    );
+    expect(source, contains('"--config", ".cspell.json"'));
+    expect(source, contains('"docs/agent"'));
+    expect(source, contains('"docs/design"'));
+    expect(
+      source,
+      isNot(
+        contains('Invoke-OptionalTool -CommandName "cspell" -Arguments @(".")'),
       ),
     );
     expect(source, isNot(contains('Maestro Cloud')));

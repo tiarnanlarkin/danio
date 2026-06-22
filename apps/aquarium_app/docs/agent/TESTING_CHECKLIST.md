@@ -113,6 +113,16 @@ The gate runs `osv-scanner scan source --format=vertical --verbosity=error
 does query OSV public vulnerability data. Keep hosted scanners and paid security
 dashboards out of the repo unless separately approved.
 
+The optional spelling check is intentionally scoped:
+
+```powershell
+cspell --config .cspell.json --no-progress docs/agent docs/design
+```
+
+Do not replace it with a full-repo `cspell .` scan unless the dictionary and
+ignore paths are expanded deliberately; generated/platform files make that output
+too noisy to be useful today.
+
 ## Android QA Discipline
 
 Use Android devices only when safe:
