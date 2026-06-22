@@ -19,6 +19,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/settings_screen.dart';
 import 'package:danio/widgets/core/app_list_tile.dart';
 
@@ -26,8 +27,58 @@ import 'package:danio/widgets/core/app_list_tile.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap(Widget child) {
-  return ProviderScope(child: MaterialApp(home: child));
+class _ThrowingPrefs implements SharedPreferences {
+  _ThrowingPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setBool(key, value);
+  }
+
+  @override
+  Future<bool> setInt(String key, int value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setInt(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+Widget _wrap(Widget child, {SharedPreferences? prefs}) {
+  return ProviderScope(
+    overrides: [
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
+    ],
+    child: MaterialApp(home: child),
+  );
 }
 
 Map<String, dynamic> _profileJson({
@@ -261,6 +312,33 @@ void main() {
 
       await tester.scrollUntilVisible(find.text('Units'), 500.0);
       expect(find.text('US units (gallons, inches, F)'), findsOneWidget);
+    });
+
+    testWidgets('failed units save keeps picker open with feedback', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'use_metric': true});
+      final prefs = await SharedPreferences.getInstance();
+      final throwingPrefs = _ThrowingPrefs(
+        prefs,
+        (key, _) => key == 'use_metric',
+      );
+
+      await tester.pumpWidget(
+        _wrap(const SettingsScreen(), prefs: throwingPrefs),
+      );
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Units'), 500.0);
+      await tester.tap(find.text('Units'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('US units'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Choose Units'), findsOneWidget);
+      expect(find.text('Couldn\'t save units. Try again.'), findsOneWidget);
+      expect(prefs.getBool('use_metric'), isTrue);
     });
   });
 

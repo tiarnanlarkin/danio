@@ -2126,6 +2126,15 @@ CL-P1-010H Optional AI privacy route:
 - Focused widget coverage verifies the Optional AI dialog routes directly to
   the local Privacy Policy screen.
 
+CL-P1-010I Preferences Units save-failure feedback:
+
+- The Units picker now waits for the local `use_metric` preference write before
+  closing, so failed saves do not look successful.
+- Failed unit preference saves keep the picker open, leave the current unit
+  selection unchanged, and show normal retry feedback.
+- Focused widget coverage simulates a failed `use_metric` write and verifies
+  the picker stays open with retry feedback.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning

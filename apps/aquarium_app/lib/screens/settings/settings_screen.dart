@@ -515,9 +515,16 @@ void _showUnitsPicker(BuildContext context, WidgetRef ref, bool useMetric) {
             trailing: useMetric
                 ? const Icon(Icons.check, color: AppColors.primary)
                 : null,
-            onTap: () {
-              ref.read(settingsProvider.notifier).setUseMetric(true);
-              Navigator.maybePop(ctx);
+            onTap: () async {
+              final saved = await ref
+                  .read(settingsProvider.notifier)
+                  .setUseMetric(true);
+              if (!ctx.mounted) return;
+              if (saved) {
+                Navigator.maybePop(ctx);
+              } else {
+                AppFeedback.showError(ctx, 'Couldn\'t save units. Try again.');
+              }
             },
           ),
           AppListTile(
@@ -528,9 +535,16 @@ void _showUnitsPicker(BuildContext context, WidgetRef ref, bool useMetric) {
             trailing: !useMetric
                 ? const Icon(Icons.check, color: AppColors.primary)
                 : null,
-            onTap: () {
-              ref.read(settingsProvider.notifier).setUseMetric(false);
-              Navigator.maybePop(ctx);
+            onTap: () async {
+              final saved = await ref
+                  .read(settingsProvider.notifier)
+                  .setUseMetric(false);
+              if (!ctx.mounted) return;
+              if (saved) {
+                Navigator.maybePop(ctx);
+              } else {
+                AppFeedback.showError(ctx, 'Couldn\'t save units. Try again.');
+              }
             },
           ),
           const SizedBox(height: AppSpacing.md),

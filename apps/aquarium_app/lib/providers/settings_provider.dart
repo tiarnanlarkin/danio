@@ -118,10 +118,12 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     }
   }
 
-  Future<void> setUseMetric(bool useMetric) async {
+  Future<bool> setUseMetric(bool useMetric) async {
     if (await _persist(_useMetricKey, useMetric)) {
       state = state.copyWith(useMetric: useMetric);
+      return true;
     }
+    return false;
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
