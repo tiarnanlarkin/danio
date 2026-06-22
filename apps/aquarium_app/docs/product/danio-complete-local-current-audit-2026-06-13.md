@@ -2057,6 +2057,18 @@ CL-P1-009DC Preferences crash-report consent failure feedback:
 - Focused widget coverage simulates a failed consent preference write and
   verifies the switch stays unchanged with retry feedback.
 
+CL-P1-009DD Local JSON storage atomic write failures:
+
+- `LocalJsonStorageService` now builds candidate entity maps, persists them to
+  the JSON file, and only swaps same-process in-memory state after the durable
+  write succeeds.
+- Failed tank saves no longer expose unsaved tanks through `getTank` after the
+  persistence exception, and failed tank deletes keep the tank and child
+  livestock visible in memory.
+- Focused storage coverage simulates write-path failures through a local
+  path-provider fake and verifies save/delete failures keep memory aligned with
+  the last durable state.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2324,8 +2336,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   partial demo data. Failed Tank Detail task completions now roll back partial
   task/log/equipment writes. Failed Tank Detail quick-feeding saves now show
   normal error feedback without changing the local journal. Failed Inventory
-  item uses keep the owned item visible, and failed Crash Reports consent writes
-  keep the visible switch unchanged with retry feedback. Remaining backup/data
+  item uses keep the owned item visible, failed Crash Reports consent writes
+  keep the visible switch unchanged with retry feedback, and failed local JSON
+  entity saves/deletes keep same-process reads aligned with the last durable
+  file state. Remaining backup/data
   work is deeper import validation UX, broader edit/delete/undo coverage, and
   restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience

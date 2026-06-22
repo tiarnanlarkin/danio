@@ -9,19 +9,68 @@
 //
 // Run: flutter test test/storage_error_handling_test.dart
 
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:danio/models/models.dart';
 import 'package:danio/services/local_json_storage_service.dart';
+
+class _FakePathProviderPlatform extends PathProviderPlatform {
+  _FakePathProviderPlatform(this.documentsPath);
+
+  String documentsPath;
+
+  @override
+  Future<String?> getApplicationDocumentsPath() async => documentsPath;
+}
+
+Tank _makeTank({
+  String id = 'tank-1',
+  String name = 'Test Tank',
+}) {
+  final now = DateTime.now();
+  return Tank(
+    id: id,
+    name: name,
+    type: TankType.freshwater,
+    volumeLitres: 80,
+    startDate: now,
+    targets: WaterTargets.freshwaterTropical(),
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+Livestock _makeLivestock({
+  String id = 'livestock-1',
+  String tankId = 'tank-1',
+}) {
+  final now = DateTime.now();
+  return Livestock(
+    id: id,
+    tankId: tankId,
+    commonName: 'Neon tetra',
+    count: 6,
+    dateAdded: now,
+    createdAt: now,
+    updatedAt: now,
+  );
+}
 
 void main() {
   group('StorageState enum', () {
     test('has all expected values', () {
-      expect(StorageState.values, containsAll([
-        StorageState.idle,
-        StorageState.loading,
-        StorageState.loaded,
-        StorageState.corrupted,
-        StorageState.ioError,
-      ]));
+      expect(
+        StorageState.values,
+        containsAll([
+          StorageState.idle,
+          StorageState.loading,
+          StorageState.loaded,
+          StorageState.corrupted,
+          StorageState.ioError,
+        ]),
+      );
     });
 
     test('idle is not an error state', () {
@@ -94,6 +143,74 @@ void main() {
       expect(str, contains('StorageError'));
       expect(str, contains('ioError'));
       expect(str, contains('Permission denied'));
+    });
+  });
+
+  group('LocalJsonStorageService atomic write failures', () {
+    late PathProviderPlatform originalPathProvider;
+    late _FakePathProviderPlatform fakePathProvider;
+    late Directory root;
+
+    setUp(() async {
+      originalPathProvider = PathProviderPlatform.instance;
+      root = await Directory.systemTemp.createTemp('danio_storage_atomic_');
+      fakePathProvider = _FakePathProviderPlatform(root.path);
+      PathProviderPlatform.instance = fakePathProvider;
+      await LocalJsonStorageService().clearAllData();
+    });
+
+    tearDown(() async {
+      fakePathProvider.documentsPath = root.path;
+      await LocalJsonStorageService().clearAllData();
+      PathProviderPlatform.instance = originalPathProvider;
+      if (await root.exists()) {
+        await root.delete(recursive: true);
+      }
+    });
+
+    Future<void> forceNextPersistToFail() async {
+      final blocker = File('${root.path}${Platform.pathSeparator}not-a-dir');
+      await blocker.writeAsString('blocks child writes');
+      fakePathProvider.documentsPath = blocker.path;
+    }
+
+    test('failed saveTank does not expose unsaved tank in memory', () async {
+      final service = LocalJsonStorageService();
+      final existing = _makeTank(id: 'existing', name: 'Existing');
+      await service.saveTank(existing);
+
+      await forceNextPersistToFail();
+
+      await expectLater(
+        service.saveTank(_makeTank(id: 'unsaved', name: 'Unsaved')),
+        throwsA(isA<FileSystemException>()),
+      );
+
+      fakePathProvider.documentsPath = root.path;
+      expect(await service.getTank('unsaved'), isNull);
+      expect((await service.getTank('existing'))?.name, 'Existing');
+    });
+
+    test('failed deleteTank keeps tank and children in memory', () async {
+      final service = LocalJsonStorageService();
+      final tank = _makeTank(id: 'delete-me', name: 'Delete Me');
+      final livestock = _makeLivestock(
+        id: 'child-fish',
+        tankId: tank.id,
+      );
+      await service.saveTank(tank);
+      await service.saveLivestock(livestock);
+
+      await forceNextPersistToFail();
+
+      await expectLater(
+        service.deleteTank(tank.id),
+        throwsA(isA<FileSystemException>()),
+      );
+
+      fakePathProvider.documentsPath = root.path;
+      expect(await service.getTank(tank.id), isNotNull);
+      expect(await service.getLivestockForTank(tank.id), hasLength(1));
     });
   });
 

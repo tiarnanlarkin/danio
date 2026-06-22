@@ -147,6 +147,8 @@ Recent CL-P1-009 continuation note:
   feedback while keeping the owned item visible.
 - CL-P1-009DC catches failed Crash Reports consent writes from Preferences
   before the visible switch changes or diagnostics consent is applied.
+- CL-P1-009DD makes local JSON entity saves/deletes expose in-memory state only
+  after the durable file write succeeds.
 
 ## 7. P2 Work - Presentation System
 

@@ -474,19 +474,23 @@ class LocalJsonStorageService implements StorageService {
     }
   }
 
-  // P0-1 FIX: Private persistence method WITHOUT lock
-  // This is called from within synchronized blocks in public methods
-  Future<void> _persistUnlocked() async {
+  Future<void> _persistMapsUnlocked({
+    required Map<String, Tank> tanks,
+    required Map<String, Livestock> livestock,
+    required Map<String, Equipment> equipment,
+    required Map<String, LogEntry> logs,
+    required Map<String, Task> tasks,
+  }) async {
     final file = await _dataFile();
 
     final payload = <String, dynamic>{
       'version': _schemaVersion,
       'updatedAt': DateTime.now().toIso8601String(),
-      'tanks': _tanks.map((k, v) => MapEntry(k, _tankToJson(v))),
-      'livestock': _livestock.map((k, v) => MapEntry(k, _livestockToJson(v))),
-      'equipment': _equipment.map((k, v) => MapEntry(k, _equipmentToJson(v))),
-      'logs': _logs.map((k, v) => MapEntry(k, _logToJson(v))),
-      'tasks': _tasks.map((k, v) => MapEntry(k, _taskToJson(v))),
+      'tanks': tanks.map((k, v) => MapEntry(k, _tankToJson(v))),
+      'livestock': livestock.map((k, v) => MapEntry(k, _livestockToJson(v))),
+      'equipment': equipment.map((k, v) => MapEntry(k, _equipmentToJson(v))),
+      'logs': logs.map((k, v) => MapEntry(k, _logToJson(v))),
+      'tasks': tasks.map((k, v) => MapEntry(k, _taskToJson(v))),
     };
 
     // Atomic write: .tmp → rename, with .bak of previous version
@@ -511,9 +515,43 @@ class LocalJsonStorageService implements StorageService {
 
     // Log successful saves (can be removed in production)
     appLog(
-      '💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock',
+      '💾 Storage persisted: ${tanks.length} tanks, ${livestock.length} livestock',
       tag: 'LocalJsonStorageService',
     );
+  }
+
+  Future<void> _commitMapsUnlocked({
+    Map<String, Tank>? tanks,
+    Map<String, Livestock>? livestock,
+    Map<String, Equipment>? equipment,
+    Map<String, LogEntry>? logs,
+    Map<String, Task>? tasks,
+  }) async {
+    final nextTanks = tanks ?? Map<String, Tank>.from(_tanks);
+    final nextLivestock = livestock ?? Map<String, Livestock>.from(_livestock);
+    final nextEquipment = equipment ?? Map<String, Equipment>.from(_equipment);
+    final nextLogs = logs ?? Map<String, LogEntry>.from(_logs);
+    final nextTasks = tasks ?? Map<String, Task>.from(_tasks);
+
+    await _persistMapsUnlocked(
+      tanks: nextTanks,
+      livestock: nextLivestock,
+      equipment: nextEquipment,
+      logs: nextLogs,
+      tasks: nextTasks,
+    );
+
+    _replaceMap(_tanks, nextTanks);
+    _replaceMap(_livestock, nextLivestock);
+    _replaceMap(_equipment, nextEquipment);
+    _replaceMap(_logs, nextLogs);
+    _replaceMap(_tasks, nextTasks);
+  }
+
+  void _replaceMap<K, V>(Map<K, V> target, Map<K, V> source) {
+    target
+      ..clear()
+      ..addAll(source);
   }
 
   /// Recovery method: Clear all data and start fresh
@@ -521,16 +559,16 @@ class LocalJsonStorageService implements StorageService {
   Future<void> clearAllData() async {
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
+      final file = await _dataFile();
+      if (await file.exists()) {
+        await file.delete();
+      }
+
       _tanks.clear();
       _livestock.clear();
       _equipment.clear();
       _logs.clear();
       _tasks.clear();
-
-      final file = await _dataFile();
-      if (await file.exists()) {
-        await file.delete();
-      }
 
       // P0-2: Reset error state
       _state = StorageState.loaded;
@@ -620,8 +658,8 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _tanks[tank.id] = tank;
-      await _persistUnlocked();
+      final nextTanks = Map<String, Tank>.from(_tanks)..[tank.id] = tank;
+      await _commitMapsUnlocked(tanks: nextTanks);
     });
   }
 
@@ -629,10 +667,11 @@ class LocalJsonStorageService implements StorageService {
   Future<void> saveTanks(List<Tank> tanks) async {
     await _ensureLoaded();
     await _persistLock.synchronized(() async {
+      final nextTanks = Map<String, Tank>.from(_tanks);
       for (final tank in tanks) {
-        _tanks[tank.id] = tank;
+        nextTanks[tank.id] = tank;
       }
-      await _persistUnlocked();
+      await _commitMapsUnlocked(tanks: nextTanks);
     });
   }
 
@@ -641,12 +680,22 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _tanks.remove(id);
-      _livestock.removeWhere((_, v) => v.tankId == id);
-      _equipment.removeWhere((_, v) => v.tankId == id);
-      _logs.removeWhere((_, v) => v.tankId == id);
-      _tasks.removeWhere((_, v) => v.tankId == id);
-      await _persistUnlocked();
+      final nextTanks = Map<String, Tank>.from(_tanks)..remove(id);
+      final nextLivestock = Map<String, Livestock>.from(_livestock)
+        ..removeWhere((_, v) => v.tankId == id);
+      final nextEquipment = Map<String, Equipment>.from(_equipment)
+        ..removeWhere((_, v) => v.tankId == id);
+      final nextLogs = Map<String, LogEntry>.from(_logs)
+        ..removeWhere((_, v) => v.tankId == id);
+      final nextTasks = Map<String, Task>.from(_tasks)
+        ..removeWhere((_, v) => v.tankId == id);
+      await _commitMapsUnlocked(
+        tanks: nextTanks,
+        livestock: nextLivestock,
+        equipment: nextEquipment,
+        logs: nextLogs,
+        tasks: nextTasks,
+      );
     });
   }
 
@@ -655,12 +704,23 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     await _persistLock.synchronized(() async {
       final idSet = ids.toSet();
-      _tanks.removeWhere((id, _) => idSet.contains(id));
-      _livestock.removeWhere((_, v) => idSet.contains(v.tankId));
-      _equipment.removeWhere((_, v) => idSet.contains(v.tankId));
-      _logs.removeWhere((_, v) => idSet.contains(v.tankId));
-      _tasks.removeWhere((_, v) => idSet.contains(v.tankId));
-      await _persistUnlocked();
+      final nextTanks = Map<String, Tank>.from(_tanks)
+        ..removeWhere((id, _) => idSet.contains(id));
+      final nextLivestock = Map<String, Livestock>.from(_livestock)
+        ..removeWhere((_, v) => idSet.contains(v.tankId));
+      final nextEquipment = Map<String, Equipment>.from(_equipment)
+        ..removeWhere((_, v) => idSet.contains(v.tankId));
+      final nextLogs = Map<String, LogEntry>.from(_logs)
+        ..removeWhere((_, v) => idSet.contains(v.tankId));
+      final nextTasks = Map<String, Task>.from(_tasks)
+        ..removeWhere((_, v) => idSet.contains(v.tankId));
+      await _commitMapsUnlocked(
+        tanks: nextTanks,
+        livestock: nextLivestock,
+        equipment: nextEquipment,
+        logs: nextLogs,
+        tasks: nextTasks,
+      );
     });
   }
 
@@ -677,8 +737,9 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _livestock[livestock.id] = livestock;
-      await _persistUnlocked();
+      final nextLivestock = Map<String, Livestock>.from(_livestock)
+        ..[livestock.id] = livestock;
+      await _commitMapsUnlocked(livestock: nextLivestock);
     });
   }
 
@@ -687,8 +748,8 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _livestock.remove(id);
-      await _persistUnlocked();
+      final nextLivestock = Map<String, Livestock>.from(_livestock)..remove(id);
+      await _commitMapsUnlocked(livestock: nextLivestock);
     });
   }
 
@@ -705,8 +766,9 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _equipment[equipment.id] = equipment;
-      await _persistUnlocked();
+      final nextEquipment = Map<String, Equipment>.from(_equipment)
+        ..[equipment.id] = equipment;
+      await _commitMapsUnlocked(equipment: nextEquipment);
     });
   }
 
@@ -715,8 +777,8 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _equipment.remove(id);
-      await _persistUnlocked();
+      final nextEquipment = Map<String, Equipment>.from(_equipment)..remove(id);
+      await _commitMapsUnlocked(equipment: nextEquipment);
     });
   }
 
@@ -756,8 +818,8 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _logs[log.id] = log;
-      await _persistUnlocked();
+      final nextLogs = Map<String, LogEntry>.from(_logs)..[log.id] = log;
+      await _commitMapsUnlocked(logs: nextLogs);
     });
   }
 
@@ -766,8 +828,8 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _logs.remove(id);
-      await _persistUnlocked();
+      final nextLogs = Map<String, LogEntry>.from(_logs)..remove(id);
+      await _commitMapsUnlocked(logs: nextLogs);
     });
   }
 
@@ -795,8 +857,8 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _tasks[task.id] = task;
-      await _persistUnlocked();
+      final nextTasks = Map<String, Task>.from(_tasks)..[task.id] = task;
+      await _commitMapsUnlocked(tasks: nextTasks);
     });
   }
 
@@ -805,8 +867,8 @@ class LocalJsonStorageService implements StorageService {
     await _ensureLoaded();
     // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
     await _persistLock.synchronized(() async {
-      _tasks.remove(id);
-      await _persistUnlocked();
+      final nextTasks = Map<String, Task>.from(_tasks)..remove(id);
+      await _commitMapsUnlocked(tasks: nextTasks);
     });
   }
 
