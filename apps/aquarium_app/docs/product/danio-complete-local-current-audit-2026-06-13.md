@@ -2253,6 +2253,19 @@ CL-P1-010J Smart setup-context nudge contrast:
 - Focused provider coverage verifies existing demo tanks are replaced while a
   real user tank remains in storage.
 
+### CL-P1-012B Final Android Demo-Mode Screen QA
+
+- Final phone and tablet Android evidence is captured under
+  `docs/qa/screenshots/2026-06-22/cl-p1-012-demo-mode/`.
+- The Preferences flow exposes `Reset Sample Tank` with the explanatory copy
+  `Replaces demo data without touching your real tanks` on both phone and
+  tablet.
+- Tapping the action opens the populated `Sample Tank` detail screen with the
+  demo banner, 18 fish, 3 equipment items, 120L volume, tank-health score, quick
+  actions, and latest water snapshot visible and accessible.
+- The captured phone and tablet result screens show no obvious visual overflow
+  in the above-the-fold demo experience.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
@@ -2520,7 +2533,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   livestock, and local logs. Remaining search work is Android phone/tablet
   walkthrough QA and any future direct-per-lesson deep links.
 - Demo mode now has a resettable populated sample tank that replaces existing
-  demo data without deleting real tanks. Remaining demo work is final screen QA.
+  demo data without deleting real tanks, with final phone/tablet Android screen
+  evidence captured under
+  `docs/qa/screenshots/2026-06-22/cl-p1-012-demo-mode/`.
 - Tablet verification is not yet current.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit can continue while `danio_api36` remains dedicated to
