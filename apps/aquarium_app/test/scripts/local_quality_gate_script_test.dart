@@ -51,6 +51,10 @@ void main() {
         contains('test/scripts/local_quality_gate_script_test.dart'),
       );
       expect(source, contains('test/quality/content_validation_test.dart'));
+      expect(
+        source,
+        contains('test/quality/visual_baseline_manifest_test.dart'),
+      );
       expect(source, contains('test/golden_tests/mc_card_golden_test.dart'));
       expect(
         source,

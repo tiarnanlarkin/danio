@@ -40,6 +40,13 @@ data, plant data, or app copy claims are changed. It catches placeholder/draft
 copy, fake feature claims, broken source references, weak quiz structure, and
 basic care-range drift.
 
+Run the visual baseline manifest validator whenever design baseline docs,
+screenshot references, or golden-test names change:
+
+```powershell
+flutter test test/quality/visual_baseline_manifest_test.dart --reporter compact
+```
+
 ## Standard Product Gates
 
 Run from `apps/aquarium_app`:

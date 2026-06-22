@@ -15,7 +15,8 @@ Run from `apps/aquarium_app`:
 Profiles:
 
 - `Focused`: worktree visibility, whitespace diff check, current docs truth
-  test, local content validation, and the local gate contract test.
+  test, local content validation, visual baseline manifest validation, and the
+  local gate contract test.
 - `Docs`: `Focused` plus Danio custom lint and `flutter analyze`.
 - `Full`: `Focused`, Danio custom lint, full `flutter test`,
   `flutter analyze`, and debug APK build.
@@ -103,6 +104,22 @@ flutter test test/quality/content_validation_test.dart --reporter compact
 If a new validator failure points to real content drift, fix the content. If it
 points to an intentionally broader content model, update the validator and docs
 in the same slice.
+
+## Local Visual Baseline Validation
+
+`test/quality/visual_baseline_manifest_test.dart` is part of the default
+focused gate. It checks `docs/design/BASELINES.md` stays limited to the agreed
+small visual surface set and that referenced local screenshot/golden evidence
+still exists.
+
+When changing visual baseline paths, design docs, or golden-test names, run:
+
+```powershell
+flutter test test/quality/visual_baseline_manifest_test.dart --reporter compact
+```
+
+If the test fails because a referenced screenshot was intentionally replaced,
+update `docs/design/BASELINES.md` and the local evidence in the same slice.
 
 ## Local Patrol Android Smoke
 
