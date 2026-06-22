@@ -306,6 +306,7 @@ class _QuickCareAction extends StatelessWidget {
     return Semantics(
       label: 'Quick care action: $semanticsLabel',
       button: true,
+      onTap: onTap,
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,

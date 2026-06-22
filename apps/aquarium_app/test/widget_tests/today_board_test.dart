@@ -16,6 +16,7 @@ import 'package:danio/screens/tasks_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget _wrap({
@@ -184,6 +185,32 @@ void main() {
         findsOneWidget,
       );
       expect(find.bySemanticsLabel('Quick care action: Tasks'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
+  });
+
+  testWidgets('quick care actions expose tappable semantic actions', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        _wrap(dailyGoal: _completedGoal(), tasks: [_task()]),
+      );
+      await tester.pumpAndSettle();
+
+      for (final label in [
+        'Quick care action: Feed',
+        'Quick care action: Water test',
+        'Quick care action: Water change',
+        'Quick care action: Tasks',
+      ]) {
+        final node = tester.getSemantics(find.bySemanticsLabel(label));
+        final data = node.getSemanticsData();
+
+        expect(data.hasAction(SemanticsAction.tap), isTrue, reason: label);
+      }
     } finally {
       semantics.dispose();
     }
