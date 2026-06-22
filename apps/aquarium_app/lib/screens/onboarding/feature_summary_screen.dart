@@ -4,6 +4,7 @@ import '../../data/species_database.dart';
 import '../../data/species_sprites.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 8 — Feature Summary
 ///
@@ -91,36 +92,36 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: AppSpacing.lg2),
-                      // Fish reference header
-                      _buildFishHeader(),
-                      const SizedBox(height: AppSpacing.md),
-                      // Title
-                      Text(
-                        'Everything you need, right here.',
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(color: AppColors.textPrimary),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Danio is free to use. No subscription needed.',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.w500,
+                  child: OnboardingContentFrame(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: AppSpacing.lg2),
+                        // Fish reference header
+                        _buildFishHeader(),
+                        const SizedBox(height: AppSpacing.md),
+                        // Title
+                        Text(
+                          'Everything you need, right here.',
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(color: AppColors.textPrimary),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.lg2),
-                      // Feature list
-                      _buildFeatureList(),
-                      const SizedBox(height: AppSpacing.md),
-                    ],
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Danio is free to use. No subscription needed.',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.lg2),
+                        // Feature list
+                        _buildFeatureList(),
+                        const SizedBox(height: AppSpacing.md),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -240,13 +241,16 @@ class _FeatureSummaryScreenState extends State<FeatureSummaryScreen>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppButton(
-            label: "Let's go! →",
-            onPressed: _onCtaTapped,
-            variant: AppButtonVariant.primary,
-            isFullWidth: true,
-            size: AppButtonSize.large,
-            semanticsLabel: 'Continue to setup',
+          OnboardingContentFrame(
+            padding: EdgeInsets.zero,
+            child: AppButton(
+              label: "Let's go! →",
+              onPressed: _onCtaTapped,
+              variant: AppButtonVariant.primary,
+              isFullWidth: true,
+              size: AppButtonSize.large,
+              semanticsLabel: 'Continue to setup',
+            ),
           ),
         ],
       ),

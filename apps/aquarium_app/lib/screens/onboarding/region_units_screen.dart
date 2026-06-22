@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 class RegionUnitsChoice {
   final String regionCode;
@@ -103,8 +104,7 @@ class _RegionUnitsScreenState extends State<RegionUnitsScreen> {
     return Scaffold(
       backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: OnboardingContentFrame(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

@@ -6,6 +6,7 @@ import '../../data/species_sprites.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 10 — Warm App Entry
 ///
@@ -66,9 +67,11 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       text: widget.userName ?? '',
     );
 
-    final disableAnimations =
-        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
-            .disableAnimations;
+    final disableAnimations = WidgetsBinding
+        .instance
+        .platformDispatcher
+        .accessibilityFeatures
+        .disableAnimations;
 
     // Fish card: slides up 20px + fades in over 400ms
     _fishCardController = AnimationController(
@@ -105,7 +108,10 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
       vsync: this,
       duration: AppDurations.long2,
     );
-    _xpFillCurve = CurvedAnimation(parent: _xpBarController, curve: Curves.easeOut);
+    _xpFillCurve = CurvedAnimation(
+      parent: _xpBarController,
+      curve: Curves.easeOut,
+    );
     _xpFill = Tween<double>(begin: 0.0, end: 0.1).animate(_xpFillCurve);
 
     // Streak flame flicker (scale pulse)
@@ -214,8 +220,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
           _callReady();
         },
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          child: OnboardingContentFrame(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -254,9 +259,10 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                             onSubmitted: (_) => _submitName(),
                             decoration: InputDecoration(
                               hintText: 'Your name (optional)',
-                              hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.textHint,
-                              ),
+                              hintStyle: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: AppColors.textHint,
+                                  ),
                               filled: true,
                               fillColor: AppColors.card,
                               contentPadding: const EdgeInsets.symmetric(
@@ -289,26 +295,26 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                     ),
                   ),
                 ] else ...[
-                // Fish care card
-                SlideTransition(
-                  position: _fishCardSlide,
-                  child: FadeTransition(
-                    opacity: _fishCardOpacity,
-                    child: _buildFishCareCard(),
+                  // Fish care card
+                  SlideTransition(
+                    position: _fishCardSlide,
+                    child: FadeTransition(
+                      opacity: _fishCardOpacity,
+                      child: _buildFishCareCard(),
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                // Lesson card
-                FadeTransition(
-                  opacity: _lessonCardOpacity,
-                  child: _buildLessonCard(),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                // XP progress bar
-                _buildXpBar(),
-                const SizedBox(height: AppSpacing.md),
-                // Streak counter
-                _buildStreakCounter(),
+                  const SizedBox(height: AppSpacing.md),
+                  // Lesson card
+                  FadeTransition(
+                    opacity: _lessonCardOpacity,
+                    child: _buildLessonCard(),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  // XP progress bar
+                  _buildXpBar(),
+                  const SizedBox(height: AppSpacing.md),
+                  // Streak counter
+                  _buildStreakCounter(),
                 ], // end of _nameSubmitted else branch
               ],
             ),
@@ -344,16 +350,18 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                     children: [
                       Text(
                         fish.commonName,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimary,
+                            ),
                       ),
                       Text(
                         'Your fish',
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
                       ),
                     ],
                   ),
@@ -403,7 +411,10 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
 
   Widget _buildInfoChip({required IconData icon, required String label}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: AppSpacing.xs2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm2,
+        vertical: AppSpacing.xs2,
+      ),
       decoration: BoxDecoration(
         color: AppColors.onboardingWarmCream,
         borderRadius: AppRadius.pillRadius,
@@ -434,58 +445,58 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
           _callReady();
         },
         child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.onPrimary,
-          borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppColors.border, width: 1),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.onboardingAmber.withAlpha(30),
-                borderRadius: AppRadius.sm3Radius,
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.onPrimary,
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(color: AppColors.border, width: 1),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.onboardingAmber.withAlpha(30),
+                  borderRadius: AppRadius.sm3Radius,
+                ),
+                child: const Icon(
+                  Icons.menu_book_rounded,
+                  color: AppColors.onboardingAmber,
+                  size: 22,
+                ),
               ),
-              child: const Icon(
-                Icons.menu_book_rounded,
-                color: AppColors.onboardingAmber,
+              const SizedBox(width: AppSpacing.sm4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Your first lesson',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxs),
+                    Text(
+                      _lessonTitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.textHint,
                 size: 22,
               ),
-            ),
-            const SizedBox(width: AppSpacing.sm4),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Your first lesson',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxs),
-                  Text(
-                    _lessonTitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textHint,
-              size: 22,
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

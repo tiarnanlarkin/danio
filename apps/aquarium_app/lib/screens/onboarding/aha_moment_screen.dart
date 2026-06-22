@@ -6,6 +6,7 @@ import '../../data/species_sprites.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 7 — Personalised Fish Care Reveal (THE AHA MOMENT)
 ///
@@ -340,118 +341,120 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
       builder: (context, _) {
         return SingleChildScrollView(
           controller: _scrollController,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.lg,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top-left fish marker
-              _buildFishMarker(fishName),
+          child: OnboardingContentFrame(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.lg,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top-left fish marker
+                _buildFishMarker(fishName),
 
-              const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
-              // Amber header pill
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm4,
-                  vertical: AppSpacing.xs2,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.onboardingAmber.withAlpha(26),
-                  borderRadius: AppRadius.lg2Radius,
-                ),
-                child: Text(
-                  'Your $fishName Profile',
-                  style: AppTypography.bodySmall.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.onboardingAmberText,
+                // Amber header pill
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm4,
+                    vertical: AppSpacing.xs2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.onboardingAmber.withAlpha(26),
+                    borderRadius: AppRadius.lg2Radius,
+                  ),
+                  child: Text(
+                    'Your $fishName Profile',
+                    style: AppTypography.bodySmall.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onboardingAmberText,
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: AppSpacing.sm2),
+                const SizedBox(height: AppSpacing.sm2),
 
-              // Headline
-              Text(
-                '$fishName needs a little love.',
-                style: AppTypography.headlineMedium.copyWith(
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textPrimary,
+                // Headline
+                Text(
+                  '$fishName needs a little love.',
+                  style: AppTypography.headlineMedium.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
-              // Care cards
-              _buildCareCard(
-                index: 0,
-                emoji: '💧',
-                label: 'Ideal pH',
-                value: '${fish.minPh}–${fish.maxPh}',
-                subLabel: _phSubLabel(fish),
-              ),
-              const SizedBox(height: AppSpacing.sm2),
-              _buildCareCard(
-                index: 1,
-                emoji: '🐠',
-                label: 'Tank mates',
-                value: fish.temperament,
-                subLabel: _compatSubLabel(fish),
-              ),
-              const SizedBox(height: AppSpacing.sm2),
-              _buildCareCard(
-                index: 2,
-                emoji: '⭐',
-                label: 'Care level',
-                value: _careLevelValue(fish),
-                subLabel: _careLevelSubLabel(fish),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // Phase 3 — invite + CTA
-              FadeTransition(
-                opacity: _inviteFade,
-                child: Column(
-                  children: [
-                    Text(
-                      _inviteText,
-                      textAlign: TextAlign.center,
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.md),
-
-                    Text(
-                      _motivationText,
-                      textAlign: TextAlign.center,
-                      style: AppTypography.bodyMedium.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // CTA
-                    AppButton(
-                      label: _ctaTapped ? '...' : 'Start your journey →',
-                      onPressed: _ctaTapped ? null : _onCtaTap,
-                      variant: AppButtonVariant.primary,
-                      isFullWidth: true,
-                      size: AppButtonSize.large,
-                      semanticsLabel: 'Start your journey',
-                    ),
-                  ],
+                // Care cards
+                _buildCareCard(
+                  index: 0,
+                  emoji: '💧',
+                  label: 'Ideal pH',
+                  value: '${fish.minPh}–${fish.maxPh}',
+                  subLabel: _phSubLabel(fish),
                 ),
-              ),
+                const SizedBox(height: AppSpacing.sm2),
+                _buildCareCard(
+                  index: 1,
+                  emoji: '🐠',
+                  label: 'Tank mates',
+                  value: fish.temperament,
+                  subLabel: _compatSubLabel(fish),
+                ),
+                const SizedBox(height: AppSpacing.sm2),
+                _buildCareCard(
+                  index: 2,
+                  emoji: '⭐',
+                  label: 'Care level',
+                  value: _careLevelValue(fish),
+                  subLabel: _careLevelSubLabel(fish),
+                ),
 
-              const SizedBox(height: AppSpacing.xxl),
-            ],
+                const SizedBox(height: AppSpacing.xl),
+
+                // Phase 3 — invite + CTA
+                FadeTransition(
+                  opacity: _inviteFade,
+                  child: Column(
+                    children: [
+                      Text(
+                        _inviteText,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+
+                      const SizedBox(height: AppSpacing.md),
+
+                      Text(
+                        _motivationText,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.bodyMedium.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+
+                      const SizedBox(height: AppSpacing.lg),
+
+                      // CTA
+                      AppButton(
+                        label: _ctaTapped ? '...' : 'Start your journey →',
+                        onPressed: _ctaTapped ? null : _onCtaTap,
+                        variant: AppButtonVariant.primary,
+                        isFullWidth: true,
+                        size: AppButtonSize.large,
+                        semanticsLabel: 'Start your journey',
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+            ),
           ),
         );
       },

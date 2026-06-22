@@ -2251,6 +2251,18 @@ CL-P1-010J Smart setup-context nudge contrast:
 - Focused widget coverage verifies the privacy explanation width at a
   2000x1200 tablet viewport.
 
+### CL-P0-004F Tablet first-run onboarding frame
+
+- Added a shared first-run onboarding content frame so reading/CTA surfaces do
+  not stretch across the full tablet width.
+- Applied the frame to Welcome, Region/Units, Experience Level, Tank Status,
+  Goals, Micro Lesson, XP Celebration, Aha Moment final reveal, Feature Summary,
+  Reminder setup, and Warm Entry.
+- Focused widget coverage verifies the primary readable/control width for these
+  screens at a 2000x1200 tablet viewport.
+- Remaining first-run visual QA should still inspect Fish Select grid/search and
+  the full phone/tablet walkthrough on real Android surfaces.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -2269,7 +2281,7 @@ P0 status:
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
 | CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
-| CL-P0-004 | In progress | CL-P0-004A completed region/units capture, profile persistence, and Preferences unit reset. CL-P0-004B completed quick-start sample handoff. CL-P0-004C completed explicit multi-goal capture after tank stage. CL-P0-004D completed setup-context Preferences repair and Smart nudge. CL-P0-004E constrained first-run privacy consent on tablet. Remaining first-run work: final Android phone/tablet screen QA beyond consent. |
+| CL-P0-004 | In progress | CL-P0-004A completed region/units capture, profile persistence, and Preferences unit reset. CL-P0-004B completed quick-start sample handoff. CL-P0-004C completed explicit multi-goal capture after tank stage. CL-P0-004D completed setup-context Preferences repair and Smart nudge. CL-P0-004E constrained first-run privacy consent on tablet. CL-P0-004F constrained the main first-run onboarding reading/CTA surfaces on tablet. Remaining first-run work: final Android phone/tablet walkthrough, including Fish Select grid/search QA. |
 | CL-P0-005 | In progress | CL-P0-005A adds care priority and next-best action from water logs/tasks. CL-P0-005B makes the main Tank Feed action a direct log with safety feedback. CL-P0-005C adds a visible Today Board care rail for Feed, Test, Change, and Tasks. Remaining: final Android phone/tablet visual QA. |
 | CL-P0-006 | Done | Emergency Guide is now directly reachable from Tank top bar, unsafe-water Tank alerts, Smart Hub, global search, More, LessonScreen, species detail sheets, and unsafe water-test save flows. |
 | CL-P0-007 | Done | Smart now works as a no-AI Aquarium Intelligence hub: local rules surface risks, suggestions, compatibility signals, care-plan actions, anomaly history, equipment maintenance, and checked reasons, with a full review screen and action routes. Richer per-tank/save-apply depth belongs to P1 guided workflows. |

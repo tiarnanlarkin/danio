@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 1 — Welcome / Hook
 ///
@@ -23,7 +24,6 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with TickerProviderStateMixin {
-
   late final AnimationController _headlineController;
   late final AnimationController _bodyController;
   late final AnimationController _buttonController;
@@ -176,80 +176,87 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             left: AppSpacing.lg,
             right: AppSpacing.lg,
             bottom: bottomPadding + AppSpacing.xl,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Headline
-                SlideTransition(
-                  position: _headlineSlide,
-                  child: FadeTransition(
-                    opacity: _headlineOpacity,
-                    child: Semantics(
-                      header: true,
-                      child: Text(
-                        'Your fish deserve better than guesswork.',
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: AppColors.onboardingWarmCream,
+            child: OnboardingContentFrame(
+              padding: EdgeInsets.zero,
+              alignment: Alignment.centerLeft,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Headline
+                  SlideTransition(
+                    position: _headlineSlide,
+                    child: FadeTransition(
+                      opacity: _headlineOpacity,
+                      child: Semantics(
+                        header: true,
+                        child: Text(
+                          'Your fish deserve better than guesswork.',
+                          style: Theme.of(context).textTheme.headlineLarge
+                              ?.copyWith(
+                                color: AppColors.onboardingWarmCream,
+                              ),
+                          textAlign: TextAlign.left,
                         ),
-                        textAlign: TextAlign.left,
                       ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: AppSpacing.sm2),
+                  const SizedBox(height: AppSpacing.sm2),
 
-                // Body
-                FadeTransition(
-                  opacity: _bodyOpacity,
-                  child: Text(
-                    "Danio learns what's in your tank and tells you exactly what they need.",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.onboardingWarmCream.withAlpha(204), // 80%
+                  // Body
+                  FadeTransition(
+                    opacity: _bodyOpacity,
+                    child: Text(
+                      "Danio learns what's in your tank and tells you exactly what they need.",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AppColors.onboardingWarmCream.withAlpha(
+                          204,
+                        ), // 80%
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                    textAlign: TextAlign.left,
                   ),
-                ),
 
-                const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
 
-                // CTA Button
-                SlideTransition(
-                  position: _buttonSlide,
-                  child: FadeTransition(
+                  // CTA Button
+                  SlideTransition(
+                    position: _buttonSlide,
+                    child: FadeTransition(
+                      opacity: _buttonOpacity,
+                      child: AppButton(
+                        label: "Let's get started →",
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          widget.onNext();
+                        },
+                        variant: AppButtonVariant.primary,
+                        isFullWidth: true,
+                        size: AppButtonSize.large,
+                        semanticsLabel: "Let's get started",
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: AppSpacing.md),
+
+                  // Secondary link
+                  FadeTransition(
                     opacity: _buttonOpacity,
                     child: AppButton(
-                      label: "Let's get started →",
+                      label: 'Skip setup, I\'ll explore first',
                       onPressed: () {
-                        HapticFeedback.lightImpact();
-                        widget.onNext();
+                        HapticFeedback.selectionClick();
+                        widget.onLogin?.call();
                       },
-                      variant: AppButtonVariant.primary,
+                      variant: AppButtonVariant.text,
                       isFullWidth: true,
-                      size: AppButtonSize.large,
-                      semanticsLabel: "Let's get started",
+                      semanticsLabel: 'Skip setup, explore first',
                     ),
                   ),
-                ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                // Secondary link
-                FadeTransition(
-                  opacity: _buttonOpacity,
-                  child: AppButton(
-                    label: 'Skip setup, I\'ll explore first',
-                    onPressed: () {
-                      HapticFeedback.selectionClick();
-                      widget.onLogin?.call();
-                    },
-                    variant: AppButtonVariant.text,
-                    isFullWidth: true,
-                    semanticsLabel: 'Skip setup, explore first',
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

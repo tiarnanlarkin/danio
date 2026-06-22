@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 2 — Experience Level
 ///
@@ -28,7 +29,6 @@ class ExperienceLevelScreen extends StatefulWidget {
 
 class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
     with TickerProviderStateMixin {
-
   ExperienceLevel? _selected;
 
   late final List<AnimationController> _cardControllers;
@@ -127,8 +127,12 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
 
   @override
   void dispose() {
-    for (final c in _cardOpacitiesCurves) { c.dispose(); }
-    for (final c in _cardSlidesCurves) { c.dispose(); }
+    for (final c in _cardOpacitiesCurves) {
+      c.dispose();
+    }
+    for (final c in _cardSlidesCurves) {
+      c.dispose();
+    }
     for (final c in _cardControllers) {
       c.dispose();
     }
@@ -153,8 +157,7 @@ class _ExperienceLevelScreenState extends State<ExperienceLevelScreen>
     return Scaffold(
       backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: OnboardingContentFrame(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -290,7 +293,6 @@ class _OptionCard extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
-
 
   @override
   Widget build(BuildContext context) {

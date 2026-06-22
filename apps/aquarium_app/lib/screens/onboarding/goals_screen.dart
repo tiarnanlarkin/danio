@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Captures the user's broad fishkeeping goals without forcing a formal track.
 class GoalsScreen extends StatefulWidget {
@@ -94,8 +95,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
     return Scaffold(
       backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: OnboardingContentFrame(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

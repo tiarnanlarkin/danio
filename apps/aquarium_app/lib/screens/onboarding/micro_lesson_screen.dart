@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../models/user_profile.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 4 — Micro-Lesson: "The #1 Mistake"
 ///
@@ -150,126 +151,128 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
       body: SafeArea(
         child: SingleChildScrollView(
           controller: _scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: AppSpacing.xl),
+          child: OnboardingContentFrame(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: AppSpacing.xl),
 
-              // Lesson badge
-              Align(
-                alignment: Alignment.centerLeft,
-                child: ExcludeSemantics(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm2,
-                      vertical: AppSpacing.xs2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.onboardingAmber.withAlpha(38), // ~15%
-                      borderRadius: AppRadius.pillRadius,
-                    ),
-                    child: Text(
-                      'Quick Lesson · 30 seconds',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: AppColors.primary,
+                // Lesson badge
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ExcludeSemantics(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm2,
+                        vertical: AppSpacing.xs2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.onboardingAmber.withAlpha(38), // ~15%
+                        borderRadius: AppRadius.pillRadius,
+                      ),
+                      child: Text(
+                        'Quick Lesson · 30 seconds',
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: AppColors.primary,
+                            ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
-              // Headline
-              Semantics(
-                header: true,
-                child: Text(
-                  _content.headline,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                    height: 1.2,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // Body paragraphs
-              ..._content.bodyParagraphs.map(
-                (p) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
+                // Headline
+                Semantics(
+                  header: true,
                   child: Text(
-                    p,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    _content.headline,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: AppColors.textPrimary,
-                      height: 1.6,
+                      height: 1.2,
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
-              // Question
-              Text(
-                _content.question,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                  height: 1.4,
+                // Body paragraphs
+                ..._content.bodyParagraphs.map(
+                  (p) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
+                    child: Text(
+                      p,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AppColors.textPrimary,
+                        height: 1.6,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.lg),
 
-              // Answer tiles
-              ...List.generate(_content.answers.length, (i) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: _buildAnswerTile(i),
-                );
-              }),
-
-              // Feedback text
-              if (_answered) ...[
-                const SizedBox(height: AppSpacing.md),
+                // Question
                 Text(
-                  _selectedAnswer == _correctIndex
-                      ? _content.correctFeedback
-                      : _content.wrongFeedback,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
-                    height: 1.5,
+                  _content.question,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.4,
                   ),
                 ),
+
+                const SizedBox(height: AppSpacing.md),
+
+                // Answer tiles
+                ...List.generate(_content.answers.length, (i) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: _buildAnswerTile(i),
+                  );
+                }),
+
+                // Feedback text
+                if (_answered) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    _selectedAnswer == _correctIndex
+                        ? _content.correctFeedback
+                        : _content.wrongFeedback,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+
+                const SizedBox(height: AppSpacing.lg),
+
+                // "Got it →" button (appears after answering)
+                SlideTransition(
+                  position: _gotItSlide,
+                  child: FadeTransition(
+                    opacity: _gotItOpacity,
+                    child: AppButton(
+                      label: 'Got it →',
+                      onPressed: _answered
+                          ? () {
+                              HapticFeedback.mediumImpact();
+                              widget.onComplete();
+                            }
+                          : null,
+                      variant: AppButtonVariant.primary,
+                      isFullWidth: true,
+                      size: AppButtonSize.large,
+                      semanticsLabel: 'Got it',
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.xl),
               ],
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // "Got it →" button (appears after answering)
-              SlideTransition(
-                position: _gotItSlide,
-                child: FadeTransition(
-                  opacity: _gotItOpacity,
-                  child: AppButton(
-                    label: 'Got it →',
-                    onPressed: _answered
-                        ? () {
-                            HapticFeedback.mediumImpact();
-                            widget.onComplete();
-                          }
-                        : null,
-                    variant: AppButtonVariant.primary,
-                    isFullWidth: true,
-                    size: AppButtonSize.large,
-                    semanticsLabel: 'Got it',
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-            ],
+            ),
           ),
         ),
       ),

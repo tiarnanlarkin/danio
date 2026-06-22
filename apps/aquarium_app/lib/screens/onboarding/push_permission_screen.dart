@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 9 — Optional Reminder Setup
 ///
@@ -91,7 +92,7 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
           child: Column(
             children: [
               Expanded(
-                child: Padding(
+                child: OnboardingContentFrame(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.xl,
                   ),
@@ -132,34 +133,37 @@ class _PushPermissionScreenState extends State<PushPermissionScreen>
                   AppSpacing.lg,
                   bottomPadding + AppSpacing.lg,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Primary button
-                    AppButton(
-                      label: 'Continue',
-                      onPressed: () {
-                        HapticFeedback.mediumImpact();
-                        widget.onAllow();
-                      },
-                      variant: AppButtonVariant.primary,
-                      isFullWidth: true,
-                      size: AppButtonSize.large,
-                      semanticsLabel: 'Continue without enabling reminders',
-                    ),
-                    const SizedBox(height: AppSpacing.sm4),
-                    // Secondary link
-                    AppButton(
-                      label: 'Set up later',
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        widget.onSkip();
-                      },
-                      variant: AppButtonVariant.text,
-                      isFullWidth: true,
-                      semanticsLabel: 'Set up reminders later',
-                    ),
-                  ],
+                child: OnboardingContentFrame(
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Primary button
+                      AppButton(
+                        label: 'Continue',
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          widget.onAllow();
+                        },
+                        variant: AppButtonVariant.primary,
+                        isFullWidth: true,
+                        size: AppButtonSize.large,
+                        semanticsLabel: 'Continue without enabling reminders',
+                      ),
+                      const SizedBox(height: AppSpacing.sm4),
+                      // Secondary link
+                      AppButton(
+                        label: 'Set up later',
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          widget.onSkip();
+                        },
+                        variant: AppButtonVariant.text,
+                        isFullWidth: true,
+                        semanticsLabel: 'Set up reminders later',
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

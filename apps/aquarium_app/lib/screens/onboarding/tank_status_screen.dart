@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 3 — Tank Status
 ///
@@ -23,7 +24,6 @@ class TankStatusScreen extends StatefulWidget {
 
 class _TankStatusScreenState extends State<TankStatusScreen>
     with TickerProviderStateMixin {
-
   String? _selected;
 
   late final List<AnimationController> _cardControllers;
@@ -123,8 +123,12 @@ class _TankStatusScreenState extends State<TankStatusScreen>
 
   @override
   void dispose() {
-    for (final c in _cardOpacitiesCurves) { c.dispose(); }
-    for (final c in _cardSlidesCurves) { c.dispose(); }
+    for (final c in _cardOpacitiesCurves) {
+      c.dispose();
+    }
+    for (final c in _cardSlidesCurves) {
+      c.dispose();
+    }
     for (final c in _cardControllers) {
       c.dispose();
     }
@@ -149,8 +153,7 @@ class _TankStatusScreenState extends State<TankStatusScreen>
     return Scaffold(
       backgroundColor: AppColors.onboardingWarmCream,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: OnboardingContentFrame(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -275,7 +278,6 @@ class _OptionCard extends StatelessWidget {
     required this.onTap,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return Semantics(
@@ -338,4 +340,3 @@ class _OptionCard extends StatelessWidget {
     );
   }
 }
-

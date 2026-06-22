@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import 'onboarding_layout.dart';
 
 /// Screen 5 — First XP Earned (Celebration)
 ///
@@ -198,8 +199,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
             ),
 
             // Main content
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            OnboardingContentFrame(
               child: Column(
                 children: [
                   const Spacer(flex: 2),
