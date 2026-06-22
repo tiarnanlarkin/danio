@@ -3,7 +3,7 @@ import 'dart:async';
 import '../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// dart:ui import removed — BackdropFilter replaced with solid overlay (perf: T-D-270)
+// dart:ui import removed - BackdropFilter replaced with solid overlay (perf: T-D-270)
 import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import '../providers/inventory_provider.dart';
@@ -15,6 +15,7 @@ import '../widgets/core/app_states.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
+import '../utils/logger.dart';
 
 /// Main Inventory Screen - View and USE owned items
 class InventoryScreen extends ConsumerStatefulWidget {
@@ -177,14 +178,26 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
 
     // Use the item
     final inventoryNotifier = ref.read(inventoryProvider.notifier);
-    final success = await inventoryNotifier.useItem(item.itemId);
+    final bool success;
+    try {
+      success = await inventoryNotifier.useItem(item.itemId);
+    } catch (e, st) {
+      logError(
+        'InventoryScreen: failed to use inventory item ${item.itemId}: $e',
+        stackTrace: st,
+        tag: 'InventoryScreen',
+      );
+      if (!mounted) return;
+      DanioSnackBar.error(context, 'Couldn\'t use that item. Try again.');
+      return;
+    }
 
     if (!mounted) return;
 
     if (success) {
       DanioSnackBar.success(context, _getUseSuccessMessage(shopItem));
     } else {
-      DanioSnackBar.error(context, 'Couldn\'t use that item — try again.');
+      DanioSnackBar.error(context, 'Couldn\'t use that item. Try again.');
     }
   }
 

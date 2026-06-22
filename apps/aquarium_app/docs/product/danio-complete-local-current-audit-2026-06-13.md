@@ -2036,6 +2036,16 @@ CL-P1-009DA Tank Journal new-entry save failure feedback:
 - Focused widget coverage simulates a failed `saveLog` write and verifies the
   sheet stays open with normal feedback.
 
+CL-P1-009DB Inventory item-use failure feedback:
+
+- Inventory item use now catches failed local `shop_inventory` writes, logs the
+  failure, and shows normal retry feedback instead of letting the provider
+  exception escape the screen.
+- The failed use path keeps the owned consumable visible and leaves persisted
+  inventory unchanged.
+- Focused widget coverage simulates a failed item-use save, confirms the
+  normal retry snackbar, and verifies the item remains visible.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

@@ -143,6 +143,8 @@ Recent CL-P1-009 continuation note:
   `unlocked_species_v1` writes before exposing updated unlock state.
 - CL-P1-009DA catches failed Tank Journal new-entry saves with inline feedback
   and keeps the entry sheet open for retry.
+- CL-P1-009DB catches failed Inventory item-use writes with normal retry
+  feedback while keeping the owned item visible.
 
 ## 7. P2 Work - Presentation System
 
