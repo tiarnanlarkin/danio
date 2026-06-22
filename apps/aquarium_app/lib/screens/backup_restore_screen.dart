@@ -8,13 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:uuid/uuid.dart';
 
 import '../models/models.dart';
 import '../providers/storage_provider.dart';
 import '../providers/restore_invalidation.dart';
 import '../providers/tank_provider.dart';
-import '../services/backup_import_relationships.dart';
+import '../services/backup_import_service.dart';
 import '../services/backup_service.dart';
 import '../services/shared_preferences_backup.dart';
 import '../theme/app_theme.dart';
@@ -25,8 +24,6 @@ import '../utils/logger.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import 'tab_navigator.dart';
-
-const _uuid = Uuid();
 
 class BackupRestoreScreen extends ConsumerStatefulWidget {
   const BackupRestoreScreen({super.key});
@@ -529,10 +526,16 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
       if (!mounted) return;
 
-      // Import all data with proper tankId remapping
+      // Import all tank-scoped data with proper tankId remapping.
       // NOTE: BackupService.getBackupData() already resolves portable photo
       // references (photos/<filename>) to this device's documents/photos path.
-      final imported = await _importAllData(backupData);
+      final importResult = await BackupImportService(
+        storage: ref.read(storageServiceProvider),
+      ).importTankScopedData(backupData);
+      final imported = importResult.importedTanks;
+      if (imported > 0) {
+        ref.invalidate(tanksProvider);
+      }
 
       // Restore SharedPreferences (profile, gems, settings, etc.)
       var preferencesRestoreFailed = false;
@@ -593,184 +596,6 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     }
   }
 
-  /// Import all data from backup with proper tankId remapping
-  Future<int> _importAllData(Map<String, dynamic> backupData) async {
-    final storage = ref.read(storageServiceProvider);
-    final now = DateTime.now();
-
-    // Map old tank IDs to new tank IDs
-    final tankIdMap = <String, String>{};
-    final livestockIdMap = <String, String>{};
-    final equipmentIdMap = <String, String>{};
-    final taskIdMap = <String, String>{};
-
-    // Import tanks first
-    final tanksJson = backupData['tanks'] as List? ?? [];
-    int imported = 0;
-
-    for (final tankJson in tanksJson) {
-      try {
-        if (tankJson is! Map<String, dynamic>) continue;
-
-        final oldTankId = tankJson['id'] as String;
-        final newTankId = _uuid.v4();
-        tankIdMap[oldTankId] = newTankId;
-
-        final tank = Tank.fromJson({
-          ...tankJson,
-          'id': newTankId,
-          'createdAt': now.toIso8601String(),
-          'updatedAt': now.toIso8601String(),
-        });
-
-        await storage.saveTank(tank);
-        imported++;
-      } catch (e) {
-        logError('Failed to import tank: $e', tag: 'BackupRestoreScreen');
-        continue;
-      }
-    }
-
-    final livestockJson = backupData['livestock'] as List? ?? [];
-    final equipmentJson = backupData['equipment'] as List? ?? [];
-    final tasksJson = backupData['tasks'] as List? ?? [];
-
-    _prepareEntityIdMap(livestockJson, tankIdMap, livestockIdMap);
-    _prepareEntityIdMap(equipmentJson, tankIdMap, equipmentIdMap);
-    _prepareEntityIdMap(tasksJson, tankIdMap, taskIdMap);
-
-    // Import livestock with updated tankIds
-    for (final lJson in livestockJson) {
-      try {
-        if (lJson is! Map<String, dynamic>) continue;
-        final oldTankId = lJson['tankId'] as String;
-        final newTankId = tankIdMap[oldTankId];
-        if (newTankId == null) continue; // Skip if tank wasn't imported
-        final oldLivestockId = lJson['id'] as String;
-        final newLivestockId = livestockIdMap[oldLivestockId];
-        if (newLivestockId == null) continue;
-
-        final livestock = _livestockFromJson({
-          ...lJson,
-          'id': newLivestockId,
-          'tankId': newTankId,
-          'createdAt': now.toIso8601String(),
-          'updatedAt': now.toIso8601String(),
-        });
-
-        await storage.saveLivestock(livestock);
-      } catch (e) {
-        logError('Failed to import livestock: $e', tag: 'BackupRestoreScreen');
-        continue;
-      }
-    }
-
-    // Import equipment with updated tankIds
-    for (final eJson in equipmentJson) {
-      try {
-        if (eJson is! Map<String, dynamic>) continue;
-        final oldTankId = eJson['tankId'] as String;
-        final newTankId = tankIdMap[oldTankId];
-        if (newTankId == null) continue;
-        final oldEquipmentId = eJson['id'] as String;
-        final newEquipmentId = equipmentIdMap[oldEquipmentId];
-        if (newEquipmentId == null) continue;
-
-        final equipment = _equipmentFromJson({
-          ...eJson,
-          'id': newEquipmentId,
-          'tankId': newTankId,
-          'createdAt': now.toIso8601String(),
-          'updatedAt': now.toIso8601String(),
-        });
-
-        await storage.saveEquipment(equipment);
-      } catch (e) {
-        logError('Failed to import equipment: $e', tag: 'BackupRestoreScreen');
-        continue;
-      }
-    }
-
-    // Import logs with updated tankIds
-    final logsJson = backupData['logs'] as List? ?? [];
-    for (final lJson in logsJson) {
-      try {
-        if (lJson is! Map<String, dynamic>) continue;
-        final oldTankId = lJson['tankId'] as String;
-        final newTankId = tankIdMap[oldTankId];
-        if (newTankId == null) continue;
-
-        final log = _logFromJson({
-          ...remapBackupLogRelationships(
-            lJson,
-            equipmentIdMap: equipmentIdMap,
-            livestockIdMap: livestockIdMap,
-            taskIdMap: taskIdMap,
-          ),
-          'id': _uuid.v4(),
-          'tankId': newTankId,
-          'createdAt': now.toIso8601String(),
-        });
-
-        await storage.saveLog(log);
-      } catch (e) {
-        logError('Failed to import log: $e', tag: 'BackupRestoreScreen');
-        continue;
-      }
-    }
-
-    // Import tasks with updated tankIds
-    for (final tJson in tasksJson) {
-      try {
-        if (tJson is! Map<String, dynamic>) continue;
-        final oldTankId = tJson['tankId'] as String;
-        final newTankId = tankIdMap[oldTankId];
-        if (newTankId == null) continue;
-        final oldTaskId = tJson['id'] as String;
-        final newTaskId = taskIdMap[oldTaskId];
-        if (newTaskId == null) continue;
-
-        final task = _taskFromJson({
-          ...remapBackupTaskRelationships(
-            tJson,
-            equipmentIdMap: equipmentIdMap,
-          ),
-          'id': newTaskId,
-          'tankId': newTankId,
-          'createdAt': now.toIso8601String(),
-          'updatedAt': now.toIso8601String(),
-        });
-
-        await storage.saveTask(task);
-      } catch (e) {
-        logError('Failed to import task: $e', tag: 'BackupRestoreScreen');
-        continue;
-      }
-    }
-
-    // Invalidate all providers to refresh UI
-    if (imported > 0) {
-      ref.invalidate(tanksProvider);
-    }
-
-    return imported;
-  }
-
-  void _prepareEntityIdMap(
-    List<dynamic> jsonItems,
-    Map<String, String> tankIdMap,
-    Map<String, String> output,
-  ) {
-    for (final item in jsonItems) {
-      if (item is! Map<String, dynamic>) continue;
-      final oldId = item['id'];
-      final oldTankId = item['tankId'];
-      if (oldId is! String || oldId.isEmpty) continue;
-      if (oldTankId is! String || !tankIdMap.containsKey(oldTankId)) continue;
-      output.putIfAbsent(oldId, () => _uuid.v4());
-    }
-  }
-
   // Serialization helpers (matching local_json_storage_service.dart format)
   Map<String, dynamic> _livestockToJson(Livestock l) => {
     'id': l.id,
@@ -790,34 +615,6 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'updatedAt': l.updatedAt.toIso8601String(),
   };
 
-  Livestock _livestockFromJson(Map<String, dynamic> m) => Livestock(
-    id: m['id'] as String,
-    tankId: m['tankId'] as String,
-    commonName: m['commonName'] as String,
-    scientificName: m['scientificName'] as String?,
-    count: (m['count'] as num?)?.toInt() ?? 1,
-    sizeCm: (m['sizeCm'] as num?)?.toDouble(),
-    maxSizeCm: (m['maxSizeCm'] as num?)?.toDouble(),
-    dateAdded: DateTime.parse(m['dateAdded'] as String),
-    source: m['source'] as String?,
-    temperament: m['temperament'] == null
-        ? null
-        : Temperament.values.firstWhere(
-            (e) => e.name == m['temperament'],
-            orElse: () => Temperament.peaceful,
-          ),
-    healthStatus: m['healthStatus'] != null
-        ? HealthStatus.values.firstWhere(
-            (e) => e.name == m['healthStatus'],
-            orElse: () => HealthStatus.healthy,
-          )
-        : HealthStatus.healthy,
-    notes: m['notes'] as String?,
-    imageUrl: m['imageUrl'] as String?,
-    createdAt: DateTime.parse(m['createdAt'] as String),
-    updatedAt: DateTime.parse(m['updatedAt'] as String),
-  );
-
   Map<String, dynamic> _equipmentToJson(Equipment e) => {
     'id': e.id,
     'tankId': e.tankId,
@@ -836,33 +633,6 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'updatedAt': e.updatedAt.toIso8601String(),
   };
 
-  Equipment _equipmentFromJson(Map<String, dynamic> m) => Equipment(
-    id: m['id'] as String,
-    tankId: m['tankId'] as String,
-    type: EquipmentType.values.firstWhere(
-      (e) => e.name == (m['type'] ?? 'other'),
-      orElse: () => EquipmentType.other,
-    ),
-    name: m['name'] as String,
-    brand: m['brand'] as String?,
-    model: m['model'] as String?,
-    settings: (m['settings'] as Map?)?.cast<String, dynamic>(),
-    maintenanceIntervalDays: (m['maintenanceIntervalDays'] as num?)?.toInt(),
-    lastServiced: m['lastServiced'] != null
-        ? DateTime.parse(m['lastServiced'] as String)
-        : null,
-    installedDate: m['installedDate'] != null
-        ? DateTime.parse(m['installedDate'] as String)
-        : null,
-    purchaseDate: m['purchaseDate'] != null
-        ? DateTime.parse(m['purchaseDate'] as String)
-        : null,
-    expectedLifespanMonths: (m['expectedLifespanMonths'] as num?)?.toInt(),
-    notes: m['notes'] as String?,
-    createdAt: DateTime.parse(m['createdAt'] as String),
-    updatedAt: DateTime.parse(m['updatedAt'] as String),
-  );
-
   Map<String, dynamic> _logToJson(LogEntry l) => {
     'id': l.id,
     'tankId': l.tankId,
@@ -879,27 +649,6 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'createdAt': l.createdAt.toIso8601String(),
   };
 
-  LogEntry _logFromJson(Map<String, dynamic> m) => LogEntry(
-    id: m['id'] as String,
-    tankId: m['tankId'] as String,
-    type: LogType.values.firstWhere(
-      (e) => e.name == (m['type'] ?? 'other'),
-      orElse: () => LogType.other,
-    ),
-    timestamp: DateTime.parse(m['timestamp'] as String),
-    waterTest: m['waterTest'] != null
-        ? _waterTestFromJson(m['waterTest'])
-        : null,
-    waterChangePercent: (m['waterChangePercent'] as num?)?.toInt(),
-    title: m['title'] as String?,
-    notes: m['notes'] as String?,
-    photoUrls: (m['photoUrls'] as List?)?.cast<String>(),
-    relatedEquipmentId: m['relatedEquipmentId'] as String?,
-    relatedLivestockId: m['relatedLivestockId'] as String?,
-    relatedTaskId: m['relatedTaskId'] as String?,
-    createdAt: DateTime.parse(m['createdAt'] as String),
-  );
-
   Map<String, dynamic> _waterTestToJson(WaterTestResults t) => {
     'temperature': t.temperature,
     'ph': t.ph,
@@ -911,19 +660,6 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'phosphate': t.phosphate,
     'co2': t.co2,
   };
-
-  WaterTestResults _waterTestFromJson(Map<String, dynamic> m) =>
-      WaterTestResults(
-        temperature: (m['temperature'] as num?)?.toDouble(),
-        ph: (m['ph'] as num?)?.toDouble(),
-        ammonia: (m['ammonia'] as num?)?.toDouble(),
-        nitrite: (m['nitrite'] as num?)?.toDouble(),
-        nitrate: (m['nitrate'] as num?)?.toDouble(),
-        gh: (m['gh'] as num?)?.toDouble(),
-        kh: (m['kh'] as num?)?.toDouble(),
-        phosphate: (m['phosphate'] as num?)?.toDouble(),
-        co2: (m['co2'] as num?)?.toDouble(),
-      );
 
   Map<String, dynamic> _taskToJson(Task t) => {
     'id': t.id,
@@ -942,34 +678,6 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'createdAt': t.createdAt.toIso8601String(),
     'updatedAt': t.updatedAt.toIso8601String(),
   };
-
-  Task _taskFromJson(Map<String, dynamic> m) => Task(
-    id: m['id'] as String,
-    tankId: m['tankId'] as String?,
-    title: m['title'] as String,
-    description: m['description'] as String?,
-    recurrence: RecurrenceType.values.firstWhere(
-      (e) => e.name == (m['recurrence'] ?? 'none'),
-      orElse: () => RecurrenceType.none,
-    ),
-    intervalDays: (m['intervalDays'] as num?)?.toInt(),
-    dueDate: m['dueDate'] != null
-        ? DateTime.parse(m['dueDate'] as String)
-        : null,
-    priority: TaskPriority.values.firstWhere(
-      (e) => e.name == (m['priority'] ?? 'normal'),
-      orElse: () => TaskPriority.normal,
-    ),
-    isEnabled: (m['isEnabled'] as bool?) ?? true,
-    isAutoGenerated: (m['isAutoGenerated'] as bool?) ?? false,
-    lastCompletedAt: m['lastCompletedAt'] != null
-        ? DateTime.parse(m['lastCompletedAt'] as String)
-        : null,
-    completionCount: (m['completionCount'] as num?)?.toInt() ?? 0,
-    relatedEquipmentId: m['relatedEquipmentId'] as String?,
-    createdAt: DateTime.parse(m['createdAt'] as String),
-    updatedAt: DateTime.parse(m['updatedAt'] as String),
-  );
 }
 
 class _ExportItem extends StatelessWidget {

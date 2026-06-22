@@ -2370,11 +2370,13 @@ High-confidence P1/P2 gaps from code/docs evidence:
   task/log/equipment writes. Failed Tank Detail quick-feeding saves now show
   normal error feedback without changing the local journal. Failed Inventory
   item uses keep the owned item visible, failed Crash Reports consent writes
-  keep the visible switch unchanged with retry feedback, and failed local JSON
+  keep the visible switch unchanged with retry feedback, failed local JSON
   entity saves/deletes keep same-process reads aligned with the last durable
-  file state. Remaining backup/data
-  work is deeper import validation UX, broader edit/delete/undo coverage, and
-  restore/migration walkthrough QA.
+  file state, and backup tank-scoped imports now use a tested transaction
+  service that remaps related IDs, preserves timeline relationships, and rolls
+  back imported tanks and children if a later child save fails. Remaining
+  backup/data work is broader edit/delete/undo coverage and restore/migration
+  walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
