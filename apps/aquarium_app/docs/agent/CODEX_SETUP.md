@@ -6,6 +6,8 @@ This setup is intentionally no-cost and local-first. It is for building, testing
 
 - Local Flutter, Dart, Android SDK, JDK, Gradle, Git, PowerShell, ripgrep, and local scripts.
 - Local Android emulator or physical device only when ownership is clear.
+- Local live preview through `docs/agent/LIVE_PREVIEW_WORKFLOW.md` when the
+  user wants to watch Danio during implementation.
 - Local screenshots and local log capture.
 - The local Danio quality gate at
   `scripts/quality_gates/run_local_quality_gate.ps1`.
@@ -180,6 +182,35 @@ Rules:
 - Do not kill, wipe, restart, or install onto a device unless ownership is clear.
 - Prefer `flutter build apk --debug --target lib/main.dart` when ownership is unclear.
 - Store local QA screenshots and logs under `docs/qa/screenshots/...` only when they are useful evidence.
+
+## Live Preview
+
+Use `docs/agent/LIVE_PREVIEW_WORKFLOW.md` when the user wants to see Danio as
+it is being built. The standard local preview target is the dedicated
+`danio_api36` emulator.
+
+Check the device without launching or taking control:
+
+```powershell
+.\scripts\run_danio_live_preview.ps1 -CheckOnly
+```
+
+Launch or attach to the dedicated preview emulator only when ownership is
+clear:
+
+```powershell
+.\scripts\run_danio_live_preview.ps1 -LaunchEmulator
+```
+
+The preview terminal prints the interactive controls: `r` hot reload, `R` hot
+restart, and `q` quit. Treat live preview as an observation lane; it does not
+replace focused tests, `flutter analyze`, debug APK builds, or the Full gate.
+
+Capture local preview evidence only when Danio is foreground:
+
+```powershell
+.\scripts\capture_danio_screen.ps1
+```
 
 ## Local Screenshots
 

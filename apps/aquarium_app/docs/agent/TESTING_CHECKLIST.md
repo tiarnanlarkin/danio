@@ -154,6 +154,18 @@ Use Android devices only when safe:
 - Do not install, clear data, restart, wipe, or kill a device without ownership clarity.
 - If ownership is unclear, stop at `flutter build apk --debug --target lib/main.dart`.
 
+Live preview is an observation lane for user-visible feedback. Use
+`docs/agent/LIVE_PREVIEW_WORKFLOW.md` and the dedicated `danio_api36` emulator
+when the user wants to see the app while it is being built.
+Live preview does not replace focused tests, the Visual gate, AndroidPrep,
+Patrol, screenshots, or the Full gate.
+
+Safe preflight:
+
+```powershell
+.\scripts\run_danio_live_preview.ps1 -CheckOnly
+```
+
 For local Patrol smoke, prefer:
 
 ```powershell
@@ -187,6 +199,8 @@ When subagents are used, the coordinator must keep verification ownership clear:
   contributed code or docs.
 - `danio_android_qa_owner` is the only role that should run Android device
   interaction, Patrol, Firebase Test Lab, or screenshot capture for a slice.
+- Live preview from `docs/agent/LIVE_PREVIEW_WORKFLOW.md` belongs to the
+  coordinator or `danio_android_qa_owner` only.
 - The coordinator must rerun the relevant local gate in the integration checkout
   before committing.
 

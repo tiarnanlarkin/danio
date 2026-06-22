@@ -8,6 +8,7 @@ param(
     "test/quality/content_validation_test.dart",
     "test/quality/visual_baseline_manifest_test.dart",
     "test/scripts/external_quality_readiness_script_test.dart",
+    "test/scripts/live_preview_workflow_script_test.dart",
     "test/scripts/local_quality_gate_script_test.dart"
   ),
 

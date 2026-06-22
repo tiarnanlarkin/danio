@@ -78,6 +78,11 @@ that make new build/readiness claims.
 ## Android Emulator Discipline
 
 - Multiple Codex sessions may be active on this machine.
+- Use the Danio live-preview workflow at
+  `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md` when the user wants
+  to watch the app while it is being built.
+- Standardize Danio live preview on the dedicated `danio_api36` emulator; do
+  not use whichever emulator happens to be connected.
 - Do not start, stop, wipe, kill, or commandeer an emulator/device without confirming it is safe.
 - Before emulator use, check `adb devices` and foreground package ownership.
 - Prefer compile/test/build verification when device ownership is unclear.
@@ -126,5 +131,6 @@ that make new build/readiness claims.
 - Testing checklist: `apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md`
 - Autonomous quality setup: `apps/aquarium_app/docs/agent/AUTONOMOUS_QUALITY_SETUP.md`
 - Multi-agent workflow: `apps/aquarium_app/docs/agent/MULTI_AGENT_WORKFLOW.md`
+- Live preview workflow: `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md`
 - Current local audit: `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
 - Backlog: `apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md`

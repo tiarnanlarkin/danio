@@ -71,6 +71,12 @@ the QA owner must confirm:
 If ownership is unclear, stop at compile/build checks such as `AndroidPrep`
 without device interaction.
 
+The live preview lane is also Android QA ownership. Use
+`docs/agent/LIVE_PREVIEW_WORKFLOW.md` when the user wants to watch the app
+during implementation. Only the coordinator or `danio_android_qa_owner` should
+run `scripts/run_danio_live_preview.ps1`,
+`scripts/capture_danio_screen.ps1`, or any related emulator controls.
+
 ## Command Working Directories
 
 - Run `git status --short -uall`, `git diff --check`, `git worktree`, and
