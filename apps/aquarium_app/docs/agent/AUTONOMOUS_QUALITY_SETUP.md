@@ -15,7 +15,7 @@ Run from `apps/aquarium_app`:
 Profiles:
 
 - `Focused`: worktree visibility, whitespace diff check, current docs truth
-  test, and the local gate contract test.
+  test, local content validation, and the local gate contract test.
 - `Docs`: `Focused` plus Danio custom lint and `flutter analyze`.
 - `Full`: `Focused`, Danio custom lint, full `flutter test`,
   `flutter analyze`, and debug APK build.
@@ -68,6 +68,30 @@ The gate can detect and run these tools when installed locally:
 
 These tools are optional. Missing tools must not block ordinary product work
 unless `-StrictOptionalTools` is explicitly supplied.
+
+## Local Content Validation
+
+`test/quality/content_validation_test.dart` is part of the default focused
+gate. It is deterministic and runs without network access. The validator checks:
+
+- learning content for draft placeholders and fake feature/premium copy;
+- lesson quizzes for quiz presence, valid IDs, explanatory answer notes, and
+  duplicate answer options;
+- lesson and browser care sources for traceable HTTPS references;
+- species data for breadth, unique common names, sane care ranges, and
+  compatible/avoid-list overlap;
+- plant data for breadth, unique names, sane height ranges, known difficulty
+  labels, and enough care tips.
+
+When expanding lessons, species, or plant data, run:
+
+```powershell
+flutter test test/quality/content_validation_test.dart --reporter compact
+```
+
+If a new validator failure points to real content drift, fix the content. If it
+points to an intentionally broader content model, update the validator and docs
+in the same slice.
 
 ## Local Patrol Android Smoke
 

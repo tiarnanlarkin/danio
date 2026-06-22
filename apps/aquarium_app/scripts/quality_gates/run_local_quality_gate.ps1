@@ -5,6 +5,7 @@ param(
 
   [string[]]$FocusedTests = @(
     "test/copy/current_docs_local_truth_test.dart",
+    "test/quality/content_validation_test.dart",
     "test/scripts/local_quality_gate_script_test.dart"
   ),
 

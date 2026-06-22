@@ -22,6 +22,7 @@ flutter test test/widget_tests/backup_restore_screen_test.dart
 flutter test test/widget/settings_screen_test.dart
 flutter test test/services/backup_service_test.dart
 flutter test test/copy/current_docs_local_truth_test.dart
+flutter test test/quality/content_validation_test.dart
 ```
 
 Use the smallest focused test first, then broaden.
@@ -33,6 +34,11 @@ The local quality gate gives Codex a repeatable default focused check:
 ```powershell
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
 ```
+
+Run the content validator whenever lessons, quizzes, care sources, species
+data, plant data, or app copy claims are changed. It catches placeholder/draft
+copy, fake feature claims, broken source references, weak quiz structure, and
+basic care-range drift.
 
 ## Standard Product Gates
 
