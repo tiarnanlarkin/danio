@@ -15,8 +15,8 @@ Run from `apps/aquarium_app`:
 Profiles:
 
 - `Focused`: worktree visibility, whitespace diff check, current docs truth
-  test, local content validation, visual baseline manifest validation, and the
-  local gate contract test.
+  test, local content validation, visual baseline manifest validation, external
+  quality preflight contract test, and the local gate contract test.
 - `Docs`: `Focused` plus dependency validation, Danio custom lint, and
   `flutter analyze`.
 - `Full`: `Focused`, dependency validation, Danio custom lint, full `flutter test`,
@@ -53,8 +53,11 @@ Use this order for normal implementation slices:
 4. `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`.
 5. Broaden to `-Profile Docs`, `-Profile Visual`, `-Profile Full`, or
    `-Profile AndroidPrep` based on the files changed.
-6. Commit only the intended files.
-7. Push after the relevant local gates pass.
+6. For external-account work, run
+   `.\scripts\quality_gates\check_external_quality_readiness.ps1 -Target All`
+   before opening dashboards, uploading artifacts, or touching tokens.
+7. Commit only the intended files.
+8. Push after the relevant local gates pass.
 
 ## Current Setup Status
 
@@ -82,6 +85,9 @@ Verified on 2026-06-22:
 - Percy/BrowserStack tokens and account keys are intentionally not committed or
   stored in this repo. Use local shell/session secrets only when running an
   external build.
+- `check_external_quality_readiness.ps1` documents and checks the Firebase,
+  BrowserStack, and Percy prerequisites without uploading builds, starting cloud
+  runs, or printing secret values.
 - Sentry and Qodo are not configured.
 
 ## Optional Local Tools
@@ -242,6 +248,25 @@ Do not upgrade Firebase billing, run paid BrowserStack device sessions, or add
 hosted CI without a fresh explicit request. These services can improve review
 coverage, but they do not replace the local Flutter gates. Danio must remain
 useful and testable locally.
+
+Before using any account-backed lane, run the no-upload preflight:
+
+```powershell
+.\scripts\quality_gates\check_external_quality_readiness.ps1 -Target All
+```
+
+To make missing prerequisites fail the command:
+
+```powershell
+.\scripts\quality_gates\check_external_quality_readiness.ps1 -Target BrowserStack -RequireReady
+```
+
+The preflight intentionally checks only local artifacts, local CLI availability,
+and whether required environment variables are present. It does not run
+`firebase test android run`, call BrowserStack APIs, run `percy exec`, or reveal
+credential values. BrowserStack Flutter execution still needs runner
+compatibility verified before using the existing Android instrumentation shell
+as a cloud test suite.
 
 When running Percy locally, set the token outside Git, for the current shell
 only:

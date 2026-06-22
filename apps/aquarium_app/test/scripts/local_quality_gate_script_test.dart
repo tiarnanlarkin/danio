@@ -50,6 +50,10 @@ void main() {
         source,
         contains('test/scripts/local_quality_gate_script_test.dart'),
       );
+      expect(
+        source,
+        contains('test/scripts/external_quality_readiness_script_test.dart'),
+      );
       expect(source, contains('test/quality/content_validation_test.dart'));
       expect(
         source,

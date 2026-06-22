@@ -96,6 +96,16 @@ The local wrapper can run the standard gates in consistent profiles:
 See `docs/agent/AUTONOMOUS_QUALITY_SETUP.md` for the autonomous workflow,
 optional local tool lane, and account-backed upgrade boundaries.
 
+Before using external account-backed quality services, run the local preflight:
+
+```powershell
+.\scripts\quality_gates\check_external_quality_readiness.ps1 -Target All
+```
+
+The preflight checks local artifacts, CLI availability, and whether required
+environment variables are present. It does not upload builds, start cloud
+device sessions, or print secret values.
+
 The static analysis stack is:
 
 - `very_good_analysis` as the Flutter/Dart analyzer baseline.
@@ -251,5 +261,6 @@ When changing the quality gate itself, also run:
 
 ```powershell
 flutter test test/scripts/local_quality_gate_script_test.dart
+flutter test test/scripts/external_quality_readiness_script_test.dart
 .\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
 ```

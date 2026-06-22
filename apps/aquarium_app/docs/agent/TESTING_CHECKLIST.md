@@ -248,6 +248,13 @@ Configured account-side services:
   `tiarnanlarkin/danio` through GitHub integration.
 - CodeRabbit setup was completed by the user; verify on the first PR review.
 
+Run the no-upload external readiness preflight before any dashboard upload,
+cloud device run, or Percy visual build:
+
+```powershell
+.\scripts\quality_gates\check_external_quality_readiness.ps1 -Target All
+```
+
 Rules:
 
 - Do not commit Firebase, Percy, BrowserStack, CodeRabbit, or Qodo secrets.
@@ -257,6 +264,9 @@ Rules:
   builds.
 - Use `PERCY_TOKEN` only as a local shell/session environment variable when
   running an external Percy build.
+- Treat BrowserStack/App Percy as account-linked but execution-gated until the
+  relevant Android test-runner compatibility has been checked for the exact
+  cloud lane being used.
 
 ## Product Truth Checklist
 
