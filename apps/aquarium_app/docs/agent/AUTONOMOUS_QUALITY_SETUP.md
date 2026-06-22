@@ -32,6 +32,12 @@ Useful switches:
   being run only for a quick local check.
 - `-RunAndroidSmoke`: run the existing local blackbox smoke script. Use only
   when emulator/device ownership is clear.
+- `-RunPatrolSmoke`: run the existing local Patrol smoke test. Use only when
+  emulator/device ownership is clear. Pass `-PatrolDeviceId` when more than one
+  device is attached. The wrapper resolves `patrol.bat` from the Pub cache when
+  the current shell has not picked up the global Dart bin path.
+- `-PatrolUninstall`: allow Patrol to uninstall before/after the test. Omit by
+  default to avoid disturbing another active session's emulator state.
 - `-RunOptionalTools`: run optional local tools when they are installed.
 - `-StrictOptionalTools`: fail if an optional tool is missing or fails.
 
@@ -62,6 +68,23 @@ The gate can detect and run these tools when installed locally:
 
 These tools are optional. Missing tools must not block ordinary product work
 unless `-StrictOptionalTools` is explicitly supplied.
+
+## Local Patrol Android Smoke
+
+Patrol is available as a local-only Android smoke layer for real-device or
+emulator confidence. It is not part of the default gate because emulator state
+may be shared with other Codex sessions on this machine.
+
+Use:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep -RunPatrolSmoke -PatrolDeviceId emulator-5554
+```
+
+The gate runs `patrol test -t integration_test/smoke_test.dart --device <id>
+--package-name com.tiarnanlarkin.danio --no-uninstall` by default. Use
+`-PatrolUninstall` only when the device is dedicated to this repo and a clean
+Patrol install cycle is intended.
 
 ## Free GitHub Dependency Updates
 

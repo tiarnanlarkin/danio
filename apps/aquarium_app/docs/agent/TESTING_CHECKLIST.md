@@ -103,6 +103,15 @@ Use Android devices only when safe:
 - Do not install, clear data, restart, wipe, or kill a device without ownership clarity.
 - If ownership is unclear, stop at `flutter build apk --debug --target lib/main.dart`.
 
+For local Patrol smoke, prefer:
+
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep -RunPatrolSmoke -PatrolDeviceId emulator-5554
+```
+
+The Patrol wrapper uses `--no-uninstall` by default. Add `-PatrolUninstall`
+only when using a dedicated emulator for this repo.
+
 When Android QA is safe, capture:
 
 - Device/emulator name.

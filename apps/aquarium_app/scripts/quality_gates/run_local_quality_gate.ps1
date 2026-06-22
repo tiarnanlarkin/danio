@@ -10,6 +10,11 @@ param(
 
   [switch]$SkipApkBuild,
   [switch]$RunAndroidSmoke,
+  [switch]$RunPatrolSmoke,
+  [string]$PatrolDeviceId = "",
+  [string]$PatrolTarget = "integration_test/smoke_test.dart",
+  [string]$PatrolPackageName = "com.tiarnanlarkin.danio",
+  [switch]$PatrolUninstall,
   [switch]$RunOptionalTools,
   [switch]$StrictOptionalTools,
   [switch]$RequireCleanWorktree
@@ -90,6 +95,66 @@ function Invoke-Flutter {
   if ($global:LASTEXITCODE -ne 0) {
     throw "flutter $($Arguments -join ' ') failed with exit code $global:LASTEXITCODE"
   }
+}
+
+function Resolve-AdbCommand {
+  $command = Get-Command adb -ErrorAction SilentlyContinue
+  if ($command) {
+    return $command.Source
+  }
+
+  $sdkAdb = Join-Path $env:LOCALAPPDATA "Android\Sdk\platform-tools\adb.exe"
+  if (Test-Path -LiteralPath $sdkAdb) {
+    return $sdkAdb
+  }
+
+  throw "adb is not available on PATH or at the default Android SDK location."
+}
+
+function Resolve-PatrolCommand {
+  $command = Get-Command patrol -ErrorAction SilentlyContinue
+  if ($command) {
+    return $command.Source
+  }
+
+  $pubCachePatrol = Join-Path $env:LOCALAPPDATA "Pub\Cache\bin\patrol.bat"
+  if (Test-Path -LiteralPath $pubCachePatrol) {
+    return $pubCachePatrol
+  }
+
+  throw "patrol was not found. Install with: dart pub global activate patrol_cli"
+}
+
+function Get-AndroidDeviceIds {
+  $adb = Resolve-AdbCommand
+  $output = & $adb devices
+  if ($global:LASTEXITCODE -ne 0) {
+    throw "adb devices failed with exit code $global:LASTEXITCODE"
+  }
+
+  return @(
+    $output |
+      Select-Object -Skip 1 |
+      Where-Object { $_ -match "^\S+\s+device$" } |
+      ForEach-Object { ($_ -split "\s+")[0] }
+  )
+}
+
+function Resolve-PatrolDeviceId {
+  if ($PatrolDeviceId) {
+    return $PatrolDeviceId
+  }
+
+  $devices = @(Get-AndroidDeviceIds)
+  if ($devices.Count -eq 1) {
+    return $devices[0]
+  }
+
+  if ($devices.Count -eq 0) {
+    throw "No ready Android device found for Patrol. Start an emulator or pass -PatrolDeviceId."
+  }
+
+  throw "Multiple Android devices found for Patrol: $($devices -join ', '). Pass -PatrolDeviceId to avoid cross-session emulator conflicts."
 }
 
 function Remove-GeneratedDirectory {
@@ -272,11 +337,8 @@ function Invoke-OptionalTools {
 
 function Invoke-AndroidDeviceVisibility {
   Invoke-Step -Name "Android device visibility" -Optional -Command {
-    if (-not (Get-Command adb -ErrorAction SilentlyContinue)) {
-      throw "adb is not available on PATH"
-    }
-
-    & adb devices
+    $adb = Resolve-AdbCommand
+    & $adb devices
     if ($global:LASTEXITCODE -ne 0) {
       throw "adb devices failed with exit code $global:LASTEXITCODE"
     }
@@ -293,6 +355,45 @@ function Invoke-AndroidSmoke {
     & powershell -NoProfile -ExecutionPolicy Bypass -File $smokeScript
     if ($global:LASTEXITCODE -ne 0) {
       throw "scripts/run_android_blackbox_smoke.ps1 failed with exit code $global:LASTEXITCODE"
+    }
+  }
+}
+
+function Invoke-PatrolSmoke {
+  if (-not $RunPatrolSmoke) {
+    return
+  }
+
+  Invoke-Step -Name "Patrol Android smoke" -Command {
+    $patrol = Resolve-PatrolCommand
+    $deviceId = Resolve-PatrolDeviceId
+    $previousAnalytics = $env:PATROL_ANALYTICS_ENABLED
+    $env:PATROL_ANALYTICS_ENABLED = "false"
+
+    $arguments = @(
+      "test",
+      "-t",
+      $PatrolTarget,
+      "--device",
+      $deviceId,
+      "--package-name",
+      $PatrolPackageName
+    )
+
+    if ($PatrolUninstall) {
+      $arguments += "--uninstall"
+    } else {
+      $arguments += "--no-uninstall"
+    }
+
+    try {
+      Write-Host "patrol test -t $PatrolTarget --device $deviceId --package-name $PatrolPackageName"
+      & $patrol @arguments
+      if ($global:LASTEXITCODE -ne 0) {
+        throw "patrol test failed with exit code $global:LASTEXITCODE"
+      }
+    } finally {
+      $env:PATROL_ANALYTICS_ENABLED = $previousAnalytics
     }
   }
 }
@@ -357,6 +458,7 @@ switch ($Profile) {
 }
 
 Invoke-AndroidSmoke
+Invoke-PatrolSmoke
 Invoke-OptionalTools
 
 Write-Host ""

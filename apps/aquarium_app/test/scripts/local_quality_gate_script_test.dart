@@ -135,4 +135,18 @@ void main() {
     expect(source, isNot(contains('secrets.')));
     expect(source, isNot(contains('token:')));
   });
+
+  test('local quality gate exposes disciplined Patrol smoke checks', () {
+    final source = File(scriptPath).readAsStringSync();
+
+    expect(source, contains(r'[switch]$RunPatrolSmoke'));
+    expect(source, contains(r'[string]$PatrolDeviceId'));
+    expect(source, contains('Resolve-PatrolCommand'));
+    expect(source, contains(r'Pub\Cache\bin\patrol.bat'));
+    expect(source, contains('integration_test/smoke_test.dart'));
+    expect(source, contains('patrol test'));
+    expect(source, contains('--device'));
+    expect(source, contains('--no-uninstall'));
+    expect(source, contains('PATROL_ANALYTICS_ENABLED'));
+  });
 }
