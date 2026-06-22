@@ -7,6 +7,7 @@ import '../models/models.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/logger.dart';
 import '../utils/log_entry_display.dart';
 import '../widgets/core/app_button.dart';
 import '../widgets/core/app_states.dart';
@@ -302,6 +303,8 @@ class _NewJournalEntrySheet extends StatefulWidget {
 class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
+  bool _isSaving = false;
+  String? _errorText;
 
   @override
   void initState() {
@@ -318,9 +321,37 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
     super.dispose();
   }
 
+  Future<void> _save() async {
+    final notes = _controller.text.trim();
+    if (notes.isEmpty || _isSaving) return;
+
+    setState(() {
+      _isSaving = true;
+      _errorText = null;
+    });
+
+    try {
+      await widget.onSave(notes);
+      if (mounted) setState(() => _isSaving = false);
+    } catch (e, st) {
+      logError(
+        'JournalScreen: journal entry save failed: $e',
+        stackTrace: st,
+        tag: 'JournalScreen',
+      );
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+          _errorText = "Couldn't save that journal entry. Try again.";
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final canSave = _controller.text.trim().isNotEmpty && !_isSaving;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -354,15 +385,23 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
             controller: _controller,
             focusNode: _focusNode,
             maxLines: 6,
+            errorText: _errorText,
+            enabled: !_isSaving,
+            onChanged: (_) {
+              if (_errorText == null) {
+                setState(() {});
+              } else {
+                setState(() => _errorText = null);
+              }
+            },
             hint:
                 'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
           ),
           const SizedBox(height: AppSpacing.md),
           AppButton(
             label: 'Save Entry',
-            onPressed: _controller.text.trim().isEmpty
-                ? null
-                : () => widget.onSave(_controller.text.trim()),
+            onPressed: canSave ? _save : null,
+            isLoading: _isSaving,
             variant: AppButtonVariant.primary,
             isFullWidth: true,
           ),

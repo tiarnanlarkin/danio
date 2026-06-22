@@ -141,6 +141,8 @@ Recent CL-P1-009 continuation note:
   SharedPreferences writes before exposing updated planning state.
 - CL-P1-009CZ makes earned species unlocks wait for local
   `unlocked_species_v1` writes before exposing updated unlock state.
+- CL-P1-009DA catches failed Tank Journal new-entry saves with inline feedback
+  and keeps the entry sheet open for retry.
 
 ## 7. P2 Work - Presentation System
 

@@ -2026,6 +2026,16 @@ CL-P1-009CZ Species unlock save ordering:
   verifying successful unlocks appear only after local save completion and
   failed unlocks return `false`.
 
+CL-P1-009DA Tank Journal new-entry save failure feedback:
+
+- Tank Journal's new-entry sheet now rebuilds the Save action as users type,
+  so non-empty notes can be saved without leaving and reopening the sheet.
+- Failed local journal-entry saves now keep the sheet open, clear the saving
+  state, log the failure, and show inline retry feedback instead of surfacing a
+  widget exception or silently dismissing the draft.
+- Focused widget coverage simulates a failed `saveLog` write and verifies the
+  sheet stays open with normal feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

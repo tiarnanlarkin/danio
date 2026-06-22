@@ -19,8 +19,8 @@ import 'package:danio/models/models.dart';
 
 const _fakeTankId = 'tank-journal-001';
 
-Widget _wrap({List<LogEntry>? logs}) {
-  final memStorage = InMemoryStorageService();
+Widget _wrap({List<LogEntry>? logs, StorageService? storage}) {
+  final memStorage = storage ?? InMemoryStorageService();
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
@@ -28,6 +28,63 @@ Widget _wrap({List<LogEntry>? logs}) {
     ],
     child: MaterialApp(home: JournalScreen(tankId: _fakeTankId)),
   );
+}
+
+class _FailingSaveLogStorage implements StorageService {
+  final InMemoryStorageService _delegate = InMemoryStorageService();
+
+  @override
+  Future<List<Tank>> getAllTanks() => _delegate.getAllTanks();
+  @override
+  Future<Tank?> getTank(String id) => _delegate.getTank(id);
+  @override
+  Future<void> saveTank(Tank tank) => _delegate.saveTank(tank);
+  @override
+  Future<void> saveTanks(List<Tank> tanks) => _delegate.saveTanks(tanks);
+  @override
+  Future<void> deleteTank(String id) => _delegate.deleteTank(id);
+  @override
+  Future<void> deleteAllTanks(List<String> ids) =>
+      _delegate.deleteAllTanks(ids);
+  @override
+  Future<List<Livestock>> getLivestockForTank(String tankId) =>
+      _delegate.getLivestockForTank(tankId);
+  @override
+  Future<void> saveLivestock(Livestock livestock) =>
+      _delegate.saveLivestock(livestock);
+  @override
+  Future<void> deleteLivestock(String id) => _delegate.deleteLivestock(id);
+  @override
+  Future<List<Equipment>> getEquipmentForTank(String tankId) =>
+      _delegate.getEquipmentForTank(tankId);
+  @override
+  Future<void> saveEquipment(Equipment equipment) =>
+      _delegate.saveEquipment(equipment);
+  @override
+  Future<void> deleteEquipment(String id) => _delegate.deleteEquipment(id);
+  @override
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) => _delegate.getLogsForTank(tankId, limit: limit, after: after);
+  @override
+  Future<LogEntry?> getLatestWaterTest(String tankId) =>
+      _delegate.getLatestWaterTest(tankId);
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    throw StateError('save failed');
+  }
+
+  @override
+  Future<void> deleteLog(String id) => _delegate.deleteLog(id);
+  @override
+  Future<List<Task>> getTasksForTank(String? tankId) =>
+      _delegate.getTasksForTank(tankId);
+  @override
+  Future<void> saveTask(Task task) => _delegate.saveTask(task);
+  @override
+  Future<void> deleteTask(String id) => _delegate.deleteTask(id);
 }
 
 LogEntry _journalEntry({
@@ -234,6 +291,28 @@ void main() {
       );
       expect(find.text('Saved optional AI note'), findsOneWidget);
       expect(find.text('AI guidance saved for reference.'), findsOneWidget);
+    });
+
+    testWidgets('failed new entry save keeps sheet open with feedback', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(storage: _FailingSaveLogStorage()));
+      await _advance(tester);
+
+      await tester.tap(find.byTooltip('Add journal entry'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.enterText(find.byType(TextField), 'Water looks cloudy.');
+      await tester.pump();
+
+      await tester.tap(find.text('Save Entry'));
+      await tester.pump();
+
+      expect(
+        find.text("Couldn't save that journal entry. Try again."),
+        findsOneWidget,
+      );
+      expect(find.text('New Journal Entry'), findsOneWidget);
     });
   });
 }
