@@ -33,14 +33,24 @@ Tank _makeTank({String id = 'tank-1', double volumeLitres = 72}) => Tank(
   updatedAt: _now,
 );
 
-Widget _wrap({InMemoryStorageService? storage}) {
+Widget _wrap({
+  InMemoryStorageService? storage,
+  TextScaler textScaler = TextScaler.noScaling,
+}) {
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(
         storage ?? InMemoryStorageService(),
       ),
     ],
-    child: const MaterialApp(home: WorkshopScreen()),
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: textScaler),
+          child: const WorkshopScreen(),
+        ),
+      ),
+    ),
   );
 }
 
@@ -348,6 +358,86 @@ void main() {
       FlutterError.onError = flutterErrors.add;
 
       await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Cost Tracker'), 300);
+      await tester.pumpAndSettle();
+
+      FlutterError.onError = originalOnError;
+
+      final overflowErrors = flutterErrors.where(
+        (details) => details.exceptionAsString().contains('overflowed'),
+      );
+      expect(overflowErrors, isEmpty);
+    });
+
+    testWidgets('uses bounded adaptive columns on tablet landscape', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final waterChangeRect = tester.getRect(
+        find.bySemanticsLabel('Water Change, Calculate changes'),
+      );
+      final stockingRect = tester.getRect(
+        find.bySemanticsLabel('Stocking, Fish capacity'),
+      );
+      final co2Rect = tester.getRect(
+        find.bySemanticsLabel('CO2 Calculator, From pH & KH'),
+      );
+
+      expect(waterChangeRect.width, lessThanOrEqualTo(560));
+      expect(
+        (waterChangeRect.top - stockingRect.top).abs(),
+        lessThanOrEqualTo(2),
+      );
+      expect((waterChangeRect.top - co2Rect.top).abs(), lessThanOrEqualTo(2));
+    });
+
+    testWidgets('keeps tablet portrait cards intentionally bounded', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1200, 2000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final waterChangeRect = tester.getRect(
+        find.bySemanticsLabel('Water Change, Calculate changes'),
+      );
+      final stockingRect = tester.getRect(
+        find.bySemanticsLabel('Stocking, Fish capacity'),
+      );
+      final co2Rect = tester.getRect(
+        find.bySemanticsLabel('CO2 Calculator, From pH & KH'),
+      );
+
+      expect(waterChangeRect.width, lessThanOrEqualTo(560));
+      expect(
+        (waterChangeRect.top - stockingRect.top).abs(),
+        lessThanOrEqualTo(2),
+      );
+      expect((waterChangeRect.top - co2Rect.top).abs(), lessThanOrEqualTo(2));
+    });
+
+    testWidgets('tool cards fit large text on a phone-sized screen', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final flutterErrors = <FlutterErrorDetails>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = flutterErrors.add;
+
+      await tester.pumpWidget(
+        _wrap(textScaler: const TextScaler.linear(1.3)),
+      );
       await _advance(tester);
 
       await tester.scrollUntilVisible(find.text('Cost Tracker'), 300);

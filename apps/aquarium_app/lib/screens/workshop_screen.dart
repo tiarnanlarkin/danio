@@ -18,6 +18,14 @@ import '../utils/navigation_throttle.dart';
 import 'tab_navigator.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
+int _workshopGridColumns(double crossAxisExtent) {
+  if (crossAxisExtent < 720) {
+    return 2;
+  }
+
+  return (crossAxisExtent / 380).floor().clamp(2, 4);
+}
+
 /// Workshop Room - Tools & Calculators
 class WorkshopScreen extends ConsumerStatefulWidget {
   const WorkshopScreen({super.key});
@@ -422,92 +430,100 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
               // Header
               SliverToBoxAdapter(child: _WorkshopHeader()),
 
-              // Tool cards - 10 cards in 2-col grid
+              // Tool cards
               SliverPadding(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                sliver: SliverGrid(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    mainAxisExtent: 184,
-                  ),
-                  delegate: SliverChildListDelegate([
-                    _ToolCard(
-                      icon: Icons.water_drop,
-                      title: 'Water Change',
-                      subtitle: 'Calculate changes',
-                      color: DanioColors.tealWater,
-                      onTap: _openWaterChangeCalculator,
-                    ),
-                    _ToolCard(
-                      icon: Icons.pool,
-                      title: 'Stocking',
-                      subtitle: 'Fish capacity',
-                      color: DanioColors.wishlistAmber,
-                      onTap: _openStockingCalculator,
-                    ),
-                    _ToolCard(
-                      icon: Icons.science,
-                      title: 'CO2 Calculator',
-                      subtitle: 'From pH & KH',
-                      color: DanioColors.tealWater,
-                      onTap: _openCo2Calculator,
-                    ),
-                    _ToolCard(
-                      icon: Icons.medication_liquid,
-                      title: 'Dosing',
-                      subtitle: 'Fertilizer calculator',
-                      color: AppColors.success,
-                      onTap: _openDosingCalculator,
-                    ),
-                    _ToolCard(
-                      icon: Icons.swap_horiz,
-                      title: 'Unit Converter',
-                      subtitle: 'Convert units',
-                      color: DanioColors.workshopAccentSteel,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const UnitConverterScreen(),
-                        rootNavigator: true,
+                sliver: SliverLayoutBuilder(
+                  builder: (context, constraints) {
+                    final columns = _workshopGridColumns(
+                      constraints.crossAxisExtent,
+                    );
+
+                    return SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columns,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        mainAxisExtent: 184,
                       ),
-                    ),
-                    _ToolCard(
-                      icon: Icons.calculate,
-                      title: 'Tank Volume',
-                      subtitle: 'Calculate capacity',
-                      color: DanioColors.tealWater,
-                      onTap: _openTankVolumeCalculator,
-                    ),
-                    _ToolCard(
-                      icon: Icons.lightbulb,
-                      title: 'Lighting',
-                      subtitle: 'Schedule lights',
-                      color: DanioColors.wishlistAmber,
-                      onTap: _openLightingSchedule,
-                    ),
+                      delegate: SliverChildListDelegate([
+                        _ToolCard(
+                          icon: Icons.water_drop,
+                          title: 'Water Change',
+                          subtitle: 'Calculate changes',
+                          color: DanioColors.tealWater,
+                          onTap: _openWaterChangeCalculator,
+                        ),
+                        _ToolCard(
+                          icon: Icons.pool,
+                          title: 'Stocking',
+                          subtitle: 'Fish capacity',
+                          color: DanioColors.wishlistAmber,
+                          onTap: _openStockingCalculator,
+                        ),
+                        _ToolCard(
+                          icon: Icons.science,
+                          title: 'CO2 Calculator',
+                          subtitle: 'From pH & KH',
+                          color: DanioColors.tealWater,
+                          onTap: _openCo2Calculator,
+                        ),
+                        _ToolCard(
+                          icon: Icons.medication_liquid,
+                          title: 'Dosing',
+                          subtitle: 'Fertilizer calculator',
+                          color: AppColors.success,
+                          onTap: _openDosingCalculator,
+                        ),
+                        _ToolCard(
+                          icon: Icons.swap_horiz,
+                          title: 'Unit Converter',
+                          subtitle: 'Convert units',
+                          color: DanioColors.workshopAccentSteel,
+                          onTap: () => NavigationThrottle.push(
+                            context,
+                            const UnitConverterScreen(),
+                            rootNavigator: true,
+                          ),
+                        ),
+                        _ToolCard(
+                          icon: Icons.calculate,
+                          title: 'Tank Volume',
+                          subtitle: 'Calculate capacity',
+                          color: DanioColors.tealWater,
+                          onTap: _openTankVolumeCalculator,
+                        ),
+                        _ToolCard(
+                          icon: Icons.lightbulb,
+                          title: 'Lighting',
+                          subtitle: 'Schedule lights',
+                          color: DanioColors.wishlistAmber,
+                          onTap: _openLightingSchedule,
+                        ),
 
-                    _ToolCard(
-                      icon: Icons.compare_arrows,
-                      title: 'Compatibility',
-                      subtitle: 'Check fish matches',
-                      color: DanioColors.wishlistAmber,
-                      onTap: _openCompatibilityChecker,
-                    ),
+                        _ToolCard(
+                          icon: Icons.compare_arrows,
+                          title: 'Compatibility',
+                          subtitle: 'Check fish matches',
+                          color: DanioColors.wishlistAmber,
+                          onTap: _openCompatibilityChecker,
+                        ),
 
-                    _ToolCard(
-                      icon: hasTank ? Icons.science : Icons.lock_outline,
-                      title: 'Cycling Assistant',
-                      subtitle: hasTank
-                          ? 'Track tank cycle'
-                          : 'Add a tank first',
-                      color: hasTank
-                          ? DanioColors.tealWater
-                          : DanioColors.workshopAccentSteel,
-                      onTap: hasTank ? _openCyclingAssistant : _openTankTab,
-                      locked: !hasTank,
-                    ),
-                  ]),
+                        _ToolCard(
+                          icon: hasTank ? Icons.science : Icons.lock_outline,
+                          title: 'Cycling Assistant',
+                          subtitle: hasTank
+                              ? 'Track tank cycle'
+                              : 'Add a tank first',
+                          color: hasTank
+                              ? DanioColors.tealWater
+                              : DanioColors.workshopAccentSteel,
+                          onTap: hasTank ? _openCyclingAssistant : _openTankTab,
+                          locked: !hasTank,
+                        ),
+                      ]),
+                    );
+                  },
                 ),
               ),
 
@@ -683,7 +699,7 @@ class _ToolCard extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 _ToolIconBadge(icon: icon, color: color),
-                                const SizedBox(height: AppSpacing.lg),
+                                const SizedBox(height: AppSpacing.sm),
                                 _ToolCopy(title: title, subtitle: subtitle),
                               ],
                             ),

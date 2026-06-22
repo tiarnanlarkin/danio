@@ -168,7 +168,7 @@ Recent CL-P1-009 continuation note:
 | ID | Area | Work | Acceptance |
 | --- | --- | --- | --- |
 | CL-P2-001 | Design system | Run a full visual redesign pass while preserving the current illustrated watercolor/tank-room direction. | Every screen has a clear primary job, custom-fit visual, and consistent hierarchy. |
-| CL-P2-002 | Tablet | Design tablet layouts instead of stretching phone screens. | Tank, Learn, Smart, tools, species, and timeline use tablet space intentionally. |
+| CL-P2-002 | Tablet | Design tablet layouts instead of stretching phone screens. | In progress; CL-P2-002A makes Workshop use bounded adaptive tool columns on tablet portrait/landscape and keeps phone large-text tool cards overflow-safe. Remaining: full tablet pass across Learn, Smart, species, timeline, and any remaining stretched phone surfaces. |
 | CL-P2-003 | Assets | Regenerate weak headers/backgrounds/sprites and add missing badges/decorations in the established style. | No first-class surface uses mismatched or low-quality art. |
 | CL-P2-004 | Accessibility | Meet baseline contrast, 48dp touch targets, labels/tooltips, text scaling, reduced motion, and non-colour-only status. | Basic accessibility audit passes on phone and tablet. |
 | CL-P2-005 | Motion/haptics | Add purposeful motion to tank life, feeding, rewards, warnings, onboarding, and feedback; keep haptics subtle and optional. | Motion adds charm and clarity without noise. |

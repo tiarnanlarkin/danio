@@ -2322,6 +2322,18 @@ CL-P1-010J Smart setup-context nudge contrast:
 - The captured phone and tablet result screens show no obvious visual overflow
   in the above-the-fold demo experience.
 
+### CL-P2-002A Workshop Adaptive Tablet Grid
+
+- Workshop no longer uses a fixed two-column phone grid on every screen size.
+  The tool grid now keeps two columns on compact phone widths, expands to
+  bounded three-column tablet portrait layouts, and uses a bounded multi-column
+  tablet landscape layout so calculator cards do not stretch across the display.
+- Tool cards use tighter icon-to-copy spacing so phone-sized large text avoids
+  vertical RenderFlex overflow without suppressing layout errors.
+- Focused widget coverage verifies phone overflow safety, phone large-text
+  safety, Android gesture-navigation inset clearance, tablet portrait bounded
+  card widths, and tablet landscape bounded first-row columns.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
@@ -2598,7 +2610,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   demo data without deleting real tanks, with final phone/tablet Android screen
   evidence captured under
   `docs/qa/screenshots/2026-06-22/cl-p1-012-demo-mode/`.
-- Tablet verification is not yet current.
+- Full-app tablet verification is not yet current, though Workshop now has
+  focused phone/tablet/large-text layout guardrails.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit can continue while `danio_api36` remains dedicated to
   Danio live preview.
