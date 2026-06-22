@@ -112,4 +112,27 @@ void main() {
     expect(gateSource, contains(r'android\app\mnt'));
     expect(gateSource, contains('dcm analyze lib'));
   });
+
+  test('dependabot setup monitors free public dependency ecosystems', () {
+    final config = File('../../.github/dependabot.yml');
+
+    expect(config.existsSync(), isTrue);
+
+    final source = config.readAsStringSync();
+    expect(source, contains('version: 2'));
+    expect(source, contains('package-ecosystem: "pub"'));
+    expect(source, contains('directory: "/apps/aquarium_app"'));
+    expect(
+      source,
+      contains('directory: "/apps/aquarium_app/tool/danio_custom_lints"'),
+    );
+    expect(source, contains('package-ecosystem: "gradle"'));
+    expect(source, contains('directory: "/apps/aquarium_app/android"'));
+    expect(source, contains('package-ecosystem: "github-actions"'));
+    expect(source, contains('directory: "/"'));
+    expect(source, contains('open-pull-requests-limit:'));
+    expect(source, isNot(contains('registries:')));
+    expect(source, isNot(contains('secrets.')));
+    expect(source, isNot(contains('token:')));
+  });
 }

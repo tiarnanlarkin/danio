@@ -63,6 +63,21 @@ The gate can detect and run these tools when installed locally:
 These tools are optional. Missing tools must not block ordinary product work
 unless `-StrictOptionalTools` is explicitly supplied.
 
+## Free GitHub Dependency Updates
+
+`.github/dependabot.yml` is configured after explicit user approval to open
+free GitHub pull requests for:
+
+- Flutter/Pub dependencies in `apps/aquarium_app`.
+- Pub dependencies in the local `tool/danio_custom_lints` package.
+- Android Gradle dependencies in `apps/aquarium_app/android`.
+- GitHub Actions used by `.github/workflows`.
+
+The config uses public package ecosystems only. Do not add private registries,
+tokens, paid package feeds, or account-specific credentials without a separate
+explicit request. Dependabot PRs are review inputs, not automatic approvals:
+run the relevant local quality gate before merging any dependency update.
+
 ## Static Analysis Stack
 
 Danio uses a layered local lint setup:
@@ -136,3 +151,10 @@ Checked on 2026-06-21:
   https://docs.qodo.ai/code-review
 - Codemagic Flutter builds:
   https://docs.codemagic.io/yaml-quick-start/building-a-flutter-app/
+
+Checked on 2026-06-22:
+
+- GitHub Dependabot configuration options:
+  https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
+- About the Dependabot configuration file:
+  https://docs.github.com/en/code-security/concepts/supply-chain-security/about-the-dependabot-yml-file

@@ -81,6 +81,19 @@ Run `flutter test test/copy/current_docs_local_truth_test.dart` if the docs desc
 Docs-only setup changes do not require a full Flutter suite or debug APK build
 unless they alter product truth, test instructions, or launch/readiness claims.
 
+## Dependabot PR Checks
+
+Dependabot PRs are allowed only as free GitHub dependency-update automation.
+Before merging one, run the smallest relevant local gate:
+
+- Pub/Flutter dependency PRs: `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full`
+- Android Gradle dependency PRs: `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep`
+- GitHub Actions dependency PRs: inspect workflow changes and run the local
+  docs/focused gate at minimum.
+
+Do not add private registries, tokens, or paid package feeds to
+`.github/dependabot.yml` without a separate explicit request.
+
 ## Android QA Discipline
 
 Use Android devices only when safe:
