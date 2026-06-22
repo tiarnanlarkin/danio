@@ -213,19 +213,20 @@ Danio uses a layered local lint setup:
 
 - `flutter analyze` with `very_good_analysis` as the baseline lint package.
 - `dart run dependency_validator` for missing, unused, under-promoted, and
-  over-promoted dependency checks. Danio excludes the nested
-  `tool/danio_custom_lints/**` package and ignores the local
-  `danio_custom_lints` analyzer plugin path dependency because it is used by
-  analyzer configuration rather than normal imports. Keep that allowlist in
+  over-promoted dependency checks. Danio excludes generated Flutter `build/**`
+  output plus the nested `tool/danio_custom_lints/**` package, and ignores the
+  local `danio_custom_lints` analyzer plugin path dependency because it is used
+  by analyzer configuration rather than normal imports. Keep that allowlist in
   `dart_dependency_validator.yaml`.
 - `dart run custom_lint` for Danio-specific local rules that generic Flutter
   lints cannot know about.
 - Local `danio_custom_lints` rules under `tool/danio_custom_lints/`.
 
-Use `scripts/quality_gates/run_local_quality_gate.ps1` for the custom-lint
-step on Windows. The wrapper clears generated Flutter output that can confuse
-workspace discovery and runs `dart run custom_lint` through a temporary
-no-space junction because this local repo path contains spaces.
+Use `scripts/quality_gates/run_local_quality_gate.ps1` for dependency
+validation and custom lint on Windows. The wrapper clears generated Flutter
+output that can confuse dependency/workspace discovery and runs
+`dart run custom_lint` through a temporary no-space junction because this local
+repo path contains spaces.
 
 Do not require a DCM license, CI key, dashboard, or cloud account for normal
 work. DCM is not part of the active quality path; use dependency validation,

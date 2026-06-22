@@ -329,6 +329,7 @@ function Invoke-CustomLint {
 
 function Invoke-DependencyValidator {
   Invoke-Step -Name "Dependency validator" -Command {
+    Clear-CustomLintGeneratedOutputs
     & dart run dependency_validator
     if ($global:LASTEXITCODE -ne 0) {
       throw "dart run dependency_validator failed with exit code $global:LASTEXITCODE"

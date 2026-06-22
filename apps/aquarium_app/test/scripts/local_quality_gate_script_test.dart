@@ -144,12 +144,14 @@ void main() {
       'dart_dependency_validator.yaml',
     ).readAsStringSync();
     final gateSource = File(scriptPath).readAsStringSync();
+    final normalizedGateSource = gateSource.replaceAll('\r\n', '\n');
 
     expect(appPubspec, contains('very_good_analysis:'));
     expect(appPubspec, contains('custom_lint:'));
     expect(appPubspec, contains('dependency_validator:'));
     expect(appPubspec, contains('danio_custom_lints:'));
     expect(appPubspec, isNot(contains('dependency_validator:\n  exclude:')));
+    expect(dependencyValidatorConfig, contains('build/**'));
     expect(dependencyValidatorConfig, contains('tool/danio_custom_lints/**'));
     expect(dependencyValidatorConfig, contains('danio_custom_lints'));
 
@@ -173,6 +175,14 @@ void main() {
     expect(gateSource, contains('dart run dependency_validator'));
     expect(gateSource, contains('Invoke-DependencyValidator'));
     expect(gateSource, contains('Clear-CustomLintGeneratedOutputs'));
+    expect(
+      normalizedGateSource,
+      contains(
+        'function Invoke-DependencyValidator {\n'
+        '  Invoke-Step -Name "Dependency validator" -Command {\n'
+        '    Clear-CustomLintGeneratedOutputs',
+      ),
+    );
     expect(gateSource, contains('danio_aquarium_lint_root'));
     expect(gateSource, contains(r'android\app\mnt'));
     expect(gateSource, isNot(contains('dcm analyze lib')));
