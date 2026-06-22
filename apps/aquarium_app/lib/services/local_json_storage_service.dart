@@ -152,6 +152,7 @@ class LocalJsonStorageService implements StorageService {
 
       // Attempt to parse JSON
       Map<String, dynamic> json;
+      var migrationRequired = false;
       try {
         final decoded = jsonDecode(raw);
         if (decoded is! Map<String, dynamic>) {
@@ -160,6 +161,8 @@ class LocalJsonStorageService implements StorageService {
           );
         }
         json = decoded;
+        final storedVersion = (json['version'] as int?) ?? 0;
+        migrationRequired = storedVersion < _schemaVersion;
 
         // FB-T3: Run forward-only schema migrations before loading entities.
         json = _migrateJson(json);
@@ -216,6 +219,19 @@ class LocalJsonStorageService implements StorageService {
       // Parse entities with robust error handling
       try {
         _parseAndLoadEntities(json);
+        if (migrationRequired) {
+          try {
+            await _persistLock.synchronized(
+              () => _persistMigratedJsonPayloadUnlocked(file, json),
+            );
+          } catch (e, stackTrace) {
+            logError(
+              'Storage migration stamp could not be persisted: $e',
+              stackTrace: stackTrace,
+              tag: 'LocalJsonStorageService',
+            );
+          }
+        }
 
         _state = StorageState.loaded;
         appLog(
@@ -516,6 +532,38 @@ class LocalJsonStorageService implements StorageService {
     // Log successful saves (can be removed in production)
     appLog(
       '💾 Storage persisted: ${tanks.length} tanks, ${livestock.length} livestock',
+      tag: 'LocalJsonStorageService',
+    );
+  }
+
+  Future<void> _persistMigratedJsonPayloadUnlocked(
+    File file,
+    Map<String, dynamic> migratedJson,
+  ) async {
+    final payload = Map<String, dynamic>.from(migratedJson)
+      ..['version'] = _schemaVersion
+      ..['updatedAt'] = DateTime.now().toIso8601String();
+
+    final tmp = File('${file.path}.tmp');
+    await tmp.writeAsString(jsonEncode(payload));
+
+    if (!_firstSaveDone && await file.exists()) {
+      final bak = File('${file.path}.bak');
+      try {
+        await file.copy(bak.path);
+        _firstSaveDone = true;
+      } catch (e) {
+        logError(
+          'Storage: backup creation failed before migration save: $e',
+          tag: 'LocalJsonStorageService',
+        );
+      }
+    }
+
+    await tmp.rename(file.path);
+
+    appLog(
+      'Storage migration stamp persisted: v$_schemaVersion',
       tag: 'LocalJsonStorageService',
     );
   }

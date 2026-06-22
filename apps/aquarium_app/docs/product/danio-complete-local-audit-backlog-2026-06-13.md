@@ -152,6 +152,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DE makes backup tank-scoped imports run through a tested
   transaction service that remaps related IDs, preserves timeline relationships,
   and rolls back imported tanks and children if a later child save fails.
+- CL-P1-009DF persists migrated local JSON schema stamps after loading v0/v1
+  files, so restore and migration walkthroughs do not re-run the same migration
+  on every launch.
 
 ## 7. P2 Work - Presentation System
 

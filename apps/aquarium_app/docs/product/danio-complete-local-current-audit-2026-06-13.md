@@ -2096,6 +2096,17 @@ CL-P1-009DD Local JSON storage atomic write failures:
   path-provider fake and verifies save/delete failures keep memory aligned with
   the last durable state.
 
+CL-P1-009DF Local JSON migration persistence:
+
+- Migrated local JSON files are now persisted back to disk after a successful
+  load, preserving the raw migrated payload while stamping the current schema
+  version.
+- This prevents older v0/v1 local files from re-running the same forward
+  migration on every launch after the app has already loaded them correctly.
+- Focused storage coverage writes a legacy v0 JSON file, reloads it through the
+  public recovery path, verifies tank defaults are applied on read, and checks
+  the file is stamped to schema version 2.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -2374,7 +2385,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   entity saves/deletes keep same-process reads aligned with the last durable
   file state, and backup tank-scoped imports now use a tested transaction
   service that remaps related IDs, preserves timeline relationships, and rolls
-  back imported tanks and children if a later child save fails. Remaining
+  back imported tanks and children if a later child save fails. Migrated local
+  JSON files are now stamped back to the current schema version after successful
+  load so old files do not re-run the same migration on every launch. Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
