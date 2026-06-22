@@ -2286,6 +2286,39 @@ CL-P1-010J Smart setup-context nudge contrast:
 - Remaining first-run work is live Android phone/tablet walkthrough evidence,
   not a known Fish Select layout blocker.
 
+### CL-P0-004H Final Android first-run walkthrough
+
+- Tablet walkthrough evidence is captured under
+  `docs/qa/screenshots/2026-06-22/cl-p0-004-first-run/` as
+  `tablet-01-welcome` through `tablet-07-tank-landing`.
+- Phone walkthrough evidence is captured in the same folder from an isolated
+  disposable `danio_phone_firstrun_api36` AVD so the active live-preview phone
+  and tablet states were not reset.
+- The phone sequence covers consent, Welcome, Region/Units, Experience Level,
+  Tank Status, Goals, Micro Lesson, XP Celebration, Fish Select grid,
+  Fish Select confirmation, Betta profile, Feature Summary, optional reminders,
+  Warm Entry, and the final Tank landing.
+- Final phone landing opens on the Tank tab with the onboarding-created
+  `Betta Paradise` tank, visible fish, plants, earned energy, and local action
+  controls.
+- CL-P0-004 is now closed for complete-local scope; future onboarding findings
+  should be filed as follow-up polish, not as remaining P0 first-run work.
+
+### CL-P0-005E Final Tank daily-loop Android visual QA
+
+- Phone and tablet Today Board evidence is captured under
+  `docs/qa/screenshots/2026-06-22/cl-p0-005-tank-daily-loop/`.
+- The final phone evidence is
+  `phone-02-today-panel-after-contrast-fix`, showing readable Today Board
+  cards after the dark Tank contrast fix.
+- The final tablet evidence is
+  `tablet-02-today-panel-after-semantics-fix`, showing the tablet Tank daily
+  loop after quick-care semantics were exposed to Android.
+- Focused widget tests, `flutter analyze`, the Focused gate, and the Visual
+  gate passed for the Tank daily-loop slice before this evidence was committed.
+- CL-P0-005 is now closed for complete-local scope; broader living-tank states
+  and seasonal/plant/decor depth remain tracked under P1 work.
+
 Current Android device state:
 
 - ADB previously saw `RFCY8022D5R` as `unauthorized`.
@@ -2294,6 +2327,8 @@ Current Android device state:
 - The dedicated `danio_tablet_api36` tablet emulator is attached as
   `emulator-5556` and is foregrounding `com.tiarnanlarkin.danio` for tablet
   QA.
+- A disposable `danio_phone_firstrun_api36` AVD was used only for fresh phone
+  first-run evidence so the live-preview devices were not reset.
 
 ## 5. Current Complete-Local Gap Map
 
@@ -2304,8 +2339,8 @@ P0 status:
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
 | CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
-| CL-P0-004 | In progress | CL-P0-004A completed region/units capture, profile persistence, and Preferences unit reset. CL-P0-004B completed quick-start sample handoff. CL-P0-004C completed explicit multi-goal capture after tank stage. CL-P0-004D completed setup-context Preferences repair and Smart nudge. CL-P0-004E constrained first-run privacy consent on tablet. CL-P0-004F constrained the main first-run onboarding reading/CTA surfaces on tablet. CL-P0-004G constrained Fish Select search/results and added adaptive tablet grid coverage. Remaining first-run work: final Android phone/tablet walkthrough evidence. |
-| CL-P0-005 | In progress | CL-P0-005A adds care priority and next-best action from water logs/tasks. CL-P0-005B makes the main Tank Feed action a direct log with safety feedback. CL-P0-005C adds a visible Today Board care rail for Feed, Test, Change, and Tasks. CL-P0-005D adds phone/tablet no-overflow and 48dp primary-control guardrails. Remaining: final Android phone/tablet visual QA. |
+| CL-P0-004 | Done | First-run now captures region/units, experience, tank stage, goals, quick-start sample handoff, setup-context repair prompts, tablet-constrained reading/CTA surfaces, adaptive Fish Select, and final Android phone/tablet walkthrough evidence under `docs/qa/screenshots/2026-06-22/cl-p0-004-first-run/`. |
+| CL-P0-005 | Done | Tank now acts as the daily ritual surface with care priority, next-best action, direct feeding feedback, visible Today Board quick care, phone/tablet layout guardrails, Android quick-care semantics, readable dark Tank contrast, and final phone/tablet visual QA under `docs/qa/screenshots/2026-06-22/cl-p0-005-tank-daily-loop/`. |
 | CL-P0-006 | Done | Emergency Guide is now directly reachable from Tank top bar, unsafe-water Tank alerts, Smart Hub, global search, More, LessonScreen, species detail sheets, and unsafe water-test save flows. |
 | CL-P0-007 | Done | Smart now works as a no-AI Aquarium Intelligence hub: local rules surface risks, suggestions, compatibility signals, care-plan actions, anomaly history, equipment maintenance, and checked reasons, with a full review screen and action routes. Richer per-tank/save-apply depth belongs to P1 guided workflows. |
 
