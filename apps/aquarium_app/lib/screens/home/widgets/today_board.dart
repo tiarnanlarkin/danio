@@ -174,11 +174,15 @@ class TodayBoardCard extends ConsumerWidget {
                 child: Text(
                   label,
                   style: AppTypography.labelMedium.copyWith(
-                    color: context.textSecondary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),
-              Icon(Icons.arrow_forward, size: 16, color: context.textSecondary),
+              const Icon(
+                Icons.arrow_forward,
+                size: 16,
+                color: AppColors.textSecondary,
+              ),
             ],
           ),
         ),
@@ -326,7 +330,7 @@ class _QuickCareAction extends StatelessWidget {
                 Text(
                   label,
                   style: AppTypography.labelSmall.copyWith(
-                    color: context.textPrimary,
+                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,
@@ -391,7 +395,7 @@ class _CarePriorityStrip extends StatelessWidget {
                       style: AppTypography.labelMedium.copyWith(
                         color: priority.level == TankCarePriorityLevel.emergency
                             ? AppColors.error
-                            : context.textPrimary,
+                            : AppColors.textPrimary,
                         fontWeight: FontWeight.w700,
                       ),
                       maxLines: 1,
@@ -401,7 +405,7 @@ class _CarePriorityStrip extends StatelessWidget {
                     Text(
                       priority.subtitle,
                       style: AppTypography.labelSmall.copyWith(
-                        color: context.textSecondary,
+                        color: AppColors.textSecondary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -534,7 +538,7 @@ class _TodayBoardContent extends StatelessWidget {
               Text(
                 'Next ${tasks.length.clamp(0, 3)} task${tasks.length == 1 ? '' : 's'}',
                 style: AppTypography.labelSmall.copyWith(
-                  color: context.textSecondary,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -584,7 +588,7 @@ class _TaskRow extends ConsumerWidget {
         ? AppColors.error
         : isToday
         ? AppColors.warning
-        : context.textSecondary;
+        : AppColors.textSecondary;
 
     String dueLabel;
     if (isOverdue) {
@@ -636,7 +640,7 @@ class _TaskRow extends ConsumerWidget {
                       ? AppColors.error
                       : isToday
                       ? AppColors.warning
-                      : context.textHint,
+                      : AppColors.textHint,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -645,7 +649,7 @@ class _TaskRow extends ConsumerWidget {
                 child: Text(
                   task.title,
                   style: AppTypography.bodySmall.copyWith(
-                    color: isOverdue ? AppColors.error : context.textPrimary,
+                    color: isOverdue ? AppColors.error : AppColors.textPrimary,
                     fontWeight: isOverdue || isToday
                         ? FontWeight.w600
                         : FontWeight.w400,
@@ -667,7 +671,7 @@ class _TaskRow extends ConsumerWidget {
                 child: Icon(
                   Icons.chevron_right,
                   size: 14,
-                  color: context.textHint,
+                  color: AppColors.textHint,
                 ),
               ),
             ],
@@ -727,7 +731,7 @@ class _DailyGoalBar extends ConsumerWidget {
                   style: AppTypography.labelSmall.copyWith(
                     color: isComplete
                         ? AppColors.success
-                        : context.textSecondary,
+                        : AppColors.textSecondary,
                     fontWeight: isComplete ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),
@@ -735,7 +739,7 @@ class _DailyGoalBar extends ConsumerWidget {
               Text(
                 '${(progress * 100).round()}%',
                 style: AppTypography.labelSmall.copyWith(
-                  color: isComplete ? AppColors.success : context.textHint,
+                  color: isComplete ? AppColors.success : AppColors.textHint,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -747,7 +751,7 @@ class _DailyGoalBar extends ConsumerWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 5,
-              backgroundColor: context.surfaceVariant,
+              backgroundColor: AppColors.surfaceVariant,
               valueColor: AlwaysStoppedAnimation<Color>(
                 isComplete ? AppColors.success : AppColors.warning,
               ),

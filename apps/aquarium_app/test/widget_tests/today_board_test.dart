@@ -14,6 +14,7 @@ import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/home/widgets/today_board.dart';
 import 'package:danio/screens/tasks_screen.dart';
 import 'package:danio/services/storage_service.dart';
+import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/semantics.dart';
@@ -24,6 +25,7 @@ Widget _wrap({
   required List<Task> tasks,
   List<LogEntry>? logs,
   StorageService? storage,
+  ThemeData? theme,
 }) {
   final resolvedLogs = logs ?? [_waterTest(), _feeding()];
   return ProviderScope(
@@ -36,8 +38,9 @@ Widget _wrap({
         (ref) => _FakeSrNotifier(_reviewStats()),
       ),
     ],
-    child: const MaterialApp(
-      home: Scaffold(body: TodayBoardCard(tankId: 'tank-1')),
+    child: MaterialApp(
+      theme: theme,
+      home: const Scaffold(body: TodayBoardCard(tankId: 'tank-1')),
     ),
   );
 }
@@ -146,6 +149,10 @@ LogEntry _feeding() {
   );
 }
 
+Color? _textColor(WidgetTester tester, String text) {
+  return tester.widget<Text>(find.text(text)).style?.color;
+}
+
 void main() {
   test('Today board source keeps visible separators ASCII-safe', () {
     final source = File(
@@ -214,6 +221,30 @@ void main() {
     } finally {
       semantics.dispose();
     }
+  });
+
+  testWidgets('Today board light cards keep readable text in dark Tank theme', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        dailyGoal: _completedGoal(),
+        tasks: [_task()],
+        theme: AppTheme.dark,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(_textColor(tester, 'Overdue care task'), AppColors.textPrimary);
+    expect(
+      _textColor(
+        tester,
+        'Open tasks and clear the most important maintenance item.',
+      ),
+      AppColors.textSecondary,
+    );
+    expect(_textColor(tester, 'Feed'), AppColors.textPrimary);
+    expect(_textColor(tester, 'Next 1 task'), AppColors.textSecondary);
   });
 
   testWidgets('Feed quick care action saves a feeding log directly', (
