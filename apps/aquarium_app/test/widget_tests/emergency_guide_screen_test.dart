@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/screens/emergency_guide_screen.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -55,6 +56,32 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       expect(find.text('CRITICAL'), findsWidgets);
+    });
+
+    testWidgets('tablet keeps intro and emergency cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final introCard = find
+          .ancestor(
+            of: find.textContaining('large water change'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      final emergencyCard = find
+          .ancestor(
+            of: find.text('Ammonia/Nitrite Spike'),
+            matching: find.byType(Card),
+          )
+          .first;
+
+      expect(tester.getSize(introCard).width, lessThanOrEqualTo(720));
+      expect(tester.getSize(emergencyCard).width, lessThanOrEqualTo(720));
     });
   });
 

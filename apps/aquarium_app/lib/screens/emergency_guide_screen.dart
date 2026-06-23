@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxEmergencyReadableWidth = 720;
+
 class EmergencyGuideScreen extends StatelessWidget {
   const EmergencyGuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Emergency Guide'),
@@ -15,8 +19,9 @@ class EmergencyGuideScreen extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems().length,
-        itemBuilder: (context, index) => _buildItems()[index],
+        itemCount: items.length,
+        itemBuilder: (context, index) =>
+            _EmergencyReadableFrame(child: items[index]),
       ),
     );
   }
@@ -217,6 +222,23 @@ class EmergencyGuideScreen extends StatelessWidget {
 
       const SizedBox(height: AppSpacing.xxl),
     ];
+  }
+}
+
+class _EmergencyReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _EmergencyReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxEmergencyReadableWidth),
+        child: child,
+      ),
+    );
   }
 }
 

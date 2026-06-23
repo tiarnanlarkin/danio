@@ -2648,6 +2648,17 @@ CL-P3-001A Optional AI provider setup boundary:
   surfaces stay at or below the 720px tablet readability bound on a 2000x1200
   tablet viewport.
 
+### CL-P2-002V Emergency Guide Tablet Readability
+
+- Emergency Guide now centers the quick-reference intro, emergency expansion
+  cards, and emergency-kit checklist in the same readable 720px rail on wide
+  tablet surfaces.
+- Existing urgency labels, emergency actions, follow-up advice, and kit
+  checklist copy remain unchanged.
+- Focused widget coverage verifies representative intro and emergency card
+  surfaces stay at or below the 720px tablet readability bound on a 2000x1200
+  tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
