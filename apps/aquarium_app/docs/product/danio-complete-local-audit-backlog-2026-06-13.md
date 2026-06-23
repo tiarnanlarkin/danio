@@ -183,7 +183,7 @@ AI expansion comes after the local core is strong.
 
 | ID | Area | Work | Acceptance |
 | --- | --- | --- | --- |
-| CL-P3-001 | Providers | Add provider model: OpenAI, Anthropic, Gemini, OpenRouter, Mistral, and recommended default. | Users can understand capabilities and choose/configure provider keys. |
+| CL-P3-001 | Providers | Add provider model: OpenAI, Anthropic, Gemini, OpenRouter, Mistral, and recommended default. | In progress; CL-P3-001A makes Optional AI setup provider-aware by naming OpenAI as the current recommended BYO key provider, listing Anthropic, Google Gemini, OpenRouter, and Mistral as unavailable local key paths in this version, and fixing tall dialog overflow. Remaining: implement real non-OpenAI provider connectors before enabling those key paths. |
 | CL-P3-002 | Confirm writes | Require confirmation before AI changes tank data, tasks, journal, reminders, or care plans. | AI never silently mutates user data. |
 | CL-P3-003 | Premium path | Design premium AI power as optional, not required for core app usefulness. | Local/free app still feels complete. |
 | CL-P3-004 | Citations | Add source/citation support where it helps learning/trust without damaging the visual style. | Learning and advice screens can show source trail subtly. |

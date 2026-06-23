@@ -215,6 +215,28 @@ void main() {
       );
     });
 
+    testWidgets('Optional AI setup explains provider status', (tester) async {
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      await _dragUntilTextVisible(tester, 'Optional AI');
+      await tester.tap(find.text('Optional AI').first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Recommended provider'), findsOneWidget);
+      expect(find.text('OpenAI'), findsWidgets);
+      expect(find.text('Current bring-your-own key provider'), findsOneWidget);
+      expect(find.text('Provider targets'), findsOneWidget);
+      expect(find.text('Anthropic'), findsOneWidget);
+      expect(find.text('Google Gemini'), findsOneWidget);
+      expect(find.text('OpenRouter'), findsOneWidget);
+      expect(find.text('Mistral'), findsOneWidget);
+      expect(
+        find.text('Not available for local keys in this version'),
+        findsNWidgets(4),
+      );
+    });
+
     testWidgets('failed crash-report consent save keeps switch unchanged', (
       tester,
     ) async {

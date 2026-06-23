@@ -1635,6 +1635,8 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),
                   const SizedBox(height: AppSpacing.md),
+                  const _AiProviderStatusCard(),
+                  const SizedBox(height: AppSpacing.md),
                   _AiDisclosurePreferenceStatus(
                     isAccepted: _aiDisclosureAccepted,
                   ),
@@ -1695,6 +1697,124 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
                 ],
               ),
       ),
+    );
+  }
+}
+
+class _AiProviderStatusCard extends StatelessWidget {
+  const _AiProviderStatusCard();
+
+  static const _targetProviders = [
+    'Anthropic',
+    'Google Gemini',
+    'OpenRouter',
+    'Mistral',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.sm2),
+      decoration: BoxDecoration(
+        color: AppColors.primaryAlpha05,
+        borderRadius: AppRadius.md2Radius,
+        border: Border.all(color: AppColors.primaryAlpha15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Recommended provider',
+            style: AppTypography.labelMedium.copyWith(
+              color: context.textPrimary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.check_circle_outline,
+                color: AppColors.success,
+                size: 20,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'OpenAI',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: context.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxs),
+                    Text(
+                      'Current bring-your-own key provider',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          Text(
+            'Provider targets',
+            style: AppTypography.labelMedium.copyWith(
+              color: context.textPrimary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          for (final provider in _targetProviders) ...[
+            _ProviderTargetRow(provider: provider),
+            if (provider != _targetProviders.last)
+              const SizedBox(height: AppSpacing.xs),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ProviderTargetRow extends StatelessWidget {
+  const _ProviderTargetRow({required this.provider});
+
+  final String provider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.radio_button_unchecked, color: context.textHint, size: 18),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                provider,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: context.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                'Not available for local keys in this version',
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

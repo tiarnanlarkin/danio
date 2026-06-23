@@ -52,39 +52,46 @@ class AppDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: 40, color: iconColor ?? AppColors.primary),
-              const SizedBox(height: AppSpacing.sm),
-            ],
-            if (title != null) ...[
-              Text(
-                title!,
-                style: AppTypography.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-            ],
-            if (child != null) ...[
-              DefaultTextStyle(
-                style: AppTypography.body.copyWith(
-                  color: isDark
-                      ? AppColors.textSecondaryDark
-                      : AppColors.textSecondary,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.86,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 40, color: iconColor ?? AppColors.primary),
+                const SizedBox(height: AppSpacing.sm),
+              ],
+              if (title != null) ...[
+                Text(
+                  title!,
+                  style: AppTypography.titleMedium,
+                  textAlign: TextAlign.center,
                 ),
-                child: child!,
-              ),
+                const SizedBox(height: AppSpacing.sm),
+              ],
+              if (child != null) ...[
+                Flexible(
+                  child: DefaultTextStyle(
+                    style: AppTypography.body.copyWith(
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondary,
+                    ),
+                    child: child!,
+                  ),
+                ),
+              ],
+              if (actions != null && actions!.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.lg),
+                ...actions!,
+              ],
             ],
-            if (actions != null && actions!.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.lg),
-              ...actions!,
-            ],
-          ],
+          ),
         ),
       ),
     );

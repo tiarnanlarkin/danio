@@ -2278,6 +2278,19 @@ CL-P1-010J Smart setup-context nudge contrast:
 - Focused widget coverage verifies the nudge title/body colors and contrast
   against the light setup-card surface.
 
+CL-P3-001A Optional AI provider setup boundary:
+
+- Preferences > Smart Hub > Optional AI now shows a provider-status section
+  instead of presenting the setup as an unexplained OpenAI-only key field.
+- OpenAI is labelled as the recommended current bring-your-own key provider.
+- Anthropic, Google Gemini, OpenRouter, and Mistral are named as provider
+  targets, but are explicitly marked as not available for local keys in this
+  version so the UI does not pretend unsupported connectors work.
+- `AppDialog` now constrains tall dialog content and flexes the body above fixed
+  action buttons, so richer settings dialogs scroll instead of overflowing.
+- Focused widget coverage verifies the provider-status copy and catches the
+  Optional AI dialog overflow regression.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -2451,7 +2464,10 @@ P0 status:
 
 High-confidence P1/P2 gaps from code/docs evidence:
 
-- AI is still OpenAI-first rather than provider-aware.
+- Optional AI setup now names the provider boundary, with OpenAI as the current
+  recommended bring-your-own key provider and Anthropic, Google Gemini,
+  OpenRouter, and Mistral visible but honestly disabled as local key paths.
+  Runtime AI calls are still OpenAI-first until those connectors are built.
 - Living Tank visuals now react to latest water-test state, old water-change
   logs, feeding events, livestock health/compatibility cues, aquascape equipment
   cues, earned species progression, and equipped earned decorations. Remaining
@@ -2611,7 +2627,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   animation checks, Notification Settings now has guided reminder intensity
   presets, Preferences links directly to the Privacy Policy, and Optional AI
   disclosure acceptance can be reset from Preferences. Optional AI setup now
-  links directly to the Privacy Policy from the setup dialog, and the Smart
+  links directly to the Privacy Policy from the setup dialog, names OpenAI as
+  the current recommended BYO provider, lists the remaining provider targets
+  honestly as unavailable local key paths in this version, and the Smart
   setup-context nudge now uses readable light-card text colors. Remaining
   profile/preferences work is any final AI/provider walkthrough gaps.
 - Global search now has complete-local coverage for app destinations, tools,
