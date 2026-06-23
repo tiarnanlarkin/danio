@@ -120,6 +120,34 @@ void main() {
       expect(find.text('6'), findsOneWidget);
       expect(find.text('Search and add fish above'), findsNothing);
     });
+
+    testWidgets('tablet keeps setup, meter, and search readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(
+        tester.getSize(find.widgetWithText(TextField, '100')).width,
+        lessThanOrEqualTo(720),
+      );
+
+      final meterCard = find
+          .ancestor(
+            of: find.text('Lightly Stocked'),
+            matching: find.byType(Card),
+          )
+          .first;
+      expect(tester.getSize(meterCard).width, lessThanOrEqualTo(720));
+
+      expect(
+        tester.getSize(find.byType(TextField).last).width,
+        lessThanOrEqualTo(720),
+      );
+    });
   });
 
   group('StockingCalculatorScreen - validation and calculation', () {

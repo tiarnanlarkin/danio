@@ -9,6 +9,8 @@ import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_text_field.dart';
 import 'add_log_screen.dart';
 
+const double _maxStockingReadableWidth = 720;
+
 class StockingCalculatorScreen extends StatefulWidget {
   final String? tankId;
   final double? initialTankVolumeLitres;
@@ -257,113 +259,122 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
         child: Column(
           children: [
             // Tank setup
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: AppTextField(
-                      controller: _tankVolumeController,
-                      label: 'Tank (L)',
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
+            _StockingReadableFrame(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: AppTextField(
+                        controller: _tankVolumeController,
+                        label: 'Tank (L)',
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                        ],
+                        onChanged: (_) => setState(() {}),
                       ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                    ),
+                    const SizedBox(width: AppSpacing.sm2),
+                    Expanded(
+                      flex: 2,
+                      child: AppTextField(
+                        controller: _filterRatingController,
+                        label: 'Filter x',
+                        hint: '1.0 = standard',
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        onChanged: (_) => setState(() {}),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm2),
+                    Column(
+                      children: [
+                        Text(
+                          'Plants',
+                          style: Theme.of(context).textTheme.bodySmall!,
+                        ),
+                        Switch(
+                          value: _hasLivePlants,
+                          onChanged: (v) => setState(() => _hasLivePlants = v),
+                        ),
                       ],
-                      onChanged: (_) => setState(() {}),
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Expanded(
-                    flex: 2,
-                    child: AppTextField(
-                      controller: _filterRatingController,
-                      label: 'Filter x',
-                      hint: '1.0 = standard',
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Column(
-                    children: [
-                      Text(
-                        'Plants',
-                        style: Theme.of(context).textTheme.bodySmall!,
-                      ),
-                      Switch(
-                        value: _hasLivePlants,
-                        onChanged: (v) => setState(() => _hasLivePlants = v),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
             if (_setupValidationMessage != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  0,
-                  AppSpacing.md,
-                  AppSpacing.sm,
-                ),
-                child: Text(
-                  _setupValidationMessage!,
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.error,
+              _StockingReadableFrame(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    0,
+                    AppSpacing.md,
+                    AppSpacing.sm,
+                  ),
+                  child: Text(
+                    _setupValidationMessage!,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.error,
+                    ),
                   ),
                 ),
               ),
 
             // Stocking meter
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: Card(
-                color: _stockingColor.withAlpha(26),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${_stockingPercent.toStringAsFixed(0)}%',
-                            style: AppTypography.headlineLarge.copyWith(
-                              color: _stockingColor,
+            _StockingReadableFrame(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: Card(
+                  color: _stockingColor.withAlpha(26),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${_stockingPercent.toStringAsFixed(0)}%',
+                              style: AppTypography.headlineLarge.copyWith(
+                                color: _stockingColor,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm2),
-                          Text(_stockingLevel, style: AppTypography.labelLarge),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.sm2),
-                      ClipRRect(
-                        borderRadius: AppRadius.smallRadius,
-                        child: LinearProgressIndicator(
-                          value: (_stockingPercent / 120).clamp(0, 1),
-                          backgroundColor: context.surfaceVariant,
-                          valueColor: AlwaysStoppedAnimation(_stockingColor),
-                          minHeight: 12,
+                            const SizedBox(width: AppSpacing.sm2),
+                            Text(
+                              _stockingLevel,
+                              style: AppTypography.labelLarge,
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('0%', style: AppTypography.bodySmall),
-                          Text('75%', style: AppTypography.bodySmall),
-                          Text('100%', style: AppTypography.bodySmall),
-                          Text('120%', style: AppTypography.bodySmall),
-                        ],
-                      ),
-                    ],
+                        const SizedBox(height: AppSpacing.sm2),
+                        ClipRRect(
+                          borderRadius: AppRadius.smallRadius,
+                          child: LinearProgressIndicator(
+                            value: (_stockingPercent / 120).clamp(0, 1),
+                            backgroundColor: context.surfaceVariant,
+                            valueColor: AlwaysStoppedAnimation(_stockingColor),
+                            minHeight: 12,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('0%', style: AppTypography.bodySmall),
+                            Text('75%', style: AppTypography.bodySmall),
+                            Text('100%', style: AppTypography.bodySmall),
+                            Text('120%', style: AppTypography.bodySmall),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -372,54 +383,58 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
             const SizedBox(height: AppSpacing.md),
 
             // Search
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: AppSearchField(
-                controller: _searchController,
-                hint: 'Search fish to add...',
-                onChanged: (v) {
-                  _debounce?.cancel();
-                  _debounce = Timer(kDebounceDuration, () {
-                    setState(() => _searchQuery = v);
-                  });
-                },
+            _StockingReadableFrame(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: AppSearchField(
+                  controller: _searchController,
+                  hint: 'Search fish to add...',
+                  onChanged: (v) {
+                    _debounce?.cancel();
+                    _debounce = Timer(kDebounceDuration, () {
+                      setState(() => _searchQuery = v);
+                    });
+                  },
+                ),
               ),
             ),
 
             // Search results
             if (_searchResults.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: AppRadius.mediumRadius,
-                  boxShadow: [
-                    BoxShadow(color: AppOverlays.black12, blurRadius: 8),
-                  ],
-                ),
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _searchResults.length,
-                    itemBuilder: (ctx, i) {
-                      final species = _searchResults[i];
-                      return ListTile(
-                        dense: true,
-                        leading: const Icon(
-                          Icons.add_circle_outline,
-                          size: AppIconSizes.sm,
-                        ),
-                        title: Text(species.commonName),
-                        subtitle: Text(
-                          '${species.adultSizeCm.toStringAsFixed(0)}cm adult',
-                        ),
-                        onTap: () => _addStock(species),
-                      );
-                    },
+              _StockingReadableFrame(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: AppRadius.mediumRadius,
+                    boxShadow: [
+                      BoxShadow(color: AppOverlays.black12, blurRadius: 8),
+                    ],
+                  ),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _searchResults.length,
+                      itemBuilder: (ctx, i) {
+                        final species = _searchResults[i];
+                        return ListTile(
+                          dense: true,
+                          leading: const Icon(
+                            Icons.add_circle_outline,
+                            size: AppIconSizes.sm,
+                          ),
+                          title: Text(species.commonName),
+                          subtitle: Text(
+                            '${species.adultSizeCm.toStringAsFixed(0)}cm adult',
+                          ),
+                          onTap: () => _addStock(species),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -440,33 +455,39 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                       itemCount: _stock.length,
                       itemBuilder: (ctx, i) {
                         final entry = _stock[i];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: ListTile(
-                            title: Text(entry.species.commonName),
-                            subtitle: Text(
-                              '${entry.species.adultSizeCm.toStringAsFixed(0)}cm x ${entry.count} = '
-                              '${(entry.species.adultSizeCm * entry.count * _getBioloadMultiplier(entry.species)).toStringAsFixed(1)} bioload',
-                              style: AppTypography.bodySmall,
+                        return _StockingReadableFrame(
+                          child: Card(
+                            margin: const EdgeInsets.only(
+                              bottom: AppSpacing.sm,
                             ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  tooltip: 'Remove fish',
-                                  icon: const Icon(Icons.remove_circle_outline),
-                                  onPressed: () => _updateCount(entry, -1),
-                                ),
-                                Text(
-                                  '${entry.count}',
-                                  style: AppTypography.labelLarge,
-                                ),
-                                IconButton(
-                                  tooltip: 'Add fish',
-                                  icon: const Icon(Icons.add_circle_outline),
-                                  onPressed: () => _updateCount(entry, 1),
-                                ),
-                              ],
+                            child: ListTile(
+                              title: Text(entry.species.commonName),
+                              subtitle: Text(
+                                '${entry.species.adultSizeCm.toStringAsFixed(0)}cm x ${entry.count} = '
+                                '${(entry.species.adultSizeCm * entry.count * _getBioloadMultiplier(entry.species)).toStringAsFixed(1)} bioload',
+                                style: AppTypography.bodySmall,
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Remove fish',
+                                    icon: const Icon(
+                                      Icons.remove_circle_outline,
+                                    ),
+                                    onPressed: () => _updateCount(entry, -1),
+                                  ),
+                                  Text(
+                                    '${entry.count}',
+                                    style: AppTypography.labelLarge,
+                                  ),
+                                  IconButton(
+                                    tooltip: 'Add fish',
+                                    icon: const Icon(Icons.add_circle_outline),
+                                    onPressed: () => _updateCount(entry, 1),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -476,85 +497,104 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
 
             // Tips
             if (_stock.isNotEmpty)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacing.md),
-                color: AppOverlays.surfaceVariant50,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_stockingPercent > 100)
-                      _stockingAdvice(
-                        icon: Icons.warning_amber_rounded,
-                        iconColor: AppColors.error,
-                        semanticLabel: 'Stocking warning',
-                        text:
-                            'Overstocked: Expect frequent water changes and potential aggression.',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.error,
-                        ),
-                      )
-                    else if (_stockingPercent > 75)
-                      _stockingAdvice(
-                        icon: Icons.info_outline,
-                        iconColor: AppColors.warning,
-                        semanticLabel: 'Stocking tip',
-                        text:
-                            'Tip: Weekly water changes recommended at this stocking level.',
-                      )
-                    else
-                      _stockingAdvice(
-                        icon: Icons.check_circle_outline,
-                        iconColor: AppColors.success,
-                        semanticLabel: 'Stocking level ok',
-                        text: 'Good stocking level with room to grow.',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.success,
-                        ),
-                      ),
-                    if (_canLogStocking) ...[
-                      const SizedBox(height: AppSpacing.md),
-                      const Divider(height: 1),
-                      const SizedBox(height: AppSpacing.md),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.route_outlined,
-                            color: AppColors.info,
-                            size: AppIconSizes.sm,
+              _StockingReadableFrame(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  color: AppOverlays.surfaceVariant50,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_stockingPercent > 100)
+                        _stockingAdvice(
+                          icon: Icons.warning_amber_rounded,
+                          iconColor: AppColors.error,
+                          semanticLabel: 'Stocking warning',
+                          text:
+                              'Overstocked: Expect frequent water changes and potential aggression.',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.error,
                           ),
-                          const SizedBox(width: AppSpacing.sm2),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Guided next step',
-                                  style: AppTypography.labelLarge,
-                                ),
-                                const SizedBox(height: AppSpacing.xs),
-                                Text(
-                                  'Save this stocking check to the tank journal before you buy or move fish.',
-                                  style: AppTypography.bodySmall,
-                                ),
-                              ],
+                        )
+                      else if (_stockingPercent > 75)
+                        _stockingAdvice(
+                          icon: Icons.info_outline,
+                          iconColor: AppColors.warning,
+                          semanticLabel: 'Stocking tip',
+                          text:
+                              'Tip: Weekly water changes recommended at this stocking level.',
+                        )
+                      else
+                        _stockingAdvice(
+                          icon: Icons.check_circle_outline,
+                          iconColor: AppColors.success,
+                          semanticLabel: 'Stocking level ok',
+                          text: 'Good stocking level with room to grow.',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.success,
+                          ),
+                        ),
+                      if (_canLogStocking) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        const Divider(height: 1),
+                        const SizedBox(height: AppSpacing.md),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.route_outlined,
+                              color: AppColors.info,
+                              size: AppIconSizes.sm,
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      FilledButton.icon(
-                        onPressed: _logStockingCheck,
-                        icon: const Icon(Icons.edit_note_rounded),
-                        label: const Text('Log stocking check'),
-                      ),
+                            const SizedBox(width: AppSpacing.sm2),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Guided next step',
+                                    style: AppTypography.labelLarge,
+                                  ),
+                                  const SizedBox(height: AppSpacing.xs),
+                                  Text(
+                                    'Save this stocking check to the tank journal before you buy or move fish.',
+                                    style: AppTypography.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        FilledButton.icon(
+                          onPressed: _logStockingCheck,
+                          icon: const Icon(Icons.edit_note_rounded),
+                          label: const Text('Log stocking check'),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _StockingReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _StockingReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxStockingReadableWidth),
+        child: child,
       ),
     );
   }
