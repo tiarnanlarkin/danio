@@ -31,6 +31,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 
 const _uuid = Uuid();
+const double _maxEquipmentReadableWidth = 720;
 
 String _maintenanceTaskId(String equipmentId) =>
     'equip_${equipmentId}_maintenance';
@@ -112,12 +113,14 @@ class EquipmentScreen extends ConsumerWidget {
         itemCount: placeholders.length,
         itemBuilder: (context, index) {
           final equipment = placeholders[index];
-          return _EquipmentCard(
-            equipment: equipment,
-            onEdit: () {},
-            onService: () {},
-            onHistory: () {},
-            onDelete: () {},
+          return _EquipmentReadableFrame(
+            child: _EquipmentCard(
+              equipment: equipment,
+              onEdit: () {},
+              onService: () {},
+              onHistory: () {},
+              onDelete: () {},
+            ),
           );
         },
       ),
@@ -177,33 +180,35 @@ class EquipmentScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 // Summary card
                 if (overdue > 0 && index == 0) {
-                  return AppCard(
-                    backgroundColor: AppOverlays.warning10,
-                    padding: AppCardPadding.standard,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.warning_amber,
-                          color: AppColors.warning,
-                          size: 32,
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '$overdue maintenance overdue',
-                                style: AppTypography.labelLarge,
-                              ),
-                              Text(
-                                'Check equipment below',
-                                style: AppTypography.bodySmall,
-                              ),
-                            ],
+                  return _EquipmentReadableFrame(
+                    child: AppCard(
+                      backgroundColor: AppOverlays.warning10,
+                      padding: AppCardPadding.standard,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.warning_amber,
+                            color: AppColors.warning,
+                            size: 32,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '$overdue maintenance overdue',
+                                  style: AppTypography.labelLarge,
+                                ),
+                                Text(
+                                  'Check equipment below',
+                                  style: AppTypography.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 } else if (overdue > 0 && index == 1) {
@@ -212,13 +217,15 @@ class EquipmentScreen extends ConsumerWidget {
                   // List with staggered animation
                   final equipmentIndex = overdue > 0 ? index - 2 : index;
                   final e = equipment[equipmentIndex];
-                  return _EquipmentCard(
-                        equipment: e,
-                        onEdit: () => _showEditDialog(context, ref, e),
-                        onService: () => _markServiced(context, ref, e),
-                        onHistory: () =>
-                            _showEquipmentHistoryDialog(context, e),
-                        onDelete: () => _confirmDelete(context, ref, e),
+                  return _EquipmentReadableFrame(
+                        child: _EquipmentCard(
+                          equipment: e,
+                          onEdit: () => _showEditDialog(context, ref, e),
+                          onService: () => _markServiced(context, ref, e),
+                          onHistory: () =>
+                              _showEquipmentHistoryDialog(context, e),
+                          onDelete: () => _confirmDelete(context, ref, e),
+                        ),
                       )
                       .animate()
                       .fadeIn(delay: (50 * equipmentIndex).ms, duration: 300.ms)
@@ -595,6 +602,23 @@ class _EquipmentHistoryContent extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _EquipmentReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _EquipmentReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxEquipmentReadableWidth),
+        child: child,
       ),
     );
   }

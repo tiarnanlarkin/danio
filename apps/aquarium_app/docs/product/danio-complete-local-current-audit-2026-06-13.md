@@ -2505,6 +2505,16 @@ CL-P3-001A Optional AI provider setup boundary:
   surfaces stay at or below the 720px tablet readability bound on a 2000x1200
   tablet viewport.
 
+### CL-P2-002I Equipment Tablet Readability
+
+- Equipment now centers loading skeleton cards, overdue-maintenance warnings,
+  and equipment cards in the same readable 720px rail on wide tablet surfaces.
+- Existing equipment add, service, history, remove, undo, and maintenance-task
+  behavior remains unchanged.
+- Focused widget coverage verifies representative Equipment loading, warning,
+  and row-card surfaces stay at or below the 720px tablet readability bound on
+  a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

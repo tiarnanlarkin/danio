@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/equipment_screen_test.dart
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,9 +11,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/equipment_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/theme/app_theme.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -44,6 +48,16 @@ Widget _wrapWithStorage({
 }) {
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(home: EquipmentScreen(tankId: tankId)),
+  );
+}
+
+Widget _wrapLoading({String tankId = 'tank-1'}) {
+  final loading = Completer<List<Equipment>>();
+  return ProviderScope(
+    overrides: [
+      equipmentProvider(tankId).overrideWith((ref) => loading.future),
+    ],
     child: MaterialApp(home: EquipmentScreen(tankId: tankId)),
   );
 }
@@ -352,6 +366,19 @@ void main() {
       expect(find.byType(FloatingActionButton), findsNothing);
     });
 
+    testWidgets('tablet keeps loading skeleton cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrapLoading());
+      await tester.pump();
+
+      final skeletonCard = find.byType(Card).first;
+      expect(tester.getSize(skeletonCard).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets(
       'empty state title uses iconography instead of raw emoji text',
       (tester) async {
@@ -407,6 +434,46 @@ void main() {
       expect(find.text('Fluval 307'), findsOneWidget);
     });
 
+    testWidgets('tablet keeps equipment warning and cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      final equip = Equipment(
+        id: 'tablet-equip',
+        tankId: 'tank-1',
+        type: EquipmentType.filter,
+        name: 'Canister filter',
+        maintenanceIntervalDays: 14,
+        lastServiced: _now.subtract(const Duration(days: 30)),
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveEquipment(equip);
+
+      await tester.pumpWidget(_wrap(storage: svc));
+      await _advance(tester);
+
+      final warningCard = find
+          .ancestor(
+            of: find.text('1 maintenance overdue'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(warningCard).width, lessThanOrEqualTo(720));
+
+      final equipmentCard = find
+          .ancestor(
+            of: find.text('Canister filter'),
+            matching: find.byType(Card),
+          )
+          .first;
+      expect(tester.getSize(equipmentCard).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets(
       'last-serviced history icon uses the minimum legible app size',
       (tester) async {
@@ -425,7 +492,15 @@ void main() {
         await tester.pumpWidget(_wrap(storage: svc));
         await _advance(tester);
 
-        final historyIcon = tester.widget<Icon>(find.byIcon(Icons.history));
+        final serviceRow = find
+            .ancestor(
+              of: find.textContaining('Last serviced'),
+              matching: find.byType(Row),
+            )
+            .first;
+        final historyIcon = tester.widget<Icon>(
+          find.descendant(of: serviceRow, matching: find.byIcon(Icons.history)),
+        );
         expect(historyIcon.size, greaterThanOrEqualTo(AppIconSizes.xs));
       },
     );
