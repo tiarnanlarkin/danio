@@ -13,6 +13,7 @@ import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/lighting_schedule_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 final _now = DateTime.now();
 
@@ -104,6 +105,38 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       expect(find.text('Schedule'), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps primary cards readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final introCard = find
+          .ancestor(
+            of: find.textContaining('Proper lighting duration'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(introCard).width, lessThanOrEqualTo(720));
+
+      final setupCard = find
+          .ancestor(
+            of: find.text('Live Plants'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(setupCard).width, lessThanOrEqualTo(720));
+
+      final timelineCard = find
+          .ancestor(
+            of: find.text('Total Light: '),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(timelineCard).width, lessThanOrEqualTo(720));
     });
   });
 

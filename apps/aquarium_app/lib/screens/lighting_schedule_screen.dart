@@ -5,6 +5,8 @@ import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
 import 'add_log_screen.dart';
 
+const double _maxLightingReadableWidth = 720;
+
 class LightingScheduleScreen extends StatefulWidget {
   final String? tankId;
   final TimeOfDay? initialLightsOn;
@@ -419,7 +421,8 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
         top: false,
         child: ListView.builder(
           padding: const EdgeInsets.all(AppSpacing.md),
-          itemBuilder: (context, index) => items[index],
+          itemBuilder: (context, index) =>
+              _LightingReadableFrame(child: items[index]),
           itemCount: items.length,
         ),
       ),
@@ -464,6 +467,23 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
         }
       });
     }
+  }
+}
+
+class _LightingReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _LightingReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxLightingReadableWidth),
+        child: child,
+      ),
+    );
   }
 }
 

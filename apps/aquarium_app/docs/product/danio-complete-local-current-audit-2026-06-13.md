@@ -2548,6 +2548,17 @@ CL-P3-001A Optional AI provider setup boundary:
   surfaces stay at or below the 720px tablet readability bound on a 2000x1200
   tablet viewport.
 
+### CL-P2-002M Lighting Schedule Tablet Readability
+
+- Lighting Schedule now centers setup, schedule, timeline, recommendation,
+  guided-log, quick-guide, and CO2 timing content in the same readable 720px
+  rail on wide tablet surfaces.
+- Existing lighting-duration calculations, siesta overlap handling,
+  recommendation copy, and journal handoff remain unchanged.
+- Focused widget coverage verifies representative intro, setup, and timeline
+  cards stay at or below the 720px tablet readability bound on a 2000x1200
+  tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
