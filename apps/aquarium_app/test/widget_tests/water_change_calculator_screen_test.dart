@@ -12,6 +12,7 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/water_change_calculator_screen.dart';
 import 'package:danio/services/storage_service.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -81,6 +82,47 @@ void main() {
       await tester.pump();
       // Nitrate Levels section is always visible above the fold
       expect(find.text('Nitrate Levels'), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps calculator cards readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank());
+      await tester.pumpWidget(_wrap(tankId: 'tank-1', storage: storage));
+      await tester.pump();
+
+      final introCard = find
+          .ancestor(
+            of: find.textContaining('Calculate exactly how much water'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(introCard).width, lessThanOrEqualTo(720));
+
+      final resultCard = find
+          .ancestor(
+            of: find.text('Water Change Needed'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(resultCard).width, lessThanOrEqualTo(720));
+
+      await tester.scrollUntilVisible(
+        find.text('Guided next step'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      final guidedCard = find
+          .ancestor(
+            of: find.text('Guided next step'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(guidedCard).width, lessThanOrEqualTo(720));
     });
   });
 

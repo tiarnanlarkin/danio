@@ -2515,6 +2515,17 @@ CL-P3-001A Optional AI provider setup boundary:
   and row-card surfaces stay at or below the 720px tablet readability bound on
   a 2000x1200 tablet viewport.
 
+### CL-P2-002J Water Change Calculator Tablet Readability
+
+- Water Change Calculator now centers its intro, nitrate inputs, result,
+  recommendation, guided-log, quick-reference, and strategy surfaces in the
+  same readable 720px rail on wide tablet surfaces.
+- Existing nitrate calculation and prefilled water-change log navigation remain
+  unchanged.
+- Focused widget coverage verifies representative intro, result, and guided-log
+  cards stay at or below the 720px tablet readability bound on a 2000x1200
+  tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

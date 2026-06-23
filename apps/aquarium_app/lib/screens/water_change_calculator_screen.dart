@@ -7,6 +7,8 @@ import '../widgets/core/app_card.dart';
 import '../widgets/core/app_text_field.dart';
 import 'add_log_screen.dart';
 
+const double _maxWaterChangeReadableWidth = 720;
+
 class WaterChangeCalculatorScreen extends StatefulWidget {
   final String? tankId;
   final double? initialTankVolumeLitres;
@@ -458,9 +460,29 @@ class _WaterChangeCalculatorScreenState
             AppSpacing.md,
             MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
           ),
-          itemBuilder: (context, index) => items[index],
+          itemBuilder: (context, index) =>
+              _WaterChangeReadableFrame(child: items[index]),
           itemCount: items.length,
         ),
+      ),
+    );
+  }
+}
+
+class _WaterChangeReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _WaterChangeReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxWaterChangeReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
