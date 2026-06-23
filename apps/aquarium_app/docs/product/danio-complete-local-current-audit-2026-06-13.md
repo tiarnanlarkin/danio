@@ -2682,6 +2682,17 @@ CL-P3-001A Optional AI provider setup boundary:
   disease card surfaces stay at or below the 720px tablet readability bound on
   a 2000x1200 tablet viewport.
 
+### CL-P2-002Y Parameter Guide Tablet Readability
+
+- Parameter Guide now centers its intro, water-parameter cards, expanded tips,
+  and quick-reference card in the same readable 720px rail on wide tablet
+  surfaces.
+- Chemistry labels and temperature copy are now source-safe ASCII text, and the
+  pH raising tip now names crushed coral instead of the previous typo.
+- Focused widget coverage verifies representative intro, parameter-card, and
+  quick-reference surfaces stay at or below the 720px tablet readability bound
+  on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
