@@ -2410,6 +2410,18 @@ CL-P3-001A Optional AI provider setup boundary:
   stay at or below the established 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002C Learn Hub Tablet Readability
+
+- Learn keeps the illustrated study-room header full-bleed, but centers the
+  actual learning hub content in a readable 720px rail on wide tablet surfaces.
+- The readable rail now wraps the next-lesson card, review handoff, streak
+  surfaces, stories card, learning progress copy, loading skeleton cards, and
+  learning path cards instead of stretching phone-card layouts across the full
+  display.
+- Focused widget coverage verifies the next-lesson card, stories card, and
+  first learning path card stay at or below the 720px tablet readability bound
+  on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
@@ -2693,8 +2705,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   demo data without deleting real tanks, with final phone/tablet Android screen
   evidence captured under
   `docs/qa/screenshots/2026-06-22/cl-p1-012-demo-mode/`.
-- Full-app tablet verification is not yet current, though Workshop now has
-  focused phone/tablet/large-text layout guardrails.
+- Full-app tablet verification is not yet current, though Workshop, Lesson, and
+  Learn now have focused phone/tablet or tablet readability layout guardrails.
 - Visual asset quality still has known older audit gaps.
 - Full local screen audit can continue while `danio_api36` remains dedicated to
   Danio live preview.

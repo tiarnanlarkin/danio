@@ -29,6 +29,8 @@ import 'learn_streak_card.dart';
 import 'lazy_learning_path_card.dart';
 import '../lesson_screen.dart';
 
+const double _maxLearnReadableWidth = 720;
+
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
 class LearnScreen extends ConsumerStatefulWidget {
@@ -232,65 +234,70 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
               ),
             ),
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.md,
-                  AppSpacing.md,
-                  AppSpacing.sm2,
-                ),
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    'Learning Paths',
-                    style: AppTypography.headlineSmall,
+              child: _LearnReadableFrame(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.md,
+                    AppSpacing.sm2,
+                  ),
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      'Learning Paths',
+                      style: AppTypography.headlineSmall,
+                    ),
                   ),
                 ),
               ),
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    child: ListTile(
-                      leading: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: AppOverlays.primary10,
-                          borderRadius: AppRadius.mediumRadius,
+                (context, index) => _LearnReadableFrame(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      child: ListTile(
+                        leading: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: AppOverlays.primary10,
+                            borderRadius: AppRadius.mediumRadius,
+                          ),
+                          child: const Icon(
+                            Icons.menu_book_rounded,
+                            color: AppColors.primary,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.menu_book_rounded,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      title: const Text('Loading learning path'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: AppSpacing.xs),
-                          const Text('Description of this learning path'),
-                          const SizedBox(height: AppSpacing.sm),
-                          ExcludeSemantics(
-                            child: ClipRRect(
-                              borderRadius: AppRadius.xsRadius,
-                              child: LinearProgressIndicator(
-                                value: 0.5,
-                                backgroundColor: context.surfaceVariant,
-                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                  AppColors.primary,
+                        title: const Text('Loading learning path'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: AppSpacing.xs),
+                            const Text('Description of this learning path'),
+                            const SizedBox(height: AppSpacing.sm),
+                            ExcludeSemantics(
+                              child: ClipRRect(
+                                borderRadius: AppRadius.xsRadius,
+                                child: LinearProgressIndicator(
+                                  value: 0.5,
+                                  backgroundColor: context.surfaceVariant,
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                        AppColors.primary,
+                                      ),
+                                  minHeight: 6,
                                 ),
-                                minHeight: 6,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -547,38 +554,48 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         )
                       else ...[
                         SliverToBoxAdapter(
-                          child: _NextLearningCard(
-                            target: profile == null
-                                ? null
-                                : _nextLessonTarget(metadata, profile),
-                            completedLessons: completedLessons,
-                            totalLessons: catalog.lessonCount,
-                            onStartLesson: (target) =>
-                                _openNextLesson(target.path, target.lessonId),
-                            onBrowsePaths: _scrollToLearningPaths,
+                          child: _LearnReadableFrame(
+                            child: _NextLearningCard(
+                              target: profile == null
+                                  ? null
+                                  : _nextLessonTarget(metadata, profile),
+                              completedLessons: completedLessons,
+                              totalLessons: catalog.lessonCount,
+                              onStartLesson: (target) =>
+                                  _openNextLesson(target.path, target.lessonId),
+                              onBrowsePaths: _scrollToLearningPaths,
+                            ),
                           ),
                         ),
 
                         // Compact handoff to Practice when reviews are due.
-                        const SliverToBoxAdapter(child: LearnReviewBanner()),
+                        const SliverToBoxAdapter(
+                          child: _LearnReadableFrame(
+                            child: LearnReviewBanner(),
+                          ),
+                        ),
 
                         // Placement challenge card
                         const SliverToBoxAdapter(
-                          child: PlacementChallengeCard(),
+                          child: _LearnReadableFrame(
+                            child: PlacementChallengeCard(),
+                          ),
                         ),
 
                         // Learning streak badge
                         if (profileState.hasLessonProgress)
                           SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                AppSpacing.md,
-                                AppSpacing.sm,
-                                AppSpacing.md,
-                                0,
-                              ),
-                              child: LearningStreakBadge(
-                                lessonProgress: profile!.lessonProgress,
+                            child: _LearnReadableFrame(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  AppSpacing.md,
+                                  AppSpacing.sm,
+                                  AppSpacing.md,
+                                  0,
+                                ),
+                                child: LearningStreakBadge(
+                                  lessonProgress: profile!.lessonProgress,
+                                ),
                               ),
                             ),
                           ),
@@ -586,85 +603,92 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         // Daily streak reminder
                         if (profileState.currentStreak > 0)
                           SliverToBoxAdapter(
-                            child: LearnStreakCard(profile: profile!),
+                            child: _LearnReadableFrame(
+                              child: LearnStreakCard(profile: profile!),
+                            ),
                           ),
 
                         // Interactive stories section
-                        SliverToBoxAdapter(child: _StoriesSection()),
+                        const SliverToBoxAdapter(
+                          child: _LearnReadableFrame(child: _StoriesSection()),
+                        ),
 
                         // Learning paths header with overall progress
                         SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              AppSpacing.md,
-                              AppSpacing.md,
-                              AppSpacing.md,
-                              AppSpacing.xs,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Semantics(
-                                  header: true,
-                                  child: Text(
-                                    'Learning Paths',
-                                    style: AppTypography.headlineSmall,
+                          child: _LearnReadableFrame(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                AppSpacing.md,
+                                AppSpacing.md,
+                                AppSpacing.md,
+                                AppSpacing.xs,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Semantics(
+                                    header: true,
+                                    child: Text(
+                                      'Learning Paths',
+                                      style: AppTypography.headlineSmall,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: AppSpacing.sm),
-                                Builder(
-                                  builder: (context) {
-                                    final userCompleted =
-                                        profile!.completedLessons;
-                                    final completedPaths = metadata.where((
-                                      meta,
-                                    ) {
-                                      final done = meta.lessonIds
-                                          .where(
-                                            (id) => userCompleted.contains(id),
-                                          )
-                                          .length;
-                                      return done == meta.lessonIds.length &&
-                                          meta.lessonIds.isNotEmpty;
-                                    }).length;
-                                    final totalPaths = metadata.length;
-                                    final progress = totalPaths > 0
-                                        ? completedPaths / totalPaths
-                                        : 0.0;
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          completedPaths == 0
-                                              ? '$totalPaths paths to explore'
-                                              : '$completedPaths of $totalPaths paths complete',
-                                          style: AppTypography.bodySmall
-                                              .copyWith(
-                                                color: context.textSecondary,
+                                  const SizedBox(height: AppSpacing.sm),
+                                  Builder(
+                                    builder: (context) {
+                                      final userCompleted =
+                                          profile!.completedLessons;
+                                      final completedPaths = metadata.where((
+                                        meta,
+                                      ) {
+                                        final done = meta.lessonIds
+                                            .where(
+                                              (id) =>
+                                                  userCompleted.contains(id),
+                                            )
+                                            .length;
+                                        return done == meta.lessonIds.length &&
+                                            meta.lessonIds.isNotEmpty;
+                                      }).length;
+                                      final totalPaths = metadata.length;
+                                      final progress = totalPaths > 0
+                                          ? completedPaths / totalPaths
+                                          : 0.0;
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            completedPaths == 0
+                                                ? '$totalPaths paths to explore'
+                                                : '$completedPaths of $totalPaths paths complete',
+                                            style: AppTypography.bodySmall
+                                                .copyWith(
+                                                  color: context.textSecondary,
+                                                ),
+                                          ),
+                                          const SizedBox(height: AppSpacing.xs),
+                                          ExcludeSemantics(
+                                            child: ClipRRect(
+                                              borderRadius: AppRadius.xsRadius,
+                                              child: LinearProgressIndicator(
+                                                value: progress,
+                                                backgroundColor:
+                                                    context.surfaceVariant,
+                                                valueColor:
+                                                    const AlwaysStoppedAnimation<
+                                                      Color
+                                                    >(AppColors.primary),
+                                                minHeight: 6,
                                               ),
-                                        ),
-                                        const SizedBox(height: AppSpacing.xs),
-                                        ExcludeSemantics(
-                                          child: ClipRRect(
-                                            borderRadius: AppRadius.xsRadius,
-                                            child: LinearProgressIndicator(
-                                              value: progress,
-                                              backgroundColor:
-                                                  context.surfaceVariant,
-                                              valueColor:
-                                                  const AlwaysStoppedAnimation<
-                                                    Color
-                                                  >(AppColors.primary),
-                                              minHeight: 6,
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ],
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -688,40 +712,42 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                             final showStartHere =
                                 index == 0 && completedLessons == 0;
 
-                            return Padding(
-                              key: index == 0 ? _firstPathKey : null,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
-                                vertical: AppSpacing.sm,
+                            return _LearnReadableFrame(
+                              child: Padding(
+                                key: index == 0 ? _firstPathKey : null,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: AppSpacing.sm,
+                                ),
+                                child: reduceMotion
+                                    ? LazyLearningPathCard(
+                                        metadata: meta,
+                                        completedLessons: completedInPath,
+                                        totalLessons: meta.lessonIds.length,
+                                        userCompletedLessons: userCompleted,
+                                        allPathMetadata: metadata,
+                                        showStartHereBadge: showStartHere,
+                                      )
+                                    : LazyLearningPathCard(
+                                            metadata: meta,
+                                            completedLessons: completedInPath,
+                                            totalLessons: meta.lessonIds.length,
+                                            userCompletedLessons: userCompleted,
+                                            allPathMetadata: metadata,
+                                            showStartHereBadge: showStartHere,
+                                          )
+                                          .animate()
+                                          .fadeIn(
+                                            duration: 300.ms,
+                                            delay: (index * 50).ms,
+                                          )
+                                          .slideY(
+                                            begin: 0.2,
+                                            end: 0,
+                                            duration: 300.ms,
+                                            delay: (index * 50).ms,
+                                          ),
                               ),
-                              child: reduceMotion
-                                  ? LazyLearningPathCard(
-                                      metadata: meta,
-                                      completedLessons: completedInPath,
-                                      totalLessons: meta.lessonIds.length,
-                                      userCompletedLessons: userCompleted,
-                                      allPathMetadata: metadata,
-                                      showStartHereBadge: showStartHere,
-                                    )
-                                  : LazyLearningPathCard(
-                                          metadata: meta,
-                                          completedLessons: completedInPath,
-                                          totalLessons: meta.lessonIds.length,
-                                          userCompletedLessons: userCompleted,
-                                          allPathMetadata: metadata,
-                                          showStartHereBadge: showStartHere,
-                                        )
-                                        .animate()
-                                        .fadeIn(
-                                          duration: 300.ms,
-                                          delay: (index * 50).ms,
-                                        )
-                                        .slideY(
-                                          begin: 0.2,
-                                          end: 0,
-                                          duration: 300.ms,
-                                          delay: (index * 50).ms,
-                                        ),
                             );
                           }, childCount: metadata.length),
                         ),
@@ -739,6 +765,23 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                 );
               },
             ),
+    );
+  }
+}
+
+class _LearnReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _LearnReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxLearnReadableWidth),
+        child: child,
+      ),
     );
   }
 }
