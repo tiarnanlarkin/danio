@@ -27,6 +27,9 @@ import 'package:danio/widgets/offline_indicator.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
+const _tabletSurface = Size(2000, 1200);
+const _maxReadableSmartWidth = 720.0;
+
 Widget _wrap({
   bool isOnline = true,
   bool aiConfigured = false,
@@ -334,6 +337,43 @@ void main() {
       expect(find.text('Unsafe water detected'), findsOneWidget);
       expect(find.textContaining('Ammonia 0.50 ppm'), findsOneWidget);
       expect(find.text('Emergency Guide', skipOffstage: false), findsWidgets);
+    });
+
+    testWidgets('keeps primary Smart surfaces readable on tablet', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(_tabletSurface);
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(tester.takeException(), isNull);
+
+      final intelligenceCard = find
+          .ancestor(
+            of: find.text('Aquarium Intelligence'),
+            matching: find.byType(Card),
+          )
+          .first;
+      final emergencyCard = find
+          .ancestor(
+            of: find.text('Emergency Guide'),
+            matching: find.byType(Card),
+          )
+          .first;
+
+      expect(intelligenceCard, findsOneWidget);
+      expect(emergencyCard, findsOneWidget);
+      expect(
+        tester.getSize(intelligenceCard).width,
+        lessThanOrEqualTo(_maxReadableSmartWidth),
+      );
+      expect(
+        tester.getSize(emergencyCard).width,
+        lessThanOrEqualTo(_maxReadableSmartWidth),
+      );
     });
 
     testWidgets('opens full local Aquarium Intelligence review', (

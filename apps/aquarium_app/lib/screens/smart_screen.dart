@@ -29,6 +29,8 @@ import '../utils/logger.dart';
 import 'emergency_guide_screen.dart';
 import 'settings_screen.dart';
 
+const double _maxSmartReadableWidth = 720;
+
 /// Helper to show a snackbar when an AI feature is tapped while offline.
 void _showOfflineSnackBar(BuildContext context) {
   DanioSnackBar.warning(
@@ -475,7 +477,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               ),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => items[index],
+                  (context, index) =>
+                      _SmartReadableFrame(child: items[index]),
                   childCount: items.length,
                 ),
               ),
@@ -693,6 +696,23 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 }
 
 // Subwidgets
+
+class _SmartReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _SmartReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxSmartReadableWidth),
+        child: child,
+      ),
+    );
+  }
+}
 
 class _AiSetupBanner extends StatelessWidget {
   final VoidCallback onOpenPreferences;

@@ -2449,6 +2449,18 @@ CL-P3-001A Optional AI provider setup boundary:
   first learning path card stay at or below the 720px tablet readability bound
   on a 2000x1200 tablet viewport.
 
+### CL-P2-002D Smart Hub Tablet Readability
+
+- Smart keeps the illustrated Smart header full-bleed, but centers local
+  intelligence, setup, optional AI, emergency, anomaly, and compatibility
+  surfaces in a readable 720px rail on wide tablet surfaces.
+- The readable rail is applied at the Smart content-list level so future Smart
+  feature cards inherit the tablet guardrail without each card hand-rolling its
+  own constraints.
+- Focused widget coverage verifies the local Aquarium Intelligence card and
+  Emergency Guide card stay at or below the 720px tablet readability bound on a
+  2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
