@@ -2659,6 +2659,17 @@ CL-P3-001A Optional AI provider setup boundary:
   surfaces stay at or below the 720px tablet readability bound on a 2000x1200
   tablet viewport.
 
+### CL-P2-002W Quarantine Guide Tablet Readability
+
+- Quarantine Guide now centers the why-quarantine intro, setup cards, protocol
+  steps, symptom table, medication cards, and tips in the same readable 720px
+  rail on wide tablet surfaces.
+- Existing quarantine guidance, medication copy, setup checklist, protocol
+  ordering, and symptom mapping remain unchanged.
+- Focused widget coverage verifies representative intro and setup card surfaces
+  stay at or below the 720px tablet readability bound on a 2000x1200 tablet
+  viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

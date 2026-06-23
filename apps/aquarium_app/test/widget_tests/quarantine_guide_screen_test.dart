@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/screens/quarantine_guide_screen.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 Widget _wrap() => const MaterialApp(home: QuarantineGuideScreen());
 
@@ -40,6 +41,27 @@ void main() {
       await tester.pump();
       expect(find.text('Filtration'), findsOneWidget);
       expect(find.text('Heater'), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps intro and setup cards readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final introCard = find
+          .ancestor(
+            of: find.text('Why Quarantine?'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      final setupCard = find
+          .ancestor(of: find.text('Filtration'), matching: find.byType(Card))
+          .first;
+
+      expect(tester.getSize(introCard).width, lessThanOrEqualTo(720));
+      expect(tester.getSize(setupCard).width, lessThanOrEqualTo(720));
     });
   });
 }
