@@ -12,6 +12,8 @@ import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_card.dart';
 import 'add_log_screen.dart';
 
+const double _maxCompatibilityReadableWidth = 720;
+
 class CompatibilityCheckerScreen extends ConsumerStatefulWidget {
   final String? tankId;
 
@@ -329,45 +331,49 @@ class _CompatibilityCheckerScreenState
         child: Column(
           children: [
             // Search bar
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: AppSearchField(
-                controller: _searchController,
-                hint: 'Search fish to add...',
-                onChanged: (v) {
-                  _debounce?.cancel();
-                  _debounce = Timer(kDebounceDuration, () {
-                    setState(() => _searchQuery = v);
-                  });
-                },
+            _CompatibilityReadableFrame(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: AppSearchField(
+                  controller: _searchController,
+                  hint: 'Search fish to add...',
+                  onChanged: (v) {
+                    _debounce?.cancel();
+                    _debounce = Timer(kDebounceDuration, () {
+                      setState(() => _searchQuery = v);
+                    });
+                  },
+                ),
               ),
             ),
 
             // Search results
             if (_searchResults.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: AppRadius.mediumRadius,
-                  boxShadow: [
-                    BoxShadow(color: AppOverlays.black12, blurRadius: 8),
-                  ],
-                ),
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _searchResults.length,
-                    itemBuilder: (ctx, i) {
-                      final species = _searchResults[i];
-                      return ListTile(
-                        leading: const Icon(Icons.add_circle_outline),
-                        title: Text(species.commonName),
-                        subtitle: Text(species.temperament),
-                        onTap: () => _addSpecies(species),
-                      );
-                    },
+              _CompatibilityReadableFrame(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: AppRadius.mediumRadius,
+                    boxShadow: [
+                      BoxShadow(color: AppOverlays.black12, blurRadius: 8),
+                    ],
+                  ),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _searchResults.length,
+                      itemBuilder: (ctx, i) {
+                        final species = _searchResults[i];
+                        return ListTile(
+                          leading: const Icon(Icons.add_circle_outline),
+                          title: Text(species.commonName),
+                          subtitle: Text(species.temperament),
+                          onTap: () => _addSpecies(species),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -378,110 +384,118 @@ class _CompatibilityCheckerScreenState
                 children: [
                   // Selected species
                   if (_selectedSpecies.isEmpty)
-                    AppCard(
-                      padding: AppCardPadding.spacious,
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.set_meal,
-                            size: AppIconSizes.xl,
-                            color: context.textHint,
-                          ),
-                          const SizedBox(height: AppSpacing.sm2),
-                          Text(
-                            'Add Fish to Check',
-                            style: AppTypography.headlineSmall,
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            'Search and add fish above to check if they\'re compatible',
-                            style: AppTypography.bodySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                    _CompatibilityReadableFrame(
+                      child: AppCard(
+                        padding: AppCardPadding.spacious,
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.set_meal,
+                              size: AppIconSizes.xl,
+                              color: context.textHint,
+                            ),
+                            const SizedBox(height: AppSpacing.sm2),
+                            Text(
+                              'Add Fish to Check',
+                              style: AppTypography.headlineSmall,
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              'Search and add fish above to check if they\'re compatible',
+                              style: AppTypography.bodySmall,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   else ...[
-                    Text(
-                      'Selected Fish (${_selectedSpecies.length})',
-                      style: AppTypography.headlineSmall,
+                    _CompatibilityReadableFrame(
+                      child: Text(
+                        'Selected Fish (${_selectedSpecies.length})',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: _selectedSpecies
-                          .map(
-                            (s) => Chip(
-                              backgroundColor: context.surfaceVariant,
-                              label: Text(
-                                s.commonName,
-                                style: AppTypography.labelMedium.copyWith(
-                                  color: context.textPrimary,
+                    _CompatibilityReadableFrame(
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _selectedSpecies
+                            .map(
+                              (s) => Chip(
+                                backgroundColor: context.surfaceVariant,
+                                label: Text(
+                                  s.commonName,
+                                  style: AppTypography.labelMedium.copyWith(
+                                    color: context.textPrimary,
+                                  ),
                                 ),
+                                deleteIcon: Icon(
+                                  Icons.close,
+                                  size: AppIconSizes.xs,
+                                  color: context.textSecondary,
+                                ),
+                                onDeleted: () => _removeSpecies(s),
                               ),
-                              deleteIcon: Icon(
-                                Icons.close,
-                                size: AppIconSizes.xs,
-                                color: context.textSecondary,
-                              ),
-                              onDeleted: () => _removeSpecies(s),
-                            ),
-                          )
-                          .toList(),
+                            )
+                            .toList(),
+                      ),
                     ),
 
                     const SizedBox(height: AppSpacing.lg),
 
                     // Compatibility verdict
                     if (_selectedSpecies.length >= 2) ...[
-                      AppCard(
-                        backgroundColor: badIssues > 0
-                            ? AppOverlays.error10
-                            : warningIssues > 0
-                            ? AppOverlays.warning10
-                            : AppOverlays.success10,
-                        padding: AppCardPadding.standard,
-                        child: Row(
-                          children: [
-                            Icon(
-                              badIssues > 0
-                                  ? Icons.cancel
-                                  : warningIssues > 0
-                                  ? Icons.warning
-                                  : Icons.check_circle,
-                              color: badIssues > 0
-                                  ? AppColors.error
-                                  : warningIssues > 0
-                                  ? AppColors.warning
-                                  : AppColors.success,
-                              size: 32,
-                            ),
-                            const SizedBox(width: AppSpacing.sm2),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    badIssues > 0
-                                        ? 'Not Recommended'
-                                        : warningIssues > 0
-                                        ? 'Proceed with Caution'
-                                        : 'Good Match!',
-                                    style: AppTypography.labelLarge,
-                                  ),
-                                  Text(
-                                    badIssues > 0
-                                        ? '$badIssues serious issue${badIssues > 1 ? 's' : ''} found'
-                                        : warningIssues > 0
-                                        ? '$warningIssues warning${warningIssues > 1 ? 's' : ''} to consider'
-                                        : 'These fish should work well together',
-                                    style: AppTypography.bodySmall,
-                                  ),
-                                ],
+                      _CompatibilityReadableFrame(
+                        child: AppCard(
+                          backgroundColor: badIssues > 0
+                              ? AppOverlays.error10
+                              : warningIssues > 0
+                              ? AppOverlays.warning10
+                              : AppOverlays.success10,
+                          padding: AppCardPadding.standard,
+                          child: Row(
+                            children: [
+                              Icon(
+                                badIssues > 0
+                                    ? Icons.cancel
+                                    : warningIssues > 0
+                                    ? Icons.warning
+                                    : Icons.check_circle,
+                                color: badIssues > 0
+                                    ? AppColors.error
+                                    : warningIssues > 0
+                                    ? AppColors.warning
+                                    : AppColors.success,
+                                size: 32,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: AppSpacing.sm2),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      badIssues > 0
+                                          ? 'Not Recommended'
+                                          : warningIssues > 0
+                                          ? 'Proceed with Caution'
+                                          : 'Good Match!',
+                                      style: AppTypography.labelLarge,
+                                    ),
+                                    Text(
+                                      badIssues > 0
+                                          ? '$badIssues serious issue${badIssues > 1 ? 's' : ''} found'
+                                          : warningIssues > 0
+                                          ? '$warningIssues warning${warningIssues > 1 ? 's' : ''} to consider'
+                                          : 'These fish should work well together',
+                                      style: AppTypography.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
 
@@ -489,31 +503,35 @@ class _CompatibilityCheckerScreenState
 
                       // Issues list
                       if (issues.isNotEmpty) ...[
-                        Text(
-                          'Issues Found',
-                          style: AppTypography.headlineSmall,
+                        _CompatibilityReadableFrame(
+                          child: Text(
+                            'Issues Found',
+                            style: AppTypography.headlineSmall,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         ...issues.map(
-                          (issue) => Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: AppSpacing.sm,
-                            ),
-                            child: AppCard(
-                              padding: AppCardPadding.none,
-                              child: ListTile(
-                                leading: Icon(
-                                  issue.severity == _Severity.bad
-                                      ? Icons.error
-                                      : Icons.warning,
-                                  color: issue.severity == _Severity.bad
-                                      ? AppColors.error
-                                      : AppColors.warning,
-                                ),
-                                title: Text(_issueTitle(issue)),
-                                subtitle: Text(
-                                  issue.reason,
-                                  style: AppTypography.bodySmall,
+                          (issue) => _CompatibilityReadableFrame(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: AppSpacing.sm,
+                              ),
+                              child: AppCard(
+                                padding: AppCardPadding.none,
+                                child: ListTile(
+                                  leading: Icon(
+                                    issue.severity == _Severity.bad
+                                        ? Icons.error
+                                        : Icons.warning,
+                                    color: issue.severity == _Severity.bad
+                                        ? AppColors.error
+                                        : AppColors.warning,
+                                  ),
+                                  title: Text(_issueTitle(issue)),
+                                  subtitle: Text(
+                                    issue.reason,
+                                    style: AppTypography.bodySmall,
+                                  ),
                                 ),
                               ),
                             ),
@@ -523,87 +541,93 @@ class _CompatibilityCheckerScreenState
                       ],
 
                       // Recommended parameters
-                      Text(
-                        'Recommended Setup',
-                        style: AppTypography.headlineSmall,
+                      _CompatibilityReadableFrame(
+                        child: Text(
+                          'Recommended Setup',
+                          style: AppTypography.headlineSmall,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
-                      AppCard(
-                        padding: AppCardPadding.standard,
-                        child: Column(
-                          children: [
-                            _ParamRow(
-                              icon: Icons.water,
-                              label: 'Minimum tank',
-                              value:
-                                  '${_minTankSize.toStringAsFixed(0)}+ litres',
-                            ),
-                            _ParamRow(
-                              icon: Icons.thermostat,
-                              label: 'Temperature',
-                              value: _tempRange.$1 <= _tempRange.$2
-                                  ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)} deg C'
-                                  : 'No overlap!',
-                              valueColor: _tempRange.$1 > _tempRange.$2
-                                  ? AppColors.error
-                                  : null,
-                            ),
-                            _ParamRow(
-                              icon: Icons.science,
-                              label: 'pH range',
-                              value: _phRange.$1 <= _phRange.$2
-                                  ? '${_phRange.$1.toStringAsFixed(1)}-${_phRange.$2.toStringAsFixed(1)}'
-                                  : 'No overlap!',
-                              valueColor: _phRange.$1 > _phRange.$2
-                                  ? AppColors.error
-                                  : null,
-                            ),
-                          ],
+                      _CompatibilityReadableFrame(
+                        child: AppCard(
+                          padding: AppCardPadding.standard,
+                          child: Column(
+                            children: [
+                              _ParamRow(
+                                icon: Icons.water,
+                                label: 'Minimum tank',
+                                value:
+                                    '${_minTankSize.toStringAsFixed(0)}+ litres',
+                              ),
+                              _ParamRow(
+                                icon: Icons.thermostat,
+                                label: 'Temperature',
+                                value: _tempRange.$1 <= _tempRange.$2
+                                    ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)} deg C'
+                                    : 'No overlap!',
+                                valueColor: _tempRange.$1 > _tempRange.$2
+                                    ? AppColors.error
+                                    : null,
+                              ),
+                              _ParamRow(
+                                icon: Icons.science,
+                                label: 'pH range',
+                                value: _phRange.$1 <= _phRange.$2
+                                    ? '${_phRange.$1.toStringAsFixed(1)}-${_phRange.$2.toStringAsFixed(1)}'
+                                    : 'No overlap!',
+                                valueColor: _phRange.$1 > _phRange.$2
+                                    ? AppColors.error
+                                    : null,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       if (widget.tankId != null) ...[
                         const SizedBox(height: AppSpacing.md),
-                        AppCard(
-                          backgroundColor: AppOverlays.info10,
-                          padding: AppCardPadding.standard,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.route_outlined,
-                                    color: AppColors.info,
-                                    size: AppIconSizes.sm,
-                                  ),
-                                  const SizedBox(width: AppSpacing.sm2),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Guided next step',
-                                          style: AppTypography.labelLarge,
-                                        ),
-                                        const SizedBox(height: AppSpacing.xs),
-                                        Text(
-                                          'Save this compatibility check to the tank journal before you buy or move fish.',
-                                          style: AppTypography.bodySmall,
-                                        ),
-                                      ],
+                        _CompatibilityReadableFrame(
+                          child: AppCard(
+                            backgroundColor: AppOverlays.info10,
+                            padding: AppCardPadding.standard,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Icons.route_outlined,
+                                      color: AppColors.info,
+                                      size: AppIconSizes.sm,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: AppSpacing.md),
-                              FilledButton.icon(
-                                onPressed: _logCompatibilityCheck,
-                                icon: const Icon(Icons.edit_note_rounded),
-                                label: const Text('Log compatibility check'),
-                              ),
-                            ],
+                                    const SizedBox(width: AppSpacing.sm2),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Guided next step',
+                                            style: AppTypography.labelLarge,
+                                          ),
+                                          const SizedBox(height: AppSpacing.xs),
+                                          Text(
+                                            'Save this compatibility check to the tank journal before you buy or move fish.',
+                                            style: AppTypography.bodySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: AppSpacing.md),
+                                FilledButton.icon(
+                                  onPressed: _logCompatibilityCheck,
+                                  icon: const Icon(Icons.edit_note_rounded),
+                                  label: const Text('Log compatibility check'),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -616,6 +640,25 @@ class _CompatibilityCheckerScreenState
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CompatibilityReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _CompatibilityReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxCompatibilityReadableWidth,
+        ),
+        child: child,
       ),
     );
   }

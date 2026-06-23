@@ -2537,6 +2537,17 @@ CL-P3-001A Optional AI provider setup boundary:
   diagram cards stay at or below the 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002L Compatibility Checker Tablet Readability
+
+- Compatibility Checker now centers the search field, search results, empty
+  guidance, selected-species chips, verdict, issues, recommended setup, and
+  guided-log card in the same readable 720px rail on wide tablet surfaces.
+- Existing species search, compatibility verdicts, tank-size warnings, and
+  observation-log navigation remain unchanged.
+- Focused widget coverage verifies representative search and empty-guidance
+  surfaces stay at or below the 720px tablet readability bound on a 2000x1200
+  tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

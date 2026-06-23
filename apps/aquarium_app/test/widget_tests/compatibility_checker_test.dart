@@ -15,6 +15,7 @@ import 'package:danio/screens/compatibility_checker_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/theme/app_theme.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 Widget _wrap({
   List<Override> overrides = const [],
@@ -123,6 +124,29 @@ void main() {
         find.text('Search and add fish above to check if they\'re compatible'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('tablet keeps search and empty guidance readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap(overrides: [_emptyTanksProvider]));
+      await tester.pump();
+
+      expect(
+        tester.getSize(find.byType(TextField)).width,
+        lessThanOrEqualTo(720),
+      );
+
+      final emptyCard = find
+          .ancestor(
+            of: find.text('Add Fish to Check'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(emptyCard).width, lessThanOrEqualTo(720));
     });
   });
 
