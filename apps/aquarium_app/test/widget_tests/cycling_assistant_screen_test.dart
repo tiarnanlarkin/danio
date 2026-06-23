@@ -15,6 +15,7 @@ import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/tank.dart';
 import 'package:danio/models/task.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -130,6 +131,38 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       // Should no longer show loading indicator
       expect(find.byType(CyclingAssistantScreen), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps primary cycling cards readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final phaseCard = find
+          .ancestor(
+            of: find.text('Ready to Start Cycling'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(phaseCard).width, lessThanOrEqualTo(720));
+
+      final guidedCard = find
+          .ancestor(
+            of: find.text('Guided next step'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(guidedCard).width, lessThanOrEqualTo(720));
+
+      final diagramCard = find
+          .ancestor(
+            of: find.text('Your Cycling Progress'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(diagramCard).width, lessThanOrEqualTo(720));
     });
 
     testWidgets('cycled water tests show completion guidance', (tester) async {

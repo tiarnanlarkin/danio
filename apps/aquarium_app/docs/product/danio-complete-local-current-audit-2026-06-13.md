@@ -2526,6 +2526,17 @@ CL-P3-001A Optional AI provider setup boundary:
   cards stay at or below the 720px tablet readability bound on a 2000x1200
   tablet viewport.
 
+### CL-P2-002K Cycling Assistant Tablet Readability
+
+- Cycling Assistant now centers its phase header, guided next step, cycle
+  diagram, parameter timeline, education, action items, and completion
+  celebration in the same readable 720px rail on wide tablet surfaces.
+- Existing phase detection, water-test navigation, and cycling-reminder
+  creation remain unchanged.
+- Focused widget coverage verifies representative phase, guided-action, and
+  diagram cards stay at or below the 720px tablet readability bound on a
+  2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

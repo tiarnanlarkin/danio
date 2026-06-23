@@ -14,6 +14,7 @@ import '../widgets/danio_snack_bar.dart';
 import 'add_log_screen.dart';
 
 const _uuid = Uuid();
+const double _maxCyclingReadableWidth = 720;
 
 /// Interactive Nitrogen Cycle Assistant - guides beginners through tank cycling.
 ///
@@ -142,7 +143,8 @@ class _CyclingAssistantBody extends StatelessWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppSpacing.md),
-      itemBuilder: (context, index) => items[index],
+      itemBuilder: (context, index) =>
+          _CyclingReadableFrame(child: items[index]),
       itemCount: items.length,
     );
   }
@@ -176,6 +178,23 @@ class _CyclingAssistantBody extends StatelessWidget {
     }
 
     return _CyclePhase.notStarted;
+  }
+}
+
+class _CyclingReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _CyclingReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxCyclingReadableWidth),
+        child: child,
+      ),
+    );
   }
 }
 
