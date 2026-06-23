@@ -13,6 +13,7 @@ import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/dosing_calculator_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -147,6 +148,41 @@ void main() {
       expect(find.textContaining('liquid aquarium products'), findsOneWidget);
       expect(find.textContaining('Do not use for medications'), findsOneWidget);
       expect(find.textContaining('fertiliser dosing only'), findsNothing);
+    });
+
+    testWidgets('tablet keeps inputs and result cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pumpAndSettle();
+
+      final volumeField = find.widgetWithText(
+        TextFormField,
+        'e.g., 120 litres',
+      );
+      expect(tester.getSize(volumeField).width, lessThanOrEqualTo(720));
+
+      final promptCard = find
+          .ancestor(
+            of: find.text('Enter your tank volume above to calculate dose'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(promptCard).width, lessThanOrEqualTo(720));
+
+      await tester.enterText(volumeField, '100');
+      await tester.pump();
+
+      final resultCard = find
+          .ancestor(
+            of: find.text('Total dose for your tank'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(resultCard).width, lessThanOrEqualTo(720));
     });
   });
 
