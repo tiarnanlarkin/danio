@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+const double _maxEquipmentGuideReadableWidth = 720;
+
 class EquipmentGuideScreen extends StatelessWidget {
   const EquipmentGuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Equipment Guide')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems().length,
-        itemBuilder: (context, index) => _buildItems()[index],
+        itemCount: items.length,
+        itemBuilder: (context, index) =>
+            _EquipmentGuideReadableFrame(child: items[index]),
       ),
     );
   }
@@ -267,6 +272,25 @@ class EquipmentGuideScreen extends StatelessWidget {
 
       const SizedBox(height: AppSpacing.xxl),
     ];
+  }
+}
+
+class _EquipmentGuideReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _EquipmentGuideReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxEquipmentGuideReadableWidth,
+        ),
+        child: child,
+      ),
+    );
   }
 }
 
