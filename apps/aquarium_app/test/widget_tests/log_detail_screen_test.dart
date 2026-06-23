@@ -25,6 +25,7 @@ LogEntry _fakeLog() => LogEntry(
   tankId: _fakeTankId,
   type: LogType.waterChange,
   timestamp: DateTime(2024, 6, 15),
+  waterChangePercent: 30,
   notes: 'Changed 30% of water',
   createdAt: DateTime(2024, 6, 15),
 );
@@ -153,6 +154,22 @@ void main() {
       await tester.pumpWidget(_wrap(logs: []));
       await _advance(tester);
       expect(find.text('Log not found'), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps log detail content cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final detailCard = find
+          .ancestor(of: find.text('30%'), matching: find.byType(Card))
+          .first;
+      expect(tester.getSize(detailCard).width, lessThanOrEqualTo(720));
+      expect(tester.getTopLeft(detailCard).dx, greaterThanOrEqualTo(640));
     });
 
     testWidgets('delete failure shows feedback and keeps log visible', (

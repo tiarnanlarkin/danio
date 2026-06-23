@@ -11,7 +11,7 @@ import 'package:danio/screens/logs_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
-import 'package:danio/models/tank.dart';
+import 'package:danio/models/models.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -19,12 +19,12 @@ import 'package:danio/models/tank.dart';
 
 const _fakeTankId = 'tank-logs-001';
 
-Widget _wrap() {
+Widget _wrap({List<LogEntry>? logs}) {
   final memStorage = InMemoryStorageService();
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
-      allLogsProvider.overrideWith((ref, tankId) async => []),
+      allLogsProvider.overrideWith((ref, tankId) async => logs ?? []),
       tankProvider.overrideWith(
         (ref, tankId) async => Tank(
           id: tankId,
@@ -43,6 +43,16 @@ Widget _wrap() {
     ),
   );
 }
+
+LogEntry _activityEntry() => LogEntry(
+  id: 'log-activity-001',
+  tankId: _fakeTankId,
+  type: LogType.observation,
+  timestamp: DateTime(2024, 7, 3, 18),
+  title: 'Filter floss changed',
+  notes: 'Replaced old floss after maintenance.',
+  createdAt: DateTime(2024, 7, 3, 18),
+);
 
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
@@ -84,21 +94,43 @@ void main() {
       expect(find.text('Add Log Entry'), findsOneWidget);
     });
 
-    testWidgets('empty state title uses iconography instead of raw emoji text', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_wrap());
-      await _advance(tester);
+    testWidgets(
+      'empty state title uses iconography instead of raw emoji text',
+      (
+        tester,
+      ) async {
+        await tester.pumpWidget(_wrap());
+        await _advance(tester);
 
-      expect(find.byIcon(Icons.list_alt), findsWidgets);
-      expect(find.text('Start your tank\'s story!'), findsOneWidget);
-      expect(find.textContaining('Start your tank\'s story! 📖'), findsNothing);
-    });
+        expect(find.byIcon(Icons.list_alt), findsWidgets);
+        expect(find.text('Start your tank\'s story!'), findsOneWidget);
+        expect(
+          find.textContaining('Start your tank\'s story! 📖'),
+          findsNothing,
+        );
+      },
+    );
 
     testWidgets('shows scaffold', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
       expect(find.byType(Scaffold), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps activity log cards readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap(logs: [_activityEntry()]));
+      await _advance(tester);
+
+      final logCard = find
+          .ancestor(
+            of: find.text('Filter floss changed'),
+            matching: find.byType(Card),
+          )
+          .first;
+      expect(tester.getSize(logCard).width, lessThanOrEqualTo(720));
     });
   });
 }

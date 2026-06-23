@@ -15,6 +15,8 @@ import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/app_bottom_sheet.dart';
 
+const double _maxJournalReadableWidth = 720;
+
 class JournalScreen extends ConsumerWidget {
   final String tankId;
 
@@ -75,18 +77,20 @@ class JournalScreen extends ConsumerWidget {
                 final month = grouped.keys.elementAt(i);
                 final entries = grouped[month]!;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.sm,
+                return _JournalReadableFrame(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.sm,
+                        ),
+                        child: Text(month, style: AppTypography.headlineSmall),
                       ),
-                      child: Text(month, style: AppTypography.headlineSmall),
-                    ),
-                    ...entries.map((e) => _JournalEntryCard(entry: e)),
-                    const SizedBox(height: AppSpacing.md),
-                  ],
+                      ...entries.map((e) => _JournalEntryCard(entry: e)),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
+                  ),
                 );
               },
             );
@@ -124,6 +128,23 @@ class JournalScreen extends ConsumerWidget {
 
           if (ctx.mounted) Navigator.maybePop(ctx);
         },
+      ),
+    );
+  }
+}
+
+class _JournalReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _JournalReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxJournalReadableWidth),
+        child: child,
       ),
     );
   }
@@ -353,59 +374,61 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
     final canSave = _controller.text.trim().isNotEmpty && !_isSaving;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.md,
-        AppSpacing.md,
-        AppSpacing.md + bottomPadding,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('New Journal Entry', style: AppTypography.headlineSmall),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: 'Close',
-                onPressed: () => Navigator.maybePop(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            DateFormat('EEEE, d MMMM y').format(DateTime.now()),
-            style: AppTypography.bodySmall,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppTextField(
-            controller: _controller,
-            focusNode: _focusNode,
-            maxLines: 6,
-            errorText: _errorText,
-            enabled: !_isSaving,
-            onChanged: (_) {
-              if (_errorText == null) {
-                setState(() {});
-              } else {
-                setState(() => _errorText = null);
-              }
-            },
-            hint:
-                'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            label: 'Save Entry',
-            onPressed: canSave ? _save : null,
-            isLoading: _isSaving,
-            variant: AppButtonVariant.primary,
-            isFullWidth: true,
-          ),
-        ],
+    return _JournalReadableFrame(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md + bottomPadding,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('New Journal Entry', style: AppTypography.headlineSmall),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: 'Close',
+                  onPressed: () => Navigator.maybePop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              DateFormat('EEEE, d MMMM y').format(DateTime.now()),
+              style: AppTypography.bodySmall,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppTextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              maxLines: 6,
+              errorText: _errorText,
+              enabled: !_isSaving,
+              onChanged: (_) {
+                if (_errorText == null) {
+                  setState(() {});
+                } else {
+                  setState(() => _errorText = null);
+                }
+              },
+              hint:
+                  'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppButton(
+              label: 'Save Entry',
+              onPressed: canSave ? _save : null,
+              isLoading: _isSaving,
+              variant: AppButtonVariant.primary,
+              isFullWidth: true,
+            ),
+          ],
+        ),
       ),
     );
   }

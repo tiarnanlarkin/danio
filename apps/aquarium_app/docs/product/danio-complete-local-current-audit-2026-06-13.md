@@ -2472,6 +2472,17 @@ CL-P3-001A Optional AI provider setup boundary:
   Actions detail cards stay at or below the 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002F Timeline And Log Tablet Readability
+
+- Tank Journal now centers timeline month sections, entry cards, and the new
+  journal-entry sheet in a readable 720px rail on wide tablet surfaces.
+- Activity Log now centers its filter summary, loaded row cards, and skeleton
+  row placeholders in the same readable tablet rail.
+- Log Detail now centers its detail content rail so narrow cards no longer sit
+  against the left edge on tablet landscape.
+- Focused widget coverage verifies representative Journal, Activity Log, and
+  Log Detail cards stay readable and centered on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

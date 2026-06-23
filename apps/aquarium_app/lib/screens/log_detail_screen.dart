@@ -16,6 +16,8 @@ import '../utils/logger.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_dialog.dart';
 
+const double _maxLogDetailReadableWidth = 720;
+
 class LogDetailScreen extends ConsumerWidget {
   final String tankId;
   final String logId;
@@ -71,72 +73,74 @@ class LogDetailScreen extends ConsumerWidget {
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(_iconFor(log.type), color: AppColors.primary),
-                    const SizedBox(width: AppSpacing.sm3),
-                    Expanded(
-                      child: Text(
-                        _titleFor(log),
-                        style: AppTypography.headlineSmall,
+            child: _LogDetailReadableFrame(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(_iconFor(log.type), color: AppColors.primary),
+                      const SizedBox(width: AppSpacing.sm3),
+                      Expanded(
+                        child: Text(
+                          _titleFor(log),
+                          style: AppTypography.headlineSmall,
+                        ),
                       ),
-                    ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xs2),
+                  Text(
+                    DateFormat('d MMM yyyy  •  h:mm a').format(log.timestamp),
+                    style: AppTypography.bodySmall,
+                  ),
+
+                  const SizedBox(height: AppSpacing.md),
+
+                  if (log.type == LogType.waterTest && log.waterTest != null)
+                    _WaterTestCard(test: log.waterTest!),
+
+                  if (log.type == LogType.waterChange)
+                    _WaterChangeCard(percent: log.waterChangePercent),
+
+                  if (log.notes != null && log.notes!.trim().isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    Text('Notes', style: AppTypography.labelLarge),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(log.notes!, style: AppTypography.bodyLarge),
                   ],
-                ),
-                const SizedBox(height: AppSpacing.xs2),
-                Text(
-                  DateFormat('d MMM yyyy  •  h:mm a').format(log.timestamp),
-                  style: AppTypography.bodySmall,
-                ),
 
-                const SizedBox(height: AppSpacing.md),
-
-                if (log.type == LogType.waterTest && log.waterTest != null)
-                  _WaterTestCard(test: log.waterTest!),
-
-                if (log.type == LogType.waterChange)
-                  _WaterChangeCard(percent: log.waterChangePercent),
-
-                if (log.notes != null && log.notes!.trim().isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  Text('Notes', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(log.notes!, style: AppTypography.bodyLarge),
-                ],
-
-                if (log.photoUrls != null && log.photoUrls!.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  Text('Photos', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: log.photoUrls!.map((path) {
-                      return ClipRRect(
-                        borderRadius: AppRadius.mediumRadius,
-                        child: CachedImage(
-                          imagePath: path,
-                          thumbnail: true,
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.cover,
-                          errorWidget: Container(
+                  if (log.photoUrls != null && log.photoUrls!.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    Text('Photos', style: AppTypography.labelLarge),
+                    const SizedBox(height: AppSpacing.sm),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: log.photoUrls!.map((path) {
+                        return ClipRRect(
+                          borderRadius: AppRadius.mediumRadius,
+                          child: CachedImage(
+                            imagePath: path,
+                            thumbnail: true,
                             width: 120,
                             height: 120,
-                            color: context.surfaceVariant,
-                            child: const Icon(Icons.broken_image_outlined),
+                            fit: BoxFit.cover,
+                            errorWidget: Container(
+                              width: 120,
+                              height: 120,
+                              color: context.surfaceVariant,
+                              child: const Icon(Icons.broken_image_outlined),
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ],
+                        );
+                      }).toList(),
+                    ),
+                  ],
 
-                const SizedBox(height: AppSpacing.xl),
-              ],
+                  const SizedBox(height: AppSpacing.xl),
+                ],
+              ),
             ),
           ),
         );
@@ -257,6 +261,23 @@ class LogDetailScreen extends ConsumerWidget {
     }
 
     return log.title ?? log.typeName;
+  }
+}
+
+class _LogDetailReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _LogDetailReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxLogDetailReadableWidth),
+        child: child,
+      ),
+    );
   }
 }
 

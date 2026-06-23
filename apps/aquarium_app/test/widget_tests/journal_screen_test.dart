@@ -203,6 +203,26 @@ void main() {
       expect(find.text('Tank looking healthy!'), findsOneWidget);
     });
 
+    testWidgets('tablet keeps journal timeline cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _wrap(logs: [_journalEntry(notes: 'Tank looking healthy!')]),
+      );
+      await _advance(tester);
+
+      final journalCard = find
+          .ancestor(
+            of: find.text('Tank looking healthy!'),
+            matching: find.byType(Card),
+          )
+          .first;
+      expect(tester.getSize(journalCard).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets('shows water tests as journal timeline events', (tester) async {
       await tester.pumpWidget(_wrap(logs: [_waterTestEntry()]));
       await _advance(tester);

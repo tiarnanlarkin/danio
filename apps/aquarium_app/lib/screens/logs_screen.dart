@@ -18,6 +18,8 @@ import 'log_detail_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/app_bottom_sheet.dart';
 
+const double _maxLogsReadableWidth = 720;
+
 class LogsScreen extends ConsumerStatefulWidget {
   final String tankId;
 
@@ -93,57 +95,70 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               },
               child: Column(
                 children: [
-                  _FiltersSummaryBar(
-                    typeFilters: _typeFilters,
-                    dateRange: _dateRange,
-                    onClear: hasAnyFilters ? _clearFilters : null,
-                    onEdit: () => _openFilters(context),
+                  _LogsReadableFrame(
+                    child: _FiltersSummaryBar(
+                      typeFilters: _typeFilters,
+                      dateRange: _dateRange,
+                      onClear: hasAnyFilters ? _clearFilters : null,
+                      onEdit: () => _openFilters(context),
+                    ),
                   ),
                   Expanded(
                     child: ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        AppSpacing.sm,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                      ),
                       itemCount: filtered.length,
                       separatorBuilder: (_, __) =>
                           const SizedBox(height: AppSpacing.sm),
                       itemBuilder: (context, index) {
                         final log = filtered[index];
-                        return Card(
-                              margin: EdgeInsets.zero,
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: _getLogColor(
-                                    log.type,
-                                  ).withAlpha(51),
-                                  child: Icon(
-                                    _getLogIcon(log.type),
-                                    color: _getLogColor(log.type),
-                                    size: AppIconSizes.sm,
+                        return _LogsReadableFrame(
+                          child:
+                              Card(
+                                    margin: EdgeInsets.zero,
+                                    child: ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: _getLogColor(
+                                          log.type,
+                                        ).withAlpha(51),
+                                        child: Icon(
+                                          _getLogIcon(log.type),
+                                          color: _getLogColor(log.type),
+                                          size: AppIconSizes.sm,
+                                        ),
+                                      ),
+                                      title: Text(_titleFor(log)),
+                                      subtitle: Text(
+                                        DateFormat(
+                                          'd MMM yyyy  •  h:mm a',
+                                        ).format(log.timestamp),
+                                      ),
+                                      trailing: const Icon(Icons.chevron_right),
+                                      onTap: () => NavigationThrottle.push(
+                                        context,
+                                        LogDetailScreen(
+                                          tankId: widget.tankId,
+                                          logId: log.id,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .animate()
+                                  .fadeIn(
+                                    delay: (50 * index).ms,
+                                    duration: 300.ms,
+                                  )
+                                  .slideX(
+                                    begin: 0.1,
+                                    end: 0,
+                                    delay: (50 * index).ms,
+                                    duration: 300.ms,
                                   ),
-                                ),
-                                title: Text(_titleFor(log)),
-                                subtitle: Text(
-                                  DateFormat(
-                                    'd MMM yyyy  •  h:mm a',
-                                  ).format(log.timestamp),
-                                ),
-                                trailing: const Icon(Icons.chevron_right),
-                                onTap: () => NavigationThrottle.push(
-                                  context,
-                                  LogDetailScreen(
-                                    tankId: widget.tankId,
-                                    logId: log.id,
-                                  ),
-                                ),
-                              ),
-                            )
-                            .animate()
-                            .fadeIn(delay: (50 * index).ms, duration: 300.ms)
-                            .slideX(
-                              begin: 0.1,
-                              end: 0,
-                              delay: (50 * index).ms,
-                              duration: 300.ms,
-                            );
+                        );
                       },
                     ),
                   ),
@@ -203,38 +218,47 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
     return Skeletonizer(
       child: Column(
         children: [
-          _FiltersSummaryBar(
-            typeFilters: const {},
-            dateRange: null,
-            onClear: null,
-            onEdit: () {},
+          _LogsReadableFrame(
+            child: _FiltersSummaryBar(
+              typeFilters: const {},
+              dateRange: null,
+              onClear: null,
+              onEdit: () {},
+            ),
           ),
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.sm,
+                AppSpacing.md,
+                AppSpacing.md,
+              ),
               itemCount: placeholders.length,
               separatorBuilder: (_, __) =>
                   const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final log = placeholders[index];
-                return Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: _getLogColor(log.type).withAlpha(51),
-                      child: Icon(
-                        _getLogIcon(log.type),
-                        color: _getLogColor(log.type),
-                        size: AppIconSizes.sm,
+                return _LogsReadableFrame(
+                  child: Card(
+                    margin: EdgeInsets.zero,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: _getLogColor(log.type).withAlpha(51),
+                        child: Icon(
+                          _getLogIcon(log.type),
+                          color: _getLogColor(log.type),
+                          size: AppIconSizes.sm,
+                        ),
                       ),
+                      title: Text(_titleFor(log)),
+                      subtitle: Text(
+                        DateFormat(
+                          'd MMM yyyy  •  h:mm a',
+                        ).format(log.timestamp),
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
                     ),
-                    title: Text(_titleFor(log)),
-                    subtitle: Text(
-                      DateFormat(
-                        'd MMM yyyy  •  h:mm a',
-                      ).format(log.timestamp),
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
                   ),
                 );
               },
@@ -509,6 +533,23 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
   }
 }
 
+class _LogsReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _LogsReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxLogsReadableWidth),
+        child: child,
+      ),
+    );
+  }
+}
+
 class _FiltersSummaryBar extends StatelessWidget {
   final Set<LogType> typeFilters;
   final DateTimeRange? dateRange;
@@ -544,7 +585,12 @@ class _FiltersSummaryBar extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm2, AppSpacing.md, AppSpacing.sm),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.sm2,
+        AppSpacing.md,
+        AppSpacing.sm,
+      ),
       child: Row(
         children: [
           Expanded(
