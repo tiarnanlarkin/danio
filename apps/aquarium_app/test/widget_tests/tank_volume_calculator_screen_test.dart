@@ -12,6 +12,7 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/screens/tank_volume_calculator_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/theme/app_theme.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -102,6 +103,40 @@ void main() {
       );
 
       expect(imperialChip.labelStyle?.color, AppColors.textPrimary);
+    });
+
+    testWidgets('tablet keeps inputs and result cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final fields = find.byType(TextField);
+      expect(tester.getSize(fields.first).width, lessThanOrEqualTo(720));
+
+      final promptCard = find
+          .ancestor(
+            of: find.text('Enter dimensions above to calculate'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(promptCard).width, lessThanOrEqualTo(720));
+
+      await tester.enterText(fields.at(0), '60');
+      await tester.enterText(fields.at(1), '30');
+      await tester.enterText(fields.at(2), '30');
+      await tester.pump();
+
+      final resultCard = find
+          .ancestor(
+            of: find.text('Estimated Volume'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(resultCard).width, lessThanOrEqualTo(720));
     });
   });
 

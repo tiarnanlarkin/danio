@@ -2582,6 +2582,17 @@ CL-P3-001A Optional AI provider setup boundary:
   card surfaces stay at or below the 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002P Tank Volume Calculator Tablet Readability
+
+- Tank Volume Calculator now centers unit selection, shape chips, dimension
+  inputs, empty and calculated result cards, tank-profile apply guidance, and
+  tips in the same readable 720px rail on wide tablet surfaces.
+- Existing volume calculations, unit conversion, shape selection, and local
+  tank-profile apply behavior remain unchanged.
+- Focused widget coverage verifies representative dimension input, empty
+  prompt, and calculated result surfaces stay at or below the 720px tablet
+  readability bound on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
