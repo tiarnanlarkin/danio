@@ -17,6 +17,8 @@ import '../widgets/app_bottom_sheet.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/source_trail_card.dart';
 
+const double _maxPlantReadableWidth = 720;
+
 class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});
 
@@ -89,111 +91,124 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
       body: Column(
         children: [
           // Search
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: AppSearchField(
-              hint: 'Search plants...',
-              onChanged: (v) {
-                _searchDebouncer.run(() {
-                  if (mounted) {
-                    setState(() {
-                      _searchQuery = v;
-                      _invalidateCache();
-                    });
-                  }
-                });
-              },
+          _PlantReadableFrame(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: AppSearchField(
+                hint: 'Search plants...',
+                onChanged: (v) {
+                  _searchDebouncer.run(() {
+                    if (mounted) {
+                      setState(() {
+                        _searchQuery = v;
+                        _invalidateCache();
+                      });
+                    }
+                  });
+                },
+              ),
             ),
           ),
 
           // Filters
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Row(
-              children: [
-                FilterChip(
-                  label: const Text('Low Tech'),
-                  selected: _lowTechOnly,
-                  onSelected: (v) => setState(() {
-                    _lowTechOnly = v;
-                    _invalidateCache();
-                  }),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                _buildDifficultyChip('Easy'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildDifficultyChip('Medium'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildDifficultyChip('Hard'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildPlacementChip('Foreground'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildPlacementChip('Background'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildPlacementChip('Floating'),
-              ],
+          _PlantReadableFrame(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Row(
+                children: [
+                  FilterChip(
+                    label: const Text('Low Tech'),
+                    selected: _lowTechOnly,
+                    onSelected: (v) => setState(() {
+                      _lowTechOnly = v;
+                      _invalidateCache();
+                    }),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildDifficultyChip('Easy'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildDifficultyChip('Medium'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildDifficultyChip('Hard'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildPlacementChip('Foreground'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildPlacementChip('Background'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildPlacementChip('Floating'),
+                ],
+              ),
             ),
           ),
 
           const SizedBox(height: AppSpacing.sm),
 
           // Results count
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Row(
-              children: [
-                Text('${plants.length} plants', style: AppTypography.bodySmall),
-                const Spacer(),
-                if (_difficultyFilter != null ||
-                    _placementFilter != null ||
-                    _lowTechOnly)
-                  AppButton(
-                    label: 'Clear filters',
-                    onPressed: () => setState(() {
-                      _difficultyFilter = null;
-                      _placementFilter = null;
-                      _lowTechOnly = false;
-                      _invalidateCache();
-                    }),
-                    variant: AppButtonVariant.text,
-                    size: AppButtonSize.small,
+          _PlantReadableFrame(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Row(
+                children: [
+                  Text(
+                    '${plants.length} plants',
+                    style: AppTypography.bodySmall,
                   ),
-              ],
+                  const Spacer(),
+                  if (_difficultyFilter != null ||
+                      _placementFilter != null ||
+                      _lowTechOnly)
+                    AppButton(
+                      label: 'Clear filters',
+                      onPressed: () => setState(() {
+                        _difficultyFilter = null;
+                        _placementFilter = null;
+                        _lowTechOnly = false;
+                        _invalidateCache();
+                      }),
+                      variant: AppButtonVariant.text,
+                      size: AppButtonSize.small,
+                    ),
+                ],
+              ),
             ),
           ),
 
           // List
           Expanded(
             child: plants.isEmpty && _searchQuery.isNotEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 48,
-                          color: context.textHint,
-                        ),
-                        const SizedBox(height: AppSpacing.sm2),
-                        Text('No matches', style: AppTypography.titleMedium),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'Try a different plant name or clear filters',
-                          style: AppTypography.bodyMedium.copyWith(
+                ? _PlantReadableFrame(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 48,
                             color: context.textHint,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                          const SizedBox(height: AppSpacing.sm2),
+                          Text('No matches', style: AppTypography.titleMedium),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            'Try a different plant name or clear filters',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: context.textHint,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 : ListView.builder(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     itemCount: plants.length,
-                    itemBuilder: (ctx, i) => _PlantCard(
-                      plant: plants[i],
-                      onTap: () => _showPlantDetail(context, plants[i]),
+                    itemBuilder: (ctx, i) => _PlantReadableFrame(
+                      child: _PlantCard(
+                        plant: plants[i],
+                        onTap: () => _showPlantDetail(context, plants[i]),
+                      ),
                     ),
                   ),
           ),
@@ -247,6 +262,23 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
       maxSize: 0.95,
       builder: (_, scrollController) =>
           _PlantDetailSheet(plant: plant, scrollController: scrollController),
+    );
+  }
+}
+
+class _PlantReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _PlantReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxPlantReadableWidth),
+        child: child,
+      ),
     );
   }
 }
@@ -363,151 +395,153 @@ class _PlantDetailSheet extends StatelessWidget {
       child: SingleChildScrollView(
         controller: scrollController,
         padding: const EdgeInsets.all(AppSpacing.lg2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: context.textHint,
-                  borderRadius: AppRadius.xxsRadius,
+        child: _PlantReadableFrame(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Handle
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.textHint,
+                    borderRadius: AppRadius.xxsRadius,
+                  ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: AppSpacing.lg2),
+              const SizedBox(height: AppSpacing.lg2),
 
-            // Header
-            Row(
-              children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: AppOverlays.success10,
-                    borderRadius: AppRadius.mediumRadius,
+              // Header
+              Row(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: AppOverlays.success10,
+                      borderRadius: AppRadius.mediumRadius,
+                    ),
+                    child: const Icon(
+                      Icons.eco,
+                      color: AppColors.success,
+                      size: 32,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.eco,
-                    color: AppColors.success,
-                    size: 32,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        plant.commonName,
-                        style: AppTypography.headlineMedium,
-                      ),
-                      Text(
-                        plant.scientificName,
-                        style: AppTypography.bodyMedium.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.md),
-
-            // Quick stats
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _StatChip(label: plant.difficulty, icon: Icons.speed),
-                _StatChip(
-                  label: '${plant.lightLevel} Light',
-                  icon: Icons.wb_sunny,
-                ),
-                _StatChip(
-                  label: '${plant.growthRate} Growth',
-                  icon: Icons.trending_up,
-                ),
-                _StatChip(label: plant.placement, icon: Icons.layers),
-                if (plant.needsCO2)
-                  _StatChip(label: 'CO₂ Required', icon: Icons.bubble_chart),
-                if (!plant.needsCO2)
-                  _StatChip(label: 'No CO₂ Needed', icon: Icons.check_circle),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            // Description
-            Text(plant.description, style: AppTypography.bodyLarge),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            _PlantingProfileCard(plant: plant),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            _PlantCareActionsCard(plant: plant),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            _PlantWatchForCard(plant: plant),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            // Details
-            _DetailSection(
-              title: 'Details',
-              children: [
-                _DetailRow(label: 'Family', value: plant.family),
-                _DetailRow(label: 'Origin', value: plant.origin),
-                _DetailRow(
-                  label: 'Height',
-                  value:
-                      '${plant.minHeightCm.toStringAsFixed(0)}-${plant.maxHeightCm.toStringAsFixed(0)} cm',
-                ),
-                _DetailRow(label: 'Propagation', value: plant.propagation),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.md),
-
-            // Tips
-            _DetailSection(
-              title: 'Care Tips',
-              children: [
-                ...plant.tips.map(
-                  (tip) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                    child: Row(
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.eco,
-                          size: AppIconSizes.xs,
-                          color: AppColors.success,
+                        Text(
+                          plant.commonName,
+                          style: AppTypography.headlineMedium,
                         ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(tip, style: AppTypography.bodyMedium),
+                        Text(
+                          plant.scientificName,
+                          style: AppTypography.bodyMedium.copyWith(
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            const SizedBox(height: AppSpacing.lg2),
-            const SourceTrailCard(sources: plantCareSources),
+              const SizedBox(height: AppSpacing.md),
 
-            const SizedBox(height: AppSpacing.xl),
-          ],
+              // Quick stats
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _StatChip(label: plant.difficulty, icon: Icons.speed),
+                  _StatChip(
+                    label: '${plant.lightLevel} Light',
+                    icon: Icons.wb_sunny,
+                  ),
+                  _StatChip(
+                    label: '${plant.growthRate} Growth',
+                    icon: Icons.trending_up,
+                  ),
+                  _StatChip(label: plant.placement, icon: Icons.layers),
+                  if (plant.needsCO2)
+                    _StatChip(label: 'CO₂ Required', icon: Icons.bubble_chart),
+                  if (!plant.needsCO2)
+                    _StatChip(label: 'No CO₂ Needed', icon: Icons.check_circle),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              // Description
+              Text(plant.description, style: AppTypography.bodyLarge),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              _PlantingProfileCard(plant: plant),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              _PlantCareActionsCard(plant: plant),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              _PlantWatchForCard(plant: plant),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              // Details
+              _DetailSection(
+                title: 'Details',
+                children: [
+                  _DetailRow(label: 'Family', value: plant.family),
+                  _DetailRow(label: 'Origin', value: plant.origin),
+                  _DetailRow(
+                    label: 'Height',
+                    value:
+                        '${plant.minHeightCm.toStringAsFixed(0)}-${plant.maxHeightCm.toStringAsFixed(0)} cm',
+                  ),
+                  _DetailRow(label: 'Propagation', value: plant.propagation),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              // Tips
+              _DetailSection(
+                title: 'Care Tips',
+                children: [
+                  ...plant.tips.map(
+                    (tip) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.eco,
+                            size: AppIconSizes.xs,
+                            color: AppColors.success,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(tip, style: AppTypography.bodyMedium),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.lg2),
+              const SourceTrailCard(sources: plantCareSources),
+
+              const SizedBox(height: AppSpacing.xl),
+            ],
+          ),
         ),
       ),
     );

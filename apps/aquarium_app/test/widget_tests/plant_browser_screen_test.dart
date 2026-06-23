@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/plant_browser_screen.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -56,6 +57,35 @@ void main() {
       await _advance(tester);
       // Plant database should have entries — verify a ListView is present
       expect(find.byType(ListView), findsWidgets);
+    });
+
+    testWidgets('tablet keeps plant list and detail cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final plantCard = find
+          .ancestor(
+            of: find.text('Anubias Barteri'),
+            matching: find.byType(Card),
+          )
+          .first;
+      expect(tester.getSize(plantCard).width, lessThanOrEqualTo(720));
+
+      await tester.tap(find.text('Anubias Barteri'));
+      await tester.pumpAndSettle();
+
+      final careActionsCard = find
+          .ancestor(
+            of: find.text('Care Actions'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(careActionsCard).width, lessThanOrEqualTo(720));
     });
 
     testWidgets('shows difficulty filter chips', (tester) async {

@@ -25,6 +25,8 @@ import 'emergency_guide_screen.dart';
 import 'livestock/livestock_add_dialog.dart';
 import 'stocking_calculator_screen.dart';
 
+const double _maxSpeciesReadableWidth = 720;
+
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});
 
@@ -86,109 +88,119 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
       appBar: AppBar(title: const Text('Fish Database')),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: AppSearchField(
-              hint: 'Search fish by name...',
-              onChanged: (v) {
-                _searchDebouncer.run(() {
-                  if (mounted) {
-                    setState(() {
-                      _searchQuery = v;
-                      _invalidateCache();
-                    });
-                  }
-                });
-              },
+          _SpeciesReadableFrame(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: AppSearchField(
+                hint: 'Search fish by name...',
+                onChanged: (v) {
+                  _searchDebouncer.run(() {
+                    if (mounted) {
+                      setState(() {
+                        _searchQuery = v;
+                        _invalidateCache();
+                      });
+                    }
+                  });
+                },
+              ),
             ),
           ),
 
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Row(
-              children: [
-                _buildAllChip(),
-                const SizedBox(width: AppSpacing.sm),
-                _buildCareLevelChip('Beginner'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildCareLevelChip('Intermediate'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildCareLevelChip('Advanced'),
-                const SizedBox(width: AppSpacing.md),
-                _buildTemperamentChip('Peaceful'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildTemperamentChip('Semi-aggressive'),
-                const SizedBox(width: AppSpacing.sm),
-                _buildTemperamentChip('Aggressive'),
-              ],
+          _SpeciesReadableFrame(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Row(
+                children: [
+                  _buildAllChip(),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildCareLevelChip('Beginner'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildCareLevelChip('Intermediate'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildCareLevelChip('Advanced'),
+                  const SizedBox(width: AppSpacing.md),
+                  _buildTemperamentChip('Peaceful'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildTemperamentChip('Semi-aggressive'),
+                  const SizedBox(width: AppSpacing.sm),
+                  _buildTemperamentChip('Aggressive'),
+                ],
+              ),
             ),
           ),
 
           const SizedBox(height: AppSpacing.sm),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Row(
-              children: [
-                Text(
-                  '${species.length} species',
-                  style: AppTypography.bodySmall,
-                ),
-                const Spacer(),
-                if (_careLevelFilter != null || _temperamentFilter != null)
-                  AppButton(
-                    label: 'Clear filters',
-                    onPressed: () => setState(() {
-                      _careLevelFilter = null;
-                      _temperamentFilter = null;
-                      _invalidateCache();
-                    }),
-                    variant: AppButtonVariant.text,
-                    size: AppButtonSize.small,
+          _SpeciesReadableFrame(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Row(
+                children: [
+                  Text(
+                    '${species.length} species',
+                    style: AppTypography.bodySmall,
                   ),
-              ],
+                  const Spacer(),
+                  if (_careLevelFilter != null || _temperamentFilter != null)
+                    AppButton(
+                      label: 'Clear filters',
+                      onPressed: () => setState(() {
+                        _careLevelFilter = null;
+                        _temperamentFilter = null;
+                        _invalidateCache();
+                      }),
+                      variant: AppButtonVariant.text,
+                      size: AppButtonSize.small,
+                    ),
+                ],
+              ),
             ),
           ),
 
           Expanded(
             child: species.isEmpty && _searchQuery.isNotEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 48,
-                          color: context.textHint,
-                        ),
-                        const SizedBox(height: AppSpacing.sm2),
-                        Text('No matches', style: AppTypography.titleMedium),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'Try a different name or clear filters',
-                          style: AppTypography.bodyMedium.copyWith(
+                ? _SpeciesReadableFrame(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 48,
                             color: context.textHint,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        AppButton(
-                          label: 'Request species',
-                          leadingIcon: Icons.outgoing_mail,
-                          onPressed: () => _showSpeciesRequestDialog(context),
-                          variant: AppButtonVariant.secondary,
-                          size: AppButtonSize.small,
-                        ),
-                      ],
+                          const SizedBox(height: AppSpacing.sm2),
+                          Text('No matches', style: AppTypography.titleMedium),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            'Try a different name or clear filters',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: context.textHint,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          AppButton(
+                            label: 'Request species',
+                            leadingIcon: Icons.outgoing_mail,
+                            onPressed: () => _showSpeciesRequestDialog(context),
+                            variant: AppButtonVariant.secondary,
+                            size: AppButtonSize.small,
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 : ListView.builder(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     itemCount: species.length,
-                    itemBuilder: (ctx, i) => _SpeciesCard(
-                      species: species[i],
-                      onTap: () => _showSpeciesDetail(context, species[i]),
+                    itemBuilder: (ctx, i) => _SpeciesReadableFrame(
+                      child: _SpeciesCard(
+                        species: species[i],
+                        onTap: () => _showSpeciesDetail(context, species[i]),
+                      ),
                     ),
                   ),
           ),
@@ -300,6 +312,23 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
       builder: (_, scrollController) => _SpeciesDetailSheet(
         species: species,
         scrollController: scrollController,
+      ),
+    );
+  }
+}
+
+class _SpeciesReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _SpeciesReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxSpeciesReadableWidth),
+        child: child,
       ),
     );
   }
@@ -434,232 +463,234 @@ class _SpeciesDetailSheet extends StatelessWidget {
       child: SingleChildScrollView(
         controller: scrollController,
         padding: const EdgeInsets.all(AppSpacing.lg2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: [
-                Hero(
-                  tag: 'species-icon-${species.scientificName}',
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: AppOverlays.primary10,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: const Icon(
-                      Icons.set_meal,
-                      color: AppColors.primary,
-                      size: 32,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        species.commonName,
-                        style: AppTypography.headlineMedium,
-                      ),
-                      Text(
-                        species.scientificName,
-                        style: AppTypography.bodyMedium.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.md),
-
-            // Quick stats
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _StatChip(label: species.careLevel, icon: Icons.speed),
-                _StatChip(label: species.temperament, icon: Icons.set_meal),
-                _StatChip(
-                  label: '${species.adultSizeCm.toStringAsFixed(0)} cm adult',
-                  icon: Icons.straighten,
-                ),
-                _StatChip(label: species.family, icon: Icons.account_tree),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            AppCard(
-              padding: AppCardPadding.compact,
-              backgroundColor: AppOverlays.error10,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: _SpeciesReadableFrame(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.emergency_outlined,
-                        color: AppColors.error,
+                  Hero(
+                    tag: 'species-icon-${species.scientificName}',
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: AppOverlays.primary10,
+                        borderRadius: AppRadius.mediumRadius,
                       ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          'Species safety',
-                          style: AppTypography.labelLarge.copyWith(
-                            color: AppColors.error,
+                      child: const Icon(
+                        Icons.set_meal,
+                        color: AppColors.primary,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          species.commonName,
+                          style: AppTypography.headlineMedium,
+                        ),
+                        Text(
+                          species.scientificName,
+                          style: AppTypography.bodyMedium.copyWith(
+                            fontStyle: FontStyle.italic,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Urgent steps for illness, injury, gasping, or unsafe water',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: context.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  AppButton(
-                    label: 'Emergency Guide',
-                    leadingIcon: Icons.emergency_outlined,
-                    variant: AppButtonVariant.secondary,
-                    size: AppButtonSize.small,
-                    onPressed: () => NavigationThrottle.push(
-                      context,
-                      const EmergencyGuideScreen(),
-                      rootNavigator: true,
+                      ],
                     ),
                   ),
                 ],
               ),
-            ),
 
-            const SizedBox(height: AppSpacing.lg2),
-
-            Text(species.description, style: AppTypography.bodyLarge),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            _SpeciesCareProfileCard(species: species),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            _CareActionsCard(species: species),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            _SpeciesWatchForCard(species: species),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            // Parameters
-            Text('Ideal Parameters', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm2),
-            AppCard(
-              padding: AppCardPadding.compact,
-              child: Column(
-                children: [
-                  _ParamRow(
-                    label: 'Temperature',
-                    value: '${species.minTempC}-${species.maxTempC}°C',
-                  ),
-                  _ParamRow(
-                    label: 'pH',
-                    value: '${species.minPh}-${species.maxPh}',
-                  ),
-                  _ParamRow(
-                    label: 'Min tank size',
-                    value: '${species.minTankLitres.toStringAsFixed(0)} L',
-                  ),
-                  _ParamRow(
-                    label: 'Min school size',
-                    value: '${species.minSchoolSize}+',
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            // Diet
-            Text('Diet', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm),
-            Text(species.diet, style: AppTypography.bodyMedium),
-
-            const SizedBox(height: AppSpacing.lg2),
-
-            // Compatibility
-            if (species.compatibleWith.isNotEmpty) ...[
-              Text('Compatible With', style: AppTypography.headlineSmall),
-              const SizedBox(height: AppSpacing.sm),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: species.compatibleWith
-                    .map(
-                      (c) => Chip(
-                        label: Text(c, style: AppTypography.bodySmall),
-                        backgroundColor: AppOverlays.success10,
-                        side: BorderSide.none,
-                      ),
-                    )
-                    .toList(),
-              ),
               const SizedBox(height: AppSpacing.md),
-            ],
 
-            if (species.avoidWith.isNotEmpty) ...[
-              Text('Avoid With', style: AppTypography.headlineSmall),
-              const SizedBox(height: AppSpacing.sm),
+              // Quick stats
               Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: species.avoidWith
-                    .map(
-                      (c) => Chip(
-                        label: Text(c, style: AppTypography.bodySmall),
-                        backgroundColor: AppOverlays.error10,
-                        side: BorderSide.none,
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
-
-            if (species.medicationWarnings.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.lg2),
-              Text('Treatment Warnings', style: AppTypography.headlineSmall),
-              const SizedBox(height: AppSpacing.sm),
-              ...species.medicationWarnings.map(
-                (warning) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppOverlays.error10,
-                      borderRadius: AppRadius.mediumRadius,
-                      border: Border.all(color: AppOverlays.error10),
-                    ),
-                    child: Text(warning, style: AppTypography.bodyMedium),
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _StatChip(label: species.careLevel, icon: Icons.speed),
+                  _StatChip(label: species.temperament, icon: Icons.set_meal),
+                  _StatChip(
+                    label: '${species.adultSizeCm.toStringAsFixed(0)} cm adult',
+                    icon: Icons.straighten,
                   ),
+                  _StatChip(label: species.family, icon: Icons.account_tree),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              AppCard(
+                padding: AppCardPadding.compact,
+                backgroundColor: AppOverlays.error10,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.emergency_outlined,
+                          color: AppColors.error,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            'Species safety',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: AppColors.error,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Urgent steps for illness, injury, gasping, or unsafe water',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    AppButton(
+                      label: 'Emergency Guide',
+                      leadingIcon: Icons.emergency_outlined,
+                      variant: AppButtonVariant.secondary,
+                      size: AppButtonSize.small,
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        const EmergencyGuideScreen(),
+                        rootNavigator: true,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              Text(species.description, style: AppTypography.bodyLarge),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              _SpeciesCareProfileCard(species: species),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              _CareActionsCard(species: species),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              _SpeciesWatchForCard(species: species),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              // Parameters
+              Text('Ideal Parameters', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm2),
+              AppCard(
+                padding: AppCardPadding.compact,
+                child: Column(
+                  children: [
+                    _ParamRow(
+                      label: 'Temperature',
+                      value: '${species.minTempC}-${species.maxTempC}°C',
+                    ),
+                    _ParamRow(
+                      label: 'pH',
+                      value: '${species.minPh}-${species.maxPh}',
+                    ),
+                    _ParamRow(
+                      label: 'Min tank size',
+                      value: '${species.minTankLitres.toStringAsFixed(0)} L',
+                    ),
+                    _ParamRow(
+                      label: 'Min school size',
+                      value: '${species.minSchoolSize}+',
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              // Diet
+              Text('Diet', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm),
+              Text(species.diet, style: AppTypography.bodyMedium),
+
+              const SizedBox(height: AppSpacing.lg2),
+
+              // Compatibility
+              if (species.compatibleWith.isNotEmpty) ...[
+                Text('Compatible With', style: AppTypography.headlineSmall),
+                const SizedBox(height: AppSpacing.sm),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: species.compatibleWith
+                      .map(
+                        (c) => Chip(
+                          label: Text(c, style: AppTypography.bodySmall),
+                          backgroundColor: AppOverlays.success10,
+                          side: BorderSide.none,
+                        ),
+                      )
+                      .toList(),
+                ),
+                const SizedBox(height: AppSpacing.md),
+              ],
+
+              if (species.avoidWith.isNotEmpty) ...[
+                Text('Avoid With', style: AppTypography.headlineSmall),
+                const SizedBox(height: AppSpacing.sm),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: species.avoidWith
+                      .map(
+                        (c) => Chip(
+                          label: Text(c, style: AppTypography.bodySmall),
+                          backgroundColor: AppOverlays.error10,
+                          side: BorderSide.none,
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+
+              if (species.medicationWarnings.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.lg2),
+                Text('Treatment Warnings', style: AppTypography.headlineSmall),
+                const SizedBox(height: AppSpacing.sm),
+                ...species.medicationWarnings.map(
+                  (warning) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppOverlays.error10,
+                        borderRadius: AppRadius.mediumRadius,
+                        border: Border.all(color: AppOverlays.error10),
+                      ),
+                      child: Text(warning, style: AppTypography.bodyMedium),
+                    ),
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: AppSpacing.lg2),
+              const SourceTrailCard(sources: fishCareSources),
+
+              const SizedBox(height: AppSpacing.xl),
             ],
-
-            const SizedBox(height: AppSpacing.lg2),
-            const SourceTrailCard(sources: fishCareSources),
-
-            const SizedBox(height: AppSpacing.xl),
-          ],
+          ),
         ),
       ),
     );

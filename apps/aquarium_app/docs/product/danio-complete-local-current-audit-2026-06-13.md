@@ -2461,6 +2461,17 @@ CL-P3-001A Optional AI provider setup boundary:
   Emergency Guide card stay at or below the 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002E Species And Plant Guide Tablet Readability
+
+- Fish Database and Plant Database now center search, filter, results-count,
+  empty-state, and list-card surfaces in a readable 720px rail on wide tablet
+  surfaces instead of stretching phone list cards across the full display.
+- Fish and plant detail sheets now constrain their guide content to the same
+  readable rail while keeping the modal sheet behavior unchanged.
+- Focused widget coverage verifies representative browser cards and Care
+  Actions detail cards stay at or below the 720px tablet readability bound on a
+  2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

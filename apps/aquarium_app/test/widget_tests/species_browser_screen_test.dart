@@ -15,6 +15,7 @@ import 'package:danio/screens/species_browser_screen.dart';
 import 'package:danio/screens/stocking_calculator_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -94,6 +95,32 @@ void main() {
       await _advance(tester);
       // Species database is static — at least one card should be present
       expect(find.byType(ListView), findsWidgets);
+    });
+
+    testWidgets('tablet keeps species list and detail cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final speciesCard = find
+          .ancestor(of: find.text('Neon Tetra'), matching: find.byType(Card))
+          .first;
+      expect(tester.getSize(speciesCard).width, lessThanOrEqualTo(720));
+
+      await tester.tap(find.text('Neon Tetra'));
+      await tester.pumpAndSettle();
+
+      final careActionsCard = find
+          .ancestor(
+            of: find.text('Care Actions'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(careActionsCard).width, lessThanOrEqualTo(720));
     });
 
     testWidgets('species detail opens Emergency Guide', (tester) async {
