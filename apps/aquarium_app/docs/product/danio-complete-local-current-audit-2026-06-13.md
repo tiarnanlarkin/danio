@@ -2181,6 +2181,16 @@ CL-P1-009DJ Livestock single-delete expiry failure feedback:
 - Focused widget coverage verifies failed expiry restores the visible fish,
   shows retry feedback, and writes no livestock-removal timeline log.
 
+CL-P1-009DK Optional AI key write-result handling:
+
+- `AiProxyService.saveApiKey` and `AiProxyService.clearApiKey` now treat failed
+  local `SharedPreferences` write/remove return values as real failures instead
+  of silently reporting success.
+- The existing Optional AI setup dialog can now show its normal save/remove
+  retry feedback when the local key write does not commit.
+- Focused service coverage simulates false `setString` and `remove` results and
+  verifies the visible key state is not reported as changed.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

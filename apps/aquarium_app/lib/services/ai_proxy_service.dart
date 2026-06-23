@@ -18,10 +18,10 @@
 // ---------------------------------------------------------------------------
 
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as encrypt_pkg;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,6 +48,22 @@ const String _kSalt = 'danio_ai_proxy_v1';
 /// server-side proxy — always use the proxy in production.
 class AiProxyService {
   AiProxyService._();
+
+  static Future<SharedPreferences> Function() _sharedPreferencesFactory =
+      SharedPreferences.getInstance;
+
+  @visibleForTesting
+  // ignore: use_setters_to_change_properties
+  static void overrideSharedPreferencesFactoryForTesting(
+    Future<SharedPreferences> Function() factory,
+  ) {
+    _sharedPreferencesFactory = factory;
+  }
+
+  @visibleForTesting
+  static void resetSharedPreferencesFactoryForTesting() {
+    _sharedPreferencesFactory = SharedPreferences.getInstance;
+  }
 
   // ---------------------------------------------------------------------------
   // Proxy configuration
@@ -91,7 +107,7 @@ class AiProxyService {
     }
 
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await _sharedPreferencesFactory();
       final encrypted = prefs.getString(_kUserApiKey);
       if (encrypted != null && encrypted.isNotEmpty) {
         final decrypted = _decrypt(encrypted);
@@ -119,23 +135,32 @@ class AiProxyService {
 
   /// Persists a user-supplied API key to SharedPreferences (encrypted).
   static Future<void> saveApiKey(String key) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await _sharedPreferencesFactory();
     if (key.isEmpty) {
-      await prefs.remove(_kUserApiKey);
+      final removed = await prefs.remove(_kUserApiKey);
+      if (!removed) {
+        throw StateError('Could not remove Optional AI key locally.');
+      }
     } else {
-      await prefs.setString(_kUserApiKey, _encrypt(key));
+      final saved = await prefs.setString(_kUserApiKey, _encrypt(key));
+      if (!saved) {
+        throw StateError('Could not save Optional AI key locally.');
+      }
     }
   }
 
   /// Removes the user-supplied API key from SharedPreferences.
   static Future<void> clearApiKey() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_kUserApiKey);
+    final prefs = await _sharedPreferencesFactory();
+    final removed = await prefs.remove(_kUserApiKey);
+    if (!removed) {
+      throw StateError('Could not remove Optional AI key locally.');
+    }
   }
 
   /// Returns `true` if the user has supplied their own key.
   static Future<bool> get hasUserKey async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await _sharedPreferencesFactory();
     final value = prefs.getString(_kUserApiKey);
     return value != null && value.isNotEmpty;
   }
