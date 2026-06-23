@@ -10,6 +10,8 @@ import '../../widgets/danio_snack_bar.dart';
 /// / "Complete Lesson" bottom action.  Pure display widget — all behaviour
 /// callbacks are passed in from [_LessonScreenState].
 class LessonCardWidget extends StatelessWidget {
+  static const double _maxReadableWidth = 720;
+
   final Lesson lesson;
   final bool isCompletingLesson;
   final VoidCallback onAction;
@@ -43,13 +45,15 @@ class LessonCardWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               // Lesson title with Hero animation
               if (index == 0) {
-                return Hero(
-                  tag: 'lesson-${lesson.id}',
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Text(
-                      lesson.title,
-                      style: AppTypography.headlineLarge,
+                return _ReadableLessonFrame(
+                  child: Hero(
+                    tag: 'lesson-${lesson.id}',
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Text(
+                        lesson.title,
+                        style: AppTypography.headlineLarge,
+                      ),
                     ),
                   ),
                 );
@@ -62,21 +66,23 @@ class LessonCardWidget extends StatelessWidget {
 
               // Time estimate row
               if (index == 2) {
-                return Row(
-                  children: [
-                    Icon(
-                      Icons.timer,
-                      size: AppIconSizes.xs,
-                      color: context.textSecondary,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      '${lesson.estimatedMinutes} min read',
-                      style: AppTypography.bodySmall.copyWith(
+                return _ReadableLessonFrame(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.timer,
+                        size: AppIconSizes.xs,
                         color: context.textSecondary,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        '${lesson.estimatedMinutes} min read',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }
 
@@ -86,9 +92,11 @@ class LessonCardWidget extends StatelessWidget {
               }
 
               if (hasGuide && index == 4) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-                  child: _LessonGuideCard(guide: guide),
+                return _ReadableLessonFrame(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                    child: _LessonGuideCard(guide: guide),
+                  ),
                 );
               }
 
@@ -96,9 +104,11 @@ class LessonCardWidget extends StatelessWidget {
               if (index < sectionsStartIndex + lesson.sections.length) {
                 final sectionIndex = index - sectionsStartIndex;
                 final section = lesson.sections[sectionIndex];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: _buildSection(context, section),
+                return _ReadableLessonFrame(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: _buildSection(context, section),
+                  ),
                 );
               }
 
@@ -122,12 +132,19 @@ class LessonCardWidget extends StatelessWidget {
             ],
           ),
           child: SafeArea(
-            child: AppButton(
-              onPressed: isCompletingLesson ? null : onAction,
-              label: lesson.quiz != null ? 'Take Quiz' : 'Complete Lesson',
-              isLoading: isCompletingLesson,
-              isFullWidth: true,
-              size: AppButtonSize.large,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: _maxReadableWidth,
+                ),
+                child: AppButton(
+                  onPressed: isCompletingLesson ? null : onAction,
+                  label: lesson.quiz != null ? 'Take Quiz' : 'Complete Lesson',
+                  isLoading: isCompletingLesson,
+                  isFullWidth: true,
+                  size: AppButtonSize.large,
+                ),
+              ),
             ),
           ),
         ),
@@ -399,6 +416,24 @@ class LessonCardWidget extends StatelessWidget {
             style: AppTypography.bodySmall.copyWith(color: context.textHint),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ReadableLessonFrame extends StatelessWidget {
+  final Widget child;
+
+  const _ReadableLessonFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: LessonCardWidget._maxReadableWidth,
+        ),
+        child: SizedBox(width: double.infinity, child: child),
       ),
     );
   }

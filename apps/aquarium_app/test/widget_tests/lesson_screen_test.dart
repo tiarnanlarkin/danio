@@ -22,6 +22,7 @@ import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/core/app_button.dart';
 
 // ---------------------------------------------------------------------------
 // Fake SpacedRepetitionNotifier (avoids NotificationService init)
@@ -99,6 +100,9 @@ final _quizLesson = Lesson(
     ],
   ),
 );
+
+const _tabletSurface = Size(2000, 1200);
+const _maxTabletLearningActionWidth = 720.0;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -358,6 +362,42 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Visual guide on the way!'), findsNothing);
+    });
+
+    testWidgets('lesson reader action stays readable on tablet', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(_tabletSurface);
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap(lesson: _quizLesson));
+      await _advance(tester);
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(AppButton), findsWidgets);
+      expect(
+        tester.getSize(find.byType(AppButton).last).width,
+        lessThanOrEqualTo(_maxTabletLearningActionWidth),
+      );
+    });
+
+    testWidgets('lesson quiz action stays readable on tablet', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(_tabletSurface);
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap(lesson: _quizLesson));
+      await _advance(tester);
+      await tester.tap(find.text('Take Quiz'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Check Answer'), findsOneWidget);
+      expect(
+        tester.getSize(find.byType(AppButton).last).width,
+        lessThanOrEqualTo(_maxTabletLearningActionWidth),
+      );
     });
 
     testWidgets('completion flow fits a compact Android viewport', (

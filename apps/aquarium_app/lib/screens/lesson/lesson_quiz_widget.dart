@@ -59,6 +59,8 @@ class LessonQuizWidget extends ConsumerStatefulWidget {
 }
 
 class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
+  static const double _maxReadableWidth = 720;
+
   static const String _hintText =
       'Look for keywords in the question - the correct answer often relates directly to the lesson content you just read.';
 
@@ -165,47 +167,49 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
         // Progress
         Padding(
           padding: const EdgeInsets.all(AppSpacing.lg2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Text(
-                      'Question ${currentQuizQuestion + 1} of ${quiz.questions.length}',
-                      style: AppTypography.labelLarge,
-                      overflow: TextOverflow.ellipsis,
+          child: _ReadableQuizFrame(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Question ${currentQuizQuestion + 1} of ${quiz.questions.length}',
+                        style: AppTypography.labelLarge,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    '$correctAnswers correct',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.success,
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '$correctAnswers correct',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.success,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Semantics(
-                label:
-                    'Quiz progress: question ${currentQuizQuestion + 1} of ${quiz.questions.length}',
-                child: ClipRRect(
-                  borderRadius: AppRadius.xsRadius,
-                  child: LinearProgressIndicator(
-                    value: (currentQuizQuestion + 1) / quiz.questions.length,
-                    backgroundColor: context.surfaceVariant,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      AppColors.primary,
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Semantics(
+                  label:
+                      'Quiz progress: question ${currentQuizQuestion + 1} of ${quiz.questions.length}',
+                  child: ClipRRect(
+                    borderRadius: AppRadius.xsRadius,
+                    child: LinearProgressIndicator(
+                      value: (currentQuizQuestion + 1) / quiz.questions.length,
+                      backgroundColor: context.surfaceVariant,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primary,
+                      ),
+                      minHeight: 8,
+                      semanticsLabel:
+                          '', // Exclude default semantics (handled by wrapper)
                     ),
-                    minHeight: 8,
-                    semanticsLabel:
-                        '', // Exclude default semantics (handled by wrapper)
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
 
@@ -228,12 +232,14 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
 
               // Question text
               if (index == 1) {
-                return Semantics(
-                  header: true,
-                  liveRegion: true,
-                  child: Text(
-                    question.question,
-                    style: AppTypography.headlineMedium,
+                return _ReadableQuizFrame(
+                  child: Semantics(
+                    header: true,
+                    liveRegion: true,
+                    child: Text(
+                      question.question,
+                      style: AppTypography.headlineMedium,
+                    ),
                   ),
                 );
               }
@@ -317,26 +323,28 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
                 );
 
                 if (answered && isSelected && isCorrect) {
-                  return Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      answerOption,
-                      Positioned(
-                        left: AppSpacing.md,
-                        top: AppSpacing.md,
-                        child: Semantics(
-                          label:
-                              'Selected answer ${String.fromCharCode(65 + optionIndex)}, correct',
-                          selected: true,
-                          liveRegion: true,
-                          child: const _SelectedCorrectAnswerMarker(),
+                  return _ReadableQuizFrame(
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        answerOption,
+                        Positioned(
+                          left: AppSpacing.md,
+                          top: AppSpacing.md,
+                          child: Semantics(
+                            label:
+                                'Selected answer ${String.fromCharCode(65 + optionIndex)}, correct',
+                            selected: true,
+                            liveRegion: true,
+                            child: const _SelectedCorrectAnswerMarker(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 }
 
-                return answerOption;
+                return _ReadableQuizFrame(child: answerOption);
               }
 
               // Explanation (after answering)
@@ -350,32 +358,34 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
 
                 // Explanation content
                 if (index == 4 + question.options.length) {
-                  return Semantics(
-                    key: _explanationKey,
-                    label: 'Explanation: ${question.explanation!}',
-                    liveRegion: true,
-                    child: Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: AppOverlays.info10,
-                        borderRadius: AppRadius.mediumRadius,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: context.textSecondary,
-                            semanticLabel: 'Explanation',
-                          ),
-                          const SizedBox(width: AppSpacing.sm2),
-                          Expanded(
-                            child: Text(
-                              question.explanation!,
-                              style: AppTypography.bodyMedium,
+                  return _ReadableQuizFrame(
+                    child: Semantics(
+                      key: _explanationKey,
+                      label: 'Explanation: ${question.explanation!}',
+                      liveRegion: true,
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: AppOverlays.info10,
+                          borderRadius: AppRadius.mediumRadius,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              color: context.textSecondary,
+                              semanticLabel: 'Explanation',
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: AppSpacing.sm2),
+                            Expanded(
+                              child: Text(
+                                question.explanation!,
+                                style: AppTypography.bodyMedium,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -405,43 +415,69 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
             ],
           ),
           child: SafeArea(
-            child: AppButton(
-              onPressed: selectedAnswer == null
-                  ? null
-                  : () async {
-                      final question = quiz.questions[currentQuizQuestion];
-                      final isCorrect = selectedAnswer == question.correctIndex;
-                      final isLastQuestion =
-                          currentQuizQuestion >= quiz.questions.length - 1;
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: _maxReadableWidth,
+                ),
+                child: AppButton(
+                  onPressed: selectedAnswer == null
+                      ? null
+                      : () async {
+                          final question = quiz.questions[currentQuizQuestion];
+                          final isCorrect =
+                              selectedAnswer == question.correctIndex;
+                          final isLastQuestion =
+                              currentQuizQuestion >= quiz.questions.length - 1;
 
-                      if (!answered) {
-                        // Announce result to screen readers
-                        SemanticsService.sendAnnouncement(
-                          View.of(context),
-                          isCorrect
-                              ? 'Correct!'
-                              : 'Incorrect. The correct answer is ${question.options[question.correctIndex]}.',
-                          TextDirection.ltr,
-                        );
-                      }
+                          if (!answered) {
+                            // Announce result to screen readers
+                            SemanticsService.sendAnnouncement(
+                              View.of(context),
+                              isCorrect
+                                  ? 'Correct!'
+                                  : 'Incorrect. The correct answer is ${question.options[question.correctIndex]}.',
+                              TextDirection.ltr,
+                            );
+                          }
 
-                      await onCheckOrAdvance(
-                        selectedAnswer: selectedAnswer,
-                        isCorrect: isCorrect,
-                        isLastQuestion: isLastQuestion,
-                      );
-                    },
-              label: !answered
-                  ? 'Check Answer'
-                  : currentQuizQuestion < quiz.questions.length - 1
-                  ? 'Next Question'
-                  : 'See Results',
-              isFullWidth: true,
-              size: AppButtonSize.large,
+                          await onCheckOrAdvance(
+                            selectedAnswer: selectedAnswer,
+                            isCorrect: isCorrect,
+                            isLastQuestion: isLastQuestion,
+                          );
+                        },
+                  label: !answered
+                      ? 'Check Answer'
+                      : currentQuizQuestion < quiz.questions.length - 1
+                      ? 'Next Question'
+                      : 'See Results',
+                  isFullWidth: true,
+                  size: AppButtonSize.large,
+                ),
+              ),
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ReadableQuizFrame extends StatelessWidget {
+  final Widget child;
+
+  const _ReadableQuizFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _LessonQuizWidgetState._maxReadableWidth,
+        ),
+        child: SizedBox(width: double.infinity, child: child),
+      ),
     );
   }
 }

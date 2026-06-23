@@ -2384,6 +2384,17 @@ CL-P3-001A Optional AI provider setup boundary:
   safety, Android gesture-navigation inset clearance, tablet portrait bounded
   card widths, and tablet landscape bounded first-row columns.
 
+### CL-P2-002B Lesson Reader Tablet Readability
+
+- Lesson reader content now uses a centered readable frame on wide tablet
+  surfaces instead of stretching headings, guide cards, sections, and the
+  primary lesson action across the full display.
+- Lesson quiz progress, question text, answer options, explanations, and the
+  fixed quiz action now use the same readable tablet width.
+- Focused widget coverage verifies the lesson reader and quiz primary actions
+  stay at or below the established 720px tablet readability bound on a
+  2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
