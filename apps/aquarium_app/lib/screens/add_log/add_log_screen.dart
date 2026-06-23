@@ -955,7 +955,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         (nitrite != null && nitrite > 0.25);
   }
 
-  Future<void> _showUnsafeWaterEmergencySheet(int effectiveXp) async {
+  Future<void> _showUnsafeWaterEmergencySheet({
+    required int effectiveXp,
+    required bool progressUpdated,
+  }) async {
     await showAppBottomSheet<void>(
       context: context,
       child: Builder(
@@ -991,7 +994,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                '+$effectiveXp XP earned',
+                progressUpdated
+                    ? '+$effectiveXp XP earned'
+                    : 'Water test saved, but progress couldn\'t update.',
                 style: AppTypography.bodySmall.copyWith(
                   color: sheetContext.textSecondary,
                 ),
@@ -1103,18 +1108,31 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       final isBoostActive = ref.read(xpBoostActiveProvider);
       final effectiveXp = isBoostActive ? xp * 2 : xp;
-      await ref
-          .read(userProfileProvider.notifier)
-          .recordActivity(xp: xp, xpBoostActive: isBoostActive);
+      var progressUpdated = true;
+      try {
+        await ref
+            .read(userProfileProvider.notifier)
+            .recordActivity(xp: xp, xpBoostActive: isBoostActive);
+      } catch (e, st) {
+        progressUpdated = false;
+        logError(
+          'AddLogScreen: profile activity update failed after log save: $e',
+          stackTrace: st,
+          tag: 'AddLogScreen',
+        );
+        ref.invalidate(userProfileProvider);
+      }
 
       // Show XP animation if XP was awarded
-      if (effectiveXp > 0 && mounted) {
+      if (progressUpdated && effectiveXp > 0 && mounted) {
         AppHaptics.success();
         ref.showXpAnimation(effectiveXp);
       }
 
       // Check for achievements after logging activity
-      final profile = ref.read(userProfileProvider).value;
+      final profile = progressUpdated
+          ? ref.read(userProfileProvider).value
+          : null;
       if (profile != null) {
         try {
           final achievementChecker = ref.read(achievementCheckerProvider);
@@ -1154,12 +1172,22 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             _isSaving = false;
             _discardConfirmed = true;
           });
-          await _showUnsafeWaterEmergencySheet(effectiveXp);
-        } else {
-          AppFeedback.showSuccessViaMessenger(
-            messenger,
-            '${log.typeName} logged! +$effectiveXp XP',
+          await _showUnsafeWaterEmergencySheet(
+            effectiveXp: effectiveXp,
+            progressUpdated: progressUpdated,
           );
+        } else {
+          if (progressUpdated) {
+            AppFeedback.showSuccessViaMessenger(
+              messenger,
+              '${log.typeName} logged! +$effectiveXp XP',
+            );
+          } else {
+            AppFeedback.showNeutralViaMessenger(
+              messenger,
+              '${log.typeName} logged, but progress couldn\'t update.',
+            );
+          }
           Navigator.maybePop(context);
         }
       }

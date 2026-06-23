@@ -2191,6 +2191,21 @@ CL-P1-009DK Optional AI key write-result handling:
 - Focused service coverage simulates false `setString` and `remove` results and
   verifies the visible key state is not reported as changed.
 
+CL-P1-009DL Add Log post-save profile failure boundary:
+
+- Add/Edit Log now treats the local journal write as the durable source of truth
+  before profile XP/activity side effects run.
+- If profile activity persistence fails after `storage.saveLog(log)` succeeds,
+  Danio logs the profile-side failure, refreshes the profile provider, exits the
+  form, and shows non-retry feedback: `<type> logged, but progress couldn't
+  update.`
+- XP animation, XP success copy, and achievement checks only run when the
+  profile activity write succeeds, so the UI does not claim progress that did
+  not persist.
+- Focused widget coverage verifies a failed `user_profile` write after an
+  observation log save leaves exactly one saved log, exits the form, shows the
+  non-blocking progress warning, and does not show the generic save retry.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

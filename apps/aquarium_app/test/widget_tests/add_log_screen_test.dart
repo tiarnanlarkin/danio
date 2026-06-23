@@ -2,11 +2,14 @@
 //
 // Run: flutter test test/widget_tests/add_log_screen_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
@@ -33,6 +36,37 @@ Tank _makeTank({String id = 'tank-1'}) => Tank(
   updatedAt: _now,
 );
 
+UserProfile _makeProfile() => UserProfile(
+  id: 'add-log-profile',
+  experienceLevel: ExperienceLevel.beginner,
+  primaryTankType: TankType.freshwater,
+  goals: [UserGoal.keepFishAlive],
+  hasStreakFreeze: false,
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _wrap({
   InMemoryStorageService? storage,
   LogType type = LogType.waterTest,
@@ -58,23 +92,43 @@ Widget _wrapWithLauncher({
   required InMemoryStorageService storage,
   LogType type = LogType.waterTest,
   String tankId = 'tank-1',
+  SharedPreferences? prefs,
+  bool showProfileProbe = false,
 }) {
   return ProviderScope(
-    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    overrides: [
+      storageServiceProvider.overrideWithValue(storage),
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
+    ],
     child: MaterialApp(
       home: Builder(
         builder: (context) => Scaffold(
           body: Center(
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        AddLogScreen(tankId: tankId, initialType: type),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (showProfileProbe)
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final profile = ref.watch(userProfileProvider).value;
+                      return Text(
+                        profile == null ? 'profile loading' : 'profile ready',
+                      );
+                    },
                   ),
-                );
-              },
-              child: const Text('Open log form'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            AddLogScreen(tankId: tankId, initialType: type),
+                      ),
+                    );
+                  },
+                  child: const Text('Open log form'),
+                ),
+              ],
             ),
           ),
         ),
@@ -485,6 +539,63 @@ void main() {
       expect(logs.single.type, LogType.observation);
       expect(logs.single.notes, note);
     });
+
+    testWidgets(
+      'profile activity failure after log save does not report log save failure',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(_makeProfile().toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final throwingPrefs = _ThrowingSetStringPrefs(
+          prefs,
+          (key, _) => key == 'user_profile',
+        );
+        final svc = InMemoryStorageService();
+        const tankId = 'profile-failure-after-log-save-tank';
+        const note = 'Fish are active after feeding.';
+        await svc.saveTank(_makeTank(id: tankId));
+
+        await tester.pumpWidget(
+          _wrapWithLauncher(
+            storage: svc,
+            tankId: tankId,
+            type: LogType.observation,
+            prefs: throwingPrefs,
+            showProfileProbe: true,
+          ),
+        );
+
+        await tester.pumpAndSettle();
+        expect(find.text('profile ready'), findsOneWidget);
+
+        await tester.tap(find.text('Open log form'));
+        await tester.pumpAndSettle();
+        await _advance(tester);
+
+        await tester.enterText(find.byType(TextFormField).last, note);
+        await tester.tap(find.text('Save'));
+        await tester.pumpAndSettle();
+        await _advance(tester);
+
+        final logs = await svc.getLogsForTank(tankId);
+        expect(logs, hasLength(1));
+        expect(logs.single.type, LogType.observation);
+        expect(logs.single.notes, note);
+        expect(find.byType(AddLogScreen), findsNothing);
+        expect(
+          find.text('Observation logged, but progress couldn\'t update.'),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Hmm, couldn\'t save that. Check your connection and try again.',
+          ),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+      },
+    );
   });
 
   group('AddLogScreen dirty close behavior', () {
