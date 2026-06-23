@@ -8,6 +8,8 @@ import '../widgets/core/app_card.dart';
 import '../widgets/core/app_text_field.dart';
 import 'add_log_screen.dart';
 
+const double _maxCo2ReadableWidth = 720;
+
 class Co2CalculatorScreen extends StatefulWidget {
   final String? tankId;
 
@@ -135,7 +137,8 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           child: ListView.builder(
             padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: _buildItems().length,
-            itemBuilder: (context, index) => _buildItems()[index],
+            itemBuilder: (context, index) =>
+                _Co2ReadableFrame(child: _buildItems()[index]),
           ),
         ),
       ),
@@ -450,6 +453,23 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _Co2ReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _Co2ReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxCo2ReadableWidth),
+        child: child,
+      ),
     );
   }
 }

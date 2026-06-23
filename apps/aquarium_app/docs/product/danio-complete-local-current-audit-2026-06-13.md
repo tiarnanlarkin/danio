@@ -2571,6 +2571,17 @@ CL-P3-001A Optional AI provider setup boundary:
   result card surfaces stay at or below the 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002O CO2 Calculator Tablet Readability
+
+- CO2 Calculator now centers intro guidance, pH/KH inputs, validation copy,
+  result card, guided-log card, reference chart, drop-checker guide, tips, and
+  pH/KH table in the same readable 720px rail on wide tablet surfaces.
+- Existing CO2 calculation, validation bounds, result status copy, reference
+  data, and journal handoff remain unchanged.
+- Focused widget coverage verifies representative input, result, and reference
+  card surfaces stay at or below the 720px tablet readability bound on a
+  2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

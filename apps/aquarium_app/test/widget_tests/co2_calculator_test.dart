@@ -13,6 +13,7 @@ import 'package:danio/screens/add_log_screen.dart';
 import 'package:danio/screens/co2_calculator_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -91,6 +92,44 @@ void main() {
       expect(find.text('10-20 ppm'), findsOneWidget);
       expect(find.text('20-30 ppm'), findsOneWidget);
       expect(find.text('30-40 ppm'), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps inputs and reference cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(
+        tester.getSize(find.widgetWithText(TextField, '7.0')).width,
+        lessThanOrEqualTo(720),
+      );
+
+      final resultCard = find
+          .ancestor(
+            of: find.text('Estimated CO2 Level'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(resultCard).width, lessThanOrEqualTo(720));
+
+      await tester.scrollUntilVisible(
+        find.text('10-20 ppm'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      final referenceCard = find
+          .ancestor(
+            of: find.text('10-20 ppm'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      expect(tester.getSize(referenceCard).width, lessThanOrEqualTo(720));
     });
   });
 
