@@ -2206,6 +2206,21 @@ CL-P1-009DL Add Log post-save profile failure boundary:
   observation log save leaves exactly one saved log, exits the form, shows the
   non-blocking progress warning, and does not show the generic save retry.
 
+CL-P1-009DM Create Tank post-create profile failure boundary:
+
+- Create Tank now treats `actions.createTank(...)` as the durable source of
+  truth before profile XP/activity side effects run.
+- If profile activity persistence fails after the local tank is created, Danio
+  logs the profile-side failure, refreshes the profile provider, closes the
+  wizard, and shows non-retry feedback:
+  `<tank name> created, but progress couldn't update.`
+- XP animation, XP success copy, and achievement checks only run when the
+  profile activity write succeeds, so the UI does not claim profile progress
+  that did not persist.
+- Focused widget coverage verifies a failed `user_profile` write after guided
+  tank creation leaves exactly one saved tank, exits the form, shows the
+  non-blocking progress warning, and does not show the generic create retry.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

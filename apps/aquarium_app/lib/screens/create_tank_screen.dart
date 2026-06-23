@@ -489,14 +489,25 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       final effectiveXp = isBoostActive
           ? XpRewards.createTank * 2
           : XpRewards.createTank;
-      await ref
-          .read(userProfileProvider.notifier)
-          .recordActivity(
-            xp: XpRewards.createTank,
-            xpBoostActive: isBoostActive,
-          );
+      var progressUpdated = true;
+      try {
+        await ref
+            .read(userProfileProvider.notifier)
+            .recordActivity(
+              xp: XpRewards.createTank,
+              xpBoostActive: isBoostActive,
+            );
+      } catch (e, st) {
+        progressUpdated = false;
+        logError(
+          'CreateTankScreen: profile activity update failed after tank create: $e',
+          stackTrace: st,
+          tag: 'CreateTankScreen',
+        );
+        ref.invalidate(userProfileProvider);
+      }
 
-      if (mounted) {
+      if (progressUpdated && mounted) {
         ref.showXpAnimation(effectiveXp);
       }
 
@@ -506,7 +517,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       // Prepare achievement checks, but do not show achievement dialogs until
       // after this wizard route has closed. Otherwise a dialog pushed here can
       // become the route that Navigator.pop closes, leaving the wizard open.
-      final profile = ref.read(userProfileProvider).value;
+      final profile = progressUpdated
+          ? ref.read(userProfileProvider).value
+          : null;
       if (profile != null) {
         achievementChecker = ref.read(achievementCheckerProvider);
         achievementStats = AchievementStats(
@@ -522,11 +535,18 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           enabled: ref.read(settingsProvider).hapticFeedbackEnabled,
         );
         final tankName = _name.trim();
-        AppFeedback.showSuccess(
-          context,
-          '$tankName created! +${XpRewards.createTank} XP',
-          duration: const Duration(seconds: 2),
-        );
+        if (progressUpdated) {
+          AppFeedback.showSuccess(
+            context,
+            '$tankName created! +${XpRewards.createTank} XP',
+            duration: const Duration(seconds: 2),
+          );
+        } else {
+          AppFeedback.showWarning(
+            context,
+            '$tankName created, but progress couldn\'t update.',
+          );
+        }
 
         setState(() => _discardConfirmed = true);
         WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/create_tank_screen_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +15,7 @@ import 'package:danio/screens/create_tank_screen/setup_mode.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/celebration_service.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/services/xp_animation_service.dart';
@@ -32,24 +35,51 @@ Widget _wrap({SetupMode mode = SetupMode.guided, String initialName = ''}) {
   );
 }
 
-Widget _wrapWithLauncher({SetupMode mode = SetupMode.guided}) {
+Widget _wrapWithLauncher({
+  SetupMode mode = SetupMode.guided,
+  InMemoryStorageService? storage,
+  SharedPreferences? prefs,
+  bool showProfileProbe = false,
+}) {
   return ProviderScope(
     overrides: [
-      storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+      storageServiceProvider.overrideWithValue(
+        storage ?? InMemoryStorageService(),
+      ),
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
     ],
     child: MaterialApp(
       home: Builder(
         builder: (context) => Scaffold(
           body: Center(
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => CreateTankScreen(mode: mode),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (showProfileProbe)
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final profile = ref.watch(userProfileProvider);
+                      return profile.when(
+                        data: (value) => Text(
+                          value == null ? 'profile loading' : 'profile ready',
+                        ),
+                        loading: () => const Text('profile loading'),
+                        error: (_, __) => const Text('profile unavailable'),
+                      );
+                    },
                   ),
-                );
-              },
-              child: const Text('Open tank form'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CreateTankScreen(mode: mode),
+                      ),
+                    );
+                  },
+                  child: const Text('Open tank form'),
+                ),
+              ],
             ),
           ),
         ),
@@ -98,6 +128,84 @@ Tank _existingTank() {
     createdAt: now,
     updatedAt: now,
   );
+}
+
+UserProfile _makeProfile() {
+  final now = DateTime(2026, 5, 25);
+  return UserProfile(
+    id: 'create-tank-profile',
+    experienceLevel: ExperienceLevel.beginner,
+    primaryTankType: TankType.freshwater,
+    goals: const [UserGoal.keepFishAlive],
+    hasStreakFreeze: false,
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Object? get(String key) => _delegate.get(key);
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  Set<String> getKeys() => _delegate.getKeys();
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setDouble(String key, double value) =>
+      _delegate.setDouble(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setStringList(String key, List<String> value) =>
+      _delegate.setStringList(key, value);
+
+  @override
+  Future<bool> remove(String key) => _delegate.remove(key);
+
+  @override
+  Future<bool> clear() => _delegate.clear();
+
+  @override
+  Future<void> reload() => _delegate.reload();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 Future<void> _openTankForm(WidgetTester tester) async {
@@ -405,6 +513,65 @@ void main() {
       expect(find.byType(CreateTankScreen), findsNothing);
       expect(find.text('Open tank form'), findsOneWidget);
     });
+
+    testWidgets(
+      'profile activity failure after tank create does not report create failure',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(_makeProfile().toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final throwingPrefs = _ThrowingSetStringPrefs(
+          prefs,
+          (key, _) => key == 'user_profile',
+        );
+        final storage = InMemoryStorageService();
+        const tankName = 'Progress Boundary Tank';
+
+        await tester.pumpWidget(
+          _wrapWithLauncher(
+            storage: storage,
+            prefs: throwingPrefs,
+            showProfileProbe: true,
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('profile ready'), findsOneWidget);
+
+        await _openTankForm(tester);
+
+        await tester.enterText(find.byType(TextFormField).first, tankName);
+        await tester.pump();
+        await tester.tap(find.text('Next'));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('60L'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Next'));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Create Tank'));
+        await tester.pumpAndSettle();
+
+        final tanks = await storage.getAllTanks();
+        final matchingTanks = tanks
+            .where((tank) => tank.name == tankName)
+            .toList();
+        expect(matchingTanks, hasLength(1));
+        expect(find.byType(CreateTankScreen), findsNothing);
+        expect(
+          find.text('$tankName created, but progress couldn\'t update.'),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Couldn\'t create your tank right now. Give it another go!',
+          ),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+      },
+    );
   });
 }
 
