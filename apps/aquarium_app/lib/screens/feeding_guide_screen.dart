@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxFeedingReadableWidth = 720;
+
 class FeedingGuideScreen extends StatelessWidget {
   const FeedingGuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Feeding Guide')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems(context).length,
-        itemBuilder: (context, index) => _buildItems(context)[index],
+        itemCount: items.length,
+        itemBuilder: (context, index) =>
+            _FeedingReadableFrame(child: items[index]),
       ),
     );
   }
@@ -219,6 +224,23 @@ class FeedingGuideScreen extends StatelessWidget {
 
       const SizedBox(height: AppSpacing.xxl),
     ];
+  }
+}
+
+class _FeedingReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _FeedingReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxFeedingReadableWidth),
+        child: child,
+      ),
+    );
   }
 }
 

@@ -2637,6 +2637,17 @@ CL-P3-001A Optional AI provider setup boundary:
   stay at or below the 720px tablet readability bound on a 2000x1200 tablet
   viewport.
 
+### CL-P2-002U Feeding Guide Tablet Readability
+
+- Feeding Guide now centers the golden-rule intro, feeding frequency rows,
+  food-type cards, common-mistake guidance, and fasting guidance in the same
+  readable 720px rail on wide tablet surfaces.
+- Existing feeding guidance, frequency labels, food-type pros/cons, mistakes,
+  and fasting copy remain unchanged.
+- Focused widget coverage verifies representative intro and frequency card
+  surfaces stay at or below the 720px tablet readability bound on a 2000x1200
+  tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
