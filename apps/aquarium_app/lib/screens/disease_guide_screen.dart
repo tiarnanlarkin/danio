@@ -3,6 +3,9 @@ import '../utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_text_field.dart';
+
+const double _maxDiseaseReadableWidth = 720;
+
 class DiseaseGuideScreen extends StatefulWidget {
   const DiseaseGuideScreen({super.key});
 
@@ -39,39 +42,43 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
           // Search
           Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: AppSearchField(
-              hint: 'Search by disease or symptom...',
-              onChanged: (v) {
-                _debounce?.cancel();
-                _debounce = Timer(kDebounceDuration, () {
-                  setState(() => _searchQuery = v);
-                });
-              },
+            child: _DiseaseReadableFrame(
+              child: AppSearchField(
+                hint: 'Search by disease or symptom...',
+                onChanged: (v) {
+                  _debounce?.cancel();
+                  _debounce = Timer(kDebounceDuration, () {
+                    setState(() => _searchQuery = v);
+                  });
+                },
+              ),
             ),
           ),
 
           // Disclaimer
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Card(
-              color: AppOverlays.warning10,
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.warning_amber,
-                      color: AppColors.warning,
-                      size: AppIconSizes.sm,
-                    ),
-                    const SizedBox(width: AppSpacing.sm2),
-                    Expanded(
-                      child: Text(
-                        'This guide is for reference only. Consult an aquatic vet for serious cases.',
-                        style: AppTypography.bodySmall,
+            child: _DiseaseReadableFrame(
+              child: Card(
+                color: AppOverlays.warning10,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning_amber,
+                        color: AppColors.warning,
+                        size: AppIconSizes.sm,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: AppSpacing.sm2),
+                      Expanded(
+                        child: Text(
+                          'This guide is for reference only. Consult an aquatic vet for serious cases.',
+                          style: AppTypography.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -84,10 +91,29 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: diseases.length,
-              itemBuilder: (ctx, i) => _DiseaseCard(disease: diseases[i]),
+              itemBuilder: (ctx, i) => _DiseaseReadableFrame(
+                child: _DiseaseCard(disease: diseases[i]),
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DiseaseReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _DiseaseReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxDiseaseReadableWidth),
+        child: child,
       ),
     );
   }
@@ -116,7 +142,12 @@ class _DiseaseCard extends StatelessWidget {
         subtitle: Text(disease.cause, style: AppTypography.bodySmall),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

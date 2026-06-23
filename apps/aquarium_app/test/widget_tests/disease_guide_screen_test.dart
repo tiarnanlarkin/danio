@@ -65,6 +65,36 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('tablet keeps search, disclaimer, and disease cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final disclaimerCard = find
+          .ancestor(
+            of: find.textContaining('This guide is for reference only'),
+            matching: find.byType(Card),
+          )
+          .first;
+      final diseaseCard = find
+          .ancestor(
+            of: find.text('Ich (White Spot Disease)'),
+            matching: find.byType(Card),
+          )
+          .first;
+
+      expect(
+        tester.getSize(find.byType(TextField)).width,
+        lessThanOrEqualTo(720),
+      );
+      expect(tester.getSize(disclaimerCard).width, lessThanOrEqualTo(720));
+      expect(tester.getSize(diseaseCard).width, lessThanOrEqualTo(720));
+    });
   });
 
   group('DiseaseGuideScreen — expandable disease cards', () {
@@ -75,7 +105,9 @@ void main() {
       expect(find.text('Symptoms'), findsNothing);
     });
 
-    testWidgets('tapping disease card reveals symptoms section', (tester) async {
+    testWidgets('tapping disease card reveals symptoms section', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
 
@@ -119,18 +151,21 @@ void main() {
       expect(find.text('\u26A0\uFE0F Contagious'), findsNothing);
     });
 
-    testWidgets('expanded card shows non-contagious status without raw symbol', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_wrap());
-      await tester.pump();
+    testWidgets(
+      'expanded card shows non-contagious status without raw symbol',
+      (
+        tester,
+      ) async {
+        await tester.pumpWidget(_wrap());
+        await tester.pump();
 
-      await tester.tap(find.text('Fin Rot'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('Fin Rot'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Not contagious'), findsOneWidget);
-      expect(find.text('\u2713 Not contagious'), findsNothing);
-    });
+        expect(find.text('Not contagious'), findsOneWidget);
+        expect(find.text('\u2713 Not contagious'), findsNothing);
+      },
+    );
   });
 
   group('DiseaseGuideScreen — search', () {

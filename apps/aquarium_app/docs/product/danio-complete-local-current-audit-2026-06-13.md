@@ -2670,6 +2670,18 @@ CL-P3-001A Optional AI provider setup boundary:
   stay at or below the 720px tablet readability bound on a 2000x1200 tablet
   viewport.
 
+### CL-P2-002X Disease Guide Tablet Readability
+
+- Disease Guide now centers search, educational-vet-substitute disclaimer,
+  disease cards, and expanded symptom/treatment/prevention content in the same
+  readable 720px rail on wide tablet surfaces.
+- Existing disease names, symptom matching, treatment guidance, prevention
+  copy, search debounce behavior, and contagious status labels remain
+  unchanged.
+- Focused widget coverage verifies representative search, disclaimer, and
+  disease card surfaces stay at or below the 720px tablet readability bound on
+  a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
