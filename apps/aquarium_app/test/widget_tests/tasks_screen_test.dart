@@ -252,6 +252,41 @@ void main() {
       expect(find.text('Water Change'), findsOneWidget);
     });
 
+    testWidgets('tablet keeps task section headers and cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      final task = Task(
+        id: 'tablet-task',
+        tankId: 'tank-1',
+        title: 'Water Change',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(_wrap(storage: svc));
+      await _advance(tester);
+
+      final header = find
+          .ancestor(of: find.text('Upcoming'), matching: find.byType(Row))
+          .first;
+      expect(tester.getSize(header).width, lessThanOrEqualTo(720));
+
+      final taskCard = find
+          .ancestor(of: find.text('Water Change'), matching: find.byType(Card))
+          .first;
+      expect(tester.getSize(taskCard).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets('adding a task shows success feedback', (tester) async {
       const tankId = 'tank-task-add-feedback';
       final svc = InMemoryStorageService();

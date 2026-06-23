@@ -22,6 +22,7 @@ import '../widgets/danio_bottom_dock.dart';
 import '../utils/logger.dart';
 
 const _uuid = Uuid();
+const double _maxTasksReadableWidth = 720;
 
 class TasksScreen extends ConsumerWidget {
   final String tankId;
@@ -126,22 +127,26 @@ class TasksScreen extends ConsumerWidget {
               final item = items[index];
 
               if (item.isHeader) {
-                return _SectionHeader(
-                  title: item.headerTitle!,
-                  color: item.headerColor!,
-                  count: item.headerCount!,
+                return _TasksReadableFrame(
+                  child: _SectionHeader(
+                    title: item.headerTitle!,
+                    color: item.headerColor!,
+                    count: item.headerCount!,
+                  ),
                 );
               } else if (item.isSpacer) {
                 return const SizedBox(height: AppSpacing.md);
               } else {
                 final t = item.task!;
-                return _TaskCard(
-                  task: t,
-                  onComplete: () => _completeTask(context, ref, t),
-                  onSnooze: () => _showSnoozeDialog(context, ref, t),
-                  onEdit: () => _showEditDialog(context, ref, t),
-                  onDelete: () => _confirmDelete(context, ref, t),
-                  onHistory: () => _showTaskHistoryDialog(context, t),
+                return _TasksReadableFrame(
+                  child: _TaskCard(
+                    task: t,
+                    onComplete: () => _completeTask(context, ref, t),
+                    onSnooze: () => _showSnoozeDialog(context, ref, t),
+                    onEdit: () => _showEditDialog(context, ref, t),
+                    onDelete: () => _confirmDelete(context, ref, t),
+                    onHistory: () => _showTaskHistoryDialog(context, t),
+                  ),
                 );
               }
             },
@@ -470,6 +475,23 @@ class TasksScreen extends ConsumerWidget {
         ),
       ],
       child: _TaskHistoryContent(tankId: tankId, task: task),
+    );
+  }
+}
+
+class _TasksReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _TasksReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxTasksReadableWidth),
+        child: child,
+      ),
     );
   }
 }

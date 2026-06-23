@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/maintenance_checklist_screen.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -67,6 +68,34 @@ void main() {
       await _advance(tester);
       // Known weekly checklist items
       expect(find.text('Test water parameters'), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps progress and checklist cards readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final progressCard = find
+          .ancestor(of: find.text('Weekly'), matching: find.byType(AppCard))
+          .first;
+      expect(tester.getSize(progressCard).width, lessThanOrEqualTo(720));
+
+      final sectionHeader = find
+          .ancestor(of: find.text('Weekly Tasks'), matching: find.byType(Row))
+          .first;
+      expect(tester.getSize(sectionHeader).width, lessThanOrEqualTo(720));
+
+      final checklistCard = find
+          .ancestor(
+            of: find.text('Test water parameters'),
+            matching: find.byType(Card),
+          )
+          .first;
+      expect(tester.getSize(checklistCard).width, lessThanOrEqualTo(720));
     });
 
     testWidgets('completed section chip avoids raw check mark text', (

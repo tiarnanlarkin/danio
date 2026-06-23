@@ -6,6 +6,8 @@ import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_dialog.dart';
 
+const double _maxMaintenanceReadableWidth = 720;
+
 class MaintenanceChecklistScreen extends ConsumerStatefulWidget {
   final String tankId;
   final String tankName;
@@ -213,72 +215,78 @@ class _MaintenanceChecklistScreenState
               final item = items[index];
 
               if (item.isProgressCard) {
-                return AppCard(
-                  padding: AppCardPadding.standard,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _ProgressCircle(
-                              label: 'Weekly',
-                              progress: item.weeklyProgress!,
-                              count:
-                                  '${item.weeklyComplete}/${item.weeklyTotal}',
+                return _MaintenanceReadableFrame(
+                  child: AppCard(
+                    padding: AppCardPadding.standard,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _ProgressCircle(
+                                label: 'Weekly',
+                                progress: item.weeklyProgress!,
+                                count:
+                                    '${item.weeklyComplete}/${item.weeklyTotal}',
+                              ),
                             ),
-                          ),
-                          Expanded(
-                            child: _ProgressCircle(
-                              label: 'Monthly',
-                              progress: item.monthlyProgress!,
-                              count:
-                                  '${item.monthlyComplete}/${item.monthlyTotal}',
+                            Expanded(
+                              child: _ProgressCircle(
+                                label: 'Monthly',
+                                progress: item.monthlyProgress!,
+                                count:
+                                    '${item.monthlyComplete}/${item.monthlyTotal}',
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.sm2),
-                      Text(
-                        DateFormat('d MMMM y').format(DateTime.now()),
-                        style: AppTypography.bodySmall,
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.sm2),
+                        Text(
+                          DateFormat('d MMMM y').format(DateTime.now()),
+                          style: AppTypography.bodySmall,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               } else if (item.isSectionHeader) {
-                return Row(
-                  children: [
-                    Text(
-                      item.sectionTitle!,
-                      style: AppTypography.headlineSmall,
-                    ),
-                    const Spacer(),
-                    if (item.sectionComplete!)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.success,
-                          borderRadius: AppRadius.mediumRadius,
-                        ),
-                        child: Text(
-                          'Complete!',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.onPrimary,
+                return _MaintenanceReadableFrame(
+                  child: Row(
+                    children: [
+                      Text(
+                        item.sectionTitle!,
+                        style: AppTypography.headlineSmall,
+                      ),
+                      const Spacer(),
+                      if (item.sectionComplete!)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.success,
+                            borderRadius: AppRadius.mediumRadius,
+                          ),
+                          child: Text(
+                            'Complete!',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.onPrimary,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 );
               } else if (item.isSpacer) {
                 return SizedBox(height: item.spacerHeight);
               } else {
-                return _TaskTile(
-                  item: item.taskItem!,
-                  checked: item.taskChecked!,
-                  onTap: item.taskOnTap!,
+                return _MaintenanceReadableFrame(
+                  child: _TaskTile(
+                    item: item.taskItem!,
+                    checked: item.taskChecked!,
+                    onTap: item.taskOnTap!,
+                  ),
                 );
               }
             },
@@ -302,6 +310,25 @@ class _MaintenanceChecklistScreenState
         });
         _saveChecks();
       },
+    );
+  }
+}
+
+class _MaintenanceReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _MaintenanceReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxMaintenanceReadableWidth,
+        ),
+        child: child,
+      ),
     );
   }
 }
