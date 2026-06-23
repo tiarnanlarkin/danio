@@ -71,6 +71,46 @@ class _ThrowingPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseRemovePrefs implements SharedPreferences {
+  _FalseRemovePrefs(this._delegate, this._failedKey);
+
+  final SharedPreferences _delegate;
+  final String _failedKey;
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> remove(String key) async {
+    if (key == _failedKey) return false;
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _wrap(Widget child, {SharedPreferences? prefs}) {
   return ProviderScope(
     overrides: [
@@ -211,6 +251,40 @@ void main() {
         find.text(
           'AI disclosure will be shown again before Optional AI sends data.',
         ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('failed Optional AI disclosure reset keeps accepted state', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'openai_disclosure_accepted': true,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final failingPrefs = _FalseRemovePrefs(
+        prefs,
+        'openai_disclosure_accepted',
+      );
+
+      await tester.pumpWidget(
+        _wrap(const SettingsScreen(), prefs: failingPrefs),
+      );
+      await tester.pump();
+
+      await _dragUntilTextVisible(tester, 'Optional AI');
+      await tester.tap(find.text('Optional AI').first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('AI disclosure accepted'), findsOneWidget);
+
+      await tester.tap(find.text('Reset AI disclosure'));
+      await tester.pumpAndSettle();
+
+      expect(prefs.getBool('openai_disclosure_accepted'), isTrue);
+      expect(find.text('AI disclosure accepted'), findsOneWidget);
+      expect(
+        find.text('Couldn\'t reset the disclosure. Try again.'),
         findsOneWidget,
       );
     });

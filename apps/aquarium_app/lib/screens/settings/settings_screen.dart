@@ -1400,7 +1400,9 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
   }
 
   Future<void> _showConfigureAiDialog(BuildContext context) async {
-    await _ConfigureAiDialog.show(context, () {
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    if (!context.mounted) return;
+    await _ConfigureAiDialog.show(context, prefs, () {
       _reload();
       ref.invalidate(aiProxyHasKeyProvider);
       ref.invalidate(openAIConfiguredProvider);
@@ -1409,14 +1411,20 @@ class _ConfigureAiTileState extends ConsumerState<_ConfigureAiTile> {
 }
 
 class _ConfigureAiDialog extends StatefulWidget {
+  final SharedPreferences prefs;
   final VoidCallback onDismissed;
 
-  const _ConfigureAiDialog({required this.onDismissed});
+  const _ConfigureAiDialog({required this.prefs, required this.onDismissed});
 
-  static Future<void> show(BuildContext context, VoidCallback onDismissed) {
+  static Future<void> show(
+    BuildContext context,
+    SharedPreferences prefs,
+    VoidCallback onDismissed,
+  ) {
     return showDialog<void>(
       context: context,
-      builder: (ctx) => _ConfigureAiDialog(onDismissed: onDismissed),
+      builder: (ctx) =>
+          _ConfigureAiDialog(prefs: prefs, onDismissed: onDismissed),
     );
   }
 
@@ -1450,8 +1458,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
 
   Future<void> _loadStatus() async {
     final hasKey = await AiProxyService.hasUserKey;
-    final prefs = await SharedPreferences.getInstance();
-    final disclosureAccepted = AiDisclosurePreferences.isAccepted(prefs);
+    final disclosureAccepted = AiDisclosurePreferences.isAccepted(widget.prefs);
     if (mounted) {
       setState(() {
         _hasUserKey = hasKey;
@@ -1542,8 +1549,7 @@ class _ConfigureAiDialogState extends State<_ConfigureAiDialog> {
   Future<void> _resetAiDisclosure() async {
     setState(() => _isBusy = true);
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await AiDisclosurePreferences.reset(prefs);
+      await AiDisclosurePreferences.reset(widget.prefs);
       if (mounted) {
         setState(() {
           _aiDisclosureAccepted = false;

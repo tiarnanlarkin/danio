@@ -2332,6 +2332,19 @@ CL-P1-010J Smart setup-context nudge contrast:
 - Focused widget coverage verifies the nudge title/body colors and contrast
   against the light setup-card surface.
 
+CL-P1-010K Optional AI disclosure reset write-result handling:
+
+- Optional AI disclosure acceptance/reset now treats failed local
+  `SharedPreferences` write/remove return values as real preference failures.
+- Preferences > Smart Hub > Optional AI now opens the dialog with the shared
+  preferences provider, so the same local failure handling is used by app code
+  and widget tests.
+- Failed disclosure reset attempts keep the accepted status visible, keep the
+  saved local flag intact, and show normal retry feedback instead of reporting
+  that the disclosure will be shown again.
+- Focused widget coverage simulates a failed disclosure-reset remove result and
+  verifies the accepted state and retry feedback.
+
 CL-P3-001A Optional AI provider setup boundary:
 
 - Preferences > Smart Hub > Optional AI now shows a provider-status section

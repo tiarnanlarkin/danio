@@ -10,11 +10,18 @@ class AiDisclosurePreferences {
     return prefs.getBool(acceptedKey) == true;
   }
 
-  static Future<void> markAccepted(SharedPreferences prefs) {
-    return prefs.setBool(acceptedKey, true);
+  static Future<void> markAccepted(SharedPreferences prefs) async {
+    final saved = await prefs.setBool(acceptedKey, true);
+    if (!saved) {
+      throw StateError('SharedPreferences returned false for $acceptedKey');
+    }
   }
 
-  static Future<void> reset(SharedPreferences prefs) {
-    return prefs.remove(acceptedKey);
+  static Future<void> reset(SharedPreferences prefs) async {
+    if (!prefs.containsKey(acceptedKey)) return;
+    final removed = await prefs.remove(acceptedKey);
+    if (!removed) {
+      throw StateError('SharedPreferences returned false for $acceptedKey');
+    }
   }
 }
