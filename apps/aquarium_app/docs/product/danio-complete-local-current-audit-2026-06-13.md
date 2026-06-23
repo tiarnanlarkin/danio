@@ -2483,6 +2483,17 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative Journal, Activity Log, and
   Log Detail cards stay readable and centered on a 2000x1200 tablet viewport.
 
+### CL-P2-002G Livestock Tablet Readability
+
+- Livestock now centers the summary card, selection banner, livestock row
+  cards, skeleton placeholders, and select-mode bulk-action controls in a
+  readable 720px rail on wide tablet surfaces.
+- The bottom bulk-action bar keeps its full-width anchored surface while
+  constraining the actual controls for readable tablet ergonomics.
+- Focused widget coverage verifies representative summary and livestock cards
+  stay at or below the 720px tablet readability bound on a 2000x1200 tablet
+  viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

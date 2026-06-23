@@ -13,6 +13,7 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_visual_event_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -321,6 +322,39 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       expect(find.byIcon(Icons.more_vert), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps livestock summary and list cards readable', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _wrap(
+          livestockOverride: AsyncData([
+            _makeLivestock(
+              id: 'tablet-neons',
+              tankId: _fakeTankId,
+              name: 'Neon Tetra',
+              count: 8,
+            ),
+          ]),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final summaryCard = find
+          .ancestor(of: find.text('8 total'), matching: find.byType(AppCard))
+          .first;
+      expect(tester.getSize(summaryCard).width, lessThanOrEqualTo(720));
+
+      final livestockCard = find
+          .ancestor(of: find.text('Neon Tetra'), matching: find.byType(Card))
+          .first;
+      expect(tester.getSize(livestockCard).width, lessThanOrEqualTo(720));
     });
 
     testWidgets(

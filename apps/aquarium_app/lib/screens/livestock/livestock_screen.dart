@@ -33,6 +33,7 @@ import '../../utils/logger.dart';
 import '../../widgets/app_bottom_sheet.dart';
 
 const _uuid = Uuid();
+const double _maxLivestockReadableWidth = 720;
 
 /// Main livestock list screen for a tank.
 class LivestockScreen extends ConsumerStatefulWidget {
@@ -163,45 +164,48 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             horizontal: AppSpacing.md,
                           ),
                           sliver: SliverToBoxAdapter(
-                            child: AppCard(
-                              padding: AppCardPadding.standard,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.set_meal,
-                                        color: AppColors.primary,
-                                        size: 32,
-                                      ),
-                                      const SizedBox(width: AppSpacing.md),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '$totalCount total',
-                                            style: AppTypography.headlineMedium,
-                                          ),
-                                          Text(
-                                            '${livestock.length} species',
-                                            style: AppTypography.bodyMedium,
-                                          ),
-                                        ],
-                                      ),
-                                      const Spacer(),
-                                      AppButton(
-                                        label: 'Feed',
-                                        onPressed: () =>
-                                            _quickFeed(context, ref),
-                                        leadingIcon: Icons.restaurant,
-                                        variant: AppButtonVariant.primary,
-                                      ),
-                                    ],
-                                  ),
-                                  // Last fed info
-                                  LivestockLastFedInfo(tankId: widget.tankId),
-                                ],
+                            child: _LivestockReadableFrame(
+                              child: AppCard(
+                                padding: AppCardPadding.standard,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.set_meal,
+                                          color: AppColors.primary,
+                                          size: 32,
+                                        ),
+                                        const SizedBox(width: AppSpacing.md),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '$totalCount total',
+                                              style:
+                                                  AppTypography.headlineMedium,
+                                            ),
+                                            Text(
+                                              '${livestock.length} species',
+                                              style: AppTypography.bodyMedium,
+                                            ),
+                                          ],
+                                        ),
+                                        const Spacer(),
+                                        AppButton(
+                                          label: 'Feed',
+                                          onPressed: () =>
+                                              _quickFeed(context, ref),
+                                          leadingIcon: Icons.restaurant,
+                                          variant: AppButtonVariant.primary,
+                                        ),
+                                      ],
+                                    ),
+                                    // Last fed info
+                                    LivestockLastFedInfo(tankId: widget.tankId),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -219,49 +223,51 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             horizontal: AppSpacing.md,
                           ),
                           sliver: SliverToBoxAdapter(
-                            child: AppCard(
-                              backgroundColor: AppOverlays.primary10,
-                              padding: AppCardPadding.standard,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.checklist,
-                                    color: AppColors.primary,
-                                  ),
-                                  const SizedBox(width: AppSpacing.sm2),
-                                  Text(
-                                    '${_selectedLivestockIds.length} selected',
-                                    style: AppTypography.labelLarge.copyWith(
+                            child: _LivestockReadableFrame(
+                              child: AppCard(
+                                backgroundColor: AppOverlays.primary10,
+                                padding: AppCardPadding.standard,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.checklist,
                                       color: AppColors.primary,
                                     ),
-                                  ),
-                                  const Spacer(),
-                                  if (_selectedLivestockIds.length <
-                                      livestock.length)
-                                    AppButton(
-                                      label: 'Select All',
-                                      onPressed: () {
-                                        setState(() {
-                                          _selectedLivestockIds.addAll(
-                                            livestock.map((l) => l.id),
-                                          );
-                                        });
-                                      },
-                                      variant: AppButtonVariant.text,
-                                      size: AppButtonSize.small,
-                                    )
-                                  else
-                                    AppButton(
-                                      label: 'Clear',
-                                      onPressed: () {
-                                        setState(() {
-                                          _selectedLivestockIds.clear();
-                                        });
-                                      },
-                                      variant: AppButtonVariant.text,
-                                      size: AppButtonSize.small,
+                                    const SizedBox(width: AppSpacing.sm2),
+                                    Text(
+                                      '${_selectedLivestockIds.length} selected',
+                                      style: AppTypography.labelLarge.copyWith(
+                                        color: AppColors.primary,
+                                      ),
                                     ),
-                                ],
+                                    const Spacer(),
+                                    if (_selectedLivestockIds.length <
+                                        livestock.length)
+                                      AppButton(
+                                        label: 'Select All',
+                                        onPressed: () {
+                                          setState(() {
+                                            _selectedLivestockIds.addAll(
+                                              livestock.map((l) => l.id),
+                                            );
+                                          });
+                                        },
+                                        variant: AppButtonVariant.text,
+                                        size: AppButtonSize.small,
+                                      )
+                                    else
+                                      AppButton(
+                                        label: 'Clear',
+                                        onPressed: () {
+                                          setState(() {
+                                            _selectedLivestockIds.clear();
+                                          });
+                                        },
+                                        variant: AppButtonVariant.text,
+                                        size: AppButtonSize.small,
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -304,19 +310,21 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                               onEdit: () => _showEditDialog(context, ref, l),
                               onDelete: () => _confirmDelete(context, ref, l),
                             );
-                            if (reduceMotion) return card;
-                            return card
-                                .animate()
-                                .fadeIn(
-                                  duration: 300.ms,
-                                  delay: (index * 50).ms,
-                                )
-                                .slideY(
-                                  begin: 0.2,
-                                  end: 0,
-                                  duration: 300.ms,
-                                  delay: (index * 50).ms,
-                                );
+                            final item = reduceMotion
+                                ? card
+                                : card
+                                      .animate()
+                                      .fadeIn(
+                                        duration: 300.ms,
+                                        delay: (index * 50).ms,
+                                      )
+                                      .slideY(
+                                        begin: 0.2,
+                                        end: 0,
+                                        duration: 300.ms,
+                                        delay: (index * 50).ms,
+                                      );
+                            return _LivestockReadableFrame(child: item);
                           },
                         ),
                       ),
@@ -344,31 +352,33 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                         ),
                       ],
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: AppButton(
-                            onPressed: () =>
-                                _bulkMoveLivestock(context, ref, livestock),
-                            label: 'Move to Tank',
-                            leadingIcon: Icons.move_down,
-                            isFullWidth: true,
-                            size: AppButtonSize.large,
+                    child: _LivestockReadableFrame(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: AppButton(
+                              onPressed: () =>
+                                  _bulkMoveLivestock(context, ref, livestock),
+                              label: 'Move to Tank',
+                              leadingIcon: Icons.move_down,
+                              isFullWidth: true,
+                              size: AppButtonSize.large,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm2),
-                        Expanded(
-                          child: AppButton(
-                            onPressed: () =>
-                                _bulkDelete(context, ref, livestock),
-                            variant: AppButtonVariant.destructive,
-                            label: 'Delete',
-                            leadingIcon: Icons.delete_outline,
-                            isFullWidth: true,
-                            size: AppButtonSize.large,
+                          const SizedBox(width: AppSpacing.sm2),
+                          Expanded(
+                            child: AppButton(
+                              onPressed: () =>
+                                  _bulkDelete(context, ref, livestock),
+                              variant: AppButtonVariant.destructive,
+                              label: 'Delete',
+                              leadingIcon: Icons.delete_outline,
+                              isFullWidth: true,
+                              size: AppButtonSize.large,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
               ],
@@ -623,37 +633,41 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           itemCount: placeholders.length + 2,
           itemBuilder: (context, index) {
             if (index == 0) {
-              return AppCard(
-                padding: AppCardPadding.standard,
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.set_meal,
-                      color: AppColors.primary,
-                      size: AppIconSizes.lg,
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('50 total', style: AppTypography.headlineMedium),
-                        Text('5 species', style: AppTypography.bodyMedium),
-                      ],
-                    ),
-                  ],
+              return _LivestockReadableFrame(
+                child: AppCard(
+                  padding: AppCardPadding.standard,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.set_meal,
+                        color: AppColors.primary,
+                        size: AppIconSizes.lg,
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('50 total', style: AppTypography.headlineMedium),
+                          Text('5 species', style: AppTypography.bodyMedium),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else if (index == 1) {
               return const SizedBox(height: AppSpacing.md);
             } else {
               final livestock = placeholders[index - 2];
-              return LivestockCard(
-                livestock: livestock,
-                tank: null,
-                allLivestock: placeholders,
-                onTap: () {},
-                onEdit: () {},
-                onDelete: () {},
+              return _LivestockReadableFrame(
+                child: LivestockCard(
+                  livestock: livestock,
+                  tank: null,
+                  allLivestock: placeholders,
+                  onTap: () {},
+                  onEdit: () {},
+                  onDelete: () {},
+                ),
               );
             }
           },
@@ -722,6 +736,25 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           AppFeedback.showSuccess(context, '${livestock.commonName} restored');
         }
       },
+    );
+  }
+}
+
+class _LivestockReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _LivestockReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxLivestockReadableWidth,
+        ),
+        child: child,
+      ),
     );
   }
 }
