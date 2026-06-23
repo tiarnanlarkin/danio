@@ -17,6 +17,7 @@ import '../widgets/core/app_dialog.dart';
 import '../widgets/danio_snack_bar.dart';
 
 const _fallbackCurrencySymbol = '\u00A3';
+const double _maxCostTrackerReadableWidth = 720;
 const _defaultCurrencyOptions = <String>[
   _fallbackCurrencySymbol,
   r'$',
@@ -211,12 +212,14 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
           ],
         ),
         body: _expenses.isEmpty
-            ? _EmptyState(onAdd: _addExpense)
+            ? _CostTrackerReadableFrame(child: _EmptyState(onAdd: _addExpense))
             : ListView.builder(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 itemCount: _buildItemCount(),
                 itemBuilder: (context, index) {
-                  return _buildListItem(index);
+                  return _CostTrackerReadableFrame(
+                    child: _buildListItem(index),
+                  );
                 },
               ),
         floatingActionButton: FloatingActionButton.extended(
@@ -430,6 +433,25 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
           logMessage: 'Failed to persist restored expenses',
         );
       },
+    );
+  }
+}
+
+class _CostTrackerReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _CostTrackerReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxCostTrackerReadableWidth,
+        ),
+        child: child,
+      ),
     );
   }
 }

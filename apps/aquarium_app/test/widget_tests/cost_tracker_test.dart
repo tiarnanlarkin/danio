@@ -279,6 +279,36 @@ void main() {
       expect(find.text('All Time Total'), findsOneWidget);
     });
 
+    testWidgets('tablet keeps summary and expense surfaces readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      SharedPreferences.setMockInitialValues({
+        'cost_tracker_expenses':
+            '[{"id":"1","description":"Filter","amount":35.0,"category":"Equipment","date":"2025-01-15T12:00:00.000"}]',
+        'cost_tracker_currency': '\u00A3',
+      });
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final totalCard = find
+          .ancestor(
+            of: find.text('All Time Total'),
+            matching: find.byType(Card),
+          )
+          .first;
+      final expenseCard = find
+          .ancestor(of: find.text('Filter'), matching: find.byType(Card))
+          .first;
+
+      expect(tester.getSize(totalCard).width, lessThanOrEqualTo(720));
+      expect(tester.getSize(expenseCard).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets('settings button opens dialog', (tester) async {
       SharedPreferences.setMockInitialValues({});
       await tester.pumpWidget(_wrap());

@@ -2616,6 +2616,16 @@ CL-P3-001A Optional AI provider setup boundary:
   card surfaces stay at or below the 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002S Cost Tracker Tablet Readability
+
+- Cost Tracker now centers the empty state, summary cards, category breakdown,
+  and expense tiles in the same readable 720px rail on wide tablet surfaces.
+- Existing local expense persistence, currency settings, add/delete/clear/undo
+  flows, category breakdown, and feedback copy remain unchanged.
+- Focused widget coverage verifies representative summary and expense card
+  surfaces stay at or below the 720px tablet readability bound on a 2000x1200
+  tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
