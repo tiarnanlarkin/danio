@@ -205,9 +205,18 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
 
       // Record rate limit & AI history.
       rateLimiter.recordRequest(AIFeature.symptomTriage);
-      ref
-          .read(aiHistoryProvider.notifier)
-          .add(type: 'symptom_triage', summary: 'Triage: $symptoms');
+      unawaited(
+        ref
+            .read(aiHistoryProvider.notifier)
+            .add(type: 'symptom_triage', summary: 'Triage: $symptoms')
+            .catchError((Object e, StackTrace st) {
+              logError(
+                'SymptomTriageScreen: failed to save AI history: $e',
+                stackTrace: st,
+                tag: 'SymptomTriageScreen',
+              );
+            }),
+      );
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _error = OpenAIUserMessages.timeout);

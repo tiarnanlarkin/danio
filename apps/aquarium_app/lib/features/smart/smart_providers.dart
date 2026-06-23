@@ -17,9 +17,10 @@ const _uuid = Uuid();
 class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
   final Ref ref;
   static const _key = 'ai_interaction_history';
+  late final Future<void> _loadFuture;
 
   AIHistoryNotifier(this.ref) : super([]) {
-    _load();
+    _loadFuture = _load();
   }
 
   Future<void> _load() async {
@@ -44,6 +45,7 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
   }
 
   Future<void> add({required String type, required String summary}) async {
+    await _loadFuture;
     final interaction = AIInteraction(
       id: _uuid.v4(),
       type: type,
@@ -51,13 +53,19 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
       timestamp: DateTime.now(),
     );
     final updated = [interaction, ...state].take(10).toList();
+    await _save(updated);
     state = updated;
+  }
 
+  Future<void> _save(List<AIInteraction> interactions) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setStringList(
+    final saved = await prefs.setStringList(
       _key,
-      updated.map((i) => jsonEncode(i.toJson())).toList(),
+      interactions.map((i) => jsonEncode(i.toJson())).toList(),
     );
+    if (!saved) {
+      throw StateError('SharedPreferences returned false for $_key');
+    }
   }
 }
 
@@ -72,9 +80,10 @@ final aiHistoryProvider =
 class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
   final Ref ref;
   static const _key = 'anomaly_history';
+  late final Future<void> _loadFuture;
 
   AnomalyHistoryNotifier(this.ref) : super([]) {
-    _load();
+    _loadFuture = _load();
   }
 
   Future<void> _load() async {
@@ -97,28 +106,34 @@ class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
   }
 
   Future<void> addAll(List<Anomaly> anomalies) async {
+    await _loadFuture;
     final updated = [...anomalies, ...state].take(50).toList();
+    await _save(updated);
     state = updated;
-    await _save();
   }
 
   Future<void> dismiss(String id) async {
-    state = state.map((a) {
+    await _loadFuture;
+    final updated = state.map((a) {
       if (a.id == id) return a.copyWith(dismissed: true);
       return a;
     }).toList();
-    await _save();
+    await _save(updated);
+    state = updated;
   }
 
   List<Anomaly> forTank(String tankId) =>
       state.where((a) => a.tankId == tankId && !a.dismissed).toList();
 
-  Future<void> _save() async {
+  Future<void> _save(List<Anomaly> anomalies) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setStringList(
+    final saved = await prefs.setStringList(
       _key,
-      state.map((a) => jsonEncode(a.toJson())).toList(),
+      anomalies.map((a) => jsonEncode(a.toJson())).toList(),
     );
+    if (!saved) {
+      throw StateError('SharedPreferences returned false for $_key');
+    }
   }
 }
 
@@ -160,9 +175,10 @@ final aquariumIntelligenceProvider =
 class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
   final Ref ref;
   static const _key = 'weekly_plan_cache';
+  late final Future<void> _loadFuture;
 
   WeeklyPlanNotifier(this.ref) : super(null) {
-    _load();
+    _loadFuture = _load();
   }
 
   Future<void> _load() async {
@@ -182,9 +198,13 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
   }
 
   Future<void> save(WeeklyPlan plan) async {
-    state = plan;
+    await _loadFuture;
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setString(_key, jsonEncode(plan.toJson()));
+    final saved = await prefs.setString(_key, jsonEncode(plan.toJson()));
+    if (!saved) {
+      throw StateError('SharedPreferences returned false for $_key');
+    }
+    state = plan;
   }
 
   void clear() {

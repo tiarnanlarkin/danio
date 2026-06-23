@@ -224,12 +224,21 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
       // Record rate limit & AI history.
       rateLimiter.recordRequest(AIFeature.fishId);
-      ref
-          .read(aiHistoryProvider.notifier)
-          .add(
-            type: 'fish_id',
-            summary: 'Identified: ${identification.commonName}',
-          );
+      unawaited(
+        ref
+            .read(aiHistoryProvider.notifier)
+            .add(
+              type: 'fish_id',
+              summary: 'Identified: ${identification.commonName}',
+            )
+            .catchError((Object e, StackTrace st) {
+              logError(
+                'FishIdScreen: failed to save AI history: $e',
+                stackTrace: st,
+                tag: 'FishIdScreen',
+              );
+            }),
+      );
 
       if (!mounted) return;
       setState(() {

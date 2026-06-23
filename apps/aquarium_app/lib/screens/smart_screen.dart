@@ -121,13 +121,22 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         maxTokens: 300,
       );
       rateLimiter.recordRequest(AIFeature.askDanio);
-      ref
-          .read(aiHistoryProvider.notifier)
-          .add(
-            type: 'ask_danio',
-            summary:
-                'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
-          );
+      unawaited(
+        ref
+            .read(aiHistoryProvider.notifier)
+            .add(
+              type: 'ask_danio',
+              summary:
+                  'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
+            )
+            .catchError((Object e, StackTrace st) {
+              logError(
+                'SmartScreen: failed to save AI history: $e',
+                stackTrace: st,
+                tag: 'SmartScreen',
+              );
+            }),
+      );
       if (!mounted) return;
       setState(() => _askResponse = result.text);
     } on TimeoutException {
@@ -636,10 +645,23 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   trailing: a.dismissed
                       ? null
                       : TextButton(
-                          onPressed: () {
-                            innerRef
-                                .read(anomalyHistoryProvider.notifier)
-                                .dismiss(a.id);
+                          onPressed: () async {
+                            try {
+                              await innerRef
+                                  .read(anomalyHistoryProvider.notifier)
+                                  .dismiss(a.id);
+                            } catch (e, st) {
+                              logError(
+                                'SmartScreen: failed to dismiss anomaly: $e',
+                                stackTrace: st,
+                                tag: 'SmartScreen',
+                              );
+                              if (!ctx.mounted) return;
+                              DanioSnackBar.warning(
+                                ctx,
+                                "Couldn't dismiss that alert. Try again.",
+                              );
+                            }
                           },
                           child: const Text('Dismiss'),
                         ),

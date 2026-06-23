@@ -2221,6 +2221,20 @@ CL-P1-009DM Create Tank post-create profile failure boundary:
   tank creation leaves exactly one saved tank, exits the form, shows the
   non-blocking progress warning, and does not show the generic create retry.
 
+CL-P1-009DN Smart local cache persistence boundary:
+
+- Smart AI history, anomaly history, and weekly-plan cache providers now wait
+  for their local `SharedPreferences` writes before exposing updated provider
+  state.
+- Failed Smart cache write return values are treated as local failures instead
+  of silently reporting success, and provider loads can no longer overwrite a
+  pending cache mutation after it has been requested.
+- Weekly Plan now awaits the durable plan-cache save before rendering the new
+  plan, while secondary AI activity history logging remains best-effort and
+  does not make completed optional-AI results feel broken.
+- Focused provider coverage verifies delayed and failed preference writes for
+  AI history, weekly plan cache, anomaly creation, and anomaly dismissal.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

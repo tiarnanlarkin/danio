@@ -114,12 +114,21 @@ class _CompatibilityCheckerWidgetState
       );
 
       rateLimiter.recordRequest(AIFeature.compatibilityCheck);
-      ref
-          .read(aiHistoryProvider.notifier)
-          .add(
-            type: 'compatibility_check',
-            summary: 'Checked: $species in ${tank.name}',
-          );
+      unawaited(
+        ref
+            .read(aiHistoryProvider.notifier)
+            .add(
+              type: 'compatibility_check',
+              summary: 'Checked: $species in ${tank.name}',
+            )
+            .catchError((Object e, StackTrace st) {
+              logError(
+                'CompatibilityCheckerWidget: failed to save AI history: $e',
+                stackTrace: st,
+                tag: 'CompatibilityCheckerWidget',
+              );
+            }),
+      );
 
       if (!mounted) return;
       setState(() => _result = result.text);

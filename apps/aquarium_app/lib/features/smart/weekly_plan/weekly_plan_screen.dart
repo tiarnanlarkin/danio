@@ -174,13 +174,22 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       });
 
       rateLimiter.recordRequest(AIFeature.weeklyPlan);
-      ref.read(weeklyPlanProvider.notifier).save(plan);
-      ref
-          .read(aiHistoryProvider.notifier)
-          .add(
-            type: 'weekly_plan',
-            summary: 'Generated weekly maintenance plan',
-          );
+      await ref.read(weeklyPlanProvider.notifier).save(plan);
+      unawaited(
+        ref
+            .read(aiHistoryProvider.notifier)
+            .add(
+              type: 'weekly_plan',
+              summary: 'Generated weekly maintenance plan',
+            )
+            .catchError((Object e, StackTrace st) {
+              logError(
+                'WeeklyPlanScreen: failed to save AI history: $e',
+                stackTrace: st,
+                tag: 'WeeklyPlanScreen',
+              );
+            }),
+      );
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _error = OpenAIUserMessages.timeout);
