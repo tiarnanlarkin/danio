@@ -89,6 +89,29 @@ void main() {
       expect(find.text(mojibakeCelsius), findsNothing);
       expect(find.text(mojibakeFahrenheit), findsNothing);
     });
+
+    testWidgets('tablet keeps converter inputs and results readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(
+        tester.getSize(find.byType(TextField)).width,
+        lessThanOrEqualTo(720),
+      );
+
+      await tester.enterText(find.byType(TextField), '10');
+      await tester.pump();
+
+      final resultCard = find
+          .ancestor(of: find.text('US gal'), matching: find.byType(Card))
+          .first;
+      expect(tester.getSize(resultCard).width, lessThanOrEqualTo(720));
+    });
   });
 
   group('UnitConverterScreen - validation and calculation', () {

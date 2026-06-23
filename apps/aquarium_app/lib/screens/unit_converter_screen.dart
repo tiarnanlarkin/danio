@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxUnitConverterReadableWidth = 720;
+
 class UnitConverterScreen extends StatefulWidget {
   const UnitConverterScreen({super.key});
 
@@ -38,6 +40,25 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _UnitConverterReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _UnitConverterReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxUnitConverterReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
@@ -107,52 +128,56 @@ class _VolumeConverterState extends State<_VolumeConverter> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _AquariumUseCard(
-            message: 'Use for dosing, water changes, and tank capacity checks.',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Value',
-                    border: OutlineInputBorder(),
+      child: _UnitConverterReadableFrame(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _AquariumUseCard(
+              message:
+                  'Use for dosing, water changes, and tank capacity checks.',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Value',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                    ],
+                    onChanged: (v) =>
+                        setState(() => _value = double.tryParse(v)),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                  ],
-                  onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              DropdownButton<String>(
-                value: _fromUnit,
-                items: _units.keys
-                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
-                    .toList(),
-                onChanged: (v) => setState(() => _fromUnit = v ?? 'L'),
-              ),
+                const SizedBox(width: AppSpacing.md),
+                DropdownButton<String>(
+                  value: _fromUnit,
+                  items: _units.keys
+                      .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                      .toList(),
+                  onChanged: (v) => setState(() => _fromUnit = v ?? 'L'),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            if (_value != null) ...[
+              Text('Conversions', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm2),
+              ..._units.keys.where((u) => u != _fromUnit).map((u) {
+                final litres = _value! * _units[_fromUnit]!;
+                final converted = litres / _units[u]!;
+                return _ConversionResult(value: converted, unit: u);
+              }),
             ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          if (_value != null) ...[
-            Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm2),
-            ..._units.keys.where((u) => u != _fromUnit).map((u) {
-              final litres = _value! * _units[_fromUnit]!;
-              final converted = litres / _units[u]!;
-              return _ConversionResult(value: converted, unit: u);
-            }),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -178,64 +203,67 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _AquariumUseCard(
-            message:
-                'Use for heater settings, livestock ranges, and acclimation notes.',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Temperature',
-                    border: OutlineInputBorder(),
+      child: _UnitConverterReadableFrame(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _AquariumUseCard(
+              message:
+                  'Use for heater settings, livestock ranges, and acclimation notes.',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Temperature',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                      signed: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.\-]')),
+                    ],
+                    onChanged: (v) =>
+                        setState(() => _value = double.tryParse(v)),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                    signed: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.\-]')),
-                  ],
-                  onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              DropdownButton<String>(
-                value: _fromUnit,
-                items: ['C', 'F', 'K']
-                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
-                    .toList(),
-                onChanged: (v) => setState(() => _fromUnit = v ?? 'C'),
-              ),
+                const SizedBox(width: AppSpacing.md),
+                DropdownButton<String>(
+                  value: _fromUnit,
+                  items: ['C', 'F', 'K']
+                      .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                      .toList(),
+                  onChanged: (v) => setState(() => _fromUnit = v ?? 'C'),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            if (_value != null) ...[
+              Text('Conversions', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm2),
+              if (_fromUnit != 'C')
+                _ConversionResult(
+                  value: _toCelsius(_value!, _fromUnit),
+                  unit: 'C',
+                ),
+              if (_fromUnit != 'F')
+                _ConversionResult(
+                  value: _toFahrenheit(_value!, _fromUnit),
+                  unit: 'F',
+                ),
+              if (_fromUnit != 'K')
+                _ConversionResult(
+                  value: _toKelvin(_value!, _fromUnit),
+                  unit: 'K',
+                ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          if (_value != null) ...[
-            Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm2),
-            if (_fromUnit != 'C')
-              _ConversionResult(
-                value: _toCelsius(_value!, _fromUnit),
-                unit: 'C',
-              ),
-            if (_fromUnit != 'F')
-              _ConversionResult(
-                value: _toFahrenheit(_value!, _fromUnit),
-                unit: 'F',
-              ),
-            if (_fromUnit != 'K')
-              _ConversionResult(
-                value: _toKelvin(_value!, _fromUnit),
-                unit: 'K',
-              ),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -284,52 +312,55 @@ class _LengthConverterState extends State<_LengthConverter> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _AquariumUseCard(
-            message: 'Use for tank dimensions, fish size, and equipment fit.',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Length',
-                    border: OutlineInputBorder(),
+      child: _UnitConverterReadableFrame(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _AquariumUseCard(
+              message: 'Use for tank dimensions, fish size, and equipment fit.',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Length',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                    ],
+                    onChanged: (v) =>
+                        setState(() => _value = double.tryParse(v)),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                  ],
-                  onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              DropdownButton<String>(
-                value: _fromUnit,
-                items: _units.keys
-                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
-                    .toList(),
-                onChanged: (v) => setState(() => _fromUnit = v ?? 'cm'),
-              ),
+                const SizedBox(width: AppSpacing.md),
+                DropdownButton<String>(
+                  value: _fromUnit,
+                  items: _units.keys
+                      .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                      .toList(),
+                  onChanged: (v) => setState(() => _fromUnit = v ?? 'cm'),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            if (_value != null) ...[
+              Text('Conversions', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm2),
+              ..._units.keys.where((u) => u != _fromUnit).map((u) {
+                final cm = _value! * _units[_fromUnit]!;
+                final converted = cm / _units[u]!;
+                return _ConversionResult(value: converted, unit: u);
+              }),
             ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          if (_value != null) ...[
-            Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm2),
-            ..._units.keys.where((u) => u != _fromUnit).map((u) {
-              final cm = _value! * _units[_fromUnit]!;
-              final converted = cm / _units[u]!;
-              return _ConversionResult(value: converted, unit: u);
-            }),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -364,71 +395,74 @@ class _HardnessConverterState extends State<_HardnessConverter> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _AquariumUseCard(
-            message:
-                'Use for GH/KH targets and species water-parameter checks.',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Hardness',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                  ],
-                  onChanged: (v) => setState(() => _value = double.tryParse(v)),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              DropdownButton<String>(
-                value: _fromUnit,
-                items: _units.keys
-                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
-                    .toList(),
-                onChanged: (v) => setState(() => _fromUnit = v ?? 'dGH'),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          if (_value != null) ...[
-            Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm2),
-            ..._units.keys.where((u) => u != _fromUnit).map((u) {
-              final dgh = _value! / _units[_fromUnit]!;
-              final converted = dgh * _units[u]!;
-              return _ConversionResult(value: converted, unit: u);
-            }),
-          ],
-
-          const SizedBox(height: AppSpacing.lg),
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.compact,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: _UnitConverterReadableFrame(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _AquariumUseCard(
+              message:
+                  'Use for GH/KH targets and species water-parameter checks.',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
               children: [
-                Text('Reference', style: AppTypography.labelLarge),
-                const SizedBox(height: AppSpacing.sm),
-                Text('0-4 dGH: Very soft', style: AppTypography.bodySmall),
-                Text('4-8 dGH: Soft', style: AppTypography.bodySmall),
-                Text('8-12 dGH: Medium', style: AppTypography.bodySmall),
-                Text('12-18 dGH: Hard', style: AppTypography.bodySmall),
-                Text('18+ dGH: Very hard', style: AppTypography.bodySmall),
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Hardness',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                    ],
+                    onChanged: (v) =>
+                        setState(() => _value = double.tryParse(v)),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                DropdownButton<String>(
+                  value: _fromUnit,
+                  items: _units.keys
+                      .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                      .toList(),
+                  onChanged: (v) => setState(() => _fromUnit = v ?? 'dGH'),
+                ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: AppSpacing.lg),
+            if (_value != null) ...[
+              Text('Conversions', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm2),
+              ..._units.keys.where((u) => u != _fromUnit).map((u) {
+                final dgh = _value! / _units[_fromUnit]!;
+                final converted = dgh * _units[u]!;
+                return _ConversionResult(value: converted, unit: u);
+              }),
+            ],
+
+            const SizedBox(height: AppSpacing.lg),
+            AppCard(
+              backgroundColor: AppOverlays.info10,
+              padding: AppCardPadding.compact,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Reference', style: AppTypography.labelLarge),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('0-4 dGH: Very soft', style: AppTypography.bodySmall),
+                  Text('4-8 dGH: Soft', style: AppTypography.bodySmall),
+                  Text('8-12 dGH: Medium', style: AppTypography.bodySmall),
+                  Text('12-18 dGH: Hard', style: AppTypography.bodySmall),
+                  Text('18+ dGH: Very hard', style: AppTypography.bodySmall),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
