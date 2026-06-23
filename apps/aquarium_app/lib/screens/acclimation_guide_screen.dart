@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxAcclimationReadableWidth = 720;
+
 class AcclimationGuideScreen extends StatelessWidget {
   const AcclimationGuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Fish Acclimation Guide')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems(context).length,
-        itemBuilder: (context, index) => _buildItems(context)[index],
+        itemCount: items.length,
+        itemBuilder: (context, index) =>
+            _AcclimationReadableFrame(child: items[index]),
       ),
     );
   }
@@ -219,6 +224,25 @@ class AcclimationGuideScreen extends StatelessWidget {
 
       const SizedBox(height: AppSpacing.xxl),
     ];
+  }
+}
+
+class _AcclimationReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _AcclimationReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxAcclimationReadableWidth,
+        ),
+        child: child,
+      ),
+    );
   }
 }
 

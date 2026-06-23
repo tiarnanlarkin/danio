@@ -2626,6 +2626,17 @@ CL-P3-001A Optional AI provider setup boundary:
   surfaces stay at or below the 720px tablet readability bound on a 2000x1200
   tablet viewport.
 
+### CL-P2-002T Acclimation Guide Tablet Readability
+
+- Acclimation Guide now centers intro guidance, method headings, step cards,
+  tip cards, and sensitive-species guidance in the same readable 720px rail on
+  wide tablet surfaces.
+- Existing acclimation guidance, timing copy, method ordering, and iconography
+  remain unchanged.
+- Focused widget coverage verifies representative intro and step card surfaces
+  stay at or below the 720px tablet readability bound on a 2000x1200 tablet
+  viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
