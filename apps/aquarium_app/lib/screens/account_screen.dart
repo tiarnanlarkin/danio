@@ -13,6 +13,8 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
+const double _maxAccountReadableWidth = 720;
+
 /// Local data status and optional cloud account management.
 ///
 /// In the local-first build this shows the offline storage status. If cloud
@@ -86,7 +88,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   // ---------------------------------------------------------------------------
 
   Widget _buildOfflineOnlyMessage(ThemeData theme) {
-    return Center(
+    return _AccountReadableFrame(
+      alignment: Alignment.center,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
@@ -128,138 +131,142 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Form(
-        key: _formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Header
-            Icon(
-              Icons.account_circle,
-              size: 80,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              _isSignUp ? 'Create Account' : 'Sign In',
-              style: theme.textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Optional cloud backup can protect a copy of your data.\n'
-              'Local use still works without an account.',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+      child: _AccountReadableFrame(
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header
+              Icon(
+                Icons.account_circle,
+                size: 80,
+                color: theme.colorScheme.primary,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-
-            // Email field
-            TextFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.email_outlined),
-                border: OutlineInputBorder(),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                _isSignUp ? 'Create Account' : 'Sign In',
+                style: theme.textTheme.headlineSmall,
+                textAlign: TextAlign.center,
               ),
-              validator: (v) {
-                if (v == null || v.isEmpty) return 'Enter your email';
-                if (!v.contains('@')) return 'Enter a valid email';
-                return null;
-              },
-            ),
-            const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Optional cloud backup can protect a copy of your data.\n'
+                'Local use still works without an account.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.xl),
 
-            // Password field
-            TextFormField(
-              controller: _passwordController,
-              obscureText: _obscurePassword,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                prefixIcon: const Icon(Icons.lock_outline),
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  tooltip: 'Toggle password visibility',
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+              // Email field
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email_outlined),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Enter your email';
+                  if (!v.contains('@')) return 'Enter a valid email';
+                  return null;
+                },
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Password field
+              TextFormField(
+                controller: _passwordController,
+                obscureText: _obscurePassword,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    tooltip: 'Toggle password visibility',
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
-                  onPressed: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
                 ),
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Enter your password';
+                  if (_isSignUp && v.length < 6) return 'Min 6 characters';
+                  return null;
+                },
+                onFieldSubmitted: (_) => _submit(),
               ),
-              validator: (v) {
-                if (v == null || v.isEmpty) return 'Enter your password';
-                if (_isSignUp && v.length < 6) return 'Min 6 characters';
-                return null;
-              },
-              onFieldSubmitted: (_) => _submit(),
-            ),
-            const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.md),
 
-            // Error message
-            if (auth.error != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: Text(
-                  auth.error!,
-                  style: TextStyle(color: theme.colorScheme.error),
-                  textAlign: TextAlign.center,
+              // Error message
+              if (auth.error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: Text(
+                    auth.error!,
+                    style: TextStyle(color: theme.colorScheme.error),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
 
-            // Submit button
-            AppButton(
-              label: _isSignUp ? 'Create Account' : 'Sign In',
-              onPressed: auth.isLoading ? null : _submit,
-              isLoading: auth.isLoading,
-              isFullWidth: true,
-              variant: AppButtonVariant.primary,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-
-            // Toggle sign-up / sign-in
-            AppButton(
-              label: _isSignUp
-                  ? 'Already have an account? Sign in'
-                  : "Don't have an account? Sign up",
-              onPressed: () => setState(() => _isSignUp = !_isSignUp),
-              variant: AppButtonVariant.text,
-            ),
-
-            // Forgot password
-            if (!_isSignUp)
+              // Submit button
               AppButton(
-                label: 'Forgot password?',
-                onPressed: _forgotPassword,
+                label: _isSignUp ? 'Create Account' : 'Sign In',
+                onPressed: auth.isLoading ? null : _submit,
+                isLoading: auth.isLoading,
+                isFullWidth: true,
+                variant: AppButtonVariant.primary,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+
+              // Toggle sign-up / sign-in
+              AppButton(
+                label: _isSignUp
+                    ? 'Already have an account? Sign in'
+                    : "Don't have an account? Sign up",
+                onPressed: () => setState(() => _isSignUp = !_isSignUp),
                 variant: AppButtonVariant.text,
               ),
 
-            const SizedBox(height: AppSpacing.lg),
-            const Row(
-              children: [
-                Expanded(child: Divider()),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: Text('or'),
+              // Forgot password
+              if (!_isSignUp)
+                AppButton(
+                  label: 'Forgot password?',
+                  onPressed: _forgotPassword,
+                  variant: AppButtonVariant.text,
                 ),
-                Expanded(child: Divider()),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
 
-            // Google sign-in
-            OutlinedButton.icon(
-              onPressed: auth.isLoading ? null : _signInWithGoogle,
-              icon: const GoogleSignInMark(size: AppIconSizes.md),
-              label: const Text('Continue with Google'),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.lg),
+              const Row(
+                children: [
+                  Expanded(child: Divider()),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    child: Text('or'),
+                  ),
+                  Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // Google sign-in
+              OutlinedButton.icon(
+                onPressed: auth.isLoading ? null : _signInWithGoogle,
+                icon: const GoogleSignInMark(size: AppIconSizes.md),
+                label: const Text('Continue with Google'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -349,7 +356,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      itemBuilder: (context, index) => items[index],
+      itemBuilder: (context, index) =>
+          _AccountReadableFrame(child: items[index]),
       itemCount: items.length,
     );
   }
@@ -390,7 +398,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       DanioSnackBar.info(context, 'Creating encrypted backup...');
       await CloudBackupService.instance.createAndUploadBackup();
       if (context.mounted) {
-        DanioSnackBar.success(context, 'Backup uploaded successfully ✓');
+        DanioSnackBar.success(context, 'Backup uploaded successfully');
       }
     } catch (e, st) {
       logError(
@@ -433,7 +441,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         );
       }
       if (context.mounted && !result.preferencesRestoreFailed) {
-        DanioSnackBar.success(context, 'Backup restored successfully ✓');
+        DanioSnackBar.success(context, 'Backup restored successfully');
       }
     } catch (e, st) {
       logError(
@@ -509,6 +517,27 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     } finally {
       if (mounted) setState(() => _isDeletingAccount = false);
     }
+  }
+}
+
+class _AccountReadableFrame extends StatelessWidget {
+  const _AccountReadableFrame({
+    required this.child,
+    this.alignment = Alignment.topCenter,
+  });
+
+  final Widget child;
+  final Alignment alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: alignment,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxAccountReadableWidth),
+        child: child,
+      ),
+    );
   }
 }
 

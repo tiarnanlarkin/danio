@@ -94,6 +94,18 @@ void main() {
       expect(find.byIcon(Icons.cloud_off), findsOneWidget);
     });
 
+    testWidgets('tablet keeps offline data message readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final explanation = find.textContaining('Danio is storing your tanks');
+
+      expect(tester.getSize(explanation).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets('account danger zone exposes cloud account deletion action', (
       tester,
     ) async {
@@ -113,6 +125,12 @@ void main() {
 
       expect(source, isNot(contains('Icons.g_mobiledata')));
       expect(source, contains('GoogleSignInMark'));
+    });
+
+    test('source copy stays ascii-safe', () {
+      final source = File('lib/screens/account_screen.dart').readAsStringSync();
+
+      expect(RegExp(r'[^\x00-\x7F]').hasMatch(source), isFalse);
     });
 
     test('optional account copy does not promise background sync', () {

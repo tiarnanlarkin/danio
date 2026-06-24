@@ -2792,6 +2792,16 @@ CL-P3-001A Optional AI provider setup boundary:
   exported-item, and import-safety surfaces stay at or below the 720px tablet
   readability bound on a 2000x1200 tablet viewport.
 
+### CL-P2-002AI Account Tablet Readability
+
+- Account now centers offline-local, signed-out, and signed-in account surfaces
+  in the same readable 720px rail on wide tablet surfaces.
+- Optional cloud backup success copy now stays ASCII-safe while preserving the
+  local-first account boundary and offline data message.
+- Focused widget coverage verifies the offline-local account explanation stays
+  at or below the 720px tablet readability bound on a 2000x1200 tablet
+  viewport, and source coverage keeps Account copy ASCII-safe.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
