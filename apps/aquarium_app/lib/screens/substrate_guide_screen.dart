@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxSubstrateGuideReadableWidth = 720;
+
 class SubstrateGuideScreen extends StatelessWidget {
   const SubstrateGuideScreen({super.key});
 
@@ -284,7 +286,7 @@ class SubstrateGuideScreen extends StatelessWidget {
             _TipItem(text: 'Dark substrate makes fish colours pop'),
             _TipItem(
               text:
-                  'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
+                  'Calculate amount: L x W x depth (cm) / 1000 = litres needed',
             ),
           ],
         ),
@@ -297,8 +299,28 @@ class SubstrateGuideScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Substrate Guide')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemBuilder: (context, index) => items[index],
+        itemBuilder: (context, index) =>
+            _SubstrateGuideReadableFrame(child: items[index]),
         itemCount: items.length,
+      ),
+    );
+  }
+}
+
+class _SubstrateGuideReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _SubstrateGuideReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxSubstrateGuideReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
@@ -370,7 +392,7 @@ class _SubstrateCard extends StatelessWidget {
                             ),
                           ),
                           ...pros.map(
-                            (p) => Text('• $p', style: AppTypography.bodySmall),
+                            (p) => Text('- $p', style: AppTypography.bodySmall),
                           ),
                         ],
                       ),
@@ -387,7 +409,7 @@ class _SubstrateCard extends StatelessWidget {
                             ),
                           ),
                           ...cons.map(
-                            (c) => Text('• $c', style: AppTypography.bodySmall),
+                            (c) => Text('- $c', style: AppTypography.bodySmall),
                           ),
                         ],
                       ),
