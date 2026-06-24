@@ -11,24 +11,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/analytics/analytics_screen.dart';
+import 'package:danio/screens/analytics/analytics_stat_card.dart';
+import 'package:danio/widgets/skeleton_loader.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap() {
+Widget _wrap({Size size = const Size(390, 844)}) {
   return ProviderScope(
     child: MediaQuery(
-      data: const MediaQueryData(size: Size(390, 844)),
+      data: MediaQueryData(size: size),
       child: const MaterialApp(home: AnalyticsScreen()),
     ),
   );
 }
 
-Widget _wrapAfterProfileLoad() {
+Widget _wrapAfterProfileLoad({Size size = const Size(390, 844)}) {
   return ProviderScope(
     child: MediaQuery(
-      data: const MediaQueryData(size: Size(390, 844)),
+      data: MediaQueryData(size: size),
       child: const MaterialApp(home: _AnalyticsAfterProfileLoad()),
     ),
   );
@@ -146,6 +148,44 @@ void main() {
       expect(last30Days, findsWidgets);
       expect(tester.getTopLeft(last30Days.first).dx, greaterThanOrEqualTo(0));
       expect(tester.getTopRight(last30Days.first).dx, lessThanOrEqualTo(390));
+    });
+
+    testWidgets('tablet keeps analytics skeleton cards in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap(size: const Size(2000, 1200)));
+
+      expect(find.byType(SkeletonCard), findsWidgets);
+      expect(
+        tester.getSize(find.byType(SkeletonCard).first).width,
+        lessThanOrEqualTo(720),
+      );
+    });
+
+    testWidgets('tablet keeps analytics stat cards in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(_profileJson()),
+      });
+
+      await tester.pumpWidget(
+        _wrapAfterProfileLoad(size: const Size(2000, 1200)),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 3));
+
+      expect(find.byType(AnalyticsStatCard), findsWidgets);
+      expect(
+        tester.getSize(find.byType(AnalyticsStatCard).first).width,
+        lessThanOrEqualTo(720),
+      );
     });
   });
 }

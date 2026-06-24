@@ -2927,6 +2927,15 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative chart cards stay at or below
   720px on a 2000x1200 tablet viewport.
 
+### CL-P2-002AX Analytics Tablet Readability
+
+- Analytics now centers loading skeletons, time range chips, overview stats,
+  charts, insights, topic breakdown, and prediction surfaces in a 720px
+  readable tablet rail.
+- Compact phone surfaces keep the existing vertical analytics dashboard flow.
+- Focused widget coverage verifies representative loading skeleton and stat
+  cards stay at or below 720px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

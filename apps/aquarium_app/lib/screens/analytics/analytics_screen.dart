@@ -25,6 +25,8 @@ import 'analytics_insight_card.dart';
 import 'analytics_topic_card.dart';
 import 'analytics_prediction_card.dart';
 
+const double _maxAnalyticsReadableWidth = 720;
+
 class AnalyticsScreen extends ConsumerStatefulWidget {
   const AnalyticsScreen({super.key});
 
@@ -142,27 +144,29 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               _updateDataLoaded(true);
               body = SingleChildScrollView(
                 key: const ValueKey('analytics-content'),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildTimeRangeSelector(),
-                    _buildOverviewSection(summary),
-                    const Divider(height: AppSpacing.xl),
-                    _buildXPChart(summary),
-                    const Divider(height: AppSpacing.xl),
-                    _buildWeeklyXPBarChart(summary),
-                    const Divider(height: AppSpacing.xl),
-                    _buildTopicMasteryRadar(summary),
-                    const Divider(height: AppSpacing.xl),
-                    _buildStreakCalendar(summary),
-                    const Divider(height: AppSpacing.xl),
-                    _buildInsightsSection(summary),
-                    const Divider(height: AppSpacing.xl),
-                    _buildTopicBreakdown(summary),
-                    const Divider(height: AppSpacing.xl),
-                    _buildPredictionsSection(summary),
-                    const SizedBox(height: AppSpacing.xl),
-                  ],
+                child: _buildReadableRail(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTimeRangeSelector(),
+                      _buildOverviewSection(summary),
+                      const Divider(height: AppSpacing.xl),
+                      _buildXPChart(summary),
+                      const Divider(height: AppSpacing.xl),
+                      _buildWeeklyXPBarChart(summary),
+                      const Divider(height: AppSpacing.xl),
+                      _buildTopicMasteryRadar(summary),
+                      const Divider(height: AppSpacing.xl),
+                      _buildStreakCalendar(summary),
+                      const Divider(height: AppSpacing.xl),
+                      _buildInsightsSection(summary),
+                      const Divider(height: AppSpacing.xl),
+                      _buildTopicBreakdown(summary),
+                      const Divider(height: AppSpacing.xl),
+                      _buildPredictionsSection(summary),
+                      const SizedBox(height: AppSpacing.xl),
+                    ],
+                  ),
                 ),
               );
             }
@@ -184,6 +188,17 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         setState(() => _dataLoaded = value);
       }
     });
+  }
+
+  Widget _buildReadableRail(Widget child) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxAnalyticsReadableWidth,
+        ),
+        child: child,
+      ),
+    );
   }
 
   Future<AnalyticsSummary> _loadAnalytics() async {
@@ -260,55 +275,69 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
   Widget _buildSkeletonLoader() {
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTimeRangeSelector(),
-          const SizedBox(height: AppSpacing.md),
-          const Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
-                    ),
-                    SizedBox(width: AppSpacing.sm2),
-                    Expanded(
-                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
-                    ),
-                  ],
-                ),
-                SizedBox(height: AppSpacing.sm2),
-                Row(
-                  children: [
-                    Expanded(
-                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
-                    ),
-                    SizedBox(width: AppSpacing.sm2),
-                    Expanded(
-                      child: SkeletonCard(height: 80, padding: EdgeInsets.zero),
-                    ),
-                  ],
-                ),
-              ],
+      child: _buildReadableRail(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTimeRangeSelector(),
+            const SizedBox(height: AppSpacing.md),
+            const Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SkeletonCard(
+                          height: 80,
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                      SizedBox(width: AppSpacing.sm2),
+                      Expanded(
+                        child: SkeletonCard(
+                          height: 80,
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: AppSpacing.sm2),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SkeletonCard(
+                          height: 80,
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                      SizedBox(width: AppSpacing.sm2),
+                      Expanded(
+                        child: SkeletonCard(
+                          height: 80,
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SkeletonChart(height: 250),
-          const SkeletonChart(height: 200),
-          const SkeletonChart(height: 200),
-          const Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              children: [
-                SkeletonCard(height: 60),
-                SkeletonCard(height: 60),
-                SkeletonCard(height: 60),
-              ],
+            const SkeletonChart(height: 250),
+            const SkeletonChart(height: 200),
+            const SkeletonChart(height: 200),
+            const Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                children: [
+                  SkeletonCard(height: 60),
+                  SkeletonCard(height: 60),
+                  SkeletonCard(height: 60),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
