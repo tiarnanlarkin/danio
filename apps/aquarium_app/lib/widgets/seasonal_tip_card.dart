@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/logger.dart';
 
 /// A dismissable seasonal tip card that shows relevant fishkeeping advice
 /// based on the current month. Appears on the home screen.
@@ -15,6 +16,7 @@ class SeasonalTipCard extends ConsumerStatefulWidget {
 class _SeasonalTipCardState extends ConsumerState<SeasonalTipCard>
     with SingleTickerProviderStateMixin {
   bool _dismissed = false;
+  bool _dismissInProgress = false;
   bool _loaded = false;
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
@@ -72,11 +74,27 @@ class _SeasonalTipCardState extends ConsumerState<SeasonalTipCard>
   }
 
   Future<void> _dismiss() async {
-    await _controller.reverse();
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setBool(_dismissKey, true);
-    if (mounted) {
-      setState(() => _dismissed = true);
+    if (_dismissInProgress) return;
+    _dismissInProgress = true;
+
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final saved = await prefs.setBool(_dismissKey, true);
+      if (!saved) {
+        throw StateError('SharedPreferences returned false');
+      }
+
+      await _controller.reverse();
+      if (mounted) {
+        setState(() => _dismissed = true);
+      }
+    } catch (e, stackTrace) {
+      _dismissInProgress = false;
+      logError(
+        'Failed to persist seasonal tip dismissal: $e',
+        stackTrace: stackTrace,
+        tag: 'SeasonalTipCard',
+      );
     }
   }
 

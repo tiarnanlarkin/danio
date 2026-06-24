@@ -2290,6 +2290,15 @@ CL-P1-009DS First-visit guidance prompt persistence boundary:
 - Focused widget coverage verifies both successful guidance dismissal and
   failed local write handling.
 
+CL-P1-009DT Seasonal tip dismissal persistence boundary:
+
+- Seasonal tip cards now save the monthly dismissal flag before running the
+  dismiss animation or hiding the card.
+- Failed local seasonal-tip writes keep the card visible and retryable instead
+  of disappearing without a durable preference.
+- Focused widget coverage verifies both successful seasonal-tip dismissal and
+  failed local write handling.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
