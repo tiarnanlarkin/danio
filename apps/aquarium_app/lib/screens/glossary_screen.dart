@@ -3,6 +3,9 @@ import '../utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_text_field.dart';
+
+const double _maxGlossaryReadableWidth = 720;
+
 class GlossaryScreen extends StatefulWidget {
   const GlossaryScreen({super.key});
 
@@ -51,66 +54,83 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
       appBar: AppBar(title: const Text('Glossary')),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: AppSearchField(
-              hint: 'Search terms...',
-              onChanged: (v) {
-                _debounce?.cancel();
-                _debounce = Timer(kDebounceDuration, () {
-                  setState(() => _searchQuery = v);
-                });
-              },
+          _readableRail(
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: AppSearchField(
+                hint: 'Search terms...',
+                onChanged: (v) {
+                  _debounce?.cancel();
+                  _debounce = Timer(kDebounceDuration, () {
+                    setState(() => _searchQuery = v);
+                  });
+                },
+              ),
             ),
           ),
 
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Row(
-              children: [
-                FilterChip(
-                  label: const Text('All'),
-                  selected: _selectedCategory == null,
-                  onSelected: (_) => setState(() => _selectedCategory = null),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                ...categories.map(
-                  (c) => Padding(
-                    padding: const EdgeInsets.only(right: AppSpacing.sm),
-                    child: FilterChip(
-                      label: Text(c),
-                      selected: _selectedCategory == c,
-                      onSelected: (_) => setState(
-                        () => _selectedCategory = _selectedCategory == c
-                            ? null
-                            : c,
+          _readableRail(
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Row(
+                children: [
+                  FilterChip(
+                    label: const Text('All'),
+                    selected: _selectedCategory == null,
+                    onSelected: (_) => setState(() => _selectedCategory = null),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  ...categories.map(
+                    (c) => Padding(
+                      padding: const EdgeInsets.only(right: AppSpacing.sm),
+                      child: FilterChip(
+                        label: Text(c),
+                        selected: _selectedCategory == c,
+                        onSelected: (_) => setState(
+                          () => _selectedCategory = _selectedCategory == c
+                              ? null
+                              : c,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
           const SizedBox(height: AppSpacing.sm),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Text(
-              '${terms.length} terms',
-              style: AppTypography.bodySmall,
+          _readableRail(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Text(
+                '${terms.length} terms',
+                style: AppTypography.bodySmall,
+              ),
             ),
           ),
 
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: terms.length,
-              itemBuilder: (ctx, i) => _TermCard(term: terms[i]),
+            child: _readableRail(
+              ListView.builder(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                itemCount: terms.length,
+                itemBuilder: (ctx, i) => _TermCard(term: terms[i]),
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _readableRail(Widget child) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxGlossaryReadableWidth),
+        child: child,
       ),
     );
   }

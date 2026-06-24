@@ -53,5 +53,20 @@ void main() {
       // GlossaryScreen uses Card widgets for each term
       expect(find.byType(Card), findsWidgets);
     });
+
+    testWidgets('tablet keeps glossary cards in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(
+        tester.getSize(find.byType(Card).first).width,
+        lessThanOrEqualTo(720),
+      );
+    });
   });
 }

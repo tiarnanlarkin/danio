@@ -2884,6 +2884,15 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative terms section content starts
   inside the centered tablet rail on a 2000x1200 tablet viewport.
 
+### CL-P2-002AS Glossary Tablet Readability
+
+- Glossary now centers the search field, category chips, term count, and term
+  cards in a 720px readable tablet rail.
+- Compact phone surfaces keep the existing glossary list and horizontal filter
+  behavior.
+- Focused widget coverage verifies representative glossary cards stay at or
+  below 720px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
