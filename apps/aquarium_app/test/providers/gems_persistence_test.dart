@@ -33,6 +33,25 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseSetStringPrefs implements SharedPreferences {
+  _FalseSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) return Future.value(false);
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForGemsLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     final gemsState = container.read(gemsProvider);
@@ -133,6 +152,44 @@ void main() {
       },
     );
 
+    test(
+      'grantGems treats false gems_state writes as local save failures',
+      () async {
+        final originalState = _gemsState();
+        SharedPreferences.setMockInitialValues({
+          'gems_state': jsonEncode(originalState.toJson()),
+          'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_state',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(
+          notifier.grantGems(amount: 5, reason: 'Debug grant'),
+          throwsA(isA<Exception>()),
+        );
+
+        final gemsState = container.read(gemsProvider);
+        expect(gemsState.asData?.value.balance, isNot(15));
+        expect(
+          prefs.getString('gems_state'),
+          jsonEncode(originalState.toJson()),
+        );
+      },
+    );
+
     test('addGems rolls back total earned when the save fails', () async {
       final originalState = _gemsState();
       SharedPreferences.setMockInitialValues({
@@ -181,6 +238,44 @@ void main() {
           overrides: [
             sharedPreferencesProvider.overrideWith((ref) async {
               return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'gems_cumulative',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(
+          notifier.addGems(amount: 5, reason: GemEarnReason.lessonComplete),
+          throwsA(isA<Exception>()),
+        );
+
+        expect(prefs.getString('gems_state'), originalGemsJson);
+        expect(
+          prefs.getString('gems_cumulative'),
+          jsonEncode({'earned': 10, 'spent': 5}),
+        );
+      },
+    );
+
+    test(
+      'addGems restores persisted gem state when cumulative save returns false',
+      () async {
+        final originalState = _gemsState();
+        final originalGemsJson = jsonEncode(originalState.toJson());
+        SharedPreferences.setMockInitialValues({
+          'gems_state': originalGemsJson,
+          'gems_cumulative': jsonEncode({'earned': 10, 'spent': 5}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseSetStringPrefs(
                 prefs,
                 (key, _) => key == 'gems_cumulative',
               );

@@ -149,10 +149,22 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   }
 
   Future<void> _saveCumulative(SharedPreferences prefs) async {
-    await prefs.setString(
+    await _setStringOrThrow(
+      prefs,
       _cumulativeKey,
       jsonEncode({'earned': _cumulativeEarned, 'spent': _cumulativeSpent}),
     );
+  }
+
+  Future<void> _setStringOrThrow(
+    SharedPreferences prefs,
+    String key,
+    String value,
+  ) async {
+    final saved = await prefs.setString(key, value);
+    if (!saved) {
+      throw StateError('SharedPreferences.setString returned false for $key.');
+    }
   }
 
   Future<void> _save(GemsState gemsState) async {
@@ -193,7 +205,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         transactions = transactions.take(_maxTransactions).toList();
         gemsState = gemsState.copyWith(transactions: transactions);
       }
-      await prefs.setString(_key, jsonEncode(gemsState.toJson()));
+      await _setStringOrThrow(prefs, _key, jsonEncode(gemsState.toJson()));
       gemsStateWritten = true;
       await _saveCumulative(prefs);
       _pendingGemsState = null; // Mark as clean after successful write.
@@ -225,7 +237,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       }
       final rollbackJson = jsonEncode(gemsState.toJson());
       if (prefs.getString(_key) == rollbackJson) return;
-      await prefs.setString(_key, rollbackJson);
+      await _setStringOrThrow(prefs, _key, rollbackJson);
     } catch (e, st) {
       logError(
         'GemsProvider: rollback save failed: $e',

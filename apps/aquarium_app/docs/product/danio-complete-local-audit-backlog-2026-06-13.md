@@ -208,6 +208,9 @@ Recent CL-P1-009 continuation note:
   durably completed.
 - CL-P1-009DY treats false shared guidance dismissal writes as local dismissal
   failures for both forever and one-day prompt scopes.
+- CL-P1-009DZ treats false gem balance, cumulative counter, and rollback
+  preference writes as local save failures instead of exposing false reward
+  progress.
 
 ## 7. P2 Work - Presentation System
 

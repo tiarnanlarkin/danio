@@ -2353,6 +2353,15 @@ CL-P1-009DY Shared guidance dismissal persistence boundary:
 - Focused service coverage simulates failed forever and day-scope guidance
   dismissal writes and verifies no dismissed flag is persisted.
 
+CL-P1-009DZ Gems preference write boundary:
+
+- Gem state, cumulative earned/spent counters, and rollback writes now treat
+  false `SharedPreferences.setString` results as local save failures.
+- The existing gem reward, spend, refund, and grant rollback paths now cover
+  both thrown preference failures and false preference write results.
+- Focused provider coverage simulates false `gems_state` and `gems_cumulative`
+  writes and verifies false reward progress is not exposed.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
