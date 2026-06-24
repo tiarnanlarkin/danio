@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxVacationGuideReadableWidth = 720;
+
 class VacationGuideScreen extends StatelessWidget {
   const VacationGuideScreen({super.key});
 
@@ -254,8 +256,28 @@ class VacationGuideScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Vacation Planning')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemBuilder: (context, index) => items[index],
+        itemBuilder: (context, index) =>
+            _VacationGuideReadableFrame(child: items[index]),
         itemCount: items.length,
+      ),
+    );
+  }
+}
+
+class _VacationGuideReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _VacationGuideReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxVacationGuideReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
@@ -394,7 +416,7 @@ class _OptionCard extends StatelessWidget {
                         ),
                       ),
                       ...pros.map(
-                        (p) => Text('• $p', style: AppTypography.bodySmall),
+                        (p) => Text('- $p', style: AppTypography.bodySmall),
                       ),
                     ],
                   ),
@@ -411,7 +433,7 @@ class _OptionCard extends StatelessWidget {
                         ),
                       ),
                       ...cons.map(
-                        (c) => Text('• $c', style: AppTypography.bodySmall),
+                        (c) => Text('- $c', style: AppTypography.bodySmall),
                       ),
                     ],
                   ),
@@ -452,7 +474,7 @@ class _BulletPoint extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ', style: AppTypography.bodyMedium),
+          Text('- ', style: AppTypography.bodyMedium),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),
