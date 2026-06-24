@@ -2737,6 +2737,17 @@ CL-P3-001A Optional AI provider setup boundary:
   feeding-option, and return-step surfaces stay at or below the 720px tablet
   readability bound on a 2000x1200 tablet viewport.
 
+### CL-P2-002AD Quick Start Guide Tablet Readability
+
+- Quick Start Guide now centers the hero card, step cards, cycle warning
+  guidance, and common beginner mistake card in the same readable 720px rail on
+  wide tablet surfaces.
+- Bullet prefixes and mistake-result separators now use source-safe ASCII copy
+  while preserving the existing beginner setup guidance.
+- Focused widget coverage verifies representative hero, step, cycle, and
+  mistake surfaces stay at or below the 720px tablet readability bound on a
+  2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
