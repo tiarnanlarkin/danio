@@ -22,6 +22,16 @@ class SchemaMigration {
 
   static const String _key = '_schemaVersion';
 
+  static Future<void> _stampVersion(
+    SharedPreferences prefs,
+    int version,
+  ) async {
+    final saved = await prefs.setInt(_key, version);
+    if (!saved) {
+      throw StateError('Schema version stamp write returned false.');
+    }
+  }
+
   /// Run any outstanding migrations against [prefs].
   ///
   /// This is a fast, synchronous-friendly operation at current scale.
@@ -44,7 +54,7 @@ class SchemaMigration {
     // version key was introduced, so this migration is a no-op; we simply
     // stamp the version to prevent re-running on future startups.
     if (currentVersion < 1) {
-      await prefs.setInt(_key, 1);
+      await _stampVersion(prefs, 1);
       appLog('Migration v0 → v1 complete (stamp only)', tag: 'SchemaMigration');
     }
 

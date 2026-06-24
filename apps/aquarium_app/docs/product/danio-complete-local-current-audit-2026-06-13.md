@@ -2324,6 +2324,15 @@ CL-P1-009DV User profile preference write boundary:
   verifies profile creation fails before persisted or visible profile state is
   exposed.
 
+CL-P1-009DW Schema migration stamp persistence boundary:
+
+- Schema migration version stamps now treat `SharedPreferences.setInt` false
+  results as migration failures.
+- The v0-to-v1 stamp runs through a shared helper so future stamp writes can use
+  the same durable-write contract.
+- Focused unit coverage simulates a failed `_schemaVersion` stamp and verifies
+  migration does not silently complete without a persisted marker.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

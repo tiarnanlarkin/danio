@@ -7,6 +7,25 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/utils/schema_migration.dart';
 
+class _FalseSetIntPrefs implements SharedPreferences {
+  _FalseSetIntPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, int value) _shouldFail;
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  Future<bool> setInt(String key, int value) async {
+    if (_shouldFail(key, value)) return false;
+    return _delegate.setInt(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
   group('SchemaMigration', () {
     setUp(() {
@@ -51,8 +70,23 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
 
-      expect(() async => SchemaMigration.runIfNeeded(prefs),
-          returnsNormally);
+      expect(() async => SchemaMigration.runIfNeeded(prefs), returnsNormally);
+    });
+
+    test('surfaces failed schema version stamp writes', () async {
+      SharedPreferences.setMockInitialValues({});
+      final delegate = await SharedPreferences.getInstance();
+      final prefs = _FalseSetIntPrefs(
+        delegate,
+        (key, _) => key == '_schemaVersion',
+      );
+
+      await expectLater(
+        SchemaMigration.runIfNeeded(prefs),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(delegate.getInt('_schemaVersion'), isNull);
     });
   });
 }

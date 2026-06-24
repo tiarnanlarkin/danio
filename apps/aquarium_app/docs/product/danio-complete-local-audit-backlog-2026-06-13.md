@@ -200,6 +200,9 @@ Recent CL-P1-009 continuation note:
   instead of false completion when local persistence fails.
 - CL-P1-009DV treats false `user_profile` preference write results as local
   profile save failures before exposing created or updated profile state.
+- CL-P1-009DW treats false schema-version stamp writes as migration failures,
+  preventing startup migrations from silently claiming completion without a
+  durable local version marker.
 
 ## 7. P2 Work - Presentation System
 
