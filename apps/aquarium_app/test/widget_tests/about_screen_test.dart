@@ -41,6 +41,21 @@ void main() {
       expect(find.textContaining('Duolingo for Fishkeeping'), findsOneWidget);
     });
 
+    testWidgets('tablet centers feature content in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(
+        tester.getTopLeft(find.text('Multi-Tank Management')).dx,
+        greaterThan(650),
+      );
+    });
+
     testWidgets('uses icons instead of raw emoji in visible copy', (
       tester,
     ) async {

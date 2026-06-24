@@ -6,6 +6,8 @@ import 'terms_of_service_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/core/app_button.dart';
 
+const double _maxAboutContentWidth = 720;
+
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
@@ -15,158 +17,165 @@ class AboutScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('About')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          children: [
-            const SizedBox(height: AppSpacing.lg),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _maxAboutContentWidth),
+            child: Column(
+              children: [
+                const SizedBox(height: AppSpacing.lg),
 
-            // App icon
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                borderRadius: AppRadius.largeRadius,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppOverlays.primary30,
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: ExcludeSemantics(
-                child: ClipRRect(
-                  borderRadius: AppRadius.largeRadius,
-                  child: Image.asset(
-                    'assets/icons/app_icon.png',
-                    width: 100,
-                    height: 100,
-                    cacheWidth: 200,
-                    cacheHeight: 200,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [AppColors.primary, AppColors.secondary],
-                        ),
+                // App icon
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: AppRadius.largeRadius,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppOverlays.primary30,
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
                       ),
-                      child: const Icon(
-                        Icons.water_drop,
-                        size: 48,
-                        color: AppColors.onPrimary,
+                    ],
+                  ),
+                  child: ExcludeSemantics(
+                    child: ClipRRect(
+                      borderRadius: AppRadius.largeRadius,
+                      child: Image.asset(
+                        'assets/icons/app_icon.png',
+                        width: 100,
+                        height: 100,
+                        cacheWidth: 200,
+                        cacheHeight: 200,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [AppColors.primary, AppColors.secondary],
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.water_drop,
+                            size: 48,
+                            color: AppColors.onPrimary,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
 
-            const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
 
-            Text('Danio', style: AppTypography.headlineMedium),
-            const SizedBox(height: AppSpacing.xs),
-            Text('Version $kAppVersion', style: AppTypography.bodyMedium),
+                Text('Danio', style: AppTypography.headlineMedium),
+                const SizedBox(height: AppSpacing.xs),
+                Text('Version $kAppVersion', style: AppTypography.bodyMedium),
 
-            const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
 
-            Text(
-              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby — one lesson at a time.',
-              style: AppTypography.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            const Divider(),
-
-            const SizedBox(height: AppSpacing.md),
-
-            const _FeatureItem(
-              icon: Icons.water,
-              title: 'Multi-Tank Management',
-              description: 'Track unlimited aquariums with individual settings',
-            ),
-            const _FeatureItem(
-              icon: Icons.science,
-              title: 'Water Testing',
-              description: 'Log parameters and visualise trends over time',
-            ),
-            const _FeatureItem(
-              icon: Icons.task_alt,
-              title: 'Smart Reminders',
-              description: 'Never miss a water change or filter maintenance',
-            ),
-            const _FeatureItem(
-              icon: Icons.set_meal,
-              title: 'Species Database',
-              description: '125+ freshwater species with care requirements',
-            ),
-            const _FeatureItem(
-              icon: Icons.shield,
-              title: 'Local-First',
-              description: 'Your data stays on your device',
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            const Divider(),
-
-            const SizedBox(height: AppSpacing.md),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.favorite,
-                  size: AppIconSizes.sm,
-                  color: AppColors.error,
-                ),
-                const SizedBox(width: AppSpacing.xs),
                 Text(
-                  'Built for the fishkeeping community',
-                  style: AppTypography.bodySmall,
+                  'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby — one lesson at a time.',
+                  style: AppTypography.bodyLarge,
+                  textAlign: TextAlign.center,
                 ),
+
+                const SizedBox(height: AppSpacing.xl),
+
+                const Divider(),
+
+                const SizedBox(height: AppSpacing.md),
+
+                const _FeatureItem(
+                  icon: Icons.water,
+                  title: 'Multi-Tank Management',
+                  description:
+                      'Track unlimited aquariums with individual settings',
+                ),
+                const _FeatureItem(
+                  icon: Icons.science,
+                  title: 'Water Testing',
+                  description: 'Log parameters and visualise trends over time',
+                ),
+                const _FeatureItem(
+                  icon: Icons.task_alt,
+                  title: 'Smart Reminders',
+                  description:
+                      'Never miss a water change or filter maintenance',
+                ),
+                const _FeatureItem(
+                  icon: Icons.set_meal,
+                  title: 'Species Database',
+                  description: '125+ freshwater species with care requirements',
+                ),
+                const _FeatureItem(
+                  icon: Icons.shield,
+                  title: 'Local-First',
+                  description: 'Your data stays on your device',
+                ),
+
+                const SizedBox(height: AppSpacing.xl),
+
+                const Divider(),
+
+                const SizedBox(height: AppSpacing.md),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.favorite,
+                      size: AppIconSizes.sm,
+                      color: AppColors.error,
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      'Built for the fishkeeping community',
+                      style: AppTypography.bodySmall,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: AppSpacing.lg),
+
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    AppButton(
+                      label: 'Privacy',
+                      leadingIcon: Icons.privacy_tip_outlined,
+                      onPressed: () => _showPrivacyInfo(context),
+                      variant: AppButtonVariant.text,
+                    ),
+                    AppButton(
+                      label: 'Terms',
+                      leadingIcon: Icons.gavel,
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        const TermsOfServiceScreen(),
+                      ),
+                      variant: AppButtonVariant.text,
+                    ),
+                    AppButton(
+                      label: 'Licenses',
+                      leadingIcon: Icons.code,
+                      onPressed: () => showLicensePage(
+                        context: context,
+                        applicationName: 'Danio',
+                        applicationVersion: kAppVersion,
+                      ),
+                      variant: AppButtonVariant.text,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: AppSpacing.xxl),
               ],
             ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                AppButton(
-                  label: 'Privacy',
-                  leadingIcon: Icons.privacy_tip_outlined,
-                  onPressed: () => _showPrivacyInfo(context),
-                  variant: AppButtonVariant.text,
-                ),
-                AppButton(
-                  label: 'Terms',
-                  leadingIcon: Icons.gavel,
-                  onPressed: () => NavigationThrottle.push(
-                    context,
-                    const TermsOfServiceScreen(),
-                  ),
-                  variant: AppButtonVariant.text,
-                ),
-                AppButton(
-                  label: 'Licenses',
-                  leadingIcon: Icons.code,
-                  onPressed: () => showLicensePage(
-                    context: context,
-                    applicationName: 'Danio',
-                    applicationVersion: kAppVersion,
-                  ),
-                  variant: AppButtonVariant.text,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.xxl),
-          ],
+          ),
         ),
       ),
     );
