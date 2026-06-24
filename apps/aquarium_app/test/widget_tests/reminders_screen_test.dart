@@ -45,6 +45,22 @@ Widget _wrapWithFailingPrefs({
   );
 }
 
+Widget _wrapWithFalseSetStringPrefs({
+  required Map<String, Object> initialValues,
+  required bool Function(String key, Object value) shouldFail,
+}) {
+  return ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWith((ref) async {
+        SharedPreferences.setMockInitialValues(initialValues);
+        final prefs = await SharedPreferences.getInstance();
+        return _FalseSetStringPrefs(prefs, shouldFail);
+      }),
+    ],
+    child: const MaterialApp(home: RemindersScreen()),
+  );
+}
+
 class _ThrowingSetStringPrefs implements SharedPreferences {
   _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
 
@@ -64,6 +80,33 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
   Future<bool> setString(String key, String value) {
     if (_shouldFail(key, value)) {
       throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _FalseSetStringPrefs implements SharedPreferences {
+  _FalseSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      return Future.value(false);
     }
     return _delegate.setString(key, value);
   }
@@ -345,6 +388,43 @@ void main() {
     });
 
     testWidgets(
+      'add false save result shows feedback and keeps reminder unsaved',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrapWithFalseSetStringPrefs(
+            initialValues: {},
+            shouldFail: (key, value) =>
+                key == 'aquarium_reminders' && value != '[]',
+          ),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.text('Add Reminder'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        await tester.enterText(
+          find.widgetWithText(TextField, 'Title'),
+          'Clean prefilter',
+        );
+        final saveButton = find.widgetWithText(AppButton, 'Save Reminder');
+        await tester.ensureVisible(saveButton);
+        await tester.pump();
+        tester.widget<AppButton>(saveButton).onPressed!();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        expect(tester.takeException(), isNull);
+        expect(find.widgetWithText(ListTile, 'Clean prefilter'), findsNothing);
+        expect(_notificationsPlatform.scheduledCount, 0);
+        expect(
+          find.text("Couldn't save that reminder. Try again in a moment."),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
       'complete save failure shows feedback and keeps one-time reminder active',
       (tester) async {
         final due = DateTime.now().add(const Duration(days: 2));
@@ -355,6 +435,41 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithFailingPrefs(
+            initialValues: {'aquarium_reminders': savedReminders},
+            shouldFail: (key, value) =>
+                key == 'aquarium_reminders' && value == '[]',
+          ),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.byTooltip('Mark reminder as done'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        expect(tester.takeException(), isNull);
+        expect(
+          find.widgetWithText(ListTile, 'Dose fertiliser'),
+          findsOneWidget,
+        );
+        expect(_notificationsPlatform.canceledCount, 0);
+        expect(
+          find.text("Couldn't complete that reminder. Try again in a moment."),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'complete false save result keeps one-time reminder active',
+      (tester) async {
+        final due = DateTime.now().add(const Duration(days: 2));
+        final savedReminders =
+            '[{"id":"1","title":"Dose fertiliser","notes":null,'
+            '"category":"maintenance","nextDue":"${due.toIso8601String()}",'
+            '"lastCompleted":null,"isRecurring":false,"frequency":"once"}]';
+
+        await tester.pumpWidget(
+          _wrapWithFalseSetStringPrefs(
             initialValues: {'aquarium_reminders': savedReminders},
             shouldFail: (key, value) =>
                 key == 'aquarium_reminders' && value == '[]',

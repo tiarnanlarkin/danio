@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
@@ -95,8 +96,24 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   Future<void> _saveExpenses() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(_expenses.map((e) => e.toJson()).toList());
-    await prefs.setString('cost_tracker_expenses', json);
-    await prefs.setString('cost_tracker_currency', _currency);
+    await _setStringOrThrow(prefs, 'cost_tracker_currency', _currency);
+    await _setStringOrThrow(prefs, 'cost_tracker_expenses', json);
+  }
+
+  Future<void> _saveCurrency(String currency) async {
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    await _setStringOrThrow(prefs, 'cost_tracker_currency', currency);
+  }
+
+  Future<void> _setStringOrThrow(
+    SharedPreferences prefs,
+    String key,
+    String value,
+  ) async {
+    final saved = await prefs.setString(key, value);
+    if (!saved) {
+      throw StateError('SharedPreferences.setString returned false for $key');
+    }
   }
 
   Future<bool> _saveExpensesWithRollback({
@@ -120,18 +137,45 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     }
   }
 
+  Future<bool> _saveCurrencyWithRollback({
+    required String rollbackCurrency,
+    required String errorMessage,
+    required String logMessage,
+  }) async {
+    try {
+      await _saveCurrency(_currency);
+      return true;
+    } catch (error, stackTrace) {
+      logError(
+        '$logMessage: $error',
+        stackTrace: stackTrace,
+        tag: 'CostTrackerScreen',
+      );
+      if (!mounted) return false;
+      setState(() => _currency = rollbackCurrency);
+      AppFeedback.showError(context, errorMessage);
+      return false;
+    }
+  }
+
   void _addExpense() {
     showAppDragSheet(
       context: context,
       builder: (ctx) => _AddExpenseSheet(
         currency: _currency,
         onSave: (expense) async {
+          final previousExpenses = List<_Expense>.from(_expenses);
           setState(() {
             _expenses.insert(0, expense);
           });
-          await _saveExpenses();
-          if (!mounted) return;
+          final saved = await _saveExpensesWithRollback(
+            rollbackExpenses: previousExpenses,
+            errorMessage: "Couldn't save that expense. Try again in a moment.",
+            logMessage: 'Failed to persist added expense',
+          );
+          if (!saved || !mounted) return false;
           AppFeedback.showSuccess(context, '${expense.description} added.');
+          return true;
         },
       ),
     );
@@ -365,10 +409,18 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
               items: _currencyOptions(
                 _currency,
               ).map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-              onChanged: (v) {
+              onChanged: (v) async {
+                final navigator = Navigator.of(context);
+                final previousCurrency = _currency;
                 setState(() => _currency = v ?? _localeCurrencySymbol());
-                _saveExpenses();
-                Navigator.maybePop(context);
+                final saved = await _saveCurrencyWithRollback(
+                  rollbackCurrency: previousCurrency,
+                  errorMessage:
+                      "Couldn't save that currency. Try again in a moment.",
+                  logMessage: 'Failed to persist selected currency',
+                );
+                if (!saved || !mounted) return;
+                await navigator.maybePop();
               },
             ),
           ),
@@ -697,7 +749,7 @@ class _ExpenseTile extends StatelessWidget {
 
 class _AddExpenseSheet extends StatefulWidget {
   final String currency;
-  final Future<void> Function(_Expense) onSave;
+  final Future<bool> Function(_Expense) onSave;
 
   const _AddExpenseSheet({required this.currency, required this.onSave});
 
@@ -861,7 +913,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               }
 
               final navigator = Navigator.of(context);
-              await widget.onSave(
+              final saved = await widget.onSave(
                 _Expense(
                   id: DateTime.now().millisecondsSinceEpoch.toString(),
                   description: description,
@@ -870,7 +922,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   date: _date,
                 ),
               );
-              if (!mounted) return;
+              if (!mounted || !saved) return;
               await navigator.maybePop();
             },
             variant: AppButtonVariant.primary,

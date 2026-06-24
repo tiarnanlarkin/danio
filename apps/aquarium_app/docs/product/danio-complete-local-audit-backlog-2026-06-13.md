@@ -217,6 +217,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EB treats false spaced-repetition card/stat preference writes as
   local review-card save failures, keeping create, auto-seed, and delete paths
   rollback-safe.
+- CL-P1-009EC treats false Reminder and Cost Tracker preference writes as local
+  save failures, keeping add/complete/clear paths rollback-safe with normal
+  retry feedback.
 
 ## 7. P2 Work - Presentation System
 

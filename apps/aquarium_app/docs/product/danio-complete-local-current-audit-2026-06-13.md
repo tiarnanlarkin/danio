@@ -2383,6 +2383,17 @@ CL-P1-009EB Spaced-repetition preference write boundary:
   verifies visible cards, review stats, and persisted card JSON stay
   consistent.
 
+CL-P1-009EC Reminder and Cost Tracker preference write boundary:
+
+- Reminder saves now treat false `SharedPreferences.setString` results as local
+  save failures, so add and complete flows keep the reminder UI unchanged and
+  skip notification side effects when `aquarium_reminders` is not saved.
+- Cost Tracker expense and currency preference writes now reject false
+  `SharedPreferences.setString` results instead of reporting add, clear, undo,
+  or currency changes as durable when local storage rejected them.
+- Focused widget coverage simulates false reminder and cost-tracker preference
+  writes and verifies normal retry feedback with no false saved item state.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3351,8 +3362,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   load so old files do not re-run the same migration on every launch. Backup &
   Restore now surfaces corrupted local-data recovery with retry and confirmed
   start-fresh actions, and failed imports now clean up newly restored photo
-  files when tank data import does not commit. Remaining backup/data work is
-  broader edit/delete/undo coverage and restore/migration walkthrough QA.
+  files when tank data import does not commit. Reminder and Cost Tracker
+  preference writes now reject false local save results with normal rollback
+  feedback. Remaining backup/data work is broader edit/delete/undo coverage and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

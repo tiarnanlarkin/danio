@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/user_profile_provider.dart';
 import '../services/notification_service.dart';
@@ -57,7 +58,18 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   Future<void> _saveReminderList(List<_Reminder> reminders) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(reminders.map((r) => r.toJson()).toList());
-    await prefs.setString('aquarium_reminders', json);
+    await _setStringOrThrow(prefs, 'aquarium_reminders', json);
+  }
+
+  Future<void> _setStringOrThrow(
+    SharedPreferences prefs,
+    String key,
+    String value,
+  ) async {
+    final saved = await prefs.setString(key, value);
+    if (!saved) {
+      throw StateError('SharedPreferences.setString returned false for $key');
+    }
   }
 
   Future<bool> _saveRemindersWithRollback({
