@@ -211,6 +211,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DZ treats false gem balance, cumulative counter, and rollback
   preference writes as local save failures instead of exposing false reward
   progress.
+- CL-P1-009EA treats false inventory preference writes as local item-use and
+  purchase save failures, preserving visible inventory state and refunding gems
+  when the purchased item cannot be saved.
 
 ## 7. P2 Work - Presentation System
 

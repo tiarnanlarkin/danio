@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
@@ -81,7 +82,18 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   Future<void> _save(List<InventoryItem> inventory) async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
     final json = jsonEncode(inventory.map((i) => i.toJson()).toList());
-    await prefs.setString(_key, json);
+    await _setStringOrThrow(prefs, _key, json);
+  }
+
+  Future<void> _setStringOrThrow(
+    SharedPreferences prefs,
+    String key,
+    String value,
+  ) async {
+    final saved = await prefs.setString(key, value);
+    if (!saved) {
+      throw StateError('SharedPreferences.setString returned false for $key.');
+    }
   }
 
   /// Purchase an item from the shop.

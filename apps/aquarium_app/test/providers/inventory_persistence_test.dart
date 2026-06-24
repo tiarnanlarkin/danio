@@ -36,6 +36,27 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseSetStringPrefs implements SharedPreferences {
+  _FalseSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      return Future<bool>.value(false);
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     final gemsState = container.read(gemsProvider);
@@ -119,6 +140,106 @@ void main() {
           jsonEncode(originalProfile.toJson()),
         );
         expect(prefs.getString('shop_inventory'), originalInventoryJson);
+      },
+    );
+
+    test(
+      'useItem treats false inventory saves as failures before applying profile effect',
+      () async {
+        final originalProfile = _profile();
+        final ownedItem = InventoryItem(
+          itemId: 'streak_freeze',
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 12),
+        );
+        final originalInventoryJson = jsonEncode([ownedItem.toJson()]);
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+          'shop_inventory': originalInventoryJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseSetStringPrefs(
+                prefs,
+                (key, _) => key == 'shop_inventory',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final sub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(sub.close);
+        await _waitForLoad(container);
+
+        final notifier = container.read(inventoryProvider.notifier);
+
+        await expectLater(
+          notifier.useItem('streak_freeze'),
+          throwsA(isA<StateError>()),
+        );
+
+        final profileState = container.read(userProfileProvider);
+        expect(profileState.value?.hasStreakFreeze, isFalse);
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
+        expect(prefs.getString('shop_inventory'), originalInventoryJson);
+      },
+    );
+
+    test(
+      'purchaseItem refunds gems when inventory save returns false',
+      () async {
+        final originalGems = _gemsState();
+        const badge = ShopItem(
+          id: 'badge_early_bird',
+          name: 'Early Bird Badge',
+          description: 'Permanent badge',
+          emoji: 'AM',
+          category: ShopItemCategory.cosmetics,
+          type: ShopItemType.profileBadge,
+          gemCost: 10,
+          isConsumable: false,
+          orderIndex: 20,
+        );
+        SharedPreferences.setMockInitialValues({
+          'gems_state': jsonEncode(originalGems.toJson()),
+          'gems_cumulative': jsonEncode({'earned': 100, 'spent': 0}),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseSetStringPrefs(
+                prefs,
+                (key, _) => key == 'shop_inventory',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final sub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(sub.close);
+        await _waitForLoad(container);
+
+        final notifier = container.read(inventoryProvider.notifier);
+
+        await expectLater(
+          notifier.purchaseItem(badge),
+          throwsA(isA<StateError>()),
+        );
+
+        expect(container.read(inventoryProvider).valueOrNull, isEmpty);
+        expect(prefs.getString('shop_inventory'), isNull);
+        final gemsState = container.read(gemsProvider).asData?.value;
+        expect(gemsState?.balance, originalGems.balance);
+        final persistedGems = GemsState.fromJson(
+          jsonDecode(prefs.getString('gems_state')!) as Map<String, dynamic>,
+        );
+        expect(persistedGems.balance, originalGems.balance);
       },
     );
 

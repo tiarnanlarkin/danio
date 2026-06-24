@@ -2362,6 +2362,16 @@ CL-P1-009DZ Gems preference write boundary:
 - Focused provider coverage simulates false `gems_state` and `gems_cumulative`
   writes and verifies false reward progress is not exposed.
 
+CL-P1-009EA Inventory preference write boundary:
+
+- Inventory saves now treat false `SharedPreferences.setString` results as
+  local inventory save failures instead of exposing unsaved item progress.
+- Item-use flows keep profile effects unapplied when `shop_inventory` writes
+  return false, and purchase flows refund spent gems when the item cannot be
+  saved.
+- Focused provider coverage simulates false `shop_inventory` writes and
+  verifies inventory state, profile state, and gem balance stay consistent.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
