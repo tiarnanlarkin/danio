@@ -48,6 +48,21 @@ void main() {
       expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
 
+    testWidgets('tablet centers terms content in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(
+        tester.getTopLeft(find.text('Educational Use Only')).dx,
+        greaterThan(700),
+      );
+    });
+
     testWidgets('shows View Full Terms button', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
