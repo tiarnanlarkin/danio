@@ -40,10 +40,16 @@ class AchievementProgressNotifier
     extends StateNotifier<Map<String, AchievementProgress>> {
   AchievementProgressNotifier(this.ref) : super({}) {
     _load();
+    _lifecycleListener = _AchievementProgressLifecycleListener(
+      _flushPendingSaveSync,
+    );
+    WidgetsBinding.instance.addObserver(_lifecycleListener);
   }
 
   final Ref ref;
   static const _key = 'achievement_progress';
+  late final _AchievementProgressLifecycleListener _lifecycleListener;
+  Map<String, AchievementProgress>? _pendingSaveState;
 
   /// Debouncer collapses rapid successive saves (e.g. multiple achievement checks
   /// in quick succession) into a single disk write after 500ms of inactivity.
@@ -51,12 +57,15 @@ class AchievementProgressNotifier
 
   @override
   void dispose() {
-    _saveDebouncer.flush();
+    WidgetsBinding.instance.removeObserver(_lifecycleListener);
+    _flushPendingSaveSync();
+    _saveDebouncer.cancel();
     super.dispose();
   }
 
   void cancelPendingSaveForRestore() {
     _saveDebouncer.cancel();
+    _pendingSaveState = null;
   }
 
   Future<void> _load() async {
@@ -89,23 +98,57 @@ class AchievementProgressNotifier
   }
 
   Future<void> _save() async {
-    _saveDebouncer.run(() async {
-      try {
-        final prefs = await ref.read(sharedPreferencesProvider.future);
-        final Map<String, dynamic> toSave = {};
-
-        state.forEach((key, value) {
-          toSave[key] = value.toJson();
-        });
-
-        await prefs.setString(_key, jsonEncode(toSave));
-      } catch (e) {
-        logError(
-          'Failed to save achievement progress: $e',
-          tag: 'AchievementProvider',
-        );
-      }
+    final toSave = Map<String, AchievementProgress>.from(state);
+    _pendingSaveState = toSave;
+    _saveDebouncer.run(() {
+      unawaited(_writeProgress(toSave));
     });
+  }
+
+  Future<void> _writeProgress(
+    Map<String, AchievementProgress> progressMap,
+  ) async {
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      await prefs.setString(_key, jsonEncode(_toJson(progressMap)));
+      if (identical(_pendingSaveState, progressMap)) {
+        _pendingSaveState = null;
+      }
+    } catch (e) {
+      logError(
+        'Failed to save achievement progress: $e',
+        tag: 'AchievementProvider',
+      );
+    }
+  }
+
+  void _flushPendingSaveSync() {
+    final pending = _pendingSaveState;
+    if (pending == null) return;
+
+    _saveDebouncer.cancel();
+    final prefs = ref.read(sharedPreferencesProvider).valueOrNull;
+    if (prefs == null) return;
+
+    try {
+      unawaited(prefs.setString(_key, jsonEncode(_toJson(pending))));
+      _pendingSaveState = null;
+    } catch (e) {
+      logError(
+        'Failed to flush achievement progress: $e',
+        tag: 'AchievementProvider',
+      );
+    }
+  }
+
+  Map<String, dynamic> _toJson(
+    Map<String, AchievementProgress> progressMap,
+  ) {
+    final Map<String, dynamic> toSave = {};
+    progressMap.forEach((key, value) {
+      toSave[key] = value.toJson();
+    });
+    return toSave;
   }
 
   /// Update progress for a single achievement
@@ -835,3 +878,17 @@ final achievementCompletionProvider = Provider.autoDispose<double>((ref) {
   if (visibleAchievements.isEmpty) return 0.0;
   return unlockedCount / visibleAchievements.length;
 });
+
+class _AchievementProgressLifecycleListener extends WidgetsBindingObserver {
+  _AchievementProgressLifecycleListener(this._onFlush);
+
+  final VoidCallback _onFlush;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      _onFlush();
+    }
+  }
+}

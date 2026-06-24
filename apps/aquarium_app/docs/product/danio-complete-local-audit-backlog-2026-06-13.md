@@ -175,6 +175,11 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DN makes Smart AI history, anomaly history, and weekly-plan cache
   providers expose updated state only after durable local preference writes
   succeed.
+- CL-P1-009DO flushes pending debounced achievement progress to local
+  `SharedPreferences` on app pause/detach so earned-progress writes are not
+  left behind if Android kills the app before the debounce timer fires. Restore
+  cancellation also clears pending progress so backup imports cannot be
+  overwritten by a stale lifecycle flush.
 
 ## 7. P2 Work - Presentation System
 

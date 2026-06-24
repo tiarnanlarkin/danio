@@ -2235,6 +2235,19 @@ CL-P1-009DN Smart local cache persistence boundary:
 - Focused provider coverage verifies delayed and failed preference writes for
   AI history, weekly plan cache, anomaly creation, and anomaly dismissal.
 
+CL-P1-009DO Achievement lifecycle persistence boundary:
+
+- Achievement progress now records the latest debounced progress map as a
+  pending local write.
+- On app pause or detach, the achievement provider cancels the debounce timer
+  and flushes pending progress to `SharedPreferences`, matching the
+  data-resilience pattern already used for profile/gem lifecycle writes.
+- Backup restore cancellation clears any pending achievement progress before
+  provider invalidation, preventing stale lifecycle flushes during import.
+- Focused provider coverage verifies achievement progress is persisted during
+  app pause before the normal debounce timer fires, and verifies restore
+  cancellation does not persist stale progress.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
