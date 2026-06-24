@@ -101,6 +101,33 @@ void main() {
       expect(find.textContaining('coming soon'), findsNothing);
     });
 
+    testWidgets('tablet centers shopping surfaces in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(
+        tester.getTopLeft(find.text('Fish Wishlist')).dx,
+        greaterThan(650),
+      );
+
+      await tester.scrollUntilVisible(
+        find.text('Monthly Budget'),
+        500,
+        scrollable: find.byType(Scrollable),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.getTopLeft(find.text('Monthly Budget')).dx,
+        greaterThan(650),
+      );
+    });
+
     testWidgets('saving monthly budget persists it and confirms the save', (
       tester,
     ) async {

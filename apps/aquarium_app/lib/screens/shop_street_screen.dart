@@ -15,6 +15,15 @@ import 'wishlist_screen.dart';
 import '../utils/navigation_throttle.dart';
 import '../widgets/app_bottom_sheet.dart';
 
+const double _maxShopStreetContentWidth = 720;
+
+double _shopStreetHorizontalInset(double availableWidth) {
+  final boundedWithPadding = _maxShopStreetContentWidth + (AppSpacing.md * 2);
+  if (availableWidth <= boundedWithPadding) return AppSpacing.md;
+
+  return (availableWidth - _maxShopStreetContentWidth) / 2;
+}
+
 /// Shop Street Room - Wishlist & Shopping
 class ShopStreetScreen extends ConsumerWidget {
   const ShopStreetScreen({super.key});
@@ -66,77 +75,101 @@ class ShopStreetScreen extends ConsumerWidget {
               ),
 
               // Header
-              SliverToBoxAdapter(child: _ShopHeader()),
+              SliverLayoutBuilder(
+                builder: (context, constraints) {
+                  return SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: _shopStreetHorizontalInset(
+                        constraints.crossAxisExtent,
+                      ),
+                    ),
+                    sliver: SliverToBoxAdapter(child: _ShopHeader()),
+                  );
+                },
+              ),
 
               // Shop sections
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    _ShopSection(
-                      title: 'Fish Wishlist',
-                      subtitle: 'Species you want to keep',
-                      icon: Icons.favorite,
-                      color: DanioColors.coralAccent,
-                      itemCount: fishCount,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const WishlistScreen(category: WishlistCategory.fish),
+              SliverLayoutBuilder(
+                builder: (context, constraints) {
+                  return SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: _shopStreetHorizontalInset(
+                        constraints.crossAxisExtent,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.sm2),
-                    _ShopSection(
-                      title: 'Plant Wishlist',
-                      subtitle: 'Plants to add to your tank',
-                      icon: Icons.eco,
-                      color: DanioColors.wishlistAmber,
-                      itemCount: plantCount,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const WishlistScreen(category: WishlistCategory.plant),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm2),
-                    _ShopSection(
-                      title: 'Equipment Wishlist',
-                      subtitle: 'Gear to compare before buying',
-                      icon: Icons.build,
-                      color: DanioColors.wishlistAmber,
-                      itemCount: equipmentCount,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const WishlistScreen(
-                          category: WishlistCategory.equipment,
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _ShopSection(
+                          title: 'Fish Wishlist',
+                          subtitle: 'Species you want to keep',
+                          icon: Icons.favorite,
+                          color: DanioColors.coralAccent,
+                          itemCount: fishCount,
+                          onTap: () => NavigationThrottle.push(
+                            context,
+                            const WishlistScreen(
+                              category: WishlistCategory.fish,
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: AppSpacing.sm2),
+                        _ShopSection(
+                          title: 'Plant Wishlist',
+                          subtitle: 'Plants to add to your tank',
+                          icon: Icons.eco,
+                          color: DanioColors.wishlistAmber,
+                          itemCount: plantCount,
+                          onTap: () => NavigationThrottle.push(
+                            context,
+                            const WishlistScreen(
+                              category: WishlistCategory.plant,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm2),
+                        _ShopSection(
+                          title: 'Equipment Wishlist',
+                          subtitle: 'Gear to compare before buying',
+                          icon: Icons.build,
+                          color: DanioColors.wishlistAmber,
+                          itemCount: equipmentCount,
+                          onTap: () => NavigationThrottle.push(
+                            context,
+                            const WishlistScreen(
+                              category: WishlistCategory.equipment,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm2),
+                        _ShopSection(
+                          title: 'Gem Shop',
+                          subtitle: 'Useful boosts and collectible badges',
+                          icon: Icons.diamond,
+                          color: AppColors.accentAlt,
+                          itemCount: 0,
+                          onTap: () => NavigationThrottle.push(
+                            context,
+                            const GemShopScreen(),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        _BudgetCard(
+                          budget: budget,
+                          onEdit: () => _showBudgetDialog(context, ref, budget),
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        _LocalShopsCard(
+                          shops: shops,
+                          onAddShop: () => _showAddShopDialog(context, ref),
+                          onEditShop: (shop) =>
+                              _showEditShopDialog(context, ref, shop),
+                          onDeleteShop: (shop) =>
+                              _deleteShop(context, ref, shop),
+                        ),
+                      ]),
                     ),
-                    const SizedBox(height: AppSpacing.sm2),
-                    _ShopSection(
-                      title: 'Gem Shop',
-                      subtitle: 'Useful boosts and collectible badges',
-                      icon: Icons.diamond,
-                      color: AppColors.accentAlt,
-                      itemCount: 0,
-                      onTap: () => NavigationThrottle.push(
-                        context,
-                        const GemShopScreen(),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _BudgetCard(
-                      budget: budget,
-                      onEdit: () => _showBudgetDialog(context, ref, budget),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _LocalShopsCard(
-                      shops: shops,
-                      onAddShop: () => _showAddShopDialog(context, ref),
-                      onEditShop: (shop) =>
-                          _showEditShopDialog(context, ref, shop),
-                      onDeleteShop: (shop) => _deleteShop(context, ref, shop),
-                    ),
-                  ]),
-                ),
+                  );
+                },
               ),
 
               // Bottom padding
