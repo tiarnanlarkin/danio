@@ -1204,24 +1204,35 @@ class _ReducedMotionToggle extends ConsumerWidget {
           ),
           value: reducedMotion.isEnabled,
           onChanged: (value) async {
-            if (value == reducedMotion.systemPreference) {
-              await ref
-                  .read(reducedMotionProvider.notifier)
-                  .setUserPreference(null);
-            } else {
-              await ref
-                  .read(reducedMotionProvider.notifier)
-                  .setUserPreference(value);
+            final saved = value == reducedMotion.systemPreference
+                ? await ref
+                      .read(reducedMotionProvider.notifier)
+                      .setUserPreference(null)
+                : await ref
+                      .read(reducedMotionProvider.notifier)
+                      .setUserPreference(value);
+
+            if (!context.mounted) return;
+
+            if (!saved) {
+              AppFeedback.showError(
+                context,
+                'Couldn\'t save reduce motion preference. Try again.',
+              );
+              return;
             }
 
-            if (context.mounted) {
-              AppFeedback.showInfo(
-                context,
-                value
-                    ? 'Reduced motion enabled - animations simplified'
-                    : 'Reduced motion disabled - full animations',
-              );
+            if (value == reducedMotion.systemPreference) {
+              AppFeedback.showInfo(context, 'Following system motion setting');
+              return;
             }
+
+            AppFeedback.showInfo(
+              context,
+              value
+                  ? 'Reduced motion enabled - animations simplified'
+                  : 'Reduced motion disabled - full animations',
+            );
           },
         ),
         if (reducedMotion.systemPreference &&

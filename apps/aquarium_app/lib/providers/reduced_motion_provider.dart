@@ -25,11 +25,14 @@ class ReducedMotionState {
     bool? isEnabled,
     bool? systemPreference,
     bool? userOverride,
+    bool clearUserOverride = false,
   }) {
     return ReducedMotionState(
       isEnabled: isEnabled ?? this.isEnabled,
       systemPreference: systemPreference ?? this.systemPreference,
-      userOverride: userOverride ?? this.userOverride,
+      userOverride: clearUserOverride
+          ? null
+          : userOverride ?? this.userOverride,
     );
   }
 
@@ -78,7 +81,10 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
         );
       }
     } catch (e) {
-      logError('Failed to load reduced motion preference: $e', tag: 'ReducedMotionProvider');
+      logError(
+        'Failed to load reduced motion preference: $e',
+        tag: 'ReducedMotionProvider',
+      );
     }
   }
 
@@ -95,7 +101,10 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
         isEnabled: state.userOverride ?? systemPreference,
       );
     } catch (e) {
-      logError('Failed to check system animation setting: $e', tag: 'ReducedMotionProvider');
+      logError(
+        'Failed to check system animation setting: $e',
+        tag: 'ReducedMotionProvider',
+      );
       // Fall back to user preference or default
     }
   }
@@ -110,30 +119,48 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
       return result ?? 1.0;
     } catch (e) {
       // If platform channel not implemented, fall back to default
-      appLog('ReducedMotionProvider: platform channel unavailable, defaulting to 1.0: $e', tag: 'ReducedMotionProvider');
+      appLog(
+        'ReducedMotionProvider: platform channel unavailable, defaulting to 1.0: $e',
+        tag: 'ReducedMotionProvider',
+      );
       return 1.0;
     }
   }
 
   /// Set user's manual override preference
-  Future<void> setUserPreference(bool? enabled) async {
+  Future<bool> setUserPreference(bool? enabled) async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
 
       if (enabled == null) {
         // Clear override - follow system
-        await prefs.remove(_userOverrideKey);
+        final removed = await prefs.remove(_userOverrideKey);
+        if (!removed) {
+          throw StateError(
+            'SharedPreferences returned false for $_userOverrideKey',
+          );
+        }
         state = state.copyWith(
-          userOverride: null,
+          clearUserOverride: true,
           isEnabled: state.systemPreference,
         );
       } else {
         // Set manual override
-        await prefs.setBool(_userOverrideKey, enabled);
+        final saved = await prefs.setBool(_userOverrideKey, enabled);
+        if (!saved) {
+          throw StateError(
+            'SharedPreferences returned false for $_userOverrideKey',
+          );
+        }
         state = state.copyWith(userOverride: enabled, isEnabled: enabled);
       }
+      return true;
     } catch (e) {
-      logError('Failed to save reduced motion preference: $e', tag: 'ReducedMotionProvider');
+      logError(
+        'Failed to save reduced motion preference: $e',
+        tag: 'ReducedMotionProvider',
+      );
+      return false;
     }
   }
 

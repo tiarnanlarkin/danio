@@ -2268,6 +2268,18 @@ CL-P1-009DQ Room-vibe apply persistence boundary:
 - Focused provider coverage simulates failed `room_theme` writes and verifies
   the previous visible room vibe stays consistent with persisted storage.
 
+CL-P1-009DR Reduce Motion preference persistence boundary:
+
+- Reduce Motion manual overrides now clear correctly when the user returns to
+  the system motion setting.
+- Manual Reduce Motion enable/disable and clear actions now update visible
+  motion state only after the local `reduced_motion_override` write or removal
+  succeeds.
+- Failed Reduce Motion preference saves keep the previous visible motion state
+  and show normal retry feedback instead of reporting success.
+- Focused provider coverage simulates failed set/clear writes and verifies
+  visible motion state stays consistent with persisted preferences.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
