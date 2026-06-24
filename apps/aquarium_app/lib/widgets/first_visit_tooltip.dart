@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/reduced_motion_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/logger.dart';
 
 /// A tooltip that appears as a floating card with a subtle shadow.
 class FirstVisitTooltip extends ConsumerStatefulWidget {
@@ -63,6 +64,7 @@ class FirstVisitTooltip extends ConsumerStatefulWidget {
 class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
     with SingleTickerProviderStateMixin {
   Timer? _dismissTimer;
+  bool _dismissInProgress = false;
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
   late final Animation<Offset> _slideAnimation;
@@ -96,13 +98,28 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
   }
 
   Future<void> _dismiss() async {
-    await _controller.reverse();
-    if (!mounted) return;
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    if (!mounted) return;
-    await prefs.setBool(widget.prefsKey, true);
-    if (!mounted) return;
-    widget.onDismissed?.call();
+    if (_dismissInProgress) return;
+    _dismissInProgress = true;
+
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      if (!mounted) return;
+      final saved = await prefs.setBool(widget.prefsKey, true);
+      if (!saved) {
+        throw StateError('SharedPreferences returned false');
+      }
+
+      await _controller.reverse();
+      if (!mounted) return;
+      widget.onDismissed?.call();
+    } catch (e, stackTrace) {
+      _dismissInProgress = false;
+      logError(
+        'Failed to persist tooltip dismissal for ${widget.prefsKey}: $e',
+        stackTrace: stackTrace,
+        tag: 'FirstVisitTooltip',
+      );
+    }
   }
 
   @override

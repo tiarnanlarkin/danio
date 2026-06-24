@@ -189,6 +189,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DR makes Reduce Motion preference changes wait for successful local
   writes/removals, clears manual overrides correctly, and reports retry
   feedback instead of false success when the preference save fails.
+- CL-P1-009DS makes first-visit guidance prompts call their dismissal callback
+  only after the local guidance-seen flag is saved, keeping prompts retryable
+  when local persistence fails.
 
 ## 7. P2 Work - Presentation System
 

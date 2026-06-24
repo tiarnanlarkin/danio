@@ -2280,6 +2280,16 @@ CL-P1-009DR Reduce Motion preference persistence boundary:
 - Focused provider coverage simulates failed set/clear writes and verifies
   visible motion state stays consistent with persisted preferences.
 
+CL-P1-009DS First-visit guidance prompt persistence boundary:
+
+- First-visit guidance prompts now save their `guidance_seen_*` flag before
+  running the dismiss animation or notifying parent screens that the prompt was
+  dismissed.
+- Failed local guidance-seen writes keep the prompt retryable and avoid false
+  parent-screen dismissed state.
+- Focused widget coverage verifies both successful guidance dismissal and
+  failed local write handling.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
