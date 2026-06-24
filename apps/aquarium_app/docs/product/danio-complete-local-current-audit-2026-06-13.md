@@ -2748,6 +2748,17 @@ CL-P3-001A Optional AI provider setup boundary:
   mistake surfaces stay at or below the 720px tablet readability bound on a
   2000x1200 tablet viewport.
 
+### CL-P2-002AE Nitrogen Cycle Guide Tablet Readability
+
+- Nitrogen Cycle Guide now centers intro, cycle-stage, cycling-method,
+  completion-check, and tip surfaces in the same readable 720px rail on wide
+  tablet surfaces.
+- Chemistry labels, bacteria-temperature guidance, and method pros/cons now use
+  source-safe ASCII copy while preserving the existing cycling guidance.
+- Focused widget coverage verifies representative intro, stage, method,
+  completion, and tip surfaces stay at or below the 720px tablet readability
+  bound on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

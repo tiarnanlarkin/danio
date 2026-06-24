@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxNitrogenCycleReadableWidth = 720;
+
 class NitrogenCycleGuideScreen extends StatelessWidget {
   const NitrogenCycleGuideScreen({super.key});
 
@@ -11,178 +13,202 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Nitrogen Cycle Guide')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Intro
-            AppCard(
-              backgroundColor: AppOverlays.info10,
-              padding: AppCardPadding.standard,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.lightbulb, color: context.textSecondary),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'What is the Nitrogen Cycle?',
-                        style: AppTypography.headlineSmall.copyWith(
-                          color: context.textSecondary,
+        child: _NitrogenCycleReadableFrame(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Intro
+              AppCard(
+                backgroundColor: AppOverlays.info10,
+                padding: AppCardPadding.standard,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.lightbulb, color: context.textSecondary),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          'What is the Nitrogen Cycle?',
+                          style: AppTypography.headlineSmall.copyWith(
+                            color: context.textSecondary,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm2),
-                  Text(
-                    'The nitrogen cycle is the process by which beneficial bacteria convert toxic fish waste (ammonia) into less harmful substances. '
-                    'A "cycled" tank has enough bacteria to process all the ammonia your fish produce.',
-                    style: AppTypography.bodyMedium,
-                  ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm2),
+                    Text(
+                      'The nitrogen cycle is the process by which beneficial bacteria convert toxic fish waste (ammonia) into less harmful substances. '
+                      'A "cycled" tank has enough bacteria to process all the ammonia your fish produce.',
+                      style: AppTypography.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+
+              // The cycle stages
+              Text('The Cycle', style: AppTypography.headlineMedium),
+              const SizedBox(height: AppSpacing.md),
+
+              _CycleStage(
+                number: 1,
+                title: 'Ammonia (NH3)',
+                subtitle: 'Toxic - burns gills, causes stress',
+                description:
+                    'Fish waste, uneaten food, and decaying plants produce ammonia. '
+                    'Even small amounts (0.25 ppm+) are harmful.',
+                color: AppColors.error,
+                icon: Icons.warning,
+              ),
+
+              _CycleArrow(),
+
+              _CycleStage(
+                number: 2,
+                title: 'Nitrite (NO2)',
+                subtitle: 'Toxic - prevents oxygen absorption',
+                description:
+                    'Nitrospira bacteria convert ammonia to nitrite. '
+                    'Still toxic but shows the cycle is progressing.',
+                color: AppColors.warning,
+                icon: Icons.science,
+              ),
+
+              _CycleArrow(),
+
+              _CycleStage(
+                number: 3,
+                title: 'Nitrate (NO3)',
+                subtitle: 'Safe in low amounts - removed by water changes',
+                description:
+                    'Nitrobacter bacteria convert nitrite to nitrate. '
+                    'Nitrate is much less toxic and removed during water changes.',
+                color: AppColors.success,
+                icon: Icons.check_circle,
+              ),
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // How to cycle
+              Text(
+                'How to Cycle Your Tank',
+                style: AppTypography.headlineMedium,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              _MethodCard(
+                title: 'Fishless Cycling (Recommended)',
+                duration: '4-8 weeks',
+                steps: [
+                  'Set up tank with filter, heater, and substrate',
+                  'Add ammonia source (fish food or pure ammonia)',
+                  'Dose to 2-4 ppm ammonia',
+                  'Test every 2-3 days',
+                  'Wait for ammonia and nitrite to reach 0',
+                  'Do a large water change before adding fish',
+                ],
+                pros: ['No fish harmed', 'More reliable'],
+                cons: ['Takes patience', 'Need ammonia source'],
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              _MethodCard(
+                title: 'Fish-In Cycling',
+                duration: '6-8 weeks',
+                steps: [
+                  'Add 1-2 hardy fish (not recommended)',
+                  'Test water daily',
+                  'Do 25-50% water changes when ammonia/nitrite detected',
+                  'Use water conditioner like Seachem Prime',
+                  'Add fish slowly over several weeks',
+                ],
+                pros: ['Fish from day one'],
+                cons: [
+                  'Stressful for fish',
+                  'Requires daily monitoring',
+                  'Fish may die',
                 ],
               ),
-            ),
 
-            const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.xl),
 
-            // The cycle stages
-            Text('The Cycle', style: AppTypography.headlineMedium),
-            const SizedBox(height: AppSpacing.md),
-
-            _CycleStage(
-              number: 1,
-              title: 'Ammonia (NH₃)',
-              subtitle: 'Toxic - burns gills, causes stress',
-              description:
-                  'Fish waste, uneaten food, and decaying plants produce ammonia. '
-                  'Even small amounts (0.25 ppm+) are harmful.',
-              color: AppColors.error,
-              icon: Icons.warning,
-            ),
-
-            _CycleArrow(),
-
-            _CycleStage(
-              number: 2,
-              title: 'Nitrite (NO₂)',
-              subtitle: 'Toxic - prevents oxygen absorption',
-              description:
-                  'Nitrospira bacteria convert ammonia to nitrite. '
-                  'Still toxic but shows the cycle is progressing.',
-              color: AppColors.warning,
-              icon: Icons.science,
-            ),
-
-            _CycleArrow(),
-
-            _CycleStage(
-              number: 3,
-              title: 'Nitrate (NO₃)',
-              subtitle: 'Safe in low amounts - removed by water changes',
-              description:
-                  'Nitrobacter bacteria convert nitrite to nitrate. '
-                  'Nitrate is much less toxic and removed during water changes.',
-              color: AppColors.success,
-              icon: Icons.check_circle,
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // How to cycle
-            Text('How to Cycle Your Tank', style: AppTypography.headlineMedium),
-            const SizedBox(height: AppSpacing.md),
-
-            _MethodCard(
-              title: 'Fishless Cycling (Recommended)',
-              duration: '4-8 weeks',
-              steps: [
-                'Set up tank with filter, heater, and substrate',
-                'Add ammonia source (fish food or pure ammonia)',
-                'Dose to 2-4 ppm ammonia',
-                'Test every 2-3 days',
-                'Wait for ammonia and nitrite to reach 0',
-                'Do a large water change before adding fish',
-              ],
-              pros: ['No fish harmed', 'More reliable'],
-              cons: ['Takes patience', 'Need ammonia source'],
-            ),
-
-            const SizedBox(height: AppSpacing.md),
-
-            _MethodCard(
-              title: 'Fish-In Cycling',
-              duration: '6-8 weeks',
-              steps: [
-                'Add 1-2 hardy fish (not recommended)',
-                'Test water daily',
-                'Do 25-50% water changes when ammonia/nitrite detected',
-                'Use water conditioner like Seachem Prime',
-                'Add fish slowly over several weeks',
-              ],
-              pros: ['Fish from day one'],
-              cons: [
-                'Stressful for fish',
-                'Requires daily monitoring',
-                'Fish may die',
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // Signs of completion
-            Text(
-              'Signs Your Tank is Cycled',
-              style: AppTypography.headlineMedium,
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            AppCard(
-              padding: AppCardPadding.standard,
-              child: Column(
-                children: [
-                  _CheckItem(text: 'Ammonia reads 0 ppm'),
-                  _CheckItem(text: 'Nitrite reads 0 ppm'),
-                  _CheckItem(text: 'Nitrate is present (5-40 ppm)'),
-                  _CheckItem(
-                    text: 'Tank can process 2 ppm ammonia in 24 hours',
-                  ),
-                ],
+              // Signs of completion
+              Text(
+                'Signs Your Tank is Cycled',
+                style: AppTypography.headlineMedium,
               ),
-            ),
+              const SizedBox(height: AppSpacing.md),
 
-            const SizedBox(height: AppSpacing.xl),
+              AppCard(
+                padding: AppCardPadding.standard,
+                child: Column(
+                  children: [
+                    _CheckItem(text: 'Ammonia reads 0 ppm'),
+                    _CheckItem(text: 'Nitrite reads 0 ppm'),
+                    _CheckItem(text: 'Nitrate is present (5-40 ppm)'),
+                    _CheckItem(
+                      text: 'Tank can process 2 ppm ammonia in 24 hours',
+                    ),
+                  ],
+                ),
+              ),
 
-            // Tips
-            Text('Tips for Success', style: AppTypography.headlineMedium),
-            const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.xl),
 
-            _TipCard(
-              icon: Icons.thermostat,
-              tip:
-                  'Keep temperature at 26-28°C - bacteria grow faster in warmth.',
-            ),
-            _TipCard(
-              icon: Icons.air,
-              tip: 'Run the filter 24/7 - bacteria live in the filter media.',
-            ),
-            _TipCard(
-              icon: Icons.cleaning_services,
-              tip:
-                  'Never replace all filter media at once - you\'ll lose your bacteria.',
-            ),
-            _TipCard(
-              icon: Icons.water_drop,
-              tip: 'Use dechlorinator - chlorine kills beneficial bacteria.',
-            ),
-            _TipCard(
-              icon: Icons.speed,
-              tip:
-                  'Add bacteria starter (Seachem Stability, etc.) to speed things up.',
-            ),
+              // Tips
+              Text('Tips for Success', style: AppTypography.headlineMedium),
+              const SizedBox(height: AppSpacing.md),
 
-            const SizedBox(height: AppSpacing.xxl),
-          ],
+              _TipCard(
+                icon: Icons.thermostat,
+                tip:
+                    'Keep temperature at 26-28 degrees C - bacteria grow faster in warmth.',
+              ),
+              _TipCard(
+                icon: Icons.air,
+                tip: 'Run the filter 24/7 - bacteria live in the filter media.',
+              ),
+              _TipCard(
+                icon: Icons.cleaning_services,
+                tip:
+                    'Never replace all filter media at once - you\'ll lose your bacteria.',
+              ),
+              _TipCard(
+                icon: Icons.water_drop,
+                tip: 'Use dechlorinator - chlorine kills beneficial bacteria.',
+              ),
+              _TipCard(
+                icon: Icons.speed,
+                tip:
+                    'Add bacteria starter (Seachem Stability, etc.) to speed things up.',
+              ),
+
+              const SizedBox(height: AppSpacing.xxl),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _NitrogenCycleReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _NitrogenCycleReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxNitrogenCycleReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
@@ -345,7 +371,7 @@ class _MethodCard extends StatelessWidget {
                         ),
                       ),
                       ...pros.map(
-                        (p) => Text('• $p', style: AppTypography.bodySmall),
+                        (p) => Text('- $p', style: AppTypography.bodySmall),
                       ),
                     ],
                   ),
@@ -361,7 +387,7 @@ class _MethodCard extends StatelessWidget {
                         ),
                       ),
                       ...cons.map(
-                        (c) => Text('• $c', style: AppTypography.bodySmall),
+                        (c) => Text('- $c', style: AppTypography.bodySmall),
                       ),
                     ],
                   ),
