@@ -198,6 +198,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DU makes first-run consent and under-13 block actions wait for
   durable local preference writes before advancing, showing retry feedback
   instead of false completion when local persistence fails.
+- CL-P1-009DV treats false `user_profile` preference write results as local
+  profile save failures before exposing created or updated profile state.
 
 ## 7. P2 Work - Presentation System
 

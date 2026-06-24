@@ -97,7 +97,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Cap dailyXpHistory to last 365 days before persisting
     _trimXpHistory(profile);
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setString(_key, jsonEncode(profile.toJson()));
+    final saved = await prefs.setString(_key, jsonEncode(profile.toJson()));
+    if (!saved) {
+      throw StateError('User profile preference write returned false.');
+    }
   }
 
   /// Remove dailyXpHistory entries older than 365 days to prevent unbounded growth.

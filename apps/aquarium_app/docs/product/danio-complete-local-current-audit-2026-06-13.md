@@ -2313,6 +2313,17 @@ CL-P1-009DU First-run consent persistence boundary:
 - Focused widget coverage simulates failed consent and under-13 preference
   writes.
 
+CL-P1-009DV User profile preference write boundary:
+
+- User profile saves now treat a `SharedPreferences.setString` false return as
+  a local save failure instead of exposing created or updated profile state.
+- The existing profile save failure handling still catches thrown write errors,
+  and the shared `_saveImmediate` helper now covers false results for profile
+  creation, edits, progress, energy, achievements, and story progress.
+- Focused provider coverage simulates a false `user_profile` write result and
+  verifies profile creation fails before persisted or visible profile state is
+  exposed.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

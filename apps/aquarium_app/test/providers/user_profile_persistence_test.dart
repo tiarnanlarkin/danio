@@ -33,6 +33,25 @@ class _ThrowingSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseSetStringPrefs implements SharedPreferences {
+  _FalseSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    if (_shouldFail(key, value)) return false;
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForProfileLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     final profileState = container.read(userProfileProvider);
@@ -69,6 +88,40 @@ void main() {
           overrides: [
             sharedPreferencesProvider.overrideWith((ref) async {
               return _ThrowingSetStringPrefs(
+                prefs,
+                (key, _) => key == 'user_profile',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(
+          notifier.createProfile(
+            experienceLevel: ExperienceLevel.beginner,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive],
+          ),
+          throwsA(isA<StateError>()),
+        );
+
+        expect(container.read(userProfileProvider).hasError, isTrue);
+        expect(prefs.getString('user_profile'), isNull);
+      },
+    );
+
+    test(
+      'createProfile treats false local save results as failures',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseSetStringPrefs(
                 prefs,
                 (key, _) => key == 'user_profile',
               );
