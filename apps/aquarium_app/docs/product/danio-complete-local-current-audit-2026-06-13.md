@@ -2802,6 +2802,16 @@ CL-P3-001A Optional AI provider setup boundary:
   at or below the 720px tablet readability bound on a 2000x1200 tablet
   viewport, and source coverage keeps Account copy ASCII-safe.
 
+### CL-P2-002AJ Achievements Tablet Gallery
+
+- Achievements now keeps the progress header and filter controls in a readable
+  720px rail while preserving the full-width trophy-case gradient band.
+- The trophy grid now uses a centered bounded grid with adaptive tablet columns
+  so achievement cards do not stretch into oversized phone-card layouts.
+- Focused widget coverage verifies the progress bar stays at or below 720px
+  and representative trophy cards stay at or below 340px on a 2000x1200 tablet
+  viewport, with source coverage keeping Achievements copy ASCII-safe.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

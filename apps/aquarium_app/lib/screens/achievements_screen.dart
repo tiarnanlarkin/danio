@@ -16,6 +16,20 @@ import '../widgets/achievement_card.dart';
 import '../widgets/achievement_detail_modal.dart';
 import '../widgets/app_bottom_sheet.dart';
 
+const double _maxAchievementsReadableWidth = 720;
+const double _maxAchievementsGridWidth = 1100;
+
+double _achievementGridHorizontalInset(double viewportWidth) {
+  if (viewportWidth <= _maxAchievementsGridWidth) return 0;
+  return (viewportWidth - _maxAchievementsGridWidth) / 2;
+}
+
+int _achievementGridColumnCount(double contentWidth) {
+  if (contentWidth >= 900) return 4;
+  if (contentWidth >= 640) return 3;
+  return 2;
+}
+
 class AchievementsScreen extends ConsumerStatefulWidget {
   const AchievementsScreen({super.key});
 
@@ -113,150 +127,160 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   ],
                 ),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ExcludeSemantics(
-                        child: Text(
-                          '$unlockedCount / $totalAchievements',
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
+              child: _AchievementsReadableFrame(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ExcludeSemantics(
+                          child: Text(
+                            '$unlockedCount / $totalAchievements',
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      ExcludeSemantics(
-                        child: Text(
-                          '${(completionPercent * 100).toStringAsFixed(1)}%',
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
+                        ExcludeSemantics(
+                          child: Text(
+                            '${(completionPercent * 100).toStringAsFixed(1)}%',
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Semantics(
+                      label:
+                          'Achievement progress: ${(completionPercent * 100).toStringAsFixed(0)} percent',
+                      value: '${(completionPercent * 100).toStringAsFixed(0)}%',
+                      child: ClipRRect(
+                        borderRadius: AppRadius.smallRadius,
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0, end: completionPercent),
+                          duration: AppDurations.long3,
+                          curve: Curves.easeOutCubic,
+                          builder: (context, value, _) =>
+                              LinearProgressIndicator(
+                                value: value,
+                                minHeight: 12,
+                                backgroundColor: AppOverlays.white30,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).colorScheme.primary,
+                                ),
                               ),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Semantics(
-                    label:
-                        'Achievement progress: ${(completionPercent * 100).toStringAsFixed(0)} percent',
-                    value: '${(completionPercent * 100).toStringAsFixed(0)}%',
-                    child: ClipRRect(
-                      borderRadius: AppRadius.smallRadius,
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 0, end: completionPercent),
-                        duration: AppDurations.long3,
-                        curve: Curves.easeOutCubic,
-                        builder: (context, value, _) => LinearProgressIndicator(
-                          value: value,
-                          minHeight: 12,
-                          backgroundColor: AppOverlays.white30,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
 
           // Filters
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(AppSpacing.sm),
-            child: Row(
-              children: [
-                // Filter by lock status
-                ChoiceChip(
-                  label: const Text('All'),
-                  selected: _filterMode == FilterMode.all,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() {
-                        _filterMode = FilterMode.all;
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                ChoiceChip(
-                  label: const Text('Unlocked'),
-                  selected: _filterMode == FilterMode.unlocked,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() {
-                        _filterMode = FilterMode.unlocked;
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                ChoiceChip(
-                  label: const Text('Locked'),
-                  selected: _filterMode == FilterMode.locked,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() {
-                        _filterMode = FilterMode.locked;
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(width: AppSpacing.md),
-
-                // Filter by category
-                ...AchievementCategory.values.map((category) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: AppSpacing.sm),
-                    child: FilterChip(
-                      avatar: Icon(AchievementCard.iconFor(category), size: 18),
-                      label: Text(category.displayName),
-                      selected: _selectedCategory == category,
-                      onSelected: (selected) {
+          _AchievementsReadableFrame(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              child: Row(
+                children: [
+                  // Filter by lock status
+                  ChoiceChip(
+                    label: const Text('All'),
+                    selected: _filterMode == FilterMode.all,
+                    onSelected: (selected) {
+                      if (selected) {
                         setState(() {
-                          _selectedCategory = selected ? category : null;
+                          _filterMode = FilterMode.all;
                         });
-                      },
-                    ),
-                  );
-                }),
-
-                const SizedBox(width: AppSpacing.sm),
-
-                // Filter by rarity
-                ...AchievementRarity.values.map((rarity) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: AppSpacing.sm),
-                    child: FilterChip(
-                      label: Text(rarity.displayName),
-                      selected: _selectedRarity == rarity,
-                      onSelected: (selected) {
+                      }
+                    },
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  ChoiceChip(
+                    label: const Text('Unlocked'),
+                    selected: _filterMode == FilterMode.unlocked,
+                    onSelected: (selected) {
+                      if (selected) {
                         setState(() {
-                          _selectedRarity = selected ? rarity : null;
+                          _filterMode = FilterMode.unlocked;
                         });
-                      },
-                    ),
-                  );
-                }),
-              ],
+                      }
+                    },
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  ChoiceChip(
+                    label: const Text('Locked'),
+                    selected: _filterMode == FilterMode.locked,
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          _filterMode = FilterMode.locked;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+
+                  // Filter by category
+                  ...AchievementCategory.values.map((category) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: AppSpacing.sm),
+                      child: FilterChip(
+                        avatar: Icon(
+                          AchievementCard.iconFor(category),
+                          size: 18,
+                        ),
+                        label: Text(category.displayName),
+                        selected: _selectedCategory == category,
+                        onSelected: (selected) {
+                          setState(() {
+                            _selectedCategory = selected ? category : null;
+                          });
+                        },
+                      ),
+                    );
+                  }),
+
+                  const SizedBox(width: AppSpacing.sm),
+
+                  // Filter by rarity
+                  ...AchievementRarity.values.map((rarity) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: AppSpacing.sm),
+                      child: FilterChip(
+                        label: Text(rarity.displayName),
+                        selected: _selectedRarity == rarity,
+                        onSelected: (selected) {
+                          setState(() {
+                            _selectedRarity = selected ? rarity : null;
+                          });
+                        },
+                      ),
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
 
           // Achievement list with Recently Unlocked section
           Expanded(
             child: filteredAchievements.isEmpty
-                ? EmptyStateWidget(
-                    icon: Icons.emoji_events_outlined,
-                    title: 'No achievements yet!',
-                    description:
-                        'Complete lessons, log water tests, and care for your tank to earn your first badge!',
-                    ctaLabel: 'Start Learning',
-                    ctaIcon: Icons.school_outlined,
-                    onCta: () => Navigator.of(context).pop(),
+                ? _AchievementsReadableFrame(
+                    child: EmptyStateWidget(
+                      icon: Icons.emoji_events_outlined,
+                      title: 'No achievements yet!',
+                      description:
+                          'Complete lessons, log water tests, and care for your tank to earn your first badge!',
+                      ctaLabel: 'Start Learning',
+                      ctaIcon: Icons.school_outlined,
+                      onCta: () => Navigator.of(context).pop(),
+                    ),
                   )
                 : RefreshIndicator(
                     onRefresh: () async {
@@ -305,13 +329,12 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
 
     final recentlyUnlocked = unlocked.take(3).toList();
 
-    // Build sorted list: recently unlocked → in progress → locked
+    // Build sorted list: recently unlocked -> in progress -> locked
     final sortedAchievements = <Achievement>[
       ...unlocked.map((e) => e.key),
       ...inProgress,
       ...locked,
     ];
-
     return CustomScrollView(
       slivers: [
         // Recently unlocked section
@@ -425,53 +448,77 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
         ],
 
-        // Main grid (sorted: unlocked → in progress → locked)
-        SliverPadding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.85,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-            ),
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final achievement = sortedAchievements[index];
-              final progress =
-                  progressMap[achievement.id] ??
-                  AchievementProgress(achievementId: achievement.id);
+        // Main grid (sorted: unlocked -> in progress -> locked)
+        SliverLayoutBuilder(
+          builder: (context, constraints) {
+            final gridHorizontalInset = _achievementGridHorizontalInset(
+              constraints.crossAxisExtent,
+            );
+            final boundedGridWidth =
+                constraints.crossAxisExtent - (gridHorizontalInset * 2);
+            final gridContentWidth = boundedGridWidth - (AppSpacing.md * 2);
+            final gridColumnCount = _achievementGridColumnCount(
+              gridContentWidth,
+            );
 
-              final isUnlocked = progress.isUnlocked;
-              final progressLabel =
-                  (achievement.targetCount ?? 0) > 1 && !isUnlocked
-                  ? ', ${progress.currentCount} of ${achievement.targetCount}'
-                  : '';
-              final reduceMotion = MediaQuery.of(context).disableAnimations;
-              final card = Semantics(
-                button: true,
-                label:
-                    '${achievement.name}, ${achievement.description}, ${isUnlocked ? "Unlocked" : "Locked"}$progressLabel',
-                child: RepaintBoundary(
-                  child: AchievementCard(
-                    achievement: achievement,
-                    progress: progress,
-                    onTap: () =>
-                        _showAchievementDetail(context, achievement, progress),
-                  ),
+            return SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                gridHorizontalInset + AppSpacing.md,
+                AppSpacing.md,
+                gridHorizontalInset + AppSpacing.md,
+                AppSpacing.md,
+              ),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: gridColumnCount,
+                  childAspectRatio: 0.85,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
                 ),
-              );
-              if (reduceMotion) return card;
-              return card
-                  .animate()
-                  .fadeIn(duration: 250.ms, delay: (index * 40).ms)
-                  .scale(
-                    begin: const Offset(0.95, 0.95),
-                    end: const Offset(1, 1),
-                    duration: 250.ms,
-                    delay: (index * 40).ms,
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final achievement = sortedAchievements[index];
+                  final progress =
+                      progressMap[achievement.id] ??
+                      AchievementProgress(achievementId: achievement.id);
+
+                  final isUnlocked = progress.isUnlocked;
+                  final progressLabel =
+                      (achievement.targetCount ?? 0) > 1 && !isUnlocked
+                      ? ', ${progress.currentCount} of ${achievement.targetCount}'
+                      : '';
+                  final reduceMotion = MediaQuery.of(
+                    context,
+                  ).disableAnimations;
+                  final card = Semantics(
+                    button: true,
+                    label:
+                        '${achievement.name}, ${achievement.description}, ${isUnlocked ? "Unlocked" : "Locked"}$progressLabel',
+                    child: RepaintBoundary(
+                      child: AchievementCard(
+                        achievement: achievement,
+                        progress: progress,
+                        onTap: () => _showAchievementDetail(
+                          context,
+                          achievement,
+                          progress,
+                        ),
+                      ),
+                    ),
                   );
-            }, childCount: sortedAchievements.length),
-          ),
+                  if (reduceMotion) return card;
+                  return card
+                      .animate()
+                      .fadeIn(duration: 250.ms, delay: (index * 40).ms)
+                      .scale(
+                        begin: const Offset(0.95, 0.95),
+                        end: const Offset(1, 1),
+                        duration: 250.ms,
+                        delay: (index * 40).ms,
+                      );
+                }, childCount: sortedAchievements.length),
+              ),
+            );
+          },
         ),
         SliverToBoxAdapter(
           child: SizedBox(
@@ -493,6 +540,25 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
       child: AchievementDetailModal(
         achievement: achievement,
         progress: progress,
+      ),
+    );
+  }
+}
+
+class _AchievementsReadableFrame extends StatelessWidget {
+  const _AchievementsReadableFrame({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxAchievementsReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
