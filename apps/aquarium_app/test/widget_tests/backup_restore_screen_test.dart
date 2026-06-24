@@ -14,6 +14,7 @@ import 'package:danio/screens/backup_restore_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/local_json_storage_service.dart';
 import 'package:danio/services/storage_service.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -203,6 +204,82 @@ void main() {
         ),
         findsOneWidget,
       );
+    });
+
+    testWidgets('tablet keeps backup and restore surfaces readable', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final introCard = find
+          .ancestor(
+            of: find.textContaining('Export your tank data and photos'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      final exportCard = find
+          .ancestor(
+            of: find.text('0 tanks to export'),
+            matching: find.byType(Card),
+          )
+          .first;
+      final introWidth = tester.getSize(introCard).width;
+      final exportWidth = tester.getSize(exportCard).width;
+
+      await tester.scrollUntilVisible(
+        find.text('Select Backup File'),
+        900,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      final importCard = find
+          .ancestor(
+            of: find.text('Select Backup File'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      final importWidth = tester.getSize(importCard).width;
+
+      await tester.scrollUntilVisible(
+        find.text('All tanks and settings'),
+        900,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      final exportedItemsCard = find
+          .ancestor(
+            of: find.text('All tanks and settings'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      final exportedItemsWidth = tester.getSize(exportedItemsCard).width;
+
+      await tester.scrollUntilVisible(
+        find.text('Import Safety'),
+        900,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      final importSafetyCard = find
+          .ancestor(
+            of: find.text('Import Safety'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+
+      expect(introWidth, lessThanOrEqualTo(720));
+      expect(exportWidth, lessThanOrEqualTo(720));
+      expect(importWidth, lessThanOrEqualTo(720));
+      expect(exportedItemsWidth, lessThanOrEqualTo(720));
+      expect(tester.getSize(importSafetyCard).width, lessThanOrEqualTo(720));
     });
 
     test('user-facing copy describes local ZIP backup only', () {

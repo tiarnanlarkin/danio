@@ -26,6 +26,8 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import 'tab_navigator.dart';
 
+const double _maxBackupRestoreReadableWidth = 720;
+
 class BackupRestoreScreen extends ConsumerStatefulWidget {
   const BackupRestoreScreen({super.key});
 
@@ -73,7 +75,8 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           MediaQuery.of(context).padding.bottom + AppSpacing.xxl,
         ),
         itemCount: items.length,
-        itemBuilder: (context, index) => items[index],
+        itemBuilder: (context, index) =>
+            _BackupRestoreReadableFrame(child: items[index]),
       ),
     );
   }
@@ -788,6 +791,25 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     'createdAt': t.createdAt.toIso8601String(),
     'updatedAt': t.updatedAt.toIso8601String(),
   };
+}
+
+class _BackupRestoreReadableFrame extends StatelessWidget {
+  const _BackupRestoreReadableFrame({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxBackupRestoreReadableWidth,
+        ),
+        child: child,
+      ),
+    );
+  }
 }
 
 class _LocalStorageRecoveryCard extends StatelessWidget {

@@ -2780,6 +2780,18 @@ CL-P3-001A Optional AI provider setup boundary:
   preparation, design-tip, and safety-note surfaces stay at or below the 720px
   tablet readability bound on a 2000x1200 tablet viewport.
 
+### CL-P2-002AH Backup And Restore Tablet Readability
+
+- Backup & Restore now centers intro, export, import, exported-item, recovery,
+  and import-safety surfaces in the same readable 720px rail on wide tablet
+  surfaces.
+- The local ZIP backup and import-safety copy remains unchanged and source-safe
+  while the page no longer stretches operational cards across wide tablet
+  layouts.
+- Focused widget coverage verifies representative intro, export, import,
+  exported-item, and import-safety surfaces stay at or below the 720px tablet
+  readability bound on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
