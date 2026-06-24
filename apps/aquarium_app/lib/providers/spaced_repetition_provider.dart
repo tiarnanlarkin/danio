@@ -3,6 +3,7 @@
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'user_profile_provider.dart';
 import 'dart:convert';
 import '../models/spaced_repetition.dart';
@@ -240,6 +241,17 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
   Future<void> reload() => _loadData();
 
+  Future<void> _setStringOrThrow(
+    SharedPreferences prefs,
+    String key,
+    String value,
+  ) async {
+    final saved = await prefs.setString(key, value);
+    if (!saved) {
+      throw StateError('SharedPreferences.setString returned false for $key.');
+    }
+  }
+
   /// Save cards to storage
   Future<void> _saveData() async {
     try {
@@ -247,7 +259,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       // Save cards
       final cardsJson = jsonEncode(state.cards.map((c) => c.toJson()).toList());
-      await prefs.setString(_storageKey, cardsJson);
+      await _setStringOrThrow(prefs, _storageKey, cardsJson);
 
       // Save stats
       final statsData = {
@@ -256,7 +268,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         'streak': state.stats.currentStreak,
         'lastReviewDate': DateTime.now().toIso8601String(),
       };
-      await prefs.setString(_statsKey, jsonEncode(statsData));
+      await _setStringOrThrow(prefs, _statsKey, jsonEncode(statsData));
     } catch (e, stackTrace) {
       throw Exception('Failed to save review data: $e\n$stackTrace');
     }

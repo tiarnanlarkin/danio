@@ -2372,6 +2372,17 @@ CL-P1-009EA Inventory preference write boundary:
 - Focused provider coverage simulates false `shop_inventory` writes and
   verifies inventory state, profile state, and gem balance stay consistent.
 
+CL-P1-009EB Spaced-repetition preference write boundary:
+
+- Spaced-repetition review-card saves now treat false
+  `SharedPreferences.setString` results as local save failures for card and
+  stats persistence.
+- Review-card create, lesson auto-seed, and delete flows keep their existing
+  rollback/error paths when `spaced_repetition_cards` writes return false.
+- Focused provider coverage simulates false review-card preference writes and
+  verifies visible cards, review stats, and persisted card JSON stay
+  consistent.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

@@ -214,6 +214,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EA treats false inventory preference writes as local item-use and
   purchase save failures, preserving visible inventory state and refunding gems
   when the purchased item cannot be saved.
+- CL-P1-009EB treats false spaced-repetition card/stat preference writes as
+  local review-card save failures, keeping create, auto-seed, and delete paths
+  rollback-safe.
 
 ## 7. P2 Work - Presentation System
 
