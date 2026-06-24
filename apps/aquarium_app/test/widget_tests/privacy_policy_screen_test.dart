@@ -59,6 +59,21 @@ void main() {
       expect(find.text('Summary'), findsOneWidget);
     });
 
+    testWidgets('tablet centers policy content in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(
+        tester.getTopLeft(find.text('Your Privacy Matters')).dx,
+        greaterThan(650),
+      );
+    });
+
     testWidgets('shows open in new icon button', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();

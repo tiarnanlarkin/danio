@@ -2868,6 +2868,14 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies a representative FAQ card stays at or below
   720px on a 2000x1200 tablet viewport.
 
+### CL-P2-002AQ Privacy Policy Tablet Readability
+
+- Privacy Policy now centers the header, summary, legal sections, data-rights
+  cards, and contact card in a 720px readable tablet rail.
+- Compact phone surfaces keep the existing vertical policy layout.
+- Focused widget coverage verifies representative policy header content starts
+  inside the centered tablet rail on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
