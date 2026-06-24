@@ -17,6 +17,8 @@ import '../widgets/danio_snack_bar.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 
+const double _maxRemindersReadableWidth = 720;
+
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
 
@@ -302,10 +304,12 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                 if (overdue.isNotEmpty) {
                   // Overdue header
                   if (index == currentIndex) {
-                    return _SectionHeader(
-                      title: 'Overdue',
-                      count: overdue.length,
-                      color: AppColors.error,
+                    return _readableRail(
+                      _SectionHeader(
+                        title: 'Overdue',
+                        count: overdue.length,
+                        color: AppColors.error,
+                      ),
                     );
                   }
                   currentIndex++;
@@ -313,11 +317,14 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                   // Overdue items
                   if (index < currentIndex + overdue.length) {
                     final r = overdue[index - currentIndex];
-                    return _ReminderTile(
-                      reminder: r,
-                      isOverdue: true,
-                      onComplete: () => _toggleReminder(_reminders.indexOf(r)),
-                      onDelete: () => _deleteReminder(_reminders.indexOf(r)),
+                    return _readableRail(
+                      _ReminderTile(
+                        reminder: r,
+                        isOverdue: true,
+                        onComplete: () =>
+                            _toggleReminder(_reminders.indexOf(r)),
+                        onDelete: () => _deleteReminder(_reminders.indexOf(r)),
+                      ),
                     );
                   }
                   currentIndex += overdue.length;
@@ -333,9 +340,11 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                 if (upcoming.isNotEmpty) {
                   // Upcoming header
                   if (index == currentIndex) {
-                    return _SectionHeader(
-                      title: 'Upcoming',
-                      count: upcoming.length,
+                    return _readableRail(
+                      _SectionHeader(
+                        title: 'Upcoming',
+                        count: upcoming.length,
+                      ),
                     );
                   }
                   currentIndex++;
@@ -343,11 +352,14 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                   // Upcoming items
                   if (index < currentIndex + upcoming.length) {
                     final r = upcoming[index - currentIndex];
-                    return _ReminderTile(
-                      reminder: r,
-                      isOverdue: false,
-                      onComplete: () => _toggleReminder(_reminders.indexOf(r)),
-                      onDelete: () => _deleteReminder(_reminders.indexOf(r)),
+                    return _readableRail(
+                      _ReminderTile(
+                        reminder: r,
+                        isOverdue: false,
+                        onComplete: () =>
+                            _toggleReminder(_reminders.indexOf(r)),
+                        onDelete: () => _deleteReminder(_reminders.indexOf(r)),
+                      ),
                     );
                   }
                 }
@@ -367,6 +379,15 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                 label: const Text('Add Reminder'),
               ),
             ),
+    );
+  }
+
+  Widget _readableRail(Widget child) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxRemindersReadableWidth),
+        child: child,
+      ),
     );
   }
 }

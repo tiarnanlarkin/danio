@@ -246,6 +246,28 @@ void main() {
       expect(find.text('Water Change'), findsOneWidget);
     });
 
+    testWidgets('tablet keeps reminder cards in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      SharedPreferences.setMockInitialValues({
+        'aquarium_reminders':
+            '[{"id":"1","title":"Water Change","notes":null,"category":"water",'
+            '"nextDue":"${DateTime.now().add(const Duration(days: 2)).toIso8601String()}",'
+            '"lastCompleted":null,"isRecurring":true,"frequency":"weekly"}]',
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(
+        tester.getSize(find.byType(Card).first).width,
+        lessThanOrEqualTo(720),
+      );
+    });
+
     testWidgets(
       'undo restore failure shows feedback and keeps reminder deleted',
       (tester) async {
