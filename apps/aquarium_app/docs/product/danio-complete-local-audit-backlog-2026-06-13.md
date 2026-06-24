@@ -180,6 +180,9 @@ Recent CL-P1-009 continuation note:
   left behind if Android kills the app before the debounce timer fires. Restore
   cancellation also clears pending progress so backup imports cannot be
   overwritten by a stale lifecycle flush.
+- CL-P1-009DP rolls back visible spaced-repetition review-card changes when
+  create, lesson auto-seed, or delete writes fail, preventing unsaved practice
+  progress from appearing in local state.
 
 ## 7. P2 Work - Presentation System
 

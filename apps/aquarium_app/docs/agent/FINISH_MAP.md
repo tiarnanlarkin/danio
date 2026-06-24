@@ -74,7 +74,7 @@ category.
 | Visual regression | In progress | Golden tests and visual baseline manifest exist. | Add selective core-surface goldens/screenshots after visual targets stabilize. |
 | Rule tests | In progress | Rule coverage exists for some local intelligence and tool paths. | Expand recommendation, compatibility, emergency, unit, and calculation tests. |
 | Content validation | In progress | Content validator exists and runs in the focused gate. | Expand validation for spelling style, warnings, sources, duplicate IDs, bad ranges, and emergency locked content. |
-| Data resilience | In progress | Backup/data hardening has broad coverage, and achievement progress now has lifecycle flush plus restore-cancel coverage. | Finish remaining create/edit/delete/app-kill flush and migration walkthrough coverage. |
+| Data resilience | In progress | Backup/data hardening has broad coverage; achievement progress has lifecycle flush/restore-cancel coverage, and review-card create/seed/delete paths now rollback on failed local writes. | Finish remaining create/edit/delete/app-kill flush and migration walkthrough coverage. |
 | Debug QA seeds | In progress | Existing debug QA seeds are useful but shallow. | Add seed states for emergencies, bad water, incompatible fish, skipped onboarding, demo, unlocks, tablet, and AI/no-AI. |
 
 ## Slice Selection Rule

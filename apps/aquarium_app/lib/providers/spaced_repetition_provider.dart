@@ -272,6 +272,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       return; // Card already exists
     }
 
+    final originalCards = state.cards;
+    final originalStats = state.stats;
+
     try {
       final newCard = ReviewCard.newCard(
         conceptId: conceptId,
@@ -296,6 +299,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _scheduleNotifications();
     } catch (e, stackTrace) {
       state = state.copyWith(
+        cards: originalCards,
+        stats: originalStats,
         errorMessage: "Couldn't create that review card. Please try again.",
       );
       logError(
@@ -313,6 +318,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     required List<dynamic> lessonSections, // List<LessonSection>
     required List<dynamic>? quizQuestions, // List<QuizQuestion>?
   }) async {
+    final originalCards = state.cards;
+    final originalStats = state.stats;
+
     try {
       final cardsToCreate = <ReviewCard>[];
       final now = DateTime.now();
@@ -418,6 +426,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     } catch (e, stackTrace) {
       // Log error but don't break lesson completion flow
       state = state.copyWith(
+        cards: originalCards,
+        stats: originalStats,
         errorMessage: "Couldn't set up your review cards. Please try again.",
       );
       logError(
@@ -925,6 +935,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
   /// Delete a card (for testing/debugging)
   Future<void> deleteCard(String cardId) async {
+    final originalCards = state.cards;
+    final originalStats = state.stats;
+
     try {
       final updatedCards = state.cards.where((c) => c.id != cardId).toList();
       final updatedStats = ReviewStats.fromCards(
@@ -943,6 +956,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _saveData();
     } catch (e, stackTrace) {
       state = state.copyWith(
+        cards: originalCards,
+        stats: originalStats,
         errorMessage: "Couldn't remove that card. Please try again.",
       );
       logError(

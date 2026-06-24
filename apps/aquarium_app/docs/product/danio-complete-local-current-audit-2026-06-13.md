@@ -2248,6 +2248,16 @@ CL-P1-009DO Achievement lifecycle persistence boundary:
   app pause before the normal debounce timer fires, and verifies restore
   cancellation does not persist stale progress.
 
+CL-P1-009DP Spaced-repetition review-card persistence boundary:
+
+- Review-card create, lesson auto-seed, and delete flows now restore the
+  previous visible cards/stats when the `spaced_repetition_cards`
+  `SharedPreferences` write fails.
+- The lesson auto-seed contract remains non-blocking for lesson completion,
+  but failed local review-card setup no longer leaves unsaved cards visible.
+- Focused provider coverage simulates local card-write failures and verifies
+  visible review progress stays consistent with persisted storage.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
