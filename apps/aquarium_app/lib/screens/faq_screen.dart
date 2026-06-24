@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+const double _maxFaqContentWidth = 720;
+
+double _faqHorizontalInset(double availableWidth) {
+  final boundedWithPadding = _maxFaqContentWidth + (AppSpacing.md * 2);
+  if (availableWidth <= boundedWithPadding) return AppSpacing.md;
+
+  return (availableWidth - _maxFaqContentWidth) / 2;
+}
+
 class FaqScreen extends StatelessWidget {
   const FaqScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems();
+
     return Scaffold(
       appBar: AppBar(title: const Text('FAQ')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems().length,
-        itemBuilder: (context, index) => _buildItems()[index],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return ListView.builder(
+            padding: EdgeInsets.symmetric(
+              horizontal: _faqHorizontalInset(constraints.maxWidth),
+              vertical: AppSpacing.md,
+            ),
+            itemCount: items.length,
+            itemBuilder: (context, index) => items[index],
+          );
+        },
       ),
     );
   }
@@ -243,37 +261,37 @@ class _FaqItemState extends State<_FaqItem> {
       button: true,
       label: '${widget.question}${_expanded ? ", expanded" : ""}',
       child: Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: InkWell(
-        onTap: () => setState(() => _expanded = !_expanded),
-        borderRadius: AppRadius.mediumRadius,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.question,
-                      style: AppTypography.labelLarge,
+        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+        child: InkWell(
+          onTap: () => setState(() => _expanded = !_expanded),
+          borderRadius: AppRadius.mediumRadius,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.question,
+                        style: AppTypography.labelLarge,
+                      ),
                     ),
-                  ),
-                  Icon(
-                    _expanded ? Icons.expand_less : Icons.expand_more,
-                    color: context.textSecondary,
-                  ),
+                    Icon(
+                      _expanded ? Icons.expand_less : Icons.expand_more,
+                      color: context.textSecondary,
+                    ),
+                  ],
+                ),
+                if (_expanded) ...[
+                  const SizedBox(height: AppSpacing.sm2),
+                  Text(widget.answer, style: AppTypography.bodyMedium),
                 ],
-              ),
-              if (_expanded) ...[
-                const SizedBox(height: AppSpacing.sm2),
-                Text(widget.answer, style: AppTypography.bodyMedium),
               ],
-            ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

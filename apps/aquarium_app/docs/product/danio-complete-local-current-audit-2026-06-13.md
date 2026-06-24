@@ -2860,6 +2860,14 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative feature content starts inside
   the centered tablet rail on a 2000x1200 tablet viewport.
 
+### CL-P2-002AP FAQ Tablet Readability
+
+- FAQ now uses a centered 720px readable tablet rail so question cards and
+  expanded answer copy do not stretch across wide screens.
+- Compact phone surfaces keep the existing vertical FAQ list padding.
+- Focused widget coverage verifies a representative FAQ card stays at or below
+  720px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

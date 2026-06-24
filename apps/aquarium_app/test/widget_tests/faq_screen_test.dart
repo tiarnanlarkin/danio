@@ -38,6 +38,22 @@ void main() {
       );
     });
 
+    testWidgets('tablet keeps FAQ cards readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final questionCard = find.ancestor(
+        of: find.text('How long should I wait before adding fish?'),
+        matching: find.byType(Card),
+      );
+
+      expect(questionCard, findsOneWidget);
+      expect(tester.getSize(questionCard).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets('shows Water Quality section by scrolling', (tester) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
