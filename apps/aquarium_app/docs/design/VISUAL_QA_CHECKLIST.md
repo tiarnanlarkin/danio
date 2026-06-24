@@ -10,9 +10,10 @@ work.
   or existing app surface.
 - Read `docs/design/DESIGN_SYSTEM.md`, `docs/design-direction.md`, and the
   relevant row in `docs/design/BASELINES.md`.
-- Confirm no paid services, paid assets, cloud visual testing, Figma Code
+- Confirm whether paid services, paid assets, cloud visual testing, Figma Code
   Connect, paid Figma features, OpenAI API calls, or external accounts are
-  needed.
+  needed. If yes, use `docs/agent/PAID_TOOL_APPROVAL_LEDGER.md` before the
+  tool is configured or run.
 
 ## During Implementation
 

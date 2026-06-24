@@ -1,8 +1,10 @@
 # Danio Autonomous Quality Setup
 
-This setup gives Codex a repeatable local quality workflow for finishing Danio
-without silently depending on paid services, cloud runners, external accounts,
-or API keys.
+This setup gives Codex a repeatable local quality workflow for finishing Danio.
+Danio stays local-first and must not silently depend on paid services, cloud
+runners, external accounts, or API keys. Paid/account-backed quality tools are
+allowed only when the user explicitly approves the exact purpose and the
+decision is recorded in `PAID_TOOL_APPROVAL_LEDGER.md`.
 
 ## Active Local Gate
 
@@ -48,16 +50,19 @@ Useful switches:
 Use this order for normal implementation slices:
 
 1. `git status --short -uall` before editing.
-2. Focused failing test for behavior changes.
-3. Small implementation slice.
-4. `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`.
-5. Broaden to `-Profile Docs`, `-Profile Visual`, `-Profile Full`, or
+2. Check `FINISH_MAP.md` and create a slice contract from
+   `SLICE_CONTRACT_TEMPLATE.md` for non-trivial work.
+3. Focused failing test for behavior changes.
+4. Small implementation slice.
+5. `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`.
+6. Broaden to `-Profile Docs`, `-Profile Visual`, `-Profile Full`, or
    `-Profile AndroidPrep` based on the files changed.
-6. For external-account work, run
+7. For external-account work, confirm approval in
+   `PAID_TOOL_APPROVAL_LEDGER.md`, then run
    `.\scripts\quality_gates\check_external_quality_readiness.ps1 -Target All`
    before opening dashboards, uploading artifacts, or touching tokens.
-7. Commit only the intended files.
-8. Push after the relevant local gates pass.
+8. Commit only the intended files.
+9. Push after the relevant local gates pass.
 
 ## Multi-Agent Completion Flow
 
@@ -74,7 +79,8 @@ project-scoped agents from `.codex/` in this order:
 
 The coordinator remains responsible for integration, local gates, commits, and
 pushes. External-account services remain optional after local gates and must not
-receive committed secrets or billing upgrades.
+receive committed secrets or billing upgrades without an approval ledger entry
+covering the exact use.
 
 ## Current Setup Status
 
@@ -230,13 +236,16 @@ repo path contains spaces.
 
 Do not require a DCM license, CI key, dashboard, or cloud account for normal
 work. DCM is not part of the active quality path; use dependency validation,
-Very Good Analysis, custom lint, and focused tests instead.
+Very Good Analysis, custom lint, and focused tests instead unless a future
+approved review proves DCM would add material value.
 
 ## Account-Backed Quality Lane
 
 Some account-backed services are now connected, but they remain outside the
 local core. Do not commit secrets, tokens, dashboard exports, generated account
-config, or paid-service workflow files without a separate explicit request.
+config, or paid-service workflow files. Do not configure, upgrade, or run a
+paid/account-backed lane unless `PAID_TOOL_APPROVAL_LEDGER.md` records approval
+for that exact use.
 
 Current account-side setup:
 
@@ -262,10 +271,11 @@ Use these services in this order:
 4. Percy/App Percy only after local visual baselines are stable and a
    `PERCY_TOKEN` has been supplied through a local shell/session secret.
 
-Do not upgrade Firebase billing, run paid BrowserStack device sessions, or add
-hosted CI without a fresh explicit request. These services can improve review
-coverage, but they do not replace the local Flutter gates. Danio must remain
-useful and testable locally.
+Do not upgrade Firebase billing, run paid BrowserStack device sessions, enable
+Sentry billing, configure Qodo, use paid Figma features, or add hosted CI
+without fresh explicit approval or a matching approval ledger entry. These
+services can improve review coverage, but they do not replace the local Flutter
+gates. Danio must remain useful and testable locally.
 
 Before using any account-backed lane, run the no-upload preflight:
 

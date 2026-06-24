@@ -1,10 +1,14 @@
 # Danio Testing Checklist
 
-Use this checklist before committing Danio changes. It is local-first and no-cost.
+Use this checklist before committing Danio changes. It is local-first and
+quality-first: local gates are mandatory, and paid/account-backed checks are
+optional evidence only after explicit approval.
 
 ## Before Editing
 
 - Run `git status --short -uall`.
+- Check `docs/agent/FINISH_MAP.md` and identify the row this slice advances.
+- Start from `docs/agent/SLICE_CONTRACT_TEMPLATE.md` for non-trivial slices.
 - Identify unrelated dirty files and leave them alone.
 - Read the relevant source and nearby tests before changing code.
 - For behavior changes, write or update a focused failing test first.
@@ -106,7 +110,8 @@ Before merging one, run the smallest relevant local gate:
   docs/focused gate at minimum.
 
 Do not add private registries, tokens, or paid package feeds to
-`.github/dependabot.yml` without a separate explicit request.
+`.github/dependabot.yml` without a separate explicit request and approval
+ledger entry.
 
 ## Local Dependency Audit
 
@@ -266,7 +271,9 @@ evidence only when device ownership is clear.
 ## External Account Checks
 
 External checks are optional and must follow local gates. They are useful for
-release confidence, not a replacement for local verification.
+release confidence, not a replacement for local verification. Use
+`docs/agent/PAID_TOOL_APPROVAL_LEDGER.md` before configuring, upgrading, or
+running a paid/account-backed lane.
 
 Configured account-side services:
 
@@ -286,11 +293,13 @@ cloud device run, or Percy visual build:
 
 Rules:
 
-- Do not commit Firebase, Percy, BrowserStack, CodeRabbit, or Qodo secrets.
-- Do not upgrade Firebase billing or start paid BrowserStack/Percy runs without
-  fresh explicit approval.
+- Do not commit Firebase, Percy, BrowserStack, CodeRabbit, Qodo, Sentry,
+  OpenAI, or Figma secrets.
+- Do not upgrade Firebase billing, start paid BrowserStack/Percy runs, enable
+  Sentry billing, configure Qodo, or use paid Figma features without fresh
+  explicit approval or an existing approval ledger entry for that exact use.
 - Do not add hosted CI workflow files unless the user separately approves hosted
-  builds.
+  builds and the approval ledger records the decision.
 - Use `PERCY_TOKEN` only as a local shell/session environment variable when
   running an external Percy build.
 - Treat BrowserStack/App Percy as account-linked but execution-gated until the
@@ -313,6 +322,9 @@ Before committing product or docs changes, confirm:
 - Required gates passed for the type of change.
 - `git diff --check` passed.
 - `git status --short` contains only files intended for the commit.
+- Finish Map, paid-tool ledger, or device ownership docs were updated when the
+  slice changed completion status, used an external tool, or captured Android
+  evidence.
 - Commit message is specific.
 - Push only after the requested verification passes.
 

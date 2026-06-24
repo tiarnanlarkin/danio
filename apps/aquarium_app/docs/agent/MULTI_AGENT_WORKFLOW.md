@@ -54,8 +54,10 @@ worktree, if needed files are dirty from another session, or if the task
 requires product decisions outside the assigned slice.
 
 Workers use local gates by default. Optional network/account-backed tools such
-as OSV, Firebase Test Lab, BrowserStack/App Percy, Percy, and CodeRabbit are
-forbidden unless the current coordinator prompt explicitly assigns that lane.
+as OSV, Firebase Test Lab, BrowserStack/App Percy, Percy, Qodo, Sentry,
+Crashlytics, Figma paid features, and CodeRabbit are forbidden unless the
+current coordinator prompt explicitly assigns that lane and
+`PAID_TOOL_APPROVAL_LEDGER.md` covers the exact use.
 
 ## Android QA Rules
 
@@ -94,8 +96,9 @@ Use local checks before optional account-backed checks:
 2. `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`.
 3. Broaden to `Docs`, `Visual`, `AndroidPrep`, or `Full` based on touched files.
 4. Use Patrol or local Android screenshots only when device ownership is clear.
-5. Use Firebase Test Lab, CodeRabbit, or Percy/App Percy only after local gates,
-   with no secrets committed and no billing upgrades.
+5. Use Firebase Test Lab, CodeRabbit, Qodo, Sentry, BrowserStack, or Percy/App
+   Percy only after local gates, with no secrets committed and with approval
+   recorded for the exact paid/account-backed use.
 
 External services are review aids. They do not replace local Flutter tests,
 analysis, content validation, visual baselines, or debug APK builds.

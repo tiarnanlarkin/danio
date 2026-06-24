@@ -1,6 +1,10 @@
 # Codex Setup For Danio
 
-This setup is intentionally no-cost and local-first. It is for building, testing, reviewing, and documenting the Flutter app on this machine without adding cloud dependencies.
+This setup is local-first and quality-first. It is for building, testing,
+reviewing, and documenting the Flutter app on this machine while keeping Danio
+usable without cloud dependencies. Paid or account-backed quality tools may be
+used only after explicit user approval in the current thread or an entry in
+`PAID_TOOL_APPROVAL_LEDGER.md`.
 
 ## What Agents May Use
 
@@ -12,15 +16,24 @@ This setup is intentionally no-cost and local-first. It is for building, testing
 - The local Danio quality gate at
   `scripts/quality_gates/run_local_quality_gate.ps1`.
 - Local-only Maestro CLI if already installed or if the user explicitly approves a local install.
-- Installed global Codex skills such as Playwright, screenshots, OpenAI docs lookup, and security review skills, provided they do not call paid services or require external accounts.
-- Installed no-cost design skills such as Figma, Product Design workflows, Playwright, and screenshots, provided they stay local/reference-only and do not require paid seats, secrets, uploads, or external accounts.
+- Installed global Codex skills such as Playwright, screenshots, OpenAI docs
+  lookup, and security review skills.
+- Figma and Product Design workflows when they are grounded in local
+  screenshots, current app surfaces, or approved design targets.
+- Account-backed quality lanes such as CodeRabbit, Firebase Test Lab,
+  BrowserStack/App Percy, Percy, Qodo, Crashlytics, or Sentry only after local
+  gates pass and the approval ledger covers the exact purpose.
 
 ## What Agents Must Not Use
 
-- Paid services.
-- Hosted CI setup.
-- Vercel, Supabase, Sentry, Figma paid features, Maestro Cloud, OpenAI API calls, or external account setup.
-- Any workflow that requires secrets, billing, remote project creation, or cloud storage.
+- Paid services, hosted CI, remote project creation, or external account setup
+  without explicit approval for the exact purpose.
+- API calls, paid Figma features, Maestro Cloud, Sentry, Qodo, BrowserStack,
+  Percy, Firebase billing upgrades, OpenAI API calls, Vercel, Supabase, or
+  similar services without an approval ledger entry.
+- Any workflow that commits secrets, billing artifacts, account exports, remote
+  tokens, or machine-local credential files.
+- Any workflow that makes paid/cloud tooling required for Danio to work locally.
 
 ## Repo Orientation
 
@@ -118,7 +131,9 @@ The local wrapper can run the standard gates in consistent profiles:
 ```
 
 See `docs/agent/AUTONOMOUS_QUALITY_SETUP.md` for the autonomous workflow,
-optional local tool lane, and account-backed upgrade boundaries.
+optional local tool lane, account-backed quality lanes, and approval
+boundaries. Use `docs/agent/FINISH_MAP.md` to choose completion slices and
+`docs/agent/SLICE_CONTRACT_TEMPLATE.md` to define each slice before editing.
 
 Before using external account-backed quality services, run the local preflight:
 
@@ -232,10 +247,10 @@ Use these docs before UI, illustration, chart, or visual polish work:
 - `docs/design/BASELINES.md`
 - `docs/design/VISUAL_QA_CHECKLIST.md`
 
-Figma MCP may be useful for reference or no-cost exploration, but the current
-seat may be read/reference-only. Do not use Figma Code Connect, paid Figma
-features, paid stock assets, cloud visual testing, or account-backed design
-services.
+Figma MCP may be useful for reference, mockups, and design-target creation.
+Paid Figma features, Figma Code Connect, paid stock assets, cloud visual
+testing, or account-backed design services require an approval ledger entry for
+the exact purpose.
 
 Flutter golden tests are local verification aids. Their reference images are
 platform-dependent and ignored by this repo, so use them for focused local
@@ -272,7 +287,7 @@ maestro test .\maestro\some_flow.yaml
 
 Not allowed:
 
-- Maestro Cloud.
+- Maestro Cloud unless explicitly approved for a specific QA purpose.
 - Hosted device farms.
 - Remote uploads.
 - Account setup.

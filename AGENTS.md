@@ -1,6 +1,10 @@
 # Danio Agent Instructions
 
-This repo is developed local-first. Agents must keep work no-cost, offline-capable, and honest unless the user explicitly requests a separate paid/cloud setup.
+This repo is developed local-first. Danio must stay offline-capable and honest,
+but the user has approved quality-first paid or account-backed tooling when it
+materially improves autonomous completion. Paid/cloud tools require explicit
+approval in the current thread or an existing entry in
+`apps/aquarium_app/docs/agent/PAID_TOOL_APPROVAL_LEDGER.md`.
 
 ## Scope
 
@@ -10,8 +14,10 @@ This repo is developed local-first. Agents must keep work no-cost, offline-capab
 
 ## Non-Negotiable Rules
 
-- Do not set up paid services, hosted CI, cloud projects, external accounts, or API-backed workflows.
-- Do not call paid APIs or require OpenAI, Supabase, Vercel, Sentry, Figma paid features, Maestro Cloud, or similar services.
+- Do not set up paid services, hosted CI, cloud projects, external accounts, or API-backed workflows unless the current thread explicitly approves that tool and purpose.
+- Do not call paid APIs or require OpenAI, Supabase, Vercel, Sentry, Figma paid features, Maestro Cloud, or similar services without an approval ledger entry that covers the exact use.
+- Never commit secrets, API keys, tokens, account exports, billing artifacts, or machine-local credential files.
+- Paid/account-backed services are quality lanes only. They must not become required for local Danio use or replace local verification gates.
 - Do not add fake premium, fake social, fake cloud sync, fake leaderboards, or dormant monetisation promises.
 - Keep Danio usable without optional AI keys. Smart Hub must work locally first.
 - Optional AI must degrade gracefully and must never make the app feel broken when no key or backend is configured.
@@ -81,6 +87,8 @@ that make new build/readiness claims.
 - Use the Danio live-preview workflow at
   `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md` when the user wants
   to watch the app while it is being built.
+- Use `apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md` before any emulator,
+  ADB, Patrol, Firebase Test Lab, live-preview, or screenshot evidence work.
 - Standardize Danio live preview on the dedicated `danio_api36` emulator; do
   not use whichever emulator happens to be connected.
 - Do not start, stop, wipe, kill, or commandeer an emulator/device without confirming it is safe.
@@ -103,9 +111,9 @@ that make new build/readiness claims.
 - Use `apps/aquarium_app/docs/design-direction.md`,
   `apps/aquarium_app/docs/theme-system.md`, and the setup docs under
   `apps/aquarium_app/docs/design/` for local design decisions.
-- Figma and Product Design skills may be used only within no-cost access. The
-  current Figma setup may be reference-only; do not use Figma Code Connect,
-  paid Figma features, paid assets, or cloud visual QA.
+- Figma and Product Design skills may be used for visual targets. Paid Figma
+  features, paid assets, Figma Code Connect, or cloud visual QA require an
+  approval ledger entry for the exact purpose.
 - Preserve Danio's local-first product honesty: no fake AI, fake premium, fake
   social, fake cloud sync, or care claims that imply veterinary advice.
 - For visual changes, run the applicable Flutter/golden/screenshot checks from
@@ -130,6 +138,10 @@ that make new build/readiness claims.
 - Codex setup: `apps/aquarium_app/docs/agent/CODEX_SETUP.md`
 - Testing checklist: `apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md`
 - Autonomous quality setup: `apps/aquarium_app/docs/agent/AUTONOMOUS_QUALITY_SETUP.md`
+- Finish map: `apps/aquarium_app/docs/agent/FINISH_MAP.md`
+- Paid tool approval ledger: `apps/aquarium_app/docs/agent/PAID_TOOL_APPROVAL_LEDGER.md`
+- Device ownership: `apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md`
+- Slice contract template: `apps/aquarium_app/docs/agent/SLICE_CONTRACT_TEMPLATE.md`
 - Multi-agent workflow: `apps/aquarium_app/docs/agent/MULTI_AGENT_WORKFLOW.md`
 - Live preview workflow: `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md`
 - Current local audit: `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
