@@ -238,6 +238,70 @@ void main() {
       expect(find.text(hidden.name), findsNothing);
     });
 
+    testWidgets('tablet keeps consumable inventory cards bounded', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final item = ShopCatalog.getById('xp_boost_1h')!;
+      final owned = InventoryItem(
+        itemId: item.id,
+        quantity: 1,
+        purchasedAt: DateTime(2026, 5, 3),
+      );
+
+      SharedPreferences.setMockInitialValues({
+        'shop_inventory': jsonEncode([owned.toJson()]),
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final itemCard = find
+          .ancestor(
+            of: find.text(item.name),
+            matching: find.byWidgetPredicate((widget) {
+              if (widget is! Container) return false;
+              final decoration = widget.decoration;
+              return decoration is BoxDecoration && decoration.border != null;
+            }),
+          )
+          .first;
+
+      expect(tester.getSize(itemCard).width, lessThanOrEqualTo(340));
+    });
+
+    testWidgets(
+      'tablet lays permanent reward collections out without sideways scroll',
+      (
+        tester,
+      ) async {
+        await tester.binding.setSurfaceSize(const Size(2000, 1200));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+
+        await tester.pumpWidget(
+          _wrap(
+            roomVibeStates: _roomVibeStates(),
+            decorationStates: _decorationStates(),
+          ),
+        );
+        await _advance(tester);
+
+        await tester.tap(find.text('Permanent'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 700));
+
+        final horizontalScrollViews = tester
+            .widgetList<SingleChildScrollView>(
+              find.byType(SingleChildScrollView),
+            )
+            .where((widget) => widget.scrollDirection == Axis.horizontal);
+
+        expect(horizontalScrollViews, isEmpty);
+      },
+    );
+
     testWidgets(
       'permanent tab shows earned room vibes without shop purchases',
       (tester) async {

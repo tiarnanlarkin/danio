@@ -2812,6 +2812,17 @@ CL-P3-001A Optional AI provider setup boundary:
   and representative trophy cards stay at or below 340px on a 2000x1200 tablet
   viewport, with source coverage keeping Achievements copy ASCII-safe.
 
+### CL-P2-002AK Inventory Rewards Tablet Layout
+
+- Inventory consumable and active item grids now use a centered bounded
+  adaptive tablet grid so owned-item cards do not stretch across wide screens.
+- Permanent room-vibe, tank-decoration, and keepsake collections now keep the
+  existing horizontal scroller behavior on narrow surfaces while switching to
+  wrapped bounded collections on wide tablet surfaces.
+- Focused widget coverage verifies consumable item cards stay at or below 340px
+  on a 2000x1200 tablet viewport and that permanent reward collections do not
+  require sideways scrolling on that tablet layout.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

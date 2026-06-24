@@ -24,6 +24,20 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
+const double _maxInventoryReadableWidth = 720;
+const double _maxInventoryCollectionWidth = 1100;
+
+double _inventoryCollectionHorizontalInset(double viewportWidth) {
+  if (viewportWidth <= _maxInventoryCollectionWidth) return 0;
+  return (viewportWidth - _maxInventoryCollectionWidth) / 2;
+}
+
+int _inventoryGridColumnCount(double contentWidth) {
+  if (contentWidth >= 900) return 4;
+  if (contentWidth >= 640) return 3;
+  return 2;
+}
+
 /// Main Inventory Screen - View and USE owned items
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key});
@@ -325,40 +339,42 @@ class _PermanentInventoryView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
-        _SectionHeader(
-          title: 'Room vibes',
-          subtitle: 'Earn tank looks from lessons, streaks, and milestones.',
+        const _InventoryReadableFrame(
+          child: _SectionHeader(
+            title: 'Room vibes',
+            subtitle: 'Earn tank looks from lessons, streaks, and milestones.',
+          ),
         ),
         const SizedBox(height: AppSpacing.sm2),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final unlockState in roomVibes) ...[
-                _RoomVibeCard(
+        _InventoryCollectionWrap(
+          children: [
+            for (final unlockState in roomVibes)
+              SizedBox(
+                width: 206,
+                height: 188,
+                child: _RoomVibeCard(
                   unlockState: unlockState,
                   isCurrent: unlockState.type == currentRoomTheme,
                   onApply: onApplyRoomVibe,
                 ),
-                const SizedBox(width: AppSpacing.sm2),
-              ],
-            ],
-          ),
+              ),
+          ],
         ),
         const SizedBox(height: AppSpacing.lg),
-        _SectionHeader(
-          title: 'Tank decorations',
-          subtitle: 'Place earned keepsakes into your aquarium scene.',
+        const _InventoryReadableFrame(
+          child: _SectionHeader(
+            title: 'Tank decorations',
+            subtitle: 'Place earned keepsakes into your aquarium scene.',
+          ),
         ),
         const SizedBox(height: AppSpacing.sm2),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final definition in TankDecorationDefinition.all) ...[
-                _TankDecorationCard(
+        _InventoryCollectionWrap(
+          children: [
+            for (final definition in TankDecorationDefinition.all)
+              SizedBox(
+                width: 206,
+                height: 204,
+                child: _TankDecorationCard(
                   unlockState:
                       decorationStates[definition.type] ??
                       TankDecorationUnlockState(
@@ -369,23 +385,21 @@ class _PermanentInventoryView extends StatelessWidget {
                   isEquipped: definition.type == equippedDecoration,
                   onEquip: onEquipDecoration,
                 ),
-                const SizedBox(width: AppSpacing.sm2),
-              ],
-            ],
-          ),
+              ),
+          ],
         ),
         const SizedBox(height: AppSpacing.lg),
-        _SectionHeader(
-          title: 'Permanent items',
-          subtitle: 'Badges and other earned keepsakes stay here.',
+        const _InventoryReadableFrame(
+          child: _SectionHeader(
+            title: 'Permanent items',
+            subtitle: 'Badges and other earned keepsakes stay here.',
+          ),
         ),
         const SizedBox(height: AppSpacing.sm2),
         if (items.isEmpty)
-          const _PermanentItemsEmptyNote()
+          const _InventoryReadableFrame(child: _PermanentItemsEmptyNote())
         else
-          Wrap(
-            spacing: AppSpacing.sm2,
-            runSpacing: AppSpacing.sm2,
+          _InventoryCollectionWrap(
             children: [
               for (final item in items)
                 SizedBox(
@@ -396,6 +410,66 @@ class _PermanentInventoryView extends StatelessWidget {
             ],
           ),
       ],
+    );
+  }
+}
+
+class _InventoryReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _InventoryReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxInventoryReadableWidth),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _InventoryCollectionWrap extends StatelessWidget {
+  final List<Widget> children;
+
+  const _InventoryCollectionWrap({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 900) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var index = 0; index < children.length; index++) ...[
+                  children[index],
+                  if (index < children.length - 1)
+                    const SizedBox(width: AppSpacing.sm2),
+                ],
+              ],
+            ),
+          );
+        }
+
+        return Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: _maxInventoryCollectionWidth,
+            ),
+            child: Wrap(
+              spacing: AppSpacing.sm2,
+              runSpacing: AppSpacing.sm2,
+              children: children,
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -779,29 +853,47 @@ class _InventoryGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return EmptyState(
-        icon: Icons.inventory_2_outlined,
-        title: emptyTitle,
-        message: emptyMessage,
+      return _InventoryReadableFrame(
+        child: EmptyState(
+          icon: Icons.inventory_2_outlined,
+          title: emptyTitle,
+          message: emptyMessage,
+        ),
       );
     }
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.85,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return _InventoryItemCard(
-          item: item,
-          showUseButton: showUseButton,
-          showTimer: showTimer,
-          onUse: onUse,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final horizontalInset = _inventoryCollectionHorizontalInset(
+          constraints.maxWidth,
+        );
+        final boundedWidth = constraints.maxWidth - (horizontalInset * 2);
+        final contentWidth = boundedWidth - (AppSpacing.md * 2);
+        final columnCount = _inventoryGridColumnCount(contentWidth);
+
+        return GridView.builder(
+          padding: EdgeInsets.fromLTRB(
+            horizontalInset + AppSpacing.md,
+            AppSpacing.md,
+            horizontalInset + AppSpacing.md,
+            AppSpacing.md,
+          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columnCount,
+            childAspectRatio: 0.85,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return _InventoryItemCard(
+              item: item,
+              showUseButton: showUseButton,
+              showTimer: showTimer,
+              onUse: onUse,
+            );
+          },
         );
       },
     );
