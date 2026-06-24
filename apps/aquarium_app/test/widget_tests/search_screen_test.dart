@@ -157,6 +157,24 @@ void main() {
       );
     });
 
+    testWidgets('tablet keeps search result cards in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'backup');
+      await _advance(tester);
+
+      expect(
+        tester.getSize(find.byType(Card).first).width,
+        lessThanOrEqualTo(720),
+      );
+    });
+
     testWidgets('tool searches find calculator destinations', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

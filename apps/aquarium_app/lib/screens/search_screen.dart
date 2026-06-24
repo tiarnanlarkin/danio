@@ -57,6 +57,8 @@ import 'vacation_guide_screen.dart';
 import 'water_change_calculator_screen.dart';
 import 'workshop_screen.dart';
 
+const double _maxSearchReadableWidth = 720;
+
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
@@ -851,16 +853,27 @@ class _SearchResults extends StatelessWidget {
         final item = items[index];
 
         if (item.isHeader) {
-          return _SectionHeader(
-            title: item.headerTitle!,
-            count: item.headerCount!,
+          return _readableRail(
+            _SectionHeader(
+              title: item.headerTitle!,
+              count: item.headerCount!,
+            ),
           );
         } else if (item.isSpacer) {
-          return const SizedBox(height: AppSpacing.md);
+          return _readableRail(const SizedBox(height: AppSpacing.md));
         } else {
-          return _ResultTile(result: item.result!);
+          return _readableRail(_ResultTile(result: item.result!));
         }
       },
+    );
+  }
+
+  Widget _readableRail(Widget child) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxSearchReadableWidth),
+        child: child,
+      ),
     );
   }
 

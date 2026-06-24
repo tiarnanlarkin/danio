@@ -2910,6 +2910,14 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative reminder cards stay at or
   below 720px on a 2000x1200 tablet viewport.
 
+### CL-P2-002AV Search Results Tablet Readability
+
+- Search now centers result section headers, spacers, and destination/result
+  cards in a 720px readable tablet rail.
+- Compact phone surfaces keep the existing vertical search result list behavior.
+- Focused widget coverage verifies representative search result cards stay at or
+  below 720px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
