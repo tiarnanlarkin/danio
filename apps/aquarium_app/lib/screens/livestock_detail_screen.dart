@@ -8,6 +8,8 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxLivestockDetailReadableWidth = 720;
+
 class LivestockDetailScreen extends ConsumerWidget {
   final String tankId;
   final Livestock livestock;
@@ -34,41 +36,21 @@ class LivestockDetailScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(livestock.commonName)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header card
-            _HeaderCard(livestock: livestock, species: species),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: _maxLivestockDetailReadableWidth,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header card
+                _HeaderCard(livestock: livestock, species: species),
 
-            const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
-            // Compatibility check (if we have tank data)
-            tankAsync.when(
-              loading: () => const SizedBox.shrink(),
-              error: (_, __) => Padding(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      size: 14,
-                      color: AppColors.warning,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      'Unable to load',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: AppColors.warning),
-                    ),
-                  ],
-                ),
-              ),
-              data: (tank) {
-                if (tank == null) return const SizedBox.shrink();
-
-                return allLivestockAsync.when(
+                // Compatibility check (if we have tank data)
+                tankAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => Padding(
                     padding: const EdgeInsets.all(AppSpacing.sm),
@@ -83,55 +65,85 @@ class LivestockDetailScreen extends ConsumerWidget {
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           'Unable to load',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColors.warning),
+                          style:
+                              Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
+                                color: AppColors.warning,
+                              ),
                         ),
                       ],
                     ),
                   ),
-                  data: (allLivestock) {
-                    final issues =
-                        CompatibilityService.checkLivestockCompatibility(
-                          livestock: livestock,
-                          tank: tank,
-                          existingLivestock: allLivestock,
-                        );
+                  data: (tank) {
+                    if (tank == null) return const SizedBox.shrink();
 
-                    if (issues.isEmpty && species != null) {
-                      return _CompatibilityCard(
-                        level: CompatibilityLevel.compatible,
-                        issues: const [],
-                      );
-                    }
+                    return allLivestockAsync.when(
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 14,
+                              color: AppColors.warning,
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              'Unable to load',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: AppColors.warning),
+                            ),
+                          ],
+                        ),
+                      ),
+                      data: (allLivestock) {
+                        final issues =
+                            CompatibilityService.checkLivestockCompatibility(
+                              livestock: livestock,
+                              tank: tank,
+                              existingLivestock: allLivestock,
+                            );
 
-                    if (issues.isNotEmpty) {
-                      return _CompatibilityCard(
-                        level: CompatibilityService.overallLevel(issues),
-                        issues: issues,
-                      );
-                    }
+                        if (issues.isEmpty && species != null) {
+                          return _CompatibilityCard(
+                            level: CompatibilityLevel.compatible,
+                            issues: const [],
+                          );
+                        }
 
-                    return const SizedBox.shrink();
+                        if (issues.isNotEmpty) {
+                          return _CompatibilityCard(
+                            level: CompatibilityService.overallLevel(issues),
+                            issues: issues,
+                          );
+                        }
+
+                        return const SizedBox.shrink();
+                      },
+                    );
                   },
-                );
-              },
+                ),
+
+                // Species care guide (if found)
+                if (species != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _CareGuideCard(species: species),
+
+                  const SizedBox(height: AppSpacing.md),
+                  _ParametersCard(species: species),
+
+                  const SizedBox(height: AppSpacing.md),
+                  _CompatibilityNotesCard(species: species),
+                ] else ...[
+                  const SizedBox(height: AppSpacing.md),
+                  _NoSpeciesDataCard(livestock: livestock),
+                ],
+              ],
             ),
-
-            // Species care guide (if found)
-            if (species != null) ...[
-              const SizedBox(height: AppSpacing.md),
-              _CareGuideCard(species: species),
-
-              const SizedBox(height: AppSpacing.md),
-              _ParametersCard(species: species),
-
-              const SizedBox(height: AppSpacing.md),
-              _CompatibilityNotesCard(species: species),
-            ] else ...[
-              const SizedBox(height: AppSpacing.md),
-              _NoSpeciesDataCard(livestock: livestock),
-            ],
-          ],
+          ),
         ),
       ),
     );

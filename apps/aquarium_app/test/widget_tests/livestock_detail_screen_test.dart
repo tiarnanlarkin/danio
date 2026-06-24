@@ -11,6 +11,7 @@ import 'package:danio/screens/livestock_detail_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -19,31 +20,30 @@ import 'package:danio/models/models.dart';
 final _now = DateTime.now();
 
 Tank _makeTank({String id = 'tank-1'}) => Tank(
-      id: id,
-      name: 'Test Tank',
-      type: TankType.freshwater,
-      volumeLitres: 100,
-      startDate: _now,
-      targets: WaterTargets.freshwaterTropical(),
-      createdAt: _now,
-      updatedAt: _now,
-    );
+  id: id,
+  name: 'Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
 
 Livestock _makeLivestock({
   String id = 'ls-1',
   String tankId = 'tank-1',
   String name = 'Neon Tetra',
-}) =>
-    Livestock(
-      id: id,
-      tankId: tankId,
-      commonName: name,
-      scientificName: 'Paracheirodon innesi',
-      count: 6,
-      dateAdded: _now,
-      createdAt: _now,
-      updatedAt: _now,
-    );
+}) => Livestock(
+  id: id,
+  tankId: tankId,
+  commonName: name,
+  scientificName: 'Paracheirodon innesi',
+  count: 6,
+  dateAdded: _now,
+  createdAt: _now,
+  updatedAt: _now,
+);
 
 Widget _wrap({InMemoryStorageService? storage, Livestock? livestock}) {
   final svc = storage ?? InMemoryStorageService();
@@ -113,6 +113,24 @@ void main() {
       await tester.pumpWidget(_wrap(storage: svc));
       await _advance(tester);
       expect(find.byType(SingleChildScrollView), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps detail cards in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank());
+      await tester.pumpWidget(_wrap(storage: svc));
+      await _advance(tester);
+
+      expect(find.byType(AppCard), findsWidgets);
+      expect(
+        tester.getSize(find.byType(AppCard).first).width,
+        lessThanOrEqualTo(720),
+      );
     });
   });
 }

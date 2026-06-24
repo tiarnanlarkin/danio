@@ -2936,6 +2936,14 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative loading skeleton and stat
   cards stay at or below 720px on a 2000x1200 tablet viewport.
 
+### CL-P2-002AY Livestock Detail Tablet Readability
+
+- Livestock Detail now centers header, compatibility, care guide, parameter,
+  tankmate, and missing-species cards in a 720px readable tablet rail.
+- Compact phone surfaces keep the existing vertical livestock detail flow.
+- Focused widget coverage verifies representative livestock detail cards stay
+  at or below 720px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
