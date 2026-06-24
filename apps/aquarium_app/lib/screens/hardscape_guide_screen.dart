@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxHardscapeGuideReadableWidth = 720;
+
 class HardscapeGuideScreen extends StatelessWidget {
   const HardscapeGuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Hardscape Guide')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems(context).length,
-        itemBuilder: (context, index) => _buildItems(context)[index],
+        itemCount: items.length,
+        itemBuilder: (context, index) =>
+            _HardscapeGuideReadableFrame(child: items[index]),
       ),
     );
   }
@@ -273,12 +278,12 @@ class HardscapeGuideScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm2),
             Text(
-              '• Never use rocks from parking lots or roadsides (contaminated)\n'
-              '• Avoid metal ores or rocks with metallic veins\n'
-              '• Secure heavy rocks - they can crack glass if they fall\n'
-              '• Test unknown rocks: vinegar fizz = calcium = affects water\n'
-              '• Don\'t collect wood from treated/painted sources\n'
-              '• Weigh down floating wood - fish can get trapped',
+              '- Never use rocks from parking lots or roadsides (contaminated)\n'
+              '- Avoid metal ores or rocks with metallic veins\n'
+              '- Secure heavy rocks - they can crack glass if they fall\n'
+              '- Test unknown rocks: vinegar fizz = calcium = affects water\n'
+              '- Don\'t collect wood from treated/painted sources\n'
+              '- Weigh down floating wood - fish can get trapped',
               style: AppTypography.bodyMedium,
             ),
           ],
@@ -287,6 +292,25 @@ class HardscapeGuideScreen extends StatelessWidget {
 
       const SizedBox(height: AppSpacing.xxl),
     ];
+  }
+}
+
+class _HardscapeGuideReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _HardscapeGuideReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxHardscapeGuideReadableWidth,
+        ),
+        child: child,
+      ),
+    );
   }
 }
 
