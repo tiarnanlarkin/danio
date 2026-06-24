@@ -140,10 +140,16 @@ class GuidanceService {
     GuidanceDismissalScope scope = GuidanceDismissalScope.forever,
   }) async {
     if (scope == GuidanceDismissalScope.day) {
-      await prefs.setString(dayStorageKey(promptId), _todayKey());
+      final saved = await prefs.setString(dayStorageKey(promptId), _todayKey());
+      if (!saved) {
+        throw StateError('Guidance day dismissal write returned false.');
+      }
       return;
     }
-    await prefs.setBool(storageKey(promptId), true);
+    final saved = await prefs.setBool(storageKey(promptId), true);
+    if (!saved) {
+      throw StateError('Guidance dismissal write returned false.');
+    }
   }
 
   Future<bool> _isDismissed(GuidancePromptId promptId) async {

@@ -2343,6 +2343,16 @@ CL-P1-009DX Onboarding completion preference boundary:
 - Focused service coverage simulates a failed `onboarding_completed` write and
   verifies the local completion flag remains unset.
 
+CL-P1-009DY Shared guidance dismissal persistence boundary:
+
+- `GuidanceService.markDismissed` now treats false `SharedPreferences` write
+  results as local dismissal failures for both forever and one-day dismissal
+  scopes.
+- The shared service boundary now matches the prompt widgets: guidance should
+  not be reported as dismissed unless its local flag was saved.
+- Focused service coverage simulates failed forever and day-scope guidance
+  dismissal writes and verifies no dismissed flag is persisted.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

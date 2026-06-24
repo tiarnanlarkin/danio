@@ -9,6 +9,34 @@ Future<GuidanceService> _service(Map<String, Object> initialValues) async {
   return GuidanceService(prefs);
 }
 
+class _FalseGuidancePrefs implements SharedPreferences {
+  _FalseGuidancePrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key) _shouldFail;
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) async {
+    if (_shouldFail(key)) return false;
+    return _delegate.setBool(key, value);
+  }
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    if (_shouldFail(key)) return false;
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
   group('GuidanceService', () {
     test(
@@ -76,6 +104,63 @@ void main() {
       );
 
       expect(decision.shouldShow, isFalse);
+    });
+
+    test('markDismissed surfaces failed forever writes', () async {
+      SharedPreferences.setMockInitialValues({});
+      final delegate = await SharedPreferences.getInstance();
+      final prefs = _FalseGuidancePrefs(
+        delegate,
+        (key) =>
+            key ==
+            GuidanceService.storageKey(
+              GuidancePromptId.learnFirstVisit,
+            ),
+      );
+      final service = GuidanceService(prefs);
+
+      await expectLater(
+        service.markDismissed(GuidancePromptId.learnFirstVisit),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(
+        delegate.getBool(
+          GuidanceService.storageKey(GuidancePromptId.learnFirstVisit),
+        ),
+        isNull,
+      );
+    });
+
+    test('markDismissed surfaces failed day-scope writes', () async {
+      SharedPreferences.setMockInitialValues({});
+      final delegate = await SharedPreferences.getInstance();
+      final prefs = _FalseGuidancePrefs(
+        delegate,
+        (key) =>
+            key ==
+            GuidanceService.dayStorageKey(
+              GuidancePromptId.practiceFirstUsefulVisit,
+            ),
+      );
+      final service = GuidanceService(prefs);
+
+      await expectLater(
+        service.markDismissed(
+          GuidancePromptId.practiceFirstUsefulVisit,
+          scope: GuidanceDismissalScope.day,
+        ),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(
+        delegate.getString(
+          GuidanceService.dayStorageKey(
+            GuidancePromptId.practiceFirstUsefulVisit,
+          ),
+        ),
+        isNull,
+      );
     });
 
     test(

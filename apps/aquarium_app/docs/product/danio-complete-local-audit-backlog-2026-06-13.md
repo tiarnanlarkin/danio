@@ -206,6 +206,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DX treats false onboarding completion preference writes as setup
   save failures, so the router cannot advance as if first-run setup was
   durably completed.
+- CL-P1-009DY treats false shared guidance dismissal writes as local dismissal
+  failures for both forever and one-day prompt scopes.
 
 ## 7. P2 Work - Presentation System
 
