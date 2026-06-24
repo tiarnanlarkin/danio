@@ -2918,6 +2918,15 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative search result cards stay at or
   below 720px on a 2000x1200 tablet viewport.
 
+### CL-P2-002AW Charts Tablet Readability
+
+- Water Charts now centers parameter chips, chart controls, alerts, chart area,
+  summary card, and recent values table in a 720px readable tablet rail.
+- Compact phone surfaces keep the existing vertical chart workflow and
+  horizontal parameter chip scrolling.
+- Focused widget coverage verifies representative chart cards stay at or below
+  720px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

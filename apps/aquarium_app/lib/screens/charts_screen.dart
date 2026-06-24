@@ -20,6 +20,8 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
+const double _maxChartsReadableWidth = 720;
+
 class ChartsScreen extends ConsumerStatefulWidget {
   final String tankId;
   final String initialParam;
@@ -98,135 +100,148 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Parameter selector
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _ParamChip(
-                        label: 'Nitrate',
-                        isSelected: _selectedParam == 'nitrate',
-                        onTap: () => setState(() => _selectedParam = 'nitrate'),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      _ParamChip(
-                        label: 'Nitrite',
-                        isSelected: _selectedParam == 'nitrite',
-                        onTap: () => setState(() => _selectedParam = 'nitrite'),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      _ParamChip(
-                        label: 'Ammonia',
-                        isSelected: _selectedParam == 'ammonia',
-                        onTap: () => setState(() => _selectedParam = 'ammonia'),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      _ParamChip(
-                        label: 'pH',
-                        isSelected: _selectedParam == 'ph',
-                        onTap: () => setState(() => _selectedParam = 'ph'),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      _ParamChip(
-                        label: 'Temp',
-                        isSelected: _selectedParam == 'temp',
-                        onTap: () => setState(() => _selectedParam = 'temp'),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      _ParamChip(
-                        label: 'GH',
-                        isSelected: _selectedParam == 'gh',
-                        onTap: () => setState(() => _selectedParam = 'gh'),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      _ParamChip(
-                        label: 'KH',
-                        isSelected: _selectedParam == 'kh',
-                        onTap: () => setState(() => _selectedParam = 'kh'),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      _ParamChip(
-                        label: 'Phosphate',
-                        isSelected: _selectedParam == 'phosphate',
-                        onTap: () =>
-                            setState(() => _selectedParam = 'phosphate'),
-                      ),
-                    ],
-                  ),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: _maxChartsReadableWidth,
                 ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                // Chart controls
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 8,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _ChartControlChip(
-                      icon: Icons.layers_outlined,
-                      label: 'Compare',
-                      isActive: _multiParamMode,
-                      onTap: () => _showMultiParamDialog(context, waterTests),
+                    // Parameter selector
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _ParamChip(
+                            label: 'Nitrate',
+                            isSelected: _selectedParam == 'nitrate',
+                            onTap: () =>
+                                setState(() => _selectedParam = 'nitrate'),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _ParamChip(
+                            label: 'Nitrite',
+                            isSelected: _selectedParam == 'nitrite',
+                            onTap: () =>
+                                setState(() => _selectedParam = 'nitrite'),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _ParamChip(
+                            label: 'Ammonia',
+                            isSelected: _selectedParam == 'ammonia',
+                            onTap: () =>
+                                setState(() => _selectedParam = 'ammonia'),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _ParamChip(
+                            label: 'pH',
+                            isSelected: _selectedParam == 'ph',
+                            onTap: () => setState(() => _selectedParam = 'ph'),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _ParamChip(
+                            label: 'Temp',
+                            isSelected: _selectedParam == 'temp',
+                            onTap: () =>
+                                setState(() => _selectedParam = 'temp'),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _ParamChip(
+                            label: 'GH',
+                            isSelected: _selectedParam == 'gh',
+                            onTap: () => setState(() => _selectedParam = 'gh'),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _ParamChip(
+                            label: 'KH',
+                            isSelected: _selectedParam == 'kh',
+                            onTap: () => setState(() => _selectedParam = 'kh'),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          _ParamChip(
+                            label: 'Phosphate',
+                            isSelected: _selectedParam == 'phosphate',
+                            onTap: () =>
+                                setState(() => _selectedParam = 'phosphate'),
+                          ),
+                        ],
+                      ),
                     ),
-                    _ChartControlChip(
-                      icon: Icons.square,
-                      label: 'Goal Zones',
-                      isActive: _showGoalZones,
-                      onTap: () =>
-                          setState(() => _showGoalZones = !_showGoalZones),
+
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Chart controls
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 8,
+                      children: [
+                        _ChartControlChip(
+                          icon: Icons.layers_outlined,
+                          label: 'Compare',
+                          isActive: _multiParamMode,
+                          onTap: () =>
+                              _showMultiParamDialog(context, waterTests),
+                        ),
+                        _ChartControlChip(
+                          icon: Icons.square,
+                          label: 'Goal Zones',
+                          isActive: _showGoalZones,
+                          onTap: () =>
+                              setState(() => _showGoalZones = !_showGoalZones),
+                        ),
+                        _ChartControlChip(
+                          icon: Icons.notifications_outlined,
+                          label: 'Alerts',
+                          isActive: _showAlerts,
+                          onTap: () =>
+                              setState(() => _showAlerts = !_showAlerts),
+                        ),
+                      ],
                     ),
-                    _ChartControlChip(
-                      icon: Icons.notifications_outlined,
-                      label: 'Alerts',
-                      isActive: _showAlerts,
-                      onTap: () => setState(() => _showAlerts = !_showAlerts),
+
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Alerts banner (if enabled and issues found)
+                    if (_showAlerts && tank != null) ...[
+                      _buildAlertsBanner(waterTests, tank),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
+
+                    // Chart
+                    Text(
+                      _multiParamMode
+                          ? 'Multi-Parameter Comparison'
+                          : _getParamTitle(_selectedParam),
+                      style: AppTypography.headlineSmall,
                     ),
+                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(
+                      height: 250,
+                      child: _multiParamMode
+                          ? _buildMultiParamChart(
+                              waterTests,
+                              targets: tank?.targets,
+                            )
+                          : _buildChart(waterTests, targets: tank?.targets),
+                    ),
+
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // Summary stats
+                    Text('Summary', style: AppTypography.headlineSmall),
+                    const SizedBox(height: AppSpacing.sm2),
+                    _SummaryCard(logs: waterTests, param: _selectedParam),
+
+                    const SizedBox(height: AppSpacing.xl),
+
+                    // Recent values table
+                    Text('Recent Values', style: AppTypography.headlineSmall),
+                    const SizedBox(height: AppSpacing.sm2),
+                    _ValuesTable(logs: waterTests.reversed.take(10).toList()),
                   ],
                 ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                // Alerts banner (if enabled and issues found)
-                if (_showAlerts && tank != null) ...[
-                  _buildAlertsBanner(waterTests, tank),
-                  const SizedBox(height: AppSpacing.md),
-                ],
-
-                // Chart
-                Text(
-                  _multiParamMode
-                      ? 'Multi-Parameter Comparison'
-                      : _getParamTitle(_selectedParam),
-                  style: AppTypography.headlineSmall,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                SizedBox(
-                  height: 250,
-                  child: _multiParamMode
-                      ? _buildMultiParamChart(
-                          waterTests,
-                          targets: tank?.targets,
-                        )
-                      : _buildChart(waterTests, targets: tank?.targets),
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // Summary stats
-                Text('Summary', style: AppTypography.headlineSmall),
-                const SizedBox(height: AppSpacing.sm2),
-                _SummaryCard(logs: waterTests, param: _selectedParam),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // Recent values table
-                Text('Recent Values', style: AppTypography.headlineSmall),
-                const SizedBox(height: AppSpacing.sm2),
-                _ValuesTable(logs: waterTests.reversed.take(10).toList()),
-              ],
+              ),
             ),
           );
         },

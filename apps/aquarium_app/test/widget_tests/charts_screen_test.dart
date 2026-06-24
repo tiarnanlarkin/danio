@@ -121,6 +121,24 @@ void main() {
       expect(find.textContaining('⚠️ High ammonia'), findsNothing);
     });
 
+    testWidgets('tablet keeps chart cards in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        _wrap(logs: [_waterTestLog(WaterTestResults(nitrate: 10))]),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(
+        tester.getSize(find.byType(Card).first).width,
+        lessThanOrEqualTo(720),
+      );
+    });
+
     testWidgets('all-clear alert uses iconography instead of raw check text', (
       tester,
     ) async {
