@@ -14,6 +14,7 @@ import 'package:danio/screens/search_screen.dart';
 import 'package:danio/screens/settings_hub_screen.dart';
 import 'package:danio/screens/settings_screen.dart';
 import 'package:danio/utils/navigation_throttle.dart';
+import 'package:danio/widgets/common/primary_action_tile.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -119,6 +120,21 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.text('0-day streak'), findsOneWidget);
+    });
+
+    testWidgets('tablet keeps hub destination tiles in a readable rail', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(
+        tester.getSize(find.byType(PrimaryActionTile).first).width,
+        lessThanOrEqualTo(720),
+      );
     });
 
     testWidgets('profile card exposes one summary semantics node', (

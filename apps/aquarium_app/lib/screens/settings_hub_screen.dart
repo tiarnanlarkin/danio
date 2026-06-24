@@ -24,6 +24,8 @@ import 'settings_screen.dart';
 import 'shop_street_screen.dart';
 import 'workshop_screen.dart';
 
+const double _maxSettingsHubReadableWidth = 720;
+
 // appVersion alias — kept for backward compatibility with about_screen.dart import
 const String appVersion = kAppVersion;
 
@@ -123,7 +125,18 @@ class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
               DanioBottomDock.contentClearance,
         ),
         itemCount: items.length,
-        itemBuilder: (context, index) => items[index],
+        itemBuilder: (context, index) => _buildReadableItem(items[index]),
+      ),
+    );
+  }
+
+  Widget _buildReadableItem(Widget child) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxSettingsHubReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
