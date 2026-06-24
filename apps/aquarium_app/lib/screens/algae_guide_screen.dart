@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
+const double _maxAlgaeGuideReadableWidth = 720;
+
 class AlgaeGuideScreen extends StatelessWidget {
   const AlgaeGuideScreen({super.key});
 
@@ -233,30 +235,38 @@ class AlgaeGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: totalItems,
         itemBuilder: (context, index) {
+          Widget readable(Widget child) => _AlgaeGuideReadableFrame(
+            child: child,
+          );
           int currentIndex = 0;
 
           // Intro card
           if (index == currentIndex) {
-            return AppCard(
-              backgroundColor: AppOverlays.info10,
-              padding: AppCardPadding.standard,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.eco, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text('Algae Basics', style: AppTypography.headlineSmall),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm2),
-                  Text(
-                    'Some algae is normal and healthy - it means your tank is alive! '
-                    'Problems occur when algae grows out of control due to imbalances in light, nutrients, or CO2.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
+            return readable(
+              AppCard(
+                backgroundColor: AppOverlays.info10,
+                padding: AppCardPadding.standard,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.eco, color: AppColors.info),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          'Algae Basics',
+                          style: AppTypography.headlineSmall,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm2),
+                    Text(
+                      'Some algae is normal and healthy - it means your tank is alive! '
+                      'Problems occur when algae grows out of control due to imbalances in light, nutrients, or CO2.',
+                      style: AppTypography.bodyMedium,
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -264,13 +274,13 @@ class AlgaeGuideScreen extends StatelessWidget {
 
           // Spacing
           if (index == currentIndex) {
-            return const SizedBox(height: AppSpacing.lg);
+            return readable(const SizedBox(height: AppSpacing.lg));
           }
           currentIndex++;
 
           // Algae types section header (invisible, just for spacing)
           if (index == currentIndex) {
-            return const SizedBox.shrink();
+            return readable(const SizedBox.shrink());
           }
           currentIndex++;
 
@@ -278,32 +288,39 @@ class AlgaeGuideScreen extends StatelessWidget {
           if (index < currentIndex + _algaeTypes.length) {
             final algaeIndex = index - currentIndex;
             final data = _algaeTypes[algaeIndex];
-            return _AlgaeCard(
-              name: data.name,
-              appearance: data.appearance,
-              color: data.color,
-              causes: data.causes,
-              solutions: data.solutions,
-              prevention: data.prevention,
+            return readable(
+              _AlgaeCard(
+                name: data.name,
+                appearance: data.appearance,
+                color: data.color,
+                causes: data.causes,
+                solutions: data.solutions,
+                prevention: data.prevention,
+              ),
             );
           }
           currentIndex += _algaeTypes.length;
 
           // Spacing
           if (index == currentIndex) {
-            return const SizedBox(height: AppSpacing.lg);
+            return readable(const SizedBox(height: AppSpacing.lg));
           }
           currentIndex++;
 
           // Crew title
           if (index == currentIndex) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Algae-Eating Crew', style: AppTypography.headlineMedium),
-                const SizedBox(height: AppSpacing.md),
-              ],
+            return readable(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Algae-Eating Crew',
+                    style: AppTypography.headlineMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                ],
+              ),
             );
           }
           currentIndex++;
@@ -312,52 +329,77 @@ class AlgaeGuideScreen extends StatelessWidget {
           if (index < currentIndex + _crewMembers.length) {
             final crewIndex = index - currentIndex;
             final data = _crewMembers[crewIndex];
-            return _CrewCard(
-              name: data.name,
-              eats: data.eats,
-              notes: data.notes,
+            return readable(
+              _CrewCard(
+                name: data.name,
+                eats: data.eats,
+                notes: data.notes,
+              ),
             );
           }
           currentIndex += _crewMembers.length;
 
           // Spacing
           if (index == currentIndex) {
-            return const SizedBox(height: AppSpacing.lg);
+            return readable(const SizedBox(height: AppSpacing.lg));
           }
           currentIndex++;
 
           // Checklist title
           if (index == currentIndex) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Prevention Checklist',
-                  style: AppTypography.headlineMedium,
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
+            return readable(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Prevention Checklist',
+                    style: AppTypography.headlineMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                ],
+              ),
             );
           }
           currentIndex++;
 
           // Checklist card
           if (index == currentIndex) {
-            return AppCard(
-              padding: AppCardPadding.standard,
-              child: Column(
-                children: _checklistItems
-                    .map((text) => _ChecklistItem(text: text))
-                    .toList(),
+            return readable(
+              AppCard(
+                padding: AppCardPadding.standard,
+                child: Column(
+                  children: _checklistItems
+                      .map((text) => _ChecklistItem(text: text))
+                      .toList(),
+                ),
               ),
             );
           }
           currentIndex++;
 
           // Final spacing
-          return const SizedBox(height: AppSpacing.xxl);
+          return readable(const SizedBox(height: AppSpacing.xxl));
         },
+      ),
+    );
+  }
+}
+
+class _AlgaeGuideReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _AlgaeGuideReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxAlgaeGuideReadableWidth,
+        ),
+        child: child,
       ),
     );
   }
@@ -429,7 +471,12 @@ class _AlgaeCard extends StatelessWidget {
         subtitle: Text(appearance, style: AppTypography.bodySmall, maxLines: 2),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:danio/screens/algae_guide_screen.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -57,18 +58,78 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('tablet keeps algae guide surfaces readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      final introCard = find
+          .ancestor(
+            of: find.text('Algae Basics'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      final algaeCard = find
+          .ancestor(
+            of: find.text('Green Spot Algae (GSA)'),
+            matching: find.byType(Card),
+          )
+          .first;
+      final introWidth = tester.getSize(introCard).width;
+      final algaeCardWidth = tester.getSize(algaeCard).width;
+
+      await tester.scrollUntilVisible(
+        find.text('Amano Shrimp'),
+        900,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      final crewCard = find
+          .ancestor(
+            of: find.text('Amano Shrimp'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+      final crewCardWidth = tester.getSize(crewCard).width;
+
+      await tester.scrollUntilVisible(
+        find.text('Light: 6-8 hours max, no direct sunlight'),
+        900,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+
+      final checklistCard = find
+          .ancestor(
+            of: find.text('Light: 6-8 hours max, no direct sunlight'),
+            matching: find.byType(AppCard),
+          )
+          .first;
+
+      expect(introWidth, lessThanOrEqualTo(720));
+      expect(algaeCardWidth, lessThanOrEqualTo(720));
+      expect(crewCardWidth, lessThanOrEqualTo(720));
+      expect(tester.getSize(checklistCard).width, lessThanOrEqualTo(720));
+    });
   });
 
   group('AlgaeGuideScreen — expandable algae cards', () {
-    testWidgets('algae cards are collapsed by default (causes not visible)',
-        (tester) async {
+    testWidgets('algae cards are collapsed by default (causes not visible)', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
       // "Causes" heading only appears in expanded cards
       expect(find.text('Causes'), findsNothing);
     });
 
-    testWidgets('tapping algae card reveals causes and solutions', (tester) async {
+    testWidgets('tapping algae card reveals causes and solutions', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pump();
 

@@ -2704,6 +2704,17 @@ CL-P3-001A Optional AI provider setup boundary:
   stay at or below the 720px tablet readability bound on a 2000x1200 tablet
   viewport.
 
+### CL-P2-002AA Algae Guide Tablet Readability
+
+- Algae Guide now centers its intro card, algae cards, algae-eating crew cards,
+  section headings, and prevention checklist in the same readable 720px rail on
+  wide tablet surfaces.
+- Existing algae type data, crew guidance, prevention checklist content, and
+  expansion behavior remain unchanged.
+- Focused widget coverage verifies representative intro, algae-card, crew-card,
+  and checklist-card surfaces stay at or below the 720px tablet readability
+  bound on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
