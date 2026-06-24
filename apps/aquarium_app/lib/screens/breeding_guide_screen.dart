@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
+
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
+
+const double _maxBreedingGuideReadableWidth = 720;
 
 class BreedingGuideScreen extends StatelessWidget {
   const BreedingGuideScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Fish Breeding Guide')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems(context).length,
-        itemBuilder: (context, index) => _buildItems(context)[index],
+        itemCount: items.length,
+        itemBuilder: (context, index) =>
+            _BreedingGuideReadableFrame(child: items[index]),
       ),
     );
   }
 
   List<Widget> _buildItems(BuildContext context) {
     return [
-      // Intro
       AppCard(
         backgroundColor: AppOverlays.info10,
         padding: AppCardPadding.standard,
@@ -42,13 +47,9 @@ class BreedingGuideScreen extends StatelessWidget {
           ],
         ),
       ),
-
       const SizedBox(height: AppSpacing.lg),
-
-      // Breeding types
       Text('Breeding Methods', style: AppTypography.headlineMedium),
       const SizedBox(height: AppSpacing.md),
-
       _MethodCard(
         title: 'Livebearers',
         icon: Icons.child_friendly,
@@ -116,13 +117,9 @@ class BreedingGuideScreen extends StatelessWidget {
           'Keep water still - bubbles fragile',
         ],
       ),
-
       const SizedBox(height: AppSpacing.lg),
-
-      // General conditioning
       Text('Conditioning Breeders', style: AppTypography.headlineMedium),
       const SizedBox(height: AppSpacing.md),
-
       AppCard(
         padding: AppCardPadding.standard,
         child: Column(
@@ -143,7 +140,7 @@ class BreedingGuideScreen extends StatelessWidget {
             _ConditionItem(
               title: 'Temperature',
               description:
-                  'Slight increase (1-2°C) can trigger breeding. Simulate rainy season.',
+                  'Slight increase (1-2 C) can trigger breeding. Simulate rainy season.',
             ),
             const Divider(),
             _ConditionItem(
@@ -160,13 +157,9 @@ class BreedingGuideScreen extends StatelessWidget {
           ],
         ),
       ),
-
       const SizedBox(height: AppSpacing.lg),
-
-      // Raising fry
       Text('Raising Fry', style: AppTypography.headlineMedium),
       const SizedBox(height: AppSpacing.md),
-
       _FryStageCard(
         stage: 'Day 1-3',
         title: 'Egg/Yolk Sac Stage',
@@ -191,13 +184,9 @@ class BreedingGuideScreen extends StatelessWidget {
         feeding: 'Crushed flakes, small pellets, frozen foods',
         care: 'Separate by size if needed, regular maintenance',
       ),
-
       const SizedBox(height: AppSpacing.lg),
-
-      // Easy breeders
       Text('Easiest Fish to Breed', style: AppTypography.headlineMedium),
       const SizedBox(height: AppSpacing.md),
-
       AppCard(
         padding: AppCardPadding.standard,
         child: Column(
@@ -247,10 +236,7 @@ class BreedingGuideScreen extends StatelessWidget {
           ],
         ),
       ),
-
       const SizedBox(height: AppSpacing.lg),
-
-      // Warning
       AppCard(
         backgroundColor: AppOverlays.warning10,
         padding: AppCardPadding.standard,
@@ -266,19 +252,37 @@ class BreedingGuideScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm2),
             Text(
-              '• Have a plan for the fry - can you home them?\n'
-              '• Breeding tanks and supplies add cost\n'
-              '• Livebearers can quickly overpopulate\n'
-              '• Quality over quantity - cull runts humanely\n'
-              '• Don\'t release into wild - ever',
+              '- Have a plan for the fry - can you home them?\n'
+              '- Breeding tanks and supplies add cost\n'
+              '- Livebearers can quickly overpopulate\n'
+              '- Quality over quantity - cull runts humanely\n'
+              '- Don\'t release into wild - ever',
               style: AppTypography.bodyMedium,
             ),
           ],
         ),
       ),
-
       const SizedBox(height: AppSpacing.xxl),
     ];
+  }
+}
+
+class _BreedingGuideReadableFrame extends StatelessWidget {
+  final Widget child;
+
+  const _BreedingGuideReadableFrame({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: _maxBreedingGuideReadableWidth,
+        ),
+        child: child,
+      ),
+    );
   }
 }
 
@@ -315,7 +319,12 @@ class _MethodCard extends StatelessWidget {
         subtitle: Text(description, style: AppTypography.bodySmall),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.md,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -327,7 +336,7 @@ class _MethodCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm2),
                 ...tips.map(
-                  (t) => Padding(
+                  (tip) => Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,7 +348,7 @@ class _MethodCard extends StatelessWidget {
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
-                          child: Text(t, style: AppTypography.bodySmall),
+                          child: Text(tip, style: AppTypography.bodySmall),
                         ),
                       ],
                     ),
@@ -421,8 +430,8 @@ class _FryStageCard extends StatelessWidget {
                 children: [
                   Text(title, style: AppTypography.labelLarge),
                   const SizedBox(height: AppSpacing.xs),
-                  Text('🍼 $feeding', style: AppTypography.bodySmall),
-                  Text('🏥 $care', style: AppTypography.bodySmall),
+                  Text('Feeding: $feeding', style: AppTypography.bodySmall),
+                  Text('Care: $care', style: AppTypography.bodySmall),
                 ],
               ),
             ),

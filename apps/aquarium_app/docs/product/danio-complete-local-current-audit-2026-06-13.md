@@ -2715,6 +2715,17 @@ CL-P3-001A Optional AI provider setup boundary:
   and checklist-card surfaces stay at or below the 720px tablet readability
   bound on a 2000x1200 tablet viewport.
 
+### CL-P2-002AB Breeding Guide Tablet Readability
+
+- Breeding Guide now centers intro, method cards, conditioning guidance,
+  fry-stage cards, easy-breeder rows, and the pre-breeding warning card in the
+  same readable 720px rail on wide tablet surfaces.
+- Temperature, fry-feeding/care, and warning copy are now source-safe ASCII
+  text while preserving the existing breeding guidance.
+- Focused widget coverage verifies representative intro, method, conditioning,
+  fry-stage, and warning surfaces stay at or below the 720px tablet readability
+  bound on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
