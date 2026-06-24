@@ -50,6 +50,7 @@ class SharedPreferencesBackup {
     'onboarding_',
     'daily_goal_',
     'spaced_repetition_',
+    'checklist_',
     'daily_xp',
     'lesson_progress',
     'completed_lessons',

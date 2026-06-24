@@ -2394,6 +2394,20 @@ CL-P1-009EC Reminder and Cost Tracker preference write boundary:
 - Focused widget coverage simulates false reminder and cost-tracker preference
   writes and verifies normal retry feedback with no false saved item state.
 
+CL-P1-009ED Maintenance Checklist preference write boundary:
+
+- Maintenance Checklist now persists weekly and monthly progress through a
+  versioned local preference snapshot while still reading the previous
+  multi-key format for existing installs.
+- Checklist toggles and reset actions now reject false
+  `SharedPreferences.setString` results, roll back visible progress, and show
+  normal retry feedback instead of displaying unsaved task completion.
+- Local backup exports now include `checklist_` preference snapshots so care
+  checklist progress survives backup/restore alongside the other local profile
+  preferences.
+- Focused widget and backup-service coverage simulates a false checklist
+  snapshot write and verifies the new snapshot is exportable.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

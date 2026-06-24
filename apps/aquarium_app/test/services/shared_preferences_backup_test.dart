@@ -51,6 +51,10 @@ void main() {
         await prefs.setString('wishlist_items', '[]');
         await prefs.setString('shop_budget', '{"monthlyBudget":100}');
         await prefs.setString('local_shops', '[]');
+        await prefs.setString(
+          'checklist_tank-1_state_v2',
+          '{"week":"2026-W1","month":"2026-1","weekly":{},"monthly":{}}',
+        );
         await prefs.setString('user_openai_api_key', 'secret');
 
         final backup =
@@ -71,6 +75,10 @@ void main() {
         expect(entries['wishlist_items'], '[]');
         expect(entries['shop_budget'], '{"monthlyBudget":100}');
         expect(entries['local_shops'], '[]');
+        expect(
+          entries['checklist_tank-1_state_v2'],
+          '{"week":"2026-W1","month":"2026-1","weekly":{},"monthly":{}}',
+        );
         expect(entries.containsKey('user_openai_api_key'), isFalse);
       },
     );

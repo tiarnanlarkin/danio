@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/maintenance_checklist_screen.dart';
 import 'package:danio/widgets/core/app_card.dart';
 
@@ -14,8 +15,16 @@ import 'package:danio/widgets/core/app_card.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrap({String tankId = 'tank-1', String tankName = 'Test Tank'}) {
+Widget _wrap({
+  String tankId = 'tank-1',
+  String tankName = 'Test Tank',
+  SharedPreferences? prefs,
+}) {
   return ProviderScope(
+    overrides: [
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
+    ],
     child: MaterialApp(
       home: MaintenanceChecklistScreen(tankId: tankId, tankName: tankName),
     ),
@@ -26,6 +35,39 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 100));
   await tester.pump(const Duration(milliseconds: 500));
+}
+
+class _FalseSetStringPrefs implements SharedPreferences {
+  _FalseSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, String value) _shouldFail;
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      return Future.value(false);
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 // ---------------------------------------------------------------------------
@@ -128,5 +170,30 @@ void main() {
       expect(find.text('Complete!'), findsOneWidget);
       expect(find.text('\u2713 Complete!'), findsNothing);
     });
+
+    testWidgets(
+      'false checklist save result rolls back progress with feedback',
+      (tester) async {
+        final prefs = await SharedPreferences.getInstance();
+        final falsePrefs = _FalseSetStringPrefs(
+          prefs,
+          (key, value) => key == 'checklist_tank-1_state_v2',
+        );
+
+        await tester.pumpWidget(_wrap(prefs: falsePrefs));
+        await _advance(tester);
+
+        await tester.tap(find.text('Test water parameters'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        final checkbox = tester.widget<Checkbox>(find.byType(Checkbox).first);
+        expect(checkbox.value, isFalse);
+        expect(
+          find.text("Couldn't save checklist progress. Try again."),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

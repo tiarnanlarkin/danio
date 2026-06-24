@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
+import '../utils/logger.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/core/app_dialog.dart';
 
@@ -27,6 +33,10 @@ class _MaintenanceChecklistScreenState
     extends ConsumerState<MaintenanceChecklistScreen> {
   Map<String, bool> _weeklyChecks = {};
   Map<String, bool> _monthlyChecks = {};
+
+  String get _prefsPrefix => 'checklist_${widget.tankId}';
+
+  String get _stateKey => '${_prefsPrefix}_state_v2';
 
   final _weeklyItems = [
     _CheckItem('water_test', 'Test water parameters', Icons.science),
@@ -68,69 +78,165 @@ class _MaintenanceChecklistScreenState
 
   Future<void> _loadChecks() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    final prefix = 'checklist_${widget.tankId}';
-
-    final savedWeek = prefs.getString('${prefix}_week');
-    final savedMonth = prefs.getString('${prefix}_month');
+    final savedState = _decodePersistedState(prefs.getString(_stateKey));
+    final savedWeek = prefs.getString('${_prefsPrefix}_week');
+    final savedMonth = prefs.getString('${_prefsPrefix}_month');
 
     if (!mounted) return;
     setState(() {
-      // Reset weekly if new week
-      if (savedWeek != _currentWeek) {
-        _weeklyChecks = {};
+      if (savedState != null) {
+        _weeklyChecks = savedState.week == _currentWeek
+            ? savedState.weeklyChecks
+            : {};
+        _monthlyChecks = savedState.month == _currentMonth
+            ? savedState.monthlyChecks
+            : {};
       } else {
-        for (final item in _weeklyItems) {
-          _weeklyChecks[item.id] =
-              prefs.getBool('${prefix}_weekly_${item.id}') ?? false;
+        // Legacy multi-key format, kept so existing installs load correctly.
+        if (savedWeek != _currentWeek) {
+          _weeklyChecks = {};
+        } else {
+          for (final item in _weeklyItems) {
+            _weeklyChecks[item.id] =
+                prefs.getBool('${_prefsPrefix}_weekly_${item.id}') ?? false;
+          }
         }
-      }
 
-      // Reset monthly if new month
-      if (savedMonth != _currentMonth) {
-        _monthlyChecks = {};
-      } else {
-        for (final item in _monthlyItems) {
-          _monthlyChecks[item.id] =
-              prefs.getBool('${prefix}_monthly_${item.id}') ?? false;
+        if (savedMonth != _currentMonth) {
+          _monthlyChecks = {};
+        } else {
+          for (final item in _monthlyItems) {
+            _monthlyChecks[item.id] =
+                prefs.getBool('${_prefsPrefix}_monthly_${item.id}') ?? false;
+          }
         }
       }
     });
+  }
+
+  _PersistedChecklistState? _decodePersistedState(String? raw) {
+    if (raw == null) return null;
+
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map<String, dynamic>) {
+        return null;
+      }
+
+      final week = decoded['week'];
+      final month = decoded['month'];
+      if (week is! String || month is! String) {
+        return null;
+      }
+
+      return _PersistedChecklistState(
+        week: week,
+        month: month,
+        weeklyChecks: _boolMapFromJson(decoded['weekly'], _weeklyItems),
+        monthlyChecks: _boolMapFromJson(decoded['monthly'], _monthlyItems),
+      );
+    } catch (error, stackTrace) {
+      logError(
+        'Failed to decode persisted checklist state: $error',
+        stackTrace: stackTrace,
+        tag: 'MaintenanceChecklistScreen',
+      );
+      return null;
+    }
+  }
+
+  Map<String, bool> _boolMapFromJson(Object? value, List<_CheckItem> items) {
+    if (value is! Map) return {};
+
+    final allowedIds = items.map((item) => item.id).toSet();
+    final checks = <String, bool>{};
+    for (final entry in value.entries) {
+      final id = entry.key;
+      final checked = entry.value;
+      if (id is String && checked is bool && allowedIds.contains(id)) {
+        checks[id] = checked;
+      }
+    }
+    return checks;
   }
 
   Future<void> _saveChecks() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    final prefix = 'checklist_${widget.tankId}';
+    final payload = jsonEncode({
+      'week': _currentWeek,
+      'month': _currentMonth,
+      'weekly': _weeklyChecks,
+      'monthly': _monthlyChecks,
+    });
+    await _setStringOrThrow(prefs, _stateKey, payload);
+  }
 
-    await prefs.setString('${prefix}_week', _currentWeek);
-    await prefs.setString('${prefix}_month', _currentMonth);
-
-    for (final item in _weeklyItems) {
-      await prefs.setBool(
-        '${prefix}_weekly_${item.id}',
-        _weeklyChecks[item.id] ?? false,
-      );
+  Future<void> _setStringOrThrow(
+    SharedPreferences prefs,
+    String key,
+    String value,
+  ) async {
+    final saved = await prefs.setString(key, value);
+    if (!saved) {
+      throw StateError('SharedPreferences.setString returned false for $key');
     }
+  }
 
-    for (final item in _monthlyItems) {
-      await prefs.setBool(
-        '${prefix}_monthly_${item.id}',
-        _monthlyChecks[item.id] ?? false,
+  Future<bool> _saveChecksWithRollback({
+    required Map<String, bool> rollbackWeeklyChecks,
+    required Map<String, bool> rollbackMonthlyChecks,
+    required String logMessage,
+  }) async {
+    try {
+      await _saveChecks();
+      return true;
+    } catch (error, stackTrace) {
+      logError(
+        '$logMessage: $error',
+        stackTrace: stackTrace,
+        tag: 'MaintenanceChecklistScreen',
       );
+      if (!mounted) return false;
+      setState(() {
+        _weeklyChecks = Map<String, bool>.from(rollbackWeeklyChecks);
+        _monthlyChecks = Map<String, bool>.from(rollbackMonthlyChecks);
+      });
+      AppFeedback.showError(
+        context,
+        "Couldn't save checklist progress. Try again.",
+      );
+      return false;
     }
   }
 
   void _toggleWeekly(String id) {
+    final previousWeeklyChecks = Map<String, bool>.from(_weeklyChecks);
+    final previousMonthlyChecks = Map<String, bool>.from(_monthlyChecks);
     setState(() {
       _weeklyChecks[id] = !(_weeklyChecks[id] ?? false);
     });
-    _saveChecks();
+    unawaited(
+      _saveChecksWithRollback(
+        rollbackWeeklyChecks: previousWeeklyChecks,
+        rollbackMonthlyChecks: previousMonthlyChecks,
+        logMessage: 'Failed to persist weekly checklist progress',
+      ),
+    );
   }
 
   void _toggleMonthly(String id) {
+    final previousWeeklyChecks = Map<String, bool>.from(_weeklyChecks);
+    final previousMonthlyChecks = Map<String, bool>.from(_monthlyChecks);
     setState(() {
       _monthlyChecks[id] = !(_monthlyChecks[id] ?? false);
     });
-    _saveChecks();
+    unawaited(
+      _saveChecksWithRollback(
+        rollbackWeeklyChecks: previousWeeklyChecks,
+        rollbackMonthlyChecks: previousMonthlyChecks,
+        logMessage: 'Failed to persist monthly checklist progress',
+      ),
+    );
   }
 
   int get _weeklyComplete => _weeklyChecks.values.where((v) => v).length;
@@ -304,14 +410,36 @@ class _MaintenanceChecklistScreenState
       confirmLabel: 'Reset',
       cancelLabel: 'Keep Progress',
       onConfirm: () {
+        final previousWeeklyChecks = Map<String, bool>.from(_weeklyChecks);
+        final previousMonthlyChecks = Map<String, bool>.from(_monthlyChecks);
         setState(() {
           _weeklyChecks = {};
           _monthlyChecks = {};
         });
-        _saveChecks();
+        unawaited(
+          _saveChecksWithRollback(
+            rollbackWeeklyChecks: previousWeeklyChecks,
+            rollbackMonthlyChecks: previousMonthlyChecks,
+            logMessage: 'Failed to persist checklist reset',
+          ),
+        );
       },
     );
   }
+}
+
+class _PersistedChecklistState {
+  const _PersistedChecklistState({
+    required this.week,
+    required this.month,
+    required this.weeklyChecks,
+    required this.monthlyChecks,
+  });
+
+  final String week;
+  final String month;
+  final Map<String, bool> weeklyChecks;
+  final Map<String, bool> monthlyChecks;
 }
 
 class _MaintenanceReadableFrame extends StatelessWidget {
