@@ -12,6 +12,15 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
 
+const double _maxWishlistContentWidth = 720;
+
+double _wishlistHorizontalInset(double availableWidth) {
+  final boundedWithPadding = _maxWishlistContentWidth + (AppSpacing.md * 2);
+  if (availableWidth <= boundedWithPadding) return AppSpacing.md;
+
+  return (availableWidth - _maxWishlistContentWidth) / 2;
+}
+
 /// Screen to view and manage wishlist items for a category
 class WishlistScreen extends ConsumerWidget {
   final WishlistCategory category;
@@ -85,17 +94,27 @@ class WishlistScreen extends ConsumerWidget {
               actionLabel: 'Add Item',
               onAction: () => _showAddDialog(screenContext, ref),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return _WishlistItemCard(
-                  item: item,
-                  accentColor: _accentColor,
-                  onTap: () => _showEditDialog(context, ref, item),
-                  onPurchased: () => _markPurchased(screenContext, ref, item),
-                  onDelete: () => _deleteItem(screenContext, ref, item),
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _wishlistHorizontalInset(
+                      constraints.maxWidth,
+                    ),
+                    vertical: AppSpacing.md,
+                  ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return _WishlistItemCard(
+                      item: item,
+                      accentColor: _accentColor,
+                      onTap: () => _showEditDialog(context, ref, item),
+                      onPurchased: () =>
+                          _markPurchased(screenContext, ref, item),
+                      onDelete: () => _deleteItem(screenContext, ref, item),
+                    );
+                  },
                 );
               },
             ),

@@ -2842,6 +2842,16 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies representative shopping and budget surfaces
   start inside the centered tablet rail on a 2000x1200 tablet viewport.
 
+### CL-P2-002AN Wishlist Tablet Cards
+
+- Wishlist saved-item lists now use a centered 720px readable tablet rail so
+  individual fish, plant, and equipment wishlist cards do not stretch across
+  wide screens.
+- Compact phone surfaces keep the existing vertical list padding and item-card
+  behaviour.
+- Focused widget coverage verifies a representative wishlist item card stays at
+  or below 720px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without

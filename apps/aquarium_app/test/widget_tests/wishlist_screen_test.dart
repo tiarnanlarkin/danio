@@ -166,6 +166,31 @@ void main() {
       expect(find.text('Neon Tetra'), findsOneWidget);
     });
 
+    testWidgets('tablet keeps wishlist item cards readable', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      SharedPreferences.setMockInitialValues({
+        'wishlist_items':
+            '[{"id":"wishlist-tablet","name":"Neon Tetra",'
+            '"category":"fish","species":"Paracheirodon innesi",'
+            '"notes":null,"estimatedPrice":2.5,"imageUrl":null,'
+            '"quantity":6,"purchased":false,'
+            '"createdAt":"${DateTime.now().toIso8601String()}",'
+            '"purchasedAt":null}]',
+      });
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final itemCard = find.ancestor(
+        of: find.text('Neon Tetra'),
+        matching: find.byType(Card),
+      );
+
+      expect(itemCard, findsOneWidget);
+      expect(tester.getSize(itemCard).width, lessThanOrEqualTo(720));
+    });
+
     testWidgets('deleting a wishlist item shows undo and restores it', (
       tester,
     ) async {
