@@ -203,6 +203,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DW treats false schema-version stamp writes as migration failures,
   preventing startup migrations from silently claiming completion without a
   durable local version marker.
+- CL-P1-009DX treats false onboarding completion preference writes as setup
+  save failures, so the router cannot advance as if first-run setup was
+  durably completed.
 
 ## 7. P2 Work - Presentation System
 

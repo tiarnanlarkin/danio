@@ -2333,6 +2333,16 @@ CL-P1-009DW Schema migration stamp persistence boundary:
 - Focused unit coverage simulates a failed `_schemaVersion` stamp and verifies
   migration does not silently complete without a persisted marker.
 
+CL-P1-009DX Onboarding completion preference boundary:
+
+- Onboarding completion now treats a `SharedPreferences.setBool` false result
+  as a local setup save failure instead of invalidating the router as if setup
+  completed durably.
+- `OnboardingService` has an injectable preferences factory for isolated
+  service tests while production callers continue using the shared singleton.
+- Focused service coverage simulates a failed `onboarding_completed` write and
+  verifies the local completion flag remains unset.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
