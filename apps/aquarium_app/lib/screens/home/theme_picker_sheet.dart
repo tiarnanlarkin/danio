@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -191,7 +192,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
     _swipeController.addListener(_activeSwipeListener!);
   }
 
-  void _selectTheme() {
+  Future<void> _selectTheme() async {
     final type = _themes[_currentIndex];
     final unlockState = ref.read(roomThemeUnlockStatesProvider)[type];
     if (unlockState != null && !unlockState.isUnlocked) {
@@ -199,7 +200,15 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
       AppHaptics.selection(enabled: _hapticEnabled);
       return;
     }
-    ref.read(roomThemeProvider.notifier).setTheme(type);
+    final saved = await ref.read(roomThemeProvider.notifier).setTheme(type);
+    if (!mounted) return;
+    if (!saved) {
+      DanioSnackBar.error(
+        context,
+        'Couldn\'t apply that room vibe. Try again.',
+      );
+      return;
+    }
     AppHaptics.success(enabled: _hapticEnabled);
     Navigator.maybePop(context);
   }
@@ -362,7 +371,7 @@ class _ThemePickerSheetState extends ConsumerState<ThemePickerSheet>
         onPanStart: _onPanStart,
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
-        onTap: _selectTheme,
+        onTap: () => unawaited(_selectTheme()),
         child: Semantics(
           label: unlockState.isUnlocked
               ? '${theme.name} theme, ${theme.description}. Swipe to browse, tap to select'

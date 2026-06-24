@@ -183,6 +183,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DP rolls back visible spaced-repetition review-card changes when
   create, lesson auto-seed, or delete writes fail, preventing unsaved practice
   progress from appearing in local state.
+- CL-P1-009DQ makes room-vibe apply flows wait for the local `room_theme`
+  preference write before exposing the changed theme or showing success
+  feedback.
 
 ## 7. P2 Work - Presentation System
 

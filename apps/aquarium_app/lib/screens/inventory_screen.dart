@@ -237,11 +237,18 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
       return;
     }
 
-    await ref.read(roomThemeProvider.notifier).setTheme(type);
+    final applied = await ref.read(roomThemeProvider.notifier).setTheme(type);
     if (!mounted) return;
 
     final theme = RoomTheme.fromType(type);
-    DanioSnackBar.success(context, '${theme.name} applied to your tank.');
+    if (applied) {
+      DanioSnackBar.success(context, '${theme.name} applied to your tank.');
+    } else {
+      DanioSnackBar.error(
+        context,
+        'Couldn\'t apply ${theme.name}. Try again.',
+      );
+    }
   }
 
   Future<void> _handleEquipDecoration(TankDecorationType type) async {

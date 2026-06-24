@@ -2258,6 +2258,16 @@ CL-P1-009DP Spaced-repetition review-card persistence boundary:
 - Focused provider coverage simulates local card-write failures and verifies
   visible review progress stays consistent with persisted storage.
 
+CL-P1-009DQ Room-vibe apply persistence boundary:
+
+- Room-vibe applies now update visible theme state only after the local
+  `room_theme` preference write succeeds.
+- Theme Picker and Inventory no longer show success feedback for failed room
+  vibe applies; failed writes keep the current room vibe visible with normal
+  retry feedback.
+- Focused provider coverage simulates failed `room_theme` writes and verifies
+  the previous visible room vibe stays consistent with persisted storage.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

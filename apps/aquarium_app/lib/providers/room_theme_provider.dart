@@ -33,24 +33,33 @@ class RoomThemeNotifier extends StateNotifier<RoomThemeType> {
     } catch (e) {
       // If loading fails, keep default theme (ocean)
       // Don't crash the app for a cosmetic preference
-      logError('Failed to load room theme preference: $e', tag: 'RoomThemeProvider');
+      logError(
+        'Failed to load room theme preference: $e',
+        tag: 'RoomThemeProvider',
+      );
     }
   }
 
-  Future<void> setTheme(RoomThemeType theme) async {
-    state = theme;
+  Future<bool> setTheme(RoomThemeType theme) async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.setInt(_key, theme.index);
+      final saved = await prefs.setInt(_key, theme.index);
+      if (!saved) {
+        throw StateError('SharedPreferences returned false for $_key');
+      }
+      state = theme;
+      return true;
     } catch (e) {
-      // Theme is already set in state, just log the save failure
-      // User will see the change but it won't persist
-      logError('Failed to save room theme preference: $e', tag: 'RoomThemeProvider');
+      logError(
+        'Failed to save room theme preference: $e',
+        tag: 'RoomThemeProvider',
+      );
+      return false;
     }
   }
 
-  void nextTheme() {
+  Future<bool> nextTheme() {
     final nextIndex = (state.index + 1) % RoomThemeType.values.length;
-    setTheme(RoomThemeType.values[nextIndex]);
+    return setTheme(RoomThemeType.values[nextIndex]);
   }
 }

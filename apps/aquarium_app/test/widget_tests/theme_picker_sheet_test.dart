@@ -85,7 +85,8 @@ class _TestRoomThemeNotifier extends RoomThemeNotifier {
   }
 
   @override
-  Future<void> setTheme(RoomThemeType theme) async {
+  Future<bool> setTheme(RoomThemeType theme) async {
     state = theme;
+    return true;
   }
 }
