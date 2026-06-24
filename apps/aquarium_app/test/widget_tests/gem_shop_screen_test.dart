@@ -77,6 +77,23 @@ void main() {
       }
     });
 
+    testWidgets('tablet keeps shop item cards bounded', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(2000, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final item = ShopCatalog.getById('xp_boost_1h')!;
+
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      final card = find.bySemanticsLabel(
+        RegExp('${RegExp.escape(item.name)}.*${item.gemCost} gems'),
+      );
+
+      expect(card, findsOneWidget);
+      expect(tester.getSize(card).width, lessThanOrEqualTo(360));
+    });
+
     testWidgets('purchase dialog title omits catalog emoji', (tester) async {
       final item = ShopCatalog.getById('xp_boost_1h')!;
 

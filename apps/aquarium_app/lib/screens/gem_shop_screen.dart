@@ -18,6 +18,23 @@ import '../widgets/core/app_button.dart';
 import '../widgets/core/app_dialog.dart';
 import '../utils/logger.dart';
 
+const double _maxGemShopGridWidth = 1100;
+const double _gemShopGridSpacing = 12;
+
+double _gemShopGridHorizontalInset(double availableWidth) {
+  final boundedWithPadding = _maxGemShopGridWidth + (AppSpacing.md * 2);
+  if (availableWidth <= boundedWithPadding) return AppSpacing.md;
+
+  return (availableWidth - _maxGemShopGridWidth) / 2;
+}
+
+int _gemShopGridColumnCount(double contentWidth) {
+  if (contentWidth < 340) return 1;
+  if (contentWidth >= 744) return 3;
+
+  return 2;
+}
+
 /// Main Gem Shop Screen
 class GemShopScreen extends ConsumerStatefulWidget {
   const GemShopScreen({super.key});
@@ -326,18 +343,30 @@ class _ShopItemGrid extends ConsumerWidget {
       );
     }
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.75,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return _ShopItemCard(item: item, onTap: () => onPurchase(item));
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final horizontalInset = _gemShopGridHorizontalInset(
+          constraints.maxWidth,
+        );
+        final contentWidth = constraints.maxWidth - (horizontalInset * 2);
+
+        return GridView.builder(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalInset,
+            vertical: AppSpacing.md,
+          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _gemShopGridColumnCount(contentWidth),
+            childAspectRatio: 0.75,
+            crossAxisSpacing: _gemShopGridSpacing,
+            mainAxisSpacing: _gemShopGridSpacing,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return _ShopItemCard(item: item, onTap: () => onPurchase(item));
+          },
+        );
       },
     );
   }

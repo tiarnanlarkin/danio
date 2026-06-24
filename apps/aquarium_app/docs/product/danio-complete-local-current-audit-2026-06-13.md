@@ -2823,6 +2823,16 @@ CL-P3-001A Optional AI provider setup boundary:
   on a 2000x1200 tablet viewport and that permanent reward collections do not
   require sideways scrolling on that tablet layout.
 
+### CL-P2-002AL Gem Shop Tablet Grid
+
+- Gem Shop category grids now use a centered bounded adaptive tablet layout so
+  product cards do not stretch into oversized two-column phone-card layouts on
+  wide screens.
+- Phone and compact surfaces keep the existing two-column shop behavior, with a
+  single-column fallback for very narrow surfaces.
+- Focused widget coverage verifies representative shop item cards stay at or
+  below 360px on a 2000x1200 tablet viewport.
+
 ### CL-P0-004E Tablet first-run consent layout
 
 - A dedicated local `danio_tablet_api36` AVD now exists for tablet QA without
