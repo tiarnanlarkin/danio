@@ -17,13 +17,59 @@ import 'package:danio/providers/user_profile_provider.dart';
 
 /// Override that provides the mocked SharedPreferences through Riverpod,
 /// matching the ConsentScreen's use of shared_preferencesProvider.
-final _prefsOverride = sharedPreferencesProvider.overrideWith((ref) async {
-  return SharedPreferences.getInstance();
-});
+Override _prefsOverride([SharedPreferences? prefs]) {
+  return sharedPreferencesProvider.overrideWith((ref) async {
+    return prefs ?? SharedPreferences.getInstance();
+  });
+}
 
-Widget _wrap({required VoidCallback onConsentGiven}) {
+class _FailingSetBoolPrefs implements SharedPreferences {
+  _FailingSetBoolPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, bool value) _shouldFail;
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  Object? get(String key) => _delegate.get(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  Set<String> getKeys() => _delegate.getKeys();
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) async {
+    if (_shouldFail(key, value)) return false;
+    return _delegate.setBool(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      Function.apply(_delegate.noSuchMethod, [invocation]);
+}
+
+Widget _wrap({
+  required VoidCallback onConsentGiven,
+  SharedPreferences? prefs,
+}) {
   return ProviderScope(
-    overrides: [_prefsOverride],
+    overrides: [_prefsOverride(prefs)],
     child: MaterialApp(home: ConsentScreen(onConsentGiven: onConsentGiven)),
   );
 }
@@ -104,6 +150,41 @@ void main() {
         // SharedPreferences should have the key set
         final prefs = await SharedPreferences.getInstance();
         expect(prefs.getBool('gdpr_analytics_consent'), isTrue);
+      },
+    );
+
+    testWidgets(
+      'failed consent save keeps user on consent screen and does not complete',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final delegate = await SharedPreferences.getInstance();
+        final prefs = _FailingSetBoolPrefs(
+          delegate,
+          (key, _) => key == 'gdpr_analytics_consent',
+        );
+        var callCount = 0;
+
+        await tester.pumpWidget(
+          _wrap(onConsentGiven: () => callCount++, prefs: prefs),
+        );
+        await tester.pump();
+
+        await tester.tap(find.byType(Checkbox).at(0));
+        await tester.pump();
+        await tester.tap(find.byType(Checkbox).at(1));
+        await tester.pump();
+
+        await tester.tap(find.text('Share Crash Reports'));
+        await tester.pumpAndSettle();
+
+        expect(callCount, 0);
+        expect(find.byType(ConsentScreen), findsOneWidget);
+        expect(
+          find.text("Couldn't save your choice. Please try again."),
+          findsOneWidget,
+        );
+        expect(delegate.getBool('gdpr_analytics_consent'), isNull);
+        expect(delegate.getBool('tos_accepted'), isNull);
       },
     );
   });
@@ -228,5 +309,31 @@ void main() {
       expect(prefs.getBool('gdpr_analytics_consent'), isNull);
       expect(prefs.getBool('tos_accepted'), isNull);
     });
+
+    testWidgets(
+      'failed under-13 block save keeps user on consent screen',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final delegate = await SharedPreferences.getInstance();
+        final prefs = _FailingSetBoolPrefs(
+          delegate,
+          (key, _) => key == 'under_13_blocked',
+        );
+
+        await tester.pumpWidget(_wrap(onConsentGiven: () {}, prefs: prefs));
+        await tester.pump();
+
+        await tester.tap(find.text("I'm under 13"));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ConsentScreen), findsOneWidget);
+        expect(find.byType(AgeBlockedScreen), findsNothing);
+        expect(
+          find.text("Couldn't save your choice. Please try again."),
+          findsOneWidget,
+        );
+        expect(delegate.getBool('under_13_blocked'), isNull);
+      },
+    );
   });
 }

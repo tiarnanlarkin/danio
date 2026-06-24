@@ -2299,6 +2299,20 @@ CL-P1-009DT Seasonal tip dismissal persistence boundary:
 - Focused widget coverage verifies both successful seasonal-tip dismissal and
   failed local write handling.
 
+CL-P1-009DU First-run consent persistence boundary:
+
+- First-run diagnostics consent now waits for both the diagnostics and
+  `tos_accepted` preference writes before applying diagnostics consent or
+  completing the consent step.
+- The under-13 hard block now uses the injectable shared-preferences provider
+  and waits for the local `under_13_blocked` flag before navigating to the hard
+  block screen.
+- Failed local first-run consent or under-13 writes keep the user on the
+  consent screen and show retry feedback instead of advancing with unsaved
+  state.
+- Focused widget coverage simulates failed consent and under-13 preference
+  writes.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

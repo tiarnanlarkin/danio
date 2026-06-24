@@ -195,6 +195,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009DT makes seasonal tip dismissals wait for the monthly local
   dismissal flag save before hiding the card, keeping the tip retryable when
   local persistence fails.
+- CL-P1-009DU makes first-run consent and under-13 block actions wait for
+  durable local preference writes before advancing, showing retry feedback
+  instead of false completion when local persistence fails.
 
 ## 7. P2 Work - Presentation System
 

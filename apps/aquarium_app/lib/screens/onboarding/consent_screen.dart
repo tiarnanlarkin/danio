@@ -5,13 +5,13 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/logger.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/danio_snack_bar.dart';
 import 'age_blocked_screen.dart';
 
 /// Key used in SharedPreferences to persist the user's diagnostics consent.
@@ -55,6 +55,8 @@ class ConsentScreen extends ConsumerStatefulWidget {
 
 class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   static const double _maxContentWidth = 720;
+  static const String _saveFailureMessage =
+      "Couldn't save your choice. Please try again.";
 
   bool _ageConfirmed = false;
   bool _tosAccepted = false;
@@ -70,9 +72,30 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   }
 
   Future<void> _respond(bool accepted) async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.setBool(kGdprAnalyticsConsentKey, accepted);
-    await prefs.setBool('tos_accepted', true);
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final consentSaved = await prefs.setBool(
+        kGdprAnalyticsConsentKey,
+        accepted,
+      );
+      if (!consentSaved) {
+        throw StateError('Consent preference write returned false.');
+      }
+
+      final tosSaved = await prefs.setBool('tos_accepted', true);
+      if (!tosSaved) {
+        throw StateError('TOS preference write returned false.');
+      }
+    } catch (e) {
+      appLog(
+        'ConsentScreen: failed to persist consent: $e',
+        tag: 'ConsentScreen',
+      );
+      if (mounted) DanioSnackBar.error(context, _saveFailureMessage);
+      return;
+    }
+
+    if (!mounted) return;
     unawaited(applyAnalyticsConsent(accepted));
     widget.onConsentGiven();
   }
@@ -85,8 +108,21 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   }
 
   Future<void> _blockUnder13() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('under_13_blocked', true);
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final saved = await prefs.setBool('under_13_blocked', true);
+      if (!saved) {
+        throw StateError('Under-13 block preference write returned false.');
+      }
+    } catch (e) {
+      appLog(
+        'ConsentScreen: failed to persist under-13 block: $e',
+        tag: 'ConsentScreen',
+      );
+      if (mounted) DanioSnackBar.error(context, _saveFailureMessage);
+      return;
+    }
+
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute<void>(builder: (_) => const AgeBlockedScreen()),
