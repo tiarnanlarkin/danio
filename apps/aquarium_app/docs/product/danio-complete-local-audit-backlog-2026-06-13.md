@@ -226,6 +226,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EE treats false Difficulty Settings preference writes as local save
   failures, keeping manual difficulty override selections unchanged with normal
   retry feedback.
+- CL-P1-009EF treats false review-request preference writes as local tracking
+  failures, using `RateService` for both service and lesson-completion review
+  prompts.
 
 ## 7. P2 Work - Presentation System
 

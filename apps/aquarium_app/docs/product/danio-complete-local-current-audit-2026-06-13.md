@@ -2419,6 +2419,17 @@ CL-P1-009EE Difficulty Settings preference write boundary:
   contract and the Settings wrapper path where `user_skill_profile` returns
   false from `setString`.
 
+CL-P1-009EF Review request preference write boundary:
+
+- In-app review request tracking now uses `RateService` as the single local
+  save boundary for both service-triggered and lesson-completion prompts.
+- Failed or false `SharedPreferences.setBool` results for `review_requested`
+  are treated as local tracking failures instead of reporting the prompt flow
+  as fully saved.
+- Focused service coverage fakes the review API and verifies false
+  `review_requested` writes leave the local flag unset and return a failed
+  tracking result.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

@@ -8,13 +8,13 @@ import '../../providers/spaced_repetition_provider.dart';
 import '../../providers/achievement_provider.dart';
 import '../../services/hearts_service.dart';
 import '../../services/notification_scheduler.dart';
+import '../../services/rate_service.dart';
 import '../../widgets/hearts_widgets.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/haptic_feedback.dart';
 import '../../utils/navigation_throttle.dart';
-import 'package:in_app_review/in_app_review.dart';
 import '../../utils/logger.dart';
 import 'lesson_card_widget.dart';
 import 'lesson_quiz_widget.dart';
@@ -550,19 +550,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       final streakForReview = reviewProfile?.currentStreak ?? 0;
       if (isPerfectForReview || streakForReview >= 7) {
         unawaited(() async {
-          try {
-            final prefs = await ref.read(sharedPreferencesProvider.future);
-            final alreadyRequested = prefs.getBool('review_requested') ?? false;
-            if (!alreadyRequested) {
-              final inAppReview = InAppReview.instance;
-              if (await inAppReview.isAvailable()) {
-                await inAppReview.requestReview();
-                await prefs.setBool('review_requested', true);
-              }
-            }
-          } catch (e) {
-            logError('In-app review failed: $e', tag: 'LessonScreen');
-          }
+          await RateService.maybeShowReview(force: true);
         }());
       }
 
