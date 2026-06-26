@@ -281,6 +281,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EW keeps Quick Water Test logs saved when only the secondary
   profile-XP write fails, showing progress-specific feedback instead of a
   false water-test save failure.
+- CL-P1-009EX makes profile reset reject failed local preference removals
+  before exposing a reset profile state.
 
 ## 7. P2 Work - Presentation System
 

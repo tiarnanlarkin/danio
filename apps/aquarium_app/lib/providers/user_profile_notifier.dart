@@ -1047,7 +1047,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   /// Reset profile (for testing/debugging)
   Future<void> resetProfile() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.remove(_key);
+    final removed = await prefs.remove(_key);
+    if (!removed) {
+      throw StateError('User profile preference removal returned false.');
+    }
     state = const AsyncValue.data(null);
   }
 }

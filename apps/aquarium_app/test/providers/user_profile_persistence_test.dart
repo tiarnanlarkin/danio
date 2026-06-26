@@ -52,6 +52,25 @@ class _FalseSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseRemovePrefs implements SharedPreferences {
+  _FalseRemovePrefs(this._delegate, this._failedKey);
+
+  final SharedPreferences _delegate;
+  final String _failedKey;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> remove(String key) async {
+    if (key == _failedKey) return false;
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForProfileLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     final profileState = container.read(userProfileProvider);
@@ -375,6 +394,37 @@ void main() {
           profileState.value?.storyProgress.containsKey('cycling_basics_story'),
           isFalse,
         );
+        expect(
+          prefs.getString('user_profile'),
+          jsonEncode(originalProfile.toJson()),
+        );
+      },
+    );
+
+    test(
+      'resetProfile surfaces local remove failures before exposing reset state',
+      () async {
+        final originalProfile = _profile();
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseRemovePrefs(prefs, 'user_profile');
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForProfileLoad(container);
+
+        final notifier = container.read(userProfileProvider.notifier);
+
+        await expectLater(notifier.resetProfile(), throwsA(isA<StateError>()));
+
+        final profileState = container.read(userProfileProvider);
+        expect(profileState.value?.id, originalProfile.id);
         expect(
           prefs.getString('user_profile'),
           jsonEncode(originalProfile.toJson()),

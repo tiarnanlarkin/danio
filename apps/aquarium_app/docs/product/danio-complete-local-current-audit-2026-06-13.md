@@ -2617,6 +2617,15 @@ CL-P1-009EW Quick Water Test progress boundary:
   a quick water-test log and verifies the log remains saved without false
   water-test failure feedback.
 
+CL-P1-009EX User profile reset removal boundary:
+
+- `UserProfileNotifier.resetProfile` now checks the local `user_profile`
+  preference removal result before exposing a reset profile state.
+- Failed preference removals throw a local persistence error and keep the
+  current in-memory profile aligned with the still-persisted profile.
+- Focused provider coverage simulates a false remove result and verifies the
+  profile remains visible while the saved profile JSON remains intact.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3598,7 +3607,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   timeline-log saves when only secondary progress writes fail. Bulk livestock
   adds and single livestock adds now roll back partial livestock/log records
   when timeline-log persistence fails. Quick Water Test now keeps saved
-  water-test logs when only the secondary profile-XP write fails. Remaining
+  water-test logs when only the secondary profile-XP write fails, and user
+  profile reset rejects failed local preference removals before exposing reset
+  state. Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
