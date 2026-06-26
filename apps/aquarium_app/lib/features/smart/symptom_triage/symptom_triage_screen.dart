@@ -240,6 +240,18 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     final diagnosisText = _stripMarkdown(_diagnosis);
     if (diagnosisText.isEmpty) return;
 
+    final confirmed = await showAppConfirmDialog(
+      context: context,
+      title: 'Save AI Diagnosis?',
+      message:
+          'Save this AI-generated symptom triage result to your tank journal '
+          'for reference? Review it first; it is educational guidance, not a '
+          'professional diagnosis.',
+      confirmLabel: 'Save',
+      cancelLabel: 'Cancel',
+    );
+    if (confirmed != true || !mounted) return;
+
     // Get first available tank to attach the journal entry.
     final tanksAsync = await ref.read(tanksProvider.future);
     if (tanksAsync.isEmpty) {
