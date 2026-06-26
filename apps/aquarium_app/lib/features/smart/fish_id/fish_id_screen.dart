@@ -144,7 +144,22 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     );
 
     if (accepted == true) {
-      await AiDisclosurePreferences.markAccepted(prefs);
+      try {
+        await AiDisclosurePreferences.markAccepted(prefs);
+      } catch (e, st) {
+        logError(
+          'FishIdScreen: failed to save AI disclosure acceptance: $e',
+          stackTrace: st,
+          tag: 'FishIdScreen',
+        );
+        if (mounted) {
+          DanioSnackBar.warning(
+            context,
+            'Couldn\'t save AI disclosure. Try again.',
+          );
+        }
+        return false;
+      }
       return true;
     }
     return false;

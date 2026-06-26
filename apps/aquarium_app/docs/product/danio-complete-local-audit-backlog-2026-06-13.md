@@ -297,6 +297,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FC stops Symptom Triage before any Optional AI diagnosis stream when
   the local AI disclosure acceptance flag cannot be saved, keeping the flag
   unset with normal retry feedback.
+- CL-P1-009FD stops Fish ID before any Optional AI image-identification request
+  when the local AI disclosure acceptance flag cannot be saved, keeping the flag
+  unset with normal retry feedback.
 
 ## 7. P2 Work - Presentation System
 

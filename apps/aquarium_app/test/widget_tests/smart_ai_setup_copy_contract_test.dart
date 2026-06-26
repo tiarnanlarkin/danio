@@ -64,4 +64,29 @@ void main() {
       );
     }
   });
+
+  test('OpenAI disclosure acceptance failures stop before AI requests', () {
+    final disclosureFiles = [
+      'lib/features/smart/fish_id/fish_id_screen.dart',
+      'lib/features/smart/symptom_triage/symptom_triage_screen.dart',
+      'lib/features/smart/weekly_plan/weekly_plan_screen.dart',
+    ];
+
+    for (final path in disclosureFiles) {
+      final source = File(path).readAsStringSync();
+      final normalizedSource = source.replaceAll(r"\'", "'");
+
+      expect(
+        source,
+        contains('failed to save AI disclosure acceptance'),
+        reason: path,
+      );
+      expect(
+        normalizedSource,
+        contains("Couldn't save AI disclosure. Try again."),
+        reason: path,
+      );
+      expect(source, contains('return false;'), reason: path);
+    }
+  });
 }
