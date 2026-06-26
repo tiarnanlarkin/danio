@@ -224,6 +224,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   }
 
   Widget _buildCardContent() {
+    final questionText = _currentCard.questionText?.trim();
+    final hasQuestionText = questionText != null && questionText.isNotEmpty;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Column(
@@ -285,26 +288,25 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 ),
                 const SizedBox(height: AppSpacing.sm2),
                 Text(_getQuestionText(), style: AppTypography.headlineMedium),
-                if (_currentCard.questionText != null &&
-                    _currentCard.questionText!.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryAlpha10,
-                      borderRadius: AppRadius.smallRadius,
-                      border: Border.all(color: AppColors.primaryAlpha15),
-                    ),
-                    child: Text(
-                      _currentCard.questionText!,
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: context.textPrimary,
-                        height: 1.5,
-                      ),
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryAlpha10,
+                    borderRadius: AppRadius.smallRadius,
+                    border: Border.all(color: AppColors.primaryAlpha15),
+                  ),
+                  child: Text(
+                    hasQuestionText
+                        ? questionText
+                        : 'Recall the main care point for ${_getQuestionText()}. If you are unsure, choose Forgot so Danio brings it back sooner.',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: context.textPrimary,
+                      height: 1.5,
                     ),
                   ),
-                ],
+                ),
               ],
             ),
           ),

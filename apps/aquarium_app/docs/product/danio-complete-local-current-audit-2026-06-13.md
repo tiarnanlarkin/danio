@@ -845,6 +845,14 @@ CL-QA-005J Learning path load-error audit truth:
 - The Learn/Practice surface audit was updated to close the stale path-load
   error gap while keeping the larger dedicated path-detail redesign open.
 
+CL-P1-005H Review fallback recall prompts:
+
+- Fallback Review Session cards with no stored `questionText` now show a clear
+  recall prompt for the concept instead of only displaying the concept title.
+- The prompt tells unsure users to choose Forgot so the card returns sooner,
+  keeping the old self-assessment flow honest for legacy/persisted cards.
+- Widget coverage verifies the no-question-text review-card path.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

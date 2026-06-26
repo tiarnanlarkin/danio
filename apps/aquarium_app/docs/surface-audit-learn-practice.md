@@ -230,7 +230,7 @@ Active flashcard review. Shows one card at a time: concept name + optional quest
 | Progress bar | Accuracy row | cardsReviewed > 0 | ✅ | Shows correct / incorrect counts + accuracy %. | ✅ Complete |
 | **Card content — concept name** | `_getQuestionText()` → `conceptDisplayName()` | | ✅ | Maps concept IDs to human-readable names. | ✅ Complete |
 | Card content — question text | `questionText` panel (primary-tinted box) | questionText present | ✅ | Shows section/quiz content as the "content to recall." | ✅ Complete |
-| Card content — question text | No questionText | questionText=null | ✅ | Panel hidden. Only concept name shown. User is asked to recall without a prompt. | ⚠️ Should Fix (cards without questionText give user no content to recall — just a concept name. User has nothing to assess themselves on.) |
+| Card content — question text | No questionText | questionText=null | ✅ | Shows a fallback recall prompt for the concept and tells unsure users to choose Forgot so the card returns sooner. Widget coverage verifies the legacy-card path. | ✅ Complete |
 | **"Remembered" / "Forgot" buttons** | Before `_showingAnswer` | | ✅ | Two large `AppButton`s. Primary (Remembered) and Destructive (Forgot). | ✅ Complete |
 | Remembered / Forgot | Loading state (`_isSubmitting=true`) | | ✅ | Shows `BubbleLoader` + "Saving your answer..." text. Buttons hidden. | ✅ Complete |
 | **Answer flow** | Self-assessment model | | ⚠️ | **The card shows ONLY the concept name before user answers.** There is no flip/reveal: user taps Remembered/Forgot without being shown what the answer is. The `questionText` IS shown upfront (it's the concept content), but there's no separate "answer" reveal step. This is a non-standard SRS UX — Anki shows front then flip to reveal back. Here the user is rating memory before seeing any confirmation of what's correct. Confusing for first-time users. | ⚠️ Should Fix |
@@ -343,7 +343,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | **`spacedRepetitionProvider.errorMessage` is surfaced** on Practice Hub and SR Practice screens with retry affordances. | Practice Hub, SR Practice | ✅ Complete |
 | **Locked story cards now explain unlock requirements on tap.** Locked cards remain non-navigable but no longer behave like dead controls. | Story Browser | ✅ Complete |
 | **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
-| **Review session self-assessment UX.** User taps "Remembered/Forgot" without ever being asked to recall anything actively — just a label. Cards with no `questionText` are especially hollow. | Review Session | ⚠️ Should Fix |
+| **Review session self-assessment model still lacks a reveal step.** Fallback cards now have recall guidance, but the old self-assess flow still asks users to rate memory without a separate answer reveal. | Review Session | ⚠️ Should Fix |
 | **`image` section type is a placeholder.** Renders "Visual guide on the way!" box. No image support. Fine now (no lessons use it), but must be implemented before image sections go live. | Lesson Screen | 🔮 Future Scope |
 | **Path card expansion shows a retryable error state.** Failed `loadPath()` calls no longer leave users with a stuck spinner. | Learning Path Detail | ✅ Complete |
 | **No dedicated full-screen path detail view.** Paths with 10+ lessons are squeezed into ExpansionTile. Especially poor for Species Spotlights (13 lessons). | Learning Path Detail | ⚠️ Should Fix |
@@ -362,12 +362,12 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | Lesson Screen | ✅ Mostly complete | 0 | 3 |
 | Practice Hub | ⚠️ Functional but fragile | 0 | 2 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
-| Review Session | ⚠️ UX gap | 0 | 2 |
+| Review Session | ⚠️ UX gap | 0 | 1 |
 | Story Browser | ✅ Mostly complete | 0 | 1 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ⚠️ UX gap | 0 | 3 |
 
-**Total: 0 Must Fix · 16 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 15 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -380,7 +380,7 @@ None currently listed in this surface audit.
 ### ⚠️ Should Fix (high priority)
 
 1. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
-2. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.
+2. **Review session reveal model** — fallback cards now have recall guidance; decide whether the old self-assess flow should become a true flip/reveal model.
 3. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
 
 ### ⚠️ Should Fix (lower priority / polish)

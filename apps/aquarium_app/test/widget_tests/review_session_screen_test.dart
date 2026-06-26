@@ -94,11 +94,13 @@ final _now = DateTime.now();
 
 ReviewCard _makeCard({
   String id = 'card-1',
+  String? conceptId,
   String concept = 'Nitrogen Cycle',
+  bool includeQuestionText = true,
 }) {
   return ReviewCard(
     id: id,
-    conceptId: 'concept-$id',
+    conceptId: conceptId ?? 'concept-$id',
     conceptType: ConceptType.lesson,
     strength: 0.5,
     lastReviewed: _now.subtract(const Duration(days: 1)),
@@ -106,7 +108,7 @@ ReviewCard _makeCard({
     reviewCount: 2,
     correctCount: 1,
     incorrectCount: 1,
-    questionText: concept,
+    questionText: includeQuestionText ? concept : null,
   );
 }
 
@@ -219,6 +221,32 @@ void main() {
       await tester.pumpWidget(_wrap(session));
       await tester.pump(const Duration(seconds: 1));
       expect(find.text('Ammonia is toxic to fish'), findsOneWidget);
+    });
+
+    testWidgets('shows recall guidance when card has no question text', (
+      tester,
+    ) async {
+      final session = ReviewSession(
+        id: 'session-1',
+        startTime: _now,
+        cards: [
+          _makeCard(
+            id: 'legacy-card',
+            conceptId: 'tm_filter_section_0',
+            includeQuestionText: false,
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(_wrap(session));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Filter Maintenance - Key Point 1'), findsOneWidget);
+      expect(
+        find.textContaining('Recall the main care point'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('choose Forgot'), findsOneWidget);
     });
 
     testWidgets('shows percent complete in progress row', (tester) async {
