@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/livestock_screen_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +13,7 @@ import 'package:danio/screens/livestock/livestock_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_visual_event_provider.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/widgets/core/app_card.dart';
@@ -48,6 +51,81 @@ Livestock _makeLivestock({
   updatedAt: _now,
 );
 
+UserProfile _makeProfile() => UserProfile(
+  id: 'livestock-profile',
+  experienceLevel: ExperienceLevel.beginner,
+  primaryTankType: TankType.freshwater,
+  goals: const [UserGoal.keepFishAlive],
+  hasStreakFreeze: false,
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Object? get(String key) => _delegate.get(key);
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  Set<String> getKeys() => _delegate.getKeys();
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setDouble(String key, double value) =>
+      _delegate.setDouble(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setStringList(String key, List<String> value) =>
+      _delegate.setStringList(key, value);
+
+  @override
+  Future<bool> remove(String key) => _delegate.remove(key);
+
+  @override
+  Future<bool> clear() => _delegate.clear();
+
+  @override
+  Future<void> reload() => _delegate.reload();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _wrap({AsyncValue<List<Livestock>>? livestockOverride}) {
   // Use in-memory storage so no real SQLite I/O occurs in tests.
   final memStorage = InMemoryStorageService();
@@ -80,21 +158,44 @@ Widget _wrapWithStorage({
   required StorageService storage,
   required String tankId,
   bool disableAnimations = false,
+  SharedPreferences? prefs,
+  bool showProfileProbe = false,
 }) {
   final screen = LivestockScreen(tankId: tankId);
   return ProviderScope(
-    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    overrides: [
+      storageServiceProvider.overrideWithValue(storage),
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
+    ],
     child: MaterialApp(
-      home: disableAnimations
-          ? Builder(
-              builder: (context) => MediaQuery(
-                data: MediaQuery.of(
-                  context,
-                ).copyWith(disableAnimations: true),
-                child: screen,
+      home: Stack(
+        children: [
+          disableAnimations
+              ? Builder(
+                  builder: (context) => MediaQuery(
+                    data: MediaQuery.of(
+                      context,
+                    ).copyWith(disableAnimations: true),
+                    child: screen,
+                  ),
+                )
+              : screen,
+          if (showProfileProbe)
+            Positioned(
+              left: 0,
+              top: 0,
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final profile = ref.watch(userProfileProvider).valueOrNull;
+                  return Text(
+                    profile == null ? 'profile loading' : 'profile ready',
+                  );
+                },
               ),
-            )
-          : screen,
+            ),
+        ],
+      ),
     ),
   );
 }
@@ -390,6 +491,71 @@ void main() {
         final logs = await storage.getLogsForTank(tankId);
         expect(logs.single.title, 'Added 1x Amano Shrimp');
         expect(find.text('1x Amano Shrimp added.'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'profile activity failure after livestock add does not report add failure',
+      (tester) async {
+        suppressAvatarError();
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(_makeProfile().toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final throwingPrefs = _ThrowingSetStringPrefs(
+          prefs,
+          (key, _) => key == 'user_profile',
+        );
+        const tankId = 'livestock-add-profile-failure-tank';
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Progress Tank'));
+
+        await tester.pumpWidget(
+          _wrapWithStorage(
+            storage: storage,
+            tankId: tankId,
+            prefs: throwingPrefs,
+            showProfileProbe: true,
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+        expect(find.text('profile ready'), findsOneWidget);
+
+        await tester.tap(find.text('Add Livestock'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'Cherry Shrimp',
+        );
+        await tester.tap(find.text('Add').last);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(seconds: 1));
+
+        final livestock = await storage.getLivestockForTank(tankId);
+        expect(livestock, hasLength(1));
+        expect(livestock.single.commonName, 'Cherry Shrimp');
+
+        final logs = await storage.getLogsForTank(tankId);
+        expect(logs, hasLength(1));
+        expect(logs.single.title, 'Added 1x Cherry Shrimp');
+        expect(
+          find.widgetWithText(TextFormField, 'Cherry Shrimp'),
+          findsNothing,
+        );
+        expect(
+          find.text('1x Cherry Shrimp added, but progress couldn\'t update.'),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            'Couldn\'t save that. Check your connection and try again.',
+          ),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
       },
     );
   });

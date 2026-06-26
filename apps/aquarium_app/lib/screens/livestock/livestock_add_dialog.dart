@@ -316,6 +316,8 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
 
       await storage.saveLivestock(livestock);
 
+      var progressUpdated = true;
+
       if (widget.existing == null) {
         await storage.saveLog(
           LogEntry(
@@ -332,11 +334,21 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
         ref.invalidate(logsProvider(widget.tankId));
         ref.invalidate(allLogsProvider(widget.tankId));
 
-        await ref
-            .read(userProfileProvider.notifier)
-            .recordActivity(xp: XpRewards.addLivestock);
+        try {
+          await ref
+              .read(userProfileProvider.notifier)
+              .recordActivity(xp: XpRewards.addLivestock);
+        } catch (e, st) {
+          progressUpdated = false;
+          logError(
+            'LivestockAddDialog: profile activity update failed after livestock save: $e',
+            stackTrace: st,
+            tag: 'LivestockAddDialog',
+          );
+          ref.invalidate(userProfileProvider);
+        }
 
-        if (mounted) {
+        if (progressUpdated && mounted) {
           AppHaptics.success();
           ref.showXpAnimation(XpRewards.addLivestock);
         }
@@ -345,12 +357,22 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
       ref.invalidate(livestockProvider(widget.tankId));
 
       if (mounted) {
-        AppFeedback.showSuccess(
-          context,
-          widget.existing != null
-              ? '${livestock.count}x ${livestock.commonName} saved.'
-              : '${livestock.count}x ${livestock.commonName} added.',
-        );
+        if (widget.existing != null) {
+          AppFeedback.showSuccess(
+            context,
+            '${livestock.count}x ${livestock.commonName} saved.',
+          );
+        } else if (progressUpdated) {
+          AppFeedback.showSuccess(
+            context,
+            '${livestock.count}x ${livestock.commonName} added.',
+          );
+        } else {
+          AppFeedback.showWarning(
+            context,
+            '${livestock.count}x ${livestock.commonName} added, but progress couldn\'t update.',
+          );
+        }
       }
       if (mounted) Navigator.maybePop(context);
     } catch (e) {

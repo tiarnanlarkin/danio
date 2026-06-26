@@ -269,6 +269,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009ES keeps newly added equipment saved when only the secondary
   profile-progress write fails, showing progress-specific feedback instead of a
   generic add failure.
+- CL-P1-009ET keeps newly added livestock and its readable timeline log saved
+  when only the secondary profile-progress write fails, showing
+  progress-specific feedback instead of a generic add failure.
 
 ## 7. P2 Work - Presentation System
 
