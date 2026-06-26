@@ -2692,6 +2692,17 @@ CL-P1-009FD Fish ID disclosure acceptance boundary:
   future Optional AI disclosure-save paths keep the same stop-before-request
   behavior.
 
+CL-P1-009FE Shared Optional AI disclosure gate:
+
+- Weekly Plan, Symptom Triage, Fish ID, AI Stocking Suggestions, and AI
+  Compatibility Advice now use one shared disclosure gate before making OpenAI
+  requests.
+- The gate catches failed local saves of `openai_disclosure_accepted`, logs the
+  failure with the feature tag, gives normal retry feedback, and returns `false`
+  before any request can send photos, text, species, or tank context off-device.
+- Focused source coverage now requires every current OpenAI request surface to
+  call `ensureOpenAIDisclosureAccepted`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3680,8 +3691,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   fails. The energy explainer now marks itself seen only after the dialog is
   dismissed, and does not consume the prompt if the lesson screen unmounts
   before it can be shown. The Tank stage sheet first-use hint now persists
-  through the shared preferences provider, and Weekly Plan, Symptom Triage, and
-  Fish ID stop before sending any Optional AI request when the disclosure
+  through the shared preferences provider, and all current OpenAI request
+  surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration

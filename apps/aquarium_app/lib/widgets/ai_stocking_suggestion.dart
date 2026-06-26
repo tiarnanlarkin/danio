@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../features/smart/openai_disclosure_gate.dart';
 import 'app_bottom_sheet.dart';
 import 'core/app_button.dart';
 
@@ -66,10 +67,26 @@ class _AiStockingSuggestionSheetState
   @override
   void initState() {
     super.initState();
-    _fetchSuggestion();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(_fetchSuggestion());
+    });
   }
 
   Future<void> _fetchSuggestion() async {
+    final accepted = await ensureOpenAIDisclosureAccepted(
+      ref: ref,
+      context: context,
+      logTag: 'AiStockingSuggestion',
+      message:
+          'Your tank size, stocking level, and current fish list are sent to '
+          'OpenAI servers in the US for stocking suggestions. OpenAI may retain '
+          'them for up to 30 days.',
+      onSaveFailure: (message) {
+        if (mounted) setState(() => _error = message);
+      },
+    );
+    if (!accepted || !mounted) return;
+
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) {
       setState(() => _error = OpenAIUserMessages.setupRequired);

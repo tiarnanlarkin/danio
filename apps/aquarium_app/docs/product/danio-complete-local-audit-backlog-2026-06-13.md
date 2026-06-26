@@ -300,6 +300,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FD stops Fish ID before any Optional AI image-identification request
   when the local AI disclosure acceptance flag cannot be saved, keeping the flag
   unset with normal retry feedback.
+- CL-P1-009FE routes all current Optional AI OpenAI request surfaces through a
+  shared disclosure gate, including stocking suggestions and compatibility
+  advice, so failed disclosure acceptance writes stop before any request.
 
 ## 7. P2 Work - Presentation System
 

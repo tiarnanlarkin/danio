@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/log_entry.dart';
 import '../../../providers/storage_provider.dart';
 import '../../../providers/tank_provider.dart';
-import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
@@ -17,7 +16,7 @@ import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/danio_snack_bar.dart';
 import '../../../widgets/offline_indicator.dart';
-import '../ai_disclosure_preferences.dart';
+import '../openai_disclosure_gate.dart';
 import '../smart_providers.dart';
 import '../../../utils/logger.dart';
 
@@ -75,42 +74,15 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
   /// Shows a one-time disclosure about OpenAI data handling for Symptom Triage.
   /// Returns `true` if the user accepts, `false` if they cancel.
   Future<bool> _ensureOpenAIDisclosure() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    if (AiDisclosurePreferences.isAccepted(prefs)) return true;
-
-    if (!mounted) return false;
-    final accepted = await showAppConfirmDialog(
+    return ensureOpenAIDisclosureAccepted(
+      ref: ref,
       context: context,
-      title: 'OpenAI Data Disclosure',
+      logTag: 'SymptomTriageScreen',
       message:
           'Text you enter and water parameters are sent to OpenAI servers in '
           'the US, retained up to 30 days per OpenAI\'s data retention policy. '
           'OpenAI does not use API data to train their models.',
-      confirmLabel: 'I Understand',
-      cancelLabel: 'Cancel',
-      barrierDismissible: false,
     );
-
-    if (accepted == true) {
-      try {
-        await AiDisclosurePreferences.markAccepted(prefs);
-      } catch (e, st) {
-        logError(
-          'SymptomTriageScreen: failed to save AI disclosure acceptance: $e',
-          stackTrace: st,
-          tag: 'SymptomTriageScreen',
-        );
-        if (mounted) {
-          DanioSnackBar.warning(
-            context,
-            'Couldn\'t save AI disclosure. Try again.',
-          );
-        }
-        return false;
-      }
-      return true;
-    }
-    return false;
   }
 
   void _nextStep() {

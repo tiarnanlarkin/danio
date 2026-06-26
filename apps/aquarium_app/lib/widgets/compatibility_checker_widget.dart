@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../features/smart/openai_disclosure_gate.dart';
 import '../providers/tank_provider.dart';
 import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
@@ -45,6 +46,20 @@ class _CompatibilityCheckerWidgetState
       setState(() => _result = 'Add or select a tank before checking.');
       return;
     }
+
+    final accepted = await ensureOpenAIDisclosureAccepted(
+      ref: ref,
+      context: context,
+      logTag: 'CompatibilityCheckerWidget',
+      message:
+          'The species name and selected tank details are sent to OpenAI '
+          'servers in the US for compatibility advice. OpenAI may retain them '
+          'for up to 30 days.',
+      onSaveFailure: (message) {
+        if (mounted) setState(() => _result = message);
+      },
+    );
+    if (!accepted || !mounted) return;
 
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) {

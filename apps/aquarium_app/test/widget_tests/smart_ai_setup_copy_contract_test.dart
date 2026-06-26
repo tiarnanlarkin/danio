@@ -15,6 +15,7 @@ void main() {
       'lib/features/smart/symptom_triage/symptom_triage_screen.dart',
       'lib/features/smart/weekly_plan/weekly_plan_screen.dart',
       'lib/widgets/ai_stocking_suggestion.dart',
+      'lib/widgets/compatibility_checker_widget.dart',
     ];
 
     expect(serviceSource, contains('setupRequired'));
@@ -65,28 +66,44 @@ void main() {
     }
   });
 
-  test('OpenAI disclosure acceptance failures stop before AI requests', () {
-    final disclosureFiles = [
+  test('Optional AI request surfaces require the shared disclosure gate', () {
+    final requestFiles = [
+      'lib/widgets/ai_stocking_suggestion.dart',
+      'lib/widgets/compatibility_checker_widget.dart',
       'lib/features/smart/fish_id/fish_id_screen.dart',
       'lib/features/smart/symptom_triage/symptom_triage_screen.dart',
       'lib/features/smart/weekly_plan/weekly_plan_screen.dart',
     ];
 
-    for (final path in disclosureFiles) {
+    for (final path in requestFiles) {
       final source = File(path).readAsStringSync();
-      final normalizedSource = source.replaceAll(r"\'", "'");
 
       expect(
         source,
-        contains('failed to save AI disclosure acceptance'),
+        contains('ensureOpenAIDisclosureAccepted('),
         reason: path,
       );
-      expect(
-        normalizedSource,
-        contains("Couldn't save AI disclosure. Try again."),
-        reason: path,
-      );
-      expect(source, contains('return false;'), reason: path);
     }
+  });
+
+  test('OpenAI disclosure gate failures stop before AI requests', () {
+    final gateFile = File('lib/features/smart/openai_disclosure_gate.dart');
+
+    expect(gateFile.existsSync(), isTrue);
+
+    final source = gateFile.readAsStringSync();
+    final normalizedSource = source.replaceAll(r"\'", "'");
+
+    expect(
+      source,
+      contains('failed to save AI disclosure acceptance'),
+      reason: gateFile.path,
+    );
+    expect(
+      normalizedSource,
+      contains("Couldn't save AI disclosure. Try again."),
+      reason: gateFile.path,
+    );
+    expect(source, contains('return false;'), reason: gateFile.path);
   });
 }

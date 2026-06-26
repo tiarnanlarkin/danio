@@ -6,7 +6,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/tank_provider.dart';
-import '../../../providers/user_profile_provider.dart';
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
@@ -14,8 +13,8 @@ import '../../../widgets/core/app_button.dart';
 import '../../../widgets/core/app_dialog.dart';
 import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/offline_indicator.dart';
-import '../ai_disclosure_preferences.dart';
 import '../models/smart_models.dart';
+import '../openai_disclosure_gate.dart';
 import '../smart_providers.dart';
 import '../../../utils/logger.dart';
 
@@ -47,40 +46,19 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   /// Shows a one-time disclosure about OpenAI data handling for Weekly Plan.
   /// Returns `true` if the user accepts, `false` if they cancel.
   Future<bool> _ensureOpenAIDisclosure() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    if (AiDisclosurePreferences.isAccepted(prefs)) return true;
-
-    if (!mounted) return false;
-    final accepted = await showAppConfirmDialog(
+    return ensureOpenAIDisclosureAccepted(
+      ref: ref,
       context: context,
-      title: 'OpenAI Data Disclosure',
+      logTag: 'WeeklyPlanScreen',
       message:
           'Your tank names, setup details, and livestock information are sent '
           'to OpenAI servers in the US, retained up to 30 days per OpenAI\'s '
           'data retention policy. OpenAI does not use API data to train their '
           'models.',
-      confirmLabel: 'I Understand',
-      cancelLabel: 'Cancel',
-      barrierDismissible: false,
+      onSaveFailure: (message) {
+        if (mounted) setState(() => _error = message);
+      },
     );
-
-    if (accepted == true) {
-      try {
-        await AiDisclosurePreferences.markAccepted(prefs);
-      } catch (e, st) {
-        logError(
-          'WeeklyPlanScreen: failed to save AI disclosure acceptance: $e',
-          stackTrace: st,
-          tag: 'WeeklyPlanScreen',
-        );
-        if (mounted) {
-          setState(() => _error = 'Couldn\'t save AI disclosure. Try again.');
-        }
-        return false;
-      }
-      return true;
-    }
-    return false;
   }
 
   Future<void> _generate() async {

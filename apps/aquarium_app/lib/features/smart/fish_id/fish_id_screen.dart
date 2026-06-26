@@ -7,7 +7,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../providers/user_profile_provider.dart';
 import '../../../providers/tank_provider.dart';
 import '../../../models/models.dart';
 import '../../../screens/livestock/livestock_add_dialog.dart';
@@ -23,8 +22,8 @@ import '../../../widgets/core/bubble_loader.dart';
 import '../../../widgets/danio_snack_bar.dart';
 import '../../../widgets/optimized_image.dart';
 import '../../../widgets/offline_indicator.dart';
-import '../ai_disclosure_preferences.dart';
 import '../models/smart_models.dart';
+import '../openai_disclosure_gate.dart';
 import '../smart_providers.dart';
 import '../../../utils/logger.dart';
 
@@ -127,42 +126,15 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
   /// Shows a one-time disclosure about OpenAI data handling.
   /// Returns `true` if the user accepts, `false` if they cancel.
   Future<bool> _ensureOpenAIDisclosure() async {
-    final prefs = await ref.read(sharedPreferencesProvider.future);
-    if (AiDisclosurePreferences.isAccepted(prefs)) return true;
-
-    if (!mounted) return false;
-    final accepted = await showAppConfirmDialog(
+    return ensureOpenAIDisclosureAccepted(
+      ref: ref,
       context: context,
-      title: 'OpenAI Data Disclosure',
+      logTag: 'FishIdScreen',
       message:
           'Photos you submit are sent to OpenAI\'s servers in the '
           'United States for identification. OpenAI may retain them '
           'for up to 30 days.',
-      confirmLabel: 'I Understand',
-      cancelLabel: 'Cancel',
-      barrierDismissible: false,
     );
-
-    if (accepted == true) {
-      try {
-        await AiDisclosurePreferences.markAccepted(prefs);
-      } catch (e, st) {
-        logError(
-          'FishIdScreen: failed to save AI disclosure acceptance: $e',
-          stackTrace: st,
-          tag: 'FishIdScreen',
-        );
-        if (mounted) {
-          DanioSnackBar.warning(
-            context,
-            'Couldn\'t save AI disclosure. Try again.',
-          );
-        }
-        return false;
-      }
-      return true;
-    }
-    return false;
   }
 
   Future<void> _identify() async {
