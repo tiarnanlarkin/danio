@@ -15,8 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/services/onboarding_service.dart';
 import 'package:danio/widgets/core/app_dialog.dart';
 
 // ---------------------------------------------------------------------------
@@ -25,6 +27,13 @@ import 'package:danio/widgets/core/app_dialog.dart';
 
 Widget _wrap(Widget child) {
   return ProviderScope(child: MaterialApp(home: child));
+}
+
+class _FalseClearSharedPreferencesStore extends InMemorySharedPreferencesStore {
+  _FalseClearSharedPreferencesStore.withData(super.data) : super.withData();
+
+  @override
+  Future<bool> clear() async => false;
 }
 
 /// Scrolls down the settings list until "Delete My Data" is visible.
@@ -48,6 +57,11 @@ void main() {
     // SettingsProvider also reads int-typed keys from the same namespace,
     // and a type mismatch triggers a logged warning (not a failure).
     SharedPreferences.setMockInitialValues({});
+    OnboardingService.resetForTesting();
+  });
+
+  tearDown(() {
+    OnboardingService.resetForTesting();
   });
 
   group('Data Deletion Flow', () {
@@ -201,6 +215,42 @@ void main() {
       expect(prefs.getString('some_progress_key'), isNull);
       expect(prefs.getInt('user_tanks_count'), isNull);
     });
+
+    testWidgets(
+      'failed preference clear keeps local data and shows retry feedback',
+      (tester) async {
+        SharedPreferences.resetStatic();
+        SharedPreferencesStorePlatform.instance =
+            _FalseClearSharedPreferencesStore.withData({
+              'flutter.onboarding_completed': true,
+              'flutter.user_tanks_count': 3,
+              'flutter.some_progress_key': 'some_value',
+            });
+        OnboardingService.resetForTesting();
+
+        await tester.pumpWidget(_wrap(const SettingsScreen()));
+        await tester.pump();
+
+        await _scrollToDeleteMyData(tester);
+        await tester.tap(find.text('Delete My Data'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppDialog), findsOneWidget);
+
+        await tester.tap(find.text('Delete Everything'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pump(const Duration(milliseconds: 500));
+
+        expect(find.text('Couldn\'t delete data. Try again!'), findsOneWidget);
+
+        SharedPreferences.resetStatic();
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getString('some_progress_key'), 'some_value');
+        expect(prefs.getInt('user_tanks_count'), 3);
+      },
+    );
   });
 
   group('Clear All Data tile (separate from Delete My Data)', () {

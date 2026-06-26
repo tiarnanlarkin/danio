@@ -2497,6 +2497,17 @@ CL-P1-009EK Achievement progress false-write retry:
 - Focused provider coverage simulates a false first `achievement_progress`
   write and verifies the next lifecycle flush persists the same local progress.
 
+CL-P1-009EL Delete My Data preference-clear boundary:
+
+- The privacy Delete My Data flow now treats a false
+  `SharedPreferences.clear` result as a local deletion failure instead of
+  continuing to delete files, reset onboarding, or navigate away.
+- Failed preference clears keep the persistent preference store retryable and
+  show normal retry feedback: `Couldn't delete data. Try again!`.
+- Focused widget coverage simulates a false platform preference clear and
+  verifies the destructive flow reports the failure and leaves local preference
+  data available for retry.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

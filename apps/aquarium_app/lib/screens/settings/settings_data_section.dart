@@ -335,7 +335,10 @@ Future<void> confirmDeleteMyData(BuildContext context, WidgetRef ref) async {
 
   try {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    final prefsCleared = await prefs.clear();
+    if (!prefsCleared) {
+      throw StateError('SharedPreferences clear returned false.');
+    }
     final dir = await getApplicationDocumentsDirectory();
     final dataFile = File('${dir.path}/aquarium_data.json');
     if (await dataFile.exists()) await dataFile.delete();

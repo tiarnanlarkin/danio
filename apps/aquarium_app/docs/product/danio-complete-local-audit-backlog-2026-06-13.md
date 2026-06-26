@@ -243,6 +243,10 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EK keeps debounced achievement progress pending after a false
   `achievement_progress` preference write, so the lifecycle flush can retry
   instead of dropping the latest local reward progress.
+- CL-P1-009EL treats false Delete My Data preference-clear results as local
+  deletion failures, preventing the destructive privacy flow from continuing to
+  file deletion, onboarding reset, or navigation after preferences reject the
+  clear.
 
 ## 7. P2 Work - Presentation System
 
