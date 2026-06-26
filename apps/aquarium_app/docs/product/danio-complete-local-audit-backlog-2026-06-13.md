@@ -324,6 +324,8 @@ Recent CL-P1-009 continuation note:
   `user_profile` saves before showing success.
 - CL-P1-009FM makes Debug species reset reject false
   `unlocked_species_v1` writes before showing success.
+- CL-P1-009FN makes Debug Clear All Data reject false local preference-clear
+  results before showing restart-success copy.
 
 ## 7. P2 Work - Presentation System
 

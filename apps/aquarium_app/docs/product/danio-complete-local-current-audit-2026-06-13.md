@@ -2787,6 +2787,15 @@ CL-P1-009FM Debug species reset persistence boundary:
 - Focused DebugMenu widget coverage drives the visible reset action with a
   false local write.
 
+CL-P1-009FN Debug clear-all preference boundary:
+
+- Debug `Clear All Data` now checks the `SharedPreferences.clear` result before
+  telling the user to restart with cleared local state.
+- False clear results show normal error feedback and do not show the restart
+  success copy.
+- Focused DebugMenu widget coverage confirms failed clear results leave the
+  existing local preference value in place.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3784,8 +3793,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   restores progress if the profile write fails after progress removal.
   DebugMenu profile-write actions now reject false local `user_profile` saves
   before showing success. Debug species reset now rejects false local
-  unlock-list writes before showing success. Tank returning-user prompts now
-  check failed dismissal seen-flag writes, and all current OpenAI request
+  unlock-list writes before showing success. Debug Clear All Data now rejects
+  false local preference-clear results before showing restart copy. Tank
+  returning-user prompts now check failed dismissal seen-flag writes, and all
+  current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining

@@ -1451,10 +1451,19 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     );
 
     if (confirmed == true) {
-      final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.clear();
-      if (context.mounted) {
-        DanioSnackBar.info(context, 'All data cleared. Restart the app.');
+      try {
+        final prefs = await ref.read(sharedPreferencesProvider.future);
+        final cleared = await prefs.clear();
+        if (!cleared) {
+          throw StateError('SharedPreferences.clear returned false.');
+        }
+        if (context.mounted) {
+          DanioSnackBar.info(context, 'All data cleared. Restart the app.');
+        }
+      } catch (e) {
+        if (context.mounted) {
+          DanioSnackBar.error(context, 'Clear all data failed: $e');
+        }
       }
     }
   }

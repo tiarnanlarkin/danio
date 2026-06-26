@@ -50,11 +50,13 @@ class _FailingPrefs implements SharedPreferences {
     this._delegate, {
     this.shouldFailRemove = _neverFailRemove,
     this.shouldFailSetString = _neverFailSetString,
+    this.failClear = false,
   });
 
   final SharedPreferences _delegate;
   final bool Function(String key) shouldFailRemove;
   final bool Function(String key, String value) shouldFailSetString;
+  final bool failClear;
 
   static bool _neverFailRemove(String key) => false;
 
@@ -92,6 +94,14 @@ class _FailingPrefs implements SharedPreferences {
       return Future<bool>.value(false);
     }
     return _delegate.remove(key);
+  }
+
+  @override
+  Future<bool> clear() {
+    if (failClear) {
+      return Future<bool>.value(false);
+    }
+    return _delegate.clear();
   }
 
   @override
@@ -621,6 +631,33 @@ void main() {
 
       expect(find.textContaining('Reset species failed'), findsOneWidget);
       expect(prefs.getString('unlocked_species_v1'), originalSpeciesJson);
+    });
+
+    testWidgets('clear all data reports failed local preference clear', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': '{"id":"debug-profile"}',
+      });
+      final prefs = await SharedPreferences.getInstance();
+
+      await tester.pumpWidget(
+        _wrap(sharedPreferences: _FailingPrefs(prefs, failClear: true)),
+      );
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Clear All Data'), 500);
+      await tester.ensureVisible(find.text('Clear All Data'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Clear All Data'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Clear'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Clear all data failed'), findsOneWidget);
+      expect(find.text('All data cleared. Restart the app.'), findsNothing);
+      expect(prefs.getString('user_profile'), '{"id":"debug-profile"}');
     });
   });
 }
