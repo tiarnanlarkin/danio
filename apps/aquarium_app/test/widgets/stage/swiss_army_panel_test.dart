@@ -1,5 +1,6 @@
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/theme/app_theme.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/widgets/danio_bottom_dock.dart';
 import 'package:danio/widgets/stage/bottom_sheet_panel.dart';
 import 'package:danio/widgets/stage/stage_provider.dart';
@@ -8,6 +9,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class _TrackingSheetHintPrefs implements SharedPreferences {
+  _TrackingSheetHintPrefs(this._delegate);
+
+  final SharedPreferences _delegate;
+  bool savedSheetHint = false;
+
+  @override
+  bool? getBool(String key) {
+    if (key == 'hasSeenSheetHint') return false;
+    return _delegate.getBool(key);
+  }
+
+  @override
+  Future<bool> setBool(String key, bool value) async {
+    if (key == 'hasSeenSheetHint' && value) {
+      savedSheetHint = true;
+    }
+    return true;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      Function.apply(_delegate.noSuchMethod, [invocation]);
+}
 
 void main() {
   group('SwissArmyPanel glass frame (concept lock 2026-04-07)', () {
@@ -329,6 +355,43 @@ void main() {
       for (final tab in tabBar.tabs.cast<Tab>()) {
         expect(tab.child, isA<FittedBox>());
       }
+    });
+
+    testWidgets('persists first-use hint through shared preferences provider', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'hasSeenSheetHint': true});
+      final delegate = await SharedPreferences.getInstance();
+      final trackingPrefs = _TrackingSheetHintPrefs(delegate);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            sharedPreferencesProvider.overrideWith(
+              (ref) async => trackingPrefs,
+            ),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(
+              body: Stack(
+                children: [
+                  BottomSheetPanel(
+                    progressContent: SizedBox(),
+                    tanksContent: SizedBox(),
+                    todayContent: SizedBox(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump();
+
+      expect(trackingPrefs.savedSheetHint, isTrue);
     });
   });
 }

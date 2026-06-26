@@ -288,6 +288,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EZ marks the energy explainer as seen only after the user dismisses
   the dialog, and avoids saving the seen flag when the lesson screen unmounts
   before the prompt can be shown.
+- CL-P1-009FA routes the Tank stage sheet first-use hint through the shared
+  preferences provider so hint persistence uses the same local boundary as the
+  rest of the app.
 
 ## 7. P2 Work - Presentation System
 

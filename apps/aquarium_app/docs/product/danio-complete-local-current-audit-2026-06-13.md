@@ -2657,6 +2657,15 @@ CL-P1-009EZ Energy explainer dismissal boundary:
 - Focused widget coverage verifies both dismissal timing and the unmounted
   screen boundary.
 
+CL-P1-009FA Stage sheet hint preference boundary:
+
+- The Tank stage sheet first-use hint now reads and writes
+  `hasSeenSheetHint` through `sharedPreferencesProvider`.
+- This keeps the hint aligned with the same local preference override,
+  restore/reset, and failure-injection boundary used by the rest of the app.
+- Focused stage-panel coverage verifies that hint persistence goes through the
+  shared provider rather than a direct `SharedPreferences.getInstance()` call.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3644,7 +3653,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   state. Practice-mode lessons no longer claim XP when profile XP persistence
   fails. The energy explainer now marks itself seen only after the dialog is
   dismissed, and does not consume the prompt if the lesson screen unmounts
-  before it can be shown. Remaining
+  before it can be shown. The Tank stage sheet first-use hint now persists
+  through the shared preferences provider. Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
