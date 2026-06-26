@@ -96,6 +96,13 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     }
   }
 
+  Future<void> _removeOrThrow(SharedPreferences prefs, String key) async {
+    final removed = await prefs.remove(key);
+    if (!removed) {
+      throw StateError('SharedPreferences.remove returned false for $key.');
+    }
+  }
+
   /// Purchase an item from the shop.
   ///
   /// Uses a compensating-refund pattern: if gems are deducted but the
@@ -428,7 +435,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   /// Reset inventory (for testing)
   Future<void> reset() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.remove(_key);
+    await _removeOrThrow(prefs, _key);
     await _load();
   }
 }

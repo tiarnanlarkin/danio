@@ -314,6 +314,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FI makes spaced-repetition reset own card, stats, streak, and
   session preference removals, restoring partially removed JSON when any reset
   removal fails.
+- CL-P1-009FJ makes gem and inventory reset helpers reject failed local
+  preference removals before reporting reset success.
 
 ## 7. P2 Work - Presentation System
 

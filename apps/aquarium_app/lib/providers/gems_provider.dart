@@ -167,6 +167,13 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     }
   }
 
+  Future<void> _removeOrThrow(SharedPreferences prefs, String key) async {
+    final removed = await prefs.remove(key);
+    if (!removed) {
+      throw StateError('SharedPreferences.remove returned false for $key.');
+    }
+  }
+
   Future<void> _save(GemsState gemsState) async {
     _pendingGemsState = gemsState;
     _saveDebounce?.cancel();
@@ -465,7 +472,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   /// Reset gems (for testing/debugging)
   Future<void> reset() async {
     final prefs = await ref.read(sharedPreferencesProvider.future);
-    await prefs.remove(_key);
+    await _removeOrThrow(prefs, _key);
     await _load();
   }
 

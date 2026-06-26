@@ -2747,6 +2747,15 @@ CL-P1-009FI Full spaced-repetition reset boundary:
   `spaced_repetition_sessions` removal and verifies visible state plus all four
   persisted practice keys remain unchanged.
 
+CL-P1-009FJ Gem/inventory reset removal boundary:
+
+- `GemsNotifier.reset` and `InventoryNotifier.reset` now check local
+  preference removal results before reloading reset state.
+- False `gems_state` and `shop_inventory` removals throw a local failure, keep
+  visible provider state unchanged, and leave persisted JSON intact.
+- Focused provider coverage simulates false remove results for both reset
+  helpers.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3738,8 +3747,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   through the shared preferences provider and restores visible retry state
   when its seen-flag write fails. Spaced-repetition reset now keeps visible
   cards/stats and restores partially removed card/stat/streak/session local
-  JSON when reset removal fails. Tank returning-user prompts now check failed
-  dismissal seen-flag writes, and all current OpenAI request
+  JSON when reset removal fails. Gem and inventory reset helpers now reject
+  false local preference removals before exposing reset success. Tank
+  returning-user prompts now check failed dismissal seen-flag writes, and all
+  current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining

@@ -52,6 +52,29 @@ class _FalseSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseRemovePrefs implements SharedPreferences {
+  _FalseRemovePrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) =>
+      _delegate.setString(key, value);
+
+  @override
+  Future<bool> remove(String key) {
+    if (_shouldFail(key)) return Future<bool>.value(false);
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForGemsLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     final gemsState = container.read(gemsProvider);
@@ -457,6 +480,41 @@ void main() {
           prefs.getString('gems_cumulative'),
           jsonEncode({'earned': 10, 'spent': 5}),
         );
+      },
+    );
+
+    test(
+      'reset surfaces failed local removals before reporting reset success',
+      () async {
+        final originalState = _gemsState(balance: 25);
+        final originalGemsJson = jsonEncode(originalState.toJson());
+        final cumulativeJson = jsonEncode({'earned': 40, 'spent': 15});
+        SharedPreferences.setMockInitialValues({
+          'gems_state': originalGemsJson,
+          'gems_cumulative': cumulativeJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseRemovePrefs(
+                prefs,
+                (key) => key == 'gems_state',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForGemsLoad(container);
+
+        final notifier = container.read(gemsProvider.notifier);
+
+        await expectLater(notifier.reset(), throwsA(isA<StateError>()));
+
+        final gemsState = container.read(gemsProvider).asData?.value;
+        expect(gemsState?.balance, originalState.balance);
+        expect(prefs.getString('gems_state'), originalGemsJson);
+        expect(prefs.getString('gems_cumulative'), cumulativeJson);
       },
     );
   });

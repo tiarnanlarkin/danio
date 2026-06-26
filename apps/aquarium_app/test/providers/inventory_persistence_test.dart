@@ -57,6 +57,31 @@ class _FalseSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseRemovePrefs implements SharedPreferences {
+  _FalseRemovePrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) =>
+      _delegate.setString(key, value);
+
+  @override
+  Future<bool> remove(String key) {
+    if (_shouldFail(key)) {
+      return Future<bool>.value(false);
+    }
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     final gemsState = container.read(gemsProvider);
@@ -345,6 +370,45 @@ void main() {
           prefs.getString('gems_state'),
           jsonEncode(originalGems.toJson()),
         );
+        expect(prefs.getString('shop_inventory'), originalInventoryJson);
+      },
+    );
+
+    test(
+      'reset surfaces failed local removals before reporting reset success',
+      () async {
+        final ownedBadge = InventoryItem(
+          itemId: 'badge_early_bird',
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 12),
+        );
+        final originalInventoryJson = jsonEncode([ownedBadge.toJson()]);
+        SharedPreferences.setMockInitialValues({
+          'shop_inventory': originalInventoryJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseRemovePrefs(
+                prefs,
+                (key) => key == 'shop_inventory',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final sub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(sub.close);
+        await _waitForLoad(container);
+
+        final notifier = container.read(inventoryProvider.notifier);
+
+        await expectLater(notifier.reset(), throwsA(isA<StateError>()));
+
+        final inventory = container.read(inventoryProvider).valueOrNull;
+        expect(inventory, hasLength(1));
+        expect(inventory?.single.itemId, ownedBadge.itemId);
         expect(prefs.getString('shop_inventory'), originalInventoryJson);
       },
     );
