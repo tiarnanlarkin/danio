@@ -168,6 +168,26 @@ void main() {
       // At least one story card should be rendered
       expect(find.text('Choose your adventure'), findsOneWidget);
     });
+
+    testWidgets('locked story tap explains how to unlock it', (tester) async {
+      await tester.pumpWidget(_wrapBrowser());
+      await _advance(tester);
+
+      await tester.dragUntilVisible(
+        find.text('Algae Outbreak'),
+        find.byType(CustomScrollView),
+        const Offset(0, -300),
+      );
+      await tester.pump();
+
+      await tester.tap(find.text('Algae Outbreak'));
+      await tester.pump();
+
+      expect(
+        find.text('Reach level 2 to unlock Algae Outbreak.'),
+        findsOneWidget,
+      );
+    });
   });
 
   group('StoryPlayScreen', () {

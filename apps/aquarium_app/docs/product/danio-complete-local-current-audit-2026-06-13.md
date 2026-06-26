@@ -747,6 +747,14 @@ CL-P1-004O Story play exit confirmation:
   story hub.
 - Focused widget coverage verifies both the cancel and confirmed leave paths.
 
+CL-P1-004P Locked story feedback:
+
+- Locked Story Browser cards now remain tappable and show a Danio info snackbar
+  explaining the level or prerequisite story requirement.
+- Locked cards still do not navigate into Story Play until their unlock
+  conditions are met.
+- Focused widget coverage verifies the level-gated locked-story feedback path.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

@@ -263,7 +263,7 @@ Active flashcard review. Shows one card at a time: concept name + optional quest
 | Story Browser | **No stories empty state** | allStories=[] | 🔴 | If `Stories.allStories` is empty, the list renders nothing with **no empty state message**. Low risk (stories are hardcoded), but fragile. | 🔍 Research First |
 | Story Browser | **No error state** | profile load error | ⚠️ | `profileSlice` defaults to null on error — stories are treated as all locked (minLevel requirement fails). No error message. User sees all stories as locked with no explanation. | ⚠️ Should Fix |
 | Story Browser — `_StoryCard` | **Unlocked story — tap** | isUnlocked=true | ✅ | `Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryPlayScreen(story: story)))`. | ✅ Complete |
-| _StoryCard | **Locked story — tap** | isUnlocked=false | ⚠️ | `onTap: null`. Tapping a locked story does **nothing** — no feedback, no snackbar, no explanation. The lock icon and "Complete prerequisites first" text are shown, but the whole card is silent on tap. | ⚠️ Should Fix |
+| _StoryCard | **Locked story — tap** | isUnlocked=false | ✅ | Card stays locked but now shows `DanioSnackBar.info` with the missing level or prerequisite requirement. No Story Play navigation occurs while locked. | ✅ Complete |
 | _StoryCard | Completed checkmark | isCompleted=true | ✅ | `Icons.check_circle` shown. | ✅ Complete |
 | _StoryCard | Locked icon | isUnlocked=false | ✅ | `Icons.lock_outline` shown. 50% opacity. | ✅ Complete |
 | _StoryCard | Difficulty badge (colour-coded) | beginner/intermediate/advanced | ✅ | Green / amber / red. | ✅ Complete |
@@ -341,7 +341,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | **Placement test CTA routes to wrong screen.** "Take the test" opens `SpacedRepetitionPracticeScreen` instead of a dedicated placement quiz. `hasCompletedPlacementTest` is never set, so the card reappears. | Learn Screen | 🔴 Must Fix |
 | **Review Banner and Practice Card are visually distinct but functionally identical** — both route to `SpacedRepetitionPracticeScreen`. Shown simultaneously on Learn screen. Confusing to users. | Learn Screen | ⚠️ Should Fix |
 | **`spacedRepetitionProvider.errorMessage` is never surfaced** on Practice Hub or SR Practice screens. SR load errors are silent beyond snackbars. | Practice Hub, SR Practice | 🔴 Must Fix |
-| **Locked story cards (`onTap: null`) give no feedback on tap.** Users tap a locked story and nothing happens. Should show a snackbar explaining the lock. | Story Browser | ⚠️ Should Fix |
+| **Locked story cards now explain unlock requirements on tap.** Locked cards remain non-navigable but no longer behave like dead controls. | Story Browser | ✅ Complete |
 | **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
 | **Review session self-assessment UX.** User taps "Remembered/Forgot" without ever being asked to recall anything actively — just a label. Cards with no `questionText` are especially hollow. | Review Session | ⚠️ Should Fix |
 | **`image` section type is a placeholder.** Renders "Visual guide on the way!" box. No image support. Fine now (no lessons use it), but must be implemented before image sections go live. | Lesson Screen | 🔮 Future Scope |
@@ -363,11 +363,11 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | Practice Hub | ⚠️ Functional but fragile | 1 (error state silent) | 2 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 1 |
 | Review Session | ⚠️ UX gap | 0 | 2 |
-| Story Browser | ⚠️ UX gap | 0 | 2 |
-| Story Play | ✅ Mostly complete | 0 | 1 |
+| Story Browser | ✅ Mostly complete | 0 | 1 |
+| Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ⚠️ UX gap | 0 | 4 |
 
-**Total: 2 Must Fix · 20 Should Fix · 3 Research First · 3 Future Scope**
+**Total: 2 Must Fix · 18 Should Fix · 3 Research First · 3 Future Scope**
 
 ---
 
@@ -380,21 +380,19 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 
 ### ⚠️ Should Fix (high priority)
 
-3. **Locked story no feedback on tap** — add `DanioSnackBar.info` explaining what's needed to unlock.
-4. **Story play exit confirmation** — complete; `PopScope` and the app-bar back button now ask before losing mid-story progress.
-5. **Path expansion load error state** — if `loadPath()` fails, show an error row + retry, not a stuck spinner.
-6. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
-7. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.
-8. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
+3. **Path expansion load error state** — if `loadPath()` fails, show an error row + retry, not a stuck spinner.
+4. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
+5. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.
+6. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-9. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
-10. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
-11. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
-12. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
-13. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-14. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+7. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
+8. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
+9. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
+10. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
+11. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
+12. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 

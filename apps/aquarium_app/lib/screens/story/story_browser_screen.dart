@@ -7,6 +7,7 @@ import '../../navigation/app_routes.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/glass_card.dart';
+import '../../widgets/danio_snack_bar.dart';
 
 /// Browsable list of all available interactive stories.
 /// Accessible from the Learn tab — lets users pick a story to play.
@@ -28,7 +29,7 @@ class StoryBrowserScreen extends ConsumerWidget {
       ),
     );
 
-    final completedStories = profileSlice?.completedStories ?? [];
+    final completedStories = profileSlice?.completedStories ?? const <String>[];
 
     final allStories = Stories.allStories;
 
@@ -80,10 +81,10 @@ class StoryBrowserScreen extends ConsumerWidget {
                   final isCompleted = completedStories.contains(story.id);
                   final isUnlocked = profileSlice != null
                       ? (profileSlice.currentLevel >= story.minLevel &&
-                          (story.prerequisites.isEmpty ||
-                              story.prerequisites.every(
-                                (id) => completedStories.contains(id),
-                              )))
+                            (story.prerequisites.isEmpty ||
+                                story.prerequisites.every(
+                                  (id) => completedStories.contains(id),
+                                )))
                       : story.minLevel == 0 && story.prerequisites.isEmpty;
 
                   return Padding(
@@ -94,7 +95,12 @@ class StoryBrowserScreen extends ConsumerWidget {
                       isUnlocked: isUnlocked,
                       onTap: isUnlocked
                           ? () => AppRoutes.toStoryPlay(context, story)
-                          : null,
+                          : () => _showLockedStoryFeedback(
+                              context,
+                              story,
+                              currentLevel: profileSlice?.currentLevel ?? 0,
+                              completedStories: completedStories,
+                            ),
                     ),
                   );
                 },
@@ -109,6 +115,31 @@ class StoryBrowserScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  void _showLockedStoryFeedback(
+    BuildContext context,
+    Story story, {
+    required int currentLevel,
+    required List<String> completedStories,
+  }) {
+    final missingPrerequisites = story.prerequisites
+        .where((storyId) => !completedStories.contains(storyId))
+        .length;
+    final String message;
+
+    if (story.minLevel > currentLevel) {
+      message = 'Reach level ${story.minLevel} to unlock ${story.title}.';
+    } else if (missingPrerequisites > 0) {
+      final prerequisiteLabel = missingPrerequisites == 1
+          ? '1 prerequisite story'
+          : '$missingPrerequisites prerequisite stories';
+      message = 'Complete $prerequisiteLabel to unlock ${story.title}.';
+    } else {
+      message = 'Keep playing stories to unlock ${story.title}.';
+    }
+
+    DanioSnackBar.info(context, message);
   }
 }
 
