@@ -212,6 +212,47 @@ void main() {
       expect(streakToggle.value, isFalse);
     });
 
+    testWidgets(
+      'failed reminder intensity save keeps picker open with feedback',
+      (tester) async {
+        final profile = _fakeProfile(
+          streakRemindersEnabled: true,
+          reviewRemindersEnabled: true,
+        );
+        final originalJson = jsonEncode(profile.toJson());
+        SharedPreferences.setMockInitialValues({'user_profile': originalJson});
+        final prefs = await SharedPreferences.getInstance();
+        final falsePrefs = _FalseSetStringPrefs(prefs, 'user_profile');
+
+        await tester.pumpWidget(_wrap(prefs: falsePrefs));
+        await _advance(tester);
+
+        await tester.tap(find.text('Reminder Intensity'));
+        await tester.pumpAndSettle();
+        expect(find.text('Choose Reminder Intensity'), findsOneWidget);
+
+        await tester.tap(find.text('Quiet'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Choose Reminder Intensity'), findsOneWidget);
+        expect(prefs.getString('user_profile'), originalJson);
+        expect(
+          find.text("Couldn't update reminder intensity. Try again."),
+          findsOneWidget,
+        );
+        expect(find.text('Quiet reminders selected'), findsNothing);
+
+        final reviewToggle = tester.widget<SwitchListTile>(
+          find.widgetWithText(SwitchListTile, 'Review Reminders'),
+        );
+        final streakToggle = tester.widget<SwitchListTile>(
+          find.widgetWithText(SwitchListTile, 'Streak Reminders'),
+        );
+        expect(reviewToggle.value, isTrue);
+        expect(streakToggle.value, isTrue);
+      },
+    );
+
     testWidgets('failed review reminder save keeps switch on with feedback', (
       tester,
     ) async {

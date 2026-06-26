@@ -2847,6 +2847,15 @@ CL-P1-009FS Reminder Settings toggle persistence boundary:
 - Focused NotificationSettings widget coverage drives both toggles with
   simulated false local `user_profile` writes.
 
+CL-P1-009FT Reminder intensity persistence boundary:
+
+- Reminder Settings intensity presets now catch failed `user_profile` writes
+  before scheduling notification changes or showing preset-selected feedback.
+- Failed intensity writes keep the picker open, preserve the previous persisted
+  profile JSON, and show retry feedback instead of leaking an async error.
+- Focused NotificationSettings widget coverage drives the Quiet preset with a
+  simulated false local `user_profile` write.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

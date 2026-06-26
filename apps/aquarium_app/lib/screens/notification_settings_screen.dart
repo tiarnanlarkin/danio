@@ -353,14 +353,24 @@ class NotificationSettingsScreen extends ConsumerWidget {
       return false;
     }
 
-    await ref
-        .read(userProfileProvider.notifier)
-        .updateProfile(
-          reviewRemindersEnabled: intensity.reviewRemindersEnabled,
-          streakRemindersEnabled: intensity.streakRemindersEnabled,
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .updateProfile(
+            reviewRemindersEnabled: intensity.reviewRemindersEnabled,
+            streakRemindersEnabled: intensity.streakRemindersEnabled,
+          );
+      await NotificationScheduler.instance.scheduleReviewNotifications(ref);
+      await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+    } catch (_) {
+      if (context.mounted) {
+        AppFeedback.showError(
+          context,
+          'Couldn\'t update reminder intensity. Try again.',
         );
-    await NotificationScheduler.instance.scheduleReviewNotifications(ref);
-    await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+      }
+      return false;
+    }
 
     if (context.mounted) {
       AppFeedback.showInfo(context, '${intensity.title} reminders selected');

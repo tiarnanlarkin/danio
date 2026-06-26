@@ -341,6 +341,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FS makes Reminder Settings review/streak toggles catch failed
   `user_profile` persistence, preserve the previous switch state, and show
   retry feedback instead of leaking an async error.
+- CL-P1-009FT makes Reminder Settings intensity presets catch failed
+  `user_profile` persistence, keep the picker open, and show retry feedback
+  instead of leaking an async error.
 
 ## 7. P2 Work - Presentation System
 
