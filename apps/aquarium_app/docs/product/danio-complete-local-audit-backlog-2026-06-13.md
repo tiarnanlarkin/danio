@@ -285,6 +285,9 @@ Recent CL-P1-009 continuation note:
   before exposing a reset profile state.
 - CL-P1-009EY stops practice-mode lesson completion from claiming XP when the
   profile XP write fails or cannot be applied.
+- CL-P1-009EZ marks the energy explainer as seen only after the user dismisses
+  the dialog, and avoids saving the seen flag when the lesson screen unmounts
+  before the prompt can be shown.
 
 ## 7. P2 Work - Presentation System
 

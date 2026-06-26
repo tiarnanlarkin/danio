@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../utils/logger.dart';
 import '../../widgets/core/app_button.dart';
 import '../../widgets/core/app_dialog.dart';
 
@@ -14,9 +15,8 @@ Future<void> maybeExplainHearts(
   final prefs = await ref.read(sharedPreferencesProvider.future);
   final explained = prefs.getBool('hearts_explained') ?? false;
   if (explained) return;
-  await prefs.setBool('hearts_explained', true);
   if (!context.mounted) return;
-  showAppDialog(
+  await showAppDialog<void>(
     context: context,
     title: 'Energy',
     child: const Text(
@@ -33,4 +33,20 @@ Future<void> maybeExplainHearts(
       ),
     ],
   );
+  if (!context.mounted) return;
+  try {
+    final saved = await prefs.setBool('hearts_explained', true);
+    if (!saved) {
+      logError(
+        'Energy explainer dismissal flag failed to save.',
+        tag: 'LessonHeartsModal',
+      );
+    }
+  } catch (e, st) {
+    logError(
+      'Energy explainer dismissal flag failed to save: $e',
+      stackTrace: st,
+      tag: 'LessonHeartsModal',
+    );
+  }
 }

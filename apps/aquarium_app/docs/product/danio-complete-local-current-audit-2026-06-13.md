@@ -2639,6 +2639,15 @@ CL-P1-009EY Practice lesson XP feedback boundary:
   simulates a failed `user_profile` write, and verifies the post-pop feedback
   does not claim the XP reward.
 
+CL-P1-009EZ Energy explainer dismissal boundary:
+
+- The energy explainer no longer writes `hearts_explained` before the user has
+  actually seen and dismissed the dialog.
+- If the lesson surface unmounts while preferences are still loading, the
+  prompt is not silently consumed.
+- Focused widget coverage verifies both dismissal timing and the unmounted
+  screen boundary.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3623,7 +3632,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   water-test logs when only the secondary profile-XP write fails, and user
   profile reset rejects failed local preference removals before exposing reset
   state. Practice-mode lessons no longer claim XP when profile XP persistence
-  fails. Remaining
+  fails. The energy explainer now marks itself seen only after the dialog is
+  dismissed, and does not consume the prompt if the lesson screen unmounts
+  before it can be shown. Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
