@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/difficulty_settings_screen_test.dart
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -86,12 +88,12 @@ UserSkillProfile _profileWithMastery() {
 
 Widget _wrap({
   required UserSkillProfile profile,
-  Function(UserSkillProfile)? onUpdated,
+  FutureOr<bool> Function(UserSkillProfile)? onUpdated,
 }) {
   return MaterialApp(
     home: DifficultySettingsScreen(
       skillProfile: profile,
-      onProfileUpdated: onUpdated ?? (_) {},
+      onProfileUpdated: onUpdated ?? (_) => true,
     ),
   );
 }
@@ -211,6 +213,32 @@ void main() {
       expect(find.text('Mastered'), findsOneWidget);
       expect(find.byIcon(Icons.emoji_events_outlined), findsOneWidget);
       expect(find.text(String.fromCharCode(0x1f3c6)), findsNothing);
+    });
+
+    testWidgets('failed override save leaves the visible selection unchanged', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(profile: _profileWithSkills(), onUpdated: (_) => false),
+      );
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.drag(find.byType(ListView), const Offset(0, -900));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -900));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Manual Difficulty Override'), findsOneWidget);
+      await tester.tap(find.byType(DropdownButton<DifficultyLevel?>).first);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Easy').last);
+      await tester.pumpAndSettle();
+
+      final firstDropdown = tester.widget<DropdownButton<DifficultyLevel?>>(
+        find.byType(DropdownButton<DifficultyLevel?>).first,
+      );
+      expect(firstDropdown.value, isNull);
     });
   });
 }

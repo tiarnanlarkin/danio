@@ -1155,15 +1155,33 @@ class _DifficultySettingsWrapperState
     if (mounted) setState(() => _loaded = true);
   }
 
-  Future<void> _onProfileUpdated(UserSkillProfile updatedProfile) async {
-    setState(() {
-      _profile = updatedProfile;
-    });
+  Future<bool> _onProfileUpdated(UserSkillProfile updatedProfile) async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.setString(_profileKey, jsonEncode(updatedProfile.toJson()));
-    } catch (_) {
-      // Persist failure is non-fatal
+      final saved = await prefs.setString(
+        _profileKey,
+        jsonEncode(updatedProfile.toJson()),
+      );
+      if (!saved) {
+        throw StateError('User skill profile preference write returned false.');
+      }
+      if (!mounted) return false;
+      setState(() {
+        _profile = updatedProfile;
+      });
+      return true;
+    } catch (error, stackTrace) {
+      logError(
+        'Difficulty settings profile save failed: $error',
+        stackTrace: stackTrace,
+        tag: 'SettingsScreen',
+      );
+      if (!mounted) return false;
+      AppFeedback.showError(
+        context,
+        "Couldn't save difficulty setting. Try again.",
+      );
+      return false;
     }
   }
 

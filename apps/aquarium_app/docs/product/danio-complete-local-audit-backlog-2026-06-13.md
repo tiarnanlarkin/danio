@@ -223,6 +223,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009ED treats false Maintenance Checklist preference writes as local
   save failures, keeping weekly/monthly checklist progress rollback-safe and
   exporting the versioned checklist snapshot in local backups.
+- CL-P1-009EE treats false Difficulty Settings preference writes as local save
+  failures, keeping manual difficulty override selections unchanged with normal
+  retry feedback.
 
 ## 7. P2 Work - Presentation System
 

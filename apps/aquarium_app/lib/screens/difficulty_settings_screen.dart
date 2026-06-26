@@ -2,6 +2,8 @@
 /// Shows performance charts, skill levels by topic, and manual overrides
 library;
 
+import 'dart:async';
+
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
@@ -11,7 +13,7 @@ import '../services/difficulty_service.dart';
 
 class DifficultySettingsScreen extends StatefulWidget {
   final UserSkillProfile skillProfile;
-  final Function(UserSkillProfile) onProfileUpdated;
+  final FutureOr<bool> Function(UserSkillProfile) onProfileUpdated;
 
   const DifficultySettingsScreen({
     super.key,
@@ -42,6 +44,28 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   void initState() {
     super.initState();
     _currentProfile = widget.skillProfile;
+  }
+
+  Future<void> _setManualOverride(
+    String topicId,
+    DifficultyLevel? difficulty,
+  ) async {
+    final updatedProfile = _currentProfile.setManualOverride(
+      topicId,
+      difficulty,
+    );
+
+    bool saved;
+    try {
+      saved = await widget.onProfileUpdated(updatedProfile);
+    } catch (_) {
+      saved = false;
+    }
+
+    if (!mounted || !saved) return;
+    setState(() {
+      _currentProfile = updatedProfile;
+    });
   }
 
   @override
@@ -617,15 +641,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   );
                 }),
               ],
-              onChanged: (newValue) {
-                setState(() {
-                  _currentProfile = _currentProfile.setManualOverride(
-                    topicId,
-                    newValue,
-                  );
-                  widget.onProfileUpdated(_currentProfile);
-                });
-              },
+              onChanged: (newValue) => unawaited(
+                _setManualOverride(topicId, newValue),
+              ),
             ),
           ),
         ],

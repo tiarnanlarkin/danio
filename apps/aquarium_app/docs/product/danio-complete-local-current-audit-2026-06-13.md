@@ -2408,6 +2408,17 @@ CL-P1-009ED Maintenance Checklist preference write boundary:
 - Focused widget and backup-service coverage simulates a false checklist
   snapshot write and verifies the new snapshot is exportable.
 
+CL-P1-009EE Difficulty Settings preference write boundary:
+
+- Manual difficulty overrides now wait for the local `user_skill_profile`
+  preference write before changing the visible selected difficulty.
+- Failed or false `SharedPreferences.setString` results keep the previous
+  automatic/manual selection visible and show normal retry feedback instead of
+  implying an unsaved override was applied.
+- Focused widget coverage verifies both the direct Difficulty Settings callback
+  contract and the Settings wrapper path where `user_skill_profile` returns
+  false from `setString`.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

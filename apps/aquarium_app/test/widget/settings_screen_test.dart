@@ -19,6 +19,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/models/adaptive_difficulty.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/settings_screen.dart';
 import 'package:danio/widgets/core/app_list_tile.dart';
@@ -105,6 +106,46 @@ class _FalseRemovePrefs implements SharedPreferences {
   Future<bool> remove(String key) async {
     if (key == _failedKey) return false;
     return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _FalseSetStringPrefs implements SharedPreferences {
+  _FalseSetStringPrefs(this._delegate, this._failedKey);
+
+  final SharedPreferences _delegate;
+  final String _failedKey;
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    if (key == _failedKey) return false;
+    return _delegate.setString(key, value);
   }
 
   @override
@@ -584,6 +625,41 @@ void main() {
 
       await _dragUntilTextVisible(tester, 'Goals');
       expect(find.text('Learn the science, Beautiful display'), findsOneWidget);
+    });
+
+    testWidgets('failed difficulty override save keeps selection unchanged', (
+      tester,
+    ) async {
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetStringPrefs(prefs, 'user_skill_profile');
+
+      await tester.pumpWidget(
+        _wrap(const SettingsScreen(), prefs: falsePrefs),
+      );
+      await tester.pump();
+
+      await _dragUntilTextVisible(tester, 'Difficulty Settings');
+      await tester.tap(find.text('Difficulty Settings'));
+      await tester.pumpAndSettle();
+
+      await tester.drag(find.byType(ListView), const Offset(0, -900));
+      await tester.pumpAndSettle();
+      expect(find.text('Manual Difficulty Override'), findsOneWidget);
+
+      await tester.tap(find.byType(DropdownButton<DifficultyLevel?>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Easy').last);
+      await tester.pumpAndSettle();
+
+      final firstDropdown = tester.widget<DropdownButton<DifficultyLevel?>>(
+        find.byType(DropdownButton<DifficultyLevel?>).first,
+      );
+      expect(firstDropdown.value, isNull);
+      expect(prefs.getString('user_skill_profile'), isNull);
+      expect(
+        find.text("Couldn't save difficulty setting. Try again."),
+        findsOneWidget,
+      );
     });
   });
 
