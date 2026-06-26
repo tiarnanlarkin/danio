@@ -344,6 +344,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FT makes Reminder Settings intensity presets catch failed
   `user_profile` persistence, keep the picker open, and show retry feedback
   instead of leaking an async error.
+- CL-P1-009FU makes Reminder Settings time edits catch failed `user_profile`
+  persistence, preserve the previous reminder time, and show retry feedback
+  instead of leaking an async error or showing false updated feedback.
 
 ## 7. P2 Work - Presentation System
 

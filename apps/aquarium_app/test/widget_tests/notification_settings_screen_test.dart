@@ -23,11 +23,17 @@ import 'package:danio/models/user_profile.dart';
 UserProfile _fakeProfile({
   bool streakRemindersEnabled = false,
   bool reviewRemindersEnabled = false,
+  String morningReminderTime = '09:00',
+  String eveningReminderTime = '19:00',
+  String nightReminderTime = '23:00',
 }) => UserProfile(
   id: 'u1',
   name: 'Test User',
   streakRemindersEnabled: streakRemindersEnabled,
   reviewRemindersEnabled: reviewRemindersEnabled,
+  morningReminderTime: morningReminderTime,
+  eveningReminderTime: eveningReminderTime,
+  nightReminderTime: nightReminderTime,
   createdAt: DateTime(2024),
   updatedAt: DateTime(2024),
 );
@@ -252,6 +258,40 @@ void main() {
         expect(streakToggle.value, isTrue);
       },
     );
+
+    testWidgets('failed reminder time save shows retry feedback', (
+      tester,
+    ) async {
+      final profile = _fakeProfile(
+        streakRemindersEnabled: true,
+        morningReminderTime: '08:00',
+      );
+      final originalJson = jsonEncode(profile.toJson());
+      SharedPreferences.setMockInitialValues({'user_profile': originalJson});
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetStringPrefs(prefs, 'user_profile');
+
+      await tester.pumpWidget(_wrap(prefs: falsePrefs));
+      await _advance(tester);
+
+      await tester.tap(find.text('Morning Reminder'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TimePickerDialog), findsOneWidget);
+
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+
+      expect(prefs.getString('user_profile'), originalJson);
+      expect(
+        find.text("Couldn't update Morning Reminder. Try again."),
+        findsOneWidget,
+      );
+      expect(find.text('Morning Reminder updated to 08:00'), findsNothing);
+      expect(
+        find.text('08:00 - Start your day with a lesson'),
+        findsOneWidget,
+      );
+    });
 
     testWidgets('failed review reminder save keeps switch on with feedback', (
       tester,

@@ -435,21 +435,28 @@ class NotificationSettingsScreen extends ConsumerWidget {
     final timeString =
         '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
-    await ref
-        .read(userProfileProvider.notifier)
-        .updateProfile(
-          morningReminderTime: fieldName == 'morningReminderTime'
-              ? timeString
-              : null,
-          eveningReminderTime: fieldName == 'eveningReminderTime'
-              ? timeString
-              : null,
-          nightReminderTime: fieldName == 'nightReminderTime'
-              ? timeString
-              : null,
-        );
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .updateProfile(
+            morningReminderTime: fieldName == 'morningReminderTime'
+                ? timeString
+                : null,
+            eveningReminderTime: fieldName == 'eveningReminderTime'
+                ? timeString
+                : null,
+            nightReminderTime: fieldName == 'nightReminderTime'
+                ? timeString
+                : null,
+          );
 
-    await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+      await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+    } catch (_) {
+      if (context.mounted) {
+        AppFeedback.showError(context, 'Couldn\'t update $title. Try again.');
+      }
+      return;
+    }
 
     if (context.mounted) {
       AppFeedback.showInfo(context, '$title updated to $timeString');
