@@ -165,6 +165,10 @@ when the user wants to see the app while it is being built.
 Live preview does not replace focused tests, the Visual gate, AndroidPrep,
 Patrol, screenshots, or the Full gate.
 
+For performance-sensitive changes, use `docs/agent/PERFORMANCE_TARGETS.md` as
+the budget source before recording Android evidence or claiming the surface is
+smooth enough for the complete-local bar.
+
 Safe preflight:
 
 ```powershell

@@ -134,6 +134,8 @@ See `docs/agent/AUTONOMOUS_QUALITY_SETUP.md` for the autonomous workflow,
 optional local tool lane, account-backed quality lanes, and approval
 boundaries. Use `docs/agent/FINISH_MAP.md` to choose completion slices and
 `docs/agent/SLICE_CONTRACT_TEMPLATE.md` to define each slice before editing.
+Use `docs/agent/PERFORMANCE_TARGETS.md` for Android phone/tablet performance
+budgets before claiming performance-sensitive UI or startup work is complete.
 
 Before using external account-backed quality services, run the local preflight:
 

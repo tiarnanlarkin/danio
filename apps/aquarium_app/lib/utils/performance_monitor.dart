@@ -16,11 +16,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
+import 'performance_targets.dart';
+
 /// Global performance monitor instance
 final performanceMonitor = PerformanceMonitor();
 
 class PerformanceMonitor {
-  static const _targetFrameTime = Duration(microseconds: 16667); // 60 FPS
+  static const _targetFrameTime = PerformanceTargets.frameBudget60Fps;
   static const _sampleWindow = Duration(seconds: 1);
   static const _maxRebuildEntries = 100; // Prevent unbounded growth
 
