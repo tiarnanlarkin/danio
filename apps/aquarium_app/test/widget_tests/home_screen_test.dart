@@ -3,6 +3,7 @@
 // Run: flutter test test/widget_tests/home_screen_test.dart
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
@@ -91,6 +92,19 @@ void main() {
   });
 
   group('HomeScreen', () {
+    test('returning user prompt persistence checks failed writes', () {
+      final source = File(
+        'lib/screens/home/home_screen.dart',
+      ).readAsStringSync();
+
+      expect(
+        source,
+        contains('final saved = await prefs.setBool(prefsKey, true);'),
+      );
+      expect(source, contains('if (!saved)'));
+      expect(source, contains('returning user prompt dismissal'));
+    });
+
     testWidgets('renders without throwing', (tester) async {
       suppressLayoutErrors();
       await tester.pumpWidget(_wrap());

@@ -2724,6 +2724,16 @@ CL-P1-009FG Spaced-repetition reset removal boundary:
   `spaced_repetition_cards` removal and verifies visible state plus persisted
   cards/stats remain unchanged.
 
+CL-P1-009FH Tank returning-user prompt dismissal boundary:
+
+- Tank day-2, day-7, and day-30 returning-user prompt dismissal writes now
+  check the `SharedPreferences.setBool` result before treating the seen flag as
+  durably persisted.
+- Failed seen-flag writes are logged with the prompt key, keeping the prompt
+  retryable instead of silently consuming the local dismissal marker.
+- Focused HomeScreen source coverage protects the `setBool` return check and
+  failed-write logging copy.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3715,7 +3725,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   through the shared preferences provider and restores visible retry state
   when its seen-flag write fails. Spaced-repetition reset now keeps visible
   cards/stats and restores partially removed local JSON when reset removal
-  fails, and all current OpenAI request
+  fails. Tank returning-user prompts now check failed dismissal seen-flag
+  writes, and all current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining

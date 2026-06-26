@@ -308,6 +308,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FG makes spaced-repetition reset reject failed local removals,
   restore any partially removed review JSON, and keep visible cards/stats
   unchanged with retry feedback.
+- CL-P1-009FH checks failed Tank returning-user prompt dismissal writes so
+  day-2, day-7, and day-30 cards do not silently consume their seen flags when
+  local preference persistence fails.
 
 ## 7. P2 Work - Presentation System
 

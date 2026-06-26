@@ -186,7 +186,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           barrierDismissible: true,
           child: milestoneCard,
         );
-        if (prefsKey != null) await prefs.setBool(prefsKey, true);
+        if (prefsKey != null) {
+          final saved = await prefs.setBool(prefsKey, true);
+          if (!saved) {
+            logError(
+              'HomeScreen: returning user prompt dismissal failed to save for $prefsKey.',
+              tag: 'HomeScreen',
+            );
+          }
+        }
       }
     } catch (e, st) {
       logError(
