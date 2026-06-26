@@ -110,7 +110,15 @@ class AchievementProgressNotifier
   ) async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.setString(_key, jsonEncode(_toJson(progressMap)));
+      final saved = await prefs.setString(
+        _key,
+        jsonEncode(_toJson(progressMap)),
+      );
+      if (!saved) {
+        throw StateError(
+          'SharedPreferences.setString returned false for $_key.',
+        );
+      }
       if (identical(_pendingSaveState, progressMap)) {
         _pendingSaveState = null;
       }
@@ -131,8 +139,28 @@ class AchievementProgressNotifier
     if (prefs == null) return;
 
     try {
-      unawaited(prefs.setString(_key, jsonEncode(_toJson(pending))));
-      _pendingSaveState = null;
+      unawaited(
+        prefs
+            .setString(_key, jsonEncode(_toJson(pending)))
+            .then((saved) {
+              if (!saved) {
+                logError(
+                  'Failed to flush achievement progress: SharedPreferences.setString returned false for $_key.',
+                  tag: 'AchievementProvider',
+                );
+                return;
+              }
+              if (identical(_pendingSaveState, pending)) {
+                _pendingSaveState = null;
+              }
+            })
+            .catchError((Object e) {
+              logError(
+                'Failed to flush achievement progress: $e',
+                tag: 'AchievementProvider',
+              );
+            }),
+      );
     } catch (e) {
       logError(
         'Failed to flush achievement progress: $e',

@@ -2475,6 +2475,16 @@ CL-P1-009EJ Review streak write boundary:
   and verifies the completed session remains saved without writing a fake
   streak snapshot or fake persisted streak value.
 
+CL-P1-009EK Achievement progress false-write retry:
+
+- Debounced achievement progress saves now treat false
+  `SharedPreferences.setString` results as failed local writes instead of
+  clearing the pending reward-progress snapshot.
+- Lifecycle pause/detach flushes can retry the same pending
+  `achievement_progress` snapshot after the failed debounced write.
+- Focused provider coverage simulates a false first `achievement_progress`
+  write and verifies the next lifecycle flush persists the same local progress.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

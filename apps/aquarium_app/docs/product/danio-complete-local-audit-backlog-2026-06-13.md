@@ -240,6 +240,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EJ treats false spaced-repetition streak writes as local streak
   update failures, preserving the previous visible streak and saving completed
   review sessions without recording fake streak progress.
+- CL-P1-009EK keeps debounced achievement progress pending after a false
+  `achievement_progress` preference write, so the lifecycle flush can retry
+  instead of dropping the latest local reward progress.
 
 ## 7. P2 Work - Presentation System
 
