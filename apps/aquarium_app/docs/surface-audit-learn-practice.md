@@ -329,7 +329,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | Coming Soon tile | **Tap** | | ✅ | `showAppDialog` with story about path being in development. "Got it!" dismisses. | ✅ Complete |
 | Path card | **`comingSoonPathIds` is currently empty** | | ⚠️ | No paths are currently gated as coming soon. This constant was likely used historically. Either populate it or remove the code path to avoid dead code. | ⚠️ Should Fix |
 | Path card | **Only one path has a prerequisite lock** (`fish_health` requires `nitrogen_cycle`) | | ✅ | Lock system functional. One real lock in production. | ✅ Complete |
-| Path card expansion | Load error (path load fails) | network error mid-expand | ⚠️ | If `loadPath(meta.id)` throws/fails, `loadedPath` stays null and `isLoading` may return to false, leaving the expanded tile showing the BubbleLoader indefinitely, or reverting to showing the loader on re-expand. No error state rendered. | ⚠️ Should Fix |
+| Path card expansion | Load error (path load fails) | network error mid-expand | ✅ | Renders a retryable error row with "Couldn't load this path", supporting copy, and a Try again action. Widget coverage verifies no loader remains stuck. | ✅ Complete |
 | Path card | **No dedicated "path detail" screen** | | ⚠️ | The path is expanded inline in the learn screen. There is no fullscreen path view. Users cannot see the full lesson list without scrolling within a tiny expansion tile — especially an issue for paths with 13 lessons (Species Spotlights). | ⚠️ Should Fix |
 
 ---
@@ -345,7 +345,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
 | **Review session self-assessment UX.** User taps "Remembered/Forgot" without ever being asked to recall anything actively — just a label. Cards with no `questionText` are especially hollow. | Review Session | ⚠️ Should Fix |
 | **`image` section type is a placeholder.** Renders "Visual guide on the way!" box. No image support. Fine now (no lessons use it), but must be implemented before image sections go live. | Lesson Screen | 🔮 Future Scope |
-| **Path card expansion has no error state.** If `loadPath()` fails, the expansion shows a spinner indefinitely. | Learning Path Detail | ⚠️ Should Fix |
+| **Path card expansion shows a retryable error state.** Failed `loadPath()` calls no longer leave users with a stuck spinner. | Learning Path Detail | ✅ Complete |
 | **No dedicated full-screen path detail view.** Paths with 10+ lessons are squeezed into ExpansionTile. Especially poor for Species Spotlights (13 lessons). | Learning Path Detail | ⚠️ Should Fix |
 | **`hasSeenTutorial` is watched but never rendered in LearnScreen.** Dead watch in the select tuple. | Learn Screen | ⚠️ Should Fix |
 | **`_isHeartsModalVisible` / `_isExitingDueToHearts` flags are dead state** in `LessonScreen`. Set in `dispose()` but never set to `true` in active code. Orphaned from old hearts-block design. | Lesson Screen | ⚠️ Should Fix |
@@ -365,9 +365,9 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | Review Session | ⚠️ UX gap | 0 | 2 |
 | Story Browser | ✅ Mostly complete | 0 | 1 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
-| Learning Path Detail | ⚠️ UX gap | 0 | 4 |
+| Learning Path Detail | ⚠️ UX gap | 0 | 3 |
 
-**Total: 0 Must Fix · 17 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 16 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -379,19 +379,18 @@ None currently listed in this surface audit.
 
 ### ⚠️ Should Fix (high priority)
 
-1. **Path expansion load error state** — if `loadPath()` fails, show an error row + retry, not a stuck spinner.
-2. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
-3. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.
-4. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
+1. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
+2. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.
+3. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-5. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
-6. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
-7. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
-8. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
-9. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-10. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+4. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
+5. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
+6. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
+7. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
+8. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
+9. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 

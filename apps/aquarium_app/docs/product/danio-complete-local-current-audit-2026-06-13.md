@@ -838,6 +838,13 @@ CL-QA-005I Learn/practice surface audit coverage:
 - The Learn/Practice surface audit was updated to close those stale Must Fix
   rows and keep remaining launch gaps focused on active product issues.
 
+CL-QA-005J Learning path load-error audit truth:
+
+- Existing `LazyLearningPathCard` widget coverage verifies failed path loads
+  show a retryable error row instead of leaving users with a stuck loader.
+- The Learn/Practice surface audit was updated to close the stale path-load
+  error gap while keeping the larger dedicated path-detail redesign open.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck
