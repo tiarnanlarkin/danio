@@ -27,7 +27,6 @@ final troubleshootingPath = LearningPath(
       orderIndex: 0,
       xpReward: 60,
       estimatedMinutes: 6,
-      prerequisites: ['nc_intro'],
       guide: const LessonLearningGuide(
         outcomes: [
           'Triage distress by oxygen, ammonia/nitrite, temperature, contamination, and recent changes.',
@@ -581,7 +580,6 @@ final troubleshootingPath = LearningPath(
       orderIndex: 4,
       xpReward: 60,
       estimatedMinutes: 6,
-      prerequisites: ['tr_emergency'],
       guide: const LessonLearningGuide(
         outcomes: [
           'Respond to heater failure with gradual temperature correction, not sudden heat shock.',

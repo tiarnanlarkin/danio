@@ -569,7 +569,6 @@ final nitrogenCyclePath = LearningPath(
       orderIndex: 4,
       xpReward: 75,
       estimatedMinutes: 5,
-      prerequisites: ['nc_testing'],
       guide: const LessonLearningGuide(
         outcomes: [
           'Triage ammonia or nitrite spikes with immediate, fish-safe actions.',

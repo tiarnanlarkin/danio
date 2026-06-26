@@ -332,6 +332,29 @@ void main() {
       },
     );
 
+    test('emergency lessons are not locked behind prerequisites', () {
+      final emergencyLessons = _allLessons.where((lesson) {
+        final keyText = _normalise(
+          '${lesson.id} ${lesson.title} ${lesson.description}',
+        );
+        return keyText.contains('emergency') || keyText.contains('distress');
+      }).toList();
+
+      expect(
+        emergencyLessons,
+        isNotEmpty,
+        reason: 'Expected at least one emergency lesson in the catalog',
+      );
+
+      for (final lesson in emergencyLessons) {
+        expect(
+          lesson.prerequisites,
+          isEmpty,
+          reason: 'Emergency lesson ${lesson.id} must stay directly accessible',
+        );
+      }
+    });
+
     test('species database is broad, unique, and has sane care ranges', () {
       final species = SpeciesDatabase.species;
       final commonNames = <String>{};

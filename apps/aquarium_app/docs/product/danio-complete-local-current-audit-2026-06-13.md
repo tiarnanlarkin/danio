@@ -730,6 +730,15 @@ CL-P1-004M Emergency lesson safety boundary:
   requires both educational positioning and aquatic-vet/professional escalation
   language.
 
+CL-P1-004N Emergency lesson unlock boundary:
+
+- Emergency/distress learning lessons now stay directly accessible instead of
+  requiring prior lesson completion.
+- `Cycle Emergency: Handling Spikes`, `Emergency! Fish in Distress`, and
+  `Temperature Crash: Heater Failure` no longer carry prerequisites.
+- The content validation gate now fails if emergency/distress lessons are
+  locked behind prerequisites.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck
@@ -3485,8 +3494,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Fish Health, Species Care, Advanced Topics, Aquascaping, and Breeding Basics
   path enrichment, plus Troubleshooting emergency enrichment. Emergency lessons
   now carry educational/professional escalation safety-boundary copy guarded by
-  the content validator. Every current learning path now has structured guide
-  coverage.
+  the content validator, and emergency/distress lessons are kept directly
+  accessible without prerequisites. Every current learning path now has
+  structured guide coverage.
   Remaining learning work is expanding visual depth and richer learning
   interactions across the catalog.
 - Practice depth now includes workflow-based Skill Drills mapped to existing
