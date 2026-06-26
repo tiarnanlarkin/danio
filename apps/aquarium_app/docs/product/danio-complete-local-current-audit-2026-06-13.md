@@ -3555,8 +3555,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   action that writes a partial progression state: 900 XP, a 6-day streak, 9
   completed lessons, Betta species unlock, Driftwood Arch unlock/equip, and
   Evening Glow room theme, while keeping later unlock thresholds locked.
-  Remaining debug seed gaps are tablet and any real keyed-AI state only when it
-  can avoid fake provider readiness.
+- Debug QA tools now include CL-QA-007F, a debug-only `Seed Tablet QA State`
+  action that creates `QA Tablet Long Layout Community Tank` with dense
+  long-copy livestock, equipment, tasks, water-test, feeding, water-change, and
+  observation data for repeatable tablet walkthroughs. Remaining debug seed gap
+  is any real keyed-AI state only when it can avoid fake provider readiness.
 - Full-app tablet verification is not yet current, though Workshop, Lesson, and
   Learn now have focused phone/tablet or tablet readability layout guardrails.
 - Visual asset quality still has known older audit gaps.

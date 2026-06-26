@@ -75,7 +75,9 @@ import '../providers/achievement_provider.dart';
 import '../providers/lesson_provider.dart';
 import '../models/tank.dart';
 import '../models/livestock.dart';
+import '../models/equipment.dart';
 import '../models/log_entry.dart';
+import '../models/task.dart';
 import '../models/tank_decoration.dart';
 import '../models/user_profile.dart';
 import '../models/spaced_repetition.dart';
@@ -279,6 +281,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         title: 'Seed Unlock Edge State',
         subtitle: 'Creates partial species, room, and decoration unlocks',
         onTap: () => _seedUnlockEdgeState(context, ref),
+      ),
+      _DebugTile(
+        title: 'Seed Tablet QA State',
+        subtitle: 'Creates dense long-copy data for tablet visual checks',
+        onTap: () => _seedTabletQaState(context, ref),
       ),
       _DebugTile(
         title: 'Set Energy: Full (5)',
@@ -983,6 +990,270 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     } catch (e) {
       if (context.mounted) {
         DanioSnackBar.error(context, 'Unlock edge seed failed: $e');
+      }
+    }
+  }
+
+  Future<void> _seedTabletQaState(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      final storage = ref.read(storageServiceProvider);
+      const tankId = 'debug-tablet-qa-tank';
+
+      final now = DateTime.now();
+      final tank = Tank(
+        id: tankId,
+        name: 'QA Tablet Long Layout Community Tank',
+        type: TankType.freshwater,
+        volumeLitres: 240,
+        startDate: now.subtract(const Duration(days: 180)),
+        targets: WaterTargets.freshwaterTropical(),
+        notes:
+            'Debug QA state for tablet layout checks with long names, dense '
+            'lists, mixed care tasks, equipment, and varied logs.',
+        isDemoTank: true,
+        createdAt: now,
+        updatedAt: now,
+        sortOrder: 9995,
+      );
+      await storage.saveTank(tank);
+
+      final livestock = [
+        Livestock(
+          id: 'debug-tablet-longfin-gourami',
+          tankId: tankId,
+          commonName: 'Longfin Pearl Gourami Layout Stress Group',
+          scientificName: 'Trichopodus leerii',
+          count: 4,
+          dateAdded: now.subtract(const Duration(days: 130)),
+          healthStatus: HealthStatus.healthy,
+          notes:
+              'Long display name for tablet card wrapping and livestock rows.',
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Livestock(
+          id: 'debug-tablet-neon-tetra',
+          tankId: tankId,
+          commonName: 'Neon Tetra',
+          scientificName: 'Paracheirodon innesi',
+          count: 18,
+          dateAdded: now.subtract(const Duration(days: 120)),
+          healthStatus: HealthStatus.healthy,
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Livestock(
+          id: 'debug-tablet-corydoras',
+          tankId: tankId,
+          commonName: 'Bronze Corydoras',
+          scientificName: 'Corydoras aeneus',
+          count: 9,
+          dateAdded: now.subtract(const Duration(days: 105)),
+          healthStatus: HealthStatus.healthy,
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Livestock(
+          id: 'debug-tablet-amano-shrimp',
+          tankId: tankId,
+          commonName: 'Amano Shrimp',
+          scientificName: 'Caridina multidentata',
+          count: 12,
+          dateAdded: now.subtract(const Duration(days: 80)),
+          healthStatus: HealthStatus.healthy,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      ];
+      for (final item in livestock) {
+        await storage.saveLivestock(item);
+      }
+
+      final equipment = [
+        Equipment(
+          id: 'debug-tablet-filter',
+          tankId: tankId,
+          type: EquipmentType.filter,
+          name: 'Oversized canister filter with extended spray bar',
+          brand: 'QA Flow',
+          model: 'Layout-Flow-240',
+          maintenanceIntervalDays: 28,
+          lastServiced: now.subtract(const Duration(days: 35)),
+          installedDate: now.subtract(const Duration(days: 180)),
+          expectedLifespanMonths: 60,
+          notes: 'Overdue service card for equipment tablet rows.',
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Equipment(
+          id: 'debug-tablet-light',
+          tankId: tankId,
+          type: EquipmentType.light,
+          name: 'Programmable planted-tank LED sunrise bar',
+          brand: 'QA Light',
+          model: 'Spectrum 1200',
+          settings: const {'photoperiodHours': 7.5, 'intensityPercent': 62},
+          maintenanceIntervalDays: 60,
+          lastServiced: now.subtract(const Duration(days: 18)),
+          installedDate: now.subtract(const Duration(days: 160)),
+          expectedLifespanMonths: 36,
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Equipment(
+          id: 'debug-tablet-heater',
+          tankId: tankId,
+          type: EquipmentType.heater,
+          name: 'Backup calibrated heater for cool overnight room',
+          brand: 'QA Heat',
+          model: 'Stable 300',
+          settings: const {'targetTempC': 25.0},
+          maintenanceIntervalDays: 90,
+          lastServiced: now.subtract(const Duration(days: 42)),
+          installedDate: now.subtract(const Duration(days: 150)),
+          expectedLifespanMonths: 36,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      ];
+      for (final item in equipment) {
+        await storage.saveEquipment(item);
+      }
+
+      final tasks = [
+        Task(
+          id: 'debug-tablet-task-filter',
+          tankId: tankId,
+          title: 'Rinse filter media in removed tank water',
+          description:
+              'Check flow at the spray bar and keep beneficial bacteria wet.',
+          recurrence: RecurrenceType.monthly,
+          dueDate: now.subtract(const Duration(days: 2)),
+          priority: TaskPriority.high,
+          isAutoGenerated: true,
+          relatedEquipmentId: 'debug-tablet-filter',
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Task(
+          id: 'debug-tablet-task-stems',
+          tankId: tankId,
+          title: 'Trim background stems and replant healthy tops',
+          description:
+              'Tablet QA long task title for wrapping, spacing, and action rows.',
+          recurrence: RecurrenceType.weekly,
+          dueDate: now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Task(
+          id: 'debug-tablet-task-water-test',
+          tankId: tankId,
+          title: 'Test ammonia, nitrite, nitrate, pH, GH, and KH',
+          recurrence: RecurrenceType.weekly,
+          dueDate: now,
+          priority: TaskPriority.high,
+          isAutoGenerated: true,
+          createdAt: now,
+          updatedAt: now,
+        ),
+        Task(
+          id: 'debug-tablet-task-feeding',
+          tankId: tankId,
+          title: 'Prep varied micro food rotation for community fish',
+          recurrence: RecurrenceType.custom,
+          intervalDays: 3,
+          dueDate: now.add(const Duration(days: 3)),
+          priority: TaskPriority.low,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      ];
+      for (final task in tasks) {
+        await storage.saveTask(task);
+      }
+
+      final logs = [
+        LogEntry(
+          id: 'debug-tablet-water-test',
+          tankId: tankId,
+          type: LogType.waterTest,
+          timestamp: now.subtract(const Duration(hours: 3)),
+          waterTest: WaterTestResults(
+            temperature: 25.2,
+            ph: 6.9,
+            ammonia: 0,
+            nitrite: 0,
+            nitrate: 18,
+            gh: 7,
+            kh: 4,
+          ),
+          title: 'Tablet QA water test',
+          notes:
+              'Stable but information-dense water test for chart and Smart rows.',
+          createdAt: now,
+        ),
+        LogEntry(
+          id: 'debug-tablet-feeding',
+          tankId: tankId,
+          type: LogType.feeding,
+          timestamp: now.subtract(const Duration(hours: 8)),
+          title: 'Community micro feeding',
+          notes:
+              'Tiny portions split across upper, middle, and bottom swimmers.',
+          createdAt: now,
+        ),
+        LogEntry(
+          id: 'debug-tablet-water-change',
+          tankId: tankId,
+          type: LogType.waterChange,
+          timestamp: now.subtract(const Duration(days: 6)),
+          waterChangePercent: 30,
+          title: 'Thirty percent maintenance change',
+          notes: 'Vacuumed open foreground while leaving planted areas stable.',
+          createdAt: now,
+        ),
+        LogEntry(
+          id: 'debug-tablet-observation',
+          tankId: tankId,
+          type: LogType.observation,
+          timestamp: now.subtract(const Duration(days: 2)),
+          title: 'Tablet layout observation with a deliberately longer title',
+          notes:
+              'Fish schooling well; gourami using upper cover; corydoras active '
+              'after lights ramp down.',
+          createdAt: now,
+        ),
+      ];
+      for (final log in logs) {
+        await storage.saveLog(log);
+      }
+
+      ref.invalidate(tanksProvider);
+      ref.invalidate(tankProvider(tankId));
+      ref.invalidate(livestockProvider(tankId));
+      ref.invalidate(equipmentProvider(tankId));
+      ref.invalidate(tasksProvider(tankId));
+      ref.invalidate(tasksProvider(null));
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(allLogsProvider(tankId));
+      ref.invalidate(recentLogsProvider(tankId));
+      ref.invalidate(latestWaterTestProvider(tankId));
+      ref.invalidate(latestWaterTestEntryProvider(tankId));
+
+      if (context.mounted) {
+        DanioSnackBar.success(
+          context,
+          'Tablet QA state seeded: QA Tablet Long Layout Community Tank',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Tablet QA seed failed: $e');
       }
     }
   }

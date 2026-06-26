@@ -14,7 +14,9 @@ import 'package:danio/services/storage_service.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_decoration_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
+import 'package:danio/models/equipment.dart';
 import 'package:danio/models/log_entry.dart';
+import 'package:danio/models/task.dart';
 import 'package:danio/models/tank_decoration.dart';
 import 'package:danio/models/user_profile.dart';
 import 'package:danio/services/tank_livestock_visual_service.dart';
@@ -305,6 +307,57 @@ void main() {
       expect(roomStates[RoomThemeType.midnight]?.isUnlocked, isFalse);
       expect(roomStates[RoomThemeType.watercolor]?.isUnlocked, isFalse);
       expect(prefs.getInt('room_theme'), RoomThemeType.eveningGlow.index);
+    });
+
+    testWidgets('seeds tablet visual QA state', (tester) async {
+      final storage = InMemoryStorageService();
+      await clearStorage(storage);
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Seed Tablet QA State'), 500);
+      await tester.tap(find.text('Seed Tablet QA State'));
+      await tester.pumpAndSettle();
+
+      final tank = await storage.getTank('debug-tablet-qa-tank');
+      expect(tank, isNotNull);
+      expect(tank!.name, 'QA Tablet Long Layout Community Tank');
+      expect(tank.notes, contains('tablet'));
+
+      final livestock = await storage.getLivestockForTank(tank.id);
+      expect(livestock, hasLength(greaterThanOrEqualTo(4)));
+      expect(
+        livestock.map((fish) => fish.commonName),
+        contains('Longfin Pearl Gourami Layout Stress Group'),
+      );
+      expect(
+        livestock.fold<int>(0, (total, fish) => total + fish.count),
+        greaterThanOrEqualTo(30),
+      );
+
+      final equipment = await storage.getEquipmentForTank(tank.id);
+      expect(equipment, hasLength(greaterThanOrEqualTo(3)));
+      expect(equipment.map((item) => item.type), contains(EquipmentType.light));
+      expect(
+        equipment.map((item) => item.type),
+        contains(EquipmentType.filter),
+      );
+
+      final tasks = await storage.getTasksForTank(tank.id);
+      expect(tasks, hasLength(greaterThanOrEqualTo(4)));
+      expect(tasks.map((task) => task.priority), contains(TaskPriority.high));
+      expect(
+        tasks.map((task) => task.title),
+        contains('Trim background stems and replant healthy tops'),
+      );
+
+      final logs = await storage.getLogsForTank(tank.id);
+      expect(logs, hasLength(greaterThanOrEqualTo(4)));
+      expect(logs.map((log) => log.type), contains(LogType.waterTest));
+      expect(logs.map((log) => log.type), contains(LogType.feeding));
+      expect(logs.map((log) => log.type), contains(LogType.waterChange));
+      expect(logs.map((log) => log.title), contains('Tablet QA water test'));
     });
   });
 }
