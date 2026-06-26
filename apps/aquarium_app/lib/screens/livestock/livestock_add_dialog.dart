@@ -319,17 +319,22 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
       var progressUpdated = true;
 
       if (widget.existing == null) {
-        await storage.saveLog(
-          LogEntry(
-            id: _uuid.v4(),
-            tankId: widget.tankId,
-            type: LogType.livestockAdded,
-            timestamp: now,
-            title: 'Added ${livestock.count}x ${livestock.commonName}',
-            relatedLivestockId: livestock.id,
-            createdAt: now,
-          ),
-        );
+        try {
+          await storage.saveLog(
+            LogEntry(
+              id: _uuid.v4(),
+              tankId: widget.tankId,
+              type: LogType.livestockAdded,
+              timestamp: now,
+              title: 'Added ${livestock.count}x ${livestock.commonName}',
+              relatedLivestockId: livestock.id,
+              createdAt: now,
+            ),
+          );
+        } catch (_) {
+          await storage.deleteLivestock(livestock.id);
+          rethrow;
+        }
 
         ref.invalidate(logsProvider(widget.tankId));
         ref.invalidate(allLogsProvider(widget.tankId));
@@ -377,6 +382,9 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
       if (mounted) Navigator.maybePop(context);
     } catch (e) {
       logError('Error saving livestock: $e', tag: 'LivestockAddDialog');
+      ref.invalidate(livestockProvider(widget.tankId));
+      ref.invalidate(logsProvider(widget.tankId));
+      ref.invalidate(allLogsProvider(widget.tankId));
       if (mounted) {
         AppFeedback.showError(
           context,

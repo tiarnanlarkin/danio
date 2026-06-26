@@ -275,6 +275,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EU rolls back bulk livestock add records when a readable timeline
   log save fails mid-add, preventing partial livestock without matching local
   journal evidence.
+- CL-P1-009EV rolls back single livestock add records when the readable
+  timeline log save fails, preventing partial livestock without matching local
+  journal evidence.
 
 ## 7. P2 Work - Presentation System
 

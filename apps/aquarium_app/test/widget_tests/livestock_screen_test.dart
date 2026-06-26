@@ -519,6 +519,41 @@ void main() {
       },
     );
 
+    testWidgets('failed add-log save rolls back new livestock', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-add-log-failure-tank';
+      final storage = _SaveLogFailsStorage();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Rollback Tank'));
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Add Livestock'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Otocinclus',
+      );
+      await tester.tap(find.text('Add').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(await storage.getLivestockForTank(tankId), isEmpty);
+      expect(await storage.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t save that. Check your connection and try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('1x Otocinclus added.'), findsNothing);
+    });
+
     testWidgets(
       'profile activity failure after livestock add does not report add failure',
       (tester) async {
@@ -734,7 +769,16 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Move to Tank'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Bedroom Tank').last);
+      final bedroomTankTile = tester.widget<ListTile>(
+        find
+            .ancestor(
+              of: find.text('Bedroom Tank'),
+              matching: find.byType(ListTile),
+            )
+            .last,
+      );
+      expect(bedroomTankTile.onTap, isNotNull);
+      bedroomTankTile.onTap!.call();
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
