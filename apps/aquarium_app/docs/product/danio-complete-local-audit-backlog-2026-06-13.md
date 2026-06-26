@@ -247,6 +247,10 @@ Recent CL-P1-009 continuation note:
   deletion failures, preventing the destructive privacy flow from continuing to
   file deletion, onboarding reset, or navigation after preferences reject the
   clear.
+- CL-P1-009EM treats false onboarding reset preference removals as local reset
+  failures, so settings/debug/data-deletion reset paths can use their existing
+  retry handling instead of reporting a reset when `onboarding_completed`
+  remains saved.
 
 ## 7. P2 Work - Presentation System
 

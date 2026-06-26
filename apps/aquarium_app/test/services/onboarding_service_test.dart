@@ -26,6 +26,25 @@ class _FalseSetBoolPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseRemovePrefs implements SharedPreferences {
+  _FalseRemovePrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key) _shouldFail;
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  Future<bool> remove(String key) async {
+    if (_shouldFail(key)) return false;
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
   group('OnboardingService', () {
     setUp(() {
@@ -65,6 +84,26 @@ void main() {
 
       expect(delegate.getBool('onboarding_completed'), isNull);
       expect(service.isOnboardingCompleted, isFalse);
+    });
+
+    test('resetOnboarding surfaces failed completion flag removals', () async {
+      SharedPreferences.setMockInitialValues({'onboarding_completed': true});
+      final delegate = await SharedPreferences.getInstance();
+      final prefs = _FalseRemovePrefs(
+        delegate,
+        (key) => key == 'onboarding_completed',
+      );
+      OnboardingService.overrideSharedPreferencesFactoryForTesting(
+        () async => prefs,
+      );
+      final service = await OnboardingService.getInstance();
+
+      expect(service.isOnboardingCompleted, isTrue);
+
+      await expectLater(service.resetOnboarding(), throwsA(isA<StateError>()));
+
+      expect(delegate.getBool('onboarding_completed'), isTrue);
+      expect(service.isOnboardingCompleted, isTrue);
     });
   });
 }

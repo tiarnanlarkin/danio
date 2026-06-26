@@ -50,6 +50,13 @@ class OnboardingService {
 
   /// For testing: reset onboarding state.
   Future<void> resetOnboarding() async {
-    await _prefs?.remove(_key);
+    final prefs = _prefs;
+    if (prefs == null) {
+      throw StateError('Onboarding preferences are not initialized.');
+    }
+    final removed = await prefs.remove(_key);
+    if (!removed) {
+      throw StateError('Onboarding completion flag removal returned false.');
+    }
   }
 }

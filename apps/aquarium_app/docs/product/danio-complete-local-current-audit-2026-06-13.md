@@ -2508,6 +2508,17 @@ CL-P1-009EL Delete My Data preference-clear boundary:
   verifies the destructive flow reports the failure and leaves local preference
   data available for retry.
 
+CL-P1-009EM Onboarding reset preference-removal boundary:
+
+- `OnboardingService.resetOnboarding` now treats missing preferences or a false
+  `SharedPreferences.remove` result as local reset failures instead of
+  silently reporting reset completion.
+- Settings, debug, and data-deletion callers that already await the service can
+  now use their existing retry/error paths when the onboarding completion flag
+  cannot be removed.
+- Focused service coverage simulates a false `onboarding_completed` removal
+  and verifies the completion flag remains set for retry.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
