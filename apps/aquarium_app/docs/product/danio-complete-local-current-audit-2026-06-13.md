@@ -3539,8 +3539,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Spike` action that creates `QA Emergency Water Spike`, one sick livestock
   entry, and an unsafe ammonia/nitrite/nitrate water-test log for repeatable
   Emergency Guide, Tank alert, Smart Hub risk, and aquarium-visual checks.
-  Remaining debug seed gaps are incompatible fish, skipped onboarding, unlock
-  edge cases, tablet, and AI/no-AI states.
+- Debug QA tools now include CL-QA-007B, a debug-only `Seed Incompatible Fish
+  Tank` action that creates `QA Incompatible Fish Tank` with Betta plus Guppy,
+  and focused widget coverage verifies that the existing livestock visual
+  service reports `compatibilityConcern`.
+  Remaining debug seed gaps are skipped onboarding, unlock edge cases, tablet,
+  and AI/no-AI states.
 - Full-app tablet verification is not yet current, though Workshop, Lesson, and
   Learn now have focused phone/tablet or tablet readability layout guardrails.
 - Visual asset quality still has known older audit gaps.

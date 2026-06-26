@@ -255,6 +255,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         onTap: () => _seedEmergencyWaterSpike(context, ref),
       ),
       _DebugTile(
+        title: 'Seed Incompatible Fish Tank',
+        subtitle: 'Creates a Betta + Guppy compatibility warning state',
+        onTap: () => _seedIncompatibleFishTank(context, ref),
+      ),
+      _DebugTile(
         title: 'Set Energy: Full (5)',
         subtitle: 'Restore hearts to max',
         onTap: () => _setEnergy(context, ref, full: true),
@@ -660,6 +665,76 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     } catch (e) {
       if (context.mounted) {
         DanioSnackBar.error(context, 'Emergency seed failed: $e');
+      }
+    }
+  }
+
+  Future<void> _seedIncompatibleFishTank(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      final storage = ref.read(storageServiceProvider);
+      const tankId = 'debug-incompatible-fish-tank';
+
+      final now = DateTime.now();
+      final tank = Tank(
+        id: tankId,
+        name: 'QA Incompatible Fish Tank',
+        type: TankType.freshwater,
+        volumeLitres: 60,
+        startDate: now.subtract(const Duration(days: 45)),
+        targets: WaterTargets.freshwaterTropical(),
+        notes: 'Debug QA state for livestock compatibility warnings.',
+        isDemoTank: true,
+        createdAt: now,
+        updatedAt: now,
+        sortOrder: 9997,
+      );
+      await storage.saveTank(tank);
+
+      await storage.saveLivestock(
+        Livestock(
+          id: 'debug-incompatible-betta',
+          tankId: tankId,
+          commonName: 'Betta',
+          scientificName: 'Betta splendens',
+          count: 1,
+          dateAdded: now.subtract(const Duration(days: 30)),
+          healthStatus: HealthStatus.healthy,
+          notes: 'QA seed: long-finned betta for compatibility review.',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.saveLivestock(
+        Livestock(
+          id: 'debug-incompatible-guppy',
+          tankId: tankId,
+          commonName: 'Guppy',
+          scientificName: 'Poecilia reticulata',
+          count: 3,
+          dateAdded: now.subtract(const Duration(days: 20)),
+          healthStatus: HealthStatus.healthy,
+          notes: 'QA seed: flashy guppies that should trigger review.',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+
+      ref.invalidate(tanksProvider);
+      ref.invalidate(tankProvider(tankId));
+      ref.invalidate(livestockProvider(tankId));
+
+      if (context.mounted) {
+        DanioSnackBar.success(
+          context,
+          'Incompatible fish tank seeded: QA Incompatible Fish Tank',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Incompatible fish seed failed: $e');
       }
     }
   }

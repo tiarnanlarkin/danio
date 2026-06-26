@@ -12,6 +12,7 @@ import 'package:danio/services/storage_service.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/log_entry.dart';
+import 'package:danio/services/tank_livestock_visual_service.dart';
 
 Widget _wrap({InMemoryStorageService? storage}) {
   SharedPreferences.setMockInitialValues({});
@@ -102,6 +103,42 @@ void main() {
       expect(waterTest.waterTest?.ammonia, greaterThan(0));
       expect(waterTest.waterTest?.nitrite, greaterThan(0));
       expect(waterTest.title, contains('Emergency'));
+    });
+
+    testWidgets('seeds incompatible fish QA tank for visual checks', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await clearStorage(storage);
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('Seed Incompatible Fish Tank'),
+        500,
+      );
+      await tester.tap(find.text('Seed Incompatible Fish Tank'));
+      await tester.pumpAndSettle();
+
+      final tank = await storage.getTank('debug-incompatible-fish-tank');
+      expect(tank, isNotNull);
+      expect(tank!.name, 'QA Incompatible Fish Tank');
+
+      final livestock = await storage.getLivestockForTank(tank.id);
+      expect(
+        livestock.map((fish) => fish.commonName),
+        containsAll(['Betta', 'Guppy']),
+      );
+
+      final visualState = TankLivestockVisualService.fromTank(
+        tank: tank,
+        livestock: livestock,
+      );
+      expect(
+        visualState.condition,
+        TankLivestockVisualCondition.compatibilityConcern,
+      );
     });
   });
 }
