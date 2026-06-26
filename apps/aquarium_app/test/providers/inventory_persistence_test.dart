@@ -71,6 +71,14 @@ Future<void> _waitForLoad(ProviderContainer container) async {
   }
 }
 
+Future<void> _waitForProfileLoad(ProviderContainer container) async {
+  for (var i = 0; i < 20; i++) {
+    final profileState = container.read(userProfileProvider);
+    if (!profileState.isLoading) return;
+    await Future<void>.delayed(Duration.zero);
+  }
+}
+
 UserProfile _profile({bool hasStreakFreeze = false}) {
   final now = DateTime(2026, 6, 19, 12);
   return UserProfile(
@@ -96,6 +104,47 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('InventoryNotifier persistence', () {
+    test(
+      'legacy inventory migration keeps profile inventory when shop save returns false',
+      () async {
+        final legacyItem = InventoryItem(
+          itemId: 'streak_freeze',
+          quantity: 1,
+          purchasedAt: DateTime(2026, 6, 19, 12),
+        );
+        final legacyProfile = _profile().copyWith(inventory: [legacyItem]);
+        final legacyProfileJson = jsonEncode(legacyProfile.toJson());
+        SharedPreferences.setMockInitialValues({
+          'user_profile': legacyProfileJson,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalseSetStringPrefs(
+                prefs,
+                (key, _) => key == 'shop_inventory',
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final profileSub = container.listen(userProfileProvider, (_, __) {});
+        addTearDown(profileSub.close);
+        await _waitForProfileLoad(container);
+        final inventorySub = container.listen(inventoryProvider, (_, __) {});
+        addTearDown(inventorySub.close);
+        await _waitForLoad(container);
+
+        final migratedItems = container.read(inventoryProvider).valueOrNull;
+        expect(migratedItems, hasLength(1));
+        expect(migratedItems?.single.itemId, legacyItem.itemId);
+        expect(migratedItems?.single.quantity, legacyItem.quantity);
+        expect(prefs.getString('shop_inventory'), isNull);
+        expect(prefs.getString('user_profile'), legacyProfileJson);
+      },
+    );
+
     test(
       'useItem surfaces inventory save failures before applying profile effect',
       () async {

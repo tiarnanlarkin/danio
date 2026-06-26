@@ -231,6 +231,9 @@ Recent CL-P1-009 continuation note:
   prompts.
 - CL-P1-009EG treats false API rate-limit preference writes as non-durable
   local saves while keeping the current app session rate-limited.
+- CL-P1-009EH preserves legacy `UserProfile.inventory` during failed
+  `shop_inventory` migration writes so retryable migration cannot lose owned
+  items.
 
 ## 7. P2 Work - Presentation System
 

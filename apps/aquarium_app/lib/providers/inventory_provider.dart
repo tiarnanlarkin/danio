@@ -52,7 +52,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
             final migrateJson = jsonEncode(
               inventory.map((i) => i.toJson()).toList(),
             );
-            await prefs.setString(_key, migrateJson);
+            await _setStringOrThrow(prefs, _key, migrateJson);
             // Clear the legacy field so we don't re-migrate.
             await ref
                 .read(userProfileProvider.notifier)

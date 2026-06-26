@@ -2441,6 +2441,17 @@ CL-P1-009EG API rate-limit preference write boundary:
   verifies the persisted list stays unset while the in-memory request count is
   reduced.
 
+CL-P1-009EH Legacy inventory migration write boundary:
+
+- Legacy `UserProfile.inventory` migration now uses the same guarded
+  `shop_inventory` preference write path as normal inventory changes.
+- Failed or false migration writes keep the legacy profile inventory intact
+  instead of clearing it before the new single-source `shop_inventory` snapshot
+  is durable.
+- Focused provider coverage simulates a false `shop_inventory` migration write
+  and verifies the visible migrated item remains available while the legacy
+  profile inventory is preserved for a later retry.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
