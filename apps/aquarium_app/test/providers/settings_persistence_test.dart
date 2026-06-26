@@ -41,6 +41,34 @@ class _ThrowingPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalsePrefs implements SharedPreferences {
+  _FalsePrefs(this._delegate, this._failedKeys);
+
+  final SharedPreferences _delegate;
+  final Set<String> _failedKeys;
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) {
+    if (_failedKeys.contains(key)) return Future<bool>.value(false);
+    return _delegate.setBool(key, value);
+  }
+
+  @override
+  Future<bool> setInt(String key, int value) {
+    if (_failedKeys.contains(key)) return Future<bool>.value(false);
+    return _delegate.setInt(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Future<void> _waitForSettingsLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i += 1) {
     container.read(settingsProvider);
@@ -95,6 +123,53 @@ void main() {
 
         expect(container.read(settingsProvider).themeMode, AppThemeMode.system);
         expect(prefs.getInt('theme_mode'), 0);
+      },
+    );
+
+    test(
+      'setting toggles report false and keep state when preference writes return false',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'theme_mode': 0,
+          'notifications_enabled': true,
+          'ambient_lighting_enabled': true,
+          'haptic_feedback_enabled': true,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _FalsePrefs(prefs, {
+                'theme_mode',
+                'notifications_enabled',
+                'ambient_lighting_enabled',
+                'haptic_feedback_enabled',
+              });
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        await _waitForSettingsLoad(container);
+
+        final notifier = container.read(settingsProvider.notifier);
+
+        expect(
+          await notifier.setThemeMode(AppThemeMode.dark),
+          isFalse,
+        );
+        expect(await notifier.setNotificationsEnabled(false), isFalse);
+        expect(await notifier.setAmbientLightingEnabled(false), isFalse);
+        expect(await notifier.setHapticFeedbackEnabled(false), isFalse);
+
+        final settings = container.read(settingsProvider);
+        expect(settings.themeMode, AppThemeMode.system);
+        expect(settings.notificationsEnabled, isTrue);
+        expect(settings.ambientLightingEnabled, isTrue);
+        expect(settings.hapticFeedbackEnabled, isTrue);
+        expect(prefs.getInt('theme_mode'), 0);
+        expect(prefs.getBool('notifications_enabled'), isTrue);
+        expect(prefs.getBool('ambient_lighting_enabled'), isTrue);
+        expect(prefs.getBool('haptic_feedback_enabled'), isTrue);
       },
     );
   });

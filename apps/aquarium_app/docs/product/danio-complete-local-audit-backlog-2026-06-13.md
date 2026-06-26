@@ -328,6 +328,10 @@ Recent CL-P1-009 continuation note:
   results before showing restart-success copy.
 - CL-P1-009FO makes Debug Force SR Cards Due reject false
   `spaced_repetition_cards` writes before showing due-now success.
+- CL-P1-009FP makes Settings theme, phone-notification, ambient-lighting, and
+  haptic-feedback writes report false local persistence results, and keeps
+  Phone Notifications from showing disabled-success feedback when its local
+  save fails.
 
 ## 7. P2 Work - Presentation System
 

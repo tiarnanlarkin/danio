@@ -112,10 +112,12 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     }
   }
 
-  Future<void> setThemeMode(AppThemeMode mode) async {
+  Future<bool> setThemeMode(AppThemeMode mode) async {
     if (await _persist(_themeModeKey, mode.index)) {
       state = state.copyWith(themeMode: mode);
+      return true;
     }
+    return false;
   }
 
   Future<bool> setUseMetric(bool useMetric) async {
@@ -126,22 +128,28 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     return false;
   }
 
-  Future<void> setNotificationsEnabled(bool enabled) async {
+  Future<bool> setNotificationsEnabled(bool enabled) async {
     if (await _persist(_notificationsKey, enabled)) {
       state = state.copyWith(notificationsEnabled: enabled);
+      return true;
     }
+    return false;
   }
 
-  Future<void> setAmbientLightingEnabled(bool enabled) async {
+  Future<bool> setAmbientLightingEnabled(bool enabled) async {
     if (await _persist(_ambientLightingKey, enabled)) {
       state = state.copyWith(ambientLightingEnabled: enabled);
+      return true;
     }
+    return false;
   }
 
-  Future<void> setHapticFeedbackEnabled(bool enabled) async {
+  Future<bool> setHapticFeedbackEnabled(bool enabled) async {
     if (await _persist(_hapticFeedbackKey, enabled)) {
       state = state.copyWith(hapticFeedbackEnabled: enabled);
+      return true;
     }
+    return false;
   }
 }
 

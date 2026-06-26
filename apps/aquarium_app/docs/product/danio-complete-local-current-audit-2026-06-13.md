@@ -2806,6 +2806,17 @@ CL-P1-009FO Debug force-SR-cards persistence boundary:
 - Focused DebugMenu widget coverage drives the visible Force 10 action with a
   false local write.
 
+CL-P1-009FP Settings toggle persistence boundary:
+
+- Settings theme, Phone Notifications, Day/Night Ambiance, and Haptic Feedback
+  writes now return explicit durable-save success/failure results instead of
+  hiding failed local persistence behind `void` futures.
+- Phone Notifications now stops before cancellation side effects or disabled
+  success feedback when the `notifications_enabled` save fails.
+- Focused provider coverage verifies false preference writes preserve the
+  previous settings state, and focused Settings widget coverage verifies a
+  failed phone-notification disable keeps the switch on with retry feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

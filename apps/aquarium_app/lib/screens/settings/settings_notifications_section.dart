@@ -90,7 +90,18 @@ Future<void> _toggleNotifications(
     }
   }
 
-  await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
+  final saved = await ref
+      .read(settingsProvider.notifier)
+      .setNotificationsEnabled(enable);
+  if (!saved) {
+    if (context.mounted) {
+      AppFeedback.showError(
+        context,
+        'Couldn\'t update phone notifications. Try again.',
+      );
+    }
+    return;
+  }
 
   if (!enable) {
     final service = ref.read(notificationServiceProvider);

@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/models/adaptive_difficulty.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/services/notification_scheduler.dart';
 import 'package:danio/services/onboarding_service.dart';
 import 'package:danio/widgets/core/app_list_tile.dart';
 
@@ -153,11 +154,81 @@ class _FalseSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-Widget _wrap(Widget child, {SharedPreferences? prefs}) {
+class _FalseSetBoolPrefs implements SharedPreferences {
+  _FalseSetBoolPrefs(this._delegate, this._failedKey);
+
+  final SharedPreferences _delegate;
+  final String _failedKey;
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) async {
+    if (key == _failedKey) return false;
+    return _delegate.setBool(key, value);
+  }
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setString(String key, String value) =>
+      _delegate.setString(key, value);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _NoopReminderNotificationService implements ReminderNotificationService {
+  @override
+  Future<void> cancelReviewReminder() async {}
+
+  @override
+  Future<void> cancelStreakNotifications() async {}
+
+  @override
+  Future<void> scheduleAllStreakNotifications({
+    required int currentStreak,
+    required int dailyXpGoal,
+    required int todayXp,
+    TimeOfDay? morningTime,
+    TimeOfDay? eveningTime,
+    TimeOfDay? nightTime,
+  }) async {}
+
+  @override
+  Future<void> scheduleReviewReminder({
+    required int dueCardsCount,
+    TimeOfDay? time,
+  }) async {}
+}
+
+Widget _wrap(
+  Widget child, {
+  SharedPreferences? prefs,
+  List<Override> overrides = const [],
+}) {
   return ProviderScope(
     overrides: [
       if (prefs != null)
         sharedPreferencesProvider.overrideWith((ref) async => prefs),
+      ...overrides,
     ],
     child: MaterialApp(home: child),
   );
@@ -788,6 +859,49 @@ void main() {
         expect(testTile.isDisabled, isTrue);
       },
     );
+
+    testWidgets('failed disable save keeps switch on with retry feedback', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'notifications_enabled': true,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetBoolPrefs(prefs, 'notifications_enabled');
+
+      await tester.pumpWidget(
+        _wrap(
+          const SettingsScreen(),
+          prefs: falsePrefs,
+          overrides: [
+            notificationServiceProvider.overrideWithValue(
+              _NoopReminderNotificationService(),
+            ),
+          ],
+        ),
+      );
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Phone Notifications'), 500.0);
+      final switchFinder = find.ancestor(
+        of: find.text('Phone Notifications'),
+        matching: find.byType(SwitchListTile),
+      );
+      await tester.ensureVisible(switchFinder);
+      await tester.pump();
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+      expect(prefs.getBool('notifications_enabled'), isTrue);
+      expect(
+        find.text("Couldn't update phone notifications. Try again."),
+        findsOneWidget,
+      );
+      expect(find.text('Phone notifications disabled'), findsNothing);
+    });
   });
 
   group('Settings semantics', () {
