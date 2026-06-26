@@ -73,6 +73,7 @@ import '../providers/achievement_provider.dart';
 import '../providers/lesson_provider.dart';
 import '../models/tank.dart';
 import '../models/livestock.dart';
+import '../models/log_entry.dart';
 import '../models/spaced_repetition.dart';
 import '../data/species_unlock_map.dart';
 import '../utils/debug_state_overrides.dart';
@@ -247,6 +248,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         title: 'Seed Demo Tank',
         subtitle: 'Creates QA Test Tank (60L, tropical) with 5 fish',
         onTap: () => _seedDemoTank(context, ref),
+      ),
+      _DebugTile(
+        title: 'Seed Emergency Water Spike',
+        subtitle: 'Creates an unsafe ammonia/nitrite QA tank state',
+        onTap: () => _seedEmergencyWaterSpike(context, ref),
       ),
       _DebugTile(
         title: 'Set Energy: Full (5)',
@@ -572,6 +578,88 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     } catch (e) {
       if (context.mounted) {
         DanioSnackBar.error(context, 'Seed failed: $e');
+      }
+    }
+  }
+
+  Future<void> _seedEmergencyWaterSpike(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      final storage = ref.read(storageServiceProvider);
+      const tankId = 'debug-emergency-water-tank';
+
+      final now = DateTime.now();
+      final tank = Tank(
+        id: tankId,
+        name: 'QA Emergency Water Spike',
+        type: TankType.freshwater,
+        volumeLitres: 60,
+        startDate: now.subtract(const Duration(days: 21)),
+        targets: WaterTargets.freshwaterTropical(),
+        notes: 'Debug QA state for unsafe water and emergency surfaces.',
+        isDemoTank: true,
+        createdAt: now,
+        updatedAt: now,
+        sortOrder: 9998,
+      );
+      await storage.saveTank(tank);
+
+      await storage.saveLivestock(
+        Livestock(
+          id: 'debug-emergency-neon-tetra',
+          tankId: tankId,
+          commonName: 'Neon Tetra',
+          scientificName: 'Paracheirodon innesi',
+          count: 8,
+          dateAdded: now.subtract(const Duration(days: 14)),
+          healthStatus: HealthStatus.sick,
+          notes: 'QA seed: clamped fins and surface gasping after water spike.',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+
+      await storage.saveLog(
+        LogEntry(
+          id: 'debug-emergency-water-test',
+          tankId: tankId,
+          type: LogType.waterTest,
+          timestamp: now,
+          waterTest: WaterTestResults(
+            temperature: 27,
+            ph: 7.1,
+            ammonia: 0.5,
+            nitrite: 1,
+            nitrate: 45,
+          ),
+          title: 'Emergency unsafe water test',
+          notes:
+              'QA seed: ammonia and nitrite are unsafe. Use this state for '
+              'Emergency Guide, Tank alerts, Smart Hub risks, and aquarium '
+              'visual checks.',
+          createdAt: now,
+        ),
+      );
+
+      ref.invalidate(tanksProvider);
+      ref.invalidate(tankProvider(tankId));
+      ref.invalidate(livestockProvider(tankId));
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(recentLogsProvider(tankId));
+      ref.invalidate(latestWaterTestProvider(tankId));
+      ref.invalidate(latestWaterTestEntryProvider(tankId));
+
+      if (context.mounted) {
+        DanioSnackBar.success(
+          context,
+          'Emergency water spike seeded: QA Emergency Water Spike',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Emergency seed failed: $e');
       }
     }
   }

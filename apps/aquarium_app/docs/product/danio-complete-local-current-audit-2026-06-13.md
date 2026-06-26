@@ -3535,6 +3535,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
   demo data without deleting real tanks, with final phone/tablet Android screen
   evidence captured under
   `docs/qa/screenshots/2026-06-22/cl-p1-012-demo-mode/`.
+- Debug QA tools now include CL-QA-007A, a debug-only `Seed Emergency Water
+  Spike` action that creates `QA Emergency Water Spike`, one sick livestock
+  entry, and an unsafe ammonia/nitrite/nitrate water-test log for repeatable
+  Emergency Guide, Tank alert, Smart Hub risk, and aquarium-visual checks.
+  Remaining debug seed gaps are incompatible fish, skipped onboarding, unlock
+  edge cases, tablet, and AI/no-AI states.
 - Full-app tablet verification is not yet current, though Workshop, Lesson, and
   Learn now have focused phone/tablet or tablet readability layout guardrails.
 - Visual asset quality still has known older audit gaps.
