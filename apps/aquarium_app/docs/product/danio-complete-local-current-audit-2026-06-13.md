@@ -828,6 +828,16 @@ CL-QA-005H Learning graph/source/range validation:
 - This is a guardrail-only slice; the current catalog already satisfies the
   tightened checks, so no lesson product copy or behavior changed.
 
+CL-QA-005I Learn/practice surface audit coverage:
+
+- Learn widget coverage now verifies the old placeholder placement-test labels
+  stay hidden while no real placement flow exists, so the wrong route to
+  Spaced Repetition Practice is not reachable.
+- Practice Hub and Spaced Repetition Practice widget coverage now verifies
+  `spacedRepetitionProvider.errorMessage` is surfaced with retry affordances.
+- The Learn/Practice surface audit was updated to close those stale Must Fix
+  rows and keep remaining launch gaps focused on active product issues.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

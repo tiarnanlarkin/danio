@@ -39,10 +39,10 @@ The main learn tab. Scrollable canvas: illustrated header, XP/streak overlays, p
 | Learn Screen | `Create Profile` button (null state) | null | ✅ | Pushes `OnboardingScreen` via `NavigationThrottle`. No dead button. | ✅ Complete |
 | Learn Screen | First-visit tooltip (`FirstVisitTooltip`) | first visit only | ✅ | Persisted via `hasSeenTooltip`. Dismisses on tap. Doesn't interfere with navigation. | ✅ Complete |
 | Learn Screen — Offline | No offline/connectivity guard | Of | ⚠️ | App is offline-first (data cached locally) so this is low risk, but no explicit offline message. On first install with no network, `userProfileProvider` loading may hang indefinitely with no timeout/error. | ⚠️ Should Fix |
-| **PlacementChallengeCard** | Whole component | Lo, null | ✅ | Returns `SizedBox.shrink()` on loading or error — no flash. | ✅ Complete |
-| PlacementChallengeCard | **"Take the test" button** | non-beginner, not completed/skipped | ⚠️ | Navigates to `SpacedRepetitionPracticeScreen` — **wrong destination**. Placement test should go to a dedicated quiz, not the spaced repetition practice screen. The `hasCompletedPlacementTest` field is never set to `true` from this flow (only `skipPlacementTest()` is called on skip). The card will reappear forever if user taps "Take the test" and goes through SR practice. | 🔴 Must Fix |
-| PlacementChallengeCard | **"Skip for now" button** | visible | ✅ | Calls `ref.read(userProfileProvider.notifier).skipPlacementTest()`. Correctly sets `hasSkippedPlacementTest`. Card disappears. | ✅ Complete |
-| PlacementChallengeCard | Hidden for beginners | experienceLevel=beginner | ✅ | Returns `SizedBox.shrink()`. Correct. | ✅ Complete |
+| **PlacementChallengeCard** | Whole component | all users | ✅ | Returns `SizedBox.shrink()` while no real placement flow exists. No placeholder CTA is shown. | ✅ Complete |
+| PlacementChallengeCard | **Placeholder actions** | "Take the test" / "Skip for now" | ✅ | Neither action is rendered, so the old wrong route to `SpacedRepetitionPracticeScreen` is no longer reachable. Widget coverage verifies these labels stay hidden. | ✅ Complete |
+| PlacementChallengeCard | Future real placement flow | dedicated quiz not implemented | 🔮 | A richer placement quiz can still be built later, but there is no broken local CTA in the current app. | 🔮 Future Scope |
+| PlacementChallengeCard | Hidden for beginners | experienceLevel=beginner | ✅ | The whole card is hidden for all users until a real placement flow exists. | ✅ Complete |
 | **LearningStreakBadge** | Badge row (📚 N-day learning streak!) | L, streak=0, streak=1 | ✅ | Renders only when streak ≥ 2. Non-interactive (display only). No dead button. | ✅ Complete |
 | **LearnReviewBanner** | Whole banner — only shown when `dueCards > 0` | L, dueCards=0 | ✅ | Hidden when due=0. | ✅ Complete |
 | LearnReviewBanner | **Tap anywhere on banner** | dueCards > 0 | ✅ | Navigates to `SpacedRepetitionPracticeScreen`. Correct. | ✅ Complete |
@@ -170,7 +170,7 @@ Tab 1 in the nav. Shows hero card (due/caught-up/empty state), stats row, practi
 | **Study Streak card** | Shows streak / "0 days" | streak=0, streak>0 | ✅ | BUG-06 fixed: neutral icon colour when streak=0. | ✅ Complete |
 | **Cards Mastered card** | Shows mastered count | | ✅ | Display only. | ✅ Complete |
 | **Practice Accuracy card** | Shows accuracy % or "Complete a review session" | totalReviews=0 | ✅ | Long CTA text rendered as subtitle (not truncated in trailing slot). | ✅ Complete |
-| Practice Hub | **Error state from `spacedRepetitionProvider`** | errorMessage set | 🔴 | `srState.errorMessage` is **never checked or displayed** on the Practice Hub screen. If SR loading fails, the hub renders with all zeros — no error banner, no retry button. Users see "No practice cards yet" rather than an error. | 🔴 Must Fix |
+| Practice Hub | **Error state from `spacedRepetitionProvider`** | errorMessage set | ✅ | Displays a visible error banner with the provider message and a Retry action while preserving the rest of the hub context. Widget coverage verifies the banner appears. | ✅ Complete |
 | Practice Hub | **No profile error handling** | userProfileProvider error | ⚠️ | `userProfileProvider` is watched with `.select()` for streak only. If profile fails, `profile` defaults to null (streak=0) — screen renders normally with neutral streak. Low risk but no explicit error state. | ⚠️ Should Fix |
 | Practice Hub | Item count constant `19` | | ⚠️ | `_getPracticeHubItemCount` always returns `19` regardless of state. If content changes, this magic number will cause index errors or missing items. | ⚠️ Should Fix |
 
@@ -184,7 +184,7 @@ Tab 1 in the nav. Shows hero card (due/caught-up/empty state), stats row, practi
 
 ### Summary
 
-Launched from: Learn review banner, Practice Hub hero card, Practice Hub "Spaced Repetition" mode card, Learn practice card, PlacementChallengeCard (incorrectly). Handles loading state, empty state (no due cards), and the practice home (mode selection). Launches `ReviewSessionScreen` when a session is active.
+Launched from: Learn review banner, Practice Hub hero card, Practice Hub "Spaced Repetition" mode card, and Learn practice card. Handles loading state, empty state (no due cards), provider error state, and the practice home (mode selection). Launches `ReviewSessionScreen` when a session is active.
 
 ---
 
@@ -206,7 +206,7 @@ Launched from: Learn review banner, Practice Hub hero card, Practice Hub "Spaced
 | Practice Home | **Mastery Breakdown widget** | | ✅ | Renders MasteryLevel bars. Same as Practice Hub. | ✅ Complete |
 | Practice Home | Session start error | `_startSession` throws | ✅ | `DanioSnackBar.error` with `onRetry`. | ✅ Complete |
 | **SR Practice — Active session** | Delegates to `ReviewSessionScreen` | session not null | ✅ | Returns `ReviewSessionScreen(session: srState.currentSession!)`. | ✅ Complete |
-| SR Practice | `errorMessage` from provider | provider error | ⚠️ | `srState.errorMessage` is **never displayed** on this screen. A failed card load or session start failure only shows a snackbar; the main screen shows no persistent error state. | ⚠️ Should Fix |
+| SR Practice | `errorMessage` from provider | provider error | ✅ | Displays a persistent provider error message with a Try again action instead of the empty/caught-up state. Widget coverage verifies the error surface. | ✅ Complete |
 
 ---
 
@@ -338,9 +338,9 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 
 | Issue | Affected Areas | Classification |
 |---|---|---|
-| **Placement test CTA routes to wrong screen.** "Take the test" opens `SpacedRepetitionPracticeScreen` instead of a dedicated placement quiz. `hasCompletedPlacementTest` is never set, so the card reappears. | Learn Screen | 🔴 Must Fix |
+| **Placement test placeholder CTA is hidden until a real flow exists.** The old wrong route to `SpacedRepetitionPracticeScreen` is not reachable. | Learn Screen | ✅ Complete |
 | **Review Banner and Practice Card are visually distinct but functionally identical** — both route to `SpacedRepetitionPracticeScreen`. Shown simultaneously on Learn screen. Confusing to users. | Learn Screen | ⚠️ Should Fix |
-| **`spacedRepetitionProvider.errorMessage` is never surfaced** on Practice Hub or SR Practice screens. SR load errors are silent beyond snackbars. | Practice Hub, SR Practice | 🔴 Must Fix |
+| **`spacedRepetitionProvider.errorMessage` is surfaced** on Practice Hub and SR Practice screens with retry affordances. | Practice Hub, SR Practice | ✅ Complete |
 | **Locked story cards now explain unlock requirements on tap.** Locked cards remain non-navigable but no longer behave like dead controls. | Story Browser | ✅ Complete |
 | **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
 | **Review session self-assessment UX.** User taps "Remembered/Forgot" without ever being asked to recall anything actively — just a label. Cards with no `questionText` are especially hollow. | Review Session | ⚠️ Should Fix |
@@ -358,16 +358,16 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 
 | Area | Overall | Critical Issues | Should Fix |
 |---|---|---|---|
-| Learn Screen | ✅ Mostly complete | 1 (Placement test wrong dest.) | 5 |
-| Lesson Screen | ✅ Mostly complete | 1 (image placeholder) | 3 |
-| Practice Hub | ⚠️ Functional but fragile | 1 (error state silent) | 2 |
-| SR Practice Screen | ✅ Mostly complete | 0 | 1 |
+| Learn Screen | ✅ Mostly complete | 0 | 5 |
+| Lesson Screen | ✅ Mostly complete | 0 | 3 |
+| Practice Hub | ⚠️ Functional but fragile | 0 | 2 |
+| SR Practice Screen | ✅ Mostly complete | 0 | 0 |
 | Review Session | ⚠️ UX gap | 0 | 2 |
 | Story Browser | ✅ Mostly complete | 0 | 1 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ⚠️ UX gap | 0 | 4 |
 
-**Total: 2 Must Fix · 18 Should Fix · 3 Research First · 3 Future Scope**
+**Total: 0 Must Fix · 17 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -375,24 +375,23 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 
 ### 🔴 Must Fix (before launch)
 
-1. **Placement test wrong destination** — `PlacementChallengeCard` "Take the test" → `SpacedRepetitionPracticeScreen`. Either build a real placement quiz or remove the card entirely. `hasCompletedPlacementTest` is never set to `true`, so the card is permanent.
-2. **SR provider error state not surfaced** — Practice Hub and SR Practice screen never display `srState.errorMessage`. Add a visible error banner with retry.
+None currently listed in this surface audit.
 
 ### ⚠️ Should Fix (high priority)
 
-3. **Path expansion load error state** — if `loadPath()` fails, show an error row + retry, not a stuck spinner.
-4. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
-5. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.
-6. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
+1. **Path expansion load error state** — if `loadPath()` fails, show an error row + retry, not a stuck spinner.
+2. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
+3. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.
+4. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-7. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
-8. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
-9. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
-10. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
-11. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-12. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+5. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
+6. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
+7. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
+8. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
+9. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
+10. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 

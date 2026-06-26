@@ -59,6 +59,7 @@ ReviewCard _card({
 Widget _wrap({
   ReviewStats? stats,
   List<ReviewCard> cards = const [],
+  String? errorMessage,
   List<Override> overrides = const [],
 }) {
   SharedPreferences.setMockInitialValues({});
@@ -68,7 +69,11 @@ Widget _wrap({
         return SharedPreferences.getInstance();
       }),
       spacedRepetitionProvider.overrideWith(
-        (ref) => _FakeSrNotifier(stats ?? ReviewStats.fromCards(cards), cards),
+        (ref) => _FakeSrNotifier(
+          stats ?? ReviewStats.fromCards(cards),
+          cards,
+          errorMessage: errorMessage,
+        ),
       ),
       ...overrides,
     ],
@@ -78,8 +83,17 @@ Widget _wrap({
 
 class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
     implements SpacedRepetitionNotifier {
-  _FakeSrNotifier(ReviewStats stats, List<ReviewCard> cards)
-    : super(SpacedRepetitionState(cards: cards, stats: stats));
+  _FakeSrNotifier(
+    ReviewStats stats,
+    List<ReviewCard> cards, {
+    String? errorMessage,
+  }) : super(
+         SpacedRepetitionState(
+           cards: cards,
+           stats: stats,
+           errorMessage: errorMessage,
+         ),
+       );
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -166,6 +180,21 @@ void main() {
         find.text('Finish one Learn lesson to create Practice cards.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('provider errors stay visible with retry action', (
+      tester,
+    ) async {
+      const message = "Couldn't load your review cards. Please try again.";
+
+      await tester.pumpWidget(
+        _wrap(stats: _stats(totalCards: 0), errorMessage: message),
+      );
+      await _advance(tester);
+
+      expect(find.text(message), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.text('Build your review deck'), findsOneWidget);
     });
 
     testWidgets('no due cards with no weak cards stays all caught up', (

@@ -121,5 +121,15 @@ void main() {
         lessThanOrEqualTo(_maxReadableLearnWidth),
       );
     });
+
+    testWidgets('does not show placeholder placement test actions', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      expect(find.text('Take the test'), findsNothing);
+      expect(find.text('Skip for now'), findsNothing);
+    });
   });
 }

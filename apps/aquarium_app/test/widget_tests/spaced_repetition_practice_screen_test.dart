@@ -122,6 +122,21 @@ void main() {
       expect(find.text('All caught up!'), findsOneWidget);
     });
 
+    testWidgets('shows provider error message with retry action', (
+      tester,
+    ) async {
+      const message = "Couldn't load your review cards. Please try again.";
+
+      await tester.pumpWidget(
+        _wrap(initialState: _emptyState().copyWith(errorMessage: message)),
+      );
+      await _advance(tester);
+
+      expect(find.text(message), findsOneWidget);
+      expect(find.text('Try again'), findsOneWidget);
+      expect(find.text('All caught up!'), findsNothing);
+    });
+
     testWidgets('shows scaffold', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);
