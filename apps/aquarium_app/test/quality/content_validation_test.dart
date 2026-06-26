@@ -85,6 +85,14 @@ const _bannedUnsafeCareCopy = [
   'best all-rounder',
   'non-toxic forms',
   'temporarily makes it non-toxic',
+  'seachem prime',
+  'api master test kit',
+  'api freshwater master test kit',
+  'dose prime',
+  'prime detoxifies',
+  'prime converts',
+  'use prime',
+  'with prime',
 ];
 
 String _normalise(String value) =>

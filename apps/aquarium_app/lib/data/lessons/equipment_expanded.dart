@@ -56,7 +56,7 @@ final equipmentExpandedLessons = [
       const LessonSection(
         type: LessonSectionType.keyPoint,
         content:
-            'The API Freshwater Master Test Kit covers ammonia (NH3/NH4), nitrite (NO2), nitrate (NO3), and pH — the four essential parameters. Every fishkeeper should own one. It\'s the single most important piece of equipment after the tank itself.',
+            'A liquid freshwater test kit should cover ammonia (NH3/NH4), nitrite (NO2), nitrate (NO3), and pH — the four routine safety parameters. It is one of the most useful tools for cycling, emergencies, and routine care.',
       ),
       const LessonSection(
         type: LessonSectionType.heading,
@@ -122,7 +122,7 @@ final equipmentExpandedLessons = [
         const QuizQuestion(
           id: 'eq_test_q3',
           question:
-              'Which four parameters does the API Freshwater Master Test Kit measure?',
+              'Which four parameters should a core freshwater liquid test kit measure?',
           options: [
             'Temperature, pH, TDS, and nitrate',
             'Ammonia, nitrite, nitrate, and pH',

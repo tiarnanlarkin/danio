@@ -423,16 +423,16 @@ final waterParametersPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'wp_chlor_q4',
-            question: 'What does Seachem Prime do?',
+            question: 'What should a chloramine-capable conditioner handle?',
             options: [
               'Only removes chlorine',
-              'Removes chlorine, chloramine, and detoxifies ammonia/heavy metals',
+              'Treats chlorine/chloramine and may bind ammonia or metals when labelled for it',
               'Adds beneficial bacteria',
               'Lowers pH',
             ],
             correctIndex: 1,
             explanation:
-                'Seachem Prime is comprehensive — handles chlorine, chloramine, temporarily detoxifies ammonia/nitrite, and binds heavy metals.',
+                'Choose a conditioner that matches your tap-water treatment. If it claims emergency ammonia or metal binding, follow the label exactly and keep testing.',
           ),
           const QuizQuestion(
             id: 'wp_chlor_q5',

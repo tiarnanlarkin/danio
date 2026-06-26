@@ -792,6 +792,16 @@ CL-QA-005F Brand-specific emergency-product copy validation:
   copy now describes emergency conditioners, kits, and parasite treatments with
   neutral label-following guidance instead of brand-as-saviour claims.
 
+CL-QA-005G Brand-name conditioner/test-kit copy validation:
+
+- The same content validation gate now fails remaining branded
+  conditioner/test-kit learning copy such as `seachem prime`, `api master test
+  kit`, `api freshwater master test kit`, `dose prime`, `prime detoxifies`,
+  `prime converts`, `use prime`, and `with prime`.
+- Water Parameters, Nitrogen Cycle, Troubleshooting, Advanced Topics, and
+  Equipment copy now explains conditioners and liquid test kits as generic
+  product categories with label-following instructions.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

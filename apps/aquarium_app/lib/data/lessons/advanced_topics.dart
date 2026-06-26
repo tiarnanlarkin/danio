@@ -583,13 +583,13 @@ final advancedTopicsPath = LearningPath(
             question: 'What is the first thing to do during an ammonia spike?',
             options: [
               'Add aquarium salt',
-              'Do a 50% water change immediately and dose Prime',
+              'Do a 50% water change and use label-supported conditioner if available',
               'Turn off the filter',
               'Do a 100% water change',
             ],
             correctIndex: 1,
             explanation:
-                'A 50% water change halves the ammonia concentration immediately. Seachem Prime detoxifies remaining ammonia for 24–48 hours while you find and fix the cause.',
+                'A 50% water change halves the ammonia concentration immediately. A label-supported conditioner may buy time, but water changes and finding the source are the core fix.',
           ),
           const QuizQuestion(
             id: 'at_trouble_q2',

@@ -307,7 +307,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• A test kit (API Master Test Kit recommended)\n• Ammonia source (pure ammonia or fish food)\n• Patience (2-6 weeks)\n• A running filter',
+              '• A liquid test kit that measures ammonia, nitrite, nitrate, and pH\n• Ammonia source (pure ammonia or fish food)\n• Patience (2-6 weeks)\n• A running filter',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -509,7 +509,7 @@ final nitrogenCyclePath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Liquid test kits like the API Master Test Kit are more accurate and reliable than test strips, especially for critical parameters like ammonia.',
+                'Liquid reagent kits are usually more accurate and reliable than test strips, especially for critical parameters like ammonia.',
           ),
           const QuizQuestion(
             id: 'nc_test_q2',
@@ -550,11 +550,11 @@ final nitrogenCyclePath = LearningPath(
           const QuizQuestion(
             id: 'nc_test_q5',
             question:
-                'How many tests does an API Master Test Kit typically provide?',
+                'Roughly how many tests can a large liquid reagent kit provide?',
             options: ['About 50', 'About 200', 'About 800+', 'Unlimited'],
             correctIndex: 2,
             explanation:
-                'The API Master Test Kit provides 800+ tests across all parameters, making it incredibly cost-effective at about 3-4 cents per test.',
+                'Some large liquid reagent kits provide hundreds of tests across all parameters, making the higher upfront cost easier to justify over time.',
           ),
         ],
       ),
@@ -595,7 +595,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Time is critical! Ammonia above 0.25 ppm stresses fish, and above 1 ppm can kill within hours. Nitrite above 0.5 ppm requires immediate action. Act fast — do a large water change and add a water conditioner like Seachem Prime.',
+              'Time is critical! Ammonia above 0.25 ppm stresses fish, and above 1 ppm can kill within hours. Nitrite above 0.5 ppm requires immediate action. Act fast — do a large water change and use a conditioner labelled for emergency ammonia/nitrite support if available.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -673,7 +673,7 @@ final nitrogenCyclePath = LearningPath(
           ),
           const QuizQuestion(
             id: 'nc_spike_q2',
-            question: 'What does Seachem Prime do?',
+            question: 'What can an emergency ammonia-binding conditioner do?',
             options: [
               'Removes ammonia completely',
               'Temporarily detoxifies ammonia for 24-48 hours',
@@ -682,7 +682,7 @@ final nitrogenCyclePath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Prime doesn\'t remove ammonia — it binds it into a non-toxic form temporarily. This gives your bacteria time to process it.',
+                'Some conditioners temporarily bind ammonia or nitrite; they do not remove waste. Use them only as label-directed support while water changes and source control fix the spike.',
           ),
           const QuizQuestion(
             id: 'nc_spike_q3',
@@ -791,7 +791,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'If you must medicate your main tank, monitor ammonia/nitrite daily. Be ready for water changes and use Prime to detoxify.',
+              'If you must medicate your main tank, monitor ammonia/nitrite daily. Be ready for water changes and use a label-appropriate conditioner for emergency ammonia/nitrite support if needed.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

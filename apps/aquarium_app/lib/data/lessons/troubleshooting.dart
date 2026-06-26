@@ -143,20 +143,21 @@ final troubleshootingPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                '100% water changes remove all the beneficial bacteria from your tank water (though most bacteria live in filter media, some are in the water column). They also cause osmotic shock from sudden complete water replacement. Worse, they don\'t fix the root cause. 25–50% with Prime is the correct approach.',
+                '100% water changes remove some suspended bacteria, can cause osmotic shock from sudden complete water replacement, and do not fix the root cause. Controlled 25–50% changes with dechlorinated, temperature-matched water are usually safer.',
           ),
           const QuizQuestion(
             id: 'tr_emg_q3',
-            question: 'What does Seachem Prime do in an ammonia emergency?',
+            question:
+                'What can a label-supported ammonia conditioner do in an emergency?',
             options: [
               'Kills the ammonia-producing bacteria causing the spike',
               'Permanently removes ammonia from the water',
-              'Converts ammonia to a non-toxic bound form for 24–48 hours, buying time to fix the cause',
-              'Prime only treats chlorine — it has no effect on ammonia',
+              'Temporarily binds ammonia, buying time to fix the cause',
+              'Only treats chlorine and has no effect on ammonia',
             ],
             correctIndex: 2,
             explanation:
-                'Prime converts free ammonia (toxic) to ammonium (non-toxic bound form) for 24–48 hours. This buys time to address the root cause — a water change, removing a dead fish, or other source. Prime doesn\'t remove ammonia permanently; it must be re-dosed every 24–48 hours until the problem is resolved.',
+                'Some conditioners temporarily bind ammonia when the product label supports that use. They do not remove ammonia permanently, so water changes, source removal, aeration, and repeated testing still matter.',
           ),
         ],
       ),
@@ -493,7 +494,7 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Check filter is running — internal filters sometimes need a manual prime after power cuts\n• Check heater is functioning, not overheating (verify temperature after 30 minutes)\n• Test ammonia immediately — it will have been building during the outage\n• Dose Seachem Prime at double dose — detoxifies any ammonia that built up\n• Do NOT feed for 24 hours after a major outage — give the system time to stabilise\n• Monitor fish closely for 48–72 hours for signs of stress (clamped fins, lethargy, surface gasping)',
+              '• Check filter is running — internal filters sometimes need a manual prime after power cuts\n• Check heater is functioning, not overheating (verify temperature after 30 minutes)\n• Test ammonia immediately — it will have been building during the outage\n• If ammonia or nitrite is present, use a conditioner labelled for emergency support and follow the product label exactly\n• Do NOT feed for 24 hours after a major outage — give the system time to stabilise\n• Monitor fish closely for 48–72 hours for signs of stress (clamped fins, lethargy, surface gasping)',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
