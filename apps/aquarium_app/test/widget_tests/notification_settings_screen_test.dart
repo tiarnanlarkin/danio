@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/notification_settings_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/notification_scheduler.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/user_profile.dart';
@@ -55,15 +56,59 @@ class _FakeReminderNotificationService implements ReminderNotificationService {
   }) async {}
 }
 
-Widget _wrap({UserProfile? profile}) {
+class _FalseSetStringPrefs implements SharedPreferences {
+  _FalseSetStringPrefs(this._delegate, this._failedKey);
+
+  final SharedPreferences _delegate;
+  final String _failedKey;
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    if (key == _failedKey) return false;
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+Widget _wrap({UserProfile? profile, SharedPreferences? prefs}) {
   final memStorage = InMemoryStorageService();
-  // Pre-load profile into SharedPreferences so the notifier can read it
-  SharedPreferences.setMockInitialValues({
-    'user_profile': jsonEncode((profile ?? _fakeProfile()).toJson()),
-  });
+  if (prefs == null) {
+    // Pre-load profile into SharedPreferences so the notifier can read it.
+    SharedPreferences.setMockInitialValues({
+      'user_profile': jsonEncode((profile ?? _fakeProfile()).toJson()),
+    });
+  }
   return ProviderScope(
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
       notificationServiceProvider.overrideWithValue(
         _FakeReminderNotificationService(),
       ),
@@ -165,6 +210,66 @@ void main() {
       );
       expect(reviewToggle.value, isFalse);
       expect(streakToggle.value, isFalse);
+    });
+
+    testWidgets('failed review reminder save keeps switch on with feedback', (
+      tester,
+    ) async {
+      final profile = _fakeProfile(reviewRemindersEnabled: true);
+      final originalJson = jsonEncode(profile.toJson());
+      SharedPreferences.setMockInitialValues({'user_profile': originalJson});
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetStringPrefs(prefs, 'user_profile');
+
+      await tester.pumpWidget(_wrap(prefs: falsePrefs));
+      await _advance(tester);
+
+      final switchFinder = find.widgetWithText(
+        SwitchListTile,
+        'Review Reminders',
+      );
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+      expect(prefs.getString('user_profile'), originalJson);
+      expect(
+        find.text("Couldn't update review reminders. Try again."),
+        findsOneWidget,
+      );
+      expect(find.text('Review reminders disabled'), findsNothing);
+    });
+
+    testWidgets('failed streak reminder save keeps switch on with feedback', (
+      tester,
+    ) async {
+      final profile = _fakeProfile(streakRemindersEnabled: true);
+      final originalJson = jsonEncode(profile.toJson());
+      SharedPreferences.setMockInitialValues({'user_profile': originalJson});
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetStringPrefs(prefs, 'user_profile');
+
+      await tester.pumpWidget(_wrap(prefs: falsePrefs));
+      await _advance(tester);
+
+      final switchFinder = find.widgetWithText(
+        SwitchListTile,
+        'Streak Reminders',
+      );
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+      expect(prefs.getString('user_profile'), originalJson);
+      expect(
+        find.text("Couldn't update streak reminders. Try again."),
+        findsOneWidget,
+      );
+      expect(find.text('Streak reminders disabled'), findsNothing);
     });
   });
 }

@@ -338,6 +338,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FR makes Settings Day/Night Ambiance and Haptic Feedback toggles
   show retry feedback while preserving previous switch state when their local
   preference saves fail.
+- CL-P1-009FS makes Reminder Settings review/streak toggles catch failed
+  `user_profile` persistence, preserve the previous switch state, and show
+  retry feedback instead of leaking an async error.
 
 ## 7. P2 Work - Presentation System
 

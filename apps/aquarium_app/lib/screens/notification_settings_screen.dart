@@ -292,10 +292,20 @@ class NotificationSettingsScreen extends ConsumerWidget {
   ) async {
     if (value && !await _ensureNotificationsEnabled(context, ref)) return;
 
-    await ref
-        .read(userProfileProvider.notifier)
-        .updateProfile(reviewRemindersEnabled: value);
-    await NotificationScheduler.instance.scheduleReviewNotifications(ref);
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .updateProfile(reviewRemindersEnabled: value);
+      await NotificationScheduler.instance.scheduleReviewNotifications(ref);
+    } catch (_) {
+      if (context.mounted) {
+        AppFeedback.showError(
+          context,
+          'Couldn\'t update review reminders. Try again.',
+        );
+      }
+      return;
+    }
 
     if (!context.mounted) return;
     AppFeedback.showInfo(
@@ -311,10 +321,20 @@ class NotificationSettingsScreen extends ConsumerWidget {
   ) async {
     if (value && !await _ensureNotificationsEnabled(context, ref)) return;
 
-    await ref
-        .read(userProfileProvider.notifier)
-        .updateProfile(streakRemindersEnabled: value);
-    await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .updateProfile(streakRemindersEnabled: value);
+      await NotificationScheduler.instance.scheduleStreakNotifications(ref);
+    } catch (_) {
+      if (context.mounted) {
+        AppFeedback.showError(
+          context,
+          'Couldn\'t update streak reminders. Try again.',
+        );
+      }
+      return;
+    }
 
     if (!context.mounted) return;
     AppFeedback.showInfo(

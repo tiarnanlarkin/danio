@@ -2836,6 +2836,17 @@ CL-P1-009FR Settings ambient/haptic toggle feedback boundary:
 - Focused Settings widget coverage drives both toggles with simulated false
   local writes.
 
+CL-P1-009FS Reminder Settings toggle persistence boundary:
+
+- Reminder Settings review and streak reminder toggles now catch failed
+  `user_profile` writes before scheduling notification changes or showing
+  enabled/disabled success feedback.
+- Failed reminder-toggle writes preserve the previous switch value, keep the
+  previous persisted profile JSON, and show retry feedback instead of leaking
+  an async error.
+- Focused NotificationSettings widget coverage drives both toggles with
+  simulated false local `user_profile` writes.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
