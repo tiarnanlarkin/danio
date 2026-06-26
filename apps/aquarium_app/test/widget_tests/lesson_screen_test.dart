@@ -120,16 +120,84 @@ String _profileJson({ExperienceLevel level = ExperienceLevel.beginner}) {
   );
 }
 
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Object? get(String key) => _delegate.get(key);
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  Set<String> getKeys() => _delegate.getKeys();
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setDouble(String key, double value) =>
+      _delegate.setDouble(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setStringList(String key, List<String> value) =>
+      _delegate.setStringList(key, value);
+
+  @override
+  Future<bool> remove(String key) => _delegate.remove(key);
+
+  @override
+  Future<bool> clear() => _delegate.clear();
+
+  @override
+  Future<void> reload() => _delegate.reload();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _wrap({
   Lesson? lesson,
   bool isPracticeMode = false,
+  SharedPreferences? prefs,
   List<Override> overrides = const [],
 }) {
-  SharedPreferences.setMockInitialValues({});
+  if (prefs == null) {
+    SharedPreferences.setMockInitialValues({});
+  }
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWith((ref) async {
-        return SharedPreferences.getInstance();
+        return prefs ?? SharedPreferences.getInstance();
       }),
       spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier()),
       ...overrides,
@@ -139,6 +207,59 @@ Widget _wrap({
         lesson: lesson ?? _testLesson,
         pathTitle: 'Getting Started',
         isPracticeMode: isPracticeMode,
+      ),
+    ),
+  );
+}
+
+Widget _wrapWithLauncher({
+  Lesson? lesson,
+  bool isPracticeMode = false,
+  required SharedPreferences prefs,
+  List<Override> overrides = const [],
+}) {
+  return ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWith((ref) async => prefs),
+      spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier()),
+      ...overrides,
+    ],
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: Consumer(
+              builder: (context, ref, _) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ref
+                      .watch(userProfileProvider)
+                      .when(
+                        data: (profile) => Text(
+                          profile == null ? 'profile missing' : 'profile ready',
+                        ),
+                        loading: () => const Text('profile loading'),
+                        error: (_, __) => const Text('profile unavailable'),
+                      ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => LessonScreen(
+                            lesson: lesson ?? _testLesson,
+                            pathTitle: 'Getting Started',
+                            isPracticeMode: isPracticeMode,
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text('Open lesson'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     ),
   );
@@ -332,6 +453,41 @@ void main() {
 
       expect(find.text('+50 XP (2x)'), findsOneWidget);
       expect(find.text('+25 XP'), findsNothing);
+    });
+
+    testWidgets('practice completion does not claim XP when XP save fails', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'user_profile': _profileJson(),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final failingPrefs = _ThrowingSetStringPrefs(
+        prefs,
+        (key, _) => key == 'user_profile',
+      );
+
+      await tester.pumpWidget(
+        _wrapWithLauncher(isPracticeMode: true, prefs: failingPrefs),
+      );
+      await _advance(tester);
+      expect(find.text('profile ready'), findsOneWidget);
+
+      await tester.tap(find.text('Open lesson'));
+      await _advance(tester);
+
+      await tester.tap(find.text('Complete Lesson'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(
+        find.textContaining('Practice complete! +25 XP'),
+        findsNothing,
+      );
+      expect(
+        find.text('Practice complete. XP could not be saved.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders image sections with asset and caption', (

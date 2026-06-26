@@ -283,6 +283,8 @@ Recent CL-P1-009 continuation note:
   false water-test save failure.
 - CL-P1-009EX makes profile reset reject failed local preference removals
   before exposing a reset profile state.
+- CL-P1-009EY stops practice-mode lesson completion from claiming XP when the
+  profile XP write fails or cannot be applied.
 
 ## 7. P2 Work - Presentation System
 

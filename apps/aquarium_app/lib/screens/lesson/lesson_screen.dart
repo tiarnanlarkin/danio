@@ -391,19 +391,35 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       // Handle practice mode rewards
       if (widget.isPracticeMode) {
         final practiceXp = totalXp ~/ 2;
+        var xpSaved = true;
+        final profileBeforePractice = ref.read(userProfileProvider).value;
+        final canReviewLesson =
+            profileBeforePractice?.lessonProgress.containsKey(
+              widget.lesson.id,
+            ) ??
+            false;
         try {
-          await ref
-              .read(userProfileProvider.notifier)
-              .reviewLesson(widget.lesson.id, practiceXp);
+          if (canReviewLesson) {
+            await ref
+                .read(userProfileProvider.notifier)
+                .reviewLesson(widget.lesson.id, practiceXp);
+          } else {
+            await ref.read(userProfileProvider.notifier).addXp(practiceXp);
+          }
         } catch (e) {
           logError(
-            'LessonScreen: reviewLesson failed, falling back to addXp: $e',
+            'LessonScreen: practice XP save failed: $e',
             tag: 'LessonScreen',
           );
-          try {
-            await ref.read(userProfileProvider.notifier).addXp(practiceXp);
-          } catch (e) {
-            logError('Error awarding practice XP: $e', tag: 'LessonScreen');
+          if (canReviewLesson) {
+            try {
+              await ref.read(userProfileProvider.notifier).addXp(practiceXp);
+            } catch (e) {
+              xpSaved = false;
+              logError('Error awarding practice XP: $e', tag: 'LessonScreen');
+            }
+          } else {
+            xpSaved = false;
           }
         }
 
@@ -419,13 +435,20 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         }
 
         if (mounted) {
-          final xpMsg = practiceXp > 0 ? ' +$practiceXp XP' : '';
-          AppFeedback.showSuccess(
-            context,
-            gainedHeart
-                ? 'Practice complete!$xpMsg +1 energy'
-                : 'Practice complete!$xpMsg (energy full)',
-          );
+          if (xpSaved) {
+            final xpMsg = practiceXp > 0 ? ' +$practiceXp XP' : '';
+            AppFeedback.showSuccess(
+              context,
+              gainedHeart
+                  ? 'Practice complete!$xpMsg +1 energy'
+                  : 'Practice complete!$xpMsg (energy full)',
+            );
+          } else {
+            AppFeedback.showNeutralViaMessenger(
+              ScaffoldMessenger.of(context),
+              'Practice complete. XP could not be saved.',
+            );
+          }
           Navigator.of(context).pop();
         }
         return;

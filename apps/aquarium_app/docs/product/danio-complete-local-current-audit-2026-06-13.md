@@ -2626,6 +2626,19 @@ CL-P1-009EX User profile reset removal boundary:
 - Focused provider coverage simulates a false remove result and verifies the
   profile remains visible while the saved profile JSON remains intact.
 
+CL-P1-009EY Practice lesson XP feedback boundary:
+
+- Practice-mode lesson completion now distinguishes a real saved XP award from
+  a failed or unavailable profile write before choosing completion feedback.
+- If the practice XP write fails, the flow no longer claims `+XP`; it reports
+  that practice completed but XP could not be saved.
+- When a lesson has no existing review progress record, practice completion
+  now writes practice XP directly instead of letting `reviewLesson` no-op while
+  still showing XP feedback.
+- Focused widget coverage opens a practice lesson from a parent route,
+  simulates a failed `user_profile` write, and verifies the post-pop feedback
+  does not claim the XP reward.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3609,7 +3622,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   when timeline-log persistence fails. Quick Water Test now keeps saved
   water-test logs when only the secondary profile-XP write fails, and user
   profile reset rejects failed local preference removals before exposing reset
-  state. Remaining
+  state. Practice-mode lessons no longer claim XP when profile XP persistence
+  fails. Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
