@@ -461,6 +461,53 @@ void main() {
   );
 
   test(
+    'resetAll restores all practice keys when session removal fails',
+    () async {
+      final originalCard = ReviewCard.newCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      final cardsJson = jsonEncode([originalCard.toJson()]);
+      final statsJson = jsonEncode({
+        'reviewsToday': 1,
+        'totalReviews': 3,
+        'streak': 2,
+        'lastReviewDate': DateTime(2026, 6, 24).toIso8601String(),
+      });
+      const streakJson = '{"currentStreak":2,"lastReviewDate":"2026-06-24"}';
+      const sessionsJson = '{"count":4,"lastCompleted":"2026-06-24"}';
+      SharedPreferences.setMockInitialValues({
+        'spaced_repetition_cards': cardsJson,
+        'spaced_repetition_stats': statsJson,
+        'spaced_repetition_streak': streakJson,
+        'spaced_repetition_sessions': sessionsJson,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithFalseRemovesForKey(
+        prefs,
+        'spaced_repetition_sessions',
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      expect(container.read(spacedRepetitionProvider).cards, hasLength(1));
+
+      await expectLater(notifier.resetAll(), throwsA(isA<StateError>()));
+
+      final state = container.read(spacedRepetitionProvider);
+      expect(state.cards, hasLength(1));
+      expect(state.cards.single.id, originalCard.id);
+      expect(state.stats.totalCards, 1);
+      expect(state.errorMessage, contains("Couldn't reset"));
+      expect(prefs.getString('spaced_repetition_cards'), cardsJson);
+      expect(prefs.getString('spaced_repetition_stats'), statsJson);
+      expect(prefs.getString('spaced_repetition_streak'), streakJson);
+      expect(prefs.getString('spaced_repetition_sessions'), sessionsJson);
+    },
+  );
+
+  test(
     'completeSession keeps active session when session count save returns false',
     () async {
       final prefs = await SharedPreferences.getInstance();

@@ -2734,6 +2734,19 @@ CL-P1-009FH Tank returning-user prompt dismissal boundary:
 - Focused HomeScreen source coverage protects the `setBool` return check and
   failed-write logging copy.
 
+CL-P1-009FI Full spaced-repetition reset boundary:
+
+- `SpacedRepetitionNotifier.resetAll` now owns all four practice preference
+  removals: cards, stats, streak, and session counters.
+- Failed reset removals restore any partially removed local JSON before
+  rethrowing, so Debug reset and QA seed callers do not report a clean practice
+  reset while old counters remain behind.
+- The Debug Practice reset no longer performs separate unchecked streak/session
+  removals after calling `resetAll`.
+- Focused provider coverage simulates a false
+  `spaced_repetition_sessions` removal and verifies visible state plus all four
+  persisted practice keys remain unchanged.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3724,9 +3737,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   before it can be shown. The Tank stage sheet first-use hint now persists
   through the shared preferences provider and restores visible retry state
   when its seen-flag write fails. Spaced-repetition reset now keeps visible
-  cards/stats and restores partially removed local JSON when reset removal
-  fails. Tank returning-user prompts now check failed dismissal seen-flag
-  writes, and all current OpenAI request
+  cards/stats and restores partially removed card/stat/streak/session local
+  JSON when reset removal fails. Tank returning-user prompts now check failed
+  dismissal seen-flag writes, and all current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining

@@ -1468,10 +1468,6 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
   Future<void> _resetPractice(BuildContext context, WidgetRef ref) async {
     try {
       await ref.read(spacedRepetitionProvider.notifier).resetAll();
-      // Also remove the streak key that resetAll() doesn't touch
-      final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.remove('spaced_repetition_streak');
-      await prefs.remove('spaced_repetition_sessions');
       ref.invalidate(spacedRepetitionProvider);
       if (context.mounted) {
         DanioSnackBar.success(context, 'Practice (SR) data cleared');

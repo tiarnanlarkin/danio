@@ -1013,31 +1013,23 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   Future<void> resetAll() async {
     final originalState = state;
     final prefs = await _ref.read(sharedPreferencesProvider.future);
-    final originalCardsJson = prefs.getString(_storageKey);
-    final originalStatsJson = prefs.getString(_statsKey);
-    var statsRemoved = false;
-    var cardsRemoved = false;
+    final originalValues = <String, String?>{
+      _statsKey: prefs.getString(_statsKey),
+      _storageKey: prefs.getString(_storageKey),
+      _streakKey: prefs.getString(_streakKey),
+      _sessionsKey: prefs.getString(_sessionsKey),
+    };
+    final removedKeys = <String>[];
 
     try {
-      await _removeOrThrow(prefs, _statsKey);
-      statsRemoved = true;
-      await _removeOrThrow(prefs, _storageKey);
-      cardsRemoved = true;
+      for (final key in [_statsKey, _storageKey, _streakKey, _sessionsKey]) {
+        await _removeOrThrow(prefs, key);
+        removedKeys.add(key);
+      }
       state = SpacedRepetitionState(stats: ReviewStats.fromCards([]));
     } catch (e, stackTrace) {
-      if (statsRemoved) {
-        await _restoreStringPreferenceIfNeeded(
-          prefs,
-          _statsKey,
-          originalStatsJson,
-        );
-      }
-      if (cardsRemoved) {
-        await _restoreStringPreferenceIfNeeded(
-          prefs,
-          _storageKey,
-          originalCardsJson,
-        );
+      for (final key in removedKeys.reversed) {
+        await _restoreStringPreferenceIfNeeded(prefs, key, originalValues[key]);
       }
       state = originalState.copyWith(
         errorMessage: "Couldn't reset review progress. Please try again.",

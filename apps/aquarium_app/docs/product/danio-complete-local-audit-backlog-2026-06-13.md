@@ -311,6 +311,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FH checks failed Tank returning-user prompt dismissal writes so
   day-2, day-7, and day-30 cards do not silently consume their seen flags when
   local preference persistence fails.
+- CL-P1-009FI makes spaced-repetition reset own card, stats, streak, and
+  session preference removals, restoring partially removed JSON when any reset
+  removal fails.
 
 ## 7. P2 Work - Presentation System
 
