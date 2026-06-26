@@ -195,7 +195,7 @@ final speciesCarePath = LearningPath(
             id: 'sc_gold_q4',
             question: 'What type of water do goldfish need?',
             options: [
-              'Warm tropical water (80°F+)',
+              'Warm tropical water (27°C / 80°F+)',
               'Coldwater — no heater needed',
               'Brackish water',
               'Very soft, acidic water',
@@ -549,7 +549,7 @@ final speciesCarePath = LearningPath(
             options: [
               'Amano shrimp are all male',
               'They need brackish or marine water for their larvae to develop',
-              'They only breed in water above 90°F',
+              'They only breed in water above 32°C (90°F)',
               'Amano shrimp reproduce asexually and don\'t need a mate',
             ],
             correctIndex: 1,
@@ -646,7 +646,7 @@ final speciesCarePath = LearningPath(
             options: [
               'Nerite snails are all the same sex',
               'They need brackish or marine water for their larvae to survive',
-              'Nerites only breed in water above 85°F',
+              'Nerites only breed in water above 29°C (85°F)',
               'They eat their own eggs',
             ],
             correctIndex: 1,

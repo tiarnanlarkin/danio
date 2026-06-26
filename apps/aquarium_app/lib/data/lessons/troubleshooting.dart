@@ -255,7 +255,7 @@ final troubleshootingPath = LearningPath(
             options: [
               'Add a broad-spectrum medication to the main tank immediately',
               'Test water parameters — most disease presentations begin with water quality stress',
-              'Raise the temperature to 86°F to accelerate the immune response',
+              'Raise the temperature to 30°C (86°F) to accelerate the immune response',
               'Feed extra high-protein food to boost the fish\'s immune system',
             ],
             correctIndex: 1,

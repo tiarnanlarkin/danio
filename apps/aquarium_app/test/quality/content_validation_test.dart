@@ -222,6 +222,25 @@ void _expectMetricVolumeContext(Iterable<MapEntry<String, String>> entries) {
   }
 }
 
+void _expectMetricTemperatureContext(
+  Iterable<MapEntry<String, String>> entries,
+) {
+  final fahrenheitTemperature = RegExp(r'°F\b');
+  final celsiusTemperature = RegExp(r'°C\b');
+
+  for (final entry in entries) {
+    if (!fahrenheitTemperature.hasMatch(entry.value)) {
+      continue;
+    }
+
+    expect(
+      entry.value,
+      matches(celsiusTemperature),
+      reason: '${entry.key} mentions °F without a °C equivalent',
+    );
+  }
+}
+
 void _expectHttpsSource({
   required String title,
   required String publisher,
@@ -258,6 +277,13 @@ void main() {
     test('learning copy pairs gallon references with litre equivalents', () {
       _expectMetricVolumeContext(_allLessons.expand(_lessonStrings));
     });
+
+    test(
+      'learning copy pairs fahrenheit references with celsius equivalents',
+      () {
+        _expectMetricTemperatureContext(_allLessons.expand(_lessonStrings));
+      },
+    );
 
     test(
       'lesson quizzes are complete, explain answers, and avoid duplicate options',

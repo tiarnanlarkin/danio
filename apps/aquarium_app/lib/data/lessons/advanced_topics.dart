@@ -177,7 +177,7 @@ final advancedTopicsPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Most egg layers need a trigger. A large cool water change (replacing 30–40% with slightly cooler water) mimics the rainy season and often initiates spawning. For some species, gradually raising temperature by 2–3°F over 24 hours works. Dawn light simulation (slowly brightening lighting) can also trigger spawning behaviour.',
+              'Most egg layers need a trigger. A large cool water change (replacing 30–40% with slightly cooler water) mimics the rainy season and often initiates spawning. For some species, gradually raising temperature by 1–2°C (2–3°F) over 24 hours works. Dawn light simulation (slowly brightening lighting) can also trigger spawning behaviour.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
@@ -256,7 +256,7 @@ final advancedTopicsPath = LearningPath(
             options: [
               'Add medication to prevent fungus',
               'Remove the parents — they will eat the eggs',
-              'Raise the temperature to 90°F',
+              'Raise the temperature to 32°C (90°F)',
               'Do a 50% water change',
             ],
             correctIndex: 1,
@@ -597,8 +597,8 @@ final advancedTopicsPath = LearningPath(
                 'How do you treat ich (white spot disease) in a TROPICAL fish tank?',
             options: [
               'Do nothing — it resolves on its own',
-              'Lower temperature to 65°F and add medication',
-              'Raise temperature to 86°F gradually + aquarium salt for 2 weeks',
+              'Lower temperature to 18°C (65°F) and add medication',
+              'Raise temperature to 30°C (86°F) gradually + aquarium salt for 2 weeks',
               'Do a 100% water change immediately',
             ],
             correctIndex: 2,

@@ -755,6 +755,14 @@ CL-QA-005B Learning metric-context validation:
   Care, and Advanced Topics so tank-size and treatment-dose copy is readable
   for metric-first users while preserving legacy gallon context.
 
+CL-QA-005C Learning temperature-context validation:
+
+- The content validation gate now fails learning copy that mentions Fahrenheit
+  without a Celsius equivalent in the same user-facing string.
+- Current Fahrenheit-only examples were updated in Advanced Topics, Species
+  Care, and Troubleshooting so temperature guidance remains metric-readable
+  while preserving Fahrenheit context where useful.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck
