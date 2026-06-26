@@ -252,6 +252,29 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     }
   }
 
+  Future<void> _removeOrThrow(SharedPreferences prefs, String key) async {
+    final removed = await prefs.remove(key);
+    if (!removed) {
+      throw StateError('SharedPreferences.remove returned false for $key.');
+    }
+  }
+
+  Future<void> _restoreStringPreferenceIfNeeded(
+    SharedPreferences prefs,
+    String key,
+    String? value,
+  ) async {
+    if (value == null) return;
+    try {
+      await _setStringOrThrow(prefs, key, value);
+    } catch (e, stackTrace) {
+      logError(
+        'SpacedRepetitionProvider: failed to restore $key after reset failure: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
+    }
+  }
+
   /// Save cards to storage
   Future<void> _saveData() async {
     try {
@@ -988,10 +1011,42 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
   /// Reset all data (for testing)
   Future<void> resetAll() async {
-    state = SpacedRepetitionState(stats: ReviewStats.fromCards([]));
-
+    final originalState = state;
     final prefs = await _ref.read(sharedPreferencesProvider.future);
-    await prefs.remove(_storageKey);
-    await prefs.remove(_statsKey);
+    final originalCardsJson = prefs.getString(_storageKey);
+    final originalStatsJson = prefs.getString(_statsKey);
+    var statsRemoved = false;
+    var cardsRemoved = false;
+
+    try {
+      await _removeOrThrow(prefs, _statsKey);
+      statsRemoved = true;
+      await _removeOrThrow(prefs, _storageKey);
+      cardsRemoved = true;
+      state = SpacedRepetitionState(stats: ReviewStats.fromCards([]));
+    } catch (e, stackTrace) {
+      if (statsRemoved) {
+        await _restoreStringPreferenceIfNeeded(
+          prefs,
+          _statsKey,
+          originalStatsJson,
+        );
+      }
+      if (cardsRemoved) {
+        await _restoreStringPreferenceIfNeeded(
+          prefs,
+          _storageKey,
+          originalCardsJson,
+        );
+      }
+      state = originalState.copyWith(
+        errorMessage: "Couldn't reset review progress. Please try again.",
+      );
+      logError(
+        'SpacedRepetitionProvider: failed to reset review progress: $e\n$stackTrace',
+        tag: 'SpacedRepetitionProvider',
+      );
+      rethrow;
+    }
   }
 }

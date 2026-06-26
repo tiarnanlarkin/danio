@@ -2712,6 +2712,18 @@ CL-P1-009FF Stage sheet hint failed-save boundary:
 - Focused source coverage protects the `setBool` return check and retry
   visibility path.
 
+CL-P1-009FG Spaced-repetition reset removal boundary:
+
+- `SpacedRepetitionNotifier.resetAll` now checks both review-card and review
+  stats preference removals before exposing an empty review state.
+- If reset removal fails after one key was removed, the provider restores the
+  original local JSON for the removed key where possible.
+- Failed resets keep the previous visible cards/stats, set normal retry copy,
+  and rethrow the local failure for callers that need to stop follow-up work.
+- Focused provider coverage simulates a false
+  `spaced_repetition_cards` removal and verifies visible state plus persisted
+  cards/stats remain unchanged.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3701,7 +3713,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   dismissed, and does not consume the prompt if the lesson screen unmounts
   before it can be shown. The Tank stage sheet first-use hint now persists
   through the shared preferences provider and restores visible retry state
-  when its seen-flag write fails, and all current OpenAI request
+  when its seen-flag write fails. Spaced-repetition reset now keeps visible
+  cards/stats and restores partially removed local JSON when reset removal
+  fails, and all current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining

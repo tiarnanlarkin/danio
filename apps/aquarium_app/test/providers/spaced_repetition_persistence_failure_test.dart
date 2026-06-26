@@ -66,6 +66,37 @@ class _FalseSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseRemovePrefs implements SharedPreferences {
+  _FalseRemovePrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  Future<bool> setString(String key, String value) =>
+      _delegate.setString(key, value);
+
+  @override
+  Future<bool> remove(String key) {
+    if (_shouldFail(key)) {
+      return Future<bool>.value(false);
+    }
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 class _NoopReminderNotificationService implements ReminderNotificationService {
   @override
   Future<void> cancelReviewReminder() async {}
@@ -151,6 +182,23 @@ ProviderContainer _containerWithFalseSavesForKey(
     overrides: [
       sharedPreferencesProvider.overrideWith((ref) async {
         return _FalseSetStringPrefs(prefs, (key, _) => key == failedKey);
+      }),
+      notificationServiceProvider.overrideWithValue(
+        _NoopReminderNotificationService(),
+      ),
+      achievementCheckerProvider.overrideWith(_NoopAchievementChecker.new),
+    ],
+  );
+}
+
+ProviderContainer _containerWithFalseRemovesForKey(
+  SharedPreferences prefs,
+  String failedKey,
+) {
+  return ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWith((ref) async {
+        return _FalseRemovePrefs(prefs, (key) => key == failedKey);
       }),
       notificationServiceProvider.overrideWithValue(
         _NoopReminderNotificationService(),
@@ -368,6 +416,47 @@ void main() {
         prefs.getString('spaced_repetition_cards'),
         jsonEncode([originalCard.toJson()]),
       );
+    },
+  );
+
+  test(
+    'resetAll keeps visible review progress when persisted reset fails',
+    () async {
+      final originalCard = ReviewCard.newCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      final cardsJson = jsonEncode([originalCard.toJson()]);
+      final statsJson = jsonEncode({
+        'reviewsToday': 1,
+        'totalReviews': 3,
+        'streak': 2,
+        'lastReviewDate': DateTime(2026, 6, 24).toIso8601String(),
+      });
+      SharedPreferences.setMockInitialValues({
+        'spaced_repetition_cards': cardsJson,
+        'spaced_repetition_stats': statsJson,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithFalseRemovesForKey(
+        prefs,
+        'spaced_repetition_cards',
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      expect(container.read(spacedRepetitionProvider).cards, hasLength(1));
+
+      await expectLater(notifier.resetAll(), throwsA(isA<StateError>()));
+
+      final state = container.read(spacedRepetitionProvider);
+      expect(state.cards, hasLength(1));
+      expect(state.cards.single.id, originalCard.id);
+      expect(state.stats.totalCards, 1);
+      expect(state.errorMessage, contains("Couldn't reset"));
+      expect(prefs.getString('spaced_repetition_cards'), cardsJson);
+      expect(prefs.getString('spaced_repetition_stats'), statsJson);
     },
   );
 

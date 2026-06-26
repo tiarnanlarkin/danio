@@ -305,6 +305,9 @@ Recent CL-P1-009 continuation note:
   advice, so failed disclosure acceptance writes stop before any request.
 - CL-P1-009FF keeps the Tank stage sheet first-use hint visible and retryable
   when the local `hasSeenSheetHint` write returns false.
+- CL-P1-009FG makes spaced-repetition reset reject failed local removals,
+  restore any partially removed review JSON, and keep visible cards/stats
+  unchanged with retry feedback.
 
 ## 7. P2 Work - Presentation System
 
