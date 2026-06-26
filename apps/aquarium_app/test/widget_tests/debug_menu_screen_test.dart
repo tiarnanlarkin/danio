@@ -12,10 +12,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/debug_menu_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/tank_decoration_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/log_entry.dart';
+import 'package:danio/models/tank_decoration.dart';
+import 'package:danio/models/user_profile.dart';
 import 'package:danio/services/tank_livestock_visual_service.dart';
+import 'package:danio/services/room_theme_unlock_service.dart';
+import 'package:danio/services/tank_decoration_unlock_service.dart';
+import 'package:danio/services/tank_progress_visual_service.dart';
 import 'package:danio/services/onboarding_service.dart';
+import 'package:danio/theme/room_themes.dart';
 import 'package:danio/features/smart/ai_disclosure_preferences.dart';
 
 Widget _wrap({InMemoryStorageService? storage}) {
@@ -210,6 +217,94 @@ void main() {
         (log) => log.type == LogType.waterTest,
       );
       expect(waterTest.waterTest?.nitrate, greaterThanOrEqualTo(40));
+    });
+
+    testWidgets('seeds partial unlock edge QA state', (tester) async {
+      final storage = InMemoryStorageService();
+      await clearStorage(storage);
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Seed Unlock Edge State'), 500);
+      await tester.tap(find.text('Seed Unlock Edge State'));
+      await tester.pumpAndSettle();
+
+      final prefs = await SharedPreferences.getInstance();
+      final rawProfile = prefs.getString('user_profile');
+      expect(rawProfile, isNotNull);
+
+      final profile = UserProfile.fromJson(
+        jsonDecode(rawProfile!) as Map<String, dynamic>,
+      );
+      expect(profile.totalXp, 900);
+      expect(profile.currentStreak, 6);
+      expect(profile.completedLessons, hasLength(9));
+      expect(profile.completedLessons.last, 'debug_unlock_edge_lesson_9');
+
+      final rawSpecies = prefs.getString('unlocked_species_v1');
+      expect(rawSpecies, isNotNull);
+      final unlockedSpecies = (jsonDecode(rawSpecies!) as List<dynamic>)
+          .whereType<String>()
+          .toSet();
+      expect(unlockedSpecies, contains('betta'));
+      expect(unlockedSpecies, isNot(contains('discus')));
+
+      final progressVisual = TankProgressVisualService.fromUnlockedSpecies(
+        unlockedSpecies,
+      );
+      expect(
+        progressVisual.condition,
+        TankProgressVisualCondition.speciesUnlocked,
+      );
+
+      final rawDecorations = prefs.getString(kUnlockedTankDecorationsKey);
+      expect(rawDecorations, isNotNull);
+      final unlockedDecorations = (jsonDecode(rawDecorations!) as List<dynamic>)
+          .whereType<String>()
+          .map(
+            (name) => TankDecorationType.values.firstWhere(
+              (type) => type.name == name,
+            ),
+          )
+          .toSet();
+      expect(unlockedDecorations, contains(TankDecorationType.driftwoodArch));
+      expect(
+        unlockedDecorations,
+        isNot(contains(TankDecorationType.mossyHide)),
+      );
+      expect(
+        prefs.getString(kEquippedTankDecorationKey),
+        TankDecorationType.driftwoodArch.name,
+      );
+
+      final decorationStates = TankDecorationUnlockService.statesFor(
+        profile: profile,
+        unlockedSpecies: unlockedSpecies,
+        unlockedDecorations: unlockedDecorations,
+      );
+      expect(
+        decorationStates[TankDecorationType.driftwoodArch]?.isUnlocked,
+        isTrue,
+      );
+      expect(
+        decorationStates[TankDecorationType.mossyHide]?.isUnlocked,
+        isFalse,
+      );
+      expect(
+        decorationStates[TankDecorationType.ceramicShelter]?.isUnlocked,
+        isFalse,
+      );
+
+      final roomStates = RoomThemeUnlockService.statesFor(
+        profile: profile,
+        unlockedSpecies: unlockedSpecies,
+      );
+      expect(roomStates[RoomThemeType.pastel]?.isUnlocked, isTrue);
+      expect(roomStates[RoomThemeType.eveningGlow]?.isUnlocked, isTrue);
+      expect(roomStates[RoomThemeType.midnight]?.isUnlocked, isFalse);
+      expect(roomStates[RoomThemeType.watercolor]?.isUnlocked, isFalse);
+      expect(prefs.getInt('room_theme'), RoomThemeType.eveningGlow.index);
     });
   });
 }

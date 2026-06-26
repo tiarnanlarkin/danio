@@ -3551,8 +3551,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
   State` action that removes any local Optional AI key/disclosure state and
   creates `QA No-AI Smart Hub` with a high-nitrate water-test log, so local
   Smart Hub risk/suggestion checks can be reviewed without fake AI readiness.
-  Remaining debug seed gaps are unlock edge cases, tablet, and any real
-  keyed-AI state only when it can avoid fake provider readiness.
+- Debug QA tools now include CL-QA-007E, a debug-only `Seed Unlock Edge State`
+  action that writes a partial progression state: 900 XP, a 6-day streak, 9
+  completed lessons, Betta species unlock, Driftwood Arch unlock/equip, and
+  Evening Glow room theme, while keeping later unlock thresholds locked.
+  Remaining debug seed gaps are tablet and any real keyed-AI state only when it
+  can avoid fake provider readiness.
 - Full-app tablet verification is not yet current, though Workshop, Lesson, and
   Learn now have focused phone/tablet or tablet readability layout guardrails.
 - Visual asset quality still has known older audit gaps.

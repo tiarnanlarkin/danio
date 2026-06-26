@@ -67,16 +67,20 @@ import 'learn/unlock_celebration_screen.dart';
 import '../providers/tank_provider.dart';
 import '../providers/species_unlock_provider.dart';
 import '../providers/room_theme_provider.dart';
+import '../providers/room_theme_unlock_provider.dart';
 import '../providers/storage_provider.dart';
+import '../providers/tank_decoration_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/achievement_provider.dart';
 import '../providers/lesson_provider.dart';
 import '../models/tank.dart';
 import '../models/livestock.dart';
 import '../models/log_entry.dart';
+import '../models/tank_decoration.dart';
 import '../models/user_profile.dart';
 import '../models/spaced_repetition.dart';
 import '../data/species_unlock_map.dart';
+import '../theme/room_themes.dart';
 import '../utils/debug_state_overrides.dart';
 import '../features/smart/ai_disclosure_preferences.dart';
 import 'story/story_browser_screen.dart';
@@ -270,6 +274,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         title: 'Seed No-AI Smart Hub State',
         subtitle: 'Clears Optional AI and creates a local Smart risk tank',
         onTap: () => _seedNoAiSmartHubState(context, ref),
+      ),
+      _DebugTile(
+        title: 'Seed Unlock Edge State',
+        subtitle: 'Creates partial species, room, and decoration unlocks',
+        onTap: () => _seedUnlockEdgeState(context, ref),
       ),
       _DebugTile(
         title: 'Set Energy: Full (5)',
@@ -874,6 +883,106 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     } catch (e) {
       if (context.mounted) {
         DanioSnackBar.error(context, 'No-AI Smart seed failed: $e');
+      }
+    }
+  }
+
+  Future<void> _seedUnlockEdgeState(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      final now = DateTime.now();
+      await ref
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: ExperienceLevel.intermediate,
+            primaryTankType: TankType.freshwater,
+            goals: [
+              UserGoal.keepFishAlive,
+              UserGoal.beautifulDisplay,
+              UserGoal.learnTheScience,
+            ],
+            firstFishSpeciesId: 'betta',
+          );
+
+      final current = ref.read(userProfileProvider).value;
+      if (current == null) {
+        throw StateError('Unlock edge profile was not created.');
+      }
+
+      final completedLessons = List<String>.generate(
+        9,
+        (index) => 'debug_unlock_edge_lesson_${index + 1}',
+      );
+      final updated = current.copyWith(
+        totalXp: 900,
+        currentStreak: 6,
+        longestStreak: 6,
+        lastActivityDate: now,
+        completedLessons: completedLessons,
+        hearts: 5,
+        weeklyXP: 180,
+        weekStartDate: now.subtract(Duration(days: now.weekday - 1)),
+        firstFishSpeciesId: 'betta',
+        updatedAt: now,
+      );
+
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      final savedProfile = await prefs.setString(
+        'user_profile',
+        jsonEncode(updated.toJson()),
+      );
+      if (!savedProfile) {
+        throw StateError('Unlock edge profile save returned false.');
+      }
+
+      final speciesNotifier = ref.read(speciesUnlockProvider.notifier);
+      final speciesSaved = await speciesNotifier.unlockSpecies('betta');
+      if (!speciesSaved && !ref.read(speciesUnlockProvider).contains('betta')) {
+        throw StateError('Betta species unlock returned false.');
+      }
+
+      final decorationNotifier = ref.read(
+        unlockedTankDecorationsProvider.notifier,
+      );
+      final decorationSaved = await decorationNotifier.unlockDecoration(
+        TankDecorationType.driftwoodArch,
+      );
+      if (!decorationSaved &&
+          !ref
+              .read(unlockedTankDecorationsProvider)
+              .contains(TankDecorationType.driftwoodArch)) {
+        throw StateError('Driftwood Arch unlock returned false.');
+      }
+
+      ref.invalidate(tankDecorationUnlockStatesProvider);
+      final equipped = await ref
+          .read(equippedTankDecorationProvider.notifier)
+          .equipDecoration(TankDecorationType.driftwoodArch);
+      if (!equipped) {
+        throw StateError('Driftwood Arch equip returned false.');
+      }
+
+      final themeSaved = await ref
+          .read(roomThemeProvider.notifier)
+          .setTheme(RoomThemeType.eveningGlow);
+      if (!themeSaved) {
+        throw StateError('Evening Glow theme save returned false.');
+      }
+
+      ref.invalidate(userProfileProvider);
+      ref.invalidate(roomThemeUnlockStatesProvider);
+
+      if (context.mounted) {
+        DanioSnackBar.success(
+          context,
+          'Unlock edge seeded: Betta, Driftwood Arch, 900 XP, 6-day streak',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Unlock edge seed failed: $e');
       }
     }
   }
