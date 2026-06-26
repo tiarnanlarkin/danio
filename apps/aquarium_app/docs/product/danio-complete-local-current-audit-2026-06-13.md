@@ -2703,6 +2703,15 @@ CL-P1-009FE Shared Optional AI disclosure gate:
 - Focused source coverage now requires every current OpenAI request surface to
   call `ensureOpenAIDisclosureAccepted`.
 
+CL-P1-009FF Stage sheet hint failed-save boundary:
+
+- The Tank stage sheet first-use hint now checks the
+  `hasSeenSheetHint` write result before hiding the hint permanently.
+- If the write returns false, the hint is restored to visible opacity so the
+  prompt remains retryable instead of being silently consumed.
+- Focused source coverage protects the `setBool` return check and retry
+  visibility path.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3691,7 +3700,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   fails. The energy explainer now marks itself seen only after the dialog is
   dismissed, and does not consume the prompt if the lesson screen unmounts
   before it can be shown. The Tank stage sheet first-use hint now persists
-  through the shared preferences provider, and all current OpenAI request
+  through the shared preferences provider and restores visible retry state
+  when its seen-flag write fails, and all current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining

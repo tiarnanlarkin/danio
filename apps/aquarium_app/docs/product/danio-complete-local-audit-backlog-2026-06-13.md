@@ -303,6 +303,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FE routes all current Optional AI OpenAI request surfaces through a
   shared disclosure gate, including stocking suggestions and compatibility
   advice, so failed disclosure acceptance writes stop before any request.
+- CL-P1-009FF keeps the Tank stage sheet first-use hint visible and retryable
+  when the local `hasSeenSheetHint` write returns false.
 
 ## 7. P2 Work - Presentation System
 

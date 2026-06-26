@@ -98,12 +98,20 @@ class _BottomSheetPanelState extends ConsumerState<BottomSheetPanel>
       setState(() => _showSheetHint = true);
       // After 3 seconds, fade out and mark as seen
       await Future.delayed(const Duration(seconds: 3));
-      if (mounted) {
-        setState(() => _hintOpacity = 0.0);
-        await Future.delayed(const Duration(milliseconds: 600));
-        if (mounted) setState(() => _showSheetHint = false);
+      if (!mounted) return;
+      setState(() => _hintOpacity = 0.0);
+      await Future.delayed(const Duration(milliseconds: 600));
+      final saved = await prefs.setBool('hasSeenSheetHint', true);
+      if (!saved) {
+        if (mounted) {
+          setState(() {
+            _showSheetHint = true;
+            _hintOpacity = 1.0;
+          });
+        }
+        return;
       }
-      await prefs.setBool('hasSeenSheetHint', true);
+      if (mounted) setState(() => _showSheetHint = false);
     }
   }
 

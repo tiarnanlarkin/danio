@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/theme/app_theme.dart';
 import 'package:danio/providers/user_profile_provider.dart';
@@ -392,6 +394,25 @@ void main() {
       await tester.pump();
 
       expect(trackingPrefs.savedSheetHint, isTrue);
+    });
+
+    test('first-use hint persistence checks failed writes', () {
+      final source = File(
+        'lib/widgets/stage/bottom_sheet_panel.dart',
+      ).readAsStringSync();
+
+      expect(
+        source,
+        contains("final saved = await prefs.setBool('hasSeenSheetHint', true)"),
+      );
+      expect(
+        source,
+        contains("if (!saved)"),
+      );
+      expect(
+        source,
+        contains('_hintOpacity = 1.0'),
+      );
     });
   });
 }
