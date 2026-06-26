@@ -285,15 +285,29 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _replayOnboarding(BuildContext context, WidgetRef ref) async {
-    final service = await OnboardingService.getInstance();
-    await service.resetOnboarding();
+    try {
+      final service = await OnboardingService.getInstance();
+      await service.resetOnboarding();
 
-    if (context.mounted) {
-      ref.invalidate(onboardingCompletedProvider);
-      Navigator.of(
-        context,
-        rootNavigator: true,
-      ).popUntil((route) => route.isFirst);
+      if (context.mounted) {
+        ref.invalidate(onboardingCompletedProvider);
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).popUntil((route) => route.isFirst);
+      }
+    } catch (e, st) {
+      logError(
+        'SettingsScreen: replay onboarding failed: $e',
+        stackTrace: st,
+        tag: 'SettingsScreen',
+      );
+      if (context.mounted) {
+        AppFeedback.showError(
+          context,
+          'Couldn\'t replay onboarding. Try again.',
+        );
+      }
     }
   }
 }

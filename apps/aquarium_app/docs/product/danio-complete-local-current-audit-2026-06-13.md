@@ -2519,6 +2519,17 @@ CL-P1-009EM Onboarding reset preference-removal boundary:
 - Focused service coverage simulates a false `onboarding_completed` removal
   and verifies the completion flag remains set for retry.
 
+CL-P1-009EN Settings replay-onboarding reset failure boundary:
+
+- Preferences Replay Onboarding now catches local onboarding reset failures,
+  logs the failure, keeps the user on Settings, and shows normal retry
+  feedback instead of letting the async reset error escape.
+- Failed replay resets no longer invalidate onboarding state or navigate away
+  while the `onboarding_completed` flag remains saved.
+- Focused widget coverage simulates a false `onboarding_completed` removal and
+  verifies Settings remains visible with `Couldn't replay onboarding. Try
+  again.` feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

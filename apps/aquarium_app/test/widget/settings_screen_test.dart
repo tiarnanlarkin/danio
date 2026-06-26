@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/models/adaptive_difficulty.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/screens/settings_screen.dart';
+import 'package:danio/services/onboarding_service.dart';
 import 'package:danio/widgets/core/app_list_tile.dart';
 
 // ---------------------------------------------------------------------------
@@ -222,7 +223,10 @@ Future<void> _dragUntilTextVisible(WidgetTester tester, String text) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    OnboardingService.resetForTesting();
   });
+
+  tearDown(OnboardingService.resetForTesting);
 
   group('SettingsScreen — smoke', () {
     testWidgets('renders without throwing', (tester) async {
@@ -265,6 +269,31 @@ void main() {
 
       expect(find.byType(SettingsScreen), findsNothing);
       expect(find.text('Your Privacy Matters'), findsOneWidget);
+    });
+
+    testWidgets('failed Replay Onboarding reset stays on settings with retry', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'onboarding_completed': true});
+      final prefs = await SharedPreferences.getInstance();
+      final failingPrefs = _FalseRemovePrefs(prefs, 'onboarding_completed');
+      OnboardingService.overrideSharedPreferencesFactoryForTesting(
+        () async => failingPrefs,
+      );
+
+      await tester.pumpWidget(_wrap(const SettingsScreen()));
+      await tester.pump();
+
+      await _dragUntilTextVisible(tester, 'Replay Onboarding');
+      await tester.tap(find.text('Replay Onboarding'));
+      await tester.pumpAndSettle();
+
+      expect(prefs.getBool('onboarding_completed'), isTrue);
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(
+        find.text('Couldn\'t replay onboarding. Try again.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('resets accepted Optional AI disclosure from Preferences', (

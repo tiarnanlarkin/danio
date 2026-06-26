@@ -251,6 +251,9 @@ Recent CL-P1-009 continuation note:
   failures, so settings/debug/data-deletion reset paths can use their existing
   retry handling instead of reporting a reset when `onboarding_completed`
   remains saved.
+- CL-P1-009EN makes Preferences Replay Onboarding catch failed onboarding reset
+  writes, keep the user on Settings, and show retry feedback instead of
+  navigating away after an unsaved reset.
 
 ## 7. P2 Work - Presentation System
 
