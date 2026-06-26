@@ -3,6 +3,7 @@
 // Run: flutter test test/widget_tests/equipment_screen_test.dart
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/equipment_screen.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/theme/app_theme.dart';
@@ -34,6 +36,81 @@ Tank _makeTank({String id = 'tank-1'}) => Tank(
   updatedAt: _now,
 );
 
+UserProfile _makeProfile() => UserProfile(
+  id: 'equipment-profile',
+  experienceLevel: ExperienceLevel.beginner,
+  primaryTankType: TankType.freshwater,
+  goals: const [UserGoal.keepFishAlive],
+  hasStreakFreeze: false,
+  createdAt: _now,
+  updatedAt: _now,
+);
+
+class _ThrowingSetStringPrefs implements SharedPreferences {
+  _ThrowingSetStringPrefs(this._delegate, this._shouldFail);
+
+  final SharedPreferences _delegate;
+  final bool Function(String key, Object value) _shouldFail;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Object? get(String key) => _delegate.get(key);
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  Set<String> getKeys() => _delegate.getKeys();
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (_shouldFail(key, value)) {
+      throw StateError('Simulated SharedPreferences write failure for $key');
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> setDouble(String key, double value) =>
+      _delegate.setDouble(key, value);
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setStringList(String key, List<String> value) =>
+      _delegate.setStringList(key, value);
+
+  @override
+  Future<bool> remove(String key) => _delegate.remove(key);
+
+  @override
+  Future<bool> clear() => _delegate.clear();
+
+  @override
+  Future<void> reload() => _delegate.reload();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _wrap({InMemoryStorageService? storage, String tankId = 'tank-1'}) {
   final svc = storage ?? InMemoryStorageService();
   return ProviderScope(
@@ -49,6 +126,55 @@ Widget _wrapWithStorage({
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
     child: MaterialApp(home: EquipmentScreen(tankId: tankId)),
+  );
+}
+
+Widget _wrapWithLauncher({
+  required InMemoryStorageService storage,
+  String tankId = 'tank-1',
+  SharedPreferences? prefs,
+  bool showProfileProbe = false,
+}) {
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(storage),
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
+    ],
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (showProfileProbe)
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final profile = ref
+                          .watch(userProfileProvider)
+                          .valueOrNull;
+                      return Text(
+                        profile == null ? 'profile loading' : 'profile ready',
+                      );
+                    },
+                  ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => EquipmentScreen(tankId: tankId),
+                      ),
+                    );
+                  },
+                  child: const Text('Open equipment'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 }
 
@@ -460,6 +586,69 @@ void main() {
       );
       expect(find.text('Sponge filter added.'), findsNothing);
     });
+
+    testWidgets(
+      'profile activity failure after equipment add does not report add failure',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'user_profile': jsonEncode(_makeProfile().toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final throwingPrefs = _ThrowingSetStringPrefs(
+          prefs,
+          (key, _) => key == 'user_profile',
+        );
+        const tankId = 'tank-equipment-add-profile-failure';
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank(id: tankId));
+
+        await tester.pumpWidget(
+          _wrapWithLauncher(
+            storage: storage,
+            tankId: tankId,
+            prefs: throwingPrefs,
+            showProfileProbe: true,
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('profile ready'), findsOneWidget);
+
+        await tester.tap(find.text('Open equipment'));
+        await tester.pump();
+        await _advance(tester);
+
+        await tester.tap(find.text('Add Equipment'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.enterText(
+          find.byType(TextFormField).first,
+          'Profile boundary filter',
+        );
+        await tester.tap(find.text('Add').last);
+        await tester.pump();
+        await _advance(tester);
+
+        final equipment = await storage.getEquipmentForTank(tankId);
+        expect(equipment, hasLength(1));
+        expect(equipment.single.name, 'Profile boundary filter');
+        expect(find.byType(EquipmentScreen), findsOneWidget);
+        expect(
+          find.widgetWithText(TextFormField, 'Profile boundary filter'),
+          findsNothing,
+        );
+        expect(
+          find.text(
+            'Profile boundary filter added, but progress couldn\'t update.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Couldn\'t do that. Give it another go!'),
+          findsNothing,
+        );
+        expect(find.text('Retry'), findsNothing);
+      },
+    );
   });
 
   group('EquipmentScreen — with equipment', () {

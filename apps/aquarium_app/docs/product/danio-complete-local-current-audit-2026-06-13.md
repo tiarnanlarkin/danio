@@ -2566,6 +2566,16 @@ CL-P1-009ER Equipment add maintenance-task rollback:
 - Focused widget coverage simulates a failed task save, verifies no
   equipment/task records remain, and checks the retry feedback.
 
+CL-P1-009ES Equipment add progress boundary:
+
+- Adding equipment now treats profile XP/progress persistence as secondary to
+  the durable equipment save.
+- If profile progress fails after the equipment is saved, the equipment remains
+  saved, the add sheet closes, XP animation is suppressed, and the user sees
+  progress-specific feedback instead of a generic add failure.
+- Focused widget coverage simulates a failed `user_profile` preference write
+  after add and verifies the equipment remains saved with the progress warning.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3542,7 +3552,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   reward/progress side effects and close the saved edit route cleanly. Tank
   Settings saved edits now close without unsaved-prompt loops after the durable
   local tank update. Equipment adds now roll back partial equipment records when
-  maintenance-task sync fails. Remaining backup/data work is broader
+  maintenance-task sync fails, while secondary progress-write failures no longer
+  undo durable equipment adds. Remaining backup/data work is broader
   edit/delete/undo coverage and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and

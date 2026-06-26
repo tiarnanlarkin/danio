@@ -953,21 +953,34 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       // Create/update (or remove) the auto maintenance task.
       await _syncEquipmentMaintenanceTask(storage, equipment);
 
+      var progressUpdated = true;
+      var effectiveXp = 0;
+
       // Award XP for adding new equipment (not editing)
       if (widget.existing == null) {
         final isBoostActive = widget.ref.read(xpBoostActiveProvider);
-        final effectiveXp = isBoostActive
+        effectiveXp = isBoostActive
             ? XpRewards.addEquipment * 2
             : XpRewards.addEquipment;
-        await widget.ref
-            .read(userProfileProvider.notifier)
-            .recordActivity(
-              xp: XpRewards.addEquipment,
-              xpBoostActive: isBoostActive,
-            );
+        try {
+          await widget.ref
+              .read(userProfileProvider.notifier)
+              .recordActivity(
+                xp: XpRewards.addEquipment,
+                xpBoostActive: isBoostActive,
+              );
+        } catch (e, st) {
+          progressUpdated = false;
+          logError(
+            'EquipmentScreen: profile activity update failed after equipment save: $e',
+            stackTrace: st,
+            tag: 'EquipmentScreen',
+          );
+          widget.ref.invalidate(userProfileProvider);
+        }
 
         // Show XP animation
-        if (mounted) {
+        if (progressUpdated && mounted) {
           AppHaptics.success();
           widget.ref.showXpAnimation(effectiveXp);
         }
@@ -977,12 +990,16 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       widget.ref.invalidate(tasksProvider(widget.tankId));
 
       if (mounted) {
-        AppFeedback.showSuccess(
-          context,
-          widget.existing != null
-              ? '${equipment.name} saved.'
-              : '${equipment.name} added.',
-        );
+        if (widget.existing != null) {
+          AppFeedback.showSuccess(context, '${equipment.name} saved.');
+        } else if (progressUpdated) {
+          AppFeedback.showSuccess(context, '${equipment.name} added.');
+        } else {
+          AppFeedback.showWarning(
+            context,
+            '${equipment.name} added, but progress couldn\'t update.',
+          );
+        }
       }
       if (mounted) Navigator.maybePop(context);
     } catch (e, st) {
