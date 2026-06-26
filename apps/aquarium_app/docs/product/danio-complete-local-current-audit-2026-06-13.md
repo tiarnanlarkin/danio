@@ -3543,8 +3543,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Tank` action that creates `QA Incompatible Fish Tank` with Betta plus Guppy,
   and focused widget coverage verifies that the existing livestock visual
   service reports `compatibilityConcern`.
-  Remaining debug seed gaps are skipped onboarding, unlock edge cases, tablet,
-  and AI/no-AI states.
+- Debug QA tools now include CL-QA-007C, a debug-only `Seed Skipped Onboarding`
+  action that mirrors quick start by writing a beginner freshwater profile,
+  creating the populated `Sample Tank`, selecting the Tank tab, and persisting
+  the onboarding-completed flag.
+  Remaining debug seed gaps are unlock edge cases, tablet, and AI/no-AI states.
 - Full-app tablet verification is not yet current, though Workshop, Lesson, and
   Learn now have focused phone/tablet or tablet readability layout guardrails.
 - Visual asset quality still has known older audit gaps.

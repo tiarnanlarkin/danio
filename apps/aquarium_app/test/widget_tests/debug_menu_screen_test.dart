@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/debug_menu_screen_test.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,6 +15,7 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/services/tank_livestock_visual_service.dart';
+import 'package:danio/services/onboarding_service.dart';
 
 Widget _wrap({InMemoryStorageService? storage}) {
   SharedPreferences.setMockInitialValues({});
@@ -35,7 +38,10 @@ Future<void> _advance(WidgetTester tester) async {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+    OnboardingService.resetForTesting();
   });
+
+  tearDown(OnboardingService.resetForTesting);
 
   Future<void> clearStorage(InMemoryStorageService storage) async {
     final tanks = await storage.getAllTanks();
@@ -139,6 +145,36 @@ void main() {
         visualState.condition,
         TankLivestockVisualCondition.compatibilityConcern,
       );
+    });
+
+    testWidgets('seeds skipped onboarding quick-start state', (tester) async {
+      final storage = InMemoryStorageService();
+      await clearStorage(storage);
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('Seed Skipped Onboarding'),
+        500,
+      );
+      await tester.tap(find.text('Seed Skipped Onboarding'));
+      await tester.pumpAndSettle();
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('onboarding_completed'), isTrue);
+
+      final profileJson =
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>;
+      expect(profileJson['experienceLevel'], 'beginner');
+      expect(profileJson['primaryTankType'], 'freshwater');
+      expect(profileJson['goals'], contains('keepFishAlive'));
+
+      final demoTank = (await storage.getAllTanks()).singleWhere(
+        (tank) => tank.isDemoTank && tank.name == 'Sample Tank',
+      );
+      expect(await storage.getLivestockForTank(demoTank.id), isNotEmpty);
+      expect(await storage.getLogsForTank(demoTank.id), isNotEmpty);
     });
   });
 }

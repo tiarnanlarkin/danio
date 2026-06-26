@@ -74,6 +74,7 @@ import '../providers/lesson_provider.dart';
 import '../models/tank.dart';
 import '../models/livestock.dart';
 import '../models/log_entry.dart';
+import '../models/user_profile.dart';
 import '../models/spaced_repetition.dart';
 import '../data/species_unlock_map.dart';
 import '../utils/debug_state_overrides.dart';
@@ -258,6 +259,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         title: 'Seed Incompatible Fish Tank',
         subtitle: 'Creates a Betta + Guppy compatibility warning state',
         onTap: () => _seedIncompatibleFishTank(context, ref),
+      ),
+      _DebugTile(
+        title: 'Seed Skipped Onboarding',
+        subtitle: 'Creates quick-start profile, sample tank, and Tank tab',
+        onTap: () => _seedSkippedOnboarding(context, ref),
       ),
       _DebugTile(
         title: 'Set Energy: Full (5)',
@@ -735,6 +741,42 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     } catch (e) {
       if (context.mounted) {
         DanioSnackBar.error(context, 'Incompatible fish seed failed: $e');
+      }
+    }
+  }
+
+  Future<void> _seedSkippedOnboarding(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: ExperienceLevel.beginner,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive],
+          );
+
+      final tank = await ref.read(tankActionsProvider).addDemoTank();
+      ref.read(currentTabProvider.notifier).state = 2;
+
+      final service = await OnboardingService.getInstance();
+      await service.completeOnboarding();
+
+      ref.invalidate(onboardingCompletedProvider);
+      ref.invalidate(userProfileProvider);
+      ref.invalidate(tanksProvider);
+
+      if (context.mounted) {
+        DanioSnackBar.success(
+          context,
+          'Skipped onboarding seeded: ${tank.name} is ready on Tank',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'Skipped onboarding seed failed: $e');
       }
     }
   }
