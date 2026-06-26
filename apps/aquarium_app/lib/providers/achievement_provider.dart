@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../models/achievements.dart';
@@ -130,6 +131,24 @@ class AchievementProgressNotifier
     }
   }
 
+  Future<void> _removeOrThrow(SharedPreferences prefs, String key) async {
+    final removed = await prefs.remove(key);
+    if (!removed) {
+      throw StateError('SharedPreferences.remove returned false for $key.');
+    }
+  }
+
+  void _restorePendingSave(
+    Map<String, AchievementProgress>? pendingSaveState,
+  ) {
+    _pendingSaveState = pendingSaveState;
+    if (pendingSaveState == null) return;
+
+    _saveDebouncer.run(() {
+      unawaited(_writeProgress(pendingSaveState));
+    });
+  }
+
   void _flushPendingSaveSync() {
     final pending = _pendingSaveState;
     if (pending == null) return;
@@ -227,8 +246,24 @@ class AchievementProgressNotifier
 
   /// Reset all progress (for testing or reset functionality)
   Future<void> resetAll() async {
-    state = {};
-    await _save();
+    final pendingSaveState = _pendingSaveState;
+    _saveDebouncer.cancel();
+
+    try {
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      await _removeOrThrow(prefs, _key);
+      _pendingSaveState = null;
+      state = {};
+    } catch (e, st) {
+      _restorePendingSave(pendingSaveState);
+      logError(
+        'ACHIEVEMENT ERROR: Failed to reset achievement progress',
+        stackTrace: st,
+        tag: 'AchievementProvider',
+      );
+      logError('Error: $e', stackTrace: st, tag: 'AchievementProvider');
+      rethrow;
+    }
   }
 }
 

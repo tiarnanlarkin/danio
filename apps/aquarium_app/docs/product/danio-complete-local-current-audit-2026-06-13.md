@@ -2844,6 +2844,15 @@ CL-P1-009FK Debug achievement reset persistence boundary:
   false profile writes, verifying achievement progress and profile achievements
   remain intact.
 
+CL-P1-009FW Achievement provider reset persistence boundary:
+
+- `AchievementProgressNotifier.resetAll` now checks the local
+  `achievement_progress` removal before clearing visible achievement progress.
+- Failed reset removals keep the previous in-memory progress and persisted JSON
+  retryable, instead of exposing an unsaved empty achievement state.
+- Focused provider coverage simulates a false `achievement_progress` removal
+  and verifies visible progress remains intact.
+
 CL-P1-009FL DebugMenu profile-write action boundary:
 
 - DebugMenu now routes profile rewrites for Set XP, Set Streak, Reset Learning,
@@ -3944,9 +3953,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   when its seen-flag write fails. Spaced-repetition reset now keeps visible
   cards/stats and restores partially removed card/stat/streak/session local
   JSON when reset removal fails. Gem and inventory reset helpers now reject
-  false local preference removals before exposing reset success. Debug
-  achievement reset now rejects failed progress/profile preference writes and
-  restores progress if the profile write fails after progress removal.
+  false local preference removals before exposing reset success. Achievement
+  provider resets now reject false progress removals before clearing visible
+  progress. Debug achievement reset now rejects failed progress/profile
+  preference writes and restores progress if the profile write fails after
+  progress removal.
   DebugMenu profile-write actions now reject false local `user_profile` saves
   before showing success. Debug species reset now rejects false local
   unlock-list writes before showing success. Debug Clear All Data now rejects

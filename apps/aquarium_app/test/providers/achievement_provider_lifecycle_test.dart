@@ -38,6 +38,29 @@ class _FalseOnceSetStringPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FalseRemovePrefs implements SharedPreferences {
+  _FalseRemovePrefs(this._delegate, this._failedKey);
+
+  final SharedPreferences _delegate;
+  final String _failedKey;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  Future<bool> setString(String key, String value) =>
+      _delegate.setString(key, value);
+
+  @override
+  Future<bool> remove(String key) {
+    if (key == _failedKey) return Future<bool>.value(false);
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -175,6 +198,48 @@ void main() {
         (decoded['first_steps'] as Map<String, dynamic>)['currentCount'],
         1,
       );
+    },
+  );
+
+  test(
+    'resetAll keeps visible progress when persisted reset fails',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'achievement_progress': jsonEncode({
+          'first_steps': const AchievementProgress(
+            achievementId: 'first_steps',
+            currentCount: 1,
+          ).toJson(),
+        }),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWith((ref) async {
+            return _FalseRemovePrefs(prefs, 'achievement_progress');
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      container.read(achievementProgressProvider);
+      await _settle();
+      expect(
+        container.read(achievementProgressProvider),
+        contains('first_steps'),
+      );
+
+      await expectLater(
+        container.read(achievementProgressProvider.notifier).resetAll(),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(
+        container.read(achievementProgressProvider),
+        contains('first_steps'),
+        reason: 'Failed durable reset must not clear visible progress.',
+      );
+      expect(prefs.getString('achievement_progress'), isNotNull);
     },
   );
 }
