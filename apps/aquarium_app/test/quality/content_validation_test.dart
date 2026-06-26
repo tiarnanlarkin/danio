@@ -241,6 +241,27 @@ void _expectMetricTemperatureContext(
   }
 }
 
+bool _isTreatmentOrEmergencyLesson(Lesson lesson) {
+  final text = _normalise(
+    '${lesson.id} ${lesson.title} ${lesson.description}',
+  );
+  const terms = [
+    'disease',
+    'infection',
+    'parasite',
+    'medication',
+    'treatment',
+    'emergency',
+  ];
+  return terms.any(text.contains);
+}
+
+bool _hasWarningSection(Lesson lesson) {
+  return lesson.sections.any(
+    (section) => section.type == LessonSectionType.warning,
+  );
+}
+
 void _expectHttpsSource({
   required String title,
   required String publisher,
@@ -284,6 +305,27 @@ void main() {
         _expectMetricTemperatureContext(_allLessons.expand(_lessonStrings));
       },
     );
+
+    test('medical and emergency lessons include warning sections', () {
+      final lessons = _allLessons.where(_isTreatmentOrEmergencyLesson).toList();
+
+      expect(
+        lessons,
+        isNotEmpty,
+        reason: 'Expected medical or emergency lessons in the catalog',
+      );
+
+      final missingWarnings = lessons
+          .where((lesson) => !_hasWarningSection(lesson))
+          .map((lesson) => lesson.id)
+          .toList();
+      expect(
+        missingWarnings,
+        isEmpty,
+        reason:
+            'Medical/emergency lessons need warning sections: $missingWarnings',
+      );
+    });
 
     test(
       'lesson quizzes are complete, explain answers, and avoid duplicate options',

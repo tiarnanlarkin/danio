@@ -763,6 +763,14 @@ CL-QA-005C Learning temperature-context validation:
   Care, and Troubleshooting so temperature guidance remains metric-readable
   while preserving Fahrenheit context where useful.
 
+CL-QA-005D Medical/emergency warning validation:
+
+- The content validation gate now fails medical/emergency learning lessons
+  without a warning section.
+- Fish Health prevention, ich, fin rot, and parasite lessons now carry explicit
+  warning-section safety boundaries around diagnosis, treatment choice, and
+  urgent escalation.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

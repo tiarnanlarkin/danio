@@ -60,6 +60,11 @@ final fishHealthPath = LearningPath(
               '90% of fish disease is caused by stress. Eliminate stress sources and most problems disappear!',
         ),
         const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Prevention guidance is not a diagnosis. If a fish has severe breathing trouble, bleeding, rapid decline, pineconing, or multiple fish become ill at once, test the water immediately, isolate when safe, and seek specialist aquatic advice.',
+        ),
+        const LessonSection(
           type: LessonSectionType.heading,
           content: 'The Prevention Triangle',
         ),
@@ -157,6 +162,11 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.heading,
           content: 'Treatment Plan',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Match treatment to the fish, tank, and product label. Heat, salt, copper, and malachite green can harm coldwater fish, scaleless species, invertebrates, plants, or overdosed tanks.',
         ),
         const LessonSection(
           type: LessonSectionType.text,
@@ -280,6 +290,11 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.heading,
           content: 'Treatment Plan',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Do not medicate before checking water quality. If rot reaches the body, spreads quickly, returns after clean-water care, or affects several fish, treat it as urgent and get specialist aquatic advice.',
         ),
         const LessonSection(
           type: LessonSectionType.text,
@@ -533,6 +548,11 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.heading,
           content: 'General Treatment Approach',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Parasite treatments are not interchangeable. Confirm the likely parasite, check species and invertebrate sensitivity, and get specialist help quickly for gill distress, weight loss, open wounds, or heavy infestations.',
         ),
         const LessonSection(
           type: LessonSectionType.text,
