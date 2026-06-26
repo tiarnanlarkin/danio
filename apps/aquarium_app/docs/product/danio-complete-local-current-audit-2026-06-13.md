@@ -853,6 +853,13 @@ CL-P1-005H Review fallback recall prompts:
   keeping the old self-assessment flow honest for legacy/persisted cards.
 - Widget coverage verifies the no-question-text review-card path.
 
+CL-P1-005I Distinct Learn practice entry points:
+
+- Learn Review Banner remains the direct due-review entry point.
+- Learn Practice Card now opens the Practice hub tab for weak-spot options
+  instead of pushing the same Spaced Repetition Practice screen.
+- Widget coverage verifies the weak-practice card switches to the Practice hub.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

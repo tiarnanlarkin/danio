@@ -4,8 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/user_profile.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
-import '../../utils/navigation_throttle.dart';
-import '../spaced_repetition_practice_screen.dart';
+import '../tab_navigator.dart';
 
 /// Practice mode card shown on the Learn screen when lessons need review.
 class LearnPracticeCard extends ConsumerWidget {
@@ -32,14 +31,10 @@ class LearnPracticeCard extends ConsumerWidget {
       child: Semantics(
         button: true,
         label:
-            'Practice Mode. $weakCount lesson${weakCount == 1 ? '' : 's'} need review. Review before you forget!',
+            'Practice hub. $weakCount weak lesson${weakCount == 1 ? '' : 's'} can be strengthened. Tap to open practice.',
         child: InkWell(
           onTap: () {
-            NavigationThrottle.push(
-              context,
-              const SpacedRepetitionPracticeScreen(),
-              rootNavigator: true,
-            );
+            ref.read(currentTabProvider.notifier).state = 1;
           },
           borderRadius: AppRadius.mediumRadius,
           child: Container(
@@ -115,7 +110,7 @@ class LearnPracticeCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        'Review before you forget!',
+                        'Open Practice hub for weak-spot drills',
                         style: AppTypography.bodySmall.copyWith(
                           color: AppOverlays.white70,
                         ),

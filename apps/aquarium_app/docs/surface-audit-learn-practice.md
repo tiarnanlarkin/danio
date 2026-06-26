@@ -48,7 +48,7 @@ The main learn tab. Scrollable canvas: illustrated header, XP/streak overlays, p
 | LearnReviewBanner | **Tap anywhere on banner** | dueCards > 0 | ✅ | Navigates to `SpacedRepetitionPracticeScreen`. Correct. | ✅ Complete |
 | LearnReviewBanner | Semantics | | ✅ | `Semantics(button: true, label: '...')` present. Screen-reader friendly. | ✅ Complete |
 | **LearnPracticeCard** | Whole card — only shown when `weakCount > 0` | L, weakCount=0 | ✅ | Hidden when no weak lessons. | ✅ Complete |
-| LearnPracticeCard | **Tap anywhere on card** | weakCount > 0 | ⚠️ | Navigates to `SpacedRepetitionPracticeScreen` — **same destination as the Review Banner**. Both cards appear on the same screen and route to the same place. No visual or behavioural distinction for the user. Potential for confusion. | ⚠️ Should Fix |
+| LearnPracticeCard | **Tap anywhere on card** | weakCount > 0 | ✅ | Switches to the Practice hub tab, leaving the Review Banner as the direct due-review entry point. Widget coverage verifies it does not push review directly. | ✅ Complete |
 | **LearnStreakCard** | Streak card (only shown when `currentStreak > 0`) | L, streak=0, hasFreeze | ✅ | Non-interactive. Correctly hidden at streak=0. Freeze state renders correctly. | ✅ Complete |
 | **_StoriesSection (GlassCard)** | Tap → `StoryBrowserScreen` | L | ✅ | `Navigator.of(context).push(MaterialPageRoute(...))`. Correct, no throttle (low-risk). | ✅ Complete |
 | Learn Screen — Cold-start nudge | "New to fishkeeping? Start with the basics below." | completedLessons=0 | ✅ | Display only row. Not tappable (no dead button). Disappears after first lesson. | ✅ Complete |
@@ -339,7 +339,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | Issue | Affected Areas | Classification |
 |---|---|---|
 | **Placement test placeholder CTA is hidden until a real flow exists.** The old wrong route to `SpacedRepetitionPracticeScreen` is not reachable. | Learn Screen | ✅ Complete |
-| **Review Banner and Practice Card are visually distinct but functionally identical** — both route to `SpacedRepetitionPracticeScreen`. Shown simultaneously on Learn screen. Confusing to users. | Learn Screen | ⚠️ Should Fix |
+| **Review Banner and Practice Card now have distinct roles.** Review Banner starts due review; Practice Card opens the Practice hub for weak-spot options. | Learn Screen | ✅ Complete |
 | **`spacedRepetitionProvider.errorMessage` is surfaced** on Practice Hub and SR Practice screens with retry affordances. | Practice Hub, SR Practice | ✅ Complete |
 | **Locked story cards now explain unlock requirements on tap.** Locked cards remain non-navigable but no longer behave like dead controls. | Story Browser | ✅ Complete |
 | **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
@@ -358,7 +358,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 
 | Area | Overall | Critical Issues | Should Fix |
 |---|---|---|---|
-| Learn Screen | ✅ Mostly complete | 0 | 5 |
+| Learn Screen | ✅ Mostly complete | 0 | 4 |
 | Lesson Screen | ✅ Mostly complete | 0 | 3 |
 | Practice Hub | ⚠️ Functional but fragile | 0 | 2 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
@@ -367,7 +367,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ⚠️ UX gap | 0 | 3 |
 
-**Total: 0 Must Fix · 15 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 14 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -381,16 +381,15 @@ None currently listed in this surface audit.
 
 1. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
 2. **Review session reveal model** — fallback cards now have recall guidance; decide whether the old self-assess flow should become a true flip/reveal model.
-3. **Review Banner + Practice Card duplication** — differentiate purpose or merge into one card.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-4. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
-5. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
-6. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
-7. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
-8. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-9. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+3. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
+4. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
+5. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
+6. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
+7. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
+8. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 
