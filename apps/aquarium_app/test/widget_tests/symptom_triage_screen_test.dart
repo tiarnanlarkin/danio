@@ -222,29 +222,34 @@ void main() {
     });
   });
 
-  testWidgets('canceling AI journal save confirmation does not write a log', (
-    tester,
-  ) async {
-    final storage = _SymptomTriageStorage(_tank());
+  testWidgets(
+    'canceling AI journal save confirmation does not write saved AI data',
+    (
+      tester,
+    ) async {
+      final prefs = await SharedPreferences.getInstance();
+      final storage = _SymptomTriageStorage(_tank());
 
-    await tester.pumpWidget(_wrap(storage: storage));
-    await tester.pump();
+      await tester.pumpWidget(_wrap(storage: storage, prefs: prefs));
+      await tester.pump();
 
-    await _generateDiagnosis(tester);
+      await _generateDiagnosis(tester);
 
-    await tester.tap(
-      find.widgetWithText(AppButton, 'Save to Journal').hitTestable(),
-    );
-    await tester.pumpAndSettle();
+      await tester.tap(
+        find.widgetWithText(AppButton, 'Save to Journal').hitTestable(),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text('Save AI Diagnosis?'), findsOneWidget);
+      expect(find.text('Save AI Diagnosis?'), findsOneWidget);
 
-    await tester.tap(find.text('Cancel'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
 
-    expect(storage.savedLogs, isEmpty);
-    expect(find.byType(SymptomTriageScreen), findsOneWidget);
-  });
+      expect(storage.savedLogs, isEmpty);
+      expect(prefs.getStringList('ai_interaction_history'), isNull);
+      expect(find.byType(SymptomTriageScreen), findsOneWidget);
+    },
+  );
 
   testWidgets('failed disclosure save does not request diagnosis', (
     tester,

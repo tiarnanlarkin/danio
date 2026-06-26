@@ -3996,7 +3996,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
 - Optional AI confirmation has started: Symptom Triage now asks before saving
   an AI-generated diagnosis to the tank journal, and Weekly Plan now asks
   before caching an AI-generated care plan. Focused widget coverage verifies
-  canceling those confirmations writes no journal log and leaves
+  canceling those confirmations writes no journal log, leaves
+  `ai_interaction_history` untouched for Symptom Triage, and leaves
   `weekly_plan_cache` empty. Remaining AI confirmation work is any future AI
   changes to tank data, tasks, and reminders.
 - Global search now has complete-local coverage for app destinations, tools,

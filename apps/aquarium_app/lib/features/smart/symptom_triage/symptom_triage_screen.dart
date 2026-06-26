@@ -190,20 +190,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         setState(() => _diagnosis += chunk);
       }
 
-      // Record rate limit & AI history.
+      // Record the used request immediately; saving AI result history happens
+      // only after the user confirms a journal save.
       rateLimiter.recordRequest(AIFeature.symptomTriage);
-      unawaited(
-        ref
-            .read(aiHistoryProvider.notifier)
-            .add(type: 'symptom_triage', summary: 'Triage: $symptoms')
-            .catchError((Object e, StackTrace st) {
-              logError(
-                'SymptomTriageScreen: failed to save AI history: $e',
-                stackTrace: st,
-                tag: 'SymptomTriageScreen',
-              );
-            }),
-      );
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _error = OpenAIUserMessages.timeout);
@@ -261,6 +250,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     try {
       final storage = ref.read(storageServiceProvider);
       await storage.saveLog(entry);
+      await _recordConfirmedAIHistory();
       if (!mounted) return;
       DanioSnackBar.show(context, 'Diagnosis saved to journal');
       Navigator.of(context).pop();
@@ -274,6 +264,26 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
       DanioSnackBar.warning(
         context,
         'Could not save to journal. Please try again.',
+      );
+    }
+  }
+
+  Future<void> _recordConfirmedAIHistory() async {
+    final symptoms = [
+      ..._selectedSymptoms,
+      if (_freeTextController.text.trim().isNotEmpty)
+        _freeTextController.text.trim(),
+    ].join(', ');
+
+    try {
+      await ref
+          .read(aiHistoryProvider.notifier)
+          .add(type: 'symptom_triage', summary: 'Triage: $symptoms');
+    } catch (e, st) {
+      logError(
+        'SymptomTriageScreen: failed to save confirmed AI history: $e',
+        stackTrace: st,
+        tag: 'SymptomTriageScreen',
       );
     }
   }
