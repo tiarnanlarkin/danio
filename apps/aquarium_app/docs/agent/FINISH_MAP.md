@@ -66,7 +66,7 @@ category.
 | Motion and haptics | In progress | Feeding pulse, reduced motion, and haptics preference integration exist. | Add purposeful motion to rewards, warnings, onboarding, and tank life only where it improves clarity. |
 | Performance | Not started | No formal complete-local performance target is recorded. | Define mid-range Android targets and measure startup, tab switching, tank animation, scrolling, and image loading. |
 | Optional AI providers | In progress | Optional AI setup names OpenAI as current BYO provider and disables other provider paths honestly. | Implement real non-OpenAI connectors before enabling those key paths. |
-| AI confirmation | In progress | Symptom Triage now requires confirmation before saving an AI-generated diagnosis to the tank journal. | Continue confirm-before-write coverage for AI changes to tank data, tasks, reminders, and care plans. |
+| AI confirmation | In progress | Symptom Triage journal saves and Weekly Plan care-plan cache saves now require confirmation before AI output becomes saved app data. | Continue confirm-before-write coverage for AI changes to tank data, tasks, and reminders. |
 | Premium AI path | Not started | Premium remains conceptual and must not appear as fake product behavior. | Design only after core app is excellent locally and real extra capability exists. |
 | Citations | In progress | Species/plant source trails and lesson references exist in limited form. | Add subtle source trails where they improve trust without damaging visual quality. |
 | Whole-app phone audit | Not started | Prior focused screenshots exist, but no current whole-app map is complete. | Run CL-QA-001 when phone device ownership is clear. |

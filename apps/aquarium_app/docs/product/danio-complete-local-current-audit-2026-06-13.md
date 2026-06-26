@@ -3670,10 +3670,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   setup-context nudge now uses readable light-card text colors. Remaining
   profile/preferences work is any final AI/provider walkthrough gaps.
 - Optional AI confirmation has started: Symptom Triage now asks before saving
-  an AI-generated diagnosis to the tank journal, and focused widget coverage
-  verifies canceling that confirmation writes no log. Remaining AI
-  confirmation work is any future AI changes to tank data, tasks, reminders,
-  and care plans.
+  an AI-generated diagnosis to the tank journal, and Weekly Plan now asks
+  before caching an AI-generated care plan. Focused widget coverage verifies
+  canceling those confirmations writes no journal log and leaves
+  `weekly_plan_cache` empty. Remaining AI confirmation work is any future AI
+  changes to tank data, tasks, and reminders.
 - Global search now has complete-local coverage for app destinations, tools,
   learning paths, guides, settings/privacy/backup, species, equipment,
   livestock, local logs, real Tank top-bar and More entry points, and

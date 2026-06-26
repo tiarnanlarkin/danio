@@ -173,7 +173,20 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         'generated_at': DateTime.now().toIso8601String(),
       });
 
-      rateLimiter.recordRequest(AIFeature.weeklyPlan);
+      unawaited(rateLimiter.recordRequest(AIFeature.weeklyPlan));
+      if (!mounted) return;
+      final confirmed = await showAppConfirmDialog(
+        context: context,
+        title: 'Save Weekly Plan?',
+        message:
+            'Save this AI-generated care plan so Danio can show it again '
+            'later? Review it first and adjust anything that does not match '
+            'your tank.',
+        confirmLabel: 'Save Plan',
+        cancelLabel: 'Cancel',
+      );
+      if (confirmed != true || !mounted) return;
+
       await ref.read(weeklyPlanProvider.notifier).save(plan);
       unawaited(
         ref
