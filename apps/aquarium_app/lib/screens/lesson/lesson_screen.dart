@@ -505,10 +505,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         logError('Notification scheduling failed: $e', tag: 'LessonScreen');
       }
 
-      // Check for achievements (fire-and-forget — see comment in original)
+      // Check achievements from profile state that has already been persisted.
       var unlockedAchievementCount = 0;
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
+        var achievementProfile = profile;
         final achievementChecker = ref.read(achievementCheckerProvider);
         final lessonQuiz = widget.lesson.quiz;
         final quizLen = lessonQuiz?.questions.length;
@@ -516,9 +517,19 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // PS-10 FIX: Increment persistent perfect-score counter
         if (isPerfect) {
-          unawaited(
-            ref.read(userProfileProvider.notifier).incrementPerfectScoreCount(),
-          );
+          try {
+            await ref
+                .read(userProfileProvider.notifier)
+                .incrementPerfectScoreCount();
+            achievementProfile =
+                ref.read(userProfileProvider).value ?? achievementProfile;
+          } catch (e, st) {
+            logError(
+              'Perfect score count save failed: $e',
+              stackTrace: st,
+              tag: 'LessonScreen',
+            );
+          }
         }
 
         // PS-11 FIX: Use actual elapsed time
@@ -527,32 +538,26 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             : widget.lesson.estimatedMinutes * 60;
 
         final todayKey = DateTime.now().toIso8601String().split('T')[0];
-        final todayLessons =
-            profile.completedLessons.where((id) {
-              final progress = profile.lessonProgress[id];
-              return progress != null &&
-                  progress.completedDate.toIso8601String().split('T')[0] ==
-                      todayKey;
-            }).length +
-            1;
-
-        final updatedPerfectScores = isPerfect
-            ? profile.perfectScoreCount + 1
-            : profile.perfectScoreCount;
+        final todayLessons = achievementProfile.completedLessons.where((id) {
+          final progress = achievementProfile.lessonProgress[id];
+          return progress != null &&
+              progress.completedDate.toIso8601String().split('T')[0] ==
+                  todayKey;
+        }).length;
 
         try {
           final results = await achievementChecker.checkAfterLesson(
-            lessonsCompleted: profile.completedLessons.length + 1,
-            currentStreak: profile.currentStreak,
-            totalXp: profile.totalXp,
-            perfectScores: updatedPerfectScores,
+            lessonsCompleted: achievementProfile.completedLessons.length,
+            currentStreak: achievementProfile.currentStreak,
+            totalXp: achievementProfile.totalXp,
+            perfectScores: achievementProfile.perfectScoreCount,
             lessonCompletedAt: DateTime.now(),
             lessonDuration: actualElapsedSeconds,
             lessonScore: quizLen != null
                 ? (_correctAnswers * 100 ~/ quizLen)
                 : 100,
             todayLessonsCompleted: todayLessons,
-            completedLessonIds: [...profile.completedLessons, widget.lesson.id],
+            completedLessonIds: achievementProfile.completedLessons,
             previousLastActivityDate: previousLastActivityDate,
             showCelebrations: false,
           );

@@ -2853,6 +2853,16 @@ CL-P1-009FW Achievement provider reset persistence boundary:
 - Focused provider coverage simulates a false `achievement_progress` removal
   and verifies visible progress remains intact.
 
+CL-P1-009FX Lesson completion achievement-stat persistence boundary:
+
+- Lesson completion now awaits the persistent perfect-score profile update
+  before achievement checks use the perfect-score count.
+- Achievement checks after lesson completion now use the already-persisted
+  completed-lesson list and count, rather than adding the current lesson again
+  after `completeLesson` has saved it.
+- Focused source-contract coverage guards against reintroducing unawaited
+  perfect-score saves or duplicate completed-lesson achievement stats.
+
 CL-P1-009FL DebugMenu profile-write action boundary:
 
 - DebugMenu now routes profile rewrites for Set XP, Set Streak, Reset Learning,
@@ -3955,7 +3965,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   JSON when reset removal fails. Gem and inventory reset helpers now reject
   false local preference removals before exposing reset success. Achievement
   provider resets now reject false progress removals before clearing visible
-  progress. Debug achievement reset now rejects failed progress/profile
+  progress. Lesson-completion achievement checks now use persisted
+  completed-lesson and perfect-score profile state rather than inferred
+  duplicate counts. Debug achievement reset now rejects failed progress/profile
   preference writes and restores progress if the profile write fails after
   progress removal.
   DebugMenu profile-write actions now reject false local `user_profile` saves
