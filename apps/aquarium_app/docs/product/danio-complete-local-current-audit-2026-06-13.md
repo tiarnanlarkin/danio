@@ -2328,6 +2328,10 @@ CL-P1-009DN Smart local cache persistence boundary:
   does not make completed optional-AI results feel broken.
 - Focused provider coverage verifies delayed and failed preference writes for
   AI history, weekly plan cache, anomaly creation, and anomaly dismissal.
+- Weekly Plan cache clearing now also waits for durable local
+  `weekly_plan_cache` removal before hiding the visible plan; failed removals
+  surface as errors and keep the existing plan visible instead of leaving a
+  stale cache that can reappear after restart.
 
 CL-P1-009DO Achievement lifecycle persistence boundary:
 

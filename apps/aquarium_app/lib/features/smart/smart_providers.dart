@@ -207,7 +207,15 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
     state = plan;
   }
 
-  void clear() {
+  Future<void> clear() async {
+    await _loadFuture;
+    final prefs = await ref.read(sharedPreferencesProvider.future);
+    if (prefs.containsKey(_key)) {
+      final removed = await prefs.remove(_key);
+      if (!removed) {
+        throw StateError('SharedPreferences returned false for $_key');
+      }
+    }
     state = null;
   }
 }

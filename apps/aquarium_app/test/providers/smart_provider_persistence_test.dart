@@ -31,6 +31,9 @@ class _DelayedSmartPrefs implements SharedPreferences {
   List<String>? getStringList(String key) => _delegate.getStringList(key);
 
   @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
   Future<bool> setString(String key, String value) {
     if (key == delayedKey) {
       return gate.future.then((saved) async {
@@ -53,7 +56,15 @@ class _DelayedSmartPrefs implements SharedPreferences {
   }
 
   @override
-  Future<bool> remove(String key) => _delegate.remove(key);
+  Future<bool> remove(String key) {
+    if (key == delayedKey) {
+      return gate.future.then((removed) async {
+        if (!removed) return false;
+        return _delegate.remove(key);
+      });
+    }
+    return _delegate.remove(key);
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -75,6 +86,13 @@ Future<void> _waitForAnomalyHistoryLoad(
 }) async {
   for (var i = 0; i < 20; i += 1) {
     if (container.read(anomalyHistoryProvider).length == expectedLength) return;
+    await Future<void>.delayed(Duration.zero);
+  }
+}
+
+Future<void> _waitForWeeklyPlanLoad(ProviderContainer container) async {
+  for (var i = 0; i < 20; i += 1) {
+    if (container.read(weeklyPlanProvider) != null) return;
     await Future<void>.delayed(Duration.zero);
   }
 }
@@ -219,6 +237,80 @@ void main() {
         await expectLater(save, throwsA(isA<StateError>()));
         expect(container.read(weeklyPlanProvider), isNull);
         expect(prefs.getString('weekly_plan_cache'), isNull);
+      },
+    );
+
+    test(
+      'weekly plan clear waits for cache removal before hiding plan',
+      () async {
+        final plan = _weeklyPlan();
+        SharedPreferences.setMockInitialValues({
+          'weekly_plan_cache': jsonEncode(plan.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final removeGate = Completer<bool>();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _DelayedSmartPrefs(
+                delegate: prefs,
+                delayedKey: 'weekly_plan_cache',
+                gate: removeGate,
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final subscription = container.listen(weeklyPlanProvider, (_, __) {});
+        addTearDown(subscription.close);
+        await _waitForWeeklyPlanLoad(container);
+
+        final clear = container.read(weeklyPlanProvider.notifier).clear();
+        await Future<void>.delayed(Duration.zero);
+
+        expect(container.read(weeklyPlanProvider), isNotNull);
+        expect(prefs.getString('weekly_plan_cache'), isNotNull);
+
+        removeGate.complete(true);
+        await clear;
+
+        expect(container.read(weeklyPlanProvider), isNull);
+        expect(prefs.getString('weekly_plan_cache'), isNull);
+      },
+    );
+
+    test(
+      'weekly plan clear surfaces cache removal failures without hiding plan',
+      () async {
+        final plan = _weeklyPlan();
+        SharedPreferences.setMockInitialValues({
+          'weekly_plan_cache': jsonEncode(plan.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final removeGate = Completer<bool>();
+        final container = ProviderContainer(
+          overrides: [
+            sharedPreferencesProvider.overrideWith((ref) async {
+              return _DelayedSmartPrefs(
+                delegate: prefs,
+                delayedKey: 'weekly_plan_cache',
+                gate: removeGate,
+              );
+            }),
+          ],
+        );
+        addTearDown(container.dispose);
+        final subscription = container.listen(weeklyPlanProvider, (_, __) {});
+        addTearDown(subscription.close);
+        await _waitForWeeklyPlanLoad(container);
+
+        final clear = container.read(weeklyPlanProvider.notifier).clear();
+        await Future<void>.delayed(Duration.zero);
+        removeGate.complete(false);
+
+        await expectLater(clear, throwsA(isA<StateError>()));
+        expect(container.read(weeklyPlanProvider), isNotNull);
+        expect(prefs.getString('weekly_plan_cache'), isNotNull);
       },
     );
 
