@@ -278,6 +278,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EV rolls back single livestock add records when the readable
   timeline log save fails, preventing partial livestock without matching local
   journal evidence.
+- CL-P1-009EW keeps Quick Water Test logs saved when only the secondary
+  profile-XP write fails, showing progress-specific feedback instead of a
+  false water-test save failure.
 
 ## 7. P2 Work - Presentation System
 

@@ -2606,6 +2606,17 @@ CL-P1-009EV Single livestock add timeline-log rollback:
 - Focused widget coverage simulates a failed add-log save and verifies no
   livestock or log records remain.
 
+CL-P1-009EW Quick Water Test progress boundary:
+
+- Quick Water Test now treats the local water-test log save as the durable
+  aquarium action and handles the follow-up profile-XP write separately.
+- If XP persistence fails after the water-test log is saved, the sheet still
+  closes and reports that the water test was logged while the XP could not be
+  saved.
+- Focused widget coverage simulates a failed `user_profile` write after saving
+  a quick water-test log and verifies the log remains saved without false
+  water-test failure feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3586,8 +3597,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   undo durable equipment adds. Livestock adds now keep durable livestock and
   timeline-log saves when only secondary progress writes fail. Bulk livestock
   adds and single livestock adds now roll back partial livestock/log records
-  when timeline-log persistence fails. Remaining backup/data work is broader
-  edit/delete/undo coverage and restore/migration walkthrough QA.
+  when timeline-log persistence fails. Quick Water Test now keeps saved
+  water-test logs when only the secondary profile-XP write fails. Remaining
+  backup/data work is broader edit/delete/undo coverage and restore/migration
+  walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

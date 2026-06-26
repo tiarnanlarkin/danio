@@ -131,15 +131,34 @@ class _QuickWaterTestSheetState extends ConsumerState<_QuickWaterTestSheet> {
       await storage.saveLog(log);
       ref.invalidate(logsProvider(widget.tank.id));
       ref.invalidate(allLogsProvider(widget.tank.id));
-      await ref.read(userProfileProvider.notifier).addXp(10);
+
+      var xpSaved = true;
+      try {
+        await ref.read(userProfileProvider.notifier).addXp(10);
+      } catch (e, st) {
+        xpSaved = false;
+        logError(
+          'HomeScreen: quick water test XP save failed after log save: $e',
+          stackTrace: st,
+          tag: 'HomeScreen',
+        );
+      }
+
       if (!mounted) return;
       FocusManager.instance.primaryFocus?.unfocus();
       Navigator.maybePop(context);
       await Future<void>.delayed(AppDurations.medium4);
-      AppFeedback.showSuccessViaMessenger(
-        widget.messenger,
-        'Water test logged! +10 XP',
-      );
+      if (xpSaved) {
+        AppFeedback.showSuccessViaMessenger(
+          widget.messenger,
+          'Water test logged! +10 XP',
+        );
+      } else {
+        AppFeedback.showNeutralViaMessenger(
+          widget.messenger,
+          'Water test logged. XP could not be saved.',
+        );
+      }
     } catch (e, st) {
       logError(
         'HomeScreen: quick water test save failed: $e',
