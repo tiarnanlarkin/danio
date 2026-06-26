@@ -156,6 +156,23 @@ Iterable<MapEntry<String, String>> _plantStrings(PlantInfo plant) sync* {
   }
 }
 
+String _lessonSearchText(Lesson lesson) {
+  final buffer = StringBuffer()
+    ..write(lesson.id)
+    ..write(' ')
+    ..write(lesson.title)
+    ..write(' ')
+    ..write(lesson.description);
+
+  for (final entry in _lessonStrings(lesson)) {
+    buffer
+      ..write(' ')
+      ..write(entry.value);
+  }
+
+  return _normalise(buffer.toString());
+}
+
 void _expectNoBannedCopy(Iterable<MapEntry<String, String>> entries) {
   for (final entry in entries) {
     final value = _normalise(entry.value);
@@ -280,6 +297,40 @@ void main() {
         reason: 'Content should cite a broad set of care references',
       );
     });
+
+    test(
+      'emergency lessons keep a clear professional escalation boundary',
+      () {
+        final emergencyLessons = _allLessons.where((lesson) {
+          final keyText = _normalise(
+            '${lesson.id} ${lesson.title} ${lesson.description}',
+          );
+          return keyText.contains('emergency') || keyText.contains('distress');
+        }).toList();
+
+        expect(
+          emergencyLessons,
+          isNotEmpty,
+          reason: 'Expected at least one emergency lesson in the catalog',
+        );
+
+        for (final lesson in emergencyLessons) {
+          final text = _lessonSearchText(lesson);
+          expect(
+            text,
+            anyOf(contains('aquatic vet'), contains('veterinarian')),
+            reason:
+                'Emergency lesson ${lesson.id} must tell users when to seek professional help',
+          );
+          expect(
+            text,
+            contains('educational'),
+            reason:
+                'Emergency lesson ${lesson.id} must keep Danio positioned as educational guidance',
+          );
+        }
+      },
+    );
 
     test('species database is broad, unique, and has sane care ranges', () {
       final species = SpeciesDatabase.species;

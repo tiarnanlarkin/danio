@@ -51,6 +51,11 @@ final troubleshootingPath = LearningPath(
           content: 'Read the Signs Fast',
         ),
         const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Danio is educational guidance, not a substitute for professional diagnosis. If several fish are affected, symptoms keep worsening, or you suspect poisoning, injury, or disease, contact an aquatic vet or experienced aquatic professional urgently.',
+        ),
+        const LessonSection(
           type: LessonSectionType.text,
           content:
               'Aquarium emergencies escalate fast. A fish that\'s in distress at 8am can be dead by noon. Knowing which symptoms mean what — and what to do first — is the difference between losing one fish and losing the tank. Don\'t panic. But don\'t wait.',
@@ -598,6 +603,11 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.heading,
           content: 'Temperature: The Invisible Emergency',
+        ),
+        const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Danio is educational guidance, not a substitute for professional diagnosis. If fish remain collapsed, gasping, burned, or unresponsive after gradual correction, contact an aquatic vet or experienced aquatic professional urgently.',
         ),
         const LessonSection(
           type: LessonSectionType.text,

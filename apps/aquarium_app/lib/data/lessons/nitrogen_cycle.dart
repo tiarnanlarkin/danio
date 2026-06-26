@@ -599,6 +599,11 @@ final nitrogenCyclePath = LearningPath(
               'Time is critical! Ammonia above 0.25 ppm stresses fish, and above 1 ppm can kill within hours. Nitrite above 0.5 ppm requires immediate action. Act fast — do a large water change and add a water conditioner like Seachem Prime.',
         ),
         const LessonSection(
+          type: LessonSectionType.warning,
+          content:
+              'Danio is educational guidance, not a substitute for professional diagnosis. If fish are collapsing, bleeding, gasping after water correction, or several animals are affected, contact an aquatic vet or experienced aquatic professional urgently.',
+        ),
+        const LessonSection(
           type: LessonSectionType.heading,
           content: 'Emergency Action Plan',
         ),
