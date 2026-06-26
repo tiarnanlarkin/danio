@@ -2777,6 +2777,16 @@ CL-P1-009FL DebugMenu profile-write action boundary:
 - Focused DebugMenu widget coverage drives each visible action and verifies the
   persisted profile JSON remains unchanged when the local write returns false.
 
+CL-P1-009FM Debug species reset persistence boundary:
+
+- Debug `Reset Species to Defaults` now checks the local
+  `unlocked_species_v1` write before invalidating species unlock state or
+  showing success.
+- False unlock writes show the existing reset-species error feedback and leave
+  the previous persisted species JSON unchanged.
+- Focused DebugMenu widget coverage drives the visible reset action with a
+  false local write.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3773,8 +3783,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   achievement reset now rejects failed progress/profile preference writes and
   restores progress if the profile write fails after progress removal.
   DebugMenu profile-write actions now reject false local `user_profile` saves
-  before showing success. Tank returning-user prompts now check failed
-  dismissal seen-flag writes, and all current OpenAI request
+  before showing success. Debug species reset now rejects false local
+  unlock-list writes before showing success. Tank returning-user prompts now
+  check failed dismissal seen-flag writes, and all current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining

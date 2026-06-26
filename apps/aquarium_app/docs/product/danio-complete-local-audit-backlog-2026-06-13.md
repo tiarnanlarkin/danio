@@ -322,6 +322,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FL makes DebugMenu profile-write actions for XP, streak, learning
   reset, gamification reset, and complete-all-lessons reject false
   `user_profile` saves before showing success.
+- CL-P1-009FM makes Debug species reset reject false
+  `unlocked_species_v1` writes before showing success.
 
 ## 7. P2 Work - Presentation System
 

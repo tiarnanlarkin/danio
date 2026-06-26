@@ -590,5 +590,37 @@ void main() {
         },
       );
     }
+
+    testWidgets('reset species reports failed local unlock writes', (
+      tester,
+    ) async {
+      const originalSpeciesJson = '["betta"]';
+      SharedPreferences.setMockInitialValues({
+        'unlocked_species_v1': originalSpeciesJson,
+      });
+      final prefs = await SharedPreferences.getInstance();
+
+      await tester.pumpWidget(
+        _wrap(
+          sharedPreferences: _FailingPrefs(
+            prefs,
+            shouldFailSetString: (key, _) => key == 'unlocked_species_v1',
+          ),
+        ),
+      );
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('Reset Species to Defaults'),
+        500,
+      );
+      await tester.ensureVisible(find.text('Reset Species to Defaults'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Reset Species to Defaults'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Reset species failed'), findsOneWidget);
+      expect(prefs.getString('unlocked_species_v1'), originalSpeciesJson);
+    });
   });
 }

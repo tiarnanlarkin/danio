@@ -1381,7 +1381,8 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
   ) async {
     try {
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.setString(
+      await _setStringOrThrow(
+        prefs,
         'unlocked_species_v1',
         jsonEncode(defaultUnlockedSpecies),
       );
