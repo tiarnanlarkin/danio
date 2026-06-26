@@ -65,7 +65,19 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     );
 
     if (accepted == true) {
-      await AiDisclosurePreferences.markAccepted(prefs);
+      try {
+        await AiDisclosurePreferences.markAccepted(prefs);
+      } catch (e, st) {
+        logError(
+          'WeeklyPlanScreen: failed to save AI disclosure acceptance: $e',
+          stackTrace: st,
+          tag: 'WeeklyPlanScreen',
+        );
+        if (mounted) {
+          setState(() => _error = 'Couldn\'t save AI disclosure. Try again.');
+        }
+        return false;
+      }
       return true;
     }
     return false;

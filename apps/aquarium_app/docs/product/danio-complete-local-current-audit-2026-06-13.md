@@ -2666,6 +2666,15 @@ CL-P1-009FA Stage sheet hint preference boundary:
 - Focused stage-panel coverage verifies that hint persistence goes through the
   shared provider rather than a direct `SharedPreferences.getInstance()` call.
 
+CL-P1-009FB Optional AI disclosure acceptance boundary:
+
+- Weekly Plan now catches failed local saves of
+  `openai_disclosure_accepted`, shows normal retry feedback, and returns before
+  any OpenAI request is made.
+- Focused widget coverage injects a false `setBool` result and verifies that
+  the disclosure flag stays unset, `weekly_plan_cache` stays empty, and the
+  fake OpenAI service is not called.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3654,7 +3663,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   fails. The energy explainer now marks itself seen only after the dialog is
   dismissed, and does not consume the prompt if the lesson screen unmounts
   before it can be shown. The Tank stage sheet first-use hint now persists
-  through the shared preferences provider. Remaining
+  through the shared preferences provider, and Weekly Plan stops before sending
+  any Optional AI request when the disclosure acceptance flag cannot be saved.
+  Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience

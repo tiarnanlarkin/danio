@@ -291,6 +291,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FA routes the Tank stage sheet first-use hint through the shared
   preferences provider so hint persistence uses the same local boundary as the
   rest of the app.
+- CL-P1-009FB stops Weekly Plan before any Optional AI request when the local
+  AI disclosure acceptance flag cannot be saved, keeping the flag unset and the
+  care-plan cache empty with normal retry feedback.
 
 ## 7. P2 Work - Presentation System
 
