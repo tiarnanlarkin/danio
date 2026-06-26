@@ -2549,6 +2549,14 @@ CL-P1-009EP Add Log edit reward boundary:
 - Focused widget coverage verifies an existing water-change edit preserves the
   saved profile XP and closes the edit route after saving.
 
+CL-P1-009EQ Tank Settings saved-edit close boundary:
+
+- Successful Tank Settings edits now mark the form as saved before closing, so
+  the dirty-form guard does not leave a durably saved edit route open.
+- Focused widget coverage edits a tank name through a pushed settings route,
+  verifies the local tank was saved, and verifies the settings screen closes
+  without showing the unsaved-changes prompt.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3522,9 +3530,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   files when tank data import does not commit. Reminder and Cost Tracker
   preference writes now reject false local save results with normal rollback
   feedback. Add Log edits now update existing logs without duplicate
-  reward/progress side effects and close the saved edit route cleanly. Remaining
-  backup/data work is broader edit/delete/undo coverage and restore/migration
-  walkthrough QA.
+  reward/progress side effects and close the saved edit route cleanly. Tank
+  Settings saved edits now close without unsaved-prompt loops after the durable
+  local tank update. Remaining backup/data work is broader edit/delete/undo
+  coverage and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

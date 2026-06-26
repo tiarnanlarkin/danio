@@ -44,6 +44,34 @@ Widget _wrap() {
   );
 }
 
+Widget _wrapWithLauncher(InMemoryStorageService storage) {
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(storage),
+      tankProvider.overrideWith((ref, tankId) => storage.getTank(tankId)),
+    ],
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        const TankSettingsScreen(tankId: _fakeTankId),
+                  ),
+                );
+              },
+              child: const Text('Open settings'),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 Widget _wrapNotFound() {
   final memStorage = InMemoryStorageService();
   return ProviderScope(
@@ -153,6 +181,31 @@ void main() {
         padding.bottom,
         greaterThanOrEqualTo(DanioBottomDock.contentClearance),
       );
+    });
+
+    testWidgets('successful save closes without dirty-change prompt', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_fakeTank());
+
+      await tester.pumpWidget(_wrapWithLauncher(storage));
+      await tester.tap(find.text('Open settings'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'My Test Tank'),
+        'Updated Tank',
+      );
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      final savedTank = await storage.getTank(_fakeTankId);
+      expect(savedTank?.name, 'Updated Tank');
+      expect(find.byType(TankSettingsScreen), findsNothing);
+      expect(find.text('Unsaved Changes'), findsNothing);
+      expect(find.text('Open settings'), findsOneWidget);
     });
 
     testWidgets('shows not found message when tank is null', (tester) async {

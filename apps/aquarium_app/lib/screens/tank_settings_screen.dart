@@ -26,6 +26,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isSaving = false;
+  bool _saveCompleted = false;
 
   // Local editable state
   bool _initialized = false;
@@ -84,7 +85,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         }
 
         return PopScope(
-          canPop: false,
+          canPop: _saveCompleted,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
             if (!_hasUnsavedChanges(tank)) {
@@ -391,7 +392,11 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       await actions.updateTank(updated);
       if (mounted) {
         AppFeedback.showSuccess(context, 'Tank updated.');
-        Navigator.maybePop(context);
+        setState(() => _saveCompleted = true);
+        final navigator = Navigator.of(context);
+        if (navigator.canPop()) {
+          navigator.pop();
+        }
       }
     } catch (e, st) {
       logError(

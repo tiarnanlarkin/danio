@@ -260,6 +260,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EP makes Add Log edits save the existing local log without awarding
   duplicate XP/streak/achievement progress, replaying new-entry visual effects,
   or leaving the saved edit form open behind the dirty-form guard.
+- CL-P1-009EQ makes successful Tank Settings edits mark the form as saved before
+  closing so durable tank updates are not trapped behind the unsaved-changes
+  prompt.
 
 ## 7. P2 Work - Presentation System
 
