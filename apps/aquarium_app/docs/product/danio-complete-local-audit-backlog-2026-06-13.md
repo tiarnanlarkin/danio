@@ -335,6 +335,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FQ makes the Settings theme picker wait for local `theme_mode`
   persistence before closing, keeping the picker open with retry feedback when
   the save fails.
+- CL-P1-009FR makes Settings Day/Night Ambiance and Haptic Feedback toggles
+  show retry feedback while preserving previous switch state when their local
+  preference saves fail.
 
 ## 7. P2 Work - Presentation System
 

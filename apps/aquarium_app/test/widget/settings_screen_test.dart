@@ -815,6 +815,39 @@ void main() {
 
       expect(tester.widget<SwitchListTile>(switchFinder).value, !initial);
     });
+
+    testWidgets('failed save keeps value with retry feedback', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'ambient_lighting_enabled': true,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetBoolPrefs(
+        prefs,
+        'ambient_lighting_enabled',
+      );
+
+      await tester.pumpWidget(_wrap(const SettingsScreen(), prefs: falsePrefs));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Day/Night Ambiance'), 500.0);
+      final switchFinder = find.ancestor(
+        of: find.text('Day/Night Ambiance'),
+        matching: find.byType(SwitchListTile),
+      );
+      await tester.ensureVisible(switchFinder);
+      await tester.pump();
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+      expect(prefs.getBool('ambient_lighting_enabled'), isTrue);
+      expect(
+        find.text("Couldn't update day/night ambiance. Try again."),
+        findsOneWidget,
+      );
+    });
   });
 
   group('_HapticFeedbackToggle', () {
@@ -845,6 +878,36 @@ void main() {
       await tester.tap(switchFinder);
       await tester.pumpAndSettle();
       expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+    });
+
+    testWidgets('failed save keeps value with retry feedback', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'haptic_feedback_enabled': true,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetBoolPrefs(prefs, 'haptic_feedback_enabled');
+
+      await tester.pumpWidget(_wrap(const SettingsScreen(), prefs: falsePrefs));
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Haptic Feedback'), 500.0);
+      final switchFinder = find.ancestor(
+        of: find.text('Haptic Feedback'),
+        matching: find.byType(SwitchListTile),
+      );
+      await tester.ensureVisible(switchFinder);
+      await tester.pump();
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(switchFinder).value, isTrue);
+      expect(prefs.getBool('haptic_feedback_enabled'), isTrue);
+      expect(
+        find.text("Couldn't update haptic feedback. Try again."),
+        findsOneWidget,
+      );
     });
   });
 

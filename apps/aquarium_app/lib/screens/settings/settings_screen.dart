@@ -876,8 +876,18 @@ class _AmbientLightingToggle extends ConsumerWidget {
       title: const Text('Day/Night Ambiance'),
       subtitle: const Text('Subtle lighting based on time of day'),
       value: enabled,
-      onChanged: (value) =>
-          ref.read(settingsProvider.notifier).setAmbientLightingEnabled(value),
+      onChanged: (value) async {
+        final saved = await ref
+            .read(settingsProvider.notifier)
+            .setAmbientLightingEnabled(value);
+        if (!context.mounted) return;
+        if (!saved) {
+          AppFeedback.showError(
+            context,
+            'Couldn\'t update day/night ambiance. Try again.',
+          );
+        }
+      },
     );
   }
 }
@@ -895,8 +905,18 @@ class _HapticFeedbackToggle extends ConsumerWidget {
       title: const Text('Haptic Feedback'),
       subtitle: const Text('Vibration for important interactions'),
       value: enabled,
-      onChanged: (value) =>
-          ref.read(settingsProvider.notifier).setHapticFeedbackEnabled(value),
+      onChanged: (value) async {
+        final saved = await ref
+            .read(settingsProvider.notifier)
+            .setHapticFeedbackEnabled(value);
+        if (!context.mounted) return;
+        if (!saved) {
+          AppFeedback.showError(
+            context,
+            'Couldn\'t update haptic feedback. Try again.',
+          );
+        }
+      },
     );
   }
 }

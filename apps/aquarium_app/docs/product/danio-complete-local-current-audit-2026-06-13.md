@@ -2826,6 +2826,16 @@ CL-P1-009FQ Settings theme-picker persistence boundary:
 - Focused Settings widget coverage drives the Dark option with a simulated
   failed `theme_mode` write.
 
+CL-P1-009FR Settings ambient/haptic toggle feedback boundary:
+
+- Day/Night Ambiance and Haptic Feedback toggles now await their local
+  preference save result before treating the tap as handled.
+- Failed `ambient_lighting_enabled` and `haptic_feedback_enabled` writes keep
+  the previous switch value and show retry feedback instead of failing
+  silently.
+- Focused Settings widget coverage drives both toggles with simulated false
+  local writes.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
