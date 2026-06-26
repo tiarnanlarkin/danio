@@ -148,6 +148,18 @@ class _DeleteTaskFailsStorage implements StorageService {
   Future<void> saveTask(Task task) => _delegate.saveTask(task);
 }
 
+class _SaveTaskFailsStorage extends _DeleteTaskFailsStorage {
+  _SaveTaskFailsStorage(super._delegate) : super(failingTaskId: '');
+
+  @override
+  Future<void> deleteTask(String id) => _delegate.deleteTask(id);
+
+  @override
+  Future<void> saveTask(Task task) async {
+    throw StateError('task save failed');
+  }
+}
+
 class _SaveEquipmentFailsStorage implements StorageService {
   _SaveEquipmentFailsStorage(
     this._delegate, {
@@ -413,6 +425,40 @@ void main() {
       final equipment = await svc.getEquipmentForTank(tankId);
       expect(equipment.single.name, 'Sponge filter');
       expect(find.text('Sponge filter added.'), findsOneWidget);
+    });
+
+    testWidgets('failed maintenance-task sync rolls back new equipment', (
+      tester,
+    ) async {
+      const tankId = 'tank-equipment-add-task-failure';
+      final delegate = InMemoryStorageService();
+      final storage = _SaveTaskFailsStorage(delegate);
+      await delegate.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await _advance(tester);
+
+      await tester.tap(find.text('Add Equipment'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(find.byType(TextFormField).first, 'Sponge filter');
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Maintenance interval (days)'),
+        '30',
+      );
+      await tester.tap(find.text('Add').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(await delegate.getEquipmentForTank(tankId), isEmpty);
+      expect(await delegate.getTasksForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t do that. Give it another go!'),
+        findsOneWidget,
+      );
+      expect(find.text('Sponge filter added.'), findsNothing);
     });
   });
 

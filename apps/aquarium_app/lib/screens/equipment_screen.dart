@@ -922,6 +922,8 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
     }
 
     setState(() => _isSaving = true);
+    Equipment? pendingEquipment;
+    var equipmentSaved = false;
 
     try {
       final storage = widget.ref.read(storageServiceProvider);
@@ -943,8 +945,10 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
         createdAt: widget.existing?.createdAt ?? now,
         updatedAt: now,
       );
+      pendingEquipment = equipment;
 
       await storage.saveEquipment(equipment);
+      equipmentSaved = true;
 
       // Create/update (or remove) the auto maintenance task.
       await _syncEquipmentMaintenanceTask(storage, equipment);
@@ -987,6 +991,25 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
         stackTrace: st,
         tag: 'EquipmentScreen',
       );
+      if (equipmentSaved && pendingEquipment != null) {
+        final storage = widget.ref.read(storageServiceProvider);
+        try {
+          final original = widget.existing;
+          if (original != null) {
+            await storage.saveEquipment(original);
+          } else {
+            await storage.deleteEquipment(pendingEquipment.id);
+          }
+        } catch (rollbackError, rollbackStack) {
+          logError(
+            'EquipmentScreen: equipment save rollback failed: $rollbackError',
+            stackTrace: rollbackStack,
+            tag: 'EquipmentScreen',
+          );
+        }
+      }
+      widget.ref.invalidate(equipmentProvider(widget.tankId));
+      widget.ref.invalidate(tasksProvider(widget.tankId));
       if (mounted) {
         AppFeedback.showError(
           context,

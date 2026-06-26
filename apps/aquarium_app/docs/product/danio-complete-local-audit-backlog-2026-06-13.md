@@ -263,6 +263,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EQ makes successful Tank Settings edits mark the form as saved before
   closing so durable tank updates are not trapped behind the unsaved-changes
   prompt.
+- CL-P1-009ER rolls back newly saved equipment when auto maintenance-task sync
+  fails during add, preventing the equipment list from showing a partial add
+  after the user sees failure feedback.
 
 ## 7. P2 Work - Presentation System
 

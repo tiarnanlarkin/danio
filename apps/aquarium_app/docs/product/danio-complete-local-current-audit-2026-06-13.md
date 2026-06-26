@@ -2557,6 +2557,15 @@ CL-P1-009EQ Tank Settings saved-edit close boundary:
   verifies the local tank was saved, and verifies the settings screen closes
   without showing the unsaved-changes prompt.
 
+CL-P1-009ER Equipment add maintenance-task rollback:
+
+- Adding equipment with a maintenance interval now rolls back the newly saved
+  equipment record if the auto maintenance-task save fails.
+- The add sheet keeps normal failure feedback and does not show the success
+  message for the partial add.
+- Focused widget coverage simulates a failed task save, verifies no
+  equipment/task records remain, and checks the retry feedback.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3532,8 +3541,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   feedback. Add Log edits now update existing logs without duplicate
   reward/progress side effects and close the saved edit route cleanly. Tank
   Settings saved edits now close without unsaved-prompt loops after the durable
-  local tank update. Remaining backup/data work is broader edit/delete/undo
-  coverage and restore/migration walkthrough QA.
+  local tank update. Equipment adds now roll back partial equipment records when
+  maintenance-task sync fails. Remaining backup/data work is broader
+  edit/delete/undo coverage and restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar
