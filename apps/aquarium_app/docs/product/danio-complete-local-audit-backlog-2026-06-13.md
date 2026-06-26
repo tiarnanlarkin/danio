@@ -294,6 +294,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FB stops Weekly Plan before any Optional AI request when the local
   AI disclosure acceptance flag cannot be saved, keeping the flag unset and the
   care-plan cache empty with normal retry feedback.
+- CL-P1-009FC stops Symptom Triage before any Optional AI diagnosis stream when
+  the local AI disclosure acceptance flag cannot be saved, keeping the flag
+  unset with normal retry feedback.
 
 ## 7. P2 Work - Presentation System
 

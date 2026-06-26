@@ -9,10 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:danio/features/smart/ai_disclosure_preferences.dart';
 import 'package:danio/features/smart/symptom_triage/symptom_triage_screen.dart';
 import 'package:danio/models/models.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_provider.dart';
+import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/openai_service.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/widgets/core/app_button.dart';
@@ -21,6 +23,8 @@ import 'package:danio/widgets/offline_indicator.dart';
 class _FakeOpenAIService extends OpenAIService {
   _FakeOpenAIService()
     : super(client: MockClient((request) async => http.Response('{}', 200)));
+
+  int streamCalls = 0;
 
   @override
   Future<bool> isConfiguredAsync() async => true;
@@ -32,8 +36,56 @@ class _FakeOpenAIService extends OpenAIService {
     double temperature = 0.7,
     int? maxTokens,
   }) async* {
+    streamCalls += 1;
     yield 'Likely water quality stress. Test ammonia and nitrite first.';
   }
+}
+
+class _FalseSetBoolPrefs implements SharedPreferences {
+  _FalseSetBoolPrefs(this._delegate, this._failedKey);
+
+  final SharedPreferences _delegate;
+  final String _failedKey;
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  double? getDouble(String key) => _delegate.getDouble(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  List<String>? getStringList(String key) => _delegate.getStringList(key);
+
+  @override
+  Future<bool> setBool(String key, bool value) async {
+    if (key == _failedKey) return false;
+    return _delegate.setBool(key, value);
+  }
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> setStringList(String key, List<String> value) {
+    return _delegate.setStringList(key, value);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _SymptomTriageStorage implements StorageService {
@@ -108,12 +160,16 @@ class _SymptomTriageStorage implements StorageService {
 
 Widget _wrap({
   required _SymptomTriageStorage storage,
+  SharedPreferences? prefs,
+  _FakeOpenAIService? openAI,
 }) {
   return ProviderScope(
     overrides: [
+      if (prefs != null)
+        sharedPreferencesProvider.overrideWith((ref) async => prefs),
       storageServiceProvider.overrideWithValue(storage),
       tanksProvider.overrideWith((ref) async => [storage.tank]),
-      openAIServiceProvider.overrideWithValue(_FakeOpenAIService()),
+      openAIServiceProvider.overrideWithValue(openAI ?? _FakeOpenAIService()),
       openAIConfiguredProvider.overrideWith((ref) async => true),
       isOnlineProvider.overrideWithValue(true),
     ],
@@ -135,7 +191,7 @@ Tank _tank() {
   );
 }
 
-Future<void> _generateDiagnosis(WidgetTester tester) async {
+Future<void> _startDiagnosisFromFirstStep(WidgetTester tester) async {
   await tester.tap(find.text('White spots'));
   await tester.pump();
 
@@ -146,6 +202,10 @@ Future<void> _generateDiagnosis(WidgetTester tester) async {
     find.widgetWithText(AppButton, 'Get Diagnosis').hitTestable(),
   );
   await tester.pumpAndSettle();
+}
+
+Future<void> _generateDiagnosis(WidgetTester tester) async {
+  await _startDiagnosisFromFirstStep(tester);
 
   expect(
     find.text('Likely water quality stress. Test ammonia and nitrite first.'),
@@ -184,5 +244,37 @@ void main() {
 
     expect(storage.savedLogs, isEmpty);
     expect(find.byType(SymptomTriageScreen), findsOneWidget);
+  });
+
+  testWidgets('failed disclosure save does not request diagnosis', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final failingPrefs = _FalseSetBoolPrefs(
+      prefs,
+      AiDisclosurePreferences.acceptedKey,
+    );
+    final storage = _SymptomTriageStorage(_tank());
+    final openAI = _FakeOpenAIService();
+
+    await tester.pumpWidget(
+      _wrap(storage: storage, prefs: failingPrefs, openAI: openAI),
+    );
+    await tester.pump();
+
+    await _startDiagnosisFromFirstStep(tester);
+
+    expect(find.text('OpenAI Data Disclosure'), findsOneWidget);
+
+    await tester.tap(find.text('I Understand'));
+    await tester.pumpAndSettle();
+
+    expect(openAI.streamCalls, 0);
+    expect(prefs.getBool(AiDisclosurePreferences.acceptedKey), isNull);
+    expect(
+      find.text('Couldn\'t save AI disclosure. Try again.'),
+      findsOneWidget,
+    );
   });
 }

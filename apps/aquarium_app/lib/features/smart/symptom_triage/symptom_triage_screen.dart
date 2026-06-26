@@ -92,7 +92,22 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     );
 
     if (accepted == true) {
-      await AiDisclosurePreferences.markAccepted(prefs);
+      try {
+        await AiDisclosurePreferences.markAccepted(prefs);
+      } catch (e, st) {
+        logError(
+          'SymptomTriageScreen: failed to save AI disclosure acceptance: $e',
+          stackTrace: st,
+          tag: 'SymptomTriageScreen',
+        );
+        if (mounted) {
+          DanioSnackBar.warning(
+            context,
+            'Couldn\'t save AI disclosure. Try again.',
+          );
+        }
+        return false;
+      }
       return true;
     }
     return false;
