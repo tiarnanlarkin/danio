@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:danio/models/achievements.dart';
 import 'package:danio/models/learning.dart';
 import 'package:danio/models/spaced_repetition.dart';
+import 'package:danio/providers/achievement_provider.dart';
 import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/services/notification_scheduler.dart';
@@ -88,6 +90,18 @@ class _NoopReminderNotificationService implements ReminderNotificationService {
   }) async {}
 }
 
+class _NoopAchievementChecker extends AchievementChecker {
+  _NoopAchievementChecker(super.ref);
+
+  @override
+  Future<List<AchievementUnlockResult>> checkAfterReview({
+    required int reviewsCompleted,
+    required int reviewStreak,
+  }) async {
+    return const [];
+  }
+}
+
 Future<void> _waitForLoad(ProviderContainer container) async {
   for (var i = 0; i < 20; i++) {
     if (!container.read(spacedRepetitionProvider).isLoading) return;
@@ -107,6 +121,7 @@ ProviderContainer _containerWithFailingCardSaves(SharedPreferences prefs) {
       notificationServiceProvider.overrideWithValue(
         _NoopReminderNotificationService(),
       ),
+      achievementCheckerProvider.overrideWith(_NoopAchievementChecker.new),
     ],
   );
 }
@@ -123,6 +138,7 @@ ProviderContainer _containerWithFalseCardSaves(SharedPreferences prefs) {
       notificationServiceProvider.overrideWithValue(
         _NoopReminderNotificationService(),
       ),
+      achievementCheckerProvider.overrideWith(_NoopAchievementChecker.new),
     ],
   );
 }
@@ -139,6 +155,7 @@ ProviderContainer _containerWithFalseSavesForKey(
       notificationServiceProvider.overrideWithValue(
         _NoopReminderNotificationService(),
       ),
+      achievementCheckerProvider.overrideWith(_NoopAchievementChecker.new),
     ],
   );
 }
@@ -387,6 +404,38 @@ void main() {
       );
       expect(prefs.getString('spaced_repetition_sessions'), isNull);
       expect(prefs.getString('spaced_repetition_streak'), isNull);
+    },
+  );
+
+  test(
+    'completeSession preserves old streak when streak save returns false',
+    () async {
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithFalseSavesForKey(
+        prefs,
+        'spaced_repetition_streak',
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      await notifier.createCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      await notifier.startSession();
+
+      await notifier.completeSession();
+
+      final state = container.read(spacedRepetitionProvider);
+      final statsJson = prefs.getString('spaced_repetition_stats');
+      final statsData = jsonDecode(statsJson!) as Map<String, dynamic>;
+      expect(state.currentSession, isNull);
+      expect(state.stats.currentStreak, 0);
+      expect(state.errorMessage, contains("Couldn't update your streak"));
+      expect(prefs.getString('spaced_repetition_sessions'), isNotNull);
+      expect(prefs.getString('spaced_repetition_streak'), isNull);
+      expect(statsData['streak'], 0);
     },
   );
 }

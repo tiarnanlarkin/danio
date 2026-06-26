@@ -237,6 +237,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EI saves spaced-repetition session counts before streak/achievement
   side effects, keeping the active review session retryable when the local
   session-count write fails.
+- CL-P1-009EJ treats false spaced-repetition streak writes as local streak
+  update failures, preserving the previous visible streak and saving completed
+  review sessions without recording fake streak progress.
 
 ## 7. P2 Work - Presentation System
 

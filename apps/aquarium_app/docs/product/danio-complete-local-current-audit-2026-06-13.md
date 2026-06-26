@@ -2463,6 +2463,18 @@ CL-P1-009EI Review session count write boundary:
   write and verifies the session remains active, the session counter is unset,
   and no streak snapshot is written.
 
+CL-P1-009EJ Review streak write boundary:
+
+- Spaced-repetition streak updates now save `spaced_repetition_streak` through
+  the guarded local preference write path instead of ignoring false
+  `SharedPreferences` results.
+- Failed or false streak writes keep the previous visible streak and preserve a
+  normal retry warning while allowing the durable review session completion to
+  finish.
+- Focused provider coverage simulates a false `spaced_repetition_streak` write
+  and verifies the completed session remains saved without writing a fake
+  streak snapshot or fake persisted streak value.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

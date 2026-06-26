@@ -767,7 +767,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       // Update review streak after the session count is durable.
-      await _updateReviewStreak();
+      final streakUpdated = await _updateReviewStreak();
 
       // Route through the full achievement system so XP, gems, and dialogs fire
       await _ref
@@ -781,7 +781,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(
         clearSession: true,
         clearResolvedQuestions: true,
-        clearError: true,
+        clearError: streakUpdated,
       );
       await _saveData();
 
@@ -847,7 +847,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   }
 
   /// Update review streak after completing a session
-  Future<void> _updateReviewStreak() async {
+  Future<bool> _updateReviewStreak() async {
     try {
       final prefs = await _ref.read(sharedPreferencesProvider.future);
       final now = DateTime.now();
@@ -868,7 +868,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       // Check if we've already reviewed today
       if (lastReviewDate != null && _isSameDay(lastReviewDate, now)) {
-        return; // Streak already updated today
+        return true; // Streak already updated today
       }
 
       // Calculate new streak
@@ -892,7 +892,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         'currentStreak': newStreak,
         'lastReviewDate': now.toIso8601String(),
       };
-      await prefs.setString(_streakKey, jsonEncode(streakData));
+      await _setStringOrThrow(prefs, _streakKey, jsonEncode(streakData));
 
       // Update stats
       final updatedStats = ReviewStats.fromCards(
@@ -904,6 +904,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(stats: updatedStats);
 
       // Streak achievements checked via checkAfterReview() in completeSession()
+      return true;
     } catch (e, stackTrace) {
       // Don't break flow on streak update failure
       state = state.copyWith(
@@ -913,6 +914,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         'Failed to update review streak: $e\n$stackTrace',
         tag: 'SpacedRepetitionProvider',
       );
+      return false;
     }
   }
 
