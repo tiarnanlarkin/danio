@@ -3547,7 +3547,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
   action that mirrors quick start by writing a beginner freshwater profile,
   creating the populated `Sample Tank`, selecting the Tank tab, and persisting
   the onboarding-completed flag.
-  Remaining debug seed gaps are unlock edge cases, tablet, and AI/no-AI states.
+- Debug QA tools now include CL-QA-007D, a debug-only `Seed No-AI Smart Hub
+  State` action that removes any local Optional AI key/disclosure state and
+  creates `QA No-AI Smart Hub` with a high-nitrate water-test log, so local
+  Smart Hub risk/suggestion checks can be reviewed without fake AI readiness.
+  Remaining debug seed gaps are unlock edge cases, tablet, and any real
+  keyed-AI state only when it can avoid fake provider readiness.
 - Full-app tablet verification is not yet current, though Workshop, Lesson, and
   Learn now have focused phone/tablet or tablet readability layout guardrails.
 - Visual asset quality still has known older audit gaps.

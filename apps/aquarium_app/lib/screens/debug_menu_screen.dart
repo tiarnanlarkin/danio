@@ -78,6 +78,7 @@ import '../models/user_profile.dart';
 import '../models/spaced_repetition.dart';
 import '../data/species_unlock_map.dart';
 import '../utils/debug_state_overrides.dart';
+import '../features/smart/ai_disclosure_preferences.dart';
 import 'story/story_browser_screen.dart';
 
 class DebugMenuScreen extends ConsumerStatefulWidget {
@@ -264,6 +265,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         title: 'Seed Skipped Onboarding',
         subtitle: 'Creates quick-start profile, sample tank, and Tank tab',
         onTap: () => _seedSkippedOnboarding(context, ref),
+      ),
+      _DebugTile(
+        title: 'Seed No-AI Smart Hub State',
+        subtitle: 'Clears Optional AI and creates a local Smart risk tank',
+        onTap: () => _seedNoAiSmartHubState(context, ref),
       ),
       _DebugTile(
         title: 'Set Energy: Full (5)',
@@ -777,6 +783,97 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
     } catch (e) {
       if (context.mounted) {
         DanioSnackBar.error(context, 'Skipped onboarding seed failed: $e');
+      }
+    }
+  }
+
+  Future<void> _seedNoAiSmartHubState(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      const apiKeyPrefsKey = 'user_openai_api_key';
+
+      final prefs = await ref.read(sharedPreferencesProvider.future);
+      if (prefs.containsKey(apiKeyPrefsKey)) {
+        final removed = await prefs.remove(apiKeyPrefsKey);
+        if (!removed) {
+          throw StateError('Optional AI key removal returned false.');
+        }
+      }
+      await AiDisclosurePreferences.reset(prefs);
+
+      final storage = ref.read(storageServiceProvider);
+      const tankId = 'debug-no-ai-smart-tank';
+
+      final now = DateTime.now();
+      final tank = Tank(
+        id: tankId,
+        name: 'QA No-AI Smart Hub',
+        type: TankType.freshwater,
+        volumeLitres: 80,
+        startDate: now.subtract(const Duration(days: 75)),
+        targets: WaterTargets.freshwaterTropical(),
+        notes: 'Debug QA state for local Smart Hub checks without Optional AI.',
+        isDemoTank: true,
+        createdAt: now,
+        updatedAt: now,
+        sortOrder: 9996,
+      );
+      await storage.saveTank(tank);
+
+      await storage.saveLivestock(
+        Livestock(
+          id: 'debug-no-ai-smart-tetra',
+          tankId: tankId,
+          commonName: 'Neon Tetra',
+          scientificName: 'Paracheirodon innesi',
+          count: 8,
+          dateAdded: now.subtract(const Duration(days: 45)),
+          healthStatus: HealthStatus.healthy,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+
+      await storage.saveLog(
+        LogEntry(
+          id: 'debug-no-ai-smart-water-test',
+          tankId: tankId,
+          type: LogType.waterTest,
+          timestamp: now.subtract(const Duration(hours: 2)),
+          waterTest: WaterTestResults(
+            temperature: 25.5,
+            ph: 7,
+            ammonia: 0,
+            nitrite: 0,
+            nitrate: 45,
+          ),
+          title: 'Local Smart Hub high nitrate review',
+          notes:
+              'QA seed: Optional AI is cleared, but local Smart Hub should '
+              'still surface nitrate risk and care suggestions.',
+          createdAt: now,
+        ),
+      );
+
+      ref.invalidate(tanksProvider);
+      ref.invalidate(tankProvider(tankId));
+      ref.invalidate(livestockProvider(tankId));
+      ref.invalidate(logsProvider(tankId));
+      ref.invalidate(recentLogsProvider(tankId));
+      ref.invalidate(latestWaterTestProvider(tankId));
+      ref.invalidate(latestWaterTestEntryProvider(tankId));
+
+      if (context.mounted) {
+        DanioSnackBar.success(
+          context,
+          'No-AI Smart Hub state seeded: QA No-AI Smart Hub',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        DanioSnackBar.error(context, 'No-AI Smart seed failed: $e');
       }
     }
   }

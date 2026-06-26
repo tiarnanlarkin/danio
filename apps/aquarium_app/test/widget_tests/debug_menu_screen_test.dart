@@ -16,6 +16,7 @@ import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/services/tank_livestock_visual_service.dart';
 import 'package:danio/services/onboarding_service.dart';
+import 'package:danio/features/smart/ai_disclosure_preferences.dart';
 
 Widget _wrap({InMemoryStorageService? storage}) {
   SharedPreferences.setMockInitialValues({});
@@ -175,6 +176,40 @@ void main() {
       );
       expect(await storage.getLivestockForTank(demoTank.id), isNotEmpty);
       expect(await storage.getLogsForTank(demoTank.id), isNotEmpty);
+    });
+
+    testWidgets('seeds no-AI Smart Hub QA state without fake keys', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await clearStorage(storage);
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_openai_api_key', 'debug-fake-key');
+      await prefs.setBool(AiDisclosurePreferences.acceptedKey, true);
+
+      await tester.scrollUntilVisible(
+        find.text('Seed No-AI Smart Hub State'),
+        500,
+      );
+      await tester.tap(find.text('Seed No-AI Smart Hub State'));
+      await tester.pumpAndSettle();
+
+      expect(prefs.containsKey('user_openai_api_key'), isFalse);
+      expect(prefs.containsKey(AiDisclosurePreferences.acceptedKey), isFalse);
+
+      final tank = await storage.getTank('debug-no-ai-smart-tank');
+      expect(tank, isNotNull);
+      expect(tank!.name, 'QA No-AI Smart Hub');
+
+      final logs = await storage.getLogsForTank(tank.id);
+      final waterTest = logs.singleWhere(
+        (log) => log.type == LogType.waterTest,
+      );
+      expect(waterTest.waterTest?.nitrate, greaterThanOrEqualTo(40));
     });
   });
 }
