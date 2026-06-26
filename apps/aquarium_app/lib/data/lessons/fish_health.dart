@@ -557,7 +557,7 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '**Step 1: Identify the parasite.** Look closely at your fish — use a magnifying glass if needed. Visible worms? Anchor worm or lice. Invisible but fish are scratching? Likely flukes.\n\n**Step 2: Isolate affected fish** in a hospital tank for targeted treatment.\n\n**Step 3: Use the correct medication.** Praziquantel is your best all-rounder for flukes and internal tapeworms. For anchor worm and lice, specific treatments like Dimilin or organophosphates are needed.\n\n**Step 4: Treat the whole tank** if the parasite is in the free-swimming stage. For flukes, treat the main tank — they can complete their lifecycle without a fish host.',
+              '**Step 1: Identify the parasite.** Look closely at your fish — use a magnifying glass if needed. Visible worms? Anchor worm or lice. Invisible but fish are scratching? Likely flukes.\n\n**Step 2: Isolate affected fish** in a hospital tank for targeted treatment.\n\n**Step 3: Use the correct medication.** Praziquantel is commonly used for flukes and internal tapeworms. For anchor worm and lice, specific treatments like Dimilin or organophosphates are needed.\n\n**Step 4: Treat the whole tank** if the parasite is in the free-swimming stage. For flukes, treat the main tank — they can complete their lifecycle without a fish host.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -584,8 +584,7 @@ final fishHealthPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'fh_para_q2',
-            question:
-                'Which medication is the best all-rounder for treating flukes?',
+            question: 'Which medication is commonly used for treating flukes?',
             options: [
               'Methylene blue',
               'Copper sulphate',
@@ -689,7 +688,7 @@ final fishHealthPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '**Ich Treatments (antiparasitic)**\n• **API Super Ick Cure / Sera Costapur** — Malachite green + formalin. Effective for ich, velvet, and some external parasites. Remove carbon before use.\n• **Copper sulphate** — Highly effective but toxic to invertebrates and harmful to scaleless fish. Requires a copper test kit to stay in the therapeutic window (0.15–0.20 ppm free copper). Do not use in reef or shrimp tanks.\n\n**Antibacterials** (for fin rot, bacterial infections)\n• **API Fin & Body Cure** — Minocycline-based. Effective broad-spectrum antibacterial. Remove carbon.\n• **Maracyn 2 (Minocycline)** — Treats gram-negative bacteria (Aeromonas, Pseudomonas). Follow the 5-day course fully.\n• **Kanaplex (Kanamycin)** — For more resistant bacterial infections or when fish are still eating (can be mixed into food).\n\n**Antifungals** (for Saprolegnia, Achlya)\n• **API Fungus Cure** — Malachite green-based. For body and fin fungus.\n• **Methylene blue** — Gentle antifungal/antiseptic. Safe for most species; useful for egg treatment. Will stain silicone sealant.\n\n**Antiparasitic (worms, flukes)**\n• **Praziquantel (PraziPro, Hikari Prazipro)** — Best all-rounder for flukes and tapeworms. Invertebrate-safe, plant-safe.\n• **Flubendazole** — Effective for gill and skin flukes. Toxic to snails and other molluscs.',
+              '**Ich Treatments (antiparasitic)**\n• **API Super Ick Cure / Sera Costapur** — Malachite green + formalin. Effective for ich, velvet, and some external parasites. Remove carbon before use.\n• **Copper sulphate** — Highly effective but toxic to invertebrates and harmful to scaleless fish. Requires a copper test kit to stay in the therapeutic window (0.15–0.20 ppm free copper). Do not use in reef or shrimp tanks.\n\n**Antibacterials** (for fin rot, bacterial infections)\n• **API Fin & Body Cure** — Minocycline-based. Effective broad-spectrum antibacterial. Remove carbon.\n• **Maracyn 2 (Minocycline)** — Treats gram-negative bacteria (Aeromonas, Pseudomonas). Follow the 5-day course fully.\n• **Kanaplex (Kanamycin)** — For more resistant bacterial infections or when fish are still eating (can be mixed into food).\n\n**Antifungals** (for Saprolegnia, Achlya)\n• **API Fungus Cure** — Malachite green-based. For body and fin fungus.\n• **Methylene blue** — Gentle antifungal/antiseptic. Safe for most species; useful for egg treatment. Will stain silicone sealant.\n\n**Antiparasitic (worms, flukes)**\n• **Praziquantel (PraziPro, Hikari Prazipro)** — Commonly used for flukes and tapeworms. Check species and invertebrate sensitivity before dosing.\n• **Flubendazole** — Effective for gill and skin flukes. Toxic to snails and other molluscs.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

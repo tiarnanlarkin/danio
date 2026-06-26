@@ -609,12 +609,12 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. STOP FEEDING — No food for 24-48 hours. Food = more waste = more ammonia\n2. Massive water change — 50% immediately with temperature-matched, dechlorinated water\n3. Test again in 1 hour — If still high, do another 25-50% change\n4. Add Seachem Prime — Temporarily detoxifies ammonia/nitrite for 24-48 hours\n5. Increase aeration — Add an air stone or point filter output upward',
+              '1. STOP FEEDING — No food for 24-48 hours. Food = more waste = more ammonia\n2. Massive water change — 50% immediately with temperature-matched, dechlorinated water\n3. Test again in 1 hour — If still high, do another 25-50% change\n4. Use a water conditioner labelled for emergency ammonia/nitrite support, following the product label exactly\n5. Increase aeration — Add an air stone or point filter output upward',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Seachem Prime is your emergency best friend. It doesn\'t remove ammonia, but it temporarily makes it non-toxic. This buys you time for bacteria to catch up.',
+              'A conditioner labelled for emergency ammonia or nitrite support can buy time while you change water and fix the cause. It does not remove waste from the tank, so keep testing and follow the product label exactly.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -637,7 +637,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Keep Seachem Prime on hand ALWAYS. It\'s cheap insurance that can save your fish\'s life. Don\'t wait until emergency — buy it now.',
+              'Keep a water conditioner that matches your tap-water treatment and a liquid test kit available before an emergency. In a spike, water changes, aeration, and source control matter more than any single bottle.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

@@ -76,6 +76,15 @@ const _bannedUnsafeCareCopy = [
   "can't overdose",
   "won't harm your fish",
   'worth every penny',
+  'emergency best friend',
+  'cheap insurance',
+  'buy it now',
+  'single most valuable',
+  'will save fish lives',
+  'widely considered the best',
+  'best all-rounder',
+  'non-toxic forms',
+  'temporarily makes it non-toxic',
 ];
 
 String _normalise(String value) =>

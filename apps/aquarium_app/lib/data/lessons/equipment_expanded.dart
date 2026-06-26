@@ -605,7 +605,7 @@ final equipmentExpandedLessons = [
       const LessonSection(
         type: LessonSectionType.bulletList,
         content:
-            '• Seachem Prime — highly concentrated (5ml treats 200L), detoxifies ammonia/nitrite temporarily at higher doses, widely considered the best all-round conditioner\n• API Stress Coat — adds slime coat protection, good for stressed fish\n• Tetra AquaSafe — standard budget option, effective',
+            '• Concentrated chloramine conditioners — treat chlorine/chloramine and may temporarily bind ammonia/nitrite at label-supported emergency doses\n• Slime-coat conditioners — useful after netting or transport, but still follow the label\n• Standard conditioners — effective for routine chlorine/chloramine removal when matched to your tap water',
       ),
       const LessonSection(
         type: LessonSectionType.heading,

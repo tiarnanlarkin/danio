@@ -76,7 +76,7 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '1. 25–50% water change immediately with dechlorinated water at the same temperature\n2. Dose Seachem Prime at double the standard dose — it detoxifies ammonia for 24–48 hours\n3. Do not feed — all food adds to ammonia load\n4. Identify and remove the source (dead fish, filter crash, overcrowding, new tank not cycled)',
+              '1. 25–50% water change immediately with dechlorinated water at the same temperature\n2. If available, use a conditioner labelled for emergency ammonia/nitrite support and follow the product label exactly\n3. Do not feed — all food adds to ammonia load\n4. Identify and remove the source (dead fish, filter crash, overcrowding, new tank not cycled)',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -86,7 +86,7 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'Seachem Prime is the single most valuable emergency product. It converts ammonia, nitrite, and nitrate to non-toxic forms for 24–48 hours — buying you time to address the root cause. It can be used at double dose (up to 5× in genuine emergencies). Keep a large bottle in stock at all times.',
+              'A broad water conditioner labelled for emergency ammonia or nitrite support can buy time, but it is not a cure. Use it exactly as directed, increase aeration, keep testing, and fix the root cause with water changes or source removal.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -100,7 +100,7 @@ final troubleshootingPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Seachem Prime (large bottle, not the tiny starter size)\n• API Freshwater Master Test Kit (liquid, not strips)\n• Spare clean bucket (never used for cleaning products)\n• Small battery-powered air pump and spare batteries\n• Methylene blue (antifungal/antibacterial, low toxicity)\n• Aquarium salt (specific uses — know before you dose)\n• Small bare-bottom hospital tank (10–20L) ready to set up fast',
+              '• Broad water conditioner labelled for chlorine/chloramine and emergency ammonia/nitrite support\n• Liquid test kit that measures ammonia, nitrite, nitrate, and pH\n• Spare clean bucket (never used for cleaning products)\n• Small battery-powered air pump and spare batteries\n• Methylene blue or another label-appropriate antifungal/antiseptic\n• Aquarium salt (specific uses — know before you dose)\n• Small bare-bottom hospital tank (10–20L) ready to set up fast',
         ),
         const LessonSection(
           type: LessonSectionType.tip,

@@ -781,6 +781,17 @@ CL-QA-005E Unsafe/product-endorsement copy validation:
   neutral, label-following guidance for test kits, water conditioner,
   emergency water changes, and algae-control snails.
 
+CL-QA-005F Brand-specific emergency-product copy validation:
+
+- The same content validation gate now fails stronger emergency/product
+  certainty phrases such as "emergency best friend", "cheap insurance", "buy it
+  now", "single most valuable", "will save fish lives", "widely considered the
+  best", "best all-rounder", "non-toxic forms", and "temporarily makes it
+  non-toxic".
+- Nitrogen Cycle, Troubleshooting, Advanced Topics, Equipment, and Fish Health
+  copy now describes emergency conditioners, kits, and parasite treatments with
+  neutral label-following guidance instead of brand-as-saviour claims.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck
