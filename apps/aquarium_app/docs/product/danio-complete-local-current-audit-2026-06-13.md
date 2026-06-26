@@ -739,6 +739,14 @@ CL-P1-004N Emergency lesson unlock boundary:
 - The content validation gate now fails if emergency/distress lessons are
   locked behind prerequisites.
 
+CL-QA-005A Learning unit spelling validation:
+
+- The content validation gate now fails learning copy that uses US
+  `liter`/`liters` volume spelling instead of the app's UK-style
+  `litre`/`litres` copy convention.
+- Existing learning drift was corrected in First Fish beginner-mistakes copy
+  and the Maintenance siphoning lesson.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

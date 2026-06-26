@@ -186,6 +186,22 @@ void _expectNoBannedCopy(Iterable<MapEntry<String, String>> entries) {
   }
 }
 
+void _expectNoUsVolumeSpelling(Iterable<MapEntry<String, String>> entries) {
+  final usVolumeSpelling = RegExp(
+    r'\bliters?\b|\bliter-',
+    caseSensitive: false,
+  );
+
+  for (final entry in entries) {
+    expect(
+      entry.value,
+      isNot(matches(usVolumeSpelling)),
+      reason:
+          '${entry.key} should use litre/litres for volume copy, not liter/liters',
+    );
+  }
+}
+
 void _expectHttpsSource({
   required String title,
   required String publisher,
@@ -214,6 +230,10 @@ void main() {
         _expectNoBannedCopy(_allLessons.expand(_lessonStrings));
       },
     );
+
+    test('learning copy uses litre spelling for volume units', () {
+      _expectNoUsVolumeSpelling(_allLessons.expand(_lessonStrings));
+    });
 
     test(
       'lesson quizzes are complete, explain answers, and avoid duplicate options',

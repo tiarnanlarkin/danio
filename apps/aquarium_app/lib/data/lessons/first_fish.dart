@@ -810,7 +810,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '"Put 20 goldfish in your 20-liter bowl!" "Clean the tank completely every week!" Pet store employees often give terrible advice — usually to make sales, not help fish.',
+              '"Put 20 goldfish in your 20-litre bowl!" "Clean the tank completely every week!" Pet store employees often give terrible advice — usually to make sales, not help fish.',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -824,7 +824,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'That fish is SO pretty! You buy it, bring it home, then Google it. Oops — it grows to 40cm, eats small fish, and needs 200 liters. Now what?',
+              'That fish is SO pretty! You buy it, bring it home, then Google it. Oops — it grows to 40cm, eats small fish, and needs 200 litres. Now what?',
         ),
         const LessonSection(
           type: LessonSectionType.tip,

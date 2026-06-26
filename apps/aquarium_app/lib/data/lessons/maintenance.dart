@@ -279,7 +279,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Siphoning is fast! A 60-liter tank can drain in minutes. Control flow by: pinching the tube, lifting the bucket end higher, or using a vacuum with a flow valve.',
+              'Siphoning is fast! A 60-litre tank can drain in minutes. Control flow by: pinching the tube, lifting the bucket end higher, or using a vacuum with a flow valve.',
         ),
         const LessonSection(
           type: LessonSectionType.funFact,
