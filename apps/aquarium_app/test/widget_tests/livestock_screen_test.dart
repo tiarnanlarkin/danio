@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/screens/livestock/livestock_screen.dart';
+import 'package:danio/screens/livestock/livestock_bulk_add_dialog.dart';
 import 'package:danio/providers/tank_provider.dart';
 import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_visual_event_provider.dart';
@@ -257,6 +258,18 @@ Widget _wrapWithTimelineProbe({
   );
 }
 
+Widget _wrapBulkAddDialog({
+  required StorageService storage,
+  required String tankId,
+}) {
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      home: Scaffold(body: LivestockBulkAddDialog(tankId: tankId)),
+    ),
+  );
+}
+
 class _FailingLivestockDeleteStorage implements StorageService {
   _FailingLivestockDeleteStorage({required this.failingLivestockId});
 
@@ -335,6 +348,18 @@ class _FailingLivestockDeleteStorage implements StorageService {
 
   @override
   Future<void> deleteTask(String id) => _delegate.deleteTask(id);
+}
+
+class _SaveLogFailsStorage extends _FailingLivestockDeleteStorage {
+  _SaveLogFailsStorage() : super(failingLivestockId: '');
+
+  @override
+  Future<void> deleteLivestock(String id) => _delegate.deleteLivestock(id);
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    throw StateError('log save failed');
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -558,6 +583,39 @@ void main() {
         expect(find.text('Retry'), findsNothing);
       },
     );
+
+    testWidgets('failed bulk-add log save rolls back new livestock', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-bulk-log-failure-tank';
+      final storage = _SaveLogFailsStorage();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Rollback Tank'));
+
+      await tester.pumpWidget(
+        _wrapBulkAddDialog(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.enterText(
+        find.byType(TextField).last,
+        'Neon Tetra, 10\nCorydoras x6',
+      );
+      await tester.pump();
+      await tester.tap(find.text('Add (2) livestock'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(await storage.getLivestockForTank(tankId), isEmpty);
+      expect(await storage.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t add that right now. Try again!'),
+        findsOneWidget,
+      );
+      expect(find.text('Added 2 livestock entries.'), findsNothing);
+    });
   });
 
   group('LivestockScreen - quick feeding', () {

@@ -6,6 +6,7 @@ import '../../models/models.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../services/storage_service.dart';
 import '../../services/xp_animation_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_feedback.dart';
@@ -141,22 +142,26 @@ class _LivestockBulkAddDialogState
     try {
       final storage = ref.read(storageServiceProvider);
       final now = DateTime.now();
+      final savedLivestockIds = <String>[];
+      final savedLogIds = <String>[];
 
-      for (final item in _items) {
-        final livestock = Livestock(
-          id: _bulkUuid.v4(),
-          tankId: widget.tankId,
-          commonName: item.name,
-          scientificName: null,
-          count: item.count,
-          dateAdded: now,
-          createdAt: now,
-          updatedAt: now,
-        );
+      try {
+        for (final item in _items) {
+          final livestock = Livestock(
+            id: _bulkUuid.v4(),
+            tankId: widget.tankId,
+            commonName: item.name,
+            scientificName: null,
+            count: item.count,
+            dateAdded: now,
+            createdAt: now,
+            updatedAt: now,
+          );
 
-        await storage.saveLivestock(livestock);
-        await storage.saveLog(
-          LogEntry(
+          await storage.saveLivestock(livestock);
+          savedLivestockIds.add(livestock.id);
+
+          final log = LogEntry(
             id: _bulkUuid.v4(),
             tankId: widget.tankId,
             type: LogType.livestockAdded,
@@ -164,8 +169,13 @@ class _LivestockBulkAddDialogState
             title: 'Added ${livestock.count} ${livestock.commonName}',
             relatedLivestockId: livestock.id,
             createdAt: now,
-          ),
-        );
+          );
+          await storage.saveLog(log);
+          savedLogIds.add(log.id);
+        }
+      } catch (_) {
+        await _rollbackBulkAdd(storage, savedLivestockIds, savedLogIds);
+        rethrow;
       }
 
       ref.invalidate(livestockProvider(widget.tankId));
@@ -173,18 +183,38 @@ class _LivestockBulkAddDialogState
       ref.invalidate(allLogsProvider(widget.tankId));
 
       final totalXp = _items.length * XpRewards.addLivestock;
-      await ref.read(userProfileProvider.notifier).recordActivity(xp: totalXp);
+      var progressUpdated = true;
+      try {
+        await ref
+            .read(userProfileProvider.notifier)
+            .recordActivity(xp: totalXp);
+      } catch (e, st) {
+        progressUpdated = false;
+        logError(
+          'LivestockBulkAddDialog: profile activity update failed after bulk save: $e',
+          stackTrace: st,
+          tag: 'LivestockBulkAddDialog',
+        );
+        ref.invalidate(userProfileProvider);
+      }
 
-      if (mounted && totalXp > 0) {
+      if (progressUpdated && mounted && totalXp > 0) {
         ref.showXpAnimation(totalXp);
       }
 
       if (mounted) {
         Navigator.maybePop(context);
-        AppFeedback.showSuccess(
-          context,
-          'Added ${_items.length} livestock entries.',
-        );
+        if (progressUpdated) {
+          AppFeedback.showSuccess(
+            context,
+            'Added ${_items.length} livestock entries.',
+          );
+        } else {
+          AppFeedback.showWarning(
+            context,
+            'Added ${_items.length} livestock entries, but progress couldn\'t update.',
+          );
+        }
       }
     } catch (e, st) {
       logError(
@@ -199,8 +229,41 @@ class _LivestockBulkAddDialogState
           onRetry: _save,
         );
       }
+      ref.invalidate(livestockProvider(widget.tankId));
+      ref.invalidate(logsProvider(widget.tankId));
+      ref.invalidate(allLogsProvider(widget.tankId));
     } finally {
       if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  Future<void> _rollbackBulkAdd(
+    StorageService storage,
+    List<String> livestockIds,
+    List<String> logIds,
+  ) async {
+    for (final logId in logIds.reversed) {
+      try {
+        await storage.deleteLog(logId);
+      } catch (e, st) {
+        logError(
+          'LivestockBulkAddDialog: rollback log delete failed: $e',
+          stackTrace: st,
+          tag: 'LivestockBulkAddDialog',
+        );
+      }
+    }
+
+    for (final livestockId in livestockIds.reversed) {
+      try {
+        await storage.deleteLivestock(livestockId);
+      } catch (e, st) {
+        logError(
+          'LivestockBulkAddDialog: rollback livestock delete failed: $e',
+          stackTrace: st,
+          tag: 'LivestockBulkAddDialog',
+        );
+      }
     }
   }
 

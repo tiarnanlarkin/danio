@@ -2587,6 +2587,16 @@ CL-P1-009ET Livestock add progress boundary:
   after add and verifies the livestock plus timeline log remain saved with the
   progress warning.
 
+CL-P1-009EU Bulk livestock add timeline-log rollback:
+
+- Bulk livestock add now tracks newly saved livestock and readable timeline logs
+  during the local add transaction.
+- If a timeline log save fails mid-add, the flow deletes any newly saved bulk
+  livestock/log records before showing retry feedback, avoiding partial
+  livestock without matching journal evidence.
+- Focused widget coverage mounts the bulk-add sheet, simulates a failed log
+  save, and verifies no livestock or log records remain.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3565,9 +3575,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   local tank update. Equipment adds now roll back partial equipment records when
   maintenance-task sync fails, while secondary progress-write failures no longer
   undo durable equipment adds. Livestock adds now keep durable livestock and
-  timeline-log saves when only secondary progress writes fail. Remaining
-  backup/data work is broader edit/delete/undo coverage and restore/migration
-  walkthrough QA.
+  timeline-log saves when only secondary progress writes fail. Bulk livestock
+  adds now roll back partial livestock/log records when timeline-log persistence
+  fails. Remaining backup/data work is broader edit/delete/undo coverage and
+  restore/migration walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

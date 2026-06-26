@@ -272,6 +272,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009ET keeps newly added livestock and its readable timeline log saved
   when only the secondary profile-progress write fails, showing
   progress-specific feedback instead of a generic add failure.
+- CL-P1-009EU rolls back bulk livestock add records when a readable timeline
+  log save fails mid-add, preventing partial livestock without matching local
+  journal evidence.
 
 ## 7. P2 Work - Presentation System
 
