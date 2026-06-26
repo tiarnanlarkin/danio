@@ -802,6 +802,16 @@ CL-QA-005G Brand-name conditioner/test-kit copy validation:
   Equipment copy now explains conditioners and liquid test kits as generic
   product categories with label-following instructions.
 
+CL-QA-005H Learning graph/source/range validation:
+
+- The content validation gate now requires unique learning path IDs, unique
+  lesson IDs, unique path and per-path lesson order indexes, matching lesson
+  `pathId` values, resolvable prerequisite path/lesson IDs, non-empty lesson
+  sections, sane lesson XP/duration ranges, valid quiz `correctIndex` values,
+  and at least two source references per lesson guide.
+- This is a guardrail-only slice; the current catalog already satisfies the
+  tightened checks, so no lesson product copy or behavior changed.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

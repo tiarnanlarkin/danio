@@ -414,6 +414,16 @@ void main() {
               reason:
                   'Question ${question.id} needs an explanatory answer note',
             );
+            expect(
+              question.options.length,
+              greaterThanOrEqualTo(2),
+              reason: 'Question ${question.id} needs at least two options',
+            );
+            expect(
+              question.correctIndex,
+              inInclusiveRange(0, question.options.length - 1),
+              reason: 'Question ${question.id} has an invalid correctIndex',
+            );
 
             final normalisedOptions = question.options.map(_normalise).toSet();
             expect(
@@ -430,7 +440,15 @@ void main() {
       final sourceKeys = <String>{};
 
       for (final lesson in _allLessons) {
-        for (final source in lesson.guide!.sources) {
+        final guide = lesson.guide;
+        expect(guide, isNotNull, reason: 'Lesson ${lesson.id} has no guide');
+        expect(
+          guide!.sources.length,
+          greaterThanOrEqualTo(2),
+          reason: 'Lesson ${lesson.id} needs at least two source references',
+        );
+
+        for (final source in guide.sources) {
           _expectHttpsSource(
             title: source.title,
             publisher: source.publisher,
@@ -512,6 +530,97 @@ void main() {
           isEmpty,
           reason: 'Emergency lesson ${lesson.id} must stay directly accessible',
         );
+      }
+    });
+
+    test('learning catalog IDs and prerequisites are internally consistent', () {
+      final pathIds = <String>{};
+      final lessonIds = <String>{};
+      final pathOrderIndexes = <int>{};
+
+      for (final path in _allPaths) {
+        expect(
+          pathIds.add(path.id),
+          isTrue,
+          reason: 'Duplicate learning path ID: ${path.id}',
+        );
+        expect(
+          path.lessons,
+          isNotEmpty,
+          reason: 'Learning path ${path.id} must include lessons',
+        );
+        expect(
+          pathOrderIndexes.add(path.orderIndex),
+          isTrue,
+          reason:
+              'Learning path ${path.id} reuses order index ${path.orderIndex}',
+        );
+
+        final lessonOrderIndexes = <int>{};
+
+        for (final lesson in path.lessons) {
+          expect(
+            lesson.pathId,
+            equals(path.id),
+            reason:
+                'Lesson ${lesson.id} is listed under ${path.id} but points to ${lesson.pathId}',
+          );
+          expect(
+            lessonIds.add(lesson.id),
+            isTrue,
+            reason: 'Duplicate lesson ID: ${lesson.id}',
+          );
+          expect(
+            lessonOrderIndexes.add(lesson.orderIndex),
+            isTrue,
+            reason:
+                'Lesson ${lesson.id} reuses order index ${lesson.orderIndex} in ${path.id}',
+          );
+          expect(
+            lesson.xpReward,
+            inInclusiveRange(10, 500),
+            reason: 'Lesson ${lesson.id} has an unusual XP reward',
+          );
+          expect(
+            lesson.estimatedMinutes,
+            inInclusiveRange(1, 60),
+            reason: 'Lesson ${lesson.id} has an unusual duration estimate',
+          );
+          expect(
+            lesson.sections,
+            isNotEmpty,
+            reason: 'Lesson ${lesson.id} must include lesson sections',
+          );
+          for (final section in lesson.sections) {
+            expect(
+              section.content.trim(),
+              isNotEmpty,
+              reason: 'Lesson ${lesson.id} has an empty section',
+            );
+          }
+        }
+      }
+
+      for (final path in _allPaths) {
+        for (final prerequisitePathId in path.prerequisitePathIds) {
+          expect(
+            pathIds,
+            contains(prerequisitePathId),
+            reason:
+                'Learning path ${path.id} has unknown prerequisite path $prerequisitePathId',
+          );
+        }
+      }
+
+      for (final lesson in _allLessons) {
+        for (final prerequisiteLessonId in lesson.prerequisites) {
+          expect(
+            lessonIds,
+            contains(prerequisiteLessonId),
+            reason:
+                'Lesson ${lesson.id} has unknown prerequisite lesson $prerequisiteLessonId',
+          );
+        }
       }
     });
 
