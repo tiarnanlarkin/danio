@@ -1050,6 +1050,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       final storage = ref.read(storageServiceProvider);
 
       final existing = widget.existingLog;
+      final isNewLog = existing == null;
 
       final log = LogEntry(
         id: existing?.id ?? _uuid.v4(),
@@ -1083,7 +1084,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       // Invalidate logs providers
       ref.invalidate(logsProvider(widget.tankId));
       ref.invalidate(allLogsProvider(widget.tankId));
-      if (existing == null && log.type == LogType.feeding) {
+      if (isNewLog && log.type == LogType.feeding) {
         ref.read(tankFeedingPulseProvider(widget.tankId).notifier).state += 1;
       }
       if (log.type == LogType.waterTest) {
@@ -1092,63 +1093,68 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         ref.invalidate(testStreakProvider(widget.tankId));
       }
 
-      // Engagement: count any log as "activity" (and award small XP).
-      final xp = switch (log.type) {
-        LogType.waterTest => XpRewards.waterTest,
-        LogType.waterChange => XpRewards.waterChange,
-        LogType.taskCompleted => XpRewards.taskComplete,
-        LogType.observation => XpRewards.journalEntry,
-        LogType.medication => XpRewards.journalEntry,
-        LogType.feeding => XpRewards.journalEntry,
-        LogType.livestockAdded => XpRewards.addLivestock,
-        LogType.livestockRemoved => 0,
-        LogType.equipmentMaintenance => XpRewards.taskComplete,
-        LogType.other => XpRewards.journalEntry,
-      };
-
-      final isBoostActive = ref.read(xpBoostActiveProvider);
-      final effectiveXp = isBoostActive ? xp * 2 : xp;
       var progressUpdated = true;
-      try {
-        await ref
-            .read(userProfileProvider.notifier)
-            .recordActivity(xp: xp, xpBoostActive: isBoostActive);
-      } catch (e, st) {
-        progressUpdated = false;
-        logError(
-          'AddLogScreen: profile activity update failed after log save: $e',
-          stackTrace: st,
-          tag: 'AddLogScreen',
-        );
-        ref.invalidate(userProfileProvider);
-      }
+      var effectiveXp = 0;
 
-      // Show XP animation if XP was awarded
-      if (progressUpdated && effectiveXp > 0 && mounted) {
-        AppHaptics.success();
-        ref.showXpAnimation(effectiveXp);
-      }
+      if (isNewLog) {
+        // Engagement: count new logs as activity. Edits should not double-award
+        // XP, streak credit, achievements, or other new-entry effects.
+        final xp = switch (log.type) {
+          LogType.waterTest => XpRewards.waterTest,
+          LogType.waterChange => XpRewards.waterChange,
+          LogType.taskCompleted => XpRewards.taskComplete,
+          LogType.observation => XpRewards.journalEntry,
+          LogType.medication => XpRewards.journalEntry,
+          LogType.feeding => XpRewards.journalEntry,
+          LogType.livestockAdded => XpRewards.addLivestock,
+          LogType.livestockRemoved => 0,
+          LogType.equipmentMaintenance => XpRewards.taskComplete,
+          LogType.other => XpRewards.journalEntry,
+        };
 
-      // Check for achievements after logging activity
-      final profile = progressUpdated
-          ? ref.read(userProfileProvider).value
-          : null;
-      if (profile != null) {
+        final isBoostActive = ref.read(xpBoostActiveProvider);
+        effectiveXp = isBoostActive ? xp * 2 : xp;
         try {
-          final achievementChecker = ref.read(achievementCheckerProvider);
-
-          // Build stats for achievement checking
-          final stats = AchievementStats(
-            totalXp: profile.totalXp,
-            currentStreak: profile.currentStreak,
-            hasCompletedPlacementTest: profile.hasCompletedPlacementTest,
-            lessonsCompleted: profile.completedLessons.length,
+          await ref
+              .read(userProfileProvider.notifier)
+              .recordActivity(xp: xp, xpBoostActive: isBoostActive);
+        } catch (e, st) {
+          progressUpdated = false;
+          logError(
+            'AddLogScreen: profile activity update failed after log save: $e',
+            stackTrace: st,
+            tag: 'AddLogScreen',
           );
+          ref.invalidate(userProfileProvider);
+        }
 
-          await achievementChecker.checkAllAchievements(stats: stats);
-        } catch (e) {
-          // Don't fail the log save if achievement check fails
-          logError('Achievement check failed: $e', tag: 'AddLogScreen');
+        // Show XP animation if XP was awarded
+        if (progressUpdated && effectiveXp > 0 && mounted) {
+          AppHaptics.success();
+          ref.showXpAnimation(effectiveXp);
+        }
+
+        // Check for achievements after logging activity
+        final profile = progressUpdated
+            ? ref.read(userProfileProvider).value
+            : null;
+        if (profile != null) {
+          try {
+            final achievementChecker = ref.read(achievementCheckerProvider);
+
+            // Build stats for achievement checking
+            final stats = AchievementStats(
+              totalXp: profile.totalXp,
+              currentStreak: profile.currentStreak,
+              hasCompletedPlacementTest: profile.hasCompletedPlacementTest,
+              lessonsCompleted: profile.completedLessons.length,
+            );
+
+            await achievementChecker.checkAllAchievements(stats: stats);
+          } catch (e) {
+            // Don't fail the log save if achievement check fails
+            logError('Achievement check failed: $e', tag: 'AddLogScreen');
+          }
         }
       }
 
@@ -1157,7 +1163,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         final unsafeWaterTest =
             log.type == LogType.waterTest && _isUnsafeWaterTest(log.waterTest);
         // Show water change celebration on root overlay (survives nav pop)
-        if (log.type == LogType.waterChange) {
+        if (isNewLog && log.type == LogType.waterChange) {
           final rootOverlay = Overlay.of(context, rootOverlay: true);
           late OverlayEntry celebrationEntry;
           celebrationEntry = OverlayEntry(
@@ -1167,7 +1173,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           );
           rootOverlay.insert(celebrationEntry);
         }
-        if (unsafeWaterTest) {
+        if (isNewLog && unsafeWaterTest) {
           setState(() {
             _isSaving = false;
             _discardConfirmed = true;
@@ -1177,7 +1183,12 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             progressUpdated: progressUpdated,
           );
         } else {
-          if (progressUpdated) {
+          if (!isNewLog) {
+            AppFeedback.showSuccessViaMessenger(
+              messenger,
+              '${log.typeName} saved.',
+            );
+          } else if (progressUpdated) {
             AppFeedback.showSuccessViaMessenger(
               messenger,
               '${log.typeName} logged! +$effectiveXp XP',
@@ -1188,7 +1199,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               '${log.typeName} logged, but progress couldn\'t update.',
             );
           }
-          Navigator.maybePop(context);
+          setState(() => _discardConfirmed = true);
+          final navigator = Navigator.of(context);
+          if (navigator.canPop()) {
+            navigator.pop();
+          }
         }
       }
     } catch (e, st) {

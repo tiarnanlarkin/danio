@@ -257,6 +257,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EO makes Preferences Clear All Data describe the actual local
   tanks/logs/tasks/photos scope instead of implying settings are deleted by
   that narrower action.
+- CL-P1-009EP makes Add Log edits save the existing local log without awarding
+  duplicate XP/streak/achievement progress, replaying new-entry visual effects,
+  or leaving the saved edit form open behind the dirty-form guard.
 
 ## 7. P2 Work - Presentation System
 

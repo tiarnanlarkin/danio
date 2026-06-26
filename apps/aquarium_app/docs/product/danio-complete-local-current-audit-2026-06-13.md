@@ -2539,6 +2539,16 @@ CL-P1-009EO Clear All Data scope copy:
 - Focused widget coverage verifies the visible Danger Zone subtitle matches the
   implemented clear-data flow.
 
+CL-P1-009EP Add Log edit reward boundary:
+
+- Editing an existing Add Log entry now saves the log without awarding new XP,
+  streak credit, achievement checks, feeding pulses, water-change celebration,
+  or unsafe-water new-entry routing.
+- Successful Add Log saves mark the form as saved before closing, so the
+  dirty-form guard no longer leaves a saved edit route open.
+- Focused widget coverage verifies an existing water-change edit preserves the
+  saved profile XP and closes the edit route after saving.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3511,8 +3521,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   start-fresh actions, and failed imports now clean up newly restored photo
   files when tank data import does not commit. Reminder and Cost Tracker
   preference writes now reject false local save results with normal rollback
-  feedback. Remaining backup/data work is broader edit/delete/undo coverage and
-  restore/migration walkthrough QA.
+  feedback. Add Log edits now update existing logs without duplicate
+  reward/progress side effects and close the saved edit route cleanly. Remaining
+  backup/data work is broader edit/delete/undo coverage and restore/migration
+  walkthrough QA.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

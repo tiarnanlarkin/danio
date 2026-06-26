@@ -94,6 +94,7 @@ Widget _wrapWithLauncher({
   String tankId = 'tank-1',
   SharedPreferences? prefs,
   bool showProfileProbe = false,
+  LogEntry? existingLog,
 }) {
   return ProviderScope(
     overrides: [
@@ -121,8 +122,11 @@ Widget _wrapWithLauncher({
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) =>
-                            AddLogScreen(tankId: tankId, initialType: type),
+                        builder: (_) => AddLogScreen(
+                          tankId: tankId,
+                          initialType: type,
+                          existingLog: existingLog,
+                        ),
                       ),
                     );
                   },
@@ -596,6 +600,57 @@ void main() {
         expect(find.text('Retry'), findsNothing);
       },
     );
+
+    testWidgets('editing an existing log does not award new XP', (
+      tester,
+    ) async {
+      final profile = _makeProfile().copyWith(totalXp: 200);
+      SharedPreferences.setMockInitialValues({
+        'user_profile': jsonEncode(profile.toJson()),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final svc = InMemoryStorageService();
+      const tankId = 'existing-log-edit-no-xp-tank';
+      final existingLog = LogEntry(
+        id: 'existing-water-change-log',
+        tankId: tankId,
+        type: LogType.waterChange,
+        timestamp: DateTime(2026, 6, 14, 12),
+        waterChangePercent: 25,
+        notes: 'Original water change note.',
+        createdAt: DateTime(2026, 6, 14, 12),
+      );
+      await svc.saveTank(_makeTank(id: tankId));
+      await svc.saveLog(existingLog);
+
+      await tester.pumpWidget(
+        _wrapWithLauncher(
+          storage: svc,
+          tankId: tankId,
+          type: LogType.waterChange,
+          prefs: prefs,
+          showProfileProbe: true,
+          existingLog: existingLog,
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(find.text('profile ready'), findsOneWidget);
+
+      await tester.tap(find.text('Open log form'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      final savedProfile = UserProfile.fromJson(
+        jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+      );
+      expect(savedProfile.totalXp, 200);
+      expect(find.byType(AddLogScreen), findsNothing);
+    });
   });
 
   group('AddLogScreen dirty close behavior', () {
