@@ -453,17 +453,17 @@ final nitrogenCyclePath = LearningPath(
         ),
         const LessonSection(
           type: LessonSectionType.heading,
-          content: 'Liquid Test Kits: The Gold Standard',
+          content: 'Liquid Test Kits: More Reliable',
         ),
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'The API Master Test Kit is the industry standard. It tests pH, ammonia, nitrite, and nitrate. While it takes 5 minutes instead of 30 seconds, the accuracy is worth it — especially during cycling.',
+              'Liquid reagent kits usually give more reliable readings than strips for pH, ammonia, nitrite, and nitrate. They take a few minutes instead of seconds, but the extra accuracy matters during cycling.',
         ),
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              'A quality liquid test kit costs \$25-35 but lasts for 800+ tests. That\'s about 3-4 cents per test. Worth every penny.',
+              'A quality liquid test kit costs more upfront but usually lasts for many tests, making it a practical choice for cycling and long-term maintenance.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

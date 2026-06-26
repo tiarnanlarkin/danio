@@ -62,7 +62,7 @@ final maintenancePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'The key to safe water changes is simple: match the temperature and always add dechlorinator. As long as those two conditions are met, even 75%+ water changes won\'t harm your fish. In emergencies (ammonia or nitrite spikes), don\'t be afraid to do multiple large changes in one day.\n\nWater conditioners are generally safe in overdose — Seachem Prime, for example, can detoxify ammonia and nitrite at up to 5× the recommended dose. However, extremely high doses may temporarily reduce oxygen levels. As a rule, dose for the full tank volume, not the water change volume.',
+              'The key to safer water changes is to match temperature, dechlorinate the new water, and add large changes carefully enough that fish are not shocked. In ammonia or nitrite emergencies, multiple partial changes in one day may be safer than waiting.\n\nUse water conditioner according to the label and dose for the full tank volume unless the product gives different emergency instructions. Avoid casual overdosing; some emergency detoxifying doses can reduce oxygen, so increase aeration and observe fish closely if a label-supported emergency dose is used.',
         ),
       ],
       quiz: Quiz(
@@ -897,7 +897,7 @@ final maintenancePath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Weekly 25-50% water changes are the gold standard. Consistent changes beat infrequent large ones. Larger changes (50-75%) are also safe when water is temperature-matched and dechlorinated.',
+                'Weekly 25-50% water changes are the usual routine. Consistent changes beat infrequent large ones. Larger changes (50-75%) can be appropriate when water is temperature-matched, dechlorinated, and added carefully.',
           ),
           const QuizQuestion(
             id: 'maint_sch_q2',

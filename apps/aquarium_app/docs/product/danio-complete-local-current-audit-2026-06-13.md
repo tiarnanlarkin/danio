@@ -771,6 +771,16 @@ CL-QA-005D Medical/emergency warning validation:
   warning-section safety boundaries around diagnosis, treatment choice, and
   urgent escalation.
 
+CL-QA-005E Unsafe/product-endorsement copy validation:
+
+- The content validation gate now fails overconfident or product-endorsing
+  learning copy such as "safe in overdose", "gold standard", "industry
+  standard", "lasts forever", "can't overdose", "won't harm your fish", and
+  "worth every penny".
+- Nitrogen Cycle, Water Parameters, Maintenance, and Species Care copy now uses
+  neutral, label-following guidance for test kits, water conditioner,
+  emergency water changes, and algae-control snails.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

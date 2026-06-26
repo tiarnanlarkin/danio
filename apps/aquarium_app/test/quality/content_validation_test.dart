@@ -68,6 +68,16 @@ const _bannedProductionCopy = [
   'subscribe to unlock',
 ];
 
+const _bannedUnsafeCareCopy = [
+  'safe in overdose',
+  'gold standard',
+  'industry standard',
+  'lasts forever',
+  "can't overdose",
+  "won't harm your fish",
+  'worth every penny',
+];
+
 String _normalise(String value) =>
     value.trim().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
 
@@ -186,6 +196,20 @@ void _expectNoBannedCopy(Iterable<MapEntry<String, String>> entries) {
   }
 }
 
+void _expectNoUnsafeCareCopy(Iterable<MapEntry<String, String>> entries) {
+  for (final entry in entries) {
+    final value = _normalise(entry.value);
+    for (final banned in _bannedUnsafeCareCopy) {
+      expect(
+        value,
+        isNot(contains(banned)),
+        reason:
+            '${entry.key} contains overconfident or product-endorsing care copy: $banned',
+      );
+    }
+  }
+}
+
 void _expectNoUsVolumeSpelling(Iterable<MapEntry<String, String>> entries) {
   final usVolumeSpelling = RegExp(
     r'\bliters?\b|\bliter-',
@@ -288,6 +312,13 @@ void main() {
       'learning content avoids draft placeholders and fake feature copy',
       () {
         _expectNoBannedCopy(_allLessons.expand(_lessonStrings));
+      },
+    );
+
+    test(
+      'learning copy avoids overconfident care and product endorsements',
+      () {
+        _expectNoUnsafeCareCopy(_allLessons.expand(_lessonStrings));
       },
     );
 

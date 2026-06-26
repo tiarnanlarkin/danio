@@ -346,12 +346,12 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Not all dechlorinators are equal. Basic ones handle chlorine. Better ones (like Seachem Prime) handle chlorine, chloramine, AND temporarily detoxify the ammonia released when chloramine breaks down.',
+              'Not all dechlorinators are equal. Basic ones handle chlorine. Other conditioners also handle chloramine and may temporarily bind the ammonia released when chloramine breaks down. Choose one that matches your local tap-water treatment.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Seachem Prime is the gold standard. It dechlorinates, detoxifies ammonia/nitrite, and detoxifies heavy metals. One bottle lasts forever — worth the investment. Water conditioners are generally safe in overdose — Seachem Prime, for example, can detoxify ammonia and nitrite at up to 5× the recommended dose. However, extremely high doses may temporarily reduce oxygen levels. As a rule, dose for the full tank volume, not the water change volume.',
+              'Follow the conditioner label and dose for the full tank volume unless the product gives different emergency instructions. Avoid casual overdosing; some emergency detoxifying doses can reduce oxygen, so increase aeration and observe fish closely if a label-supported emergency dose is used.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -360,7 +360,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.numberedList,
           content:
-              '1. Add correct dose to NEW water (follow bottle instructions)\n2. Wait just 1-2 minutes for it to work\n3. Match temperature to tank before adding\n4. Can dose directly to tank during water changes if needed\n5. Can\'t overdose moderately — 1.5x is safe',
+              '1. Add correct dose to NEW water (follow bottle instructions)\n2. Wait just 1-2 minutes for it to work\n3. Match temperature to tank before adding\n4. Can dose directly to tank during water changes if needed\n5. Avoid casual overdosing; use emergency doses only when the product label supports them',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

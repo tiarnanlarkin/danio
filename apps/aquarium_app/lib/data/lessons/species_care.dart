@@ -608,7 +608,7 @@ final speciesCarePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Nerite snails are the gold standard for algae control. They eat virtually every type of algae, won\'t breed in freshwater (need brackish conditions for larvae), and stay small (1 inch). The catch: they lay tiny white eggs on every hard surface — glass, rocks, driftwood. Annoying but harmless.',
+              'Nerite snails are widely used for algae control. They graze many algae films, won\'t breed in freshwater (larvae need brackish conditions), and stay small at about 2.5 cm (1 inch). The catch: they lay tiny white eggs on hard surfaces such as glass, rocks, and driftwood. Annoying but harmless.',
         ),
         const LessonSection(
           type: LessonSectionType.text,
