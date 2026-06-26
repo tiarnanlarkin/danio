@@ -279,7 +279,7 @@ Active flashcard review. Shows one card at a time: concept name + optional quest
 |---|---|---|---|---|---|
 | Story Play — AppBar | Story title | | ✅ | | ✅ Complete |
 | Story Play — AppBar | Difficulty badge (non-complete only) | _isComplete=false | ✅ | Shows `emoji displayName`. Hidden on completion screen. | ✅ Complete |
-| Story Play — AppBar | Back button | mid-story | ⚠️ | **No exit confirmation dialog.** Back button immediately dismisses the story mid-progress. Progress is not saved until `_handleCompletion()` is called. If user taps back mid-story, all progress is lost silently. | ⚠️ Should Fix |
+| Story Play — AppBar | Back button | mid-story | ✅ | `Leave story?` confirmation now protects unfinished story progress; cancel keeps the current scene and Leave returns to the story hub. | ✅ Complete |
 | Story Play | **Progress indicator** | 0→1 | ✅ | `LinearProgressIndicator` at 4dp height. Progress based on `visitedSceneIds.length / scenes.length`. | ✅ Complete |
 | Story Play — Scene | Scene text (GlassCard) | | ✅ | `bodyLarge` with lineHeight 1.6. Scrollable. | ✅ Complete |
 | Story Play — Scene | "What do you do?" prompt | !_showingFeedback | ✅ | Shown above choices. | ✅ Complete |
@@ -342,7 +342,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | **Review Banner and Practice Card are visually distinct but functionally identical** — both route to `SpacedRepetitionPracticeScreen`. Shown simultaneously on Learn screen. Confusing to users. | Learn Screen | ⚠️ Should Fix |
 | **`spacedRepetitionProvider.errorMessage` is never surfaced** on Practice Hub or SR Practice screens. SR load errors are silent beyond snackbars. | Practice Hub, SR Practice | 🔴 Must Fix |
 | **Locked story cards (`onTap: null`) give no feedback on tap.** Users tap a locked story and nothing happens. Should show a snackbar explaining the lock. | Story Browser | ⚠️ Should Fix |
-| **Story mid-play back button has no exit confirmation.** All unsaved progress lost silently. | Story Play | ⚠️ Should Fix |
+| **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
 | **Review session self-assessment UX.** User taps "Remembered/Forgot" without ever being asked to recall anything actively — just a label. Cards with no `questionText` are especially hollow. | Review Session | ⚠️ Should Fix |
 | **`image` section type is a placeholder.** Renders "Visual guide on the way!" box. No image support. Fine now (no lessons use it), but must be implemented before image sections go live. | Lesson Screen | 🔮 Future Scope |
 | **Path card expansion has no error state.** If `loadPath()` fails, the expansion shows a spinner indefinitely. | Learning Path Detail | ⚠️ Should Fix |
@@ -381,7 +381,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 ### ⚠️ Should Fix (high priority)
 
 3. **Locked story no feedback on tap** — add `DanioSnackBar.info` explaining what's needed to unlock.
-4. **Story play — no exit confirmation** — `PopScope` / confirm dialog before losing mid-story progress.
+4. **Story play exit confirmation** — complete; `PopScope` and the app-bar back button now ask before losing mid-story progress.
 5. **Path expansion load error state** — if `loadPath()` fails, show an error row + retry, not a stuck spinner.
 6. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
 7. **Review session UX** — improve cards without `questionText` to show at least the lesson context, or consider a "flip" reveal model.

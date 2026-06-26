@@ -739,6 +739,14 @@ CL-P1-004N Emergency lesson unlock boundary:
 - The content validation gate now fails if emergency/distress lessons are
   locked behind prerequisites.
 
+CL-P1-004O Story play exit confirmation:
+
+- Story Play now guards unfinished story progress with a `Leave story?`
+  confirmation when users use back after making story choices.
+- Cancel keeps the user in the current scene, while confirming returns to the
+  story hub.
+- Focused widget coverage verifies both the cancel and confirmed leave paths.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

@@ -5,6 +5,7 @@ import '../../models/story.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/app_button.dart';
+import '../../widgets/core/app_dialog.dart';
 import '../../widgets/core/glass_card.dart';
 import '../../widgets/xp_award_animation.dart';
 
@@ -24,6 +25,8 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
   StoryChoice? _selectedChoice;
   bool _showingFeedback = false;
   bool _isAwarding = false;
+  bool _exitDialogOpen = false;
+  bool _exitConfirmed = false;
 
   @override
   void initState() {
@@ -40,6 +43,9 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
   }
 
   bool get _isComplete => _progress.completed;
+
+  bool get _hasProgressToLose =>
+      !_isComplete && (_progress.totalChoices > 0 || _selectedChoice != null);
 
   void _onChoiceTap(StoryChoice choice) {
     if (_showingFeedback || _isComplete) return;
@@ -87,12 +93,14 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
     final xpEarned = progress.calculateXp(widget.story.xpReward);
 
     // Save to profile — updateStoryProgress handles XP + completedStories
-    await ref.read(userProfileProvider.notifier).updateStoryProgress(
-      storyId: widget.story.id,
-      progressData: progress.toJson(),
-      isCompleted: true,
-      xpReward: xpEarned,
-    );
+    await ref
+        .read(userProfileProvider.notifier)
+        .updateStoryProgress(
+          storyId: widget.story.id,
+          progressData: progress.toJson(),
+          isCompleted: true,
+          xpReward: xpEarned,
+        );
 
     if (!mounted) return;
 
@@ -106,33 +114,76 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
     );
   }
 
+  Future<bool> _confirmExitStory() async {
+    if (!_hasProgressToLose) return true;
+    if (_exitDialogOpen) return false;
+
+    _exitDialogOpen = true;
+    final confirmed = await showAppDestructiveDialog(
+      context: context,
+      title: 'Leave story?',
+      message:
+          'Your current story progress will be lost. You can restart this '
+          'story anytime.',
+      destructiveLabel: 'Leave',
+      cancelLabel: 'Keep playing',
+    );
+    _exitDialogOpen = false;
+    return confirmed ?? false;
+  }
+
+  Future<void> _requestExit() async {
+    final canExit = await _confirmExitStory();
+    if (!canExit || !mounted) return;
+
+    setState(() => _exitConfirmed = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(widget.story.title),
-        centerTitle: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          if (!_isComplete)
-            Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.sm),
-              child: Center(
-                child: Text(
-                  '${widget.story.difficulty.emoji} ${widget.story.difficulty.displayName}',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: context.textSecondary,
+    return PopScope(
+      canPop: _exitConfirmed || !_hasProgressToLose,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        await _requestExit();
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: Navigator.canPop(context)
+              ? IconButton(
+                  tooltip: 'Back',
+                  icon: const BackButtonIcon(),
+                  onPressed: _requestExit,
+                )
+              : null,
+          title: Text(widget.story.title),
+          centerTitle: false,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          actions: [
+            if (!_isComplete)
+              Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
+                child: Center(
+                  child: Text(
+                    '${widget.story.difficulty.emoji} ${widget.story.difficulty.displayName}',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
+        body: _isComplete ? _buildCompletionScreen() : _buildPlayScreen(),
       ),
-      body: _isComplete
-          ? _buildCompletionScreen()
-          : _buildPlayScreen(),
     );
   }
 
@@ -146,8 +197,8 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
         LinearProgressIndicator(
           value: _progress.totalChoices > 0
               ? (_progress.visitedSceneIds.length /
-                      (widget.story.scenes.length.clamp(1, 999)))
-                  .clamp(0.0, 1.0)
+                        (widget.story.scenes.length.clamp(1, 999)))
+                    .clamp(0.0, 1.0)
               : 0.0,
           backgroundColor: context.surfaceVariant,
           valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
@@ -317,7 +368,8 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
                   ),
                   _StatItem(
                     label: 'Choices',
-                    value: '${_progress.correctChoices}/${_progress.totalChoices}',
+                    value:
+                        '${_progress.correctChoices}/${_progress.totalChoices}',
                     icon: Icons.check_circle_outline,
                     color: AppColors.success,
                   ),
