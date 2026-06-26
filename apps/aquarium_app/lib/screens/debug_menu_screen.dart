@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
@@ -95,6 +96,17 @@ class DebugMenuScreen extends ConsumerStatefulWidget {
 }
 
 class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
+  Future<void> _setStringOrThrow(
+    SharedPreferences prefs,
+    String key,
+    String value,
+  ) async {
+    final saved = await prefs.setString(key, value);
+    if (!saved) {
+      throw StateError('SharedPreferences.setString returned false for $key.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!kDebugMode) return const SizedBox.shrink();
@@ -1293,7 +1305,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       }
       final prefs = await ref.read(sharedPreferencesProvider.future);
       final updated = current.copyWith(totalXp: xp, updatedAt: DateTime.now());
-      await prefs.setString('user_profile', jsonEncode(updated.toJson()));
+      await _setStringOrThrow(
+        prefs,
+        'user_profile',
+        jsonEncode(updated.toJson()),
+      );
       ref.invalidate(userProfileProvider);
       if (context.mounted) {
         DanioSnackBar.success(context, 'XP set to $xp');
@@ -1323,7 +1339,11 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
         currentStreak: streak,
         updatedAt: DateTime.now(),
       );
-      await prefs.setString('user_profile', jsonEncode(updated.toJson()));
+      await _setStringOrThrow(
+        prefs,
+        'user_profile',
+        jsonEncode(updated.toJson()),
+      );
       ref.invalidate(userProfileProvider);
       if (context.mounted) {
         DanioSnackBar.success(context, 'Streak set to $streak days');
@@ -1453,7 +1473,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       json['completedLessons'] = <String>[];
       json['lessonProgress'] = <String, dynamic>{};
       json['updatedAt'] = DateTime.now().toIso8601String();
-      await prefs.setString('user_profile', jsonEncode(json));
+      await _setStringOrThrow(prefs, 'user_profile', jsonEncode(json));
       ref.invalidate(userProfileProvider);
       if (context.mounted) {
         DanioSnackBar.success(context, 'Learning progress cleared');
@@ -1499,12 +1519,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
           final json = current.toJson();
           json['achievements'] = <String>[];
           json['updatedAt'] = DateTime.now().toIso8601String();
-          final saved = await prefs.setString(profileKey, jsonEncode(json));
-          if (!saved) {
-            throw StateError(
-              'SharedPreferences.setString returned false for $profileKey.',
-            );
-          }
+          await _setStringOrThrow(prefs, profileKey, jsonEncode(json));
         }
       } catch (_) {
         if (progressJson != null) {
@@ -1546,7 +1561,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       json['lastHeartRefill'] = null;
       json['dailyXpHistory'] = <String, dynamic>{};
       json['updatedAt'] = DateTime.now().toIso8601String();
-      await prefs.setString('user_profile', jsonEncode(json));
+      await _setStringOrThrow(prefs, 'user_profile', jsonEncode(json));
       ref.invalidate(userProfileProvider);
       if (context.mounted) {
         DanioSnackBar.success(
@@ -1619,7 +1634,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       json['completedLessons'] = allLessonIds;
       json['lessonProgress'] = progressMap;
       json['updatedAt'] = now.toIso8601String();
-      await prefs.setString('user_profile', jsonEncode(json));
+      await _setStringOrThrow(prefs, 'user_profile', jsonEncode(json));
       ref.invalidate(userProfileProvider);
 
       if (context.mounted) {

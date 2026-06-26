@@ -319,6 +319,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FK makes the Debug achievement reset reject failed local progress
   removals/profile writes and restore achievement progress if the profile write
   fails after removal.
+- CL-P1-009FL makes DebugMenu profile-write actions for XP, streak, learning
+  reset, gamification reset, and complete-all-lessons reject false
+  `user_profile` saves before showing success.
 
 ## 7. P2 Work - Presentation System
 

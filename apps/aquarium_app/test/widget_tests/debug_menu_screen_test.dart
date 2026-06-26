@@ -98,6 +98,16 @@ class _FailingPrefs implements SharedPreferences {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _DebugProfileWriteCase {
+  const _DebugProfileWriteCase({
+    required this.actionLabel,
+    required this.errorPrefix,
+  });
+
+  final String actionLabel;
+  final String errorPrefix;
+}
+
 Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
@@ -511,5 +521,74 @@ void main() {
         expect(savedProfile.achievements, originalProfile.achievements);
       },
     );
+
+    for (final debugCase in const [
+      _DebugProfileWriteCase(
+        actionLabel: 'Set XP: 500',
+        errorPrefix: 'Set XP failed',
+      ),
+      _DebugProfileWriteCase(
+        actionLabel: 'Set Streak: 7',
+        errorPrefix: 'Set streak failed',
+      ),
+      _DebugProfileWriteCase(
+        actionLabel: 'Reset Learning Only',
+        errorPrefix: 'Reset learning failed',
+      ),
+      _DebugProfileWriteCase(
+        actionLabel: 'Reset Gamification Only',
+        errorPrefix: 'Reset gamification failed',
+      ),
+      _DebugProfileWriteCase(
+        actionLabel: 'Complete All Lessons',
+        errorPrefix: 'Complete all lessons failed',
+      ),
+    ]) {
+      testWidgets(
+        '${debugCase.actionLabel} reports failed profile writes',
+        (tester) async {
+          final originalProfile = UserProfile(
+            id: 'debug-profile',
+            totalXp: 123,
+            weeklyXP: 77,
+            currentStreak: 5,
+            longestStreak: 8,
+            hearts: 3,
+            completedLessons: const ['existing_lesson'],
+            achievements: const ['first_tank'],
+            createdAt: DateTime(2026, 6, 26),
+            updatedAt: DateTime(2026, 6, 26),
+          );
+          final originalJson = jsonEncode(originalProfile.toJson());
+          SharedPreferences.setMockInitialValues({
+            'user_profile': originalJson,
+          });
+          final prefs = await SharedPreferences.getInstance();
+
+          await tester.pumpWidget(
+            _wrap(
+              sharedPreferences: _FailingPrefs(
+                prefs,
+                shouldFailSetString: (key, _) => key == 'user_profile',
+              ),
+            ),
+          );
+          await _advance(tester);
+
+          await tester.scrollUntilVisible(
+            find.text(debugCase.actionLabel),
+            500,
+          );
+          await tester.tap(find.text(debugCase.actionLabel));
+          await tester.pumpAndSettle();
+
+          expect(
+            find.textContaining(debugCase.errorPrefix),
+            findsOneWidget,
+          );
+          expect(prefs.getString('user_profile'), originalJson);
+        },
+      );
+    }
   });
 }

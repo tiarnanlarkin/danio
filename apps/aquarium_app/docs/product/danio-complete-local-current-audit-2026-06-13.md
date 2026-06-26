@@ -2767,6 +2767,16 @@ CL-P1-009FK Debug achievement reset persistence boundary:
   false profile writes, verifying achievement progress and profile achievements
   remain intact.
 
+CL-P1-009FL DebugMenu profile-write action boundary:
+
+- DebugMenu now routes profile rewrites for Set XP, Set Streak, Reset Learning,
+  Reset Gamification, and Complete All Lessons through a guarded local
+  `user_profile` save helper.
+- False `user_profile` writes show the existing action-specific error feedback
+  instead of invalidating profile state or showing success.
+- Focused DebugMenu widget coverage drives each visible action and verifies the
+  persisted profile JSON remains unchanged when the local write returns false.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3761,9 +3771,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   JSON when reset removal fails. Gem and inventory reset helpers now reject
   false local preference removals before exposing reset success. Debug
   achievement reset now rejects failed progress/profile preference writes and
-  restores progress if the profile write fails after progress removal. Tank
-  returning-user prompts now check failed dismissal seen-flag writes, and all
-  current OpenAI request
+  restores progress if the profile write fails after progress removal.
+  DebugMenu profile-write actions now reject false local `user_profile` saves
+  before showing success. Tank returning-user prompts now check failed
+  dismissal seen-flag writes, and all current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
   acceptance flag cannot be saved.
   Remaining
