@@ -326,6 +326,8 @@ Recent CL-P1-009 continuation note:
   `unlocked_species_v1` writes before showing success.
 - CL-P1-009FN makes Debug Clear All Data reject false local preference-clear
   results before showing restart-success copy.
+- CL-P1-009FO makes Debug Force SR Cards Due reject false
+  `spaced_repetition_cards` writes before showing due-now success.
 
 ## 7. P2 Work - Presentation System
 

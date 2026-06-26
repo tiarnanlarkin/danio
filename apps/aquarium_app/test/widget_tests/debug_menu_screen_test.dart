@@ -12,10 +12,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/debug_menu_screen.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/providers/storage_provider.dart';
+import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/providers/tank_decoration_provider.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/models/equipment.dart';
 import 'package:danio/models/log_entry.dart';
+import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/models/task.dart';
 import 'package:danio/models/tank_decoration.dart';
 import 'package:danio/models/user_profile.dart';
@@ -24,12 +26,14 @@ import 'package:danio/services/room_theme_unlock_service.dart';
 import 'package:danio/services/tank_decoration_unlock_service.dart';
 import 'package:danio/services/tank_progress_visual_service.dart';
 import 'package:danio/services/onboarding_service.dart';
+import 'package:danio/services/notification_scheduler.dart';
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/features/smart/ai_disclosure_preferences.dart';
 
 Widget _wrap({
   InMemoryStorageService? storage,
   SharedPreferences? sharedPreferences,
+  List<Override> overrides = const [],
 }) {
   if (sharedPreferences == null) {
     SharedPreferences.setMockInitialValues({});
@@ -40,6 +44,7 @@ Widget _wrap({
         return sharedPreferences ?? SharedPreferences.getInstance();
       }),
       if (storage != null) storageServiceProvider.overrideWithValue(storage),
+      ...overrides,
     ],
     child: const MaterialApp(home: DebugMenuScreen()),
   );
@@ -116,6 +121,57 @@ class _DebugProfileWriteCase {
 
   final String actionLabel;
   final String errorPrefix;
+}
+
+class _NoopReminderNotificationService implements ReminderNotificationService {
+  @override
+  Future<void> cancelReviewReminder() async {}
+
+  @override
+  Future<void> cancelStreakNotifications() async {}
+
+  @override
+  Future<void> scheduleAllStreakNotifications({
+    required int currentStreak,
+    required int dailyXpGoal,
+    required int todayXp,
+    TimeOfDay? morningTime,
+    TimeOfDay? eveningTime,
+    TimeOfDay? nightTime,
+  }) async {}
+
+  @override
+  Future<void> scheduleReviewReminder({
+    required int dueCardsCount,
+    TimeOfDay? time,
+  }) async {}
+}
+
+class _FrozenSpacedRepetitionNotifier extends SpacedRepetitionNotifier {
+  _FrozenSpacedRepetitionNotifier(
+    super.ref, {
+    required List<ReviewCard> cards,
+  }) {
+    state = SpacedRepetitionState(
+      cards: cards,
+      stats: ReviewStats.fromCards(cards),
+    );
+  }
+}
+
+List<ReviewCard> _futureReviewCards(int count) {
+  final now = DateTime(2026, 6, 26, 12);
+  return List.generate(
+    count,
+    (index) => ReviewCard(
+      id: 'future-card-$index',
+      conceptId: 'concept-$index',
+      conceptType: ConceptType.lesson,
+      strength: 0.6,
+      lastReviewed: now,
+      nextReview: now.add(const Duration(days: 7)),
+    ),
+  );
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -658,6 +714,50 @@ void main() {
       expect(find.textContaining('Clear all data failed'), findsOneWidget);
       expect(find.text('All data cleared. Restart the app.'), findsNothing);
       expect(prefs.getString('user_profile'), '{"id":"debug-profile"}');
+    });
+
+    testWidgets('force SR cards due reports failed local card writes', (
+      tester,
+    ) async {
+      final originalCards = _futureReviewCards(1);
+      final originalJson = jsonEncode(
+        originalCards.map((card) => card.toJson()).toList(),
+      );
+      SharedPreferences.setMockInitialValues({
+        'spaced_repetition_cards': originalJson,
+      });
+      final prefs = await SharedPreferences.getInstance();
+
+      await tester.pumpWidget(
+        _wrap(
+          sharedPreferences: _FailingPrefs(
+            prefs,
+            shouldFailSetString: (key, _) => key == 'spaced_repetition_cards',
+          ),
+          overrides: [
+            notificationServiceProvider.overrideWithValue(
+              _NoopReminderNotificationService(),
+            ),
+            spacedRepetitionProvider.overrideWith(
+              (ref) => _FrozenSpacedRepetitionNotifier(
+                ref,
+                cards: originalCards,
+              ),
+            ),
+          ],
+        ),
+      );
+      await _advance(tester);
+
+      await tester.scrollUntilVisible(find.text('Force 10 SR Cards Due'), 500);
+      await tester.ensureVisible(find.text('Force 10 SR Cards Due'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Force 10 SR Cards Due'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Force SR cards due failed'), findsOneWidget);
+      expect(find.text('1 SR cards set to due-now'), findsNothing);
+      expect(prefs.getString('spaced_repetition_cards'), originalJson);
     });
   });
 }

@@ -1697,7 +1697,7 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
       final cardsJson = jsonEncode(
         updatedCards.map((c) => c.toJson()).toList(),
       );
-      await prefs.setString('spaced_repetition_cards', cardsJson);
+      await _setStringOrThrow(prefs, 'spaced_repetition_cards', cardsJson);
       ref.invalidate(spacedRepetitionProvider);
 
       final actual = toUpdate.length;

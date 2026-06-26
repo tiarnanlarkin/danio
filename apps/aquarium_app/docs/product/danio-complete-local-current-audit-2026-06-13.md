@@ -2796,6 +2796,16 @@ CL-P1-009FN Debug clear-all preference boundary:
 - Focused DebugMenu widget coverage confirms failed clear results leave the
   existing local preference value in place.
 
+CL-P1-009FO Debug force-SR-cards persistence boundary:
+
+- Debug `Force 10/50 SR Cards Due` now checks the local
+  `spaced_repetition_cards` write before invalidating practice state or showing
+  due-now success.
+- False review-card writes show the existing force-SR error feedback and leave
+  the previous persisted review-card JSON unchanged.
+- Focused DebugMenu widget coverage drives the visible Force 10 action with a
+  false local write.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
