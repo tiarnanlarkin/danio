@@ -69,8 +69,8 @@ final speciesCarePath = LearningPath(
             id: 'sc_betta_q1',
             question: 'What is the minimum recommended tank size for a betta?',
             options: [
-              '1 gallon (a bowl)',
-              '2.5 gallons',
+              '4 litres (1 gallon, a bowl)',
+              '10 litres (2.5 gallons)',
               '5 gallons (19 litres)',
               '10 gallons (40 litres)',
             ],
@@ -155,7 +155,7 @@ final speciesCarePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.keyPoint,
           content:
-              '20 gallons for the first fancy goldfish, +10 gallons per additional fish. Commons and comets are pond fish that grow to 12"+ and should not be kept in typical home aquariums.',
+              '75 litres (20 gallons) for the first fancy goldfish, +40 litres (10 gallons) per additional fish. Commons and comets are pond fish that grow to 12"+ and should not be kept in typical home aquariums.',
         ),
       ],
       quiz: Quiz(
@@ -181,10 +181,15 @@ final speciesCarePath = LearningPath(
           const QuizQuestion(
             id: 'sc_gold_q3',
             question: 'How much tank space does the first fancy goldfish need?',
-            options: ['5 gallons', '10 gallons', '20 gallons', '50 gallons'],
+            options: [
+              '19 litres (5 gallons)',
+              '40 litres (10 gallons)',
+              '75 litres (20 gallons)',
+              '190 litres (50 gallons)',
+            ],
             correctIndex: 2,
             explanation:
-                'The first fancy goldfish needs 20 gallons, plus 10 additional gallons per extra fish. They produce a lot of waste and need powerful filtration.',
+                'The first fancy goldfish needs 75 litres (20 gallons), plus 40 litres (10 gallons) per extra fish. They produce a lot of waste and need powerful filtration.',
           ),
           const QuizQuestion(
             id: 'sc_gold_q4',
@@ -255,7 +260,7 @@ final speciesCarePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Water: pH 6.0–7.0, temperature 72–80°F (22–27°C)\n• Tank mates: corydoras, small rasboras, peaceful dwarf gouramis\n• Diet: varied — quality flake food + frozen brine shrimp or daphnia\n• Tank size: 10 gallon minimum for a school',
+              '• Water: pH 6.0–7.0, temperature 72–80°F (22–27°C)\n• Tank mates: corydoras, small rasboras, peaceful dwarf gouramis\n• Diet: varied — quality flake food + frozen brine shrimp or daphnia\n• Tank size: 40 litres (10 gallons) minimum for a school',
         ),
         const LessonSection(
           type: LessonSectionType.warning,
@@ -371,12 +376,12 @@ final speciesCarePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'Africans need a minimum of 55 gallons — the extra space dilutes aggression. South American species range from 30 gallons for dwarf cichlids (rams, apistogrammas) up to 75+ gallons for Oscars, which grow to 12–14 inches. Don\'t let a fish shop sell you a "small" Oscar for a 20-gallon tank.',
+              'Africans need a minimum of 210 litres (55 gallons) — the extra space dilutes aggression. South American species range from 115 litres (30 gallons) for dwarf cichlids (rams, apistogrammas) up to 285+ litres (75+ gallons) for Oscars, which grow to 12–14 inches. Don\'t let a fish shop sell you a "small" Oscar for a 75-litre (20-gallon) tank.',
         ),
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• African cichlids: pH 7.8–8.6, 55 gal+, rock caves, slight overstocking reduces aggression\n• Dwarf SA cichlids (rams): pH 6.0–7.2, 30 gal+, driftwood and plants\n• Oscars: pH 6.5–7.5, 75 gal+, grow fast, very messy — need heavy filtration',
+              '• African cichlids: pH 7.8–8.6, 210L+ (55 gal+), rock caves, slight overstocking reduces aggression\n• Dwarf SA cichlids (rams): pH 6.0–7.2, 115L+ (30 gal+), driftwood and plants\n• Oscars: pH 6.5–7.5, 285L+ (75 gal+), grow fast, very messy — need heavy filtration',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -410,10 +415,15 @@ final speciesCarePath = LearningPath(
             id: 'sc_cich_q2',
             question:
                 'What is the minimum tank size recommended for African cichlids?',
-            options: ['10 gallons', '20 gallons', '30 gallons', '55 gallons'],
+            options: [
+              '40 litres (10 gallons)',
+              '75 litres (20 gallons)',
+              '115 litres (30 gallons)',
+              '210 litres (55 gallons)',
+            ],
             correctIndex: 3,
             explanation:
-                'African cichlids need 55 gallons as a minimum. The extra space dilutes aggression and allows the natural territorial behaviours without constant fighting.',
+                'African cichlids need 210 litres (55 gallons) as a minimum. The extra space dilutes aggression and allows the natural territorial behaviours without constant fighting.',
           ),
           const QuizQuestion(
             id: 'sc_cich_q3',
@@ -505,7 +515,7 @@ final speciesCarePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• Cleanup crew role: algae grazing, biofilm, uneaten food\n• Safe tank mates: small tetras, rasboras, corydoras, snails\n• Avoid: angelfish, bettas (may eat shrimp), any copper medications\n• Minimum tank: 5 gallons for a shrimp-only setup',
+              '• Cleanup crew role: algae grazing, biofilm, uneaten food\n• Safe tank mates: small tetras, rasboras, corydoras, snails\n• Avoid: angelfish, bettas (may eat shrimp), any copper medications\n• Minimum tank: 19 litres (5 gallons) for a shrimp-only setup',
         ),
       ],
       quiz: Quiz(

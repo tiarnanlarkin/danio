@@ -747,6 +747,14 @@ CL-QA-005A Learning unit spelling validation:
 - Existing learning drift was corrected in First Fish beginner-mistakes copy
   and the Maintenance siphoning lesson.
 
+CL-QA-005B Learning metric-context validation:
+
+- The content validation gate now fails learning copy that mentions gallons
+  without a litre/litres equivalent in the same user-facing string.
+- Current gallon-only examples were updated in First Fish, Fish Health, Species
+  Care, and Advanced Topics so tank-size and treatment-dose copy is readable
+  for metric-first users while preserving legacy gallon context.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

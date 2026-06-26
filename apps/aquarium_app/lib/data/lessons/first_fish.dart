@@ -838,7 +838,7 @@ final firstFishPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              '"One inch of fish per gallon" is outdated and often wrong. A 12-inch oscar in a 12-gallon tank? Disaster! Consider adult size, bioload, and swimming space.',
+              '"One inch of fish per gallon" is outdated and often wrong. A 30cm oscar in a 45-litre (12-gallon) tank? Disaster! Consider adult size, bioload, and swimming space.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -938,7 +938,8 @@ final firstFishPath = LearningPath(
           ),
           const QuizQuestion(
             id: 'ff_mist_q4',
-            question: 'Is the "1 inch of fish per gallon" rule reliable?',
+            question:
+                'Is the old "1 inch per gallon" / "2.5cm per 4 litres" stocking rule reliable?',
             options: [
               'Yes, always use it',
               'No, it\'s outdated and often wrong',
@@ -947,7 +948,7 @@ final firstFishPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'This rule is terrible! A 12-inch oscar needs WAY more than 12 gallons. Consider adult size, bioload, and swimming behaviour instead.',
+                'This rule is terrible! A 30cm oscar needs WAY more than 45 litres (12 gallons). Consider adult size, bioload, and swimming behaviour instead.',
           ),
           const QuizQuestion(
             id: 'ff_mist_q5',

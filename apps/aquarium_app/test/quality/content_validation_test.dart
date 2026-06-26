@@ -202,6 +202,26 @@ void _expectNoUsVolumeSpelling(Iterable<MapEntry<String, String>> entries) {
   }
 }
 
+void _expectMetricVolumeContext(Iterable<MapEntry<String, String>> entries) {
+  final gallonVolume = RegExp(r'\bgallons?\b', caseSensitive: false);
+  final litreVolume = RegExp(
+    r'\blitres?\b|\b\d+(?:\.\d+)?\s*L\b',
+    caseSensitive: false,
+  );
+
+  for (final entry in entries) {
+    if (!gallonVolume.hasMatch(entry.value)) {
+      continue;
+    }
+
+    expect(
+      entry.value,
+      matches(litreVolume),
+      reason: '${entry.key} mentions gallons without a litre/litres equivalent',
+    );
+  }
+}
+
 void _expectHttpsSource({
   required String title,
   required String publisher,
@@ -233,6 +253,10 @@ void main() {
 
     test('learning copy uses litre spelling for volume units', () {
       _expectNoUsVolumeSpelling(_allLessons.expand(_lessonStrings));
+    });
+
+    test('learning copy pairs gallon references with litre equivalents', () {
+      _expectMetricVolumeContext(_allLessons.expand(_lessonStrings));
     });
 
     test(
