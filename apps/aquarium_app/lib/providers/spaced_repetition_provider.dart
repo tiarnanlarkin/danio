@@ -749,9 +749,6 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     if (state.currentSession == null) return;
 
     try {
-      // Update review streak
-      await _updateReviewStreak();
-
       // Load and update session count
       final prefs = await _ref.read(sharedPreferencesProvider.future);
       final sessionCountJson = prefs.getString(_sessionsKey);
@@ -763,7 +760,14 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       }
 
       // Save session count
-      await prefs.setString(_sessionsKey, jsonEncode({'count': sessionCount}));
+      await _setStringOrThrow(
+        prefs,
+        _sessionsKey,
+        jsonEncode({'count': sessionCount}),
+      );
+
+      // Update review streak after the session count is durable.
+      await _updateReviewStreak();
 
       // Route through the full achievement system so XP, gems, and dialogs fire
       await _ref

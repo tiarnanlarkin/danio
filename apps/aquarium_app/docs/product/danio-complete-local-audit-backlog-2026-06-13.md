@@ -234,6 +234,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EH preserves legacy `UserProfile.inventory` during failed
   `shop_inventory` migration writes so retryable migration cannot lose owned
   items.
+- CL-P1-009EI saves spaced-repetition session counts before streak/achievement
+  side effects, keeping the active review session retryable when the local
+  session-count write fails.
 
 ## 7. P2 Work - Presentation System
 

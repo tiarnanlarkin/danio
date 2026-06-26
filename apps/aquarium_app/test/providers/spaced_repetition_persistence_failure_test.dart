@@ -127,6 +127,22 @@ ProviderContainer _containerWithFalseCardSaves(SharedPreferences prefs) {
   );
 }
 
+ProviderContainer _containerWithFalseSavesForKey(
+  SharedPreferences prefs,
+  String failedKey,
+) {
+  return ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWith((ref) async {
+        return _FalseSetStringPrefs(prefs, (key, _) => key == failedKey);
+      }),
+      notificationServiceProvider.overrideWithValue(
+        _NoopReminderNotificationService(),
+      ),
+    ],
+  );
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -335,6 +351,42 @@ void main() {
         prefs.getString('spaced_repetition_cards'),
         jsonEncode([originalCard.toJson()]),
       );
+    },
+  );
+
+  test(
+    'completeSession keeps active session when session count save returns false',
+    () async {
+      final prefs = await SharedPreferences.getInstance();
+      final container = _containerWithFalseSavesForKey(
+        prefs,
+        'spaced_repetition_sessions',
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(spacedRepetitionProvider.notifier);
+      await _waitForLoad(container);
+      await notifier.createCard(
+        conceptId: 'nitrogen_cycle_intro',
+        conceptType: ConceptType.lesson,
+      );
+      await notifier.startSession();
+      expect(
+        container.read(spacedRepetitionProvider).currentSession,
+        isNotNull,
+      );
+
+      await expectLater(notifier.completeSession(), throwsA(isA<StateError>()));
+
+      final state = container.read(spacedRepetitionProvider);
+      expect(state.currentSession, isNotNull);
+      expect(state.stats.currentStreak, 0);
+      expect(
+        state.errorMessage,
+        contains("Couldn't save your session results"),
+      );
+      expect(prefs.getString('spaced_repetition_sessions'), isNull);
+      expect(prefs.getString('spaced_repetition_streak'), isNull);
     },
   );
 }

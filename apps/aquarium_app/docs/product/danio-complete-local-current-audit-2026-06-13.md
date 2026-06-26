@@ -2452,6 +2452,17 @@ CL-P1-009EH Legacy inventory migration write boundary:
   and verifies the visible migrated item remains available while the legacy
   profile inventory is preserved for a later retry.
 
+CL-P1-009EI Review session count write boundary:
+
+- Spaced-repetition session completion now saves `spaced_repetition_sessions`
+  through the guarded local preference write path before updating streak or
+  achievement side effects.
+- Failed or false session-count writes keep the active review session open and
+  prevent unsaved streak progress from appearing as durable.
+- Focused provider coverage simulates a false `spaced_repetition_sessions`
+  write and verifies the session remains active, the session counter is unset,
+  and no streak snapshot is written.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
