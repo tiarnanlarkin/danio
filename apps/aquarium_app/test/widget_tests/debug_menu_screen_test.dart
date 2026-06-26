@@ -27,17 +27,75 @@ import 'package:danio/services/onboarding_service.dart';
 import 'package:danio/theme/room_themes.dart';
 import 'package:danio/features/smart/ai_disclosure_preferences.dart';
 
-Widget _wrap({InMemoryStorageService? storage}) {
-  SharedPreferences.setMockInitialValues({});
+Widget _wrap({
+  InMemoryStorageService? storage,
+  SharedPreferences? sharedPreferences,
+}) {
+  if (sharedPreferences == null) {
+    SharedPreferences.setMockInitialValues({});
+  }
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWith((ref) async {
-        return SharedPreferences.getInstance();
+        return sharedPreferences ?? SharedPreferences.getInstance();
       }),
       if (storage != null) storageServiceProvider.overrideWithValue(storage),
     ],
     child: const MaterialApp(home: DebugMenuScreen()),
   );
+}
+
+class _FailingPrefs implements SharedPreferences {
+  _FailingPrefs(
+    this._delegate, {
+    this.shouldFailRemove = _neverFailRemove,
+    this.shouldFailSetString = _neverFailSetString,
+  });
+
+  final SharedPreferences _delegate;
+  final bool Function(String key) shouldFailRemove;
+  final bool Function(String key, String value) shouldFailSetString;
+
+  static bool _neverFailRemove(String key) => false;
+
+  static bool _neverFailSetString(String key, String value) => false;
+
+  @override
+  String? getString(String key) => _delegate.getString(key);
+
+  @override
+  int? getInt(String key) => _delegate.getInt(key);
+
+  @override
+  bool? getBool(String key) => _delegate.getBool(key);
+
+  @override
+  bool containsKey(String key) => _delegate.containsKey(key);
+
+  @override
+  Future<bool> setString(String key, String value) {
+    if (shouldFailSetString(key, value)) {
+      return Future<bool>.value(false);
+    }
+    return _delegate.setString(key, value);
+  }
+
+  @override
+  Future<bool> setInt(String key, int value) => _delegate.setInt(key, value);
+
+  @override
+  Future<bool> setBool(String key, bool value) => _delegate.setBool(key, value);
+
+  @override
+  Future<bool> remove(String key) {
+    if (shouldFailRemove(key)) {
+      return Future<bool>.value(false);
+    }
+    return _delegate.remove(key);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 Future<void> _advance(WidgetTester tester) async {
@@ -359,5 +417,99 @@ void main() {
       expect(logs.map((log) => log.type), contains(LogType.waterChange));
       expect(logs.map((log) => log.title), contains('Tablet QA water test'));
     });
+
+    testWidgets(
+      'reset achievements reports failed local removal without clearing profile',
+      (tester) async {
+        final originalProfile = UserProfile(
+          id: 'debug-profile',
+          achievements: const ['first_tank'],
+          createdAt: DateTime(2026, 6, 26),
+          updatedAt: DateTime(2026, 6, 26),
+        );
+        const progressJson = '{"first_tank":{"current":1}}';
+        SharedPreferences.setMockInitialValues({
+          'achievement_progress': progressJson,
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+
+        await tester.pumpWidget(
+          _wrap(
+            sharedPreferences: _FailingPrefs(
+              prefs,
+              shouldFailRemove: (key) => key == 'achievement_progress',
+            ),
+          ),
+        );
+        await _advance(tester);
+
+        await tester.scrollUntilVisible(
+          find.text('Reset Achievements Only'),
+          500,
+        );
+        await tester.tap(find.text('Reset Achievements Only'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.textContaining('Reset achievements failed'),
+          findsOneWidget,
+        );
+        expect(find.text('Achievements cleared'), findsNothing);
+        expect(prefs.getString('achievement_progress'), progressJson);
+
+        final savedProfile = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(savedProfile.achievements, originalProfile.achievements);
+      },
+    );
+
+    testWidgets(
+      'reset achievements restores progress when profile write fails',
+      (tester) async {
+        final originalProfile = UserProfile(
+          id: 'debug-profile',
+          achievements: const ['first_tank'],
+          createdAt: DateTime(2026, 6, 26),
+          updatedAt: DateTime(2026, 6, 26),
+        );
+        const progressJson = '{"first_tank":{"current":1}}';
+        SharedPreferences.setMockInitialValues({
+          'achievement_progress': progressJson,
+          'user_profile': jsonEncode(originalProfile.toJson()),
+        });
+        final prefs = await SharedPreferences.getInstance();
+
+        await tester.pumpWidget(
+          _wrap(
+            sharedPreferences: _FailingPrefs(
+              prefs,
+              shouldFailSetString: (key, _) => key == 'user_profile',
+            ),
+          ),
+        );
+        await _advance(tester);
+
+        await tester.scrollUntilVisible(
+          find.text('Reset Achievements Only'),
+          500,
+        );
+        await tester.tap(find.text('Reset Achievements Only'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.textContaining('Reset achievements failed'),
+          findsOneWidget,
+        );
+        expect(find.text('Achievements cleared'), findsNothing);
+        expect(prefs.getString('achievement_progress'), progressJson);
+
+        final savedProfile = UserProfile.fromJson(
+          jsonDecode(prefs.getString('user_profile')!) as Map<String, dynamic>,
+        );
+        expect(savedProfile.achievements, originalProfile.achievements);
+      },
+    );
   });
 }

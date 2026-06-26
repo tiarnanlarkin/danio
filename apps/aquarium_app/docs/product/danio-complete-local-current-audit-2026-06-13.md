@@ -2756,6 +2756,17 @@ CL-P1-009FJ Gem/inventory reset removal boundary:
 - Focused provider coverage simulates false remove results for both reset
   helpers.
 
+CL-P1-009FK Debug achievement reset persistence boundary:
+
+- Debug `Reset Achievements Only` now checks the local `achievement_progress`
+  removal before clearing profile achievements.
+- If the profile achievement write fails after progress was removed, the reset
+  restores the previous achievement-progress JSON before showing normal error
+  feedback.
+- Focused DebugMenu widget coverage simulates both false progress removal and
+  false profile writes, verifying achievement progress and profile achievements
+  remain intact.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
@@ -3748,7 +3759,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   when its seen-flag write fails. Spaced-repetition reset now keeps visible
   cards/stats and restores partially removed card/stat/streak/session local
   JSON when reset removal fails. Gem and inventory reset helpers now reject
-  false local preference removals before exposing reset success. Tank
+  false local preference removals before exposing reset success. Debug
+  achievement reset now rejects failed progress/profile preference writes and
+  restores progress if the profile write fails after progress removal. Tank
   returning-user prompts now check failed dismissal seen-flag writes, and all
   current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure

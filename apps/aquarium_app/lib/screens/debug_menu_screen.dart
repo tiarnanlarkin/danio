@@ -1481,15 +1481,41 @@ class _DebugMenuScreenState extends ConsumerState<DebugMenuScreen> {
 
   Future<void> _resetAchievements(BuildContext context, WidgetRef ref) async {
     try {
+      const progressKey = 'achievement_progress';
+      const profileKey = 'user_profile';
       final prefs = await ref.read(sharedPreferencesProvider.future);
-      await prefs.remove('achievement_progress');
-      // Clear achievements list from user profile
-      final current = ref.read(userProfileProvider).value;
-      if (current != null) {
-        final json = current.toJson();
-        json['achievements'] = <String>[];
-        json['updatedAt'] = DateTime.now().toIso8601String();
-        await prefs.setString('user_profile', jsonEncode(json));
+      final progressJson = prefs.getString(progressKey);
+      final removed = await prefs.remove(progressKey);
+      if (!removed) {
+        throw StateError(
+          'SharedPreferences.remove returned false for $progressKey.',
+        );
+      }
+
+      try {
+        // Clear achievements list from user profile
+        final current = ref.read(userProfileProvider).value;
+        if (current != null) {
+          final json = current.toJson();
+          json['achievements'] = <String>[];
+          json['updatedAt'] = DateTime.now().toIso8601String();
+          final saved = await prefs.setString(profileKey, jsonEncode(json));
+          if (!saved) {
+            throw StateError(
+              'SharedPreferences.setString returned false for $profileKey.',
+            );
+          }
+        }
+      } catch (_) {
+        if (progressJson != null) {
+          final restored = await prefs.setString(progressKey, progressJson);
+          if (!restored) {
+            throw StateError(
+              'SharedPreferences.setString returned false while restoring $progressKey.',
+            );
+          }
+        }
+        rethrow;
       }
       ref.invalidate(achievementProgressProvider);
       ref.invalidate(userProfileProvider);

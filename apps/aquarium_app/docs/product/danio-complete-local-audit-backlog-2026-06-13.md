@@ -316,6 +316,9 @@ Recent CL-P1-009 continuation note:
   removal fails.
 - CL-P1-009FJ makes gem and inventory reset helpers reject failed local
   preference removals before reporting reset success.
+- CL-P1-009FK makes the Debug achievement reset reject failed local progress
+  removals/profile writes and restore achievement progress if the profile write
+  fails after removal.
 
 ## 7. P2 Work - Presentation System
 
