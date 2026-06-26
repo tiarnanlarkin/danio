@@ -332,6 +332,9 @@ Recent CL-P1-009 continuation note:
   haptic-feedback writes report false local persistence results, and keeps
   Phone Notifications from showing disabled-success feedback when its local
   save fails.
+- CL-P1-009FQ makes the Settings theme picker wait for local `theme_mode`
+  persistence before closing, keeping the picker open with retry feedback when
+  the save fails.
 
 ## 7. P2 Work - Presentation System
 

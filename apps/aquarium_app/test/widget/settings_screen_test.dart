@@ -543,6 +543,33 @@ void main() {
 
       expect(find.text('Choose Theme'), findsNothing);
     });
+
+    testWidgets('failed theme save keeps picker open with retry feedback', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'theme_mode': 0});
+      final prefs = await SharedPreferences.getInstance();
+      final throwingPrefs = _ThrowingPrefs(
+        prefs,
+        (key, _) => key == 'theme_mode',
+      );
+
+      await tester.pumpWidget(
+        _wrap(const SettingsScreen(), prefs: throwingPrefs),
+      );
+      await tester.pump();
+
+      await tester.scrollUntilVisible(find.text('Light/Dark Mode'), 500.0);
+      await tester.tap(find.text('Light/Dark Mode'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Dark'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Choose Theme'), findsOneWidget);
+      expect(prefs.getInt('theme_mode'), 0);
+      expect(find.text("Couldn't save theme. Try again."), findsOneWidget);
+    });
   });
 
   group('_UnitsTile', () {

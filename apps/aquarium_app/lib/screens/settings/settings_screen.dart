@@ -380,6 +380,16 @@ void _showThemePicker(
   WidgetRef ref,
   AppThemeMode current,
 ) {
+  Future<void> chooseTheme(BuildContext sheetContext, AppThemeMode mode) async {
+    final saved = await ref.read(settingsProvider.notifier).setThemeMode(mode);
+    if (!sheetContext.mounted) return;
+    if (saved) {
+      Navigator.maybePop(sheetContext);
+    } else {
+      AppFeedback.showError(sheetContext, 'Couldn\'t save theme. Try again.');
+    }
+  }
+
   showAppDragSheet(
     context: context,
     builder: (ctx) => SafeArea(
@@ -402,10 +412,7 @@ void _showThemePicker(
                 ? const Icon(Icons.check, color: AppColors.primary)
                 : null,
             onTap: () {
-              ref
-                  .read(settingsProvider.notifier)
-                  .setThemeMode(AppThemeMode.system);
-              Navigator.maybePop(ctx);
+              chooseTheme(ctx, AppThemeMode.system);
             },
           ),
           AppListTile(
@@ -416,10 +423,7 @@ void _showThemePicker(
                 ? const Icon(Icons.check, color: AppColors.primary)
                 : null,
             onTap: () {
-              ref
-                  .read(settingsProvider.notifier)
-                  .setThemeMode(AppThemeMode.light);
-              Navigator.maybePop(ctx);
+              chooseTheme(ctx, AppThemeMode.light);
             },
           ),
           AppListTile(
@@ -430,10 +434,7 @@ void _showThemePicker(
                 ? const Icon(Icons.check, color: AppColors.primary)
                 : null,
             onTap: () {
-              ref
-                  .read(settingsProvider.notifier)
-                  .setThemeMode(AppThemeMode.dark);
-              Navigator.maybePop(ctx);
+              chooseTheme(ctx, AppThemeMode.dark);
             },
           ),
           const SizedBox(height: AppSpacing.md),

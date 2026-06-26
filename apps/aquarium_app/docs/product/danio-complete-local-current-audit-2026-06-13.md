@@ -2817,6 +2817,15 @@ CL-P1-009FP Settings toggle persistence boundary:
   previous settings state, and focused Settings widget coverage verifies a
   failed phone-notification disable keeps the switch on with retry feedback.
 
+CL-P1-009FQ Settings theme-picker persistence boundary:
+
+- The Settings Light/Dark Mode picker now awaits the `theme_mode` save result
+  before dismissing the sheet.
+- Failed theme writes keep the picker open, preserve the previous local
+  `theme_mode` value, and show retry feedback instead of silently closing.
+- Focused Settings widget coverage drives the Dark option with a simulated
+  failed `theme_mode` write.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
