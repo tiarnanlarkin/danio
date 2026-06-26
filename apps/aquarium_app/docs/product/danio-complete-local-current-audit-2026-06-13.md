@@ -2530,6 +2530,15 @@ CL-P1-009EN Settings replay-onboarding reset failure boundary:
   verifies Settings remains visible with `Couldn't replay onboarding. Try
   again.` feedback.
 
+CL-P1-009EO Clear All Data scope copy:
+
+- Preferences Clear All Data now describes its actual local scope as tanks,
+  logs, tasks, and photos instead of claiming to delete settings.
+- Delete My Data remains the broader privacy action for preferences, progress,
+  achievements, and onboarding state.
+- Focused widget coverage verifies the visible Danger Zone subtitle matches the
+  implemented clear-data flow.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:

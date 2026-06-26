@@ -199,7 +199,7 @@ class SettingsScreen extends ConsumerWidget {
           color: AppColors.error,
         ),
         title: 'Clear All Data',
-        subtitle: 'Delete all tanks, logs, and settings',
+        subtitle: 'Delete tanks, logs, tasks, and photos',
         isDestructive: true,
         onTap: () => confirmClearData(context, ref),
       ),

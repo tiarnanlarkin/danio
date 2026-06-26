@@ -254,6 +254,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EN makes Preferences Replay Onboarding catch failed onboarding reset
   writes, keep the user on Settings, and show retry feedback instead of
   navigating away after an unsaved reset.
+- CL-P1-009EO makes Preferences Clear All Data describe the actual local
+  tanks/logs/tasks/photos scope instead of implying settings are deleted by
+  that narrower action.
 
 ## 7. P2 Work - Presentation System
 

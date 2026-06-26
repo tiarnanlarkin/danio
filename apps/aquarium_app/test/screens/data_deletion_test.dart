@@ -277,7 +277,10 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
 
-      expect(find.text('Delete all tanks, logs, and settings'), findsOneWidget);
+      expect(
+        find.text('Delete tanks, logs, tasks, and photos'),
+        findsOneWidget,
+      );
     });
   });
 }
