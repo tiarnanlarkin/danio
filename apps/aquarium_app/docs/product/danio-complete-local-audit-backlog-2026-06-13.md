@@ -347,6 +347,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009FU makes Reminder Settings time edits catch failed `user_profile`
   persistence, preserve the previous reminder time, and show retry feedback
   instead of leaking an async error or showing false updated feedback.
+- CL-P1-009FV makes Preferences region, tank-stage, experience-level, and
+  goals edits await `user_profile` persistence, keeping the picker open with
+  retry feedback when the local save fails.
 
 ## 7. P2 Work - Presentation System
 

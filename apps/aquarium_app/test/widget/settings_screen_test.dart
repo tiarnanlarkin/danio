@@ -701,6 +701,34 @@ void main() {
       expect(find.text('UK & Ireland'), findsOneWidget);
     });
 
+    testWidgets('failed region save keeps picker open with feedback', (
+      tester,
+    ) async {
+      final originalJson = jsonEncode(_profileJson());
+      SharedPreferences.setMockInitialValues({'user_profile': originalJson});
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetStringPrefs(prefs, 'user_profile');
+
+      await tester.pumpWidget(_wrap(const SettingsScreen(), prefs: falsePrefs));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(find.text('Region'), 500.0);
+      await tester.tap(find.text('Region'));
+      await tester.pumpAndSettle();
+      expect(find.text('Choose Region'), findsOneWidget);
+
+      await tester.tap(find.text('UK & Ireland'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Choose Region'), findsOneWidget);
+      expect(prefs.getString('user_profile'), originalJson);
+      expect(
+        find.text("Couldn't update region. Try again."),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('experience picker updates the visible profile level', (
       tester,
     ) async {
@@ -752,6 +780,40 @@ void main() {
 
       await _dragUntilTextVisible(tester, 'Goals');
       expect(find.text('Learn the science, Beautiful display'), findsOneWidget);
+    });
+
+    testWidgets('failed goals save keeps picker open with feedback', (
+      tester,
+    ) async {
+      final originalJson = jsonEncode(
+        _profileJson(goals: const ['keepFishAlive']),
+      );
+      SharedPreferences.setMockInitialValues({'user_profile': originalJson});
+      final prefs = await SharedPreferences.getInstance();
+      final falsePrefs = _FalseSetStringPrefs(prefs, 'user_profile');
+
+      await tester.pumpWidget(_wrap(const SettingsScreen(), prefs: falsePrefs));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await _dragUntilTextVisible(tester, 'Goals');
+      await tester.tap(find.text('Goals'));
+      await tester.pumpAndSettle();
+      expect(find.text('Choose Goals'), findsOneWidget);
+
+      await tester.tap(
+        find.widgetWithText(CheckboxListTile, 'Beautiful display'),
+      );
+      await tester.pump();
+      await tester.tap(find.text('Save goals'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Choose Goals'), findsOneWidget);
+      expect(prefs.getString('user_profile'), originalJson);
+      expect(
+        find.text("Couldn't update goals. Try again."),
+        findsOneWidget,
+      );
     });
 
     testWidgets('failed difficulty override save keeps selection unchanged', (

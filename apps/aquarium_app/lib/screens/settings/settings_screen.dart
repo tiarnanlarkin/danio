@@ -610,11 +610,15 @@ void _showRegionPicker(
               trailing: currentRegion == entry.key
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
-              onTap: () {
-                ref
-                    .read(userProfileProvider.notifier)
-                    .updateProfile(regionCode: entry.key);
-                Navigator.maybePop(ctx);
+              onTap: () async {
+                final saved = await _saveProfilePickerEdit(
+                  context,
+                  label: 'region',
+                  save: () => ref
+                      .read(userProfileProvider.notifier)
+                      .updateProfile(regionCode: entry.key),
+                );
+                if (saved && ctx.mounted) Navigator.maybePop(ctx);
               },
             ),
           const SizedBox(height: AppSpacing.md),
@@ -650,11 +654,15 @@ void _showTankStagePicker(
               trailing: currentTankStage == entry.key
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
-              onTap: () {
-                ref
-                    .read(userProfileProvider.notifier)
-                    .updateProfile(tankStatus: entry.key);
-                Navigator.maybePop(ctx);
+              onTap: () async {
+                final saved = await _saveProfilePickerEdit(
+                  context,
+                  label: 'tank stage',
+                  save: () => ref
+                      .read(userProfileProvider.notifier)
+                      .updateProfile(tankStatus: entry.key),
+                );
+                if (saved && ctx.mounted) Navigator.maybePop(ctx);
               },
             ),
           const SizedBox(height: AppSpacing.md),
@@ -691,11 +699,15 @@ void _showExperiencePicker(
               trailing: currentLevel == level
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
-              onTap: () {
-                ref
-                    .read(userProfileProvider.notifier)
-                    .updateProfile(experienceLevel: level);
-                Navigator.maybePop(ctx);
+              onTap: () async {
+                final saved = await _saveProfilePickerEdit(
+                  context,
+                  label: 'experience level',
+                  save: () => ref
+                      .read(userProfileProvider.notifier)
+                      .updateProfile(experienceLevel: level),
+                );
+                if (saved && ctx.mounted) Navigator.maybePop(ctx);
               },
             ),
           const SizedBox(height: AppSpacing.md),
@@ -757,14 +769,18 @@ void _showGoalsPicker(
                 isFullWidth: true,
                 onPressed: selectedGoals.isEmpty
                     ? null
-                    : () {
+                    : () async {
                         final orderedGoals = _goalOrder
                             .where(selectedGoals.contains)
                             .toList(growable: false);
-                        ref
-                            .read(userProfileProvider.notifier)
-                            .updateProfile(goals: orderedGoals);
-                        Navigator.maybePop(ctx);
+                        final saved = await _saveProfilePickerEdit(
+                          context,
+                          label: 'goals',
+                          save: () => ref
+                              .read(userProfileProvider.notifier)
+                              .updateProfile(goals: orderedGoals),
+                        );
+                        if (saved && ctx.mounted) Navigator.maybePop(ctx);
                       },
               ),
             ),
@@ -773,6 +789,22 @@ void _showGoalsPicker(
       ),
     ),
   );
+}
+
+Future<bool> _saveProfilePickerEdit(
+  BuildContext context, {
+  required String label,
+  required Future<void> Function() save,
+}) async {
+  try {
+    await save();
+    return true;
+  } catch (_) {
+    if (context.mounted) {
+      AppFeedback.showError(context, 'Couldn\'t update $label. Try again.');
+    }
+    return false;
+  }
 }
 
 class _RegionProfileTile extends ConsumerWidget {

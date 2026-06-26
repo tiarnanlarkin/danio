@@ -2865,6 +2865,16 @@ CL-P1-009FU Reminder time persistence boundary:
 - Focused NotificationSettings widget coverage drives the Morning Reminder
   time picker with a simulated false local `user_profile` write.
 
+CL-P1-009FV Preferences setup-context persistence boundary:
+
+- Preferences region, tank-stage, experience-level, and goals edits now await
+  `user_profile` writes before closing their pickers.
+- Failed setup-context writes keep the relevant picker open, preserve the
+  previous persisted profile JSON, and show retry feedback instead of leaking
+  an async error or exposing false profile changes.
+- Focused Settings widget coverage drives a failed Region save and failed Goals
+  save with simulated false local `user_profile` writes.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
