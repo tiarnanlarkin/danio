@@ -1,7 +1,8 @@
 import 'dart:async';
-import '../providers/user_profile_provider.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../providers/user_profile_provider.dart';
 import '../utils/logger.dart';
 
 /// Per-feature rate limiter for AI API calls.
@@ -36,12 +37,16 @@ class ApiRateLimiter {
     return (maxRequestsPerHour - count).clamp(0, maxRequestsPerHour);
   }
 
-  /// Record a request for [feature]. Call AFTER a successful API call.
-  void recordRequest(String feature) {
+  /// Record a request for [feature]. Call after a successful API call.
+  ///
+  /// Returns whether the local persistence write succeeded. The in-memory
+  /// session count still advances when persistence fails, so the current app
+  /// session remains rate-limited.
+  Future<bool> recordRequest(String feature) async {
     _pruneOld(feature);
     _timestamps.putIfAbsent(feature, () => []);
     _timestamps[feature]!.add(DateTime.now());
-    _saveToPrefs(feature);
+    return _saveToPrefs(feature);
   }
 
   /// How long until the next request slot opens for [feature].
@@ -88,21 +93,32 @@ class ApiRateLimiter {
         }
       }
     } catch (e) {
-      logError('RateLimiter: failed to load state, starting fresh: $e', tag: 'ApiRateLimiter');
-      // Non-critical — start with empty state.
+      logError(
+        'RateLimiter: failed to load state, starting fresh: $e',
+        tag: 'ApiRateLimiter',
+      );
+      // Non-critical: start with empty state.
     }
   }
 
-  Future<void> _saveToPrefs(String feature) async {
+  Future<bool> _saveToPrefs(String feature) async {
     try {
       final prefs = await _ref.read(sharedPreferencesProvider.future);
       final stamps = _timestamps[feature] ?? [];
-      await prefs.setStringList(
+      final saved = await prefs.setStringList(
         '$_prefsPrefix$feature',
         stamps.map((t) => t.toIso8601String()).toList(),
       );
+      if (!saved) {
+        throw StateError(
+          'SharedPreferences.setStringList returned false for '
+          '$_prefsPrefix$feature',
+        );
+      }
+      return true;
     } catch (e) {
       logError('RateLimiter: failed to save state: $e', tag: 'ApiRateLimiter');
+      return false;
     }
   }
 }

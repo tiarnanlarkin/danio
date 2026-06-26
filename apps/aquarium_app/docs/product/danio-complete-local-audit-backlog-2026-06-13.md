@@ -229,6 +229,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009EF treats false review-request preference writes as local tracking
   failures, using `RateService` for both service and lesson-completion review
   prompts.
+- CL-P1-009EG treats false API rate-limit preference writes as non-durable
+  local saves while keeping the current app session rate-limited.
 
 ## 7. P2 Work - Presentation System
 

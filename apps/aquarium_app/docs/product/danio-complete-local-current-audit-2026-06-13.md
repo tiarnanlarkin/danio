@@ -2430,6 +2430,17 @@ CL-P1-009EF Review request preference write boundary:
   `review_requested` writes leave the local flag unset and return a failed
   tracking result.
 
+CL-P1-009EG API rate-limit preference write boundary:
+
+- Optional-AI API rate-limit tracking now returns whether the local
+  `SharedPreferences.setStringList` timestamp write succeeded.
+- Failed or false rate-limit writes still count in the current app session, so
+  repeated requests remain limited while the app is running, but the save result
+  is no longer treated as durable.
+- Focused service coverage simulates a false `rate_limit_ask_danio` write and
+  verifies the persisted list stays unset while the in-memory request count is
+  reduced.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
