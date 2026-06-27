@@ -386,6 +386,20 @@ class LessonProvider extends StateNotifier<LessonState> {
     ),
   ];
 
+  static Future<List<LearningPath>> loadSearchCatalogPaths() async {
+    final loader = LessonProvider();
+    final paths = <LearningPath>[];
+
+    for (final metadata in allPathMetadata) {
+      final path = await loader._loadPathContent(metadata.id);
+      if (path == null) continue;
+      paths.add(loader._withPathVisualIdentity(path));
+    }
+
+    paths.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    return paths;
+  }
+
   /// Load a specific learning path
   Future<void> loadPath(String pathId) async {
     // Already loaded or loading

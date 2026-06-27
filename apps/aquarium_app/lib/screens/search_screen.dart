@@ -36,6 +36,7 @@ import 'gem_shop_screen.dart';
 import 'glossary_screen.dart';
 import 'hardscape_guide_screen.dart';
 import 'learn_screen.dart';
+import 'lesson_screen.dart';
 import 'lighting_schedule_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
 import 'notification_settings_screen.dart';
@@ -583,6 +584,65 @@ bool _matchesSearchText(String query, Iterable<String?> values) {
   return values.any((value) => (value ?? '').toLowerCase().contains(query));
 }
 
+final _lessonSearchCatalogProvider =
+    FutureProvider.autoDispose<List<LearningPath>>((ref) {
+      return LessonProvider.loadSearchCatalogPaths();
+    });
+
+List<_LessonSearchMatch> _matchingLessonSearchResults(
+  String query,
+  List<LearningPath> paths,
+) {
+  final metadataByPathId = {
+    for (final metadata in LessonProvider.allPathMetadata)
+      metadata.id: metadata,
+  };
+
+  final matches = <_LessonSearchMatch>[];
+  for (final path in paths) {
+    final metadata = metadataByPathId[path.id];
+    final lessons = [...path.lessons]
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+
+    for (final lesson in lessons) {
+      if (!_matchesSearchText(query, [
+        path.title,
+        path.description,
+        metadata?.title,
+        metadata?.description,
+        lesson.id.replaceAll('_', ' '),
+        lesson.title,
+        lesson.description,
+        lesson.guide?.scenario,
+        ...?lesson.guide?.outcomes,
+        ...?lesson.guide?.careDrill,
+        ...lesson.sections.map((section) => section.content),
+      ])) {
+        continue;
+      }
+
+      matches.add(
+        _LessonSearchMatch(
+          lesson: lesson,
+          pathTitle: path.title,
+        ),
+      );
+    }
+  }
+
+  return matches.take(8).toList(growable: false);
+}
+
+class _LessonSearchMatch {
+  final Lesson lesson;
+  final String pathTitle;
+
+  const _LessonSearchMatch({
+    required this.lesson,
+    required this.pathTitle,
+  });
+}
+
 String _homeLabel(DanioToolHome home) {
   switch (home) {
     case DanioToolHome.learn:
@@ -705,6 +765,34 @@ class _SearchResults extends StatelessWidget {
           ),
         ),
       );
+    }
+
+    if (normalizedQuery.length >= 3) {
+      final lessonCatalogAsync = ref.watch(_lessonSearchCatalogProvider);
+      lessonCatalogAsync.whenData((paths) {
+        for (final match in _matchingLessonSearchResults(
+          normalizedQuery,
+          paths,
+        )) {
+          results.add(
+            _SearchResult(
+              type: _ResultType.lesson,
+              title: match.lesson.title,
+              subtitle: '${match.pathTitle} - ${match.lesson.description}',
+              icon: Icons.menu_book_outlined,
+              color: AppColors.secondary,
+              onTap: () => NavigationThrottle.push(
+                context,
+                LessonScreen(
+                  lesson: match.lesson,
+                  pathTitle: match.pathTitle,
+                ),
+                rootNavigator: true,
+              ),
+            ),
+          );
+        }
+      });
     }
 
     // Search tanks
@@ -839,6 +927,7 @@ class _SearchResults extends StatelessWidget {
     addSection(_ResultType.app, 'App');
     addSection(_ResultType.tool, 'Tools');
     addSection(_ResultType.learning, 'Learning');
+    addSection(_ResultType.lesson, 'Lessons');
     addSection(_ResultType.guide, 'Guides');
     addSection(_ResultType.tank, 'Tanks');
     addSection(_ResultType.log, 'Logs');
@@ -1046,6 +1135,7 @@ enum _ResultType {
   app,
   tool,
   learning,
+  lesson,
   guide,
   tank,
   log,

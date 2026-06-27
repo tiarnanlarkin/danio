@@ -3298,6 +3298,19 @@ CL-P3-001A Optional AI provider setup boundary:
   entry with sample tank/log results and tablet Tank top-bar entry with Backup
   & Restore app results.
 
+### CL-P1-011C Direct Lesson Search
+
+- Global search now loads the real local lesson catalog for non-empty search
+  queries and adds direct lesson results alongside path-level Learning results.
+- Lesson results search lesson title, description, ID, guide scenario,
+  outcomes, care drills, and body section text, then open the matching
+  `LessonScreen` directly with the correct path title.
+- The lesson search index is read-only and independent of live lesson-provider
+  state, so searching cannot mutate the current Learn screen loading/progress
+  state.
+- Focused widget coverage verifies searching for `Why New Tanks Kill Fish`
+  surfaces a Lessons result and opens that lesson directly.
+
 ### CL-P1-012A Resettable Sample Tank
 
 - Settings now presents the sample-tank action as `Reset Sample Tank` and tells
@@ -4172,11 +4185,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   `weekly_plan_cache` empty. Remaining AI confirmation work is any future AI
   changes to tank data, tasks, and reminders.
 - Global search now has complete-local coverage for app destinations, tools,
-  learning paths, guides, settings/privacy/backup, species, equipment,
-  livestock, local logs, real Tank top-bar and More entry points, and
-  phone/tablet Android walkthrough evidence. Remaining search work is only
-  optional direct-per-lesson deep links if future walkthroughs show users need
-  them.
+  learning paths, direct lesson results, guides, settings/privacy/backup,
+  species, equipment, livestock, local logs, real Tank top-bar and More entry
+  points, and phone/tablet Android walkthrough evidence. Search is currently
+  closed for complete-local scope unless future walkthroughs reveal a new
+  findability issue.
 - Demo mode now has a resettable populated sample tank that replaces existing
   demo data without deleting real tanks, with final phone/tablet Android screen
   evidence captured under
@@ -4220,8 +4233,7 @@ Continue CL-P1-009 local depth while Android transport is reserved by other
 sessions:
 
 - Continue remaining timeline/guided-tool phone/tablet QA when device ownership
-  is clear, continue CL-P1-009 data-safety hardening, keep CL-P1-010 preference
-  centralisation, and keep CL-P1-011 direct-per-lesson search/deep links as
-  optional polish if walkthroughs show users need it.
+  is clear, continue CL-P1-009 data-safety hardening, and keep CL-P1-010
+  preference centralisation honest as more settings surfaces change.
 - Keep Android phone/tablet visual QA deferred until emulator/device ownership
   is confirmed.

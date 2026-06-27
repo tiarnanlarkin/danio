@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/models.dart';
+import 'package:danio/screens/lesson_screen.dart';
 import 'package:danio/screens/emergency_guide_screen.dart';
 import 'package:danio/screens/search_screen.dart';
 import 'package:danio/providers/tank_provider.dart';
@@ -207,6 +208,30 @@ void main() {
         ),
         findsOneWidget,
       );
+    });
+
+    testWidgets('lesson title searches open the matching lesson directly', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await _advance(tester);
+
+      await tester.enterText(find.byType(TextField), 'new tanks kill');
+      await _advance(tester);
+
+      expect(find.text('Lessons'), findsOneWidget);
+      expect(find.text('Why New Tanks Kill Fish'), findsOneWidget);
+      expect(
+        find.text(
+          'The Nitrogen Cycle - The hidden danger in every new aquarium',
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Why New Tanks Kill Fish'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LessonScreen), findsOneWidget);
     });
 
     testWidgets('log searches find matching tank history', (tester) async {
