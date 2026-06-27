@@ -827,6 +827,15 @@ CL-P1-004X Story Browser empty-catalog fallback:
   state instead of rendering a blank story list.
 - Focused widget coverage verifies the empty catalog fallback.
 
+CL-P1-004Y Lesson image-section audit closeout:
+
+- The stale LessonCard image-placeholder audit row is closed against current
+  implementation evidence.
+- Lesson image sections already render asset/network images in a stable frame
+  with caption support and a "Visual unavailable" fallback.
+- Existing focused widget and lesson-data checks verify asset rendering and
+  reject stale "Visual guide on the way!" placeholder copy.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

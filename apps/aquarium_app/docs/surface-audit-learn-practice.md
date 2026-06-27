@@ -100,7 +100,7 @@ Three sequential states: (1) lesson content card → (2) quiz widget → (3) com
 | LessonCardWidget | Section type: `funFact` | | ✅ | Purple box with 🤓 and "Fun Fact" label. | ✅ Complete |
 | LessonCardWidget | Section type: `bulletList` | | ✅ | Renders items split by `\n`. | ✅ Complete |
 | LessonCardWidget | Section type: `numberedList` | | ✅ | Renders items split by `\n`. | ✅ Complete |
-| LessonCardWidget | **Section type: `image`** | | 🔴 | **Placeholder only.** Shows grey box with `Icons.image_outlined` and "Visual guide on the way!" text. No actual image rendering. No lessons currently use `image` type, but if any are added, users will see an empty placeholder. Needs real implementation or removal of the type. | 🔴 Must Fix (when image sections added) |
+| LessonCardWidget | **Section type: `image`** | asset, caption, missing asset | ✅ | Renders real asset/network images in a stable 16:9 frame with caption support and a "Visual unavailable" fallback. Widget coverage verifies asset rendering and rejects stale "Visual guide on the way!" copy. | ✅ Complete |
 | LessonCardWidget | Bottom CTA: **"Take Quiz"** (lesson has quiz) | | ✅ | Sets `_showQuiz = true`. Transitions to `LessonQuizWidget`. | ✅ Complete |
 | LessonCardWidget | Bottom CTA: **"Complete Lesson"** (no quiz) | | ✅ | Calls `_completeLesson()` directly. No quiz flow. | ✅ Complete |
 | LessonCardWidget | CTA disabled state | `isCompletingLesson=true` | ✅ | Button shows loading indicator. Prevents double-tap. | ✅ Complete |
@@ -344,7 +344,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | **Locked story cards now explain unlock requirements on tap.** Locked cards remain non-navigable but no longer behave like dead controls. | Story Browser | ✅ Complete |
 | **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
 | **Review session fallback self-assessment now has a reveal step.** Users no longer rate fallback cards before revealing the saved content. | Review Session | ✅ Complete |
-| **`image` section type is a placeholder.** Renders "Visual guide on the way!" box. No image support. Fine now (no lessons use it), but must be implemented before image sections go live. | Lesson Screen | 🔮 Future Scope |
+| **`image` section type renders real lesson visuals.** The stale placeholder branch is gone; image sections now support assets/network images, captions, and fallback UI. | Lesson Screen | ✅ Complete |
 | **Path card expansion shows a retryable error state.** Failed `loadPath()` calls no longer leave users with a stuck spinner. | Learning Path Detail | ✅ Complete |
 | **Dedicated full-screen path detail view exists.** Paths with 10+ lessons can be opened from the inline preview into the complete sequence view. | Learning Path Detail | ✅ Complete |
 | **`hasSeenTutorial` is no longer watched by LearnScreen.** The stale dead-watch audit row is closed. | Learn Screen | ✅ Complete |
@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 0 Should Fix · 0 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 0 Should Fix · 0 Research First · 3 Future Scope**
 
 ---
 
