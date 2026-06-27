@@ -261,7 +261,7 @@ Active flashcard review. Shows one card at a time: concept name + optional quest
 | Story Browser | Header copy ("Choose your adventure") | | ✅ | Subtext present. | ✅ Complete |
 | Story Browser | **Story list** | allStories (6 stories) | ✅ | 6 stories: 3 beginner, 2 intermediate, 1 advanced. All rendered. | ✅ Complete |
 | Story Browser | **No stories empty state** | allStories=[] | 🔴 | If `Stories.allStories` is empty, the list renders nothing with **no empty state message**. Low risk (stories are hardcoded), but fragile. | 🔍 Research First |
-| Story Browser | **No error state** | profile load error | ⚠️ | `profileSlice` defaults to null on error — stories are treated as all locked (minLevel requirement fails). No error message. User sees all stories as locked with no explanation. | ⚠️ Should Fix |
+| Story Browser | Profile error handling | profile load error | ✅ | Shows a non-blocking retry banner while keeping available starter stories visible; locked-state decisions use profile data only when available. Widget coverage verifies banner and story hub copy. | ✅ Complete |
 | Story Browser — `_StoryCard` | **Unlocked story — tap** | isUnlocked=true | ✅ | `Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryPlayScreen(story: story)))`. | ✅ Complete |
 | _StoryCard | **Locked story — tap** | isUnlocked=false | ✅ | Card stays locked but now shows `DanioSnackBar.info` with the missing level or prerequisite requirement. No Story Play navigation occurs while locked. | ✅ Complete |
 | _StoryCard | Completed checkmark | isCompleted=true | ✅ | `Icons.check_circle` shown. | ✅ Complete |
@@ -363,11 +363,11 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Practice Hub | ✅ Mostly complete | 0 | 0 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
 | Review Session | ✅ Mostly complete | 0 | 0 |
-| Story Browser | ✅ Mostly complete | 0 | 1 |
+| Story Browser | ✅ Mostly complete | 0 | 0 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 2 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 1 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 

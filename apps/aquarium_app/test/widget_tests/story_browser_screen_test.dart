@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:danio/screens/story/story_browser_screen.dart';
 import 'package:danio/screens/story/story_play_screen.dart';
 import 'package:danio/models/story.dart';
+import 'package:danio/models/user_profile.dart';
 import 'package:danio/providers/user_profile_provider.dart';
 import 'package:danio/widgets/core/app_button.dart';
 
@@ -17,13 +18,17 @@ import 'package:danio/widgets/core/app_button.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrapBrowser() {
+Widget _wrapBrowser({AsyncValue<UserProfile?>? profileState}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWith((ref) async {
         return SharedPreferences.getInstance();
       }),
+      if (profileState != null)
+        userProfileProvider.overrideWith(
+          (ref) => _FakeUserProfileNotifier(profileState),
+        ),
     ],
     child: const MaterialApp(home: StoryBrowserScreen()),
   );
@@ -60,6 +65,14 @@ Future<void> _advance(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 500));
   await tester.pump(const Duration(seconds: 1));
+}
+
+class _FakeUserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>>
+    implements UserProfileNotifier {
+  _FakeUserProfileNotifier(super.state);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 // A minimal story for testing StoryPlayScreen directly.
@@ -187,6 +200,29 @@ void main() {
         find.text('Reach level 2 to unlock Algae Outbreak.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('profile errors show a non-blocking retry banner', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrapBrowser(
+          profileState: AsyncValue.error(
+            StateError('profile read failed'),
+            StackTrace.current,
+          ),
+        ),
+      );
+      await _advance(tester);
+
+      expect(
+        find.text(
+          'Couldn\'t load your profile. Stories are still available, but unlock progress may be unavailable.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.text('Choose your adventure'), findsOneWidget);
     });
   });
 

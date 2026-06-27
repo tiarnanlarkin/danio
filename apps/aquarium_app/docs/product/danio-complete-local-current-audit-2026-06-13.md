@@ -781,6 +781,15 @@ CL-P1-004S Locked path prerequisite polish:
 - Widget coverage verifies the friendly prerequisite copy and rejects raw
   underscore ID text in the locked-path subtitle.
 
+CL-P1-004T Story Browser profile-error handling:
+
+- Story Browser now reads profile state through `valueOrNull` and shows a
+  non-blocking retry banner when profile loading fails.
+- Starter stories remain visible instead of making the screen look silently
+  locked by missing profile data.
+- Focused widget coverage verifies the profile-error banner and retained story
+  hub context.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

@@ -19,17 +19,18 @@ class StoryBrowserScreen extends ConsumerWidget {
     // Select only the fields used in this screen to avoid spurious rebuilds
     // when unrelated profile fields (XP, gems, streak, etc.) change.
     final profileSlice = ref.watch(
-      userProfileProvider.select(
-        (s) => s.value == null
-            ? null
-            : (
-                completedStories: s.value!.completedStories,
-                currentLevel: s.value!.currentLevel,
-              ),
-      ),
+      userProfileProvider.select((s) {
+        final profile = s.valueOrNull;
+        return (
+          hasError: s.hasError,
+          hasProfile: profile != null,
+          completedStories: profile?.completedStories ?? const <String>[],
+          currentLevel: profile?.currentLevel,
+        );
+      }),
     );
 
-    final completedStories = profileSlice?.completedStories ?? const <String>[];
+    final completedStories = profileSlice.completedStories;
 
     final allStories = Stories.allStories;
 
@@ -71,6 +72,21 @@ class StoryBrowserScreen extends ConsumerWidget {
             ),
           ),
 
+          if (profileSlice.hasError)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  0,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                ),
+                child: _ProfileErrorBanner(
+                  onRetry: () => ref.invalidate(userProfileProvider),
+                ),
+              ),
+            ),
+
           // Stories list
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -79,8 +95,8 @@ class StoryBrowserScreen extends ConsumerWidget {
                 (context, index) {
                   final story = allStories[index];
                   final isCompleted = completedStories.contains(story.id);
-                  final isUnlocked = profileSlice != null
-                      ? (profileSlice.currentLevel >= story.minLevel &&
+                  final isUnlocked = profileSlice.hasProfile
+                      ? (profileSlice.currentLevel! >= story.minLevel &&
                             (story.prerequisites.isEmpty ||
                                 story.prerequisites.every(
                                   (id) => completedStories.contains(id),
@@ -98,7 +114,7 @@ class StoryBrowserScreen extends ConsumerWidget {
                           : () => _showLockedStoryFeedback(
                               context,
                               story,
-                              currentLevel: profileSlice?.currentLevel ?? 0,
+                              currentLevel: profileSlice.currentLevel ?? 0,
                               completedStories: completedStories,
                             ),
                     ),
@@ -140,6 +156,51 @@ class StoryBrowserScreen extends ConsumerWidget {
     }
 
     DanioSnackBar.info(context, message);
+  }
+}
+
+class _ProfileErrorBanner extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _ProfileErrorBanner({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: const BoxDecoration(
+              color: AppColors.warningAlpha15,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.sync_problem,
+              color: AppColors.warning,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              'Couldn\'t load your profile. Stories are still available, but unlock progress may be unavailable.',
+              style: AppTypography.bodyMedium.copyWith(
+                color: context.textSecondary,
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          TextButton(
+            onPressed: onRetry,
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
