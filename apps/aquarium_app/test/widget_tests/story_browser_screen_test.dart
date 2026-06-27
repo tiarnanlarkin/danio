@@ -153,6 +153,22 @@ const _multiSceneStory = Story(
   ],
 );
 
+const _noChoiceStory = Story(
+  id: 'no_choice_story',
+  title: 'No Choice Story',
+  description: 'A malformed story scene',
+  difficulty: StoryDifficulty.beginner,
+  estimatedMinutes: 3,
+  xpReward: 10,
+  scenes: [
+    StoryScene(
+      id: 'broken_scene',
+      text: 'This story scene has no choices.',
+      choices: [],
+    ),
+  ],
+);
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -302,6 +318,33 @@ void main() {
         find.text('You have made progress that should not be lost silently.'),
         findsNothing,
       );
+    });
+
+    testWidgets('non-final scenes without choices show a safe exit', (
+      tester,
+    ) async {
+      final navigatorKey = GlobalKey<NavigatorState>();
+
+      await tester.pumpWidget(_wrapStoryNavigator(navigatorKey));
+      await tester.pump();
+
+      navigatorKey.currentState!.push<void>(
+        MaterialPageRoute(
+          builder: (_) => const StoryPlayScreen(story: _noChoiceStory),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('This story scene has no choices.'), findsOneWidget);
+      expect(find.text('Story step unavailable'), findsOneWidget);
+      expect(find.widgetWithText(AppButton, 'Back to Stories'), findsOneWidget);
+      expect(find.text('What do you do?'), findsNothing);
+
+      await tester.tap(find.widgetWithText(AppButton, 'Back to Stories'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Story hub'), findsOneWidget);
     });
   });
 }

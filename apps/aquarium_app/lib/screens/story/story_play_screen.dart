@@ -190,6 +190,7 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
   Widget _buildPlayScreen() {
     final scene = _currentScene;
     final choice = _selectedChoice;
+    final hasChoices = scene.choices.isNotEmpty;
 
     return Column(
       children: [
@@ -229,7 +230,7 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
                 ],
 
                 // Choices (hidden after selection, show Continue instead)
-                if (!_showingFeedback) ...[
+                if (!_showingFeedback && hasChoices) ...[
                   Text(
                     'What do you do?',
                     style: AppTypography.titleSmall.copyWith(
@@ -246,6 +247,8 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
                       ),
                     ),
                   ),
+                ] else if (!_showingFeedback) ...[
+                  _buildUnavailableStepCard(),
                 ],
 
                 // Continue button after feedback
@@ -265,6 +268,55 @@ class _StoryPlayScreenState extends ConsumerState<StoryPlayScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildUnavailableStepCard() {
+    return GlassCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.route_outlined,
+                color: AppColors.warning,
+                size: 22,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Story step unavailable',
+                      style: AppTypography.titleSmall.copyWith(
+                        color: AppColors.warning,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'This story step is missing its choices, so Danio cannot continue it safely.',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: 'Back to Stories',
+            onPressed: _requestExit,
+            isFullWidth: true,
+            size: AppButtonSize.large,
+          ),
+        ],
+      ),
     );
   }
 

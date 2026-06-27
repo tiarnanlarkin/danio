@@ -288,7 +288,7 @@ Active flashcard review. Shows one card at a time: concept name + optional quest
 | Story Play — Feedback | **Feedback banner** | isCorrect=true, isCorrect=false | ✅ | Green "Great choice!" / Amber "Interesting choice..." with feedback text. | ✅ Complete |
 | Story Play — Feedback | No feedback text | choice.feedback=null | ✅ | Label shown, no body text. Safe. | ✅ Complete |
 | Story Play — Feedback | **"Continue" CTA** | _showingFeedback=true | ✅ | Calls `_onContinue()`. Advances scene or triggers completion. | ✅ Complete |
-| Story Play | Scene with no choices | | 🔍 | If a scene has 0 choices and is not `isFinalScene`, user would be stuck with no Continue button and no choices. Not expected from current data, but no guard. | 🔍 Research First |
+| Story Play | Scene with no choices | malformed content | ✅ | Non-final scenes with no choices now show a "Story step unavailable" fallback with a safe Back to Stories action instead of trapping the user. Widget coverage verifies the fallback and return path. | ✅ Complete |
 | **Story Completion screen** | Score-based headline (🏆/🎉/👍/📚) | score 90/70/50/0 | ✅ | Four tiers. | ✅ Complete |
 | Story Completion | Score / XP / Choices stats card (GlassCard) | | ✅ | Three stat items. | ✅ Complete |
 | Story Completion | **"Back to Stories" CTA** | | ✅ | `Navigator.of(context).pop()` — returns to `StoryBrowserScreen`. | ✅ Complete |
@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 0 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 0 Should Fix · 2 Research First · 4 Future Scope**
 
 ---
 

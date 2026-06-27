@@ -802,6 +802,15 @@ CL-P1-004U Learn slow local-profile loading guard:
 - Focused widget coverage verifies the stuck-loading guidance and existing
   Learn surface tests still pass.
 
+CL-P1-004V Story Play malformed-scene fallback:
+
+- Story Play now handles non-final scenes with no choices by showing a
+  "Story step unavailable" fallback instead of leaving users with no action.
+- The fallback returns users to the story hub without awarding XP or pretending
+  the malformed story step was completed.
+- Focused widget coverage verifies the fallback copy and Back to Stories exit
+  path.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US
