@@ -755,6 +755,14 @@ CL-P1-004P Locked story feedback:
   conditions are met.
 - Focused widget coverage verifies the level-gated locked-story feedback path.
 
+CL-P1-004Q Dedicated learning path detail:
+
+- Lazy path cards now expose an `Open full path` action after content loads.
+- Inline expansion is a short preview, while the full-screen detail view shows
+  path overview, progress, and the complete lesson sequence.
+- Widget coverage verifies the path loads, opens the full-screen view, and keeps
+  the retryable load-error path intact.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

@@ -28,6 +28,37 @@ PathMetadata _missingPathMeta() {
 
 void main() {
   group('LazyLearningPathCard', () {
+    testWidgets('opens a full-screen path detail view after path loads', (
+      tester,
+    ) async {
+      final metadata = LessonProvider.allPathMetadata.firstWhere(
+        (path) => path.id == 'nitrogen_cycle',
+      );
+
+      await tester.pumpWidget(
+        _wrap(
+          LazyLearningPathCard(
+            metadata: metadata,
+            completedLessons: 1,
+            totalLessons: metadata.lessonIds.length,
+            userCompletedLessons: const ['nc_intro'],
+            allPathMetadata: LessonProvider.allPathMetadata,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text(metadata.title));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Open full path'), findsOneWidget);
+
+      await tester.tap(find.text('Open full path'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Path overview'), findsOneWidget);
+      expect(find.text('Why New Tanks Kill Fish'), findsOneWidget);
+    });
+
     testWidgets('shows a retryable error when path loading fails', (
       tester,
     ) async {

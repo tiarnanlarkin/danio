@@ -11,6 +11,7 @@ import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/core/pressable_card.dart';
 import '../../widgets/danio_snack_bar.dart';
 import '../lesson_screen.dart';
+import 'learning_path_detail_screen.dart';
 
 /// Lazy-loading learning path card.
 /// Shows metadata (title, description, progress) immediately.
@@ -391,9 +392,50 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
       ];
     }
 
+    final previewLessons = path.lessons.take(4).toList();
+    final hiddenLessonCount = path.lessons.length - previewLessons.length;
+
     return [
       const Divider(height: 1),
-      ...path.lessons.map((lesson) {
+      Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.sm,
+        ),
+        child: AppButton(
+          label: 'Open full path',
+          leadingIcon: Icons.open_in_full,
+          variant: AppButtonVariant.secondary,
+          isFullWidth: true,
+          onPressed: () {
+            NavigationThrottle.push(
+              context,
+              LearningPathDetailScreen(
+                path: path,
+                completedLessonIds: widget.userCompletedLessons,
+              ),
+            );
+          },
+        ),
+      ),
+      if (hiddenLessonCount > 0)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            0,
+            AppSpacing.md,
+            AppSpacing.sm,
+          ),
+          child: Text(
+            'Showing ${previewLessons.length} of ${path.lessons.length} lessons here. Open the full path for the complete sequence.',
+            style: AppTypography.bodySmall.copyWith(
+              color: context.textSecondary,
+            ),
+          ),
+        ),
+      ...previewLessons.map((lesson) {
         final isCompleted = widget.userCompletedLessons.contains(lesson.id);
         final isUnlocked = lesson.isUnlocked(widget.userCompletedLessons);
 
