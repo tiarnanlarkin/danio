@@ -195,23 +195,15 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   ) {
     final items = totalCards == 0
         ? _buildEmptyPracticeDeckItems(context, ref)
-        : <Widget>[
-            for (
-              int index = 0;
-              index < _getPracticeHubItemCount(dueCards, totalCards);
-              index++
-            )
-              _buildPracticeHubItem(
-                context,
-                ref,
-                index,
-                dueCards,
-                totalCards,
-                srState,
-                profile,
-                practiceContext,
-              ),
-          ];
+        : _buildPopulatedPracticeDeckItems(
+            context,
+            ref,
+            dueCards,
+            totalCards,
+            srState,
+            profile,
+            practiceContext,
+          );
 
     if (srState.errorMessage != null) {
       final insertAt = items.length > 2 ? 2 : items.length;
@@ -436,216 +428,166 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     }
   }
 
-  int _getPracticeHubItemCount(int dueCards, int totalCards) {
-    // Hero (1) + spacer + stats row + spacer +
-    // section header (Review Sessions) + spacer + SR choices + spacer +
-    // section header (Skill Drills) + spacer + drill choices + spacer +
-    // section header (Mastery Breakdown) + spacer + mastery widget + spacer +
-    // section header (Your Progress) + spacer +
-    // streak + spacer + mastered + spacer + accuracy = 23 items
-    return 23;
-  }
-
-  Widget _buildPracticeHubItem(
+  List<Widget> _buildPopulatedPracticeDeckItems(
     BuildContext context,
     WidgetRef ref,
-    int index,
     int dueCards,
     int totalCards,
     SpacedRepetitionState srState,
     dynamic profile,
     PracticeDrillContext? practiceContext,
   ) {
-    switch (index) {
-      case 0: // Hero card
-        if (dueCards > 0) {
-          return _buildHeroCard(
+    final streak = profile is int ? profile : 0;
+    final accuracy = _practiceAccuracy(srState);
+
+    return [
+      _buildPracticeHubHeroCard(context, ref, dueCards, srState),
+      const SizedBox(height: AppSpacing.lg),
+      _buildStatsRow(
+        context,
+        stats: [
+          _StatItem(
+            label: 'Due Today',
+            value: '$dueCards',
+            color: dueCards > 0 ? AppColors.error : context.textSecondary,
+          ),
+          _StatItem(
+            label: 'Mastered',
+            value: '${srState.stats.masteredCards}',
+            color: srState.stats.masteredCards > 0
+                ? AppColors.success
+                : context.textSecondary,
+          ),
+          _StatItem(
+            label: 'Total Cards',
+            value: '${srState.stats.totalCards}',
+            color: context.textSecondary,
+          ),
+        ],
+      ),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Review Sessions', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      _buildPracticeCard(
+        context,
+        title: 'Spaced Repetition',
+        subtitle:
+            'Review cards based on memory strength - the most effective way to learn',
+        icon: Icons.psychology,
+        iconColor: AppColors.primary,
+        onTap: () {
+          NavigationThrottle.push(
             context,
-            title: 'Start Review',
-            subtitle: '$dueCards card${dueCards == 1 ? '' : 's'} ready now',
-            icon: Icons.replay,
-            color: AppColors.error,
-            actionLabel: 'Start Review',
-            onTap: () => _startReviewSession(ReviewSessionMode.standard),
+            const SpacedRepetitionPracticeScreen(),
+            rootNavigator: true,
           );
-        } else if (dueCards == 0 &&
-            totalCards > 0 &&
-            srState.stats.weakCards > 0) {
-          return _buildHeroCard(
-            context,
-            title: 'Weak spots available',
-            subtitle: 'No due reviews right now. Reinforce your weak cards.',
-            icon: Icons.trending_down,
-            color: AppColors.warning,
-            actionLabel: 'Practice Weak Spots',
-            onTap: () => _startReviewSession(ReviewSessionMode.intensive),
-          );
-        } else if (dueCards == 0 && totalCards > 0) {
-          // Has cards but none are due; genuinely all caught up.
-          return _buildHeroCard(
-            context,
-            title: 'All caught up',
-            subtitle:
-                'No reviews due right now. Learn the next concept to grow your queue.',
-            icon: Icons.check_circle,
-            color: AppColors.success,
-            actionLabel: 'Learn Next',
-            onTap: () {
-              ref.read(currentTabProvider.notifier).state = 0;
-            },
-          );
-        } else {
-          // No cards at all; user hasn't started yet.
-          return _buildHeroCard(
-            context,
-            title: 'No practice cards yet',
-            subtitle: 'Complete a Learn lesson to create review cards',
-            icon: Icons.auto_stories,
-            color: AppColors.primary,
-            actionLabel: 'Start Learning',
-            onTap: () {
-              ref.read(currentTabProvider.notifier).state = 0;
-            },
-          );
-        }
-      case 1:
-        return const SizedBox(height: AppSpacing.lg);
-      case 2:
-        return _buildStatsRow(
-          context,
-          stats: [
-            _StatItem(
-              label: 'Due Today',
-              value: '$dueCards',
-              color: dueCards > 0 ? AppColors.error : context.textSecondary,
-            ),
-            _StatItem(
-              label: 'Mastered',
-              value: '${srState.stats.masteredCards}',
-              color: srState.stats.masteredCards > 0
-                  ? AppColors.success
-                  : context.textSecondary,
-            ),
-            _StatItem(
-              label: 'Total Cards',
-              value: '${srState.stats.totalCards}',
-              color: context.textSecondary,
-            ),
-          ],
-        );
-      case 3:
-        return const SizedBox(height: AppSpacing.lg);
-      case 4: // Section: Review Sessions
-        return Text('Review Sessions', style: AppTypography.headlineSmall);
-      case 5:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 6:
-        return _buildPracticeCard(
-          context,
-          title: 'Spaced Repetition',
-          subtitle:
-              'Review cards based on memory strength - the most effective way to learn',
-          icon: Icons.psychology,
-          iconColor: AppColors.primary,
-          onTap: () {
-            NavigationThrottle.push(
-              context,
-              const SpacedRepetitionPracticeScreen(),
-              rootNavigator: true,
-            );
-          },
-        );
-      case 7:
-        return const SizedBox(height: AppSpacing.lg);
-      case 8:
-        return Text('Skill Drills', style: AppTypography.headlineSmall);
-      case 9:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 10:
-        return _buildSkillDrillSection(context, srState, practiceContext);
-      case 11:
-        return const SizedBox(height: AppSpacing.lg);
-      case 12:
-        return Text('Mastery Breakdown', style: AppTypography.headlineSmall);
-      case 13:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 14:
-        return _buildMasteryBreakdown(context, srState);
-      case 15:
-        return const SizedBox(height: AppSpacing.lg);
-      case 16:
-        return Text('Your Progress', style: AppTypography.headlineSmall);
-      case 17:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 18:
-        {
-          final streak = profile ?? 0;
-          return _buildProgressCard(
-            context,
-            title: 'Study Streak',
-            value: streak > 0
-                ? (streak == 1 ? '1 day' : '$streak days')
-                : '0 days',
-            icon: streak > 0
-                ? Icons.local_fire_department
-                : Icons.local_fire_department_outlined,
-            color: streak > 0 ? AppColors.warning : context.textSecondary,
-          );
-        }
-      case 19:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 20:
-        return _buildProgressCard(
-          context,
-          title: 'Cards Mastered',
-          value: '${srState.stats.masteredCards}',
-          icon: Icons.stars,
-          color: AppColors.success,
-        );
-      case 21:
-        return const SizedBox(height: AppSpacing.sm2);
-      case 22:
-        {
-          final totalReviews = srState.stats.totalReviews;
-          final allCards = srState.cards;
-          final totalCorrect = allCards.fold<int>(
-            0,
-            (sum, card) => sum + card.correctCount,
-          );
-          if (totalReviews == 0) {
-            return _buildProgressCard(
-              context,
-              title: 'Practice Accuracy',
-              value: 'Complete a review session',
-              icon: Icons.track_changes,
-              color: context.textSecondary,
-            );
-          }
-          final accuracyPct = allCards.isEmpty
-              ? 0
-              : (totalCorrect /
-                        allCards.fold<int>(
-                          0,
-                          (sum, card) => sum + card.reviewCount,
-                        ) *
-                        100)
-                    .round();
-          final accuracyColor = accuracyPct >= 80
-              ? AppColors.success
-              : accuracyPct >= 60
-              ? AppColors.warning
-              : AppColors.error;
-          return _buildProgressCard(
-            context,
-            title: 'Practice Accuracy',
-            value: '$accuracyPct%',
-            icon: Icons.track_changes,
-            color: accuracyColor,
-          );
-        }
-      default:
-        return const SizedBox.shrink();
+        },
+      ),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Skill Drills', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      _buildSkillDrillSection(context, srState, practiceContext),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Mastery Breakdown', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      _buildMasteryBreakdown(context, srState),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Your Progress', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      _buildProgressCard(
+        context,
+        title: 'Study Streak',
+        value: streak > 0 ? (streak == 1 ? '1 day' : '$streak days') : '0 days',
+        icon: streak > 0
+            ? Icons.local_fire_department
+            : Icons.local_fire_department_outlined,
+        color: streak > 0 ? AppColors.warning : context.textSecondary,
+      ),
+      const SizedBox(height: AppSpacing.sm2),
+      _buildProgressCard(
+        context,
+        title: 'Cards Mastered',
+        value: '${srState.stats.masteredCards}',
+        icon: Icons.stars,
+        color: AppColors.success,
+      ),
+      const SizedBox(height: AppSpacing.sm2),
+      _buildProgressCard(
+        context,
+        title: 'Practice Accuracy',
+        value: accuracy == null ? 'Complete a review session' : '$accuracy%',
+        icon: Icons.track_changes,
+        color: accuracy == null
+            ? context.textSecondary
+            : accuracy >= 80
+            ? AppColors.success
+            : accuracy >= 60
+            ? AppColors.warning
+            : AppColors.error,
+      ),
+    ];
+  }
+
+  Widget _buildPracticeHubHeroCard(
+    BuildContext context,
+    WidgetRef ref,
+    int dueCards,
+    SpacedRepetitionState srState,
+  ) {
+    if (dueCards > 0) {
+      return _buildHeroCard(
+        context,
+        title: 'Start Review',
+        subtitle: '$dueCards card${dueCards == 1 ? '' : 's'} ready now',
+        icon: Icons.replay,
+        color: AppColors.error,
+        actionLabel: 'Start Review',
+        onTap: () => _startReviewSession(ReviewSessionMode.standard),
+      );
     }
+
+    if (srState.stats.weakCards > 0) {
+      return _buildHeroCard(
+        context,
+        title: 'Weak spots available',
+        subtitle: 'No due reviews right now. Reinforce your weak cards.',
+        icon: Icons.trending_down,
+        color: AppColors.warning,
+        actionLabel: 'Practice Weak Spots',
+        onTap: () => _startReviewSession(ReviewSessionMode.intensive),
+      );
+    }
+
+    return _buildHeroCard(
+      context,
+      title: 'All caught up',
+      subtitle:
+          'No reviews due right now. Learn the next concept to grow your queue.',
+      icon: Icons.check_circle,
+      color: AppColors.success,
+      actionLabel: 'Learn Next',
+      onTap: () {
+        ref.read(currentTabProvider.notifier).state = 0;
+      },
+    );
+  }
+
+  int? _practiceAccuracy(SpacedRepetitionState srState) {
+    final totalReviews = srState.stats.totalReviews;
+    if (totalReviews == 0) return null;
+
+    final allCards = srState.cards;
+    final totalAttempts = allCards.fold<int>(
+      0,
+      (sum, card) => sum + card.reviewCount,
+    );
+    if (totalAttempts == 0) return null;
+
+    final totalCorrect = allCards.fold<int>(
+      0,
+      (sum, card) => sum + card.correctCount,
+    );
+    return (totalCorrect / totalAttempts * 100).round();
   }
 
   Widget _buildHeroCard(

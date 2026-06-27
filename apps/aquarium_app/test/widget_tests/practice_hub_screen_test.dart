@@ -2,6 +2,8 @@
 //
 // Run: flutter test test/widget_tests/practice_hub_screen_test.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -139,6 +141,16 @@ void main() {
   });
 
   group('PracticeHubScreen', () {
+    test('uses an explicit populated item list instead of a magic count', () {
+      final source = File(
+        'lib/screens/practice_hub_screen.dart',
+      ).readAsStringSync();
+
+      expect(source, contains('_buildPopulatedPracticeDeckItems'));
+      expect(source, isNot(contains('_getPracticeHubItemCount')));
+      expect(source, isNot(contains('return 23')));
+    });
+
     testWidgets('renders without throwing', (tester) async {
       await tester.pumpWidget(_wrap());
       await _advance(tester);

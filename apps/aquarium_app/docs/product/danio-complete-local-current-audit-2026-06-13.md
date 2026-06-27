@@ -910,6 +910,15 @@ CL-P1-005J Fallback review reveal flow:
 - Widget coverage verifies hidden self-rating buttons, reveal behavior, content
   visibility, and next-card reset.
 
+CL-P1-005K Practice Hub explicit item list:
+
+- Practice Hub populated content now builds an explicit widget list instead of
+  relying on the old fixed `_getPracticeHubItemCount` / `return 23` pattern.
+- This keeps section additions/removals from silently desynchronising the list
+  count from the item builder.
+- Focused Practice Hub coverage verifies the source guard and existing
+  populated/empty/error states.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck
