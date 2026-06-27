@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 0 Should Fix · 0 Research First · 3 Future Scope**
+**Total: 0 Must Fix · 0 Should Fix · 0 Research First · 1 Future Scope**
 
 ---
 
