@@ -24,7 +24,7 @@ class HeartIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final energy = ref.watch(
-      userProfileProvider.select((a) => a.value?.hearts),
+      userProfileProvider.select((a) => a.valueOrNull?.hearts),
     );
     if (energy == null) return const SizedBox.shrink();
 
@@ -139,7 +139,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider.select((p) => p.value));
+    final profile = ref.watch(userProfileProvider.select((p) => p.valueOrNull));
     if (profile == null) return const SizedBox.shrink();
 
     final heartsService = ref.watch(heartsServiceProvider);
@@ -361,7 +361,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider.select((p) => p.value));
+    final profile = ref.watch(userProfileProvider.select((p) => p.valueOrNull));
     if (profile == null) {
       Navigator.of(context).pop();
       return const SizedBox.shrink();

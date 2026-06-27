@@ -919,6 +919,15 @@ CL-P1-005K Practice Hub explicit item list:
 - Focused Practice Hub coverage verifies the source guard and existing
   populated/empty/error states.
 
+CL-P1-005L Practice Hub profile-error handling:
+
+- Practice Hub now shows a non-blocking retry banner when `userProfileProvider`
+  errors, while keeping Practice content usable.
+- The header `HeartIndicator` now reads profile energy through `valueOrNull` so
+  profile load errors do not crash screens that show energy.
+- Focused widget coverage verifies the profile-error banner and retained empty
+  deck context.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

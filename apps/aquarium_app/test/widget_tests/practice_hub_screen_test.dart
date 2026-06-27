@@ -16,6 +16,7 @@ import 'package:danio/providers/spaced_repetition_provider.dart';
 import 'package:danio/models/log_entry.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/models/tank.dart';
+import 'package:danio/models/user_profile.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -62,6 +63,7 @@ Widget _wrap({
   ReviewStats? stats,
   List<ReviewCard> cards = const [],
   String? errorMessage,
+  AsyncValue<UserProfile?>? profileState,
   List<Override> overrides = const [],
 }) {
   SharedPreferences.setMockInitialValues({});
@@ -77,6 +79,10 @@ Widget _wrap({
           errorMessage: errorMessage,
         ),
       ),
+      if (profileState != null)
+        userProfileProvider.overrideWith(
+          (ref) => _FakeUserProfileNotifier(profileState),
+        ),
       ...overrides,
     ],
     child: const MaterialApp(home: PracticeHubScreen()),
@@ -96,6 +102,14 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
            errorMessage: errorMessage,
          ),
        );
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _FakeUserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>>
+    implements UserProfileNotifier {
+  _FakeUserProfileNotifier(super.state);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -205,6 +219,30 @@ void main() {
       await _advance(tester);
 
       expect(find.text(message), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.text('Build your review deck'), findsOneWidget);
+    });
+
+    testWidgets('profile errors show a non-blocking retry banner', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          stats: _stats(totalCards: 0),
+          profileState: AsyncValue.error(
+            StateError('profile read failed'),
+            StackTrace.current,
+          ),
+        ),
+      );
+      await _advance(tester);
+
+      expect(
+        find.text(
+          'Couldn\'t load your profile. Practice still works, but your streak may be unavailable.',
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Retry'), findsOneWidget);
       expect(find.text('Build your review deck'), findsOneWidget);
     });

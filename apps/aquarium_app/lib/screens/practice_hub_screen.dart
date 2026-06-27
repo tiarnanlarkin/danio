@@ -70,8 +70,13 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
   @override
   Widget build(BuildContext context) {
     final srState = ref.watch(spacedRepetitionProvider);
-    final profile = ref.watch(
-      userProfileProvider.select((p) => p.value?.currentStreak),
+    final profileState = ref.watch(
+      userProfileProvider.select(
+        (p) => (
+          currentStreak: p.valueOrNull?.currentStreak,
+          hasError: p.hasError,
+        ),
+      ),
     );
     final practiceContext = _buildPracticeContext(ref);
     final dueCards = srState.stats.dueCards;
@@ -137,7 +142,8 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
                   dueCards,
                   totalCards,
                   srState,
-                  profile,
+                  profileState.currentStreak,
+                  profileState.hasError,
                   practiceContext,
                 ),
               ),
@@ -191,6 +197,7 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
     int totalCards,
     SpacedRepetitionState srState,
     dynamic profile,
+    bool profileHasError,
     PracticeDrillContext? practiceContext,
   ) {
     final items = totalCards == 0
@@ -211,6 +218,14 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
         insertAt,
         _buildErrorBanner(context, ref, srState.errorMessage!),
       );
+      items.insert(insertAt + 1, const SizedBox(height: AppSpacing.lg));
+    }
+
+    if (profileHasError) {
+      final insertAt = items.length > 2
+          ? (srState.errorMessage != null ? 4 : 2)
+          : items.length;
+      items.insert(insertAt, _buildProfileErrorBanner(context, ref));
       items.insert(insertAt + 1, const SizedBox(height: AppSpacing.lg));
     }
 
@@ -266,6 +281,35 @@ class _PracticeHubScreenState extends ConsumerState<PracticeHubScreen> {
             TextButton(
               onPressed: () =>
                   ref.read(spacedRepetitionProvider.notifier).reload(),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileErrorBanner(BuildContext context, WidgetRef ref) {
+    return Card(
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.lg2Radius),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.person_off_outlined, color: AppColors.warning),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                'Couldn\'t load your profile. Practice still works, but your streak may be unavailable.',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => ref.invalidate(userProfileProvider),
               child: const Text('Retry'),
             ),
           ],

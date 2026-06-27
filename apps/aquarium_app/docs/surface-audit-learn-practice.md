@@ -171,7 +171,7 @@ Tab 1 in the nav. Shows hero card (due/caught-up/empty state), stats row, practi
 | **Cards Mastered card** | Shows mastered count | | ✅ | Display only. | ✅ Complete |
 | **Practice Accuracy card** | Shows accuracy % or "Complete a review session" | totalReviews=0 | ✅ | Long CTA text rendered as subtitle (not truncated in trailing slot). | ✅ Complete |
 | Practice Hub | **Error state from `spacedRepetitionProvider`** | errorMessage set | ✅ | Displays a visible error banner with the provider message and a Retry action while preserving the rest of the hub context. Widget coverage verifies the banner appears. | ✅ Complete |
-| Practice Hub | **No profile error handling** | userProfileProvider error | ⚠️ | `userProfileProvider` is watched with `.select()` for streak only. If profile fails, `profile` defaults to null (streak=0) — screen renders normally with neutral streak. Low risk but no explicit error state. | ⚠️ Should Fix |
+| Practice Hub | **Profile error handling** | userProfileProvider error | ✅ | Shows a non-blocking retry banner while keeping Practice usable. Header energy indicator now reads `valueOrNull` so profile errors do not crash the screen. Widget coverage verifies the banner and existing hub content remain visible. | ✅ Complete |
 | Practice Hub | Item count constant | | ✅ | Populated Practice Hub content is now assembled as an explicit widget list, with source-guard coverage rejecting the old `_getPracticeHubItemCount` / `return 23` magic-count pattern. | ✅ Complete |
 
 ---
@@ -360,14 +360,14 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 |---|---|---|---|
 | Learn Screen | ✅ Mostly complete | 0 | 1 |
 | Lesson Screen | ✅ Mostly complete | 0 | 0 |
-| Practice Hub | ✅ Mostly complete | 0 | 1 |
+| Practice Hub | ✅ Mostly complete | 0 | 0 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
 | Review Session | ✅ Mostly complete | 0 | 0 |
 | Story Browser | ✅ Mostly complete | 0 | 1 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 3 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 2 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
