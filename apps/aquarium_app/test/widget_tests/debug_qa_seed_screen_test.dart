@@ -25,7 +25,8 @@ void main() {
     await tester.tap(find.text('Need a hint?'));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Look for keywords'), findsOneWidget);
+    expect(find.textContaining('Look for keywords'), findsNothing);
+    expect(find.textContaining('Use this care clue'), findsOneWidget);
 
     await _disposeAnimatedTree(tester);
   });

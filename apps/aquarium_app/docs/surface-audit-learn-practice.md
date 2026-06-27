@@ -109,7 +109,7 @@ Three sequential states: (1) lesson content card → (2) quiz widget → (3) com
 | LessonQuizWidget | Progress bar | 1 to N questions | ✅ | `LinearProgressIndicator` with correct fraction. Semantic label provided. | ✅ Complete |
 | LessonQuizWidget | Question counter "N of M correct" | | ✅ | Updates after each answer. | ✅ Complete |
 | LessonQuizWidget | **Hint button** (beginners only) | isBeginner=true, answered=false | ✅ | `ActionChip` "Need a hint?" renders only for beginners before answering. | ✅ Complete |
-| LessonQuizWidget | **Hint text panel** | showHint=true | ✅ | Generic text: "Look for keywords in the question..." Reveals after chip tap. | ⚠️ Should Fix (hint is generic, not question-specific) |
+| LessonQuizWidget | **Hint text panel** | showHint=true | ✅ | Hint copy is now derived from the current question's explanation when available, with the correct option scrubbed from the clue. Widget coverage verifies the old generic "Look for keywords" copy is gone. | ✅ Complete |
 | LessonQuizWidget | **Answer options (`QuizAnswerOption`)** | selected, answered-correct, answered-incorrect | ✅ | Bounce animation on correct answer. Scale + fade-in checkmark. Respects `disableAnimations`. | ✅ Complete |
 | LessonQuizWidget | Answer option — tap disabled after answering | answered=true | ✅ | `onTap: null` when answered. | ✅ Complete |
 | LessonQuizWidget | **Explanation panel** | answered=true, explanation present | ✅ | Shows info box with explanation text. Has `Semantics(liveRegion: true)`. | ✅ Complete |
@@ -359,7 +359,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Area | Overall | Critical Issues | Should Fix |
 |---|---|---|---|
 | Learn Screen | ✅ Mostly complete | 0 | 2 |
-| Lesson Screen | ✅ Mostly complete | 0 | 2 |
+| Lesson Screen | ✅ Mostly complete | 0 | 1 |
 | Practice Hub | ⚠️ Functional but fragile | 0 | 2 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
 | Review Session | ✅ Mostly complete | 0 | 0 |
@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 1 |
 
-**Total: 0 Must Fix · 8 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 7 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -383,8 +383,7 @@ None currently listed in this surface audit.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-1. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-2. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+1. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 

@@ -763,6 +763,15 @@ CL-P1-004Q Dedicated learning path detail:
 - Widget coverage verifies the path loads, opens the full-screen view, and keeps
   the retryable load-error path intact.
 
+CL-P1-004R Contextual quiz hints:
+
+- Lesson quiz hints now use the current question explanation to show a
+  care-specific clue instead of the old generic "Look for keywords" prompt.
+- The hint builder scrubs the correct option text where possible so beginner
+  hints guide recall without simply revealing the answer.
+- Focused widget coverage verifies the contextual hint panel and screen-reader
+  announcement, and QA debug coverage rejects the old generic copy.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

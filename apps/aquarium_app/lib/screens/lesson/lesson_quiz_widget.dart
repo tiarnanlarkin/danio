@@ -61,9 +61,6 @@ class LessonQuizWidget extends ConsumerStatefulWidget {
 class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
   static const double _maxReadableWidth = 720;
 
-  static const String _hintText =
-      'Look for keywords in the question - the correct answer often relates directly to the lesson content you just read.';
-
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _explanationKey = GlobalKey();
 
@@ -100,13 +97,66 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
     super.dispose();
   }
 
-  void _showHint() {
+  void _showHint(String hintText) {
     SemanticsService.sendAnnouncement(
       View.of(context),
-      'Hint shown. $_hintText',
+      'Hint shown. $hintText',
       TextDirection.ltr,
     );
     widget.onShowHint();
+  }
+
+  String _hintTextFor(QuizQuestion question) {
+    final explanation = question.explanation?.trim();
+    if (explanation != null && explanation.isNotEmpty) {
+      final clue = _careClueFromExplanation(explanation, question);
+      if (clue.isNotEmpty) {
+        return 'Use this care clue from the lesson: $clue';
+      }
+    }
+
+    final prompt = question.question.trim().replaceFirst(RegExp(r'\?$'), '');
+    if (prompt.isNotEmpty) {
+      return 'Focus on what this question asks: $prompt.';
+    }
+
+    return 'Review the lesson point this question is checking before choosing.';
+  }
+
+  String _careClueFromExplanation(
+    String explanation,
+    QuizQuestion question,
+  ) {
+    final becauseMatch = RegExp(
+      r'\bbecause\b\s*(.+)$',
+      caseSensitive: false,
+    ).firstMatch(explanation);
+
+    var clue = becauseMatch?.group(1) ?? explanation;
+    clue = _withoutCorrectAnswer(clue, question);
+    clue = clue.replaceAll(RegExp(r'\s+'), ' ').trim();
+    if (clue.isEmpty) return '';
+
+    final firstSentence = RegExp(r'^(.+?[.!?])(?:\s|$)').firstMatch(clue);
+    clue = firstSentence?.group(1)?.trim() ?? clue;
+    if (clue.length > 180) {
+      clue = '${clue.substring(0, 177).trimRight()}...';
+    }
+    return clue;
+  }
+
+  String _withoutCorrectAnswer(String text, QuizQuestion question) {
+    final correctIndex = question.correctIndex;
+    if (correctIndex < 0 || correctIndex >= question.options.length) {
+      return text;
+    }
+    final correctAnswer = question.options[correctIndex].trim();
+    if (correctAnswer.isEmpty) return text;
+
+    return text.replaceAll(
+      RegExp(RegExp.escape(correctAnswer), caseSensitive: false),
+      'the right choice',
+    );
   }
 
   @override
@@ -161,6 +211,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
     final showHintPanel = shouldShowHintControls && !answered && showHint;
     final hintItemCount = (showHintButton || showHintPanel) ? 1 : 0;
     final hasExplanation = answered && question.explanation != null;
+    final hintText = _hintTextFor(question);
 
     return Column(
       children: [
@@ -262,7 +313,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
                       child: ActionChip(
                         avatar: const Icon(Icons.lightbulb_outline, size: 16),
                         label: const Text('Need a hint?'),
-                        onPressed: _showHint,
+                        onPressed: () => _showHint(hintText),
                       ),
                     ),
                   ),
@@ -289,7 +340,7 @@ class _LessonQuizWidgetState extends ConsumerState<LessonQuizWidget> {
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
-                            'Look for keywords in the question — the correct answer often relates directly to the lesson content you just read.',
+                            hintText,
                             style: AppTypography.bodySmall.copyWith(
                               color: context.textSecondary,
                             ),

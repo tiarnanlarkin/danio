@@ -810,7 +810,7 @@ void main() {
       expect(find.text('Quiz coming soon!'), findsNothing);
     });
 
-    testWidgets('hint chip reveals visible hint panel and announces it', (
+    testWidgets('hint chip reveals contextual hint panel and announces it', (
       tester,
     ) async {
       SharedPreferences.setMockInitialValues({'user_profile': _profileJson()});
@@ -854,11 +854,13 @@ void main() {
       await tester.tap(find.text('Need a hint?'));
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Look for keywords'), findsOneWidget);
+      expect(find.textContaining('Look for keywords'), findsNothing);
+      expect(find.textContaining('burn gills'), findsOneWidget);
       final announcements = tester.takeAnnouncements();
       expect(
         announcements.any((announcement) {
-          return announcement.message.contains('Hint shown');
+          return announcement.message.contains('Hint shown') &&
+              announcement.message.contains('burn gills');
         }),
         isTrue,
       );
