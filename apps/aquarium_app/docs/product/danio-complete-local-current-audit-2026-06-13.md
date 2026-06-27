@@ -3045,6 +3045,15 @@ CL-P1-009FY Tank delete expiry failure feedback:
   widget coverage verifies failed expiry restores the tank and shows
   `Couldn't delete Retry Reef. Try again.`
 
+CL-P1-009FZ Cost Tracker single-delete rollback:
+
+- Failed single-expense delete writes now defer the visible rollback until the
+  next frame, avoiding a dismissed `Dismissible` key reinsert error.
+- The failed delete keeps the expense visible, preserves the last durable
+  expense JSON, and shows normal retry feedback.
+- Focused Cost Tracker widget coverage verifies `Filter` remains visible when
+  its swipe-delete persistence fails.
+
 CL-P1-009FL DebugMenu profile-write action boundary:
 
 - DebugMenu now routes profile rewrites for Set XP, Set Streak, Reset Learning,
@@ -4082,12 +4091,14 @@ High-confidence P1/P2 gaps from code/docs evidence:
   that restores the same local planning item. Local fish shop deletion now has
   a 5-second undo snackbar that restores the same saved shop. Cost Tracker
   clear-all now has a 5-second undo snackbar that restores the same saved
-  expense records. Bulk tank deletion now uses the same 5-second undo window as
-  single-tank deletion instead of deleting tank storage immediately. Failed Log
-  Detail deletion now stays on the log and shows normal error feedback instead
-  of surfacing a raw widget exception. Livestock removal feedback now uses
-  ASCII-safe count text in confirmation, journal, and snackbar copy. Livestock
-  bulk move now reports the real moved count after clearing selection mode.
+  expense records, and failed single-expense deletes now roll back without
+  dismissed-widget errors. Bulk tank deletion now uses the same 5-second undo
+  window as single-tank deletion instead of deleting tank storage immediately.
+  Failed Log Detail deletion now stays on the log and shows normal error
+  feedback instead of surfacing a raw widget exception. Livestock removal
+  feedback now uses ASCII-safe count text in confirmation, journal, and snackbar
+  copy. Livestock bulk move now reports the real moved count after clearing
+  selection mode.
   Bulk livestock removal now writes local removal timeline logs after the undo
   window expires. Equipment removal now rolls back partial local deletes if the
   linked maintenance-task delete fails, and skips stale task deletion when no

@@ -120,6 +120,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     required List<_Expense> rollbackExpenses,
     required String errorMessage,
     required String logMessage,
+    bool deferRollback = false,
   }) async {
     try {
       await _saveExpenses();
@@ -131,8 +132,19 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         tag: 'CostTrackerScreen',
       );
       if (!mounted) return false;
-      setState(() => _expenses = List<_Expense>.from(rollbackExpenses));
-      AppFeedback.showError(context, errorMessage);
+      void restoreAndShowError() {
+        if (!mounted) return;
+        setState(() => _expenses = List<_Expense>.from(rollbackExpenses));
+        AppFeedback.showError(context, errorMessage);
+      }
+
+      if (deferRollback) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          restoreAndShowError();
+        });
+      } else {
+        restoreAndShowError();
+      }
       return false;
     }
   }
@@ -191,6 +203,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
       rollbackExpenses: previousExpenses,
       errorMessage: "Couldn't delete that expense. Try again in a moment.",
       logMessage: 'Failed to persist deleted expense',
+      deferRollback: true,
     );
     if (!saved || !mounted) return;
 
