@@ -62,8 +62,8 @@ The main learn tab. Scrollable canvas: illustrated header, XP/streak overlays, p
 | LazyLearningPathCard | Lesson row — completed | isCompleted=true | ✅ | Shows ✅ icon + "+N XP" label. Still tappable (allows replay). | ✅ Complete |
 | LazyLearningPathCard | Path expand — loading state | isLoading=true | ✅ | Shows `BubbleLoader.small()` while path loads. | ✅ Complete |
 | LazyLearningPathCard | Empty lesson list | path with 0 lessons | 🔍 | If a path somehow has 0 lessons, `_buildExpandedContent` returns `[Divider]` with no items. No empty-state message. Low risk since all paths have lessons. | 🔍 Research First |
-| Learn Screen | **hasSeenTutorial** field in profile | | ⚠️ | `hasSeenTutorial` is read in `profileState` select but **never rendered** anywhere in `LearnScreen`. It's part of the profile watch tuple but has no effect on the screen. Dead watch — minor unnecessary compute. | ⚠️ Should Fix |
-| Learn Screen | Animate: reduced motion | disableAnimations=true | ✅ | Both `.animate()` and non-animated paths render `LazyLearningPathCard`. The `reduceMotion` path renders the same widget twice (both branches identical — the non-animated path was never differentiated). | ⚠️ Should Fix |
+| Learn Screen | **hasSeenTutorial** field in profile | | ✅ | Current `profileState` select no longer watches `hasSeenTutorial`; the stale dead-watch finding is closed. | ✅ Complete |
+| Learn Screen | Animate: reduced motion | disableAnimations=true | ✅ | Reduced motion renders the plain `LazyLearningPathCard`; normal motion applies fade/slide animation. The branches are now intentionally differentiated. | ✅ Complete |
 
 ---
 
@@ -141,7 +141,7 @@ Three sequential states: (1) lesson content card → (2) quiz widget → (3) com
 | Exit Quiz dialog | Mid-quiz back press | | ✅ | `showAppDestructiveDialog` with "Leave" / "Keep going" options. | ✅ Complete |
 | Exit Quiz dialog | Pre-quiz / post-quiz back press | `_showQuiz=false` or `_quizComplete=true` | ✅ | Allows immediate pop (returns `true` from `_confirmExitQuiz`). | ✅ Complete |
 | **In-app review trigger** | After perfect score or streak ≥ 7 | | ✅ | One-time request, guarded by `review_requested` prefs key. | ✅ Complete |
-| LessonScreen | **`isExitingDueToHearts` / `_isHeartsModalVisible` flags** | | ⚠️ | `_isHeartsModalVisible` is always false throughout the screen's lifecycle — it's set in `dispose()` but never set to `true` anywhere in the live code. The `maybeExplainHearts` dialog doesn't use it. This is dead state that was likely orphaned from an older hearts-block design. | ⚠️ Should Fix |
+| LessonScreen | **`isExitingDueToHearts` / `_isHeartsModalVisible` flags** | | ✅ | These old hearts-block flags are no longer present in `LessonScreen`; the stale dead-state finding is closed. | ✅ Complete |
 
 ---
 
@@ -347,9 +347,9 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | **`image` section type is a placeholder.** Renders "Visual guide on the way!" box. No image support. Fine now (no lessons use it), but must be implemented before image sections go live. | Lesson Screen | 🔮 Future Scope |
 | **Path card expansion shows a retryable error state.** Failed `loadPath()` calls no longer leave users with a stuck spinner. | Learning Path Detail | ✅ Complete |
 | **Dedicated full-screen path detail view exists.** Paths with 10+ lessons can be opened from the inline preview into the complete sequence view. | Learning Path Detail | ✅ Complete |
-| **`hasSeenTutorial` is watched but never rendered in LearnScreen.** Dead watch in the select tuple. | Learn Screen | ⚠️ Should Fix |
-| **`_isHeartsModalVisible` / `_isExitingDueToHearts` flags are dead state** in `LessonScreen`. Set in `dispose()` but never set to `true` in active code. Orphaned from old hearts-block design. | Lesson Screen | ⚠️ Should Fix |
-| **Reduce-motion path in LazyLearningPathCard renders the exact same widget both branches.** The non-animated path was never differentiated from the animated path. | Learn Screen | ⚠️ Should Fix |
+| **`hasSeenTutorial` is no longer watched by LearnScreen.** The stale dead-watch audit row is closed. | Learn Screen | ✅ Complete |
+| **`_isHeartsModalVisible` / `_isExitingDueToHearts` flags are no longer present** in `LessonScreen`. The stale dead-state audit row is closed. | Lesson Screen | ✅ Complete |
+| **Reduced-motion path in LazyLearningPathCard is differentiated.** Reduced motion uses the plain card; normal motion applies fade/slide animation. | Learn Screen | ✅ Complete |
 | **`comingSoonPathIds` is an empty set.** Entire Coming Soon code path is dead. Either populate or remove. | Learning Path Detail | ⚠️ Should Fix |
 
 ---
@@ -358,8 +358,8 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 
 | Area | Overall | Critical Issues | Should Fix |
 |---|---|---|---|
-| Learn Screen | ✅ Mostly complete | 0 | 4 |
-| Lesson Screen | ✅ Mostly complete | 0 | 3 |
+| Learn Screen | ✅ Mostly complete | 0 | 2 |
+| Lesson Screen | ✅ Mostly complete | 0 | 2 |
 | Practice Hub | ⚠️ Functional but fragile | 0 | 2 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
 | Review Session | ✅ Mostly complete | 0 | 0 |
@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 2 |
 
-**Total: 0 Must Fix · 12 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 9 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -383,12 +383,9 @@ None currently listed in this surface audit.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-1. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
-2. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
-3. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
-4. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
-5. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-6. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+1. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
+2. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
+3. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 

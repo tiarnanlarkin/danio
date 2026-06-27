@@ -853,6 +853,14 @@ CL-QA-005J Learning path load-error audit truth:
 - The Learn/Practice surface audit was updated to close the stale path-load
   error gap while keeping the larger dedicated path-detail redesign open.
 
+CL-QA-005K Learn/practice dead-code audit truth:
+
+- The Learn/Practice surface audit was updated to match current source truth:
+  `LearnScreen` no longer watches `hasSeenTutorial`, `LessonScreen` no longer
+  contains the old hearts-modal exit flags, and reduced-motion path cards now
+  use the plain non-animated branch while normal motion keeps fade/slide.
+- This was a documentation-truth cleanup only; no product behavior changed.
+
 CL-P1-005H Review fallback recall prompts:
 
 - Fallback Review Session cards with no stored `questionText` now show a clear
