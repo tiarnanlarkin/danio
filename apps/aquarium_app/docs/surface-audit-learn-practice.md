@@ -38,7 +38,7 @@ The main learn tab. Scrollable canvas: illustrated header, XP/streak overlays, p
 | Learn Screen | Null profile state ("Complete your profile setup") | null | ✅ | Shows `Create Profile` CTA → navigates to `OnboardingScreen`. XP/streak/paths all hidden. | ✅ Complete |
 | Learn Screen | `Create Profile` button (null state) | null | ✅ | Pushes `OnboardingScreen` via `NavigationThrottle`. No dead button. | ✅ Complete |
 | Learn Screen | First-visit tooltip (`FirstVisitTooltip`) | first visit only | ✅ | Persisted via `hasSeenTooltip`. Dismisses on tap. Doesn't interfere with navigation. | ✅ Complete |
-| Learn Screen — Offline | No offline/connectivity guard | Of | ⚠️ | App is offline-first (data cached locally) so this is low risk, but no explicit offline message. On first install with no network, `userProfileProvider` loading may hang indefinitely with no timeout/error. | ⚠️ Should Fix |
+| Learn Screen — Slow local profile load | Loading guard | Lo, Of | ✅ | After an extended profile-loading state, Learn swaps the skeleton for retryable local-first guidance instead of hanging indefinitely. Widget coverage verifies the stuck-loading state. | ✅ Complete |
 | **PlacementChallengeCard** | Whole component | all users | ✅ | Returns `SizedBox.shrink()` while no real placement flow exists. No placeholder CTA is shown. | ✅ Complete |
 | PlacementChallengeCard | **Placeholder actions** | "Take the test" / "Skip for now" | ✅ | Neither action is rendered, so the old wrong route to `SpacedRepetitionPracticeScreen` is no longer reachable. Widget coverage verifies these labels stay hidden. | ✅ Complete |
 | PlacementChallengeCard | Future real placement flow | dedicated quiz not implemented | 🔮 | A richer placement quiz can still be built later, but there is no broken local CTA in the current app. | 🔮 Future Scope |
@@ -358,7 +358,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 
 | Area | Overall | Critical Issues | Should Fix |
 |---|---|---|---|
-| Learn Screen | ✅ Mostly complete | 0 | 1 |
+| Learn Screen | ✅ Mostly complete | 0 | 0 |
 | Lesson Screen | ✅ Mostly complete | 0 | 0 |
 | Practice Hub | ✅ Mostly complete | 0 | 0 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 1 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 0 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 

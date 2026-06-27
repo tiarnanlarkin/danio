@@ -790,6 +790,18 @@ CL-P1-004T Story Browser profile-error handling:
 - Focused widget coverage verifies the profile-error banner and retained story
   hub context.
 
+CL-P1-004U Learn slow local-profile loading guard:
+
+- Learn now detects an extended `userProfileProvider` loading state and swaps
+  the skeleton for retryable local-first guidance instead of hanging
+  indefinitely.
+- The retry action resets the guard and invalidates the profile provider while
+  preserving the normal loaded, null-profile, and error paths.
+- The first-path auto-scroll retry is now tracked with a cancellable timer so
+  disposal cannot leave delayed callbacks behind.
+- Focused widget coverage verifies the stuck-loading guidance and existing
+  Learn surface tests still pass.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

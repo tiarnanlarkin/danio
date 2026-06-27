@@ -43,6 +43,14 @@ class _FakeSrNotifier extends StateNotifier<SpacedRepetitionState>
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+class _FakeUserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>>
+    implements UserProfileNotifier {
+  _FakeUserProfileNotifier(super.state);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 UserProfile _profile() {
   final now = DateTime(2026, 6, 23);
   return UserProfile(
@@ -54,7 +62,7 @@ UserProfile _profile() {
   );
 }
 
-Widget _wrap() {
+Widget _wrap({AsyncValue<UserProfile?>? profileState}) {
   SharedPreferences.setMockInitialValues({
     'user_profile': jsonEncode(_profile().toJson()),
     'guidance_seen_learnFirstVisit': true,
@@ -66,6 +74,10 @@ Widget _wrap() {
         return SharedPreferences.getInstance();
       }),
       spacedRepetitionProvider.overrideWith((ref) => _FakeSrNotifier()),
+      if (profileState != null)
+        userProfileProvider.overrideWith(
+          (ref) => _FakeUserProfileNotifier(profileState),
+        ),
     ],
     child: const MaterialApp(home: LearnScreen()),
   );
@@ -130,6 +142,23 @@ void main() {
 
       expect(find.text('Take the test'), findsNothing);
       expect(find.text('Skip for now'), findsNothing);
+    });
+
+    testWidgets('stuck profile loading shows retry guidance', (tester) async {
+      await tester.pumpWidget(
+        _wrap(profileState: const AsyncValue<UserProfile?>.loading()),
+      );
+
+      await tester.pump(const Duration(seconds: 9));
+
+      expect(find.text('Still opening Learn'), findsOneWidget);
+      expect(
+        find.text(
+          'Danio is still trying to open your local learning profile. Learning works offline once your local data is ready.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Try Again'), findsOneWidget);
     });
   });
 }

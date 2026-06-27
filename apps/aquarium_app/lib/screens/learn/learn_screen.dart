@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -43,6 +45,7 @@ class LearnScreen extends ConsumerStatefulWidget {
 class _LearnScreenState extends ConsumerState<LearnScreen> {
   static const double _firstPathDockMargin = 12;
   static const int _firstPathScrollMaxAttempts = 8;
+  static const Duration _profileLoadWarningDelay = Duration(seconds: 8);
   static const Duration _firstPathScrollRetryDelay = Duration(
     milliseconds: 120,
   );
@@ -50,8 +53,11 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _hasScrolledToFirstLesson = false;
   bool _firstPathScrollScheduled = false;
+  bool _profileLoadTimedOut = false;
   bool _showTooltip = true;
   final GlobalKey _firstPathKey = GlobalKey();
+  Timer? _firstPathRetryTimer;
+  Timer? _profileLoadingTimer;
 
   @override
   void initState() {
@@ -70,8 +76,40 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
   @override
   void dispose() {
+    _firstPathRetryTimer?.cancel();
+    _profileLoadingTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _syncProfileLoadingGuard({required bool isLoading}) {
+    if (!isLoading) {
+      _profileLoadingTimer?.cancel();
+      _profileLoadingTimer = null;
+      if (_profileLoadTimedOut) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) setState(() => _profileLoadTimedOut = false);
+        });
+      }
+      return;
+    }
+
+    if (_profileLoadTimedOut || _profileLoadingTimer != null) return;
+
+    _profileLoadingTimer = Timer(_profileLoadWarningDelay, () {
+      _profileLoadingTimer = null;
+      if (!mounted) return;
+      setState(() => _profileLoadTimedOut = true);
+    });
+  }
+
+  void _retryProfileLoad() {
+    _profileLoadingTimer?.cancel();
+    _profileLoadingTimer = null;
+    if (_profileLoadTimedOut) {
+      setState(() => _profileLoadTimedOut = false);
+    }
+    ref.invalidate(userProfileProvider);
   }
 
   /// Auto-scroll to first lesson module on first visit (no completed lessons).
@@ -97,6 +135,8 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       if (!mounted) return;
       if (!_isVisibleTab) {
         _firstPathScrollScheduled = false;
+        _firstPathRetryTimer?.cancel();
+        _firstPathRetryTimer = null;
         return;
       }
 
@@ -108,15 +148,21 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       if (settled) {
         _hasScrolledToFirstLesson = true;
         _firstPathScrollScheduled = false;
+        _firstPathRetryTimer?.cancel();
+        _firstPathRetryTimer = null;
         return;
       }
 
       if (attempt >= _firstPathScrollMaxAttempts) {
         _firstPathScrollScheduled = false;
+        _firstPathRetryTimer?.cancel();
+        _firstPathRetryTimer = null;
         return;
       }
 
-      Future<void>.delayed(duration + _firstPathScrollRetryDelay, () {
+      _firstPathRetryTimer?.cancel();
+      _firstPathRetryTimer = Timer(duration + _firstPathScrollRetryDelay, () {
+        _firstPathRetryTimer = null;
         if (!mounted) return;
         _scheduleFirstPathScroll(duration: duration, attempt: attempt + 1);
       });
@@ -391,9 +437,19 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
       learningStatsProvider.select((s) => s?.levelTitle ?? 'Beginner'),
     );
 
+    _syncProfileLoadingGuard(isLoading: profileState.isLoading);
+
     return Scaffold(
       body: profileState.isLoading
-          ? _buildSkeletonScreen(context, controller: _scrollController)
+          ? _profileLoadTimedOut
+                ? AppErrorState(
+                    icon: Icons.hourglass_disabled_rounded,
+                    title: 'Still opening Learn',
+                    message:
+                        'Danio is still trying to open your local learning profile. Learning works offline once your local data is ready.',
+                    onRetry: _retryProfileLoad,
+                  )
+                : _buildSkeletonScreen(context, controller: _scrollController)
           : profileState.hasError
           ? AppErrorState(
               title: 'Couldn\'t load lessons',
