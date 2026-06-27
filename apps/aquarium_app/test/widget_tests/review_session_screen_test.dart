@@ -203,16 +203,28 @@ void main() {
       expect(find.text('Card 1 of 3'), findsOneWidget);
     });
 
-    testWidgets('shows answer buttons (Forgot and Remembered)', (tester) async {
+    testWidgets('hides answer buttons until the fallback answer is revealed', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(_makeSession()));
       await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Reveal answer'), findsOneWidget);
+      expect(find.text('Forgot'), findsNothing);
+      expect(find.text('Remembered'), findsNothing);
+
+      await tester.tap(find.text('Reveal answer'));
+      await tester.pumpAndSettle();
+
       expect(find.text('Forgot'), findsOneWidget);
       expect(find.text('Remembered'), findsOneWidget);
     });
   });
 
   group('ReviewSessionScreen — card content', () {
-    testWidgets('shows question text from card', (tester) async {
+    testWidgets('reveals question text from card after recall prompt', (
+      tester,
+    ) async {
       final session = ReviewSession(
         id: 'session-1',
         startTime: _now,
@@ -220,6 +232,13 @@ void main() {
       );
       await tester.pumpWidget(_wrap(session));
       await tester.pump(const Duration(seconds: 1));
+
+      expect(find.text('Ammonia is toxic to fish'), findsNothing);
+      expect(find.text('Reveal answer'), findsOneWidget);
+
+      await tester.tap(find.text('Reveal answer'));
+      await tester.pumpAndSettle();
+
       expect(find.text('Ammonia is toxic to fish'), findsOneWidget);
     });
 
@@ -247,6 +266,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('choose Forgot'), findsOneWidget);
+      expect(find.text('Reveal answer'), findsOneWidget);
     });
 
     testWidgets('shows percent complete in progress row', (tester) async {
@@ -262,11 +282,15 @@ void main() {
       await tester.pumpWidget(_wrap(_makeSession(cardCount: 2)));
       await tester.pump(const Duration(seconds: 1));
 
+      await tester.tap(find.text('Reveal answer'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Remembered'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.text('Card 2 of 2'), findsOneWidget);
+      expect(find.text('Reveal answer'), findsOneWidget);
+      expect(find.text('Remembered'), findsNothing);
       expect(find.text('1 correct'), findsOneWidget);
       expect(find.textContaining('Couldn\'t record'), findsNothing);
     });

@@ -860,6 +860,15 @@ CL-P1-005I Distinct Learn practice entry points:
   instead of pushing the same Spaced Repetition Practice screen.
 - Widget coverage verifies the weak-practice card switches to the Practice hub.
 
+CL-P1-005J Fallback review reveal flow:
+
+- Fallback Review Session cards now show a recall prompt first and hide
+  Forgot/Remembered until users tap `Reveal answer`.
+- Revealed cards show the saved answer/content before self-rating, and the next
+  card resets back to the unrevealed prompt state.
+- Widget coverage verifies hidden self-rating buttons, reveal behavior, content
+  visibility, and next-card reset.
+
 CL-P1-005A Practice Skill Drills:
 
 - Practice Hub now includes five workflow-based Skill Drills when a review deck

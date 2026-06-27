@@ -34,6 +34,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   DateTime? _questionStartTime;
   String? _errorMessage;
   bool _isSubmitting = false;
+  bool _isFallbackAnswerRevealed = false;
   late ReviewSession _session;
 
   @override
@@ -226,6 +227,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   Widget _buildCardContent() {
     final questionText = _currentCard.questionText?.trim();
     final hasQuestionText = questionText != null && questionText.isNotEmpty;
+    final conceptTitle = _getQuestionText();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg2),
@@ -287,7 +289,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm2),
-                Text(_getQuestionText(), style: AppTypography.headlineMedium),
+                Text(conceptTitle, style: AppTypography.headlineMedium),
                 const SizedBox(height: AppSpacing.md),
                 Container(
                   width: double.infinity,
@@ -298,9 +300,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     border: Border.all(color: AppColors.primaryAlpha15),
                   ),
                   child: Text(
-                    hasQuestionText
-                        ? questionText
-                        : 'Recall the main care point for ${_getQuestionText()}. If you are unsure, choose Forgot so Danio brings it back sooner.',
+                    _isFallbackAnswerRevealed
+                        ? hasQuestionText
+                              ? questionText
+                              : 'No saved answer text is available for this older review card. Use your memory of the lesson, and choose Forgot if you are unsure.'
+                        : 'Recall the main care point for $conceptTitle. When you are ready, reveal the answer and rate yourself. If you are unsure, choose Forgot so Danio brings it back sooner.',
                     style: AppTypography.bodyMedium.copyWith(
                       color: context.textPrimary,
                       height: 1.5,
@@ -363,6 +367,17 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   SizedBox(height: AppSpacing.sm),
                   Text('Saving your answer...'),
                 ],
+              )
+            else if (!_isFallbackAnswerRevealed)
+              AppButton(
+                onPressed: () {
+                  setState(() => _isFallbackAnswerRevealed = true);
+                },
+                variant: AppButtonVariant.primary,
+                label: 'Reveal answer',
+                leadingIcon: Icons.visibility,
+                isFullWidth: true,
+                size: AppButtonSize.large,
               )
             else
               Row(
@@ -474,6 +489,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         _currentCardIndex++;
         _questionStartTime = DateTime.now();
         _errorMessage = null;
+        _isFallbackAnswerRevealed = false;
       });
     } else {
       _completeSession();

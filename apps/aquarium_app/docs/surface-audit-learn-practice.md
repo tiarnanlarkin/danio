@@ -233,7 +233,7 @@ Active flashcard review. Shows one card at a time: concept name + optional quest
 | Card content — question text | No questionText | questionText=null | ✅ | Shows a fallback recall prompt for the concept and tells unsure users to choose Forgot so the card returns sooner. Widget coverage verifies the legacy-card path. | ✅ Complete |
 | **"Remembered" / "Forgot" buttons** | Before `_showingAnswer` | | ✅ | Two large `AppButton`s. Primary (Remembered) and Destructive (Forgot). | ✅ Complete |
 | Remembered / Forgot | Loading state (`_isSubmitting=true`) | | ✅ | Shows `BubbleLoader` + "Saving your answer..." text. Buttons hidden. | ✅ Complete |
-| **Answer flow** | Self-assessment model | | ⚠️ | **The card shows ONLY the concept name before user answers.** There is no flip/reveal: user taps Remembered/Forgot without being shown what the answer is. The `questionText` IS shown upfront (it's the concept content), but there's no separate "answer" reveal step. This is a non-standard SRS UX — Anki shows front then flip to reveal back. Here the user is rating memory before seeing any confirmation of what's correct. Confusing for first-time users. | ⚠️ Should Fix |
+| **Answer flow** | Fallback self-assessment model | | ✅ | Fallback cards now show a recall prompt first, hide Forgot/Remembered until the user taps "Reveal answer", then show the saved answer/content and self-rating buttons. Widget coverage verifies reveal, answer visibility, and reset on the next card. | ✅ Complete |
 | Answer flow | Feedback panel (after answering) | correct=true, correct=false | ✅ | "Great job!" (green) / "Keep practicing!" (red). Shows `+N XP`. | ✅ Complete |
 | Feedback panel | **"Next Card" CTA** | not last card | ✅ | `_nextCard()` → advances `_currentCardIndex`, resets `_showingAnswer`. | ✅ Complete |
 | Feedback panel | **"Complete Session" CTA** | last card | ✅ | Calls `_completeSession()`. | ✅ Complete |
@@ -343,7 +343,7 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | **`spacedRepetitionProvider.errorMessage` is surfaced** on Practice Hub and SR Practice screens with retry affordances. | Practice Hub, SR Practice | ✅ Complete |
 | **Locked story cards now explain unlock requirements on tap.** Locked cards remain non-navigable but no longer behave like dead controls. | Story Browser | ✅ Complete |
 | **Story mid-play back button now asks before leaving unfinished progress.** Cancel keeps the current scene; Leave returns to the story hub. | Story Play | ✅ Complete |
-| **Review session self-assessment model still lacks a reveal step.** Fallback cards now have recall guidance, but the old self-assess flow still asks users to rate memory without a separate answer reveal. | Review Session | ⚠️ Should Fix |
+| **Review session fallback self-assessment now has a reveal step.** Users no longer rate fallback cards before revealing the saved content. | Review Session | ✅ Complete |
 | **`image` section type is a placeholder.** Renders "Visual guide on the way!" box. No image support. Fine now (no lessons use it), but must be implemented before image sections go live. | Lesson Screen | 🔮 Future Scope |
 | **Path card expansion shows a retryable error state.** Failed `loadPath()` calls no longer leave users with a stuck spinner. | Learning Path Detail | ✅ Complete |
 | **No dedicated full-screen path detail view.** Paths with 10+ lessons are squeezed into ExpansionTile. Especially poor for Species Spotlights (13 lessons). | Learning Path Detail | ⚠️ Should Fix |
@@ -362,12 +362,12 @@ Learning paths are displayed as `ExpansionTile`s within `LazyLearningPathCard`. 
 | Lesson Screen | ✅ Mostly complete | 0 | 3 |
 | Practice Hub | ⚠️ Functional but fragile | 0 | 2 |
 | SR Practice Screen | ✅ Mostly complete | 0 | 0 |
-| Review Session | ⚠️ UX gap | 0 | 1 |
+| Review Session | ✅ Mostly complete | 0 | 0 |
 | Story Browser | ✅ Mostly complete | 0 | 1 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ⚠️ UX gap | 0 | 3 |
 
-**Total: 0 Must Fix · 14 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 13 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -380,16 +380,15 @@ None currently listed in this surface audit.
 ### ⚠️ Should Fix (high priority)
 
 1. **Path detail as dedicated screen** — especially for paths with 10–13 lessons. Expansion tile is too cramped.
-2. **Review session reveal model** — fallback cards now have recall guidance; decide whether the old self-assess flow should become a true flip/reveal model.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-3. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
-4. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
-5. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
-6. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
-7. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-8. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+2. **Dead watch: `hasSeenTutorial`** in LearnScreen select tuple.
+3. **Dead state: `_isHeartsModalVisible` / `_isExitingDueToHearts`** in LessonScreen.
+4. **Reduce-motion branch in LazyLearningPathCard** renders identical widget both branches.
+5. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
+6. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
+7. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 
