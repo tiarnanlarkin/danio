@@ -260,7 +260,7 @@ Active flashcard review. Shows one card at a time: concept name + optional quest
 | Story Browser | AppBar ("Interactive Stories") | | ✅ | Transparent AppBar, correct title. | ✅ Complete |
 | Story Browser | Header copy ("Choose your adventure") | | ✅ | Subtext present. | ✅ Complete |
 | Story Browser | **Story list** | allStories (6 stories) | ✅ | 6 stories: 3 beginner, 2 intermediate, 1 advanced. All rendered. | ✅ Complete |
-| Story Browser | **No stories empty state** | allStories=[] | 🔴 | If `Stories.allStories` is empty, the list renders nothing with **no empty state message**. Low risk (stories are hardcoded), but fragile. | 🔍 Research First |
+| Story Browser | Empty story catalog | allStories=[] | ✅ | Shows a "No stories available yet" empty state instead of a blank list. Widget coverage verifies the empty catalog fallback through an injectable story list seam. | ✅ Complete |
 | Story Browser | Profile error handling | profile load error | ✅ | Shows a non-blocking retry banner while keeping available starter stories visible; locked-state decisions use profile data only when available. Widget coverage verifies banner and story hub copy. | ✅ Complete |
 | Story Browser — `_StoryCard` | **Unlocked story — tap** | isUnlocked=true | ✅ | `Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryPlayScreen(story: story)))`. | ✅ Complete |
 | _StoryCard | **Locked story — tap** | isUnlocked=false | ✅ | Card stays locked but now shows `DanioSnackBar.info` with the missing level or prerequisite requirement. No Story Play navigation occurs while locked. | ✅ Complete |
@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 0 Should Fix · 1 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 0 Should Fix · 0 Research First · 4 Future Scope**
 
 ---
 

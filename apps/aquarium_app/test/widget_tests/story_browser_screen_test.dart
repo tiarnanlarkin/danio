@@ -18,7 +18,10 @@ import 'package:danio/widgets/core/app_button.dart';
 // Helpers
 // ---------------------------------------------------------------------------
 
-Widget _wrapBrowser({AsyncValue<UserProfile?>? profileState}) {
+Widget _wrapBrowser({
+  AsyncValue<UserProfile?>? profileState,
+  List<Story>? stories,
+}) {
   SharedPreferences.setMockInitialValues({});
   return ProviderScope(
     overrides: [
@@ -30,7 +33,7 @@ Widget _wrapBrowser({AsyncValue<UserProfile?>? profileState}) {
           (ref) => _FakeUserProfileNotifier(profileState),
         ),
     ],
-    child: const MaterialApp(home: StoryBrowserScreen()),
+    child: MaterialApp(home: StoryBrowserScreen(stories: stories)),
   );
 }
 
@@ -239,6 +242,19 @@ void main() {
       );
       expect(find.text('Retry'), findsOneWidget);
       expect(find.text('Choose your adventure'), findsOneWidget);
+    });
+
+    testWidgets('empty story catalog shows an empty state', (tester) async {
+      await tester.pumpWidget(_wrapBrowser(stories: const []));
+      await _advance(tester);
+
+      expect(find.text('No stories available yet'), findsOneWidget);
+      expect(
+        find.text(
+          'Danio could not find any interactive stories. Lessons and practice are still available from the Learn tab.',
+        ),
+        findsOneWidget,
+      );
     });
   });
 

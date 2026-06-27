@@ -819,6 +819,14 @@ CL-P1-004W Learning path empty-lesson fallback:
 - Focused widget coverage verifies the empty path fallback alongside existing
   locked, loaded, and load-error path card behavior.
 
+CL-P1-004X Story Browser empty-catalog fallback:
+
+- Story Browser now accepts an optional story list for testability while using
+  the real hardcoded story catalog in production.
+- An empty story catalog now shows a clear "No stories available yet" empty
+  state instead of rendering a blank story list.
+- Focused widget coverage verifies the empty catalog fallback.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

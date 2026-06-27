@@ -12,7 +12,9 @@ import '../../widgets/danio_snack_bar.dart';
 /// Browsable list of all available interactive stories.
 /// Accessible from the Learn tab — lets users pick a story to play.
 class StoryBrowserScreen extends ConsumerWidget {
-  const StoryBrowserScreen({super.key});
+  final List<Story>? stories;
+
+  const StoryBrowserScreen({super.key, this.stories});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,7 +34,7 @@ class StoryBrowserScreen extends ConsumerWidget {
 
     final completedStories = profileSlice.completedStories;
 
-    final allStories = Stories.allStories;
+    final allStories = stories ?? Stories.allStories;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -87,43 +89,49 @@ class StoryBrowserScreen extends ConsumerWidget {
               ),
             ),
 
-          // Stories list
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final story = allStories[index];
-                  final isCompleted = completedStories.contains(story.id);
-                  final isUnlocked = profileSlice.hasProfile
-                      ? (profileSlice.currentLevel! >= story.minLevel &&
-                            (story.prerequisites.isEmpty ||
-                                story.prerequisites.every(
-                                  (id) => completedStories.contains(id),
-                                )))
-                      : story.minLevel == 0 && story.prerequisites.isEmpty;
+          if (allStories.isEmpty)
+            const SliverFillRemaining(
+              hasScrollBody: false,
+              child: _EmptyStoriesState(),
+            )
+          else
+            // Stories list
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final story = allStories[index];
+                    final isCompleted = completedStories.contains(story.id);
+                    final isUnlocked = profileSlice.hasProfile
+                        ? (profileSlice.currentLevel! >= story.minLevel &&
+                              (story.prerequisites.isEmpty ||
+                                  story.prerequisites.every(
+                                    (id) => completedStories.contains(id),
+                                  )))
+                        : story.minLevel == 0 && story.prerequisites.isEmpty;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                    child: _StoryCard(
-                      story: story,
-                      isCompleted: isCompleted,
-                      isUnlocked: isUnlocked,
-                      onTap: isUnlocked
-                          ? () => AppRoutes.toStoryPlay(context, story)
-                          : () => _showLockedStoryFeedback(
-                              context,
-                              story,
-                              currentLevel: profileSlice.currentLevel ?? 0,
-                              completedStories: completedStories,
-                            ),
-                    ),
-                  );
-                },
-                childCount: allStories.length,
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: _StoryCard(
+                        story: story,
+                        isCompleted: isCompleted,
+                        isUnlocked: isUnlocked,
+                        onTap: isUnlocked
+                            ? () => AppRoutes.toStoryPlay(context, story)
+                            : () => _showLockedStoryFeedback(
+                                context,
+                                story,
+                                currentLevel: profileSlice.currentLevel ?? 0,
+                                completedStories: completedStories,
+                              ),
+                      ),
+                    );
+                  },
+                  childCount: allStories.length,
+                ),
               ),
             ),
-          ),
 
           const SliverToBoxAdapter(
             child: SizedBox(height: 80),
@@ -156,6 +164,41 @@ class StoryBrowserScreen extends ConsumerWidget {
     }
 
     DanioSnackBar.info(context, message);
+  }
+}
+
+class _EmptyStoriesState extends StatelessWidget {
+  const _EmptyStoriesState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.auto_stories_outlined,
+            size: AppIconSizes.xxl,
+            color: context.textSecondary,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'No stories available yet',
+            textAlign: TextAlign.center,
+            style: AppTypography.titleLarge,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Danio could not find any interactive stories. Lessons and practice are still available from the Learn tab.',
+            textAlign: TextAlign.center,
+            style: AppTypography.bodyMedium.copyWith(
+              color: context.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
