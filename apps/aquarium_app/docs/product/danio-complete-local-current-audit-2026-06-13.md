@@ -2143,8 +2143,9 @@ CL-P1-009CF Cost Tracker undo-restore failure feedback:
 - Failed undo restore writes roll the visible expense list back to the
   pre-undo state and show normal local error feedback instead of surfacing an
   async widget exception.
-- Focused Cost Tracker widget coverage simulates a failed clear-all undo
-  restore write and verifies the user sees restore-failure feedback.
+- Focused Cost Tracker widget coverage simulates failed single-expense and
+  clear-all undo restore writes, verifying the user sees restore-failure
+  feedback and the visible expense list returns to the pre-undo state.
 
 CL-P1-009CG Reminder delete/undo failure feedback:
 

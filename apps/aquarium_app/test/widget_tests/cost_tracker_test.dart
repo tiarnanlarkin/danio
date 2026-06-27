@@ -508,6 +508,64 @@ void main() {
     });
 
     testWidgets(
+      'single expense undo restore failure keeps expense deleted with feedback',
+      (tester) async {
+        const savedExpenses =
+            '[{"id":"1","description":"Filter","amount":35.0,'
+            '"category":"Equipment","date":"2025-01-15T12:00:00.000"},'
+            '{"id":"2","description":"Plant food","amount":8.5,'
+            '"category":"Food","date":"2025-01-16T12:00:00.000"}]';
+
+        await tester.pumpWidget(
+          _wrapWithFailingPrefs(
+            initialValues: {
+              'cost_tracker_expenses': savedExpenses,
+              'cost_tracker_currency': '\u00A3',
+            },
+            shouldFail: (key, value) =>
+                key == 'cost_tracker_expenses' &&
+                value is String &&
+                value.contains('"description":"Filter"'),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.drag(find.byKey(const Key('1')), const Offset(-600, 0));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.text('Filter'), findsNothing);
+        expect(find.text('Plant food'), findsOneWidget);
+        expect(find.text('Deleted: Filter'), findsOneWidget);
+
+        tester
+            .state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger))
+            .hideCurrentSnackBar(reason: SnackBarClosedReason.action);
+        tester
+            .widget<SnackBarAction>(find.widgetWithText(SnackBarAction, 'Undo'))
+            .onPressed();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Filter'), findsNothing);
+        expect(find.text('Plant food'), findsOneWidget);
+        expect(
+          find.text("Couldn't restore that expense. Try again in a moment."),
+          findsOneWidget,
+        );
+
+        final prefs = await SharedPreferences.getInstance();
+        final saved =
+            jsonDecode(prefs.getString('cost_tracker_expenses')!)
+                as List<dynamic>;
+        expect(saved.map((e) => e['description']), ['Plant food']);
+      },
+    );
+
+    testWidgets(
       'clear false save result shows feedback and keeps expenses active',
       (tester) async {
         SharedPreferences.setMockInitialValues({});
