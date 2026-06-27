@@ -56,7 +56,7 @@ The main learn tab. Scrollable canvas: illustrated header, XP/streak overlays, p
 | **LazyLearningPathCard** | ExpansionTile (collapsed) | L | ✅ | Lazy-loads full path on expansion. Shows BubbleLoader while loading. | ✅ Complete |
 | LazyLearningPathCard | "Start Here 👋" badge | index=0 and completedLessons=0 | ✅ | Display only. Correct condition. | ✅ Complete |
 | LazyLearningPathCard | Locked path tile (🔒 Locked) | isPathLocked=true | ✅ | Non-expandable. `onTap` shows `DanioSnackBar.warning` with prereq names. | ✅ Complete |
-| LazyLearningPathCard | Coming Soon tile | comingSoonPathIds (empty set currently) | ✅ | Shows `showAppDialog` with "Coming Soon!" message + "Got it!" button. The set `comingSoonPathIds` is currently empty — no paths are gated. | ✅ Complete |
+| LazyLearningPathCard | Coming Soon tile | removed branch | ✅ | No coming-soon path gate remains in `LearnScreen`; all current metadata paths are available. Existing source guard coverage verifies `comingSoonPathIds` and placeholder "Coming Soon" copy stay out of the Learn source. | ✅ Complete |
 | LazyLearningPathCard | Lesson row — unlocked | isUnlocked=true | ✅ | `NavigationThrottle.push(LessonScreen(...))`. Hero animation on lesson icon. | ✅ Complete |
 | LazyLearningPathCard | Lesson row — locked | isUnlocked=false | ✅ | `DanioSnackBar.warning` with "Complete the previous lesson to unlock this one 🔒". No navigation. | ✅ Complete |
 | LazyLearningPathCard | Lesson row — completed | isCompleted=true | ✅ | Shows ✅ icon + "+N XP" label. Still tappable (allows replay). | ✅ Complete |
@@ -325,9 +325,9 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | **Locked path tile** (🔒 Locked) | Displayed when `isPathLocked=true` | | ✅ | Non-expandable `ListTile`. Lock icon. Prereq names in subtitle. | ✅ Complete |
 | Locked path tile | **Tap** | | ✅ | `DanioSnackBar.warning` with prereq names. No navigation. | ✅ Complete |
 | Locked path tile | Prereq name resolution | prereq ID not in allPathMetadata | ✅ | Falls back to `PathMetadata(id: id, title: id, emoji: '🔒', ...)`. Shows raw ID as name — minor UX rough edge. | ⚠️ Should Fix |
-| **Coming Soon tile** | Displayed when `comingSoonPathIds` contains path ID | | ✅ | Non-expandable. Amber "Coming Soon 🚧" badge. | ✅ Complete |
-| Coming Soon tile | **Tap** | | ✅ | `showAppDialog` with story about path being in development. "Got it!" dismisses. | ✅ Complete |
-| Path card | **`comingSoonPathIds` is currently empty** | | ⚠️ | No paths are currently gated as coming soon. This constant was likely used historically. Either populate it or remove the code path to avoid dead code. | ⚠️ Should Fix |
+| **Coming Soon tile** | Removed branch | | ✅ | No coming-soon path branch remains in the Learn source; all current metadata paths are shown as available or locked by real prerequisites. | ✅ Complete |
+| Coming Soon tile | **Tap** | removed branch | ✅ | No placeholder coming-soon dialog branch remains for learning paths. | ✅ Complete |
+| Path card | **`comingSoonPathIds` is currently empty** | | ✅ | Stale audit row: source guard coverage already verifies `comingSoonPathIds` is absent from `learn_screen.dart`. | ✅ Complete |
 | Path card | **Only one path has a prerequisite lock** (`fish_health` requires `nitrogen_cycle`) | | ✅ | Lock system functional. One real lock in production. | ✅ Complete |
 | Path card expansion | Load error (path load fails) | network error mid-expand | ✅ | Renders a retryable error row with "Couldn't load this path", supporting copy, and a Try again action. Widget coverage verifies no loader remains stuck. | ✅ Complete |
 | Path card | **Dedicated path detail screen** | | ✅ | Expanded path cards expose `Open full path`; the inline list is now a short preview and the full-screen view shows overview, progress, and the complete lesson sequence. | ✅ Complete |
@@ -350,7 +350,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | **`hasSeenTutorial` is no longer watched by LearnScreen.** The stale dead-watch audit row is closed. | Learn Screen | ✅ Complete |
 | **`_isHeartsModalVisible` / `_isExitingDueToHearts` flags are no longer present** in `LessonScreen`. The stale dead-state audit row is closed. | Lesson Screen | ✅ Complete |
 | **Reduced-motion path in LazyLearningPathCard is differentiated.** Reduced motion uses the plain card; normal motion applies fade/slide animation. | Learn Screen | ✅ Complete |
-| **`comingSoonPathIds` is an empty set.** Entire Coming Soon code path is dead. Either populate or remove. | Learning Path Detail | ⚠️ Should Fix |
+| **`comingSoonPathIds` branch is absent.** The stale empty-set dead-code row is closed by existing Learn source guard coverage. | Learning Path Detail | ✅ Complete |
 
 ---
 
@@ -365,9 +365,9 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Review Session | ✅ Mostly complete | 0 | 0 |
 | Story Browser | ✅ Mostly complete | 0 | 1 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
-| Learning Path Detail | ✅ Mostly complete | 0 | 2 |
+| Learning Path Detail | ✅ Mostly complete | 0 | 1 |
 
-**Total: 0 Must Fix · 9 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 8 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -383,9 +383,8 @@ None currently listed in this surface audit.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-1. **`comingSoonPathIds` empty set** — dead code. Populate or remove.
-2. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
-3. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+1. **Generic hint in quiz** — hint chip shows the same text for every question. Should be question-specific or removed.
+2. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
 
 ---
 

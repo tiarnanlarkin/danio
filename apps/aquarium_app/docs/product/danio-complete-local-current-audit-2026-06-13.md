@@ -861,6 +861,13 @@ CL-QA-005K Learn/practice dead-code audit truth:
   use the plain non-animated branch while normal motion keeps fade/slide.
 - This was a documentation-truth cleanup only; no product behavior changed.
 
+CL-QA-005L Learning coming-soon audit truth:
+
+- The Learn/Practice surface audit was updated to match existing Learn source
+  guard coverage: `comingSoonPathIds` and placeholder "Coming Soon" learning
+  path copy are already absent from `learn_screen.dart`.
+- This was a documentation-truth cleanup only; no product behavior changed.
+
 CL-P1-005H Review fallback recall prompts:
 
 - Fallback Review Session cards with no stored `questionText` now show a clear
