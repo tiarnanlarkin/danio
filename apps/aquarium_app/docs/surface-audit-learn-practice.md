@@ -61,7 +61,7 @@ The main learn tab. Scrollable canvas: illustrated header, XP/streak overlays, p
 | LazyLearningPathCard | Lesson row — locked | isUnlocked=false | ✅ | `DanioSnackBar.warning` with "Complete the previous lesson to unlock this one 🔒". No navigation. | ✅ Complete |
 | LazyLearningPathCard | Lesson row — completed | isCompleted=true | ✅ | Shows ✅ icon + "+N XP" label. Still tappable (allows replay). | ✅ Complete |
 | LazyLearningPathCard | Path expand — loading state | isLoading=true | ✅ | Shows `BubbleLoader.small()` while path loads. | ✅ Complete |
-| LazyLearningPathCard | Empty lesson list | path with 0 lessons | 🔍 | If a path somehow has 0 lessons, `_buildExpandedContent` returns `[Divider]` with no items. No empty-state message. Low risk since all paths have lessons. | 🔍 Research First |
+| LazyLearningPathCard | Empty lesson list | path with 0 lessons | ✅ | Loaded paths with no lessons now show an explicit "No lessons in this path yet" empty state instead of only a divider. Widget coverage verifies the fallback and keeps the full-path CTA hidden. | ✅ Complete |
 | Learn Screen | **hasSeenTutorial** field in profile | | ✅ | Current `profileState` select no longer watches `hasSeenTutorial`; the stale dead-watch finding is closed. | ✅ Complete |
 | Learn Screen | Animate: reduced motion | disableAnimations=true | ✅ | Reduced motion renders the plain `LazyLearningPathCard`; normal motion applies fade/slide animation. The branches are now intentionally differentiated. | ✅ Complete |
 
@@ -367,7 +367,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Story Play | ✅ Mostly complete | 0 | 0 |
 | Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 0 Should Fix · 2 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 0 Should Fix · 1 Research First · 4 Future Scope**
 
 ---
 

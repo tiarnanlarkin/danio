@@ -2,17 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:danio/models/learning.dart';
 import 'package:danio/providers/lesson_provider.dart';
 import 'package:danio/screens/learn/lazy_learning_path_card.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {List<Override> overrides = const []}) {
   return ProviderScope(
+    overrides: overrides,
     child: MaterialApp(
       home: Scaffold(
         body: Center(child: SizedBox(width: 420, child: child)),
       ),
     ),
   );
+}
+
+class _LoadedPathLessonProvider extends LessonProvider {
+  _LoadedPathLessonProvider(LearningPath path) {
+    state = LessonState(
+      loadedPaths: {path.id: path},
+      pathLoadStates: {path.id: LessonLoadState.loaded},
+    );
+  }
+
+  @override
+  Future<void> loadPath(String pathId) async {}
 }
 
 PathMetadata _missingPathMeta() {
@@ -46,6 +60,27 @@ PathMetadata _rawPrereqPathMeta() {
     emoji: '!',
     orderIndex: 0,
     lessonIds: ['missing_lesson'],
+  );
+}
+
+PathMetadata _emptyPathMeta() {
+  return const PathMetadata(
+    id: 'empty_path',
+    title: 'Empty Path',
+    description: 'A path with no lessons yet.',
+    emoji: '!',
+    orderIndex: 0,
+    lessonIds: [],
+  );
+}
+
+LearningPath _emptyLearningPath() {
+  return const LearningPath(
+    id: 'empty_path',
+    title: 'Empty Path',
+    description: 'A path with no lessons yet.',
+    emoji: '!',
+    lessons: [],
   );
 }
 
@@ -127,6 +162,42 @@ void main() {
       expect(find.text('Check your connection and try again.'), findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
+    });
+
+    testWidgets('shows an empty message when a loaded path has no lessons', (
+      tester,
+    ) async {
+      final metadata = _emptyPathMeta();
+      final path = _emptyLearningPath();
+
+      await tester.pumpWidget(
+        _wrap(
+          LazyLearningPathCard(
+            metadata: metadata,
+            completedLessons: 0,
+            totalLessons: 0,
+            userCompletedLessons: const [],
+            allPathMetadata: [metadata],
+          ),
+          overrides: [
+            lessonProvider.overrideWith(
+              (ref) => _LoadedPathLessonProvider(path),
+            ),
+          ],
+        ),
+      );
+
+      await tester.tap(find.text('Empty Path'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('No lessons in this path yet'), findsOneWidget);
+      expect(
+        find.text(
+          'This learning path is available, but its lessons have not been added yet.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Open full path'), findsNothing);
     });
   });
 }

@@ -411,6 +411,40 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
       ];
     }
 
+    if (path.lessons.isEmpty) {
+      return [
+        const Divider(height: 1),
+        Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            children: [
+              Icon(
+                Icons.menu_book_outlined,
+                color: context.textSecondary,
+                size: AppIconSizes.xl,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'No lessons in this path yet',
+                style: AppTypography.labelLarge.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'This learning path is available, but its lessons have not been added yet.',
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ];
+    }
+
     final previewLessons = path.lessons.take(4).toList();
     final hiddenLessonCount = path.lessons.length - previewLessons.length;
 

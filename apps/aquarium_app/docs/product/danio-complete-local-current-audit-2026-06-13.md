@@ -811,6 +811,14 @@ CL-P1-004V Story Play malformed-scene fallback:
 - Focused widget coverage verifies the fallback copy and Back to Stories exit
   path.
 
+CL-P1-004W Learning path empty-lesson fallback:
+
+- Expanded learning path cards now show a clear "No lessons in this path yet"
+  empty state when a loaded path has no lesson records.
+- The empty state avoids showing the full-path CTA for an empty path.
+- Focused widget coverage verifies the empty path fallback alongside existing
+  locked, loaded, and load-error path card behavior.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US
