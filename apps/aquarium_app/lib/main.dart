@@ -33,6 +33,7 @@ import 'widgets/performance_overlay.dart';
 import 'widgets/reduced_motion_media_query.dart';
 import 'widgets/error_boundary.dart';
 import 'widgets/core/bubble_loader.dart';
+import 'widgets/tank_delete_failure_feedback_listener.dart';
 import 'utils/logger.dart';
 import 'services/debug_deep_link_service.dart';
 import 'utils/schema_migration.dart';
@@ -40,6 +41,10 @@ import 'providers/gems_provider.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+/// App-level messenger for feedback that can outlive a popped route.
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 /// Notification payloads arrive from native while the widget tree may not
 /// yet be built.  This notifier bridges the gap — the notification service
@@ -220,6 +225,7 @@ class DanioApp extends ConsumerWidget {
     return MaterialApp(
       scrollBehavior: const DanioScrollBehavior(),
       navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       title: 'Danio',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
@@ -227,12 +233,15 @@ class DanioApp extends ConsumerWidget {
       themeMode: themeMode,
       // navigatorObservers: [
       // ],
-      builder: (context, child) => ReducedMotionMediaQuery(
-        child: XpAnimationListener(
-          child: CelebrationOverlayWrapper(
-            child: AppPerformanceOverlay(
-              showOverlay: _showPerformanceOverlay,
-              child: child ?? const SizedBox.shrink(),
+      builder: (context, child) => TankDeleteFailureFeedbackListener(
+        scaffoldMessengerKey: scaffoldMessengerKey,
+        child: ReducedMotionMediaQuery(
+          child: XpAnimationListener(
+            child: CelebrationOverlayWrapper(
+              child: AppPerformanceOverlay(
+                showOverlay: _showPerformanceOverlay,
+                child: child ?? const SizedBox.shrink(),
+              ),
             ),
           ),
         ),

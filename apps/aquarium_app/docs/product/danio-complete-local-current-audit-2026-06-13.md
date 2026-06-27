@@ -3034,6 +3034,16 @@ CL-P1-009FX Lesson completion achievement-stat persistence boundary:
 - Focused source-contract coverage guards against reintroducing unawaited
   perfect-score saves or duplicate completed-lesson achievement stats.
 
+CL-P1-009FY Tank delete expiry failure feedback:
+
+- Single-tank soft-delete expiry now emits a provider-backed failure event when
+  the permanent local delete write fails after the undo window.
+- The root app feedback listener shows normal retry feedback from a still-mounted
+  shell instead of relying on the popped Tank Detail or Tank Settings route.
+- Tank Detail and Tank Settings pass tank-specific retry copy, and focused
+  widget coverage verifies failed expiry restores the tank and shows
+  `Couldn't delete Retry Reef. Try again.`
+
 CL-P1-009FL DebugMenu profile-write action boundary:
 
 - DebugMenu now routes profile rewrites for Set XP, Set Streak, Reset Learning,
@@ -4106,10 +4116,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Equipment service logging now rolls back the saved serviced timestamp, linked
   maintenance-task changes, and generated service log with normal error
   feedback. Failed tank and livestock soft-delete expiry now restores
-  visibility when permanent local delete writes fail, and failed single
-  livestock removal expiry now shows normal retry feedback without writing a
-  false removal timeline log. Failed new-tank default-task creation now rolls
-  back partial tank/task data. Failed livestock
+  visibility when permanent local delete writes fail, failed tank expiry shows
+  normal retry feedback from the root app shell, and failed single livestock
+  removal expiry now shows normal retry feedback without writing a false removal
+  timeline log. Failed new-tank default-task creation now rolls back partial
+  tank/task data. Failed livestock
   bulk moves now roll back earlier moved records. Failed sample-tank replacement
   now restores the previous demo tank and child data. Failed tank reorders now
   restore partial sort-order writes. Failed first-run demo seeding now removes

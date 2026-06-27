@@ -433,11 +433,13 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     final actions = ref.read(tankActionsProvider);
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    final tankName = _name.trim().isEmpty ? 'this tank' : _name.trim();
     actions.softDeleteTank(
       widget.tankId,
       onUndoExpired: () {
         // Tank has been permanently deleted
       },
+      permanentDeleteFailureMessage: "Couldn't delete $tankName. Try again.",
     );
 
     // Navigate back: pop TankSettings and TankDetail only (2 screens)

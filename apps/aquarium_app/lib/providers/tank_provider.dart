@@ -63,6 +63,15 @@ final _softDeleteLivestockStateProvider = Provider<SoftDeleteState>((ref) {
   return state;
 });
 
+class TankDeleteFailureFeedback {
+  final String message;
+
+  TankDeleteFailureFeedback(this.message);
+}
+
+final tankDeleteFailureFeedbackProvider =
+    StateProvider<TankDeleteFailureFeedback?>((ref) => null);
+
 /// All tanks list (excludes soft-deleted tanks, sorted by sortOrder)
 final tanksProvider = FutureProvider<List<Tank>>((ref) async {
   final storage = ref.watch(storageServiceProvider);
@@ -401,7 +410,11 @@ class TankActions {
 
   /// Soft delete a tank (marks for deletion, can be undone within 5 seconds)
   /// Returns a callback to undo the deletion
-  void softDeleteTank(String id, {void Function()? onUndoExpired}) {
+  void softDeleteTank(
+    String id, {
+    void Function()? onUndoExpired,
+    String? permanentDeleteFailureMessage,
+  }) {
     _ref
         .read(_softDeleteStateProvider)
         .markDeleted(
@@ -415,6 +428,12 @@ class TankActions {
                 'TankProvider.softDeleteTank permanent delete failed: $e',
                 stackTrace: st,
                 tag: 'TankProvider',
+              );
+              _ref
+                  .read(tankDeleteFailureFeedbackProvider.notifier)
+                  .state = TankDeleteFailureFeedback(
+                permanentDeleteFailureMessage ??
+                    "Couldn't delete that tank. Try again.",
               );
             }
           },

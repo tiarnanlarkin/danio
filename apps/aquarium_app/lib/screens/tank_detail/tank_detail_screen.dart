@@ -385,6 +385,7 @@ class TankDetailScreen extends ConsumerWidget {
         // Called after 5 seconds if user doesn't undo
         // Tank is already permanently deleted by the timer
       },
+      permanentDeleteFailureMessage: "Couldn't delete ${tank.name}. Try again.",
     );
 
     // Pop back to home screen immediately

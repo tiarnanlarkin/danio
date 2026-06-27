@@ -15,6 +15,7 @@ import 'package:danio/providers/storage_provider.dart';
 import 'package:danio/providers/tank_visual_event_provider.dart';
 import 'package:danio/services/storage_service.dart';
 import 'package:danio/models/models.dart';
+import 'package:danio/widgets/tank_delete_failure_feedback_listener.dart';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -45,6 +46,34 @@ Widget _wrapWithStorage(String tankId, {required StorageService storage}) {
   return ProviderScope(
     overrides: [storageServiceProvider.overrideWithValue(storage)],
     child: MaterialApp(home: TankDetailScreen(tankId: tankId)),
+  );
+}
+
+Widget _wrapWithHost(String tankId, {required StorageService storage}) {
+  final messengerKey = GlobalKey<ScaffoldMessengerState>();
+  return ProviderScope(
+    overrides: [storageServiceProvider.overrideWithValue(storage)],
+    child: MaterialApp(
+      scaffoldMessengerKey: messengerKey,
+      builder: (context, child) => TankDeleteFailureFeedbackListener(
+        scaffoldMessengerKey: messengerKey,
+        child: child ?? const SizedBox.shrink(),
+      ),
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => TankDetailScreen(tankId: tankId),
+                ),
+              );
+            },
+            child: const Text('Open tank'),
+          ),
+        ),
+      ),
+    ),
   );
 }
 
@@ -178,6 +207,15 @@ class _FeedingLogFailsStorage extends _DelegatingStorageService {
   }
 }
 
+class _TankDeleteFailsStorage extends _DelegatingStorageService {
+  _TankDeleteFailsStorage(super.delegate);
+
+  @override
+  Future<void> deleteTank(String id) async {
+    throw StateError('tank delete failed');
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -247,8 +285,19 @@ void main() {
         500,
         scrollable: find.byType(Scrollable).first,
       );
+      final taskTile = find.ancestor(
+        of: find.text('Rinse prefilter'),
+        matching: find.byType(ListTile),
+      );
+      final completeTaskButton = find.descendant(
+        of: taskTile,
+        matching: find.byTooltip('Complete task'),
+      );
+      await tester.ensureVisible(completeTaskButton);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
-      await tester.tap(find.byTooltip('Complete task'));
+      await tester.tap(completeTaskButton);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
@@ -319,6 +368,42 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Feeding logged.'), findsNothing);
+    });
+  });
+
+  group('TankDetailScreen - tank deletion', () {
+    testWidgets('failed delete expiry restores tank with retry feedback', (
+      tester,
+    ) async {
+      const tankId = 'tank-detail-delete-expiry-failure';
+      final svc = InMemoryStorageService();
+      final failingStorage = _TankDeleteFailsStorage(svc);
+      await svc.saveTank(_makeTank(id: tankId, name: 'Retry Reef'));
+
+      await tester.pumpWidget(_wrapWithHost(tankId, storage: failingStorage));
+      await tester.tap(find.text('Open tank'));
+      await _advance(tester);
+
+      await tester.tap(find.byIcon(Icons.more_vert));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('Delete Tank').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('Delete Tank').last);
+      await tester.pump();
+
+      expect(find.text('Retry Reef deleted'), findsWidgets);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(await svc.getTank(tankId), isNotNull);
+      expect(
+        find.text("Couldn't delete Retry Reef. Try again."),
+        findsOneWidget,
+      );
     });
   });
 }
