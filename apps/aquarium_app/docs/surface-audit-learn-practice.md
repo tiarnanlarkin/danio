@@ -324,7 +324,7 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Path card expansion | Hero animation | | ✅ | `Hero(tag: 'lesson-${lesson.id}')` on lesson icon. | ✅ Complete |
 | **Locked path tile** (🔒 Locked) | Displayed when `isPathLocked=true` | | ✅ | Non-expandable `ListTile`. Lock icon. Prereq names in subtitle. | ✅ Complete |
 | Locked path tile | **Tap** | | ✅ | `DanioSnackBar.warning` with prereq names. No navigation. | ✅ Complete |
-| Locked path tile | Prereq name resolution | prereq ID not in allPathMetadata | ✅ | Falls back to `PathMetadata(id: id, title: id, emoji: '🔒', ...)`. Shows raw ID as name — minor UX rough edge. | ⚠️ Should Fix |
+| Locked path tile | Prereq name resolution | raw ID-style title | ✅ | Raw ID-style prerequisite titles are formatted into readable names before rendering, and the locked tile has its own transparent `Material` for correct ink/debug behavior inside the decorated card. | ✅ Complete |
 | **Coming Soon tile** | Removed branch | | ✅ | No coming-soon path branch remains in the Learn source; all current metadata paths are shown as available or locked by real prerequisites. | ✅ Complete |
 | Coming Soon tile | **Tap** | removed branch | ✅ | No placeholder coming-soon dialog branch remains for learning paths. | ✅ Complete |
 | Path card | **`comingSoonPathIds` is currently empty** | | ✅ | Stale audit row: source guard coverage already verifies `comingSoonPathIds` is absent from `learn_screen.dart`. | ✅ Complete |
@@ -365,9 +365,9 @@ Learning paths are previewed inside `LazyLearningPathCard` and can now open a de
 | Review Session | ✅ Mostly complete | 0 | 0 |
 | Story Browser | ✅ Mostly complete | 0 | 1 |
 | Story Play | ✅ Mostly complete | 0 | 0 |
-| Learning Path Detail | ✅ Mostly complete | 0 | 1 |
+| Learning Path Detail | ✅ Mostly complete | 0 | 0 |
 
-**Total: 0 Must Fix · 7 Should Fix · 3 Research First · 4 Future Scope**
+**Total: 0 Must Fix · 6 Should Fix · 3 Research First · 4 Future Scope**
 
 ---
 
@@ -383,7 +383,7 @@ None currently listed in this surface audit.
 
 ### ⚠️ Should Fix (lower priority / polish)
 
-1. **Prereq name fallback shows raw ID** in locked path subtitle (if prereq ID not in metadata).
+None currently listed in this surface audit.
 
 ---
 

@@ -772,6 +772,15 @@ CL-P1-004R Contextual quiz hints:
 - Focused widget coverage verifies the contextual hint panel and screen-reader
   announcement, and QA debug coverage rejects the old generic copy.
 
+CL-P1-004S Locked path prerequisite polish:
+
+- Locked learning path cards now format raw ID-style prerequisite titles into
+  readable names before showing unlock guidance.
+- The locked `ListTile` now owns a transparent `Material`, avoiding hidden ink
+  and debug assertions when rendered inside the decorated path card.
+- Widget coverage verifies the friendly prerequisite copy and rejects raw
+  underscore ID text in the locked-path subtitle.
+
 CL-QA-005A Learning unit spelling validation:
 
 - The content validation gate now fails learning copy that uses US

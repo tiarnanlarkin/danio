@@ -26,8 +26,54 @@ PathMetadata _missingPathMeta() {
   );
 }
 
+PathMetadata _lockedPathWithRawPrereqTitle() {
+  return const PathMetadata(
+    id: 'advanced_path',
+    title: 'Advanced Path',
+    description: 'A path that needs another path first.',
+    emoji: '!',
+    orderIndex: 1,
+    lessonIds: ['advanced_intro'],
+    prerequisitePathIds: ['missing_path'],
+  );
+}
+
+PathMetadata _rawPrereqPathMeta() {
+  return const PathMetadata(
+    id: 'missing_path',
+    title: 'missing_path',
+    description: 'A prerequisite path with a raw ID-style title.',
+    emoji: '!',
+    orderIndex: 0,
+    lessonIds: ['missing_lesson'],
+  );
+}
+
 void main() {
   group('LazyLearningPathCard', () {
+    testWidgets('locked path fallback formats raw prerequisite IDs', (
+      tester,
+    ) async {
+      final lockedPath = _lockedPathWithRawPrereqTitle();
+      final rawPrereq = _rawPrereqPathMeta();
+
+      await tester.pumpWidget(
+        _wrap(
+          LazyLearningPathCard(
+            metadata: lockedPath,
+            completedLessons: 0,
+            totalLessons: 1,
+            userCompletedLessons: const [],
+            allPathMetadata: [lockedPath, rawPrereq],
+          ),
+        ),
+      );
+
+      expect(find.text('Advanced Path'), findsOneWidget);
+      expect(find.textContaining('Missing Path'), findsOneWidget);
+      expect(find.textContaining('missing_path'), findsNothing);
+    });
+
     testWidgets('opens a full-screen path detail view after path loads', (
       tester,
     ) async {

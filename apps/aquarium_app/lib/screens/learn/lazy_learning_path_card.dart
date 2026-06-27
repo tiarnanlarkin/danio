@@ -266,70 +266,89 @@ class _LazyLearningPathCardState extends ConsumerState<LazyLearningPathCard> {
               lessonIds: const [],
             ),
           );
-          return '"${found.title}"';
+          return '"${_friendlyPrerequisiteTitle(found.title, id)}"';
         })
         .join(', ');
 
-    return ListTile(
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      leading: Container(
-        width: 52,
-        height: 52,
-        decoration: BoxDecoration(
-          color: context.surfaceVariant,
-          borderRadius: AppRadius.mediumRadius,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: AppRadius.largeRadius,
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
         ),
-        child: const Center(child: Icon(Icons.lock, size: 26)),
-      ),
-      title: Row(
-        children: [
-          Expanded(
-            child: Text(
-              meta.title,
-              style: AppTypography.labelLarge.copyWith(
-                fontWeight: FontWeight.w600,
+        leading: Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: context.surfaceVariant,
+            borderRadius: AppRadius.mediumRadius,
+          ),
+          child: const Center(child: Icon(Icons.lock, size: 26)),
+        ),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                meta.title,
+                style: AppTypography.labelLarge.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: context.surfaceVariant,
-              borderRadius: AppRadius.md2Radius,
-            ),
-            child: Text(
-              'Locked',
-              style: AppTypography.labelSmall.copyWith(
-                color: context.textSecondary,
-                fontWeight: FontWeight.w600,
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: context.surfaceVariant,
+                borderRadius: AppRadius.md2Radius,
+              ),
+              child: Text(
+                'Locked',
+                style: AppTypography.labelSmall.copyWith(
+                  color: context.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: AppSpacing.xs),
-        child: Text(
-          'Complete $prereqNames first to unlock this path.',
-          style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
+          ],
         ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.xs),
+          child: Text(
+            'Complete $prereqNames first to unlock this path.',
+            style: AppTypography.bodySmall.copyWith(
+              color: context.textSecondary,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        onTap: () {
+          DanioSnackBar.warning(
+            context,
+            'Complete $prereqNames first to unlock ${meta.title}.',
+          );
+        },
       ),
-      onTap: () {
-        DanioSnackBar.warning(
-          context,
-          'Complete $prereqNames first to unlock ${meta.title}.',
-        );
-      },
     );
+  }
+
+  String _friendlyPrerequisiteTitle(String title, String id) {
+    final trimmedTitle = title.trim();
+    if (trimmedTitle.isNotEmpty && trimmedTitle != id) {
+      return trimmedTitle;
+    }
+
+    return id
+        .split(RegExp(r'[_\-\s]+'))
+        .where((part) => part.isNotEmpty)
+        .map((part) => part[0].toUpperCase() + part.substring(1))
+        .join(' ');
   }
 
   List<Widget> _buildExpandedContent(
