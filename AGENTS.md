@@ -45,6 +45,30 @@ approval in the current thread or an existing entry in
 - Provide a concise handoff prompt before stopping so the next session can
   continue from the current repo state without rebuilding context from chat.
 
+## Research-First Planning
+
+- Before substantial implementation, pause and plan from current repo state.
+  Start by checking whether the work should move to a fresh session, then read
+  the active repo docs, roadmap, relevant source, tests, and current worktree
+  state before proposing or editing.
+- Do not guess current best practice when it can be checked. For technology,
+  framework, testing, platform, accessibility, AI, security, or workflow
+  decisions, compare the intended approach against current primary sources
+  before implementation. Prefer official docs, standards, vendor docs, repo
+  docs, and directly inspected code over blogs or memory.
+- Use the narrowest powerful research lane that fits the task:
+  repo inspection for local truth; official docs or MCP documentation servers
+  for current APIs and platform guidance; installed skills for repeatable
+  workflows; browser/app tools for live UI evidence; specialist plugins only
+  when they materially improve quality.
+- If a useful tool, plugin, MCP server, account-backed service, or paid lane is
+  missing, stop before installing or using it. Explain the benefit, expected
+  cost or account requirement if known, local/no-cost alternatives, and wait for
+  explicit approval or a matching approval-ledger entry.
+- Record research that changes implementation direction in the slice contract,
+  active handoff, or relevant agent docs so future agents can see why the
+  approach was chosen.
+
 ## Local Verification Gates
 
 Run commands from `apps/aquarium_app` unless stated otherwise.
@@ -93,9 +117,13 @@ that make new build/readiness claims.
 ## Android Emulator Discipline
 
 - Multiple Codex sessions may be active on this machine.
-- Use the Danio live-preview workflow at
-  `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md` when the user wants
-  to watch the app while it is being built.
+- For substantial Danio app work, especially UI, navigation, product behavior,
+  Android, or visual slices, attempt to start the Danio live-preview workflow at
+  the beginning of the session so the user can follow along. Use
+  `apps/aquarium_app/docs/agent/LIVE_PREVIEW_WORKFLOW.md` and keep the emulator
+  visible while making changes.
+- Live preview is not required for docs-only, tests-only, refactor-only, or
+  device-unsafe slices, but state when it was skipped and why.
 - Use `apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md` before any emulator,
   ADB, Patrol, Firebase Test Lab, live-preview, or screenshot evidence work.
 - Standardize Danio live preview on the dedicated `danio_api36` emulator; do

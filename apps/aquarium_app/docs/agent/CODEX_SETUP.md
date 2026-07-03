@@ -137,6 +137,25 @@ boundaries. Use `docs/agent/FINISH_MAP.md` to choose completion slices and
 Use `docs/agent/PERFORMANCE_TARGETS.md` for Android phone/tablet performance
 budgets before claiming performance-sensitive UI or startup work is complete.
 
+## Research-First Planning
+
+Before substantial implementation, plan from current truth instead of memory:
+
+1. Check whether the work should start in a fresh session.
+2. Read the active repo docs, current roadmap, relevant source/tests, and
+   `git status --short -uall`.
+3. Compare the intended approach against current primary sources when
+   framework, platform, testing, accessibility, AI, security, or workflow best
+   practice matters.
+4. Use the narrowest strong research lane: repo inspection, official docs,
+   documentation MCP servers, installed skills, browser/app evidence, or a
+   specialist plugin when it materially improves quality.
+5. Stop and ask before installing tools, enabling plugins, using account-backed
+   services, or entering paid lanes. Explain benefit, cost/account needs when
+   known, and no-cost alternatives.
+6. Record decision-changing research in the slice contract, active handoff, or
+   relevant agent docs.
+
 Before using external account-backed quality services, run the local preflight:
 
 ```powershell
@@ -202,9 +221,14 @@ Rules:
 
 ## Live Preview
 
-Use `docs/agent/LIVE_PREVIEW_WORKFLOW.md` when the user wants to see Danio as
-it is being built. The standard local preview target is the dedicated
-`danio_api36` emulator.
+For substantial Danio app work, especially UI, navigation, product behavior,
+Android, or visual slices, start by attempting the local live preview in
+`docs/agent/LIVE_PREVIEW_WORKFLOW.md` so the user can see the app while changes
+are made. The standard local preview target is the dedicated `danio_api36`
+emulator.
+
+Skip live preview for docs-only, tests-only, refactor-only, or device-unsafe
+slices. When skipping it, state the reason in the session summary.
 
 Check the device without launching or taking control:
 

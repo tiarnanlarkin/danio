@@ -9,6 +9,10 @@ optional evidence only after explicit approval.
 - Run `git status --short -uall`.
 - Check `docs/agent/FINISH_MAP.md` and identify the row this slice advances.
 - Start from `docs/agent/SLICE_CONTRACT_TEMPLATE.md` for non-trivial slices.
+- For substantial implementation, complete the slice contract's research and
+  planning section before editing. Current best-practice checks should use
+  primary sources when framework, platform, testing, accessibility, AI,
+  security, or workflow choices matter.
 - Identify unrelated dirty files and leave them alone.
 - Read the relevant source and nearby tests before changing code.
 - For behavior changes, write or update a focused failing test first.
@@ -329,6 +333,8 @@ Before committing product or docs changes, confirm:
 - Finish Map, paid-tool ledger, or device ownership docs were updated when the
   slice changed completion status, used an external tool, or captured Android
   evidence.
+- Research that changed implementation direction was recorded in the slice
+  contract, active handoff, or relevant agent docs.
 - Commit message is specific.
 - Push only after the requested verification passes.
 

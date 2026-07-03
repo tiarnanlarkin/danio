@@ -5,6 +5,12 @@ Path: `docs/agent/LIVE_PREVIEW_WORKFLOW.md`.
 This workflow lets the user watch Danio while Codex builds, without replacing
 the local verification gates.
 
+Default rule: for substantial Danio app work, especially UI, navigation,
+product behavior, Android, or visual slices, attempt to start live preview at
+the beginning of the session so the user can follow along. Skip it only for
+docs-only, tests-only, refactor-only, or device-unsafe slices, and state why it
+was skipped.
+
 ## Purpose
 
 Live preview is an observation lane. It helps the user see the current app,

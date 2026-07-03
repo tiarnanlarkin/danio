@@ -52,17 +52,26 @@ Use this order for normal implementation slices:
 1. `git status --short -uall` before editing.
 2. Check `FINISH_MAP.md` and create a slice contract from
    `SLICE_CONTRACT_TEMPLATE.md` for non-trivial work.
-3. Focused failing test for behavior changes.
-4. Small implementation slice.
-5. `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`.
-6. Broaden to `-Profile Docs`, `-Profile Visual`, `-Profile Full`, or
+3. For substantial implementation, do a research-first planning pass before
+   editing. Rebuild current repo context, decide whether the work needs a fresh
+   session, compare the intended approach against current primary sources when
+   technology or quality practice matters, and record any decision-changing
+   sources in the slice contract or handoff.
+4. For substantial app work, especially UI, navigation, product behavior,
+   Android, or visual slices, attempt `docs/agent/LIVE_PREVIEW_WORKFLOW.md`
+   so the user can follow along on the dedicated Danio emulator. Skip only for
+   docs-only, tests-only, refactor-only, or device-unsafe slices, and state why.
+5. Focused failing test for behavior changes.
+6. Small implementation slice.
+7. `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`.
+8. Broaden to `-Profile Docs`, `-Profile Visual`, `-Profile Full`, or
    `-Profile AndroidPrep` based on the files changed.
-7. For external-account work, confirm approval in
+9. For external-account work, confirm approval in
    `PAID_TOOL_APPROVAL_LEDGER.md`, then run
    `.\scripts\quality_gates\check_external_quality_readiness.ps1 -Target All`
    before opening dashboards, uploading artifacts, or touching tokens.
-8. Commit only the intended files.
-9. Push after the relevant local gates pass.
+10. Commit only the intended files.
+11. Push after the relevant local gates pass.
 
 ## Multi-Agent Completion Flow
 

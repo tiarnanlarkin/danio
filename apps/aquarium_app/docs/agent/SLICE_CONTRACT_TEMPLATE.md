@@ -20,6 +20,15 @@ and tied to `FINISH_MAP.md`.
 - Finish Map row(s):
 - Product backlog row(s):
 
+## Research And Planning
+
+- Fresh session recommended: Yes/No and why:
+- Repo context checked:
+- Current best-practice sources checked:
+- Tool/plugin/MCP/account-backed lane considered:
+- Tool/plugin/MCP/account-backed lane approved: Yes/No/Not needed:
+- Decision-changing research notes:
+
 ## Design And Visual Target
 
 - Current screenshot/golden/mockup/existing surface:
