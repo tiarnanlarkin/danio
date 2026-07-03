@@ -77,6 +77,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     required List<_Reminder> rollbackReminders,
     required String errorMessage,
     required String logMessage,
+    bool rollbackAfterFrame = false,
   }) async {
     try {
       await _saveReminderList(remindersToSave ?? _reminders);
@@ -88,9 +89,18 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
         tag: 'RemindersScreen',
       );
       if (!mounted) return false;
-      setState(() => _reminders = List<_Reminder>.from(rollbackReminders));
-      DanioSnackBar.dismiss(context);
-      AppFeedback.showError(context, errorMessage);
+      void restoreAndReport() {
+        if (!mounted) return;
+        setState(() => _reminders = List<_Reminder>.from(rollbackReminders));
+        DanioSnackBar.dismiss(context);
+        AppFeedback.showError(context, errorMessage);
+      }
+
+      if (rollbackAfterFrame) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => restoreAndReport());
+      } else {
+        restoreAndReport();
+      }
       return false;
     }
   }
@@ -236,6 +246,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
       rollbackReminders: previousReminders,
       errorMessage: "Couldn't delete that reminder. Try again in a moment.",
       logMessage: 'Failed to persist deleted reminder',
+      rollbackAfterFrame: true,
     );
     if (!saved || !mounted) return;
 

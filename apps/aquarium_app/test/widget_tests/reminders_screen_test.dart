@@ -6,6 +6,7 @@
 // fish-bob animation, so pumpAndSettle never settles. We advance time
 // with pump(Duration) calls instead.
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -348,6 +349,45 @@ void main() {
           find.text("Couldn't restore that reminder. Try again in a moment."),
           findsOneWidget,
         );
+      },
+    );
+
+    testWidgets(
+      'delete save failure keeps reminder visible with feedback',
+      (tester) async {
+        final due = DateTime.now().add(const Duration(days: 2));
+        final savedReminders =
+            '[{"id":"1","title":"Water Change","notes":null,'
+            '"category":"water","nextDue":"${due.toIso8601String()}",'
+            '"lastCompleted":null,"isRecurring":true,"frequency":"weekly"}]';
+
+        await tester.pumpWidget(
+          _wrapWithFailingPrefs(
+            initialValues: {'aquarium_reminders': savedReminders},
+            shouldFail: (key, value) =>
+                key == 'aquarium_reminders' && value == '[]',
+          ),
+        );
+        await _advance(tester);
+
+        await tester.drag(find.byType(Dismissible), const Offset(-800, 0));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('Water Change'), findsOneWidget);
+        expect(_notificationsPlatform.canceledCount, 0);
+        expect(
+          find.text("Couldn't delete that reminder. Try again in a moment."),
+          findsOneWidget,
+        );
+
+        final prefs = await SharedPreferences.getInstance();
+        final saved =
+            jsonDecode(prefs.getString('aquarium_reminders')!) as List<dynamic>;
+        expect(saved.map((e) => e['title']), ['Water Change']);
       },
     );
 
