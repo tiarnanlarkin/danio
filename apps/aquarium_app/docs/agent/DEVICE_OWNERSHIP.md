@@ -16,9 +16,9 @@ Other agents must stop at compile, test, analyze, or `AndroidPrep` checks.
 
 | Device | Intended use | Current durable owner | Notes |
 | --- | --- | --- | --- |
-| `danio_api36` | Phone live preview and phone Android QA | Unclaimed in this docs slice | Use explicit device serial after checking `adb devices`. |
-| `danio_tablet_api36` | Tablet layout QA and screenshots | Unclaimed in this docs slice | Use explicit device serial after checking `adb devices`. |
-| Physical phone `RFCY8022D5R` | Do not use unless user authorizes and ADB is authorized | Unclaimed | Previously observed as unauthorized. |
+| `danio_api36` | Phone live preview and phone Android QA | Unclaimed after `QA-2026-07-04-001` | Last verified as `emulator-5554`; use explicit device serial after checking `adb devices`. |
+| `danio_tablet_api36` | Tablet layout QA and screenshots | Unclaimed after `QA-2026-07-04-001` | Last verified as `emulator-5556`; use explicit device serial after checking `adb devices`. |
+| Physical phone `RFCY8022D5R` | Do not use unless user authorizes and ADB is authorized | Unclaimed | Observed as `unauthorized` on 2026-07-04; not used. |
 
 This file is a durable coordination record, not a real-time lock. At the start
 of each Android slice, the active session must announce ownership in the thread
@@ -77,13 +77,14 @@ install, wipe, tap, or capture device state.
 - emulator kill, wipe, restart, or data clear
 - app uninstall or `pm clear`
 
-## Ownership Log Template
+## Ownership Log
 
 Add a row when a committed slice uses Android evidence:
 
 | Date | Owner/session | Device serial | AVD/device | Slice | Actions | Evidence path | Released |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| yyyy-mm-dd | Coordinator or agent | emulator-5554 | `danio_api36` | CL-... | Screenshots, Patrol, live preview | `docs/qa/screenshots/...` | Yes/No |
+| 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-04-001` | CheckOnly launch, debug APK install, app launch, screenshot, focus dump, logcat | `docs/qa/screenshots/live-preview/2026-07-04/` | Yes |
+| 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-001` | CheckOnly launch, debug APK install, app launch, screenshot, focus dump, logcat | `docs/qa/screenshots/live-preview/2026-07-04/` | Yes |
 
 ## Release Rule
 

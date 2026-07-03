@@ -1,0 +1,446 @@
+--------- beginning of system
+07-04 00:51:05.467   708   920 D BackgroundInstallControlService: Package event received: 0
+--------- beginning of main
+07-04 00:51:05.490  1459  3844 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0
+07-04 00:51:05.503  1459  3572 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=null serviceId=30
+07-04 00:51:05.577  1459  3844 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0
+07-04 00:51:05.612  1459  3844 I Icing   : Indexing com.google.android.gms-apps from com.google.android.gms
+07-04 00:51:05.634  1459  3844 I gle.android.gms: AssetManager2(0x7a9a7ea99818) locale list changing from [] to [en-US]
+07-04 00:51:05.655  3652  3691 W abht    : (REDACTED) [%s] response code: %d
+07-04 00:51:05.695  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2d4d8) locale list changing from [] to [en-US]
+07-04 00:51:05.698  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3c578) locale list changing from [] to [en-US]
+07-04 00:51:05.703  1459  3844 I Icing   : Indexing done com.google.android.gms-apps
+07-04 00:51:05.704  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea225d8) locale list changing from [] to [en-US]
+07-04 00:51:05.707  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2b278) locale list changing from [] to [en-US]
+07-04 00:51:05.714  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea26138) locale list changing from [] to [en-US]
+07-04 00:51:05.716  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea34558) locale list changing from [] to [en-US]
+07-04 00:51:05.724  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2fd78) locale list changing from [] to [en-US]
+07-04 00:51:05.731  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea32f78) locale list changing from [] to [en-US]
+07-04 00:51:05.738  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea33298) locale list changing from [] to [en-US]
+07-04 00:51:05.738  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea35b38) locale list changing from [] to [en-US]
+07-04 00:51:05.740  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea29c98) locale list changing from [] to [en-US]
+07-04 00:51:05.741  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea34238) locale list changing from [] to [en-US]
+07-04 00:51:05.741  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea35e58) locale list changing from [] to [en-US]
+07-04 00:51:05.742  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea34b98) locale list changing from [] to [en-US]
+07-04 00:51:05.749  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea31998) locale list changing from [] to [en-US]
+07-04 00:51:05.753  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea31cb8) locale list changing from [] to [en-US]
+07-04 00:51:05.764  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea33bf8) locale list changing from [] to [en-US]
+07-04 00:51:05.766  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2f738) locale list changing from [] to [en-US]
+07-04 00:51:05.768  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea31038) locale list changing from [] to [en-US]
+07-04 00:51:05.770  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea309f8) locale list changing from [] to [en-US]
+07-04 00:51:05.771  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea34eb8) locale list changing from [] to [en-US]
+07-04 00:51:05.772  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea37118) locale list changing from [] to [en-US]
+07-04 00:51:05.830  3809  3809 D nativeloader: Configuring clns-9 for other apk /data/app/~~6eB6A5NfHrYgknIFEMLG5g==/com.tiarnanlarkin.danio-Fs2v8jbSPkNzyFi8aCtaLw==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~6eB6A5NfHrYgknIFEMLG5g==/com.tiarnanlarkin.danio-Fs2v8jbSPkNzyFi8aCtaLw==/lib/x86_64:/data/app/~~6eB6A5NfHrYgknIFEMLG5g==/com.tiarnanlarkin.danio-Fs2v8jbSPkNzyFi8aCtaLw==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.tiarnanlarkin.danio
+07-04 00:51:05.850  3809  3809 I nanlarkin.danio: AssetManager2(0x7a9a7ea19618) locale list changing from [] to [en-US]
+07-04 00:51:05.872  3809  3809 V GraphicsEnvironment: Currently set values for:
+07-04 00:51:05.873  3809  3809 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+07-04 00:51:05.873  3809  3809 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+07-04 00:51:05.873  3809  3809 V GraphicsEnvironment: com.tiarnanlarkin.danio is not listed in per-application setting
+07-04 00:51:05.873  3809  3809 V GraphicsEnvironment: ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+07-04 00:51:05.873  3809  3809 V GraphicsEnvironment: com.tiarnanlarkin.danio is not listed in ANGLE allowlist or settings, returning default
+07-04 00:51:05.873  3809  3809 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+07-04 00:51:05.876  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea36178) locale list changing from [] to [en-US]
+07-04 00:51:05.881  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea36ad8) locale list changing from [] to [en-US]
+07-04 00:51:05.882  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea31fd8) locale list changing from [] to [en-US]
+07-04 00:51:05.884  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea33f18) locale list changing from [] to [en-US]
+07-04 00:51:05.890  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea31678) locale list changing from [] to [en-US]
+07-04 00:51:05.893  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea32618) locale list changing from [] to [en-US]
+07-04 00:51:05.896  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea383d8) locale list changing from [] to [en-US]
+07-04 00:51:05.898  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea338d8) locale list changing from [] to [en-US]
+07-04 00:51:05.900  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea32c58) locale list changing from [] to [en-US]
+07-04 00:51:05.905  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea380b8) locale list changing from [] to [en-US]
+07-04 00:51:05.914  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea354f8) locale list changing from [] to [en-US]
+07-04 00:51:05.919   708  1020 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ENABLE_FAKE_FOCUS
+07-04 00:51:05.924  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea37758) locale list changing from [] to [en-US]
+07-04 00:51:05.925   708   920 D BackgroundInstallControlService: Package event received: 0
+07-04 00:51:05.925  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3af98) locale list changing from [] to [en-US]
+07-04 00:51:05.927   708   920 D BackgroundInstallControlService: Package event received: 0
+07-04 00:51:05.928  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea432d8) locale list changing from [] to [en-US]
+07-04 00:51:05.934  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3a318) locale list changing from [] to [en-US]
+07-04 00:51:05.938  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3b2b8) locale list changing from [] to [en-US]
+07-04 00:51:05.943  3809  3809 I nanlarkin.danio: AssetManager2(0x7a9a7ea1bb98) locale list changing from [] to [en-US]
+07-04 00:51:05.944  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3b5d8) locale list changing from [] to [en-US]
+07-04 00:51:05.944  3809  3852 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+07-04 00:51:05.950  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3c258) locale list changing from [] to [en-US]
+07-04 00:51:05.959  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea42fb8) locale list changing from [] to [en-US]
+07-04 00:51:05.962  3809  3809 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+07-04 00:51:05.964  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea37d98) locale list changing from [] to [en-US]
+07-04 00:51:05.968  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3e198) locale list changing from [] to [en-US]
+07-04 00:51:05.970  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea43f58) locale list changing from [] to [en-US]
+07-04 00:51:05.971  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea45e98) locale list changing from [] to [en-US]
+07-04 00:51:05.977  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3f138) locale list changing from [] to [en-US]
+07-04 00:51:05.979  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea39698) locale list changing from [] to [en-US]
+07-04 00:51:05.981  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea461b8) locale list changing from [] to [en-US]
+07-04 00:51:05.983  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea435f8) locale list changing from [] to [en-US]
+07-04 00:51:05.987  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea44278) locale list changing from [] to [en-US]
+07-04 00:51:05.991  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea44598) locale list changing from [] to [en-US]
+07-04 00:51:05.993  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea448b8) locale list changing from [] to [en-US]
+07-04 00:51:05.996  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea46b18) locale list changing from [] to [en-US]
+07-04 00:51:06.000  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea41398) locale list changing from [] to [en-US]
+07-04 00:51:06.002  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea21c78) locale list changing from [] to [en-US]
+07-04 00:51:06.004  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea23578) locale list changing from [] to [en-US]
+07-04 00:51:06.006  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea21958) locale list changing from [] to [en-US]
+07-04 00:51:06.007  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea24838) locale list changing from [] to [en-US]
+07-04 00:51:06.011  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea273f8) locale list changing from [] to [en-US]
+07-04 00:51:06.014  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3d518) locale list changing from [] to [en-US]
+07-04 00:51:06.016  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea24b58) locale list changing from [] to [en-US]
+07-04 00:51:06.018  3809  3855 I ResourceExtractor: Found extracted resources res_timestamp-1-1783116116276
+07-04 00:51:06.018  3809  3855 I ResourceExtractor: Resource version mismatch res_timestamp-1-1783122664291
+07-04 00:51:06.018  3809  3854 D FlutterJNI: Beginning load of flutter...
+07-04 00:51:06.019  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea39378) locale list changing from [] to [en-US]
+07-04 00:51:06.022  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3e4b8) locale list changing from [] to [en-US]
+07-04 00:51:06.023  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea37438) locale list changing from [] to [en-US]
+07-04 00:51:06.025  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea39ff8) locale list changing from [] to [en-US]
+07-04 00:51:06.027  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea222b8) locale list changing from [] to [en-US]
+07-04 00:51:06.028  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea386f8) locale list changing from [] to [en-US]
+07-04 00:51:06.031  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea38d38) locale list changing from [] to [en-US]
+07-04 00:51:06.033  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3db58) locale list changing from [] to [en-US]
+07-04 00:51:06.035  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3bc18) locale list changing from [] to [en-US]
+07-04 00:51:06.036  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea399b8) locale list changing from [] to [en-US]
+07-04 00:51:06.037  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3eaf8) locale list changing from [] to [en-US]
+07-04 00:51:06.038  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3c898) locale list changing from [] to [en-US]
+07-04 00:51:06.039  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3a958) locale list changing from [] to [en-US]
+07-04 00:51:06.039  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3ced8) locale list changing from [] to [en-US]
+07-04 00:51:06.041  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea37a78) locale list changing from [] to [en-US]
+07-04 00:51:06.042  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3bf38) locale list changing from [] to [en-US]
+07-04 00:51:06.044  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2ac38) locale list changing from [] to [en-US]
+07-04 00:51:06.045  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2b8b8) locale list changing from [] to [en-US]
+07-04 00:51:06.046  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3b8f8) locale list changing from [] to [en-US]
+07-04 00:51:06.047  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2a918) locale list changing from [] to [en-US]
+07-04 00:51:06.048  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2de38) locale list changing from [] to [en-US]
+07-04 00:51:06.050  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2c218) locale list changing from [] to [en-US]
+07-04 00:51:06.051  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2b598) locale list changing from [] to [en-US]
+07-04 00:51:06.051  3809  3852 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+07-04 00:51:06.052  3809  3852 I EGL_emulation: Opening libGLESv2_emulation.so
+07-04 00:51:06.052  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2edd8) locale list changing from [] to [en-US]
+07-04 00:51:06.056  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea28cf8) locale list changing from [] to [en-US]
+07-04 00:51:06.060  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea286b8) locale list changing from [] to [en-US]
+07-04 00:51:06.061  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea28398) locale list changing from [] to [en-US]
+07-04 00:51:06.062  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2d1b8) locale list changing from [] to [en-US]
+07-04 00:51:06.063  3809  3852 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+07-04 00:51:06.064  3809  3852 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+07-04 00:51:06.064  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2eab8) locale list changing from [] to [en-US]
+07-04 00:51:06.067  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea29978) locale list changing from [] to [en-US]
+07-04 00:51:06.067  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea2c538) locale list changing from [] to [en-US]
+07-04 00:51:06.068  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea26458) locale list changing from [] to [en-US]
+07-04 00:51:06.071  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea25198) locale list changing from [] to [en-US]
+07-04 00:51:06.073  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea1d7b8) locale list changing from [] to [en-US]
+07-04 00:51:06.074  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea23258) locale list changing from [] to [en-US]
+07-04 00:51:06.076  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea24e78) locale list changing from [] to [en-US]
+07-04 00:51:06.079  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea22f38) locale list changing from [] to [en-US]
+07-04 00:51:06.079  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea19618) locale list changing from [] to [en-US]
+07-04 00:51:06.082  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea26778) locale list changing from [] to [en-US]
+07-04 00:51:06.083  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea27718) locale list changing from [] to [en-US]
+07-04 00:51:06.087  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea20cd8) locale list changing from [] to [en-US]
+07-04 00:51:06.090  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea21318) locale list changing from [] to [en-US]
+07-04 00:51:06.091  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea45b78) locale list changing from [] to [en-US]
+07-04 00:51:06.093  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea42018) locale list changing from [] to [en-US]
+07-04 00:51:06.094  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea41078) locale list changing from [] to [en-US]
+07-04 00:51:06.095  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea41cf8) locale list changing from [] to [en-US]
+07-04 00:51:06.096  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea254b8) locale list changing from [] to [en-US]
+07-04 00:51:06.096  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea400d8) locale list changing from [] to [en-US]
+07-04 00:51:06.108  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3f458) locale list changing from [] to [en-US]
+07-04 00:51:06.109  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea42c98) locale list changing from [] to [en-US]
+07-04 00:51:06.110  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea43918) locale list changing from [] to [en-US]
+07-04 00:51:06.111  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea44ef8) locale list changing from [] to [en-US]
+07-04 00:51:06.112  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea45538) locale list changing from [] to [en-US]
+07-04 00:51:06.114  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea42978) locale list changing from [] to [en-US]
+07-04 00:51:06.115  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea45218) locale list changing from [] to [en-US]
+07-04 00:51:06.122  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3fa98) locale list changing from [] to [en-US]
+07-04 00:51:06.162  3809  3854 D nativeloader: Load /data/app/~~6eB6A5NfHrYgknIFEMLG5g==/com.tiarnanlarkin.danio-Fs2v8jbSPkNzyFi8aCtaLw==/base.apk!/lib/x86_64/libflutter.so using class loader ns clns-9 (caller=/data/app/~~6eB6A5NfHrYgknIFEMLG5g==/com.tiarnanlarkin.danio-Fs2v8jbSPkNzyFi8aCtaLw==/base.apk): ok
+07-04 00:51:06.166  3809  3854 D FlutterJNI: flutter (null) was loaded normally!
+07-04 00:51:06.169  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea419d8) locale list changing from [] to [en-US]
+07-04 00:51:06.183  3809  3856 D skia    : [SkFontMgr Android Parser] '/product/etc/fonts_customization.xml' could not be opened
+07-04 00:51:06.189  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3d1f8) locale list changing from [] to [en-US]
+07-04 00:51:06.206  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea3ac78) locale list changing from [] to [en-US]
+07-04 00:51:06.230  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea44bd8) locale list changing from [] to [en-US]
+07-04 00:51:06.253  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea254b8) locale list changing from [] to [en-US]
+07-04 00:51:06.259  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea432d8) locale list changing from [] to [en-US]
+07-04 00:51:06.270  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea41078) locale list changing from [] to [en-US]
+07-04 00:51:06.280  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea42018) locale list changing from [] to [en-US]
+07-04 00:51:06.299  1418  1559 I .apps.wellbeing: AssetManager2(0x7a9a7ea45b78) locale list changing from [] to [en-US]
+07-04 00:51:07.132  3809  3855 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/kernel_blob.bin
+07-04 00:51:07.135  3809  3855 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/vm_snapshot_data
+07-04 00:51:07.230  3809  3855 I ResourceExtractor: Extracted baseline resource assets/flutter_assets/isolate_snapshot_data
+07-04 00:51:07.234   708  1020 D FileUtils: Rounded bytes from 2592600064 to 4000000000
+07-04 00:51:07.257  3809  3809 I nanlarkin.danio: AssetManager2(0x7a9a7ea20058) locale list changing from [] to [en-US]
+07-04 00:51:07.275  3809  3809 W nanlarkin.danio: type=1400 audit(0.0:22): avc:  denied  { read } for  name="max_map_count" dev="proc" ino=18240 scontext=u:r:untrusted_app:s0:c220,c256,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=com.tiarnanlarkin.danio
+07-04 00:51:07.304  3809  3809 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+07-04 00:51:07.369  3809  3857 I flutter : [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+07-04 00:51:07.421  3809  3863 I flutter : The Dart VM service is listening on http://127.0.0.1:40591/-zzj267tm4U=/
+07-04 00:51:07.861   708  1658 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+07-04 00:51:07.888  3809  3809 D com.llfbandit.app_links: Intent { flg=0x10000000 xflg=0x5 cmp=com.tiarnanlarkin.danio/.MainActivity }
+07-04 00:51:07.910   708   863 D WifiClientModeImpl[26229:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+07-04 00:51:07.926   708   863 D WifiDataStall: tx tput in kbps: 11000
+07-04 00:51:07.926   708   863 D WifiDataStall: rx tput in kbps: 11000
+07-04 00:51:07.926   708   863 V WifiConfigManager: Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:07.926   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:07.928   708   863 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 52320190 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+07-04 00:51:07.928   708   863 D WifiScoreCard: txRate: 4 txSpeed: 1
+07-04 00:51:07.928   708   863 D WifiScoreCard: network update SIGNAL_POLL "AndroidWifi" ID: 843735694 RSSI -50 txSpeed 1
+07-04 00:51:07.929   708   863 D WifiClientModeImpl[26229:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=3.8, 0.0, 0.0 rx=3.5 bcn=0 [on:0 tx:0 rx:0 period:3034] from screen [on:0 period:711240089] score=60
+07-04 00:51:07.992  3809  3809 I nanlarkin.danio: hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported,test-api) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app) using reflection: allowed
+07-04 00:51:07.993  3809  3809 I nanlarkin.danio: hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app) using reflection: allowed
+07-04 00:51:07.998  3809  3809 I nanlarkin.danio: hiddenapi: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app) using reflection: allowed
+07-04 00:51:07.998  3809  3809 I nanlarkin.danio: hiddenapi: Accessing hidden method Landroid/util/LongArray;->get(I)J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app) using reflection: allowed
+07-04 00:51:08.034  3809  3809 D FlutterRenderer: Width is zero. 0,0
+07-04 00:51:08.043  3809  3809 D CompatChangeReporter: Compat change id reported: 377864165; UID 10220; state: ENABLED
+07-04 00:51:08.076  3809  3809 W HWUI    : Unknown dataspace 0
+--------- beginning of kernel
+07-04 00:51:08.060     0     0 I servicemanager: Caller(pid=3809,uid=10220,sid=u:r:untrusted_app:s0:c220,c256,c512,c768) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+07-04 00:51:08.069     0     0 I servicemanager: Caller(pid=3809,uid=10220,sid=u:r:untrusted_app:s0:c220,c256,c512,c768) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+07-04 00:51:08.078     0     0 I servicemanager: Caller(pid=3809,uid=10220,sid=u:r:untrusted_app:s0:c220,c256,c512,c768) Found mapper/ranchu in device VINTF manifest.
+07-04 00:51:08.459  3809  3809 I Choreographer: Skipped 151 frames!  The application may be doing too much work on its main thread.
+07-04 00:51:08.462   708  1020 D CoreBackPreview: Window{e907eb7 u0 com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@728258d, mPriority=-1, mIsAnimationCallback=false, mOverrideBehavior=0}
+07-04 00:51:08.533  3809  3809 I WindowExtensionsImpl: Initializing Window Extensions, vendor API level=9, activity embedding enabled=true
+07-04 00:51:08.572  3809  3809 D FlutterRenderer: Width is zero. 0,0
+07-04 00:51:08.582   563   578 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10220 pid=0
+07-04 00:51:08.582   563   578 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10220 => denied (233 us)
+07-04 00:51:08.582   563   578 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10220 pid=0
+07-04 00:51:08.582   563   578 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10220 => denied (773 us)
+07-04 00:51:08.583   563   578 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10220 pid=0
+07-04 00:51:08.583   563   578 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10220 => denied (64 us)
+07-04 00:51:08.588  3809  3809 D FlutterJNI: Sending viewport metrics to the engine.
+07-04 00:51:08.666  3809  3815 I nanlarkin.danio: Compiler allocated 5042KB to compile void android.view.ViewRootImpl.performTraversals()
+07-04 00:51:08.936  3871  3871 W dumpsys : Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: window
+07-04 00:51:08.943   708  1020 I system_server: AssetManager2(0x7a9a7ea5a078) locale list changing from [] to [en-US]
+07-04 00:51:08.948   708  1020 I system_server: AssetManager2(0x7a9a7ea593f8) locale list changing from [] to [en-US]
+07-04 00:51:08.951   708  1020 I system_server: AssetManager2(0x7a9a7ea57e18) locale list changing from [] to [en-US]
+07-04 00:51:08.984   708  1020 I system_server: AssetManager2(0x7a9a7ea57af8) locale list changing from [] to [en-US]
+07-04 00:51:09.180   708   720 I system_server: Background concurrent mark compact GC freed 24MB AllocSpace bytes, 67(1712KB) LOS objects, 45% free, 28MB/52MB, paused 1.163ms,2.263ms total 164.957ms
+07-04 00:51:09.250   948   948 D wpa_supplicant: nl80211: Drv Event 64 (NL80211_CMD_NOTIFY_CQM) received for wlan0
+07-04 00:51:09.250   948   948 D wpa_supplicant: nl80211: Beacon loss event
+07-04 00:51:09.250   948   948 D wpa_supplicant: wlan0: Event BEACON_LOSS (53) received
+07-04 00:51:09.250   948   948 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS
+07-04 00:51:09.522   708   757 I WifiService: isFeatureSupported uid=1000 returns [WIFI_FEATURE_INFRA, WIFI_FEATURE_P2P, WIFI_FEATURE_MOBILE_HOTSPOT, WIFI_FEATURE_WPA3_SAE, WIFI_FEATURE_WPA3_SUITE_B, WIFI_FEATURE_OWE, WIFI_FEATURE_DPP, WIFI_FEATURE_AP_RAND_MAC, WIFI_FEATURE_MBO, WIFI_FEATURE_FILS_SHA256, WIFI_FEATURE_FILS_SHA384, WIFI_FEATURE_SAE_PK, WIFI_FEATURE_DPP_ENROLLEE_RESPONDER, WIFI_FEATURE_PASSPOINT_TERMS_AND_CONDITIONS, WIFI_FEATURE_WFD_R2, WIFI_FEATURE_DECORATED_IDENTITY, WIFI_FEATURE_TRUST_ON_FIRST_USE, WIFI_FEATURE_SET_TLS_MINIMUM_VERSION, WIFI_FEATURE_TLS_V1_3, WIFI_FEATURE_WEP, WIFI_FEATURE_WPA_PERSONAL]
+07-04 00:51:09.563   708  1020 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_IGNORE_REQUESTED_ORIENTATION
+07-04 00:51:09.563   708  1020 W OptProp : Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_IGNORING_ORIENTATION_REQUEST_WHEN_LOOP_DETECTED
+07-04 00:51:09.598  3809  3809 I Choreographer: Skipped 61 frames!  The application may be doing too much work on its main thread.
+07-04 00:51:10.691  3809  3809 D WindowLayoutComponentImpl: Register WindowLayoutInfoListener on Context=com.tiarnanlarkin.danio.MainActivity@1b49a1b, of which baseContext=android.app.ContextImpl@5c22682
+07-04 00:51:10.733  3809  3809 I Choreographer: Skipped 67 frames!  The application may be doing too much work on its main thread.
+07-04 00:51:10.801   708  1020 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10220 pid=0
+07-04 00:51:10.801   708  1020 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10220 => denied (590 us)
+07-04 00:51:10.801   708  1020 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10220 pid=0
+07-04 00:51:10.802   708  1020 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10220 => denied (372 us)
+07-04 00:51:10.802   708  1020 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10220 pid=0
+07-04 00:51:10.802   708  1020 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10220 => denied (87 us)
+07-04 00:51:10.806  3809  3820 I HWUI    : Davey! duration=1185ms; Flags=1, FrameTimelineVsyncId=10228, IntendedVsync=234316391290, Vsync=235433057912, InputEventId=0, HandleInputStart=235437655564, AnimationStart=235437658092, PerformTraversalsStart=235437658812, DrawStart=235443267652, FrameDeadline=234333057956, FrameStartTime=235436846843, FrameInterval=16666666, WorkloadTarget=16666666, SyncQueued=235445354177, SyncStart=235446300497, IssueDrawCommandsStart=235446965787, SwapBuffers=235472177968, FrameCompleted=235502482364, DequeueBufferDuration=24382513, QueueBufferDuration=369361, GpuCompleted=235484750701, SwapBuffersCompleted=235502482364, DisplayPresentTime=0, CommandSubmissionCompleted=235472177968,
+07-04 00:51:10.825   708   736 I ActivityTaskManager: Displayed com.tiarnanlarkin.danio/.MainActivity for user 0: +5s999ms
+07-04 00:51:10.825   708   736 I ActivityTaskManager: Fully drawn com.tiarnanlarkin.danio/.MainActivity: +5s999ms
+07-04 00:51:10.936   708   863 D WifiClientModeImpl[26229:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+07-04 00:51:10.936   708   863 D WifiDataStall: tx tput in kbps: 11000
+07-04 00:51:10.936   708   863 D WifiDataStall: rx tput in kbps: 11000
+07-04 00:51:10.936   708   863 V WifiConfigManager: Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+07-04 00:51:10.936   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:10.937   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:10.937   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:10.937   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:10.937   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:10.937   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:10.937   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:10.937   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:10.939   708   863 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 52320190 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+07-04 00:51:10.940   708   863 D WifiScoreCard: txRate: 2 txSpeed: 1
+07-04 00:51:10.940   708   863 D WifiScoreCard: network update SIGNAL_POLL "AndroidWifi" ID: 843735694 RSSI -50 txSpeed -1
+07-04 00:51:10.940   708   863 D WifiClientModeImpl[26229:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=1.3, 0.0, 0.0 rx=1.2 bcn=0 [on:0 tx:0 rx:0 period:3011] from screen [on:0 period:711243100] score=60
+07-04 00:51:11.078  1461  1573 D PickerSyncController: Attempting to enable cloud media queries.
+07-04 00:51:11.080  1461  1573 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@49ae4d2[Unlocked]. Lock Name = CLOUD_SYNC_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+07-04 00:51:11.080  1461  1573 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@49ae4d2[Locked by thread com.android.providers.media.internal.modules.utils.BackgroundThread]. Lock Name = CLOUD_SYNC_LOCK. Threads that may be waiting to acquire this lock = []
+07-04 00:51:11.080  1461  1573 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cec4fdd[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+07-04 00:51:11.080  1461  1573 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cec4fdd[Locked by thread com.android.providers.media.internal.modules.utils.BackgroundThread]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+07-04 00:51:11.080  1461  1573 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cec4fdd[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+07-04 00:51:11.080  1461  1573 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cec4fdd[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+07-04 00:51:11.080  1461  1573 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cec4fdd[Locked by thread com.android.providers.media.internal.modules.utils.BackgroundThread]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+07-04 00:51:11.080  1461  1573 D PickerSyncController: getSyncRequestParams() CLOUD, auth=com.google.android.apps.photos.cloudpicker
+07-04 00:51:11.085   708  1020 D OomAdjuster: Not killing cached processes
+07-04 00:51:11.091   708  1020 D ActivityManager: sync unfroze 1861 com.google.android.apps.photos for 7
+07-04 00:51:11.095   708   920 D BackgroundInstallControlService: Package event received: 0
+07-04 00:51:11.096  1861  1861 D ActivityThread: Package [com.tiarnanlarkin.danio] reported as REPLACED, but missing application info. Assuming REMOVED.
+07-04 00:51:11.099   708   920 D BackgroundInstallControlService: Package event received: 0
+07-04 00:51:11.123   487   525 I netd    : tetherGetStats() -> {[]} <0.82ms>
+07-04 00:51:11.182  1861  1892 W libc    : Access denied finding property "ro.debuggable"
+07-04 00:51:11.186  1461  1573 D PickerSyncController:    Latest ID/Gen=null/0
+07-04 00:51:11.186  1461  1573 D PickerSyncController:    Cached ID/Gen=null/-1
+07-04 00:51:11.186  1461  1573 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@cec4fdd[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+07-04 00:51:11.186  1461  1573 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@49ae4d2[Unlocked]. Lock Name = CLOUD_SYNC_LOCK. Threads that may be waiting to acquire this lock = []
+07-04 00:51:11.179  1861  1861 W binder:1861_3: type=1400 audit(0.0:23): avc:  denied  { read } for  name="u:object_r:userdebug_or_eng_prop:s0" dev="tmpfs" ino=375 scontext=u:r:untrusted_app:s0:c161,c256,c512,c768 tcontext=u:object_r:userdebug_or_eng_prop:s0 tclass=file permissive=0 app=com.google.android.apps.photos
+07-04 00:51:11.196  1461  1573 D PickerSyncController: Error occurred, remaining retry count: 2
+07-04 00:51:11.196  1461  1573 D PickerSyncController: java.lang.IllegalStateException: Unexpected Latest Media Collection Info: ID/Gen=null/0
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at com.android.providers.media.photopicker.PickerSyncController.getSyncRequestParamsLocked(PickerSyncController.java:1554)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at com.android.providers.media.photopicker.PickerSyncController.getSyncRequestParams(PickerSyncController.java:1514)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at com.android.providers.media.photopicker.PickerSyncController.maybeEnableCloudMediaQueries(PickerSyncController.java:355)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at com.android.providers.media.photopicker.PickerSyncController.lambda$tryEnablingCloudMediaQueries$0(PickerSyncController.java:286)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at com.android.providers.media.photopicker.PickerSyncController.$r8$lambda$igHbLHRBgFxI5G0Bp5TN28PcQJ4(PickerSyncController.java:0)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at com.android.providers.media.photopicker.PickerSyncController$$ExternalSyntheticLambda1.run(R8$$SyntheticClass:0)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at android.os.Handler.handleCallback(Handler.java:995)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at android.os.Handler.dispatchMessage(Handler.java:103)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at android.os.Looper.loopOnce(Looper.java:248)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at android.os.Looper.loop(Looper.java:338)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: 	at android.os.HandlerThread.run(HandlerThread.java:85)
+07-04 00:51:11.196  1461  1573 D PickerSyncController: Schedule enable cloud media query task.
+07-04 00:51:11.239  1096  1096 D BaseDepthController: setSurface:
+07-04 00:51:11.239  1096  1096 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+07-04 00:51:11.239  1096  1096 D BaseDepthController: 	mBaseSurface: null
+07-04 00:51:11.239  1096  1096 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+07-04 00:51:11.242  1096  1096 D StateManager: goToState - fromState: Normal, toState: Normal, partial trace:
+07-04 00:51:11.242  1096  1096 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:4)
+07-04 00:51:11.242  1096  1096 D StateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:1)
+07-04 00:51:11.242  1096  1096 D StateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:34)
+07-04 00:51:11.244  1096  1096 D StatsLog: LAUNCHER_ONSTOP
+07-04 00:51:11.247  1096  1096 D StatsLog: LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+07-04 00:51:11.247   708   724 I AppWidgetServiceImpl: setAppWidgetHidden() 0
+07-04 00:51:11.260   708   920 D BackgroundInstallControlService: Package event received: 0
+07-04 00:51:13.197  3809  3809 I flutter : [LocalJsonStorageService] ✅ Storage loaded successfully: 3 tanks, 2 livestock, 3 equipment
+07-04 00:51:13.225  3809  3809 D FlutterJNI: Sending viewport metrics to the engine.
+07-04 00:51:13.581  3809  3809 I Choreographer: Skipped 164 frames!  The application may be doing too much work on its main thread.
+07-04 00:51:13.608  3809  3809 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=false callback=io.flutter.embedding.android.FlutterActivity$1@41ccee8
+07-04 00:51:13.612   708   724 D CoreBackPreview: Window{e907eb7 u0 com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@3c0e187, mPriority=0, mIsAnimationCallback=true, mOverrideBehavior=0}
+07-04 00:51:13.612   708  1545 D CoreBackPreview: Window{e907eb7 u0 com.tiarnanlarkin.danio/com.tiarnanlarkin.danio.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@34158b4, mPriority=-1, mIsAnimationCallback=false, mOverrideBehavior=0}
+07-04 00:51:13.730   708   831 I ImeTracker: com.tiarnanlarkin.danio:cac20d7b: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+07-04 00:51:13.741  1402  1402 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2043
+07-04 00:51:13.746   708  1545 I ImeTracker: system_server:a3d718f: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+07-04 00:51:13.746  1402  1402 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+07-04 00:51:13.750  1402  1402 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1293 onStartInput(EditorInfo{EditorInfo{packageName=com.tiarnanlarkin.danio, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+07-04 00:51:13.752   708   739 I ImeTracker: system_server:a3d718f: onCancelled at PHASE_SERVER_SHOULD_HIDE
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: EmojiCompatManager.getEmojiCompatIfLoaded():343 EmojiCompat.init() was never called.
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: java.lang.IllegalStateException: EmojiCompat is not initialized. Please call EmojiCompat.init() first
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at asx.p(PG:6)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at axb.b(PG:13)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at jnr.b(PG:2)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at jnr.c(PG:4)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at jnr.f(PG:3)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at jnx.c(PG:3)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at kif.cz(PG:47)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at lhl.run(PG:1025)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at jaf.execute(PG:12)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at nco.v(PG:13)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at lhn.m(PG:96)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at lhn.k(PG:25)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at kgn.onStartInput(PG:250)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.inputmethodservice.InputMethodService.doStartInput(InputMethodService.java:3521)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.inputmethodservice.InputMethodService$InputMethodImpl.startInput(InputMethodService.java:879)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.inputmethodservice.InputMethodService$InputMethodImpl.dispatchStartInput(InputMethodService.java:908)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.inputmethodservice.IInputMethodWrapper.executeMessage(IInputMethodWrapper.java:201)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:44)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.os.Handler.dispatchMessage(Handler.java:110)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.os.Looper.loopOnce(Looper.java:248)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.os.Looper.loop(Looper.java:338)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at android.app.ActivityThread.main(ActivityThread.java:9067)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at java.lang.reflect.Method.invoke(Native Method)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:593)
+07-04 00:51:13.764  1402  1402 I EmojiCompatManager: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:932)
+07-04 00:51:13.766  1402  1402 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+07-04 00:51:13.767   708  1545 W PackageConfigPersister: App-specific configuration not found for packageName: com.tiarnanlarkin.danio and userId: 0
+07-04 00:51:13.835  3809  3883 D ProfileInstaller: Installing profile for com.tiarnanlarkin.danio
+07-04 00:51:13.925  3809  3809 D InsetsController: hide(ime(), fromIme=false)
+07-04 00:51:13.926  3809  3809 I ImeTracker: com.tiarnanlarkin.danio:cac20d7b: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+07-04 00:51:13.935   708  1545 D ConnectivityService: requestNetwork for uid/pid:10220/3809 activeRequest: null callbackRequest: 161 [NetworkRequest [ REQUEST id=162, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10220 RequestorUid: 10220 RequestorPkg: com.tiarnanlarkin.danio UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC
+07-04 00:51:13.938   708   869 D ConnectivityService: NetReassign [162 : null → 100] [c 1] [a 0] [i 1]
+07-04 00:51:13.940   708   863 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=162, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10220 RequestorUid: 10220 RequestorPkg: com.tiarnanlarkin.danio UnderlyingNetworks: Null] ]
+07-04 00:51:13.940   708   863 V WifiNetworkFactory: Accepted network request NetworkRequest [ REQUEST id=162, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10220 RequestorUid: 10220 RequestorPkg: com.tiarnanlarkin.danio UnderlyingNetworks: Null] ]
+07-04 00:51:13.940   708   863 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=162, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10220 RequestorUid: 10220 RequestorPkg: com.tiarnanlarkin.danio UnderlyingNetworks: Null] ]
+07-04 00:51:13.940   708   863 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=162, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10220 RequestorUid: 10220 RequestorPkg: com.tiarnanlarkin.danio UnderlyingNetworks: Null] ]
+07-04 00:51:13.940   708   863 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=162, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10220 RequestorUid: 10220 RequestorPkg: com.tiarnanlarkin.danio UnderlyingNetworks: Null] ]
+07-04 00:51:13.942   708   863 D WifiClientModeImpl[26229:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+07-04 00:51:13.942   708   863 D WifiDataStall: tx tput in kbps: 11000
+07-04 00:51:13.942   708   863 D WifiDataStall: rx tput in kbps: 11000
+07-04 00:51:13.942   708   863 V WifiConfigManager: Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:13.942   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:13.942   708   863 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 52320190 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+07-04 00:51:13.942   708   863 D WifiScoreCard: txRate: 1 txSpeed: 1
+07-04 00:51:13.942   708   863 D WifiScoreCard: network update SIGNAL_POLL "AndroidWifi" ID: 843735694 RSSI -50 txSpeed -1
+07-04 00:51:13.942   708   863 D WifiClientModeImpl[26229:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=0.5, 0.0, 0.0 rx=0.4 bcn=0 [on:0 tx:0 rx:0 period:3002] from screen [on:0 period:711246102] score=60
+07-04 00:51:14.018   708   739 W ProcessStats: Tracking association SourceState{4330a4c com.google.android.providers.media.module/10195 BFgs #2595} whose proc state 4 is better than process ProcessState{60bbbea com.google.android.apps.photos/10161 pkg=com.google.android.apps.photos} proc state 14 (1 skipped)
+07-04 00:51:14.066  3809  3881 D SessionsDependencies: Dependency to CRASHLYTICS added.
+07-04 00:51:14.078  3809  3881 I FirebaseApp: Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+07-04 00:51:14.118  3809  3881 I FirebaseCrashlytics: Initializing Firebase Crashlytics 18.6.3 for com.tiarnanlarkin.danio
+07-04 00:51:14.139  3809  3881 D SessionsDependencies: Subscriber CRASHLYTICS registered.
+07-04 00:51:14.239   708   724 D FileUtils: Rounded bytes from 2592600064 to 4000000000
+07-04 00:51:14.256   708   724 D FileUtils: Rounded bytes from 2592600064 to 4000000000
+07-04 00:51:14.275  3809  3885 I FirebaseCrashlytics: No version control information found
+07-04 00:51:14.371  3809  3881 D FirebaseSessions: Initializing Firebase Sessions SDK.
+07-04 00:51:14.391  3809  3894 D LifecycleServiceBinder: Binding service to application.
+07-04 00:51:14.420  3809  3809 I flutter : [Main] Firebase initialised successfully
+07-04 00:51:14.421  3809  3809 I flutter : [ConsentScreen] ConsentScreen: diagnostics consent=true
+07-04 00:51:14.448  3809  3809 D SessionLifecycleService: Service bound to new client on process 3809
+07-04 00:51:14.452  3809  3900 D SessionLifecycleService: App has not yet foregrounded. Using previously stored session: null
+07-04 00:51:14.452  3809  3900 D SessionLifecycleService: Client android.os.Messenger@ccfe1d5 bound at 239151. Clients: 1
+07-04 00:51:14.458  3809  3809 I flutter : [SupabaseService] [SupabaseService] Placeholder credentials detected - running in offline-only mode.
+07-04 00:51:14.468  3809  3809 D SessionLifecycleClient: Connected to SessionLifecycleService. Queue size 0
+07-04 00:51:14.484  1091  1307 D SatelliteController: iisInCarrierRoamingNbIotNtn: satellite is disabled
+07-04 00:51:14.775   487   525 I netd    : tetherGetStats() -> {[]} <0.44ms>
+07-04 00:51:15.082  1294  2648 I NearbyDiscovery: FastPair: isDestroyable: Scanner is alive. [CONTEXT service_id=265 ]
+07-04 00:51:15.083  1294  2648 I NearbyDiscovery: DiscoveryService: Skip stopSelf(), fast pair controller is not destroyable. [CONTEXT service_id=265 ]
+07-04 00:51:15.130   708   812 D ActivityManager: freezing 3652 com.google.android.googlequicksearchbox:search
+07-04 00:51:15.302   708   746 W IPCThreadState: Sending oneway calls to frozen process.
+07-04 00:51:15.303   708   746 W IPCThreadState: Sending oneway calls to frozen process.
+07-04 00:51:16.095   708  1864 D OomAdjuster: Not killing cached processes
+07-04 00:51:16.364  3904  3904 W dumpsys : Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: window
+07-04 00:51:16.373   708  1864 I system_server: AssetManager2(0x7a9a7ea5cc38) locale list changing from [] to [en-US]
+07-04 00:51:16.376   708  1864 I system_server: AssetManager2(0x7a9a7ea5a398) locale list changing from [] to [en-US]
+07-04 00:51:16.380   708  1864 I system_server: AssetManager2(0x7a9a7ea5dbd8) locale list changing from [] to [en-US]
+07-04 00:51:16.389   708  1864 I system_server: AssetManager2(0x7a9a7ea53f98) locale list changing from [] to [en-US]
+07-04 00:51:16.424   708  1864 I system_server: AssetManager2(0x7a9a7ea53958) locale list changing from [] to [en-US]
+07-04 00:51:16.432   708  1864 I system_server: AssetManager2(0x7a9a7ea6c958) locale list changing from [] to [en-US]
+07-04 00:51:16.945   708   863 D WifiClientModeImpl[26229:wlan0]: updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+07-04 00:51:16.946   708   863 D WifiDataStall: tx tput in kbps: 11000
+07-04 00:51:16.946   708   863 D WifiDataStall: rx tput in kbps: 11000
+07-04 00:51:16.946   708   863 V WifiConfigManager: Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+07-04 00:51:16.946   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:16.946   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:16.946   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:16.946   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:16.946   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:16.946   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:16.946   708   863 D WifiThroughputPredictor:  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+07-04 00:51:16.948   708   863 D WifiThroughputPredictor:  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+07-04 00:51:16.948   708   863 D WifiScoreCard: BSSID update SIGNAL_POLL ID: 52320190 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+07-04 00:51:16.948   708   863 D WifiScoreCard: txRate: 1 txSpeed: 1
+07-04 00:51:16.948   708   863 D WifiScoreCard: network update SIGNAL_POLL "AndroidWifi" ID: 843735694 RSSI -50 txSpeed -1
+07-04 00:51:16.948   708   863 D WifiClientModeImpl[26229:wlan0]:  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=0.1, 0.0, 0.0 rx=0.1 bcn=0 [on:0 tx:0 rx:0 period:3005] from screen [on:0 period:711249108] score=60
+07-04 00:51:17.080  3907  3907 W screencap: Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: SurfaceFlingerAIDL
+07-04 00:51:17.082  3907  3907 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+07-04 00:51:17.083  3907  3907 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+07-04 00:51:17.099   563   578 E HwcComposer: getLuts failed Status(-8, EX_SERVICE_SPECIFIC): '8: '
+07-04 00:51:17.099   563   578 E HWComposer: getLuts: getLuts failed for display 4619827259835644672: UNSUPPORTED (8)
+07-04 00:51:17.094     0     0 I servicemanager: Caller(pid=3907,uid=2000,sid=u:r:shell:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+07-04 00:51:17.102     0     0 I servicemanager: Caller(pid=3907,uid=2000,sid=u:r:shell:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+07-04 00:51:17.110     0     0 I servicemanager: Caller(pid=3907,uid=2000,sid=u:r:shell:s0) Found mapper/ranchu in device VINTF manifest.
+07-04 00:51:17.186   948   948 D wpa_supplicant: nl80211: Drv Event 64 (NL80211_CMD_NOTIFY_CQM) received for wlan0
+07-04 00:51:17.187   948   948 D wpa_supplicant: nl80211: Beacon loss event
+07-04 00:51:17.187   948   948 D wpa_supplicant: wlan0: Event BEACON_LOSS (53) received
+07-04 00:51:17.187   948   948 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS
+07-04 00:51:17.208  1461  2102 W MediaProvider: isAppCloneUserPair for user 0: false
+07-04 00:51:17.222   487   525 I netd    : tetherGetStats() -> {[]} <0.36ms>
+07-04 00:51:17.292  1294  3910 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService started execution. cause:9 exec_start_elapsed_seconds: 241 [CONTEXT service_id=218 ]
+07-04 00:51:17.307  1294  3911 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService finished executing. cause:9 result: 1 elapsed_millis: 21 uptime_millis: 21 exec_start_elapsed_seconds: 241 [CONTEXT service_id=218 ]
+07-04 00:51:17.376  1294  3910 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.tapandpay.gcmtask.TapAndPayGcmTaskService started execution. cause:5 exec_start_elapsed_seconds: 242 [CONTEXT service_id=218 ]
+07-04 00:51:17.380  1294  3910 I TapAndPay: Sending QUICK_ACCESS_WALLET_STATE_CHANGED broadcast to wallet app. [CONTEXT service_id=79 ]
+07-04 00:51:17.387  1294  3910 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.tapandpay.gcmtask.TapAndPayGcmTaskService finished executing. cause:5 result: 1 elapsed_millis: 20 uptime_millis: 20 exec_start_elapsed_seconds: 242 [CONTEXT service_id=218 ]
+07-04 00:51:18.855   708  1864 I ActivityManager: Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+07-04 00:51:18.857   708  1864 I ActivityManager: Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+07-04 00:51:18.860   708   724 W JobInfo : Job 'com.google.android.providers.media.module/com.android.providers.media.MediaService#-300' has a deadline with no functional constraints. The deadline won't improve job execution latency. Consider removing the deadline.
+07-04 00:51:18.868   708   736 I ActivityManager: Broadcast completed: result=0
+07-04 00:51:18.871  1461  1961 I MediaProvider: Begin Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaService }
+07-04 00:51:18.958  1461  1961 I MediaProvider: End Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaService }
+07-04 00:51:19.051  1461  1667 D WM-SystemJobScheduler: Scheduling work ID 76e68bf5-4ed5-493a-acf8-69a2329aaa1cJob ID 32
+07-04 00:51:19.056  1461  1667 D WM-GreedyScheduler: Ignoring {WorkSpec: 4ab35118-0008-4e0e-9667-4896f94f6ee7}. Requires device idle.
+07-04 00:51:19.056  1461  1667 D WM-GreedyScheduler: Ignoring {WorkSpec: 5e0a924a-98f8-4d1c-b169-89fa94ec2302}. Requires device idle.
+07-04 00:51:19.116  1461  1724 W MediaProvider: Ignoring param:deletedata post U for external apps
+07-04 00:51:19.139  1461  1724 I MediaProvider: Deleted 0 1 0 0 0 0 0 items on external_primary due to com.android.shell
+07-04 00:51:19.211  3920  3920 W dumpsys : Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: window
+07-04 00:51:19.340     0     0 I logd    : logdr: UID=2000 GID=2000 PID=3923 n tail=400 logMask=99 pid=0 start=0ns deadline=0ns
