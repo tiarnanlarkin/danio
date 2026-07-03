@@ -36,6 +36,15 @@ approval in the current thread or an existing entry in
   that are clearly isolated from that session's slice.
 - Commit focused slices separately. Docs-only setup changes must stay separate from product behavior changes.
 
+## Session Freshness
+
+- When a Codex session becomes long, usage-limited, heavily compacted, or is
+  about to start a broad new slice, pause at the next clean checkpoint and
+  recommend starting a fresh session.
+- Prefer pausing after commit/push with `git status --short -uall` clean.
+- Provide a concise handoff prompt before stopping so the next session can
+  continue from the current repo state without rebuilding context from chat.
+
 ## Local Verification Gates
 
 Run commands from `apps/aquarium_app` unless stated otherwise.
