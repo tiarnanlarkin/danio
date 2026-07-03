@@ -1,12 +1,14 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-03 during workflow-foundation implementation
+Last updated: 2026-07-03 after workflow-foundation implementation
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest workflow checkpoint commit: `774fd154 docs: add research-first live preview workflow rules`
+- Latest commits:
+  - `d1530694 docs: add agent workflow foundation`
+  - `774fd154 docs: add research-first live preview workflow rules`
 - Prior pushed handoff reference from user: `ce4a72b1 docs: add session freshness handoff rule`
 
 ## Current Slice
@@ -15,7 +17,9 @@ Last updated: 2026-07-03 during workflow-foundation implementation
 - Scope: Docs and one docs truth test only.
 - Product behavior changes: none.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
-- Live preview requirement: skipped for this docs/test-guard slice. Live preview is required for later substantial app-facing work when device ownership is clear.
+- Live preview requirement: skipped for edits because this was a docs/test-guard
+  slice. `CheckOnly` passed after the slice, and live preview is available for
+  later substantial app-facing work.
 
 ## Dirty Files To Preserve
 
@@ -27,17 +31,21 @@ Last updated: 2026-07-03 during workflow-foundation implementation
 
 - `git status --short -uall` run before editing.
 - `git diff --check` passed before commit `774fd154`.
-- Foundation docs checks are pending until the new docs and guard test are written.
+- `git diff --check` passed after foundation docs/test edits.
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed with 2 tests.
+- `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs` passed.
+  The slowest step was `flutter analyze`, which completed with no issues after
+  about 287 seconds.
 
 ## Device And Preview State
 
 - Dedicated preview target: `danio_api36`.
-- Last known state from this session: live preview was launched before this docs-only foundation work.
-- Before relying on preview or capturing evidence, rerun:
-
-  ```powershell
-  .\scripts\run_danio_live_preview.ps1 -CheckOnly
-  ```
+- `.\scripts\run_danio_live_preview.ps1 -CheckOnly` passed after the
+  foundation commit.
+- Device: `emulator-5554`
+- AVD: `danio_api36`
+- Foreground package: `com.tiarnanlarkin.danio`
 
 - If Flutter tests hang while a live preview terminal is attached, detach or
   quit live preview cleanly with `d` or `q`, rerun the docs checks, then
@@ -51,13 +59,14 @@ Last updated: 2026-07-03 during workflow-foundation implementation
 
 ## Next Action
 
-Finish the foundation slice:
+Recommended clean checkpoint:
 
-1. Create/update `WORKFLOW_CHARTER.md`, `RESEARCH_PROTOCOL.md`,
-   `SCREEN_INVENTORY.md`, `SLICE_LOG.md`, `HOUSEKEEPING.md`,
-   `QUALITY_LADDER.md`, and `SOURCE_REFERENCES.md`.
-2. Link them from the existing entry docs.
-3. Extend `test/copy/current_docs_local_truth_test.dart`.
-4. Run docs gates.
-5. Commit the foundation docs and update this handoff with final commit state.
-
+1. Commit this final handoff update.
+2. Because this session is long and has crossed a broad workflow-foundation
+   slice, start a fresh session before new product work.
+3. In the fresh session, rebuild context from repo truth and choose one narrow
+   next slice:
+   - resume the paused Reminders data-safety test, preserving the dirty file; or
+   - choose the next highest-value `FINISH_MAP.md` gap.
+4. For app-facing work, keep live preview running or restart it through
+   `LIVE_PREVIEW_WORKFLOW.md`.
