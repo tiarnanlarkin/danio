@@ -48,6 +48,22 @@ apps/aquarium_app/docs/   Product, QA, release, and agent docs
 
 Use `apps/aquarium_app` as the working directory for Flutter commands.
 
+## Workflow Foundation Docs
+
+Start with these docs for autonomous work:
+
+- `WORKFLOW_CHARTER.md`: master working agreement.
+- `RESEARCH_PROTOCOL.md`: research lanes and stop-and-ask tooling rules.
+- `ACTIVE_HANDOFF.md`: current branch, dirty files, live-preview state, last
+  checks, active slice, blockers, and next action.
+- `SCREEN_INVENTORY.md`: known screen/page map and evidence gaps.
+- `SLICE_LOG.md`: append-only completed-slice breadcrumbs.
+- `HOUSEKEEPING.md`: screenshots, logs, build artifacts, stale docs, and
+  cleanup rules.
+- `QUALITY_LADDER.md`: required checks by change type.
+- `SOURCE_REFERENCES.md`: reviewed official/current references for workflow
+  decisions.
+
 ## Dirty Worktree And Parallel Session Discipline
 
 Before any edit:

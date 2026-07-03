@@ -4,6 +4,11 @@ Danio can use Codex subagents to speed up autonomous completion work, but the
 main coordinator remains responsible for repo state, integration, verification,
 commits, and pushes.
 
+This workflow is subordinate to `WORKFLOW_CHARTER.md`,
+`RESEARCH_PROTOCOL.md`, `ACTIVE_HANDOFF.md`, `SLICE_LOG.md`, and
+`QUALITY_LADDER.md`. Use `SCREEN_INVENTORY.md` when subagents audit or review
+screen/page coverage.
+
 ## Standard Agent Layout
 
 Use at most six open project agents:

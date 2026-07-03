@@ -29,6 +29,14 @@ Profiles:
   `flutter analyze`, debug APK build, and read-only `adb devices` visibility.
   It does not install, wipe, tap, or capture device state.
 
+## Operating Docs
+
+Use `WORKFLOW_CHARTER.md` as the master working agreement,
+`RESEARCH_PROTOCOL.md` for planning research, `ACTIVE_HANDOFF.md` for current
+session state, `SCREEN_INVENTORY.md` for no-guessing visual/page coverage,
+`SLICE_LOG.md` for breadcrumbs, `HOUSEKEEPING.md` for repo hygiene, and
+`QUALITY_LADDER.md` for the required checks by change type.
+
 Useful switches:
 
 - `-RequireCleanWorktree`: fail if any dirty file is present.

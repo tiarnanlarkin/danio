@@ -172,6 +172,14 @@ that make new build/readiness claims.
 
 ## Documentation References
 
+- Workflow charter: `apps/aquarium_app/docs/agent/WORKFLOW_CHARTER.md`
+- Research protocol: `apps/aquarium_app/docs/agent/RESEARCH_PROTOCOL.md`
+- Active handoff: `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
+- Screen inventory: `apps/aquarium_app/docs/agent/SCREEN_INVENTORY.md`
+- Slice log: `apps/aquarium_app/docs/agent/SLICE_LOG.md`
+- Housekeeping: `apps/aquarium_app/docs/agent/HOUSEKEEPING.md`
+- Quality ladder: `apps/aquarium_app/docs/agent/QUALITY_LADDER.md`
+- Source references: `apps/aquarium_app/docs/agent/SOURCE_REFERENCES.md`
 - Codex setup: `apps/aquarium_app/docs/agent/CODEX_SETUP.md`
 - Testing checklist: `apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md`
 - Autonomous quality setup: `apps/aquarium_app/docs/agent/AUTONOMOUS_QUALITY_SETUP.md`

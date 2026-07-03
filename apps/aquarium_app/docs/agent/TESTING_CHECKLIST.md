@@ -4,6 +4,11 @@ Use this checklist before committing Danio changes. It is local-first and
 quality-first: local gates are mandatory, and paid/account-backed checks are
 optional evidence only after explicit approval.
 
+For the full operating rules, use `WORKFLOW_CHARTER.md`. For research gates,
+use `RESEARCH_PROTOCOL.md`. For current dirty files and active blockers, check
+`ACTIVE_HANDOFF.md`. For change-type gates, use `QUALITY_LADDER.md`. For visual
+and page evidence gaps, use `SCREEN_INVENTORY.md`.
+
 ## Before Editing
 
 - Run `git status --short -uall`.

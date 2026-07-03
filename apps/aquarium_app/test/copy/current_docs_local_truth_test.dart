@@ -3,6 +3,14 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 String _source(String path) => File(path).readAsStringSync();
+bool _exists(String path) => File(path).existsSync();
+
+void _expectContainsAll(String path, Iterable<String> values) {
+  final source = _source(path);
+  for (final value in values) {
+    expect(source, contains(value), reason: '$path should link $value');
+  }
+}
 
 void main() {
   test('current docs describe the local-first build honestly', () {
@@ -43,5 +51,68 @@ void main() {
       _source('docs/data-resilience-audit.md'),
       contains('No dormant backend queue remains in the current local build'),
     );
+  });
+
+  test('agent workflow foundation docs exist and are linked', () {
+    const requiredDocs = [
+      'docs/agent/WORKFLOW_CHARTER.md',
+      'docs/agent/RESEARCH_PROTOCOL.md',
+      'docs/agent/ACTIVE_HANDOFF.md',
+      'docs/agent/SCREEN_INVENTORY.md',
+      'docs/agent/SLICE_LOG.md',
+      'docs/agent/HOUSEKEEPING.md',
+      'docs/agent/QUALITY_LADDER.md',
+      'docs/agent/SOURCE_REFERENCES.md',
+    ];
+
+    for (final path in requiredDocs) {
+      expect(_exists(path), isTrue, reason: path);
+    }
+
+    final entryDocs = <String, List<String>>{
+      '../../AGENTS.md': [
+        'WORKFLOW_CHARTER.md',
+        'RESEARCH_PROTOCOL.md',
+        'ACTIVE_HANDOFF.md',
+        'SCREEN_INVENTORY.md',
+        'QUALITY_LADDER.md',
+      ],
+      'docs/agent/CODEX_SETUP.md': [
+        'WORKFLOW_CHARTER.md',
+        'RESEARCH_PROTOCOL.md',
+        'ACTIVE_HANDOFF.md',
+        'SCREEN_INVENTORY.md',
+        'QUALITY_LADDER.md',
+      ],
+      'docs/agent/AUTONOMOUS_QUALITY_SETUP.md': [
+        'WORKFLOW_CHARTER.md',
+        'RESEARCH_PROTOCOL.md',
+        'ACTIVE_HANDOFF.md',
+        'QUALITY_LADDER.md',
+      ],
+      'docs/agent/TESTING_CHECKLIST.md': [
+        'WORKFLOW_CHARTER.md',
+        'RESEARCH_PROTOCOL.md',
+        'ACTIVE_HANDOFF.md',
+        'QUALITY_LADDER.md',
+        'SCREEN_INVENTORY.md',
+      ],
+      'docs/agent/MULTI_AGENT_WORKFLOW.md': [
+        'WORKFLOW_CHARTER.md',
+        'RESEARCH_PROTOCOL.md',
+        'ACTIVE_HANDOFF.md',
+        'SLICE_LOG.md',
+        'QUALITY_LADDER.md',
+      ],
+      'docs/agent/FINISH_MAP.md': [
+        'ACTIVE_HANDOFF.md',
+        'SCREEN_INVENTORY.md',
+        'SLICE_LOG.md',
+      ],
+    };
+
+    for (final entry in entryDocs.entries) {
+      _expectContainsAll(entry.key, entry.value);
+    }
   });
 }

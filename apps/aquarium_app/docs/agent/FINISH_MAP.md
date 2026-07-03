@@ -99,6 +99,14 @@ Each completed slice should update one of these sources:
 
 - This file, when the overall completion status changes.
 - The detailed product backlog, when feature acceptance history changes.
+- `WORKFLOW_CHARTER.md`, `RESEARCH_PROTOCOL.md`, `QUALITY_LADDER.md`,
+  `HOUSEKEEPING.md`, or `SOURCE_REFERENCES.md`, when the operating model or
+  research policy changes.
+- `ACTIVE_HANDOFF.md`, when a future agent needs current branch, dirty-file,
+  live-preview, blocker, or next-action state.
+- `SCREEN_INVENTORY.md`, when screens, routes, tests, evidence, or visual gaps
+  change.
+- `SLICE_LOG.md`, when a completed slice needs a durable breadcrumb.
 - `docs/qa/screenshots/...`, when phone/tablet visual evidence is captured.
 - `PAID_TOOL_APPROVAL_LEDGER.md`, when an external paid or account-backed lane
   is approved or used.
