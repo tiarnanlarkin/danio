@@ -1,23 +1,23 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after phone/tablet black-box smoke reruns passed
+Last updated: 2026-07-04 after phone Smart root recapture
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Current tested commit: `20f14eee docs: unblock android device ownership qa`
-  plus uncommitted Smart/smoke-helper follow-up changes.
+- Latest slice commit: `docs: recapture phone smart qa evidence`.
+- Source build commit for the latest device recapture:
+  `273a9644 fix: harden smart dock qa smoke`.
 - Prior pushed handoff reference from user: `ce4a72b1 docs: add session freshness handoff rule`
 
 ## Current Slice
 
-- Slice: CL-QA-001/002 follow-up for Smart bottom-dock overlap and black-box
-  smoke helper hardening.
-- Scope completed: after the partial phone/tablet map pass, fixed the Smart
-  Fish & Plant ID card overlap locally, made the smoke helper avoid bottom-dock
-  false positives, updated lower More hub route swipes for tablet geometry, and
-  verified with local Flutter/script/build/device gates.
+- Slice: CL-QA-001 phone Smart root recapture after the bottom-dock fix.
+- Scope completed: installed the current debug APK on `danio_api36`, opened
+  `danio://qa/smart`, captured after-fix screenshot/XML/logcat evidence without
+  overwriting the pre-fix failure artifacts, and verified Fish & Plant ID clears
+  the bottom dock by `47px`.
 - Product behavior changes: Smart under the persistent bottom dock now nudges
   the locked Fish & Plant ID card above the dock on phone-sized shells.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
@@ -28,20 +28,14 @@ Last updated: 2026-07-04 after phone/tablet black-box smoke reruns passed
 
 - Expected current slice files:
   - `docs/qa/whole-app-phone-map-2026-07-04.md`
-  - `docs/qa/whole-app-tablet-map-2026-07-04.md`
-  - `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/`
-  - `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`
+  - `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-04b-smart-root-after-dock-fix.png`
+  - `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-04b-smart-root-after-dock-fix.xml`
+  - `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-smart-after-dock-fix-logcat-tail.txt`
   - `docs/agent/DEVICE_OWNERSHIP.md`
   - `docs/agent/SLICE_LOG.md`
   - `docs/agent/FINISH_MAP.md`
   - `docs/agent/SCREEN_INVENTORY.md`
   - `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
-  - `docs/superpowers/plans/2026-07-04-cl-qa-001-002-whole-app-maps.md`
-  - `lib/screens/smart_screen.dart`
-  - `lib/screens/tab_navigator.dart`
-  - `scripts/run_android_blackbox_smoke.ps1`
-  - `test/scripts/android_blackbox_smoke_script_test.dart`
-  - `test/widget_tests/tab_navigator_test.dart`
 
 ## Last Checks
 
@@ -108,6 +102,27 @@ Last updated: 2026-07-04 after phone/tablet black-box smoke reruns passed
 - Additional RED/GREEN script regressions were added for current care-clue hint
   copy and lower More hub targets that sit behind the tablet/phone dock
   (`Workshop`, `Preferences`, `About`).
+- `adb devices` for `QA-2026-07-04-004` showed `RFCY8022D5R` as
+  `unauthorized`, `emulator-5554` as `device`, and `emulator-5556` as `device`;
+  the physical phone was not used.
+- `.\scripts\run_danio_live_preview.ps1 -DeviceId emulator-5554 -CheckOnly -WaitSeconds 180`
+  passed for `danio_api36`, foreground package `com.tiarnanlarkin.danio`.
+- `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile AndroidPrep`
+  passed, including focused tests, dependency validation, custom lint,
+  `flutter analyze`, debug APK build, and device visibility. The build emitted
+  the known Kotlin Gradle Plugin and Java source/target warnings only.
+- `adb -s emulator-5554 install -r build\app\outputs\flutter-apk\app-debug.apk`
+  succeeded.
+- `adb -s emulator-5554 shell am start -W -a android.intent.action.VIEW -d danio://qa/smart com.tiarnanlarkin.danio`
+  opened the Smart tab.
+- New after-fix phone evidence:
+  `phone-04b-smart-root-after-dock-fix.png`,
+  `phone-04b-smart-root-after-dock-fix.xml`, and
+  `phone-smart-after-dock-fix-logcat-tail.txt`.
+- XML bounds check: Fish & Plant ID bottom `2080`, bottom dock top `2127`,
+  clearance `47px`.
+- Fresh logcat tail scan found no `FATAL EXCEPTION`, `AndroidRuntime: FATAL`,
+  `E/flutter`, `RenderFlex overflowed`, or `ANR in` entries.
 
 ## Device And Preview State
 
@@ -115,14 +130,14 @@ Last updated: 2026-07-04 after phone/tablet black-box smoke reruns passed
 - Tablet target: `danio_tablet_api36`, serial `emulator-5556`.
 - Physical phone `RFCY8022D5R`: still `unauthorized`; do not use without user
   authorization and ADB authorization.
-- Device ownership for `QA-2026-07-04-002` is released after evidence capture.
+- Device ownership for `QA-2026-07-04-004` is released after evidence capture.
   The dedicated Danio emulators were left running; do not kill or wipe them.
 
 ## Blockers
 
 - CL-QA-001 and CL-QA-002 are still in progress, not complete.
-- Resolved locally: Smart root lower optional-AI cards are nudged above the
-  persistent bottom dock, and the smoke helper now avoids bottom-dock false
+- Resolved locally: Smart root Fish & Plant ID now clears the persistent bottom
+  dock on the phone recapture, and the smoke helper avoids bottom-dock false
   positives for route assertions, tap centers, and lower More hub scroll
   positions.
 - Full `SCREEN_INVENTORY.md` coverage remains pending beyond the current
@@ -134,7 +149,5 @@ Recommended clean checkpoint:
 
 1. Finish CL-QA-001 and CL-QA-002 by extending coverage to every remaining
    `SCREEN_INVENTORY.md` surface with pass/fail/gap notes.
-2. Recapture Smart root on phone after the dock fix as part of the full phone
-   inventory closeout.
-3. Keep using `DEVICE_OWNERSHIP.md` before installs, taps, screenshots, logcat,
+2. Keep using `DEVICE_OWNERSHIP.md` before installs, taps, screenshots, logcat,
    Patrol, Maestro, or live-preview control.
