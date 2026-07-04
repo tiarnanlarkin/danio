@@ -784,6 +784,43 @@ void main() {
       );
       expect(find.text('Added 2 livestock entries.'), findsNothing);
     });
+
+    testWidgets('bulk add rejects missing parent tanks before saving', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-bulk-missing-parent-tank';
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Missing Parent'));
+
+      await tester.pumpWidget(
+        _wrapBulkAddDialog(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.enterText(
+        find.byType(TextField).last,
+        'Neon Tetra, 10\nCorydoras x6',
+      );
+      await tester.pump();
+
+      await storage.deleteTank(tankId);
+      expect(await storage.getTank(tankId), isNull);
+
+      await tester.tap(find.text('Add (2) livestock'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(await storage.getLivestockForTank(tankId), isEmpty);
+      expect(await storage.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t add that right now. Try again!'),
+        findsOneWidget,
+      );
+      expect(find.text('Added 2 livestock entries.'), findsNothing);
+    });
   });
 
   group('LivestockScreen - quick feeding', () {

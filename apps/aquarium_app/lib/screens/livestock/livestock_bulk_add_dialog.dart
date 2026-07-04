@@ -145,6 +145,13 @@ class _LivestockBulkAddDialogState
       final savedLivestockIds = <String>[];
       final savedLogIds = <String>[];
 
+      final tank = await storage.getTank(widget.tankId);
+      if (tank == null) {
+        throw StateError(
+          'Cannot bulk add livestock for missing tank ${widget.tankId}',
+        );
+      }
+
       try {
         for (final item in _items) {
           final livestock = Livestock(

@@ -2896,6 +2896,15 @@ CL-P1-009EU Bulk livestock add timeline-log rollback:
 - Focused widget coverage mounts the bulk-add sheet, simulates a failed log
   save, and verifies no livestock or log records remain.
 
+CL-P1-009GP Bulk livestock add missing-parent guard:
+
+- Bulk livestock add now rechecks its parent tank in storage before saving any
+  bulk livestock records or acquisition timeline logs.
+- If the sheet is stale after tank deletion, the flow shows the existing retry
+  feedback and saves no orphan livestock or log records.
+- Focused widget coverage mounts the bulk-add sheet, deletes the parent tank,
+  and verifies no livestock or log records are saved.
+
 CL-P1-009EV Single livestock add timeline-log rollback:
 
 - Single livestock add now rolls back the newly saved livestock record if the
@@ -4259,8 +4268,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   maintenance-task sync fails, while secondary progress-write failures no longer
   undo durable equipment adds. Livestock adds now keep durable livestock and
   timeline-log saves when only secondary progress writes fail. Bulk livestock
-  adds and single livestock adds now roll back partial livestock/log records
-  when timeline-log persistence fails. Quick Water Test now keeps saved
+  adds now reject missing parent tanks before saving, and bulk/single livestock
+  adds now roll back partial livestock/log records when timeline-log persistence
+  fails. Quick Water Test now keeps saved
   water-test logs when only the secondary profile-XP write fails, and user
   profile reset rejects failed local preference removals before exposing reset
   state. Practice-mode lessons no longer claim XP when profile XP persistence

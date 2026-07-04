@@ -1,34 +1,33 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after DS-2026-07-04-012 Cycling Assistant reminder parent-tank boundary
+Last updated: 2026-07-04 after DS-2026-07-04-013 bulk livestock add parent-tank boundary
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `DS-2026-07-04-012` Cycling Assistant reminder
+- Latest completed slice: `DS-2026-07-04-013` bulk livestock add
   parent-tank boundary.
 - Latest implementation checkpoint:
-  Current commit after DS-2026-07-04-012 is committed and pushed.
+  Current commit after DS-2026-07-04-013 is committed and pushed.
 - Prior implementation checkpoint before this slice:
-  `0bd2c93b fix: confirm ask danio history save`.
+  `7cabe842 fix: guard cycling reminders against missing tanks`.
 - Current uncommitted slice: none expected after this handoff cleanup is
   committed and pushed; verify with `git status --short -uall` before new work.
 
 ## Current Slice
 
-- Slice: DS-2026-07-04-012 for Cycling Assistant data resilience.
-- Scope completed: `_CycleGuidedActions._createReminder()` now checks
-  `storage.getTank(widget.tankId)` before saving the phase-aware reminder task.
-- Product behavior changes: if Cycling Assistant is still open after its parent
-  tank was deleted, tapping `Create cycling reminder` shows the existing retry
-  feedback and does not create an orphan local task.
-- Product behavior not changed: normal Cycling Assistant reminder creation,
-  water-test logging handoff, phase detection, task copy, recurrence, due date,
-  priority, AI behavior, backup/restore, and task form behavior are unchanged.
-- Test infrastructure note: `cycling_assistant_screen_test.dart` now clears the
-  singleton `InMemoryStorageService` between tests so seeded tank/task state
-  cannot leak across widget cases.
+- Slice: DS-2026-07-04-013 for Livestock bulk-add data resilience.
+- Scope completed: `_LivestockBulkAddDialogState._save()` now checks
+  `storage.getTank(widget.tankId)` before saving any bulk livestock records or
+  acquisition timeline logs.
+- Product behavior changes: if the bulk livestock sheet is still open after
+  its parent tank was deleted, tapping `Add livestock` shows the existing retry
+  feedback and does not create orphan local livestock or log records.
+- Product behavior not changed: normal bulk livestock parsing, successful bulk
+  add, timeline log creation, rollback when a log save fails, XP/progress
+  warning behavior, single livestock add/edit, bulk move/delete, and tank
+  screens are unchanged.
 - Inventory state: no screen inventory or visual evidence changes in this
   non-visual data-safety slice.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
@@ -37,35 +36,35 @@ Last updated: 2026-07-04 after DS-2026-07-04-012 Cycling Assistant reminder pare
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the DS-2026-07-04-012 handoff cleanup. If
+No dirty files are expected after the DS-2026-07-04-013 handoff cleanup. If
 resuming from an interrupted pre-commit copy, preserve these paths:
 
-- `lib/screens/cycling_assistant_screen.dart`
-- `test/widget_tests/cycling_assistant_screen_test.dart`
+- `lib/screens/livestock/livestock_bulk_add_dialog.dart`
+- `test/widget_tests/livestock_screen_test.dart`
 - `docs/agent/ACTIVE_HANDOFF.md`
 - `docs/agent/FINISH_MAP.md`
 - `docs/agent/SLICE_LOG.md`
-- `docs/agent/plans/DS-2026-07-04-012-data-resilience-slice-contract.md`
+- `docs/agent/plans/DS-2026-07-04-013-data-resilience-slice-contract.md`
 - `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
 - `docs/product/danio-complete-local-current-audit-2026-06-13.md`
 
 ## Last Checks
 
-- Repo/remote preflight before DS-2026-07-04-012 was clean and aligned with
-  `origin/qa/production-tool-audit-2026-05-25` at `0bd2c93b`.
+- Repo/remote preflight before DS-2026-07-04-013 was clean and aligned with
+  `origin/qa/production-tool-audit-2026-05-25` at `7cabe842`.
 - TDD RED:
-  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --name "missing tank ids do not create orphan cycling reminders" --reporter compact`
-  failed because an orphan `Task` was saved when the parent tank was absent from
-  storage.
+  `flutter test test/widget_tests/livestock_screen_test.dart --name "bulk add rejects missing parent tanks before saving" --reporter compact`
+  failed because two orphan `Livestock` records were saved when the parent tank
+  was absent from storage.
 - TDD GREEN:
-  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --name "missing tank ids do not create orphan cycling reminders" --reporter compact`
+  `flutter test test/widget_tests/livestock_screen_test.dart --name "bulk add rejects missing parent tanks before saving" --reporter compact`
   and
-  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --name "guided action creates a phase-aware cycling reminder" --reporter compact`
+  `flutter test test/widget_tests/livestock_screen_test.dart --name "failed bulk-add log save rolls back new livestock" --reporter compact`
   passed after adding the parent-tank check.
 - Focused widget coverage and targeted analysis:
-  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --reporter compact`
+  `flutter test test/widget_tests/livestock_screen_test.dart --reporter compact`
   and
-  `flutter analyze lib/screens/cycling_assistant_screen.dart test/widget_tests/cycling_assistant_screen_test.dart`
+  `flutter analyze lib/screens/livestock/livestock_bulk_add_dialog.dart test/widget_tests/livestock_screen_test.dart`
   passed.
 - Required data-safety local gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` passed.
@@ -78,7 +77,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Device And Preview State
 
-- No device ownership was claimed for DS-2026-07-04-012.
+- No device ownership was claimed for DS-2026-07-04-013.
 - No emulator, physical phone, ADB install, screenshot capture, Patrol,
   Maestro, or live-preview session was used.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
@@ -86,7 +85,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Blockers
 
-- No current blocker for DS-2026-07-04-012.
+- No current blocker for DS-2026-07-04-013.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   create/edit/delete, restore, migration, and any future app-kill flush coverage
   found in review.

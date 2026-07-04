@@ -80,6 +80,10 @@ category.
 
 ## Current Data-Resilience Note
 
+- DS-2026-07-04-013 closes a bulk livestock orphan-child gap: bulk add now
+  rechecks the parent tank in storage before saving livestock or timeline logs,
+  so a stale open sheet cannot create local child data after its tank was
+  deleted.
 - DS-2026-07-04-012 closes a guided-tool orphan-task gap: Cycling Assistant now
   rechecks the parent tank in storage before saving a phase-aware reminder, so a
   stale open assistant cannot create a local task after its tank was deleted.
