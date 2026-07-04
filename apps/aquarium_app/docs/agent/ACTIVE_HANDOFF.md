@@ -1,30 +1,29 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after DS-2026-07-04-004 Livestock edit stale ID guard
+Last updated: 2026-07-04 after DS-2026-07-04-005 Add Log edit stale ID guard
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `DS-2026-07-04-004` stale Livestock edit ID
+- Latest completed slice: `DS-2026-07-04-005` stale Add Log edit ID
   rejection before local save.
 - Latest implementation checkpoint:
-  `f6915d0f fix: reject stale livestock edits`.
+  `1d759b4b fix: reject stale log edits`.
 - Prior completed handoff checkpoint:
-  `41fde881 docs: update handoff after tank edit guard`.
+  `0dc68bd6 docs: update handoff after livestock edit guard`.
 - Current uncommitted slice: none expected after this handoff cleanup is
   committed and pushed; verify with `git status --short -uall` before new work.
 
 ## Current Slice
 
-- Slice: DS-2026-07-04-004 for CL-P1-009/CL-QA-006 local data resilience.
-- Scope completed: `LivestockAddDialog` now reloads the current tank livestock
-  before edit saves and rejects missing edit IDs before calling
-  `saveLivestock`.
-- Product behavior changes: stale Livestock edit sheets now fail into the
-  existing retry/error feedback instead of upserting and recreating a deleted
-  or absent local livestock record. Existing livestock edits still save through
-  the same local persistence path.
+- Slice: DS-2026-07-04-005 for CL-P1-009/CL-QA-006 local data resilience.
+- Scope completed: `AddLogScreen` now reloads current tank logs before edit
+  saves and rejects missing edit IDs before calling `saveLog`.
+- Product behavior changes: stale Add Log edit forms now fail into the existing
+  retry/error feedback instead of upserting and recreating a deleted or absent
+  local log record. Existing log edits still save through the same local
+  persistence path.
 - Inventory state: no screen inventory or visual evidence changes in this
   dialog/data-safety slice.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
@@ -33,11 +32,11 @@ Last updated: 2026-07-04 after DS-2026-07-04-004 Livestock edit stale ID guard
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the DS-2026-07-04-004 handoff cleanup. If
+No dirty files are expected after the DS-2026-07-04-005 handoff cleanup. If
 resuming from an interrupted pre-commit copy, preserve these paths:
 
-- `lib/screens/livestock/livestock_add_dialog.dart`
-- `test/widget_tests/livestock_screen_test.dart`
+- `lib/screens/add_log/add_log_screen.dart`
+- `test/widget_tests/add_log_screen_test.dart`
 - `docs/agent/ACTIVE_HANDOFF.md`
 - `docs/agent/FINISH_MAP.md`
 - `docs/agent/SLICE_LOG.md`
@@ -45,20 +44,20 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Last Checks
 
-- Repo/remote preflight before DS-2026-07-04-004 was clean and aligned with
+- Repo/remote preflight before DS-2026-07-04-005 was clean and aligned with
   `origin/qa/production-tool-audit-2026-05-25`.
 - TDD RED:
-  `flutter test test/widget_tests/livestock_screen_test.dart --name "stale livestock edit ids are not recreated by save" --reporter compact`
+  `flutter test test/widget_tests/add_log_screen_test.dart --name "stale log edit ids are not recreated by save" --reporter compact`
   failed before the production change because the stale edit recreated the
-  deleted livestock record.
+  deleted log record.
 - TDD GREEN:
-  `flutter test test/widget_tests/livestock_screen_test.dart --name "stale livestock edit ids are not recreated by save" --reporter compact`
+  `flutter test test/widget_tests/add_log_screen_test.dart --name "stale log edit ids are not recreated by save" --reporter compact`
   passed after the guard.
 - Focused file:
-  `flutter test test/widget_tests/livestock_screen_test.dart --reporter compact`
+  `flutter test test/widget_tests/add_log_screen_test.dart --reporter compact`
   passed.
 - Targeted analyze:
-  `flutter analyze lib/screens/livestock/livestock_add_dialog.dart test/widget_tests/livestock_screen_test.dart`
+  `flutter analyze lib/screens/add_log/add_log_screen.dart test/widget_tests/add_log_screen_test.dart`
   passed with no issues.
 - Documentation checks after slice evidence updates passed: `git diff --check`
   and
@@ -71,7 +70,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Device And Preview State
 
-- No device ownership was claimed for DS-2026-07-04-004.
+- No device ownership was claimed for DS-2026-07-04-005.
 - No emulator, physical phone, ADB install, screenshot capture, Patrol,
   Maestro, or live-preview session was used.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
@@ -79,7 +78,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Blockers
 
-- No current blocker for DS-2026-07-04-004.
+- No current blocker for DS-2026-07-04-005.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for create/delete,
   restore, migration, and app-kill flush coverage.
 
