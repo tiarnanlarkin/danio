@@ -1,30 +1,30 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after DS-2026-07-04-006 Task and Equipment edit stale ID guard bundle
+Last updated: 2026-07-04 after DS-2026-07-04-007 missing parent tank child-save guard bundle
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `DS-2026-07-04-006` stale Task and Equipment edit
-  ID rejection before local save.
+- Latest completed slice: `DS-2026-07-04-007` missing parent tank rejection
+  before child saves.
 - Latest implementation checkpoint:
-  `c4515006 fix: reject stale task and equipment edits`.
+  `7f5a13db fix: reject missing tank child saves`.
 - Prior completed handoff checkpoint:
-  `68ef8d2d docs: update handoff after log edit guard`.
+  `6c34ec7a docs: update handoff after task equipment guard`.
 - Current uncommitted slice: none expected after this handoff cleanup is
   committed and pushed; verify with `git status --short -uall` before new work.
 
 ## Current Slice
 
-- Slice: DS-2026-07-04-006 for CL-P1-009/CL-QA-006 local data resilience.
-- Scope completed: Task and Equipment edit sheets now reload current tank tasks
-  or equipment before edit saves and reject missing edit IDs before calling
-  `saveTask` or `saveEquipment`.
-- Product behavior changes: stale Task and Equipment edit sheets now fail into
-  the existing retry/error feedback instead of upserting and recreating deleted
-  or absent local records. Existing task and equipment edits still save through
-  the same local persistence paths.
+- Slice: DS-2026-07-04-007 for CL-P1-009/CL-QA-006 local data resilience.
+- Scope completed: Add Log, Livestock, Task, and Equipment save forms now reload
+  the parent tank before local child saves and reject missing tank IDs before
+  calling `saveLog`, `saveLivestock`, `saveTask`, or `saveEquipment`.
+- Product behavior changes: stale child save forms now fail into existing
+  retry/error feedback instead of creating orphan local logs, livestock, tasks,
+  equipment, or linked maintenance tasks after the parent tank was deleted.
+  Normal saves for existing tanks still use the same local persistence paths.
 - Inventory state: no screen inventory or visual evidence changes in this
   dialog/data-safety slice.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
@@ -33,11 +33,15 @@ Last updated: 2026-07-04 after DS-2026-07-04-006 Task and Equipment edit stale I
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the DS-2026-07-04-006 handoff cleanup. If
+No dirty files are expected after the DS-2026-07-04-007 handoff cleanup. If
 resuming from an interrupted pre-commit copy, preserve these paths:
 
+- `lib/screens/add_log/add_log_screen.dart`
+- `lib/screens/livestock/livestock_add_dialog.dart`
 - `lib/screens/tasks_screen.dart`
 - `lib/screens/equipment_screen.dart`
+- `test/widget_tests/add_log_screen_test.dart`
+- `test/widget_tests/livestock_screen_test.dart`
 - `test/widget_tests/tasks_screen_test.dart`
 - `test/widget_tests/equipment_screen_test.dart`
 - `docs/agent/ACTIVE_HANDOFF.md`
@@ -47,23 +51,27 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Last Checks
 
-- Repo/remote preflight before DS-2026-07-04-006 was clean and aligned with
+- Repo/remote preflight before DS-2026-07-04-007 was clean and aligned with
   `origin/qa/production-tool-audit-2026-05-25`.
 - TDD RED:
-  `flutter test test/widget_tests/tasks_screen_test.dart --name "stale task edit ids are not recreated by save" --reporter compact`
+  `flutter test test/widget_tests/add_log_screen_test.dart --name "missing tank ids do not create orphan log entries" --reporter compact`,
+  `flutter test test/widget_tests/livestock_screen_test.dart --name "missing tank ids do not create orphan livestock" --reporter compact`,
+  `flutter test test/widget_tests/tasks_screen_test.dart --name "missing tank ids do not create orphan tasks" --reporter compact`,
   and
-  `flutter test test/widget_tests/equipment_screen_test.dart --name "stale equipment edit ids are not recreated by save" --reporter compact`
-  failed before the production changes because stale edits recreated the deleted
-  task and equipment records.
+  `flutter test test/widget_tests/equipment_screen_test.dart --name "missing tank ids do not create orphan equipment" --reporter compact`
+  failed before the production changes because child saves created orphan local
+  records after the parent tank was deleted.
 - TDD GREEN:
-  both named stale-edit tests passed after the guards.
+  all four named missing-parent tests passed after the guards.
 - Focused files:
+  `flutter test test/widget_tests/add_log_screen_test.dart --reporter compact`,
+  `flutter test test/widget_tests/livestock_screen_test.dart --reporter compact`,
   `flutter test test/widget_tests/tasks_screen_test.dart --reporter compact`
   and
   `flutter test test/widget_tests/equipment_screen_test.dart --reporter compact`
   passed.
 - Targeted analyze:
-  `flutter analyze lib/screens/tasks_screen.dart lib/screens/equipment_screen.dart test/widget_tests/tasks_screen_test.dart test/widget_tests/equipment_screen_test.dart`
+  `flutter analyze lib/screens/add_log/add_log_screen.dart lib/screens/livestock/livestock_add_dialog.dart lib/screens/tasks_screen.dart lib/screens/equipment_screen.dart test/widget_tests/add_log_screen_test.dart test/widget_tests/livestock_screen_test.dart test/widget_tests/tasks_screen_test.dart test/widget_tests/equipment_screen_test.dart`
   passed with no issues.
 - Documentation checks after slice evidence updates passed: `git diff --check`
   and
@@ -75,7 +83,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Device And Preview State
 
-- No device ownership was claimed for DS-2026-07-04-006.
+- No device ownership was claimed for DS-2026-07-04-007.
 - No emulator, physical phone, ADB install, screenshot capture, Patrol,
   Maestro, or live-preview session was used.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
@@ -83,7 +91,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Blockers
 
-- No current blocker for DS-2026-07-04-006.
+- No current blocker for DS-2026-07-04-007.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for create/delete,
   restore, migration, and app-kill flush coverage.
 
