@@ -930,6 +930,12 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       final now = DateTime.now();
       final interval = int.tryParse(_intervalController.text);
       final existing = widget.existing;
+      final tank = await storage.getTank(widget.tankId);
+      if (tank == null) {
+        throw StateError(
+          'Cannot save equipment for missing tank ${widget.tankId}',
+        );
+      }
       if (existing != null) {
         final currentEquipment = await storage.getEquipmentForTank(
           widget.tankId,

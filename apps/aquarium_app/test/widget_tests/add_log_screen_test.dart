@@ -698,6 +698,34 @@ void main() {
       );
       expect(find.text('Retry'), findsOneWidget);
     });
+
+    testWidgets('missing tank ids do not create orphan log entries', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'missing-parent-log-tank';
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await svc.deleteTank(tankId);
+      expect(await svc.getTank(tankId), isNull);
+
+      await tester.enterText(find.widgetWithText(TextFormField, 'pH'), '7.2');
+      await tester.tap(find.text('Save'));
+      await _advance(tester);
+
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+      expect(find.byType(AddLogScreen), findsOneWidget);
+      expect(
+        find.text(
+          'Hmm, couldn\'t save that. Check your connection and try again.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Retry'), findsOneWidget);
+    });
   });
 
   group('AddLogScreen dirty close behavior', () {

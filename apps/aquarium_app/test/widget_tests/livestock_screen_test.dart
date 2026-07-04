@@ -714,6 +714,44 @@ void main() {
       expect(find.text('8x Neon Tetra saved.'), findsNothing);
     });
 
+    testWidgets('missing tank ids do not create orphan livestock', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-missing-parent-tank';
+      final storage = InMemoryStorageService();
+      await storage.saveTank(
+        _makeTank(id: tankId, name: 'Missing Parent Tank'),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Add Livestock'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(find.byType(TextFormField).first, 'Cherry Shrimp');
+
+      await storage.deleteTank(tankId);
+      expect(await storage.getTank(tankId), isNull);
+
+      await tester.tap(find.text('Add').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(await storage.getLivestockForTank(tankId), isEmpty);
+      expect(await storage.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t save that. Check your connection and try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('1x Cherry Shrimp added.'), findsNothing);
+    });
+
     testWidgets('failed bulk-add log save rolls back new livestock', (
       tester,
     ) async {

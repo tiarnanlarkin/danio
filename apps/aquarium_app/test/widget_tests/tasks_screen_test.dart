@@ -352,6 +352,38 @@ void main() {
       );
     });
 
+    testWidgets('missing tank ids do not create orphan tasks', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-missing-parent';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byTooltip('Add a new task'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Rinse prefilter',
+      );
+
+      await svc.deleteTank(tankId);
+      expect(await svc.getTank(tankId), isNull);
+
+      await tester.tap(find.text('Add').last);
+      await _advance(tester);
+
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+      expect(find.text('Add Task'), findsWidgets);
+      expect(
+        find.text('Couldn\'t complete that action. Try again!'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('deleting a task shows undo and restores the task', (
       tester,
     ) async {

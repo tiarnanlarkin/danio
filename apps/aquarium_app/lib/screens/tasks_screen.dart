@@ -943,6 +943,10 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       final storage = widget.ref.read(storageServiceProvider);
       final now = DateTime.now();
       final existing = widget.existing;
+      final tank = await storage.getTank(widget.tankId);
+      if (tank == null) {
+        throw StateError('Cannot save task for missing tank ${widget.tankId}');
+      }
       if (existing != null) {
         final currentTasks = await storage.getTasksForTank(widget.tankId);
         final hasCurrentTask = currentTasks.any(

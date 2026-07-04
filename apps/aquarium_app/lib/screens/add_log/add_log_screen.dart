@@ -1051,6 +1051,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       final existing = widget.existingLog;
       final isNewLog = existing == null;
+      final tank = await storage.getTank(widget.tankId);
+      if (tank == null) {
+        throw StateError('Cannot save log for missing tank ${widget.tankId}');
+      }
       if (existing != null) {
         final currentLogs = await storage.getLogsForTank(widget.tankId);
         final hasCurrentLog = currentLogs.any((log) => log.id == existing.id);

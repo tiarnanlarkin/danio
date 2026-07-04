@@ -786,6 +786,39 @@ void main() {
       );
     });
 
+    testWidgets('missing tank ids do not create orphan equipment', (
+      tester,
+    ) async {
+      const tankId = 'tank-equipment-missing-parent';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.text('Add Equipment'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Canister filter',
+      );
+
+      await svc.deleteTank(tankId);
+      expect(await svc.getTank(tankId), isNull);
+
+      await tester.tap(find.text('Add').last);
+      await _advance(tester);
+
+      expect(await svc.getEquipmentForTank(tankId), isEmpty);
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+      expect(find.text('Add Equipment'), findsWidgets);
+      expect(
+        find.text('Couldn\'t do that. Give it another go!'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('undoing equipment removal restores its maintenance task', (
       tester,
     ) async {

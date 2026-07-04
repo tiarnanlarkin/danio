@@ -301,6 +301,13 @@ class _LivestockAddDialogState extends ConsumerState<LivestockAddDialog> {
       final storage = ref.read(storageServiceProvider);
       final now = DateTime.now();
 
+      final tank = await storage.getTank(widget.tankId);
+      if (tank == null) {
+        throw StateError(
+          'Cannot save livestock for missing tank ${widget.tankId}',
+        );
+      }
+
       if (widget.existing != null) {
         final currentLivestock = await storage.getLivestockForTank(
           widget.tankId,
