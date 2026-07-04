@@ -258,6 +258,61 @@ void main() {
       expect(persisted, isA<Map<String, dynamic>>());
       expect((persisted as Map<String, dynamic>)['version'], 2);
     });
+
+    test(
+      'failed migration stamp write does not report loaded success',
+      () async {
+        final service = LocalJsonStorageService();
+        final file = File(
+          '${root.path}${Platform.pathSeparator}aquarium_data.json',
+        );
+        final tmpBlocker = Directory('${file.path}.tmp');
+        final createdAt = DateTime.utc(2026, 1, 1);
+        await file.writeAsString(
+          jsonEncode({
+            'tanks': {
+              'legacy-tank': {
+                'id': 'legacy-tank',
+                'name': 'Legacy Tank',
+                'type': 'freshwater',
+                'volumeLitres': 75,
+                'startDate': createdAt.toIso8601String(),
+                'targets': {
+                  'tempMin': 24,
+                  'tempMax': 26,
+                  'phMin': 6.8,
+                  'phMax': 7.4,
+                },
+                'createdAt': createdAt.toIso8601String(),
+                'updatedAt': createdAt.toIso8601String(),
+              },
+            },
+            'livestock': <String, dynamic>{},
+            'equipment': <String, dynamic>{},
+            'logs': <String, dynamic>{},
+            'tasks': <String, dynamic>{},
+          }),
+        );
+        await tmpBlocker.create();
+
+        await expectLater(
+          service.retryLoad(),
+          throwsA(isA<StorageMigrationPersistenceException>()),
+        );
+
+        expect(service.state, StorageState.ioError);
+        expect(service.hasError, isTrue);
+        expect(service.lastError?.state, StorageState.ioError);
+        expect(service.lastError?.message, contains('Migration stamp'));
+
+        final persisted = jsonDecode(await file.readAsString());
+        expect(persisted, isA<Map<String, dynamic>>());
+        expect(
+          (persisted as Map<String, dynamic>).containsKey('version'),
+          false,
+        );
+      },
+    );
   });
 
   group('LocalJsonStorageService singleton', () {

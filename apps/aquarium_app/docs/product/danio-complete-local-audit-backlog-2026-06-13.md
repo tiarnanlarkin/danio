@@ -379,6 +379,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009GI makes the root app lifecycle flush pending debounced gem writes on
   `AppLifecycleState.detached`, covering app-kill paths before the gem debounce
   timer can be skipped.
+- CL-P1-009GJ makes local JSON schema-stamp write failures surface as storage
+  load I/O errors instead of reporting a successful loaded state.
 
 ## 7. P2 Work - Presentation System
 

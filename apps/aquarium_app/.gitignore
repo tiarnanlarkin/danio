@@ -57,6 +57,8 @@ android/app/google-services.json
 base/
 qa_screenshots/
 plans/
+!docs/agent/plans/
+!docs/agent/plans/*.md
 prd/
 store-listing/
 BUNDLE-METADATA/

@@ -2400,6 +2400,18 @@ CL-P1-009DF Local JSON migration persistence:
   public recovery path, verifies tank defaults are applied on read, and checks
   the file is stamped to schema version 2.
 
+CL-P1-009GJ Local JSON migration stamp failure boundary:
+
+- If a legacy local JSON file can be parsed and migrated but the
+  `aquarium_data.json.tmp` migration-stamp write cannot be persisted, Danio now
+  treats the load as an I/O failure instead of reporting `StorageState.loaded`.
+- The original legacy file remains intact, the in-memory migrated entities are
+  cleared, and `StorageMigrationPersistenceException` is thrown for retry or
+  recovery handling.
+- Focused storage coverage blocks the migration temp-file path and verifies the
+  service reports `StorageState.ioError` without adding a false schema version
+  to the legacy file.
+
 CL-P1-009DG Backup & Restore local recovery surface:
 
 - Backup & Restore now surfaces a local recovery card when the local JSON

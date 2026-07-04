@@ -25,6 +25,21 @@ class StorageCorruptionException implements Exception {
   String toString() => 'StorageCorruptionException: $message';
 }
 
+/// Raised when a schema migration succeeds in memory but cannot be stamped
+/// back to disk. Treat this as a load-time I/O failure, not corrupt user data.
+class StorageMigrationPersistenceException implements Exception {
+  final String message;
+  final Object originalError;
+
+  StorageMigrationPersistenceException(
+    this.message, {
+    required this.originalError,
+  });
+
+  @override
+  String toString() => 'StorageMigrationPersistenceException: $message';
+}
+
 /// Storage service loading state
 enum StorageState {
   idle, // Not yet loaded
@@ -237,11 +252,30 @@ class LocalJsonStorageService
               () => _persistMigratedJsonPayloadUnlocked(file, json),
             );
           } catch (e, stackTrace) {
+            _tanks.clear();
+            _livestock.clear();
+            _equipment.clear();
+            _logs.clear();
+            _tasks.clear();
+
+            final error = StorageMigrationPersistenceException(
+              'Migration stamp could not be persisted.',
+              originalError: e,
+            );
+            _lastError = StorageError(
+              state: StorageState.ioError,
+              message: 'Migration stamp persistence failed: ${e.toString()}',
+              timestamp: DateTime.now(),
+              originalError: error,
+            );
+            _state = StorageState.ioError;
+
             logError(
               'Storage migration stamp could not be persisted: $e',
               stackTrace: stackTrace,
               tag: 'LocalJsonStorageService',
             );
+            throw error;
           }
         }
 
@@ -251,6 +285,10 @@ class LocalJsonStorageService
           tag: 'LocalJsonStorageService',
         );
       } catch (entityError) {
+        if (entityError is StorageMigrationPersistenceException) {
+          rethrow;
+        }
+
         // Error during entity parsing (malformed data structure)
         final timestamp = DateTime.now().millisecondsSinceEpoch;
         final corruptedPath = '${file.path}.corrupted.$timestamp';
@@ -298,6 +336,9 @@ class LocalJsonStorageService
         _state = StorageState.corrupted;
         throw error;
       }
+    } on StorageMigrationPersistenceException {
+      // Already classified as a load-time I/O failure above.
+      rethrow;
     } on StorageCorruptionException {
       // Already handled above, just rethrow
       rethrow;

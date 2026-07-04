@@ -78,6 +78,13 @@ category.
 | Weekly Plan cache clear | Locally verified | Weekly Plan cache clear now waits for durable local `weekly_plan_cache` removal before hiding the visible plan, and failed removals leave the plan visible with a surfaced error. | Recheck if Weekly Plan cache, restore invalidation, or optional-AI save flows change. |
 | Debug QA seeds | In progress | Existing debug QA seeds now include demo tank, lesson quiz/practice, unlock/progression controls, emergency unsafe-water, incompatible-fish, skipped-onboarding quick-start, no-AI Smart Hub, partial unlock-edge, and tablet visual-stress seeds. | Add any real keyed-AI seed only when it can avoid fake provider readiness. |
 
+## Current Data-Resilience Note
+
+- DS-2026-07-04-009 closes the local JSON migration stamp false-success gap:
+  failed legacy-file schema-stamp writes now leave the legacy file intact, clear
+  in-memory migrated entities, report `StorageState.ioError`, and throw
+  `StorageMigrationPersistenceException` instead of reporting loaded success.
+
 ## Slice Selection Rule
 
 Choose the next slice in this order:
