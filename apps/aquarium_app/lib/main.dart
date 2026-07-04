@@ -368,7 +368,8 @@ class _AppRouterState extends ConsumerState<_AppRouter>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
       // FB-T4: Flush any pending debounced gem writes synchronously so the
       // OS cannot kill the process before the 500 ms timer fires.
       // unawaited is intentional — we want the flush to run but we cannot

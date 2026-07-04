@@ -3162,6 +3162,16 @@ CL-P1-009FV Preferences setup-context persistence boundary:
 - Focused Settings widget coverage drives a failed Region save and failed Goals
   save with simulated false local `user_profile` writes.
 
+CL-P1-009GI Root lifecycle gem detached flush:
+
+- The root app lifecycle handler now includes `AppLifecycleState.detached` in
+  the pending gem flush condition.
+- Pending debounced `gems_state` writes now call
+  `GemsNotifier.flushPendingWrite()` on detach as well as pause/inactive,
+  covering app-kill paths before the debounce timer can be skipped.
+- Focused source-contract coverage verifies the lifecycle handler keeps paused,
+  inactive, detached, and `flushPendingWrite()` together.
+
 CL-P1-010A Tank Settings water-profile copy:
 
 - Tank Settings now shows readable tropical/coldwater target labels:
