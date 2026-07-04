@@ -8,9 +8,10 @@ Last updated: 2026-07-04 after DS-2026-07-04-002 Wishlist stale purchase guard
 - Branch: `qa/production-tool-audit-2026-05-25`
 - Latest completed slice: `DS-2026-07-04-002` stale Wishlist purchase ID
   rejection before success or budget spend.
-- Prior pushed checkpoint: `6fa6ae2f qa: capture onboarding gap evidence`.
-- Current uncommitted slice: DS-2026-07-04-002 until this handoff is committed
-  and pushed; verify with `git status --short -uall` before new work.
+- Latest implementation checkpoint:
+  `9f10973f fix: reject stale wishlist purchases`.
+- Current uncommitted slice: none expected after this handoff cleanup is
+  committed and pushed; verify with `git status --short -uall` before new work.
 - Prior pushed handoff reference from user:
   `ce4a72b1 docs: add session freshness handoff rule`.
 
@@ -31,7 +32,8 @@ Last updated: 2026-07-04 after DS-2026-07-04-002 Wishlist stale purchase guard
 
 ## Dirty Files To Preserve
 
-If resuming before the DS-2026-07-04-002 commit, preserve these paths:
+No dirty files are expected after the DS-2026-07-04-002 handoff cleanup. If
+resuming from an interrupted pre-commit copy, preserve these paths:
 
 - `lib/providers/wishlist_provider.dart`
 - `test/providers/wishlist_persistence_test.dart`
@@ -57,8 +59,8 @@ If resuming before the DS-2026-07-04-002 commit, preserve these paths:
 - Targeted analyze:
   `flutter analyze lib/providers/wishlist_provider.dart test/providers/wishlist_persistence_test.dart`
   passed with no issues.
-- Documentation checks before this handoff update passed: `git diff --check`
-  and `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`.
+- Documentation checks after handoff updates passed: `git diff --check` and
+  `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`.
 - Full local quality gate passed:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full`
   completed worktree visibility, whitespace diff check, focused Flutter tests,
