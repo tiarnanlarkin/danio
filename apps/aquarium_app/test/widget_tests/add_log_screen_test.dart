@@ -651,6 +651,53 @@ void main() {
       expect(savedProfile.totalXp, 200);
       expect(find.byType(AddLogScreen), findsNothing);
     });
+
+    testWidgets('stale log edit ids are not recreated by save', (
+      tester,
+    ) async {
+      final svc = InMemoryStorageService();
+      const tankId = 'stale-log-edit-tank';
+      final existingLog = LogEntry(
+        id: 'stale-water-change-log',
+        tankId: tankId,
+        type: LogType.waterChange,
+        timestamp: DateTime(2026, 7, 4, 11),
+        waterChangePercent: 30,
+        notes: 'Original water change note.',
+        createdAt: DateTime(2026, 7, 4, 11),
+      );
+      await svc.saveTank(_makeTank(id: tankId));
+      await svc.saveLog(existingLog);
+
+      await tester.pumpWidget(
+        _wrapWithLauncher(
+          storage: svc,
+          tankId: tankId,
+          type: LogType.waterChange,
+          existingLog: existingLog,
+        ),
+      );
+
+      await tester.tap(find.text('Open log form'));
+      await tester.pumpAndSettle();
+      await _advance(tester);
+
+      await svc.deleteLog(existingLog.id);
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+
+      await tester.tap(find.text('Save'));
+      await _advance(tester);
+
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+      expect(find.byType(AddLogScreen), findsOneWidget);
+      expect(
+        find.text(
+          'Hmm, couldn\'t save that. Check your connection and try again.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Retry'), findsOneWidget);
+    });
   });
 
   group('AddLogScreen dirty close behavior', () {

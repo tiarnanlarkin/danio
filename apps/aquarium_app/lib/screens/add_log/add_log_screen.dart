@@ -1051,6 +1051,13 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       final existing = widget.existingLog;
       final isNewLog = existing == null;
+      if (existing != null) {
+        final currentLogs = await storage.getLogsForTank(widget.tankId);
+        final hasCurrentLog = currentLogs.any((log) => log.id == existing.id);
+        if (!hasCurrentLog) {
+          throw StateError('Cannot edit missing log ${existing.id}');
+        }
+      }
 
       final log = LogEntry(
         id: existing?.id ?? _uuid.v4(),
