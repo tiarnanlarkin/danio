@@ -3003,6 +3003,15 @@ CL-P1-009GM Ask Danio disclosure gate:
 - Focused source-contract coverage now includes `lib/screens/smart_screen.dart`
   alongside the other current OpenAI request surfaces.
 
+CL-P1-009GN Ask Danio local-history confirmation:
+
+- Ask Danio now shows the AI answer immediately, then asks before saving the
+  typed-question summary to local Recent AI Activity.
+- Canceling the save confirmation leaves `ai_interaction_history` empty while
+  keeping the visible answer available.
+- Confirming the save writes one local `ask_danio` history entry.
+- Focused widget coverage exercises both cancel and confirm paths.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4289,12 +4298,13 @@ High-confidence P1/P2 gaps from code/docs evidence:
   supported. Remaining profile/preferences work is any final AI/provider
   walkthrough gaps.
 - Optional AI confirmation has started: Symptom Triage now asks before saving
-  an AI-generated diagnosis to the tank journal, and Weekly Plan now asks
-  before caching an AI-generated care plan. Focused widget coverage verifies
+  an AI-generated diagnosis to the tank journal, Weekly Plan now asks before
+  caching an AI-generated care plan, and Ask Danio now asks before saving a
+  typed-question summary to Recent AI Activity. Focused widget coverage verifies
   canceling those confirmations writes no journal log, leaves
-  `ai_interaction_history` untouched for Symptom Triage, and leaves
-  `weekly_plan_cache` empty. Remaining AI confirmation work is any future AI
-  changes to tank data, tasks, and reminders.
+  `ai_interaction_history` untouched for Symptom Triage and Ask Danio, and
+  leaves `weekly_plan_cache` empty. Remaining AI confirmation work is any future
+  AI changes to tank data, tasks, and reminders.
 - Global search now has complete-local coverage for app destinations, tools,
   learning paths, direct lesson results, guides, settings/privacy/backup,
   species, equipment, livestock, local logs, real Tank top-bar and More entry

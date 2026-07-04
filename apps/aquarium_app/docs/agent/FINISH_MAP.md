@@ -66,7 +66,7 @@ category.
 | Motion and haptics | In progress | Feeding pulse, reduced motion, and haptics preference integration exist. | Add purposeful motion to rewards, warnings, onboarding, and tank life only where it improves clarity. |
 | Performance | In progress | Complete-local Android targets are recorded in `docs/agent/PERFORMANCE_TARGETS.md` and enforced by `test/utils/performance_targets_test.dart`; the debug performance monitor now uses the shared 60 FPS frame-budget constant. | Measure startup, tab switching, tank animation, scrolling, and image loading on Android phone/tablet when device ownership is clear. |
 | Optional AI providers | In progress | Optional AI setup names OpenAI as current BYO provider, disables other provider paths honestly, and treats build-time `OPENAI_API_KEY` as a local-dev-only fallback that is ignored in release builds. | Implement real non-OpenAI connectors before enabling those key paths. |
-| AI confirmation | In progress | Symptom Triage journal saves, Symptom Triage AI history writes, and Weekly Plan care-plan cache saves now require confirmation before AI output becomes saved app data. | Continue confirm-before-write coverage for AI changes to tank data, tasks, and reminders. |
+| AI confirmation | In progress | Symptom Triage journal saves, Symptom Triage AI history writes, Weekly Plan care-plan cache saves, and Ask Danio Recent AI Activity saves now require confirmation before AI output becomes saved app data. | Continue confirm-before-write coverage for AI changes to tank data, tasks, and reminders. |
 | Premium AI path | Not started | Premium remains conceptual and must not appear as fake product behavior. | Design only after core app is excellent locally and real extra capability exists. |
 | Citations | In progress | Species/plant source trails and lesson references exist in limited form. | Add subtle source trails where they improve trust without damaging visual quality. |
 | Whole-app phone audit | Locally verified | Current phone screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/`, with notes in `docs/qa/whole-app-phone-map-2026-07-04.md`; the Smart/Fish ID bottom-dock overlap and smoke tap false positive are fixed locally with tests, the phone black-box smoke rerun passed, `phone-04b-smart-root-after-dock-fix` recaptures Fish & Plant ID clearing the dock by `47px`, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have phone `Pass` accounting with 96 passes and 0 current gaps. | Recheck when app surfaces change or before release signoff. |
@@ -87,6 +87,9 @@ category.
 
 ## Current Optional AI Note
 
+- AI-2026-07-04-012 closes the Ask Danio local-history confirmation gap: typed
+  Ask Danio answers remain visible immediately, but saving the question summary
+  to Recent AI Activity now requires explicit confirmation.
 - AI-2026-07-04-011 closes the Ask Danio disclosure-gate gap: typed Ask Danio
   questions now use the shared Optional AI disclosure gate before any OpenAI
   request can send text off-device.

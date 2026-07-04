@@ -23,6 +23,7 @@ import '../widgets/offline_indicator.dart';
 import '../widgets/first_visit_tooltip.dart';
 import '../widgets/danio_snack_bar.dart';
 import '../widgets/core/app_button.dart';
+import '../widgets/core/app_dialog.dart';
 import '../widgets/app_bottom_sheet.dart';
 import '../widgets/themed_tab_header.dart';
 import '../widgets/danio_bottom_dock.dart';
@@ -254,24 +255,23 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         maxTokens: 300,
       );
       rateLimiter.recordRequest(AIFeature.askDanio);
-      unawaited(
-        ref
-            .read(aiHistoryProvider.notifier)
-            .add(
-              type: 'ask_danio',
-              summary:
-                  'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
-            )
-            .catchError((Object e, StackTrace st) {
-              logError(
-                'SmartScreen: failed to save AI history: $e',
-                stackTrace: st,
-                tag: 'SmartScreen',
-              );
-            }),
-      );
       if (!mounted) return;
-      setState(() => _askResponse = result.text);
+      setState(() {
+        _askLoading = false;
+        _askResponse = result.text;
+      });
+
+      final confirmed = await showAppConfirmDialog(
+        context: context,
+        title: 'Save Ask Danio Activity?',
+        message:
+            'Save this Ask Danio question in Recent AI Activity on this device?',
+        confirmLabel: 'Save Activity',
+        cancelLabel: 'Cancel',
+      );
+      if (confirmed != true || !mounted) return;
+
+      unawaited(_saveAskDanioHistory(question));
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _askResponse = OpenAIUserMessages.timeout);
@@ -291,6 +291,24 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       );
     } finally {
       if (mounted) setState(() => _askLoading = false);
+    }
+  }
+
+  Future<void> _saveAskDanioHistory(String question) async {
+    try {
+      await ref
+          .read(aiHistoryProvider.notifier)
+          .add(
+            type: 'ask_danio',
+            summary:
+                'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
+          );
+    } catch (e, st) {
+      logError(
+        'SmartScreen: failed to save confirmed AI history: $e',
+        stackTrace: st,
+        tag: 'SmartScreen',
+      );
     }
   }
 
@@ -483,12 +501,11 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                     border: const OutlineInputBorder(),
                     isDense: true,
                     suffixIcon: _askLoading
-                        ? const Padding(
-                            padding: EdgeInsets.all(AppSpacing.sm2),
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: BubbleLoader(),
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: Center(
+                              child: BubbleLoader(size: 18, bubbleCount: 3),
                             ),
                           )
                         : IconButton(

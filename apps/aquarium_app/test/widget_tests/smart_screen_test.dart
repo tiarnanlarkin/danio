@@ -34,6 +34,7 @@ Widget _wrap({
   bool isOnline = true,
   bool aiConfigured = false,
   StorageService? storage,
+  OpenAIService? openAI,
 }) {
   return ProviderScope(
     overrides: [
@@ -41,7 +42,7 @@ Widget _wrap({
         storage ?? _SmartTestStorageService(),
       ),
       openAIServiceProvider.overrideWithValue(
-        OpenAIService(directApiKey: aiConfigured ? 'sk-test' : ''),
+        openAI ?? OpenAIService(directApiKey: aiConfigured ? 'sk-test' : ''),
       ),
       openAIConfiguredProvider.overrideWith((ref) async => aiConfigured),
       isOnlineProvider.overrideWithValue(isOnline),
@@ -51,6 +52,29 @@ Widget _wrap({
     ],
     child: const MaterialApp(home: SmartScreen()),
   );
+}
+
+class _FakeAskDanioOpenAIService extends OpenAIService {
+  _FakeAskDanioOpenAIService() : super(directApiKey: 'sk-test');
+
+  int chatCompletionCalls = 0;
+
+  @override
+  Future<bool> isConfiguredAsync() async => true;
+
+  @override
+  Future<ChatResult> chatCompletion({
+    required List<ChatMessage> messages,
+    String model = OpenAIModels.chat,
+    double temperature = 0.7,
+    int? maxTokens,
+  }) async {
+    chatCompletionCalls += 1;
+    return const ChatResult(
+      text:
+          'Neon tetras need a peaceful group, stable water, and careful betta monitoring.',
+    );
+  }
 }
 
 Map<String, dynamic> _profileJson({String? regionCode, String? tankStatus}) {
@@ -213,6 +237,14 @@ class _SmartTestStorageService implements StorageService {
   Future<void> deleteTask(String id) async {
     _tasks.remove(id);
   }
+}
+
+Future<void> _pumpUntilText(WidgetTester tester, String text) async {
+  for (var i = 0; i < 30; i += 1) {
+    await tester.pump(const Duration(milliseconds: 100));
+    if (find.text(text).evaluate().isNotEmpty) return;
+  }
+  expect(find.text(text), findsOneWidget);
 }
 
 // ---------------------------------------------------------------------------
@@ -638,6 +670,100 @@ void main() {
       await tester.pump();
 
       expect(find.text('Ask a fishkeeping question first.'), findsOneWidget);
+    });
+
+    testWidgets(
+      'canceling Ask Danio activity save confirmation does not write AI history',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'openai_disclosure_accepted': true,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final openAI = _FakeAskDanioOpenAIService();
+
+        await tester.pumpWidget(
+          _wrap(aiConfigured: true, openAI: openAI),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        await tester.scrollUntilVisible(
+          find.text('Ask Danio'),
+          500,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pump(const Duration(seconds: 1));
+        final askField = find.byWidgetPredicate(
+          (widget) =>
+              widget is TextField &&
+              widget.decoration?.hintText ==
+                  'e.g. "Can neon tetras live with bettas?"',
+        );
+        await tester.enterText(
+          askField,
+          'Can neon tetras live with bettas?',
+        );
+        await tester.tap(find.byTooltip('Send question'));
+        await _pumpUntilText(tester, 'Save Ask Danio Activity?');
+
+        expect(openAI.chatCompletionCalls, 1);
+        expect(find.text('Save Ask Danio Activity?'), findsOneWidget);
+
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
+
+        expect(prefs.getStringList('ai_interaction_history'), isNull);
+        expect(
+          find.text(
+            'Neon tetras need a peaceful group, stable water, and careful betta monitoring.',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('confirming Ask Danio activity save writes AI history', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'openai_disclosure_accepted': true,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final openAI = _FakeAskDanioOpenAIService();
+
+      await tester.pumpWidget(_wrap(aiConfigured: true, openAI: openAI));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.scrollUntilVisible(
+        find.text('Ask Danio'),
+        500,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump(const Duration(seconds: 1));
+      final askField = find.byWidgetPredicate(
+        (widget) =>
+            widget is TextField &&
+            widget.decoration?.hintText ==
+                'e.g. "Can neon tetras live with bettas?"',
+      );
+      await tester.enterText(
+        askField,
+        'Can neon tetras live with bettas?',
+      );
+      await tester.tap(find.byTooltip('Send question'));
+      await _pumpUntilText(tester, 'Save Ask Danio Activity?');
+
+      await tester.tap(find.text('Save Activity'));
+      await tester.pumpAndSettle();
+
+      final history = prefs.getStringList('ai_interaction_history') ?? [];
+      expect(history, hasLength(1));
+      expect(history.single, contains('"type":"ask_danio"'));
+      expect(
+        history.single,
+        contains('Asked: Can neon tetras live with bettas?'),
+      );
     });
   });
 }
