@@ -188,6 +188,35 @@ void main() {
       },
     );
 
+    test('markPurchased rejects missing items before reporting success', () async {
+      final item = _wishlistItem();
+      SharedPreferences.setMockInitialValues({
+        'wishlist_items': jsonEncode([item.toJson()]),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      final subscription = container.listen(wishlistProvider, (_, __) {});
+      addTearDown(subscription.close);
+      await _waitForWishlistLoad(container, expectedLength: 1);
+
+      await expectLater(
+        container.read(wishlistProvider.notifier).markPurchased('missing-item'),
+        throwsA(
+          isA<StateError>().having(
+            (error) => error.message,
+            'message',
+            contains('Wishlist item missing-item was not found'),
+          ),
+        ),
+      );
+
+      expect(container.read(wishlistProvider).single.purchased, isFalse);
+      final savedItems =
+          jsonDecode(prefs.getString('wishlist_items')!) as List<dynamic>;
+      expect((savedItems.single as Map<String, dynamic>)['purchased'], isFalse);
+    });
+
     test(
       'setMonthlyBudget waits for budget save before exposing amount',
       () async {
