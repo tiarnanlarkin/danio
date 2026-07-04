@@ -393,6 +393,10 @@ class TankActions {
 
   /// Update an existing tank
   Future<void> updateTank(Tank tank) async {
+    final existing = await _storage.getTank(tank.id);
+    if (existing == null) {
+      throw StateError('Cannot update missing tank ${tank.id}.');
+    }
     try {
       final updated = tank.copyWith(updatedAt: DateTime.now());
       await _storage.saveTank(updated);

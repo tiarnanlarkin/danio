@@ -794,6 +794,23 @@ void main() {
       final stored = await storage.getTank('tank-upd');
       expect(stored!.name, equals('Renamed'));
     });
+
+    test('rejects missing tank ids before saving an edit', () async {
+      final storage = _TestStorageService();
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      final staleEdit = _makeTank(id: 'missing-tank', name: 'Stale Edit');
+
+      await expectLater(
+        container.read(tankActionsProvider).updateTank(staleEdit),
+        throwsA(isA<StateError>()),
+      );
+      await _settle();
+
+      expect(await storage.getTank('missing-tank'), isNull);
+      expect(await container.read(tanksProvider.future), isEmpty);
+    });
   });
 
   // ── TankActions.permanentlyDeleteTank ───────────────────────────────────────
