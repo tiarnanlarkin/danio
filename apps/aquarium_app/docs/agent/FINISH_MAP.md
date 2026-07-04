@@ -78,6 +78,61 @@ category.
 | Weekly Plan cache clear | Locally verified | Weekly Plan cache clear now waits for durable local `weekly_plan_cache` removal before hiding the visible plan, and failed removals leave the plan visible with a surfaced error. | Recheck if Weekly Plan cache, restore invalidation, or optional-AI save flows change. |
 | Debug QA seeds | In progress | Existing debug QA seeds now include demo tank, lesson quiz/practice, unlock/progression controls, emergency unsafe-water, incompatible-fish, skipped-onboarding quick-start, no-AI Smart Hub, partial unlock-edge, and tablet visual-stress seeds. | Add any real keyed-AI seed only when it can avoid fake provider readiness. |
 
+## Finish-Line Roadmap Snapshot - 2026-07-04
+
+This roadmap was written after the housekeeping handoff was resumed on `main`,
+the remote was fetched, and the current source, tests, screen inventory, phone
+map, tablet map, backlog, and audit docs were re-read. It ranks the remaining
+work from the current local completion bar; it is not a replacement for the
+detailed backlog acceptance history.
+
+Current baseline:
+
+- Source of truth is `main` at `e246fa3f docs: finalize housekeeping handoff`,
+  aligned with `origin/main` at `0 0`.
+- Current phone and tablet whole-app maps are locally verified with all 96
+  `SCREEN_INVENTORY.md` rows accounted for and 0 current visual capture gaps.
+- The last broad product/docs verification passed `git diff --check`,
+  `flutter test test/copy/current_docs_local_truth_test.dart --reporter
+  compact`, `flutter analyze`, and
+  `flutter build apk --debug --target lib/main.dart`.
+- The next development push should not reopen broad screen-mapping work unless
+  a surface changes or release signoff begins.
+
+### Ranked Roadmap
+
+| Rank | Lane | Why it comes here | Exit evidence |
+| --- | --- | --- | --- |
+| 1 | Data resilience closeout (`CL-P1-009`, `CL-QA-006`) | This remains the highest-priority open local-first risk. Recent slices closed stale edit IDs, missing parent tanks, false local writes, import no-tank preference restore, schema stamp failure, and app-kill gem flush gaps, but restore, migration, broader create/delete walkthroughs, and future debounced-writer checks are still open. | Focused failure-path tests, `Full` gate before commit, updated backlog/finish map entries, and Android walkthrough evidence only when device ownership is clear. |
+| 2 | Optional AI confirmation closeout (`CL-P3-002`, Preferences/Smart) | Current AI writes to journal/history/cache now require confirmation, but the finish bar still requires confirmation before any AI-driven tank data, task, or reminder write. Do not create fake AI write paths just to close this; audit current surfaces and only add confirmation where a real current write exists. | Focused no-write/cancel tests, keyless/no-AI path test, relevant Focused or Full gate, and product docs updated if behavior changes. |
+| 3 | Normal-user P1 depth (`Living Tank`, `Guided tools`, `Timeline`, `Learning`, `Rewards`) | P0 spine, search, multi-tank, demo mode, and whole-app evidence are strong enough to resume user-value depth after reliability risks. Work should be narrow and grounded in current screenshots or walkthrough findings. | Per-surface focused tests, visual or Android evidence for UI changes, and status updates only when a row genuinely advances. |
+| 4 | Content and rule confidence (`CL-QA-005`, `Rule tests`, `Citations`) | The app has broad learning/species content and validation, but launch confidence still needs broader locked-content/source-risk checks and more rule coverage for recommendations, compatibility, emergency, units, and calculator behavior. | Content validation tests, targeted service/rule tests, source-trail updates where useful, and no unsafe care or veterinary-positioning drift. |
+| 5 | Accessibility, tablet, and visual polish (`CL-P2-001` through `CL-P2-005`, `CL-QA-003`) | The maps show current phone/tablet coverage, but accessibility, selective visual regression, weak assets, and remaining tablet polish are not done. Any material UI or asset change must start from a current screenshot, golden, mockup, or design doc. | Visual gate, focused accessibility/widget tests, selective goldens or screenshots, and updated `SCREEN_INVENTORY.md` evidence for changed surfaces. |
+| 6 | Performance measurement (`CL-P2-006`) | Performance targets and constants exist, but Android phone/tablet measurement has not yet closed the complete-local bar. This should follow reliability and major UI churn so measurements are stable. | Profile or release evidence for cold start, warm resume, tab switching, tank animation, scrolling, and local image first paint, recorded without noisy raw logs. |
+| 7 | Optional AI provider expansion and premium path (`CL-P3-001`, `Premium AI path`) | Provider expansion is explicitly downstream of local quality. Non-OpenAI connectors require real implementation and current approval for any paid/API/account workflow; premium remains conceptual and must stay invisible as product behavior until real value exists. | No-AI path still works, provider tests pass, paid-tool ledger covers any external lane, and unavailable provider paths remain honest until implemented. |
+| 8 | Final release-candidate evidence | This is last because it only has value after the open local quality lanes above are closed or explicitly deferred. | `Full` gate, `AndroidPrep`, current phone and tablet recheck, content validation, visual baseline checks, product-truth scan, and a release QA note. |
+
+### Next Development Push
+
+Recommended next slice: `DS-2026-07-04-018` data-resilience restore and
+migration walkthrough coverage.
+
+First files to inspect:
+
+- `lib/screens/backup_restore_screen.dart`
+- `lib/services/backup_import_service.dart`
+- `lib/utils/schema_migration.dart`
+- `test/services/backup_import_service_test.dart`
+- `test/widget_tests/backup_restore_screen_test.dart`
+- `test/utils/schema_migration_test.dart`
+- `test/screens/app_lifecycle_contract_test.dart`
+
+Done for that slice means one concrete restore, migration, create/delete, or
+app-kill persistence gap is proven red, fixed green, and then verified with the
+data-safety row of `QUALITY_LADDER.md`. Prefer local tests and `Full` gate
+first; use Android walkthrough evidence only after `DEVICE_OWNERSHIP.md`
+preflight is clear.
+
 ## Current Data-Resilience Note
 
 - DS-2026-07-04-017 closes a Tank Detail quick-feeding orphan-log gap: quick

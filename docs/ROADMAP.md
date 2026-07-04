@@ -14,6 +14,7 @@ Current planning sources:
 - `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md` - exact current resume
   point.
 
-The next roadmap should be written after the current build is re-studied from
-source, tests, and device evidence. Do not treat archived February-May planning
-docs as current product direction.
+The updated finish-line roadmap now lives in
+`apps/aquarium_app/docs/agent/FINISH_MAP.md` under
+`Finish-Line Roadmap Snapshot - 2026-07-04`. Do not treat archived
+February-May planning docs as current product direction.
