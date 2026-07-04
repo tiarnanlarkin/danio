@@ -87,7 +87,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
                 // Last Updated
                 Text(
-                  'Last Updated: 28 March 2026',
+                  'Last Updated: 4 July 2026',
                   style: AppTypography.bodySmall.copyWith(
                     color: context.textSecondary,
                     fontStyle: FontStyle.italic,
@@ -125,9 +125,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 ),
 
                 _buildHighlight(
-                  'OpenAI API - Fish ID (optional feature)',
-                  'When you use the Fish ID feature, the photo you capture is stripped of metadata before being sent to OpenAI Inc. (USA) for species identification. Images are retained by OpenAI for a maximum of 30 days, then automatically deleted. OpenAI does not use your data to train their models.',
-                  Icons.photo_camera,
+                  'Optional AI services',
+                  'When you choose an Optional AI feature, Danio asks before sending Fish ID photos, symptom descriptions, stocking or compatibility requests, and weekly-plan tank context to the configured AI provider. The current provider path uses OpenAI. Fish ID photos are stripped of metadata before upload.',
+                  Icons.smart_toy_outlined,
                 ),
 
                 _buildHighlight(
@@ -143,7 +143,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
                 _buildBulletList([
                   'Crash reports: Art. 6(1)(a) - Your explicit consent, given on first launch and manageable in Settings',
-                  'Fish ID images: Art. 6(1)(a) - Your consent each time you use the feature',
+                  'Optional AI requests: Art. 6(1)(a) - Your consent before Optional AI sends photos, text, or tank context',
                   'Local app data: Not subject to GDPR as it does not leave your device',
                 ], context),
 
@@ -154,7 +154,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
                 _buildBulletList([
                   'Google LLC (USA) - Firebase Crashlytics data, covered by the EU-US Data Privacy Framework and Google\'s Data Processing Agreement',
-                  'OpenAI Inc. (USA) - Fish ID image data, covered by OpenAI\'s Data Processing Agreement and standard contractual clauses',
+                  'OpenAI (USA) - Optional AI request data, covered by OpenAI\'s API data processing terms and standard contractual clauses where applicable',
                   'Appropriate safeguards are in place for all transfers in compliance with UK GDPR Chapter V',
                 ], context),
 
@@ -165,7 +165,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
                 _buildBulletList([
                   'Crash logs: 90 days, then automatically deleted',
-                  'Fish ID images: metadata stripped before upload; max 30 days on OpenAI\'s servers, then deleted',
+                  'Optional AI request data: Fish ID photos are stripped of metadata before upload. OpenAI may retain API inputs and outputs for abuse monitoring for up to 30 days unless longer retention is legally required. OpenAI says API data is not used for model training unless the API account explicitly opts in.',
                   'Local app data: Stored indefinitely on your device until you delete it',
                 ], context),
 
@@ -319,7 +319,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             'Firebase Crashlytics collects crash reports only when you opt in',
           ),
           _buildSummaryItem(
-            'Fish ID sends metadata-stripped photos to OpenAI for identification',
+            'Optional AI can send photos, text, or tank context only after disclosure',
           ),
           _buildSummaryItem(
             'Cloud sync and account login are not active in this version of Danio',

@@ -196,6 +196,10 @@ Fixed:
 - Privacy Policy cloud/account copy now says "this version of Danio" instead
   of "local build", and the policy content uses plain ASCII separators for a
   cleaner in-app reading experience.
+- Privacy Policy Optional AI copy now describes the current request scope
+  across Fish ID photos, symptom descriptions, stocking or compatibility
+  requests, and weekly-plan tank context instead of saying Optional AI is
+  Fish ID/photo-only.
 - Optional cloud account and account-deletion service failures now say the
   cloud feature is not set up and reassure users that local Danio data still
   works or stays on the device.
@@ -3342,6 +3346,18 @@ CL-P3-001B OpenAI release key policy:
 - Focused service coverage verifies the release guard source contract, proxy
   routing, direct dev fallback routing, and missing-proxy-auth failure path.
 
+SEC-2026-07-04-012 Optional AI Privacy Policy scope:
+
+- The in-app Privacy Policy now names Fish ID photos, symptom descriptions,
+  stocking or compatibility requests, and weekly-plan tank context as current
+  Optional AI request data that can leave the device after disclosure.
+- The OpenAI retention/training copy now follows the current API data-controls
+  boundary: API inputs and outputs may be retained for abuse monitoring for up
+  to 30 days unless longer retention is legally required, and API data is not
+  used for model training unless the API account explicitly opts in.
+- Focused widget/source coverage prevents the old Fish-ID-only policy copy from
+  returning.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -4038,7 +4054,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, account-keyed backup encryption copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
+| CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, account-keyed backup encryption copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Optional AI privacy-policy request-scope copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
 | CL-P0-004 | Done | First-run now captures region/units, experience, tank stage, goals, quick-start sample handoff, setup-context repair prompts, tablet-constrained reading/CTA surfaces, adaptive Fish Select, and final Android phone/tablet walkthrough evidence under `docs/qa/screenshots/2026-06-22/cl-p0-004-first-run/`. |
 | CL-P0-005 | Done | Tank now acts as the daily ritual surface with care priority, next-best action, direct feeding feedback, visible Today Board quick care, phone/tablet layout guardrails, Android quick-care semantics, readable dark Tank contrast, and final phone/tablet visual QA under `docs/qa/screenshots/2026-06-22/cl-p0-005-tank-daily-loop/`. |
 | CL-P0-006 | Done | Emergency Guide is now directly reachable from Tank top bar, unsafe-water Tank alerts, Smart Hub, global search, More, LessonScreen, species detail sheets, and unsafe water-test save flows. |

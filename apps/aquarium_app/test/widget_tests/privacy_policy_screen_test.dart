@@ -113,6 +113,31 @@ void main() {
       expect(find.textContaining('delete your cloud account'), findsNothing);
     });
 
+    testWidgets('describes Optional AI data beyond Fish ID photos', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap());
+      await tester.pump();
+
+      expect(find.text('Optional AI services'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'Fish ID photos, symptom descriptions, stocking or compatibility requests, and weekly-plan tank context',
+        ),
+        findsWidgets,
+      );
+      expect(
+        find.textContaining(
+          'OpenAI may retain API inputs and outputs for abuse monitoring for up to 30 days',
+        ),
+        findsWidgets,
+      );
+      expect(
+        find.textContaining('Fish ID images: Art. 6(1)(a)'),
+        findsNothing,
+      );
+    });
+
     test('does not mention dormant provider or developer wording', () {
       final source = File(
         'lib/screens/privacy_policy_screen.dart',
@@ -123,6 +148,10 @@ void main() {
       expect(source, isNot(contains('Cloud sync code exists')));
       expect(source, isNot(contains('local build')));
       expect(source, isNot(contains('\u2014')));
+      expect(source, isNot(contains('OpenAI API - Fish ID')));
+      expect(source, contains('Optional AI services'));
+      expect(source, contains('symptom descriptions'));
+      expect(source, contains('weekly-plan tank context'));
     });
   });
 }

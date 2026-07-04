@@ -57,7 +57,7 @@ category.
 | Multi-tank | Done | Current local scope has priority overview, recent activity, swap action, and Android walkthrough evidence. | Recheck if tank switching, comparison, or all-tanks priority logic changes. |
 | Timeline and journal | In progress | Unified timeline, tool result labels, milestone labels, AI note labels, and contextual strips exist. | Finish future source-specific guided-tool and optional-AI save handoff walkthroughs. |
 | Backup and restore | In progress | Extensive validation, rollback, undo, import transaction, no-tank preference-restore guard, migration, corruption recovery, and account-keyed cloud backup copy honesty work exists. | Continue edit/delete/undo coverage plus restore and migration Android walkthrough QA. |
-| Preferences | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, and AI disclosure controls exist. | Finish final AI/provider walkthrough gaps. |
+| Preferences | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Finish final AI/provider walkthrough gaps. |
 | Global search | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
 | Tablet layout | In progress | Many surfaces have CL-P2-002 tablet readability slices through livestock detail. | Continue remaining stretched phone surfaces, starting with the next unaudited high-traffic screen. |
@@ -98,6 +98,10 @@ category.
   backup actions no longer call the cloud backup "encrypted" in user-facing
   copy, and `CloudBackupService` documents that the current backup blob
   encryption is account-keyed rather than user-held or end-to-end.
+- SEC-2026-07-04-012 closes the Optional AI Privacy Policy scope gap: the policy
+  now names Fish ID photos, symptom descriptions, stocking or compatibility
+  requests, and weekly-plan tank context instead of describing Optional AI as
+  Fish ID/photo-only.
 
 ## Slice Selection Rule
 
