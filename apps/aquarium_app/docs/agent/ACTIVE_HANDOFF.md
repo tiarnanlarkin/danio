@@ -1,80 +1,84 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after AI-2026-07-04-012 Ask Danio history confirmation slice
+Last updated: 2026-07-04 after DS-2026-07-04-012 Cycling Assistant reminder parent-tank boundary
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `AI-2026-07-04-012` Ask Danio history confirmation.
+- Latest completed slice: `DS-2026-07-04-012` Cycling Assistant reminder
+  parent-tank boundary.
 - Latest implementation checkpoint:
-  Current commit after AI-2026-07-04-012 is committed and pushed.
+  Current commit after DS-2026-07-04-012 is committed and pushed.
 - Prior implementation checkpoint before this slice:
-  `424332a9 fix: gate ask danio disclosure`.
+  `0bd2c93b fix: confirm ask danio history save`.
 - Current uncommitted slice: none expected after this handoff cleanup is
   committed and pushed; verify with `git status --short -uall` before new work.
 
 ## Current Slice
 
-- Slice: AI-2026-07-04-012 for Ask Danio local AI-history confirmation.
-- Scope completed: `SmartScreen._askDanio()` now shows the AI answer
-  immediately, then asks whether to save the typed-question summary to Recent
-  AI Activity before writing `ai_interaction_history`.
-- Product behavior changes: canceling the save confirmation leaves
-  `ai_interaction_history` empty while keeping the visible answer available;
-  confirming saves one local `ask_danio` history entry.
-- Product behavior not changed: no AI provider, API key, proxy, disclosure
-  gate, OpenAI request, prompt, answer rendering, rate-limit, tank data, task,
-  reminder, or journal-write behavior changed.
-- Incidental UI fix: the Ask Danio loading indicator now uses an 18px
-  `BubbleLoader` inside the suffix icon slot so the loading frame does not
-  overflow the text-field icon constraints.
+- Slice: DS-2026-07-04-012 for Cycling Assistant data resilience.
+- Scope completed: `_CycleGuidedActions._createReminder()` now checks
+  `storage.getTank(widget.tankId)` before saving the phase-aware reminder task.
+- Product behavior changes: if Cycling Assistant is still open after its parent
+  tank was deleted, tapping `Create cycling reminder` shows the existing retry
+  feedback and does not create an orphan local task.
+- Product behavior not changed: normal Cycling Assistant reminder creation,
+  water-test logging handoff, phase detection, task copy, recurrence, due date,
+  priority, AI behavior, backup/restore, and task form behavior are unchanged.
+- Test infrastructure note: `cycling_assistant_screen_test.dart` now clears the
+  singleton `InMemoryStorageService` between tests so seeded tank/task state
+  cannot leak across widget cases.
 - Inventory state: no screen inventory or visual evidence changes in this
-  non-visual behavior/source-contract slice.
+  non-visual data-safety slice.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
 - Live preview/device requirement: not required. No emulator, ADB, physical
   device, live-preview, or `flutter run` ownership was used.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the AI-2026-07-04-012 handoff cleanup. If
+No dirty files are expected after the DS-2026-07-04-012 handoff cleanup. If
 resuming from an interrupted pre-commit copy, preserve these paths:
 
-- `lib/screens/smart_screen.dart`
-- `test/widget_tests/smart_screen_test.dart`
+- `lib/screens/cycling_assistant_screen.dart`
+- `test/widget_tests/cycling_assistant_screen_test.dart`
 - `docs/agent/ACTIVE_HANDOFF.md`
 - `docs/agent/FINISH_MAP.md`
 - `docs/agent/SLICE_LOG.md`
-- `docs/agent/plans/AI-2026-07-04-012-ask-danio-history-confirmation-slice-contract.md`
+- `docs/agent/plans/DS-2026-07-04-012-data-resilience-slice-contract.md`
 - `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
 - `docs/product/danio-complete-local-current-audit-2026-06-13.md`
 
 ## Last Checks
 
-- Repo/remote preflight before AI-2026-07-04-012 was clean and aligned with
-  `origin/qa/production-tool-audit-2026-05-25` at `424332a9`.
+- Repo/remote preflight before DS-2026-07-04-012 was clean and aligned with
+  `origin/qa/production-tool-audit-2026-05-25` at `0bd2c93b`.
 - TDD RED:
-  `flutter test test/widget_tests/smart_screen_test.dart --name "canceling Ask Danio activity save confirmation does not write AI history" --reporter compact`
-  failed because Ask Danio did not show a save-history confirmation, and
-  `flutter test test/widget_tests/smart_screen_test.dart --name "confirming Ask Danio activity save writes AI history" --reporter compact`
-  failed for the same missing confirmation.
+  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --name "missing tank ids do not create orphan cycling reminders" --reporter compact`
+  failed because an orphan `Task` was saved when the parent tank was absent from
+  storage.
 - TDD GREEN:
-  `flutter test test/widget_tests/smart_screen_test.dart --name "Ask Danio activity" --reporter compact`
-  passed after adding the confirmation flow.
-- Focused widget coverage:
-  `flutter test test/widget_tests/smart_screen_test.dart --reporter compact`
+  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --name "missing tank ids do not create orphan cycling reminders" --reporter compact`
+  and
+  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --name "guided action creates a phase-aware cycling reminder" --reporter compact`
+  passed after adding the parent-tank check.
+- Focused widget coverage and targeted analysis:
+  `flutter test test/widget_tests/cycling_assistant_screen_test.dart --reporter compact`
+  and
+  `flutter analyze lib/screens/cycling_assistant_screen.dart test/widget_tests/cycling_assistant_screen_test.dart`
   passed.
-- Targeted analysis and local gate:
-  `flutter analyze lib/screens/smart_screen.dart test/widget_tests/smart_screen_test.dart`,
-  `git diff --check`,
-  `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`,
-  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`, and
-  `flutter build apk --debug --target lib/main.dart` passed. The debug APK
-  build emitted Flutter's existing Kotlin Gradle Plugin migration warning.
+- Required data-safety local gate:
+  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` passed.
+  The debug APK build emitted Flutter's existing Kotlin Gradle Plugin migration
+  warning and Java source/target deprecation warnings.
+- Post-doc checks:
+  `git diff --check` and
+  `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed.
 
 ## Device And Preview State
 
-- No device ownership was claimed for AI-2026-07-04-012.
+- No device ownership was claimed for DS-2026-07-04-012.
 - No emulator, physical phone, ADB install, screenshot capture, Patrol,
   Maestro, or live-preview session was used.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
@@ -82,9 +86,9 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Blockers
 
-- No current blocker for AI-2026-07-04-012.
+- No current blocker for DS-2026-07-04-012.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
-  create/delete, restore, migration, and any future app-kill flush coverage
+  create/edit/delete, restore, migration, and any future app-kill flush coverage
   found in review.
 - Remaining AI confirmation work is still any future AI changes to tank data,
   tasks, and reminders.
@@ -93,7 +97,8 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 Recommended next slice:
 
-1. Continue data-resilience or AI confirmation slices per `FINISH_MAP.md`
-   priority.
-2. If a higher-priority local data-loss, restore, backup, or false-success risk
-   is found during review, take that data-resilience slice before polish work.
+1. Continue data-resilience slices per `FINISH_MAP.md` priority while any
+   data-loss, restore, backup, false-success, or orphan-child risk is known.
+2. If no higher-priority local data-safety gap is found in review, continue the
+   remaining AI confirmation work for any future AI changes to tank data, tasks,
+   and reminders.

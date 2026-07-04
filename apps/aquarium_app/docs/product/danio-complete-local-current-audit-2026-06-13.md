@@ -3012,6 +3012,15 @@ CL-P1-009GN Ask Danio local-history confirmation:
 - Confirming the save writes one local `ask_danio` history entry.
 - Focused widget coverage exercises both cancel and confirm paths.
 
+CL-P1-009GO Cycling Assistant reminder parent-tank boundary:
+
+- Cycling Assistant now rechecks the parent tank in storage before saving a
+  phase-aware reminder task from the guided action card.
+- If a stale open assistant no longer has a durable parent tank, the reminder is
+  not saved and the existing retry feedback is shown.
+- Focused widget coverage verifies both the missing-parent failure path and the
+  normal phase-aware reminder create path.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4278,7 +4287,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   shared disclosure gate and stop before sending any Optional AI request when
   the disclosure acceptance flag cannot be saved. Backup imports that import
   zero local tanks now skip app-wide SharedPreferences restore while keeping the
-  existing no-tanks warning.
+  existing no-tanks warning. Cycling Assistant reminder create actions now reject
+  missing parent tank IDs before saving, preventing orphan local tasks after
+  tank deletion.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

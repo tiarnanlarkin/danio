@@ -285,10 +285,15 @@ class _CycleGuidedActionsState extends ConsumerState<_CycleGuidedActions> {
     setState(() => _isCreatingReminder = true);
 
     try {
+      final storage = ref.read(storageServiceProvider);
+      final tank = await storage.getTank(widget.tankId);
+      if (tank == null) {
+        throw StateError(
+          'Cannot create cycling reminder for missing tank ${widget.tankId}',
+        );
+      }
       final suggestion = _CycleTaskSuggestion.forPhase(widget.phase);
-      await ref
-          .read(storageServiceProvider)
-          .saveTask(suggestion.toTask(tankId: widget.tankId));
+      await storage.saveTask(suggestion.toTask(tankId: widget.tankId));
       ref.invalidate(tasksProvider(widget.tankId));
 
       if (mounted) {

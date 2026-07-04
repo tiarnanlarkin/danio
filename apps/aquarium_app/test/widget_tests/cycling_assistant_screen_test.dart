@@ -23,6 +23,17 @@ import 'package:danio/widgets/core/app_card.dart';
 
 const _fakeTankId = 'tank-cycle-001';
 
+Tank _cyclingTank({String id = _fakeTankId}) => Tank(
+  id: id,
+  name: 'Cycling Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: DateTime.now().subtract(const Duration(days: 10)),
+  targets: const WaterTargets(),
+  createdAt: DateTime(2024),
+  updatedAt: DateTime(2024),
+);
+
 Widget _wrap({
   Tank? tank,
   List<LogEntry> logs = const [],
@@ -33,18 +44,7 @@ Widget _wrap({
     overrides: [
       storageServiceProvider.overrideWithValue(memStorage),
       tankProvider.overrideWith(
-        (ref, tankId) async =>
-            tank ??
-            Tank(
-              id: tankId,
-              name: 'Cycling Tank',
-              type: TankType.freshwater,
-              volumeLitres: 100,
-              startDate: DateTime.now().subtract(const Duration(days: 10)),
-              targets: const WaterTargets(),
-              createdAt: DateTime(2024),
-              updatedAt: DateTime(2024),
-            ),
+        (ref, tankId) async => tank ?? _cyclingTank(id: tankId),
       ),
       allLogsProvider.overrideWith((ref, tankId) async => logs),
     ],
@@ -93,8 +93,17 @@ Future<void> _advance(WidgetTester tester) async {
 // ---------------------------------------------------------------------------
 
 void main() {
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    final storage = InMemoryStorageService();
+    final tanks = await storage.getAllTanks();
+    if (tanks.isNotEmpty) {
+      await storage.deleteAllTanks(tanks.map((tank) => tank.id).toList());
+    }
+    final tasks = await storage.getTasksForTank(null);
+    for (final task in tasks) {
+      await storage.deleteTask(task.id);
+    }
   });
 
   group('CyclingAssistantScreen - rendering', () {
@@ -253,6 +262,7 @@ void main() {
       tester,
     ) async {
       final storage = InMemoryStorageService();
+      await storage.saveTank(_cyclingTank());
       final now = DateTime(2026, 5, 18);
 
       await tester.pumpWidget(
@@ -277,6 +287,25 @@ void main() {
       expect(tasks.single.intervalDays, 2);
       expect(tasks.single.priority, TaskPriority.high);
       expect(find.text('Cycling reminder created'), findsOneWidget);
+    });
+
+    testWidgets('missing tank ids do not create orphan cycling reminders', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      expect(await storage.getTank(_fakeTankId), isNull);
+      await tester.tap(find.text('Create cycling reminder'));
+      await tester.pumpAndSettle();
+
+      expect(await storage.getTasksForTank(_fakeTankId), isEmpty);
+      expect(
+        find.text("Couldn't create that reminder. Give it another go."),
+        findsOneWidget,
+      );
     });
   });
 }
