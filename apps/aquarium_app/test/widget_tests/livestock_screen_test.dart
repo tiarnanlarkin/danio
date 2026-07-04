@@ -657,6 +657,63 @@ void main() {
       },
     );
 
+    testWidgets('stale livestock edit ids are not recreated by save', (
+      tester,
+    ) async {
+      suppressAvatarError();
+      const tankId = 'livestock-stale-edit-tank';
+      const livestockId = 'livestock-stale-edit-neons';
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_makeTank(id: tankId, name: 'Stale Edit Tank'));
+      await storage.saveLivestock(
+        _makeLivestock(
+          id: livestockId,
+          tankId: tankId,
+          name: 'Neon Tetra',
+          count: 8,
+        ),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithStorage(storage: storage, tankId: tankId),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final livestockTile = find.ancestor(
+        of: find.text('Neon Tetra'),
+        matching: find.byType(ListTile),
+      );
+      await tester.tap(
+        find.descendant(
+          of: livestockTile,
+          matching: find.byTooltip('Livestock actions'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Edit'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Edit Livestock'), findsOneWidget);
+
+      await storage.deleteLivestock(livestockId);
+
+      await tester.ensureVisible(find.text('Save').last);
+      await tester.pump();
+      await tester.tap(find.text('Save').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(await storage.getLivestockForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t save that. Check your connection and try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('8x Neon Tetra saved.'), findsNothing);
+    });
+
     testWidgets('failed bulk-add log save rolls back new livestock', (
       tester,
     ) async {
