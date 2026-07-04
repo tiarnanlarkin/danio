@@ -3058,6 +3058,15 @@ CL-P1-009GS Tank Journal manual-entry parent-tank boundary:
 - Focused widget coverage verifies the stale-tank failure path keeps local
   journal logs empty while preserving the separate save-failure feedback path.
 
+CL-P1-009GT Tank Detail quick-feeding parent-tank boundary:
+
+- Tank Detail now rechecks the current tank in storage before saving a
+  quick-feeding log from the QuickAdd FAB.
+- If the Tank Detail route remains open after the durable tank was deleted, the
+  feeding log is not saved and the existing retry feedback is shown.
+- Focused widget coverage verifies the stale-tank failure path keeps local
+  feeding logs empty while preserving normal quick-feeding behavior.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4276,8 +4285,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   restore partial sort-order writes. Failed first-run demo seeding now removes
   partial demo data. Failed Tank Detail task completions now roll back partial
   task/log/equipment writes. Failed Tank Detail quick-feeding saves now show
-  normal error feedback without changing the local journal. Failed Inventory
-  item uses keep the owned item visible, failed Crash Reports consent writes
+  normal error feedback without changing the local journal, and stale Tank
+  Detail quick-feeding routes now reject missing parent tanks before saving.
+  Failed Inventory item uses keep the owned item visible, failed Crash Reports consent writes
   keep the visible switch unchanged with retry feedback, failed local JSON
   entity saves/deletes keep same-process reads aligned with the last durable
   file state, and backup tank-scoped imports now use a tested transaction
@@ -4332,8 +4342,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   tank deletion, Symptom Triage confirmed journal saves now reject missing
   parent tank IDs before saving local AI diagnosis logs or history, Species
   detail care-task actions now reject missing parent tank IDs before saving
-  local weekly care tasks, and Tank Journal manual-entry saves now reject
-  missing parent tank IDs before saving local observation logs.
+  local weekly care tasks, Tank Journal manual-entry saves now reject missing
+  parent tank IDs before saving local observation logs, and Tank Detail
+  quick-feeding saves now reject missing parent tank IDs before saving local
+  feeding logs.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

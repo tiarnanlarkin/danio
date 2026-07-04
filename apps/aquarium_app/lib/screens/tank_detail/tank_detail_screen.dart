@@ -1226,6 +1226,11 @@ class TankDetailScreen extends ConsumerWidget {
     final now = DateTime.now();
 
     try {
+      final tank = await storage.getTank(tankId);
+      if (tank == null) {
+        throw StateError('Cannot save quick feeding for missing tank $tankId');
+      }
+
       await storage.saveLog(
         LogEntry(
           id: _uuid.v4(),

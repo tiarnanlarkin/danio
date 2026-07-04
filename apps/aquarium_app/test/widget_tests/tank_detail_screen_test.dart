@@ -369,6 +369,33 @@ void main() {
       );
       expect(find.text('Feeding logged.'), findsNothing);
     });
+
+    testWidgets('missing tank ids do not create orphan quick feeding logs', (
+      tester,
+    ) async {
+      const tankId = 'tank-detail-feed-missing-parent';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+
+      await tester.pumpWidget(_wrapWithStorage(tankId, storage: svc));
+      await _advance(tester);
+
+      await svc.deleteTank(tankId);
+      await tester.tap(find.byTooltip('Quick actions menu'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.byTooltip('Log Feeding'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(tester.takeException(), isNull);
+      expect(await svc.getLogsForTank(tankId), isEmpty);
+      expect(
+        find.text('Couldn\'t save that feeding. Try again.'),
+        findsOneWidget,
+      );
+      expect(find.text('Feeding logged.'), findsNothing);
+    });
   });
 
   group('TankDetailScreen - tank deletion', () {
