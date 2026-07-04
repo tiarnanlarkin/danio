@@ -88,6 +88,8 @@ Add a row when a committed slice uses Android evidence:
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-04-002` | CheckOnly, AndroidPrep, debug APK install/launch, black-box smoke attempt, 19-surface screenshot/XML capture, logcat tail, passing black-box smoke rerun | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/` | Yes |
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-002` | CheckOnly, AndroidPrep, debug APK install/launch, black-box smoke attempt, 19-surface screenshot/XML capture, logcat tail, passing black-box smoke rerun | `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/` | Yes |
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-04-004` | CheckOnly, AndroidPrep, debug APK install, Smart QA deep link, screenshot/XML recapture, XML dock-clearance check, logcat tail scan | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/` | Yes |
+| 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-04-006` | CheckOnly, debug APK install, 39 standalone QA deep-link screenshot/XML captures, XML hierarchy validation, logcat tail scan | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/` | Yes |
+| 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-006` | CheckOnly, debug APK install, 39 standalone QA deep-link screenshot/XML captures, XML hierarchy validation, logcat tail scan | `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/` | Yes |
 
 ## Release Rule
 

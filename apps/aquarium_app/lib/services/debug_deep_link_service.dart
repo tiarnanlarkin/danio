@@ -13,20 +13,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../features/smart/fish_id/fish_id_screen.dart';
+import '../features/smart/intelligence/aquarium_intelligence_screen.dart';
+import '../features/smart/symptom_triage/symptom_triage_screen.dart';
+import '../features/smart/weekly_plan/weekly_plan_screen.dart';
+import '../models/wishlist.dart';
 import '../providers/lesson_provider.dart';
-import '../screens/tab_navigator.dart'; // currentTabProvider, tabNavigatorKeysProvider
+import '../screens/about_screen.dart';
+import '../screens/account_screen.dart';
+import '../screens/acclimation_guide_screen.dart';
 import '../screens/achievements_screen.dart';
+import '../screens/algae_guide_screen.dart';
+import '../screens/backup_restore_screen.dart';
+import '../screens/breeding_guide_screen.dart';
+import '../screens/co2_calculator_screen.dart';
+import '../screens/compatibility_checker_screen.dart';
+import '../screens/cost_tracker_screen.dart';
 import '../screens/create_tank_screen.dart';
 import '../screens/debug_menu_screen.dart';
 import '../screens/debug_qa_seed_screen.dart';
-import '../screens/species_browser_screen.dart';
-import '../screens/plant_browser_screen.dart';
-import '../screens/tank_comparison_screen.dart';
-import '../screens/workshop_screen.dart';
-import '../screens/glossary_screen.dart';
+import '../screens/disease_guide_screen.dart';
+import '../screens/dosing_calculator_screen.dart';
+import '../screens/emergency_guide_screen.dart';
+import '../screens/equipment_guide_screen.dart';
 import '../screens/faq_screen.dart';
-import '../screens/settings_screen.dart';
+import '../screens/feeding_guide_screen.dart';
+import '../screens/gem_shop_screen.dart';
+import '../screens/glossary_screen.dart';
+import '../screens/hardscape_guide_screen.dart';
+import '../screens/inventory_screen.dart';
 import '../screens/lesson/lesson_screen.dart';
+import '../screens/lighting_schedule_screen.dart';
+import '../screens/nitrogen_cycle_guide_screen.dart';
+import '../screens/notification_settings_screen.dart';
+import '../screens/parameter_guide_screen.dart';
+import '../screens/plant_browser_screen.dart';
+import '../screens/privacy_policy_screen.dart';
+import '../screens/quarantine_guide_screen.dart';
+import '../screens/quick_start_guide_screen.dart';
+import '../screens/search_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/shop_street_screen.dart';
+import '../screens/species_browser_screen.dart';
+import '../screens/stocking_calculator_screen.dart';
+import '../screens/substrate_guide_screen.dart';
+import '../screens/tab_navigator.dart'; // currentTabProvider, tabNavigatorKeysProvider
+import '../screens/tank_comparison_screen.dart';
+import '../screens/tank_volume_calculator_screen.dart';
+import '../screens/terms_of_service_screen.dart';
+import '../screens/troubleshooting_screen.dart';
+import '../screens/unit_converter_screen.dart';
+import '../screens/vacation_guide_screen.dart';
+import '../screens/water_change_calculator_screen.dart';
+import '../screens/wishlist_screen.dart';
+import '../screens/workshop_screen.dart';
 
 /// Method channel used by [MainActivity] (debug build only) to pass the
 /// launch-intent URI back to Flutter.
@@ -113,6 +153,9 @@ class DebugDeepLinkService {
 
     // ── Screen routes ─────────────────────────────────────────────────────
     final nav = Navigator.of(context, rootNavigator: true);
+    void push(Widget screen) {
+      nav.push(MaterialPageRoute(builder: (_) => screen));
+    }
 
     switch (route) {
       case 'debug':
@@ -152,6 +195,123 @@ class DebugDeepLinkService {
 
       case 'faq':
         nav.push(MaterialPageRoute(builder: (_) => const FaqScreen()));
+
+      case 'backup':
+        push(const BackupRestoreScreen());
+
+      case 'search':
+        push(const SearchScreen());
+
+      case 'notification-settings':
+        push(const NotificationSettingsScreen());
+
+      case 'account':
+        push(const AccountScreen());
+
+      case 'about':
+        push(const AboutScreen());
+
+      case 'privacy':
+        push(const PrivacyPolicyScreen());
+
+      case 'terms':
+        push(const TermsOfServiceScreen());
+
+      case 'shop':
+        push(const ShopStreetScreen());
+
+      case 'wishlist':
+        push(const WishlistScreen(category: WishlistCategory.fish));
+
+      case 'gem-shop':
+        push(const GemShopScreen());
+
+      case 'inventory':
+        push(const InventoryScreen());
+
+      case 'aquarium-intelligence':
+        push(const AquariumIntelligenceScreen());
+
+      case 'symptom-triage':
+        push(const SymptomTriageScreen());
+
+      case 'weekly-plan':
+        push(const WeeklyPlanScreen());
+
+      case 'fish-id':
+        push(const FishIdScreen());
+
+      case 'water-change':
+        push(const WaterChangeCalculatorScreen());
+
+      case 'tank-volume':
+        push(const TankVolumeCalculatorScreen());
+
+      case 'dosing':
+        push(const DosingCalculatorScreen());
+
+      case 'co2':
+        push(const Co2CalculatorScreen());
+
+      case 'lighting':
+        push(const LightingScheduleScreen());
+
+      case 'stocking':
+        push(const StockingCalculatorScreen());
+
+      case 'compatibility':
+        push(const CompatibilityCheckerScreen());
+
+      case 'unit-converter':
+        push(const UnitConverterScreen());
+
+      case 'cost-tracker':
+        push(const CostTrackerScreen());
+
+      case 'emergency-guide':
+        push(const EmergencyGuideScreen());
+
+      case 'quick-start-guide':
+        push(const QuickStartGuideScreen());
+
+      case 'nitrogen-cycle-guide':
+        push(const NitrogenCycleGuideScreen());
+
+      case 'parameter-guide':
+        push(const ParameterGuideScreen());
+
+      case 'algae-guide':
+        push(const AlgaeGuideScreen());
+
+      case 'disease-guide':
+        push(const DiseaseGuideScreen());
+
+      case 'feeding-guide':
+        push(const FeedingGuideScreen());
+
+      case 'acclimation-guide':
+        push(const AcclimationGuideScreen());
+
+      case 'quarantine-guide':
+        push(const QuarantineGuideScreen());
+
+      case 'breeding-guide':
+        push(const BreedingGuideScreen());
+
+      case 'equipment-guide':
+        push(const EquipmentGuideScreen());
+
+      case 'substrate-guide':
+        push(const SubstrateGuideScreen());
+
+      case 'hardscape-guide':
+        push(const HardscapeGuideScreen());
+
+      case 'vacation-guide':
+        push(const VacationGuideScreen());
+
+      case 'troubleshooting':
+        push(const TroubleshootingScreen());
 
       case 'lesson':
         ref.read(currentTabProvider.notifier).state = 0;
