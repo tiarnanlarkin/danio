@@ -192,8 +192,8 @@ class BackupImportService {
         'updatedAt': importTime.toIso8601String(),
       });
 
-      await storage.saveTank(tank);
       importedTankIds.add(newTankId);
+      await storage.saveTank(tank);
     }
 
     _prepareEntityIdMap(livestockJson, tankIdMap, livestockIdMap);

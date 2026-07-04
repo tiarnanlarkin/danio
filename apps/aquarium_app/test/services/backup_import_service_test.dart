@@ -12,6 +12,7 @@ class _RecordingStorageService implements StorageService {
   final Map<String, LogEntry> logs = {};
   final Map<String, Task> tasks = {};
 
+  bool failAfterSaveTank = false;
   bool failOnSaveLog = false;
 
   @override
@@ -101,6 +102,9 @@ class _RecordingStorageService implements StorageService {
   @override
   Future<void> saveTank(Tank tank) async {
     tanks[tank.id] = tank;
+    if (failAfterSaveTank) {
+      throw StateError('simulated tank save failure');
+    }
   }
 
   @override
@@ -278,6 +282,29 @@ void main() {
         );
 
         expect(storage.tanks.keys, contains('existing-tank'));
+        expect(storage.tanks.keys, isNot(contains('new-tank')));
+        expect(storage.livestock, isEmpty);
+        expect(storage.equipment, isEmpty);
+        expect(storage.logs, isEmpty);
+        expect(storage.tasks, isEmpty);
+      },
+    );
+
+    test(
+      'rolls back a tank when saveTank persists then reports failure',
+      () async {
+        final storage = _RecordingStorageService()..failAfterSaveTank = true;
+        final service = BackupImportService(
+          storage: storage,
+          newId: _idSequence(['new-tank']),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+
+        await expectLater(
+          service.importTankScopedData(_backupData()),
+          throwsA(isA<BackupImportException>()),
+        );
+
         expect(storage.tanks.keys, isNot(contains('new-tank')));
         expect(storage.livestock, isEmpty);
         expect(storage.equipment, isEmpty);
