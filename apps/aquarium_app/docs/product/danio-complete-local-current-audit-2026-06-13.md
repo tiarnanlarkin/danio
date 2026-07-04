@@ -3040,6 +3040,15 @@ CL-P1-009GQ Symptom Triage journal parent-tank boundary:
 - Focused widget coverage verifies the stale-tank failure path keeps local
   journal logs and `ai_interaction_history` empty.
 
+CL-P1-009GR Species care-task parent-tank boundary:
+
+- Species detail now rechecks the selected tank in storage before creating or
+  updating the weekly species care task from the Care Actions card.
+- If the detail sheet has a stale cached tank list after the durable tank was
+  deleted, the task is not saved and existing retry feedback is shown.
+- Focused widget coverage verifies the stale-tank failure path keeps local
+  species care tasks empty while normal care-task creation still works.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4278,9 +4287,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   maintenance-task sync fails, while secondary progress-write failures no longer
   undo durable equipment adds. Livestock adds now keep durable livestock and
   timeline-log saves when only secondary progress writes fail. Bulk livestock
-  adds and Symptom Triage confirmed journal saves now reject missing parent
-  tanks before saving, and bulk/single livestock adds now roll back partial
-  livestock/log records when timeline-log persistence fails. Quick Water Test
+  adds, Symptom Triage confirmed journal saves, and Species detail care-task
+  actions now reject missing parent tanks before saving, and bulk/single
+  livestock adds now roll back partial livestock/log records when timeline-log
+  persistence fails. Quick Water Test
   now keeps saved
   water-test logs when only the secondary profile-XP write fails, and user
   profile reset rejects failed local preference removals before exposing reset
@@ -4310,8 +4320,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   zero local tanks now skip app-wide SharedPreferences restore while keeping the
   existing no-tanks warning. Cycling Assistant reminder create actions now reject
   missing parent tank IDs before saving, preventing orphan local tasks after
-  tank deletion, and Symptom Triage confirmed journal saves now reject missing
-  parent tank IDs before saving local AI diagnosis logs or history.
+  tank deletion, Symptom Triage confirmed journal saves now reject missing
+  parent tank IDs before saving local AI diagnosis logs or history, and Species
+  detail care-task actions now reject missing parent tank IDs before saving
+  local weekly care tasks.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

@@ -936,14 +936,22 @@ class _CareActionsCard extends ConsumerWidget {
 
     try {
       final storage = ref.read(storageServiceProvider);
+      final durableTank = await storage.getTank(selectedTank.id);
+      if (durableTank == null) {
+        throw StateError(
+          'Cannot create species care task for missing tank '
+          '${selectedTank.id}',
+        );
+      }
+
       final now = DateTime.now();
       final dueTomorrow = DateTime(
         now.year,
         now.month,
         now.day,
       ).add(const Duration(days: 1));
-      final taskId = _speciesTaskId(selectedTank);
-      final currentTasks = await storage.getTasksForTank(selectedTank.id);
+      final taskId = _speciesTaskId(durableTank);
+      final currentTasks = await storage.getTasksForTank(durableTank.id);
 
       Task? existing;
       for (final task in currentTasks) {
@@ -958,7 +966,7 @@ class _CareActionsCard extends ConsumerWidget {
       final task = existing == null
           ? Task(
               id: taskId,
-              tankId: selectedTank.id,
+              tankId: durableTank.id,
               title: title,
               description: description,
               recurrence: RecurrenceType.weekly,
@@ -981,7 +989,7 @@ class _CareActionsCard extends ConsumerWidget {
             );
 
       await storage.saveTask(task);
-      ref.invalidate(tasksProvider(selectedTank.id));
+      ref.invalidate(tasksProvider(durableTank.id));
 
       if (context.mounted) {
         DanioSnackBar.success(context, '${species.commonName} care task added');
