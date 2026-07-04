@@ -3328,6 +3328,16 @@ CL-P3-001A Optional AI provider setup boundary:
 - Focused widget coverage verifies the provider-status copy and catches the
   Optional AI dialog overflow regression.
 
+CL-P3-001B OpenAI release key policy:
+
+- `AiProxyService` now treats build-time `OPENAI_API_KEY` as a
+  local-development-only fallback and returns no build-time direct key in
+  release builds.
+- `OpenAIService` no longer reads the build-time OpenAI key directly, so the
+  release-key policy stays centralized at the proxy/direct-key boundary.
+- Focused service coverage verifies the release guard source contract, proxy
+  routing, direct dev fallback routing, and missing-proxy-auth failure path.
+
 ### CL-P1-011A Global Destination And Log Search
 
 - Global search now indexes app destinations, calculators, guides, learning
@@ -4243,8 +4253,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   links directly to the Privacy Policy from the setup dialog, names OpenAI as
   the current recommended BYO provider, lists the remaining provider targets
   honestly as unavailable local key paths in this version, and the Smart
-  setup-context nudge now uses readable light-card text colors. Remaining
-  profile/preferences work is any final AI/provider walkthrough gaps.
+  setup-context nudge now uses readable light-card text colors. Build-time
+  `OPENAI_API_KEY` is now a local-development-only direct fallback ignored in
+  release builds, while user-supplied BYO keys and proxy routing remain
+  supported. Remaining profile/preferences work is any final AI/provider
+  walkthrough gaps.
 - Optional AI confirmation has started: Symptom Triage now asks before saving
   an AI-generated diagnosis to the tank journal, and Weekly Plan now asks
   before caching an AI-generated care plan. Focused widget coverage verifies

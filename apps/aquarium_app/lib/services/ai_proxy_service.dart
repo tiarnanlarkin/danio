@@ -13,15 +13,17 @@
 // The client sends a Supabase anon key (safe to expose) as the Authorization
 // header instead.
 //
-// When SUPABASE_AI_PROXY_URL is NOT set (local dev), the service falls back to
-// direct OpenAI calls using a user-supplied or build-time API key.
+// When SUPABASE_AI_PROXY_URL is NOT set, the service falls back to direct
+// OpenAI calls using a user-supplied key. Build-time OPENAI_API_KEY is a local
+// development fallback only and is ignored in release builds.
 // ---------------------------------------------------------------------------
 
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as encrypt_pkg;
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart'
+    show Uint8List, kReleaseMode, visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -86,6 +88,15 @@ class AiProxyService {
   /// to the OpenAI API. The proxy handles API key injection server-side.
   static bool get hasProxy => proxyUrl.isNotEmpty;
 
+  /// Build-time direct OpenAI key for local development only.
+  ///
+  /// Release builds must not treat an app-owned `OPENAI_API_KEY` define as a
+  /// valid configuration path because it would be embedded in the mobile app.
+  static String get directBuildTimeApiKey {
+    if (kReleaseMode) return '';
+    return const String.fromEnvironment('OPENAI_API_KEY');
+  }
+
   // ---------------------------------------------------------------------------
   // Public API
   // ---------------------------------------------------------------------------
@@ -120,8 +131,7 @@ class AiProxyService {
       );
     }
 
-    // Fall back to build-time define.
-    return const String.fromEnvironment('OPENAI_API_KEY');
+    return directBuildTimeApiKey;
   }
 
   /// Returns `true` if any API key is available (proxy, user-supplied, or build-time).

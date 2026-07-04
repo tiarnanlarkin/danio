@@ -109,12 +109,8 @@ class OpenAIService {
   bool get isConfigured {
     if (_usesProxy) return _proxyAuthToken.isNotEmpty;
 
-    // Fast path: check build-time key first, then cached prefs synchronously.
-    // AiProxyService.getApiKey() is async, so we use the build-time fallback
-    // here for backward-compatible synchronous callers (SmartScreen, etc.).
-    const buildKey = String.fromEnvironment('OPENAI_API_KEY');
     return (_directApiKeyOverride?.isNotEmpty ?? false) ||
-        buildKey.isNotEmpty ||
+        AiProxyService.directBuildTimeApiKey.isNotEmpty ||
         _cachedUserKey != null;
   }
 

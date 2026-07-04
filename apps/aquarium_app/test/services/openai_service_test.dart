@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -190,6 +191,21 @@ void main() {
       );
       expect(client.requestedHeaders?['Authorization'], 'Bearer anon-token');
       expect(client.requestedBody?['stream'], isTrue);
+    });
+  });
+
+  group('OpenAIService release key policy', () {
+    test('does not read build-time OpenAI keys outside AiProxyService', () {
+      final source = File(
+        'lib/services/openai_service.dart',
+      ).readAsStringSync();
+
+      expect(
+        source,
+        isNot(contains("String.fromEnvironment('OPENAI_API_KEY')")),
+        reason:
+            'Build-time OpenAI key release policy must stay centralized in AiProxyService.',
+      );
     });
   });
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,6 +52,34 @@ void main() {
         ),
       );
       expect(await AiProxyService.hasUserKey, isTrue);
+    });
+  });
+
+  group('AiProxyService release key policy', () {
+    test('build-time OpenAI keys are guarded to local dev only', () {
+      final source = File(
+        'lib/services/ai_proxy_service.dart',
+      ).readAsStringSync();
+
+      expect(
+        source,
+        contains("show Uint8List, kReleaseMode"),
+        reason:
+            'AiProxyService must branch on release mode for build-time keys.',
+      );
+      expect(
+        source,
+        contains(
+          "if (kReleaseMode) return '';\n"
+          "    return const String.fromEnvironment('OPENAI_API_KEY');",
+        ),
+        reason: 'Build-time OpenAI keys must be empty in release builds.',
+      );
+      expect(
+        source,
+        contains('return directBuildTimeApiKey;'),
+        reason: 'getApiKey must use the guarded build-time fallback.',
+      );
     });
   });
 }

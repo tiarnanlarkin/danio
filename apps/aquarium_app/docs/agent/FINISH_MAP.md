@@ -65,7 +65,7 @@ category.
 | Accessibility | In progress | Some 48dp, contrast, semantics, reduced-motion, and layout guardrails exist. | Run an app-wide accessibility pass with phone/tablet screenshots and focused tests. |
 | Motion and haptics | In progress | Feeding pulse, reduced motion, and haptics preference integration exist. | Add purposeful motion to rewards, warnings, onboarding, and tank life only where it improves clarity. |
 | Performance | In progress | Complete-local Android targets are recorded in `docs/agent/PERFORMANCE_TARGETS.md` and enforced by `test/utils/performance_targets_test.dart`; the debug performance monitor now uses the shared 60 FPS frame-budget constant. | Measure startup, tab switching, tank animation, scrolling, and image loading on Android phone/tablet when device ownership is clear. |
-| Optional AI providers | In progress | Optional AI setup names OpenAI as current BYO provider and disables other provider paths honestly. | Implement real non-OpenAI connectors before enabling those key paths. |
+| Optional AI providers | In progress | Optional AI setup names OpenAI as current BYO provider, disables other provider paths honestly, and treats build-time `OPENAI_API_KEY` as a local-dev-only fallback that is ignored in release builds. | Implement real non-OpenAI connectors before enabling those key paths. |
 | AI confirmation | In progress | Symptom Triage journal saves, Symptom Triage AI history writes, and Weekly Plan care-plan cache saves now require confirmation before AI output becomes saved app data. | Continue confirm-before-write coverage for AI changes to tank data, tasks, and reminders. |
 | Premium AI path | Not started | Premium remains conceptual and must not appear as fake product behavior. | Design only after core app is excellent locally and real extra capability exists. |
 | Citations | In progress | Species/plant source trails and lesson references exist in limited form. | Add subtle source trails where they improve trust without damaging visual quality. |
@@ -84,6 +84,13 @@ category.
   backups that import zero local tanks now skip app-wide SharedPreferences
   restore, so profile, learning, gem, and settings data are not silently
   replaced while the UI reports "No tanks found in this backup file."
+
+## Current Optional AI Note
+
+- AI-2026-07-04-010 closes the direct OpenAI release-key policy gap:
+  app-owned build-time `OPENAI_API_KEY` values are local-development only and
+  are ignored in release builds. Release Optional AI must use a user-supplied
+  BYO key or a configured proxy path.
 
 ## Slice Selection Rule
 
