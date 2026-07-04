@@ -2412,6 +2412,16 @@ CL-P1-009GJ Local JSON migration stamp failure boundary:
   service reports `StorageState.ioError` without adding a false schema version
   to the legacy file.
 
+CL-P1-009GK Bulk tank delete retry feedback:
+
+- Bulk tank soft-delete expiry now uses the same retry feedback channel as
+  single-tank soft-delete expiry when the durable local delete write fails.
+- The tank remains visible again after the soft-delete state settles, and the
+  existing global feedback listener can show "Couldn't delete one or more
+  tanks. Try again." instead of leaving the failure as a log-only event.
+- Focused provider coverage verifies a failed permanent bulk soft delete both
+  restores tank visibility and publishes `tankDeleteFailureFeedbackProvider`.
+
 CL-P1-009DG Backup & Restore local recovery surface:
 
 - Backup & Restore now surfaces a local recovery card when the local JSON

@@ -488,6 +488,11 @@ class TankActions {
                 stackTrace: st,
                 tag: 'TankProvider',
               );
+              _ref
+                  .read(tankDeleteFailureFeedbackProvider.notifier)
+                  .state = TankDeleteFailureFeedback(
+                "Couldn't delete one or more tanks. Try again.",
+              );
             }
           },
           onSettled: () {

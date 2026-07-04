@@ -716,6 +716,12 @@ void main() {
         await _settle();
 
         expect(await storage.getTank(tankId), isNotNull);
+        final feedback = container.read(tankDeleteFailureFeedbackProvider);
+        expect(feedback, isNotNull);
+        expect(
+          feedback!.message,
+          "Couldn't delete one or more tanks. Try again.",
+        );
 
         tanks = await container.read(tanksProvider.future);
         expect(tanks.map((tank) => tank.id), contains(tankId));

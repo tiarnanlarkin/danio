@@ -27,14 +27,15 @@ Finish line: complete-local before public release or store/account execution
   - `git rev-list --left-right --count "HEAD...@{u}"`
   - confirm `ACTIVE_HANDOFF.md`, `FINISH_MAP.md`, `QUALITY_LADDER.md`, and
     `MULTI_AGENT_WORKFLOW.md`
-- Start condition observed: branch was aligned with upstream at `0 0` before
-  DS-2026-07-04-009 implementation.
+- Latest observed start condition: branch was aligned with upstream at `0 0`
+  before DS-2026-07-04-010 implementation.
 
 ## Initial Read-Only Research Wave
 
 - `danio_product_auditor`: keep P1/P2/P3 completion order after data resilience.
-- `danio_quality_auditor`: first data-resilience slice should be local JSON
-  migration stamp false-green coverage.
+- `danio_quality_auditor`: first data-resilience slice was local JSON
+  migration stamp false-green coverage; current follow-up is continuing
+  bounded CL-P1-009/CL-QA-006 failure-path coverage.
 - `danio_ui_auditor`: defer P2 visual/accessibility/performance polish until
   data/test/security slices are resolved.
 - `danio_reviewer`: security/product-honesty blockers are AI proxy abuse,
@@ -61,14 +62,13 @@ Finish line: complete-local before public release or store/account execution
 
 ## Active Slice
 
-- Current slice: `DS-2026-07-04-009`
+- Current slice: `DS-2026-07-04-010`
 - Contract:
-  `docs/agent/plans/DS-2026-07-04-009-data-resilience-slice-contract.md`
-- Goal: local JSON migration stamp write failures must not report loaded
-  success.
+  `docs/agent/plans/DS-2026-07-04-010-data-resilience-slice-contract.md`
+- Goal: failed bulk tank permanent delete writes must surface retry feedback.
 - Owned files:
-  - `lib/services/local_json_storage_service.dart`
-  - `test/storage_error_handling_test.dart`
+  - `lib/providers/tank_provider.dart`
+  - `test/providers/tank_provider_test.dart`
   - relevant agent/product status docs
 
 ## Maintenance Checkpoints
