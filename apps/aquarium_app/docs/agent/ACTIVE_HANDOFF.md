@@ -1,37 +1,36 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after phone Smart root recapture
+Last updated: 2026-07-04 after CL-QA inventory accounting
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest slice commit: `docs: recapture phone smart qa evidence`.
+- Latest committed slice: `docs: recapture phone smart qa evidence`.
+- Current uncommitted slice: `QA-2026-07-04-005` CL-QA-001/002 inventory
+  accounting.
 - Source build commit for the latest device recapture:
   `273a9644 fix: harden smart dock qa smoke`.
 - Prior pushed handoff reference from user: `ce4a72b1 docs: add session freshness handoff rule`
 
 ## Current Slice
 
-- Slice: CL-QA-001 phone Smart root recapture after the bottom-dock fix.
-- Scope completed: installed the current debug APK on `danio_api36`, opened
-  `danio://qa/smart`, captured after-fix screenshot/XML/logcat evidence without
-  overwriting the pre-fix failure artifacts, and verified Fish & Plant ID clears
-  the bottom dock by `47px`.
-- Product behavior changes: Smart under the persistent bottom dock now nudges
-  the locked Fish & Plant ID card above the dock on phone-sized shells.
+- Slice: QA-2026-07-04-005 CL-QA-001/002 inventory accounting.
+- Scope completed: extended the phone and tablet whole-app map docs so every
+  one of the 96 `SCREEN_INVENTORY.md` rows has a current `Pass` or `Gap` result.
+  Each form factor now has 29 current passes and 67 explicit gaps.
+- Product behavior changes: none in this slice. The prior Smart bottom-dock
+  product fix remains the latest behavior change.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
-- Live preview/device requirement: completed through `DEVICE_OWNERSHIP.md` and
-  `LIVE_PREVIEW_WORKFLOW.md`. No `flutter run` terminal is attached.
+- Live preview/device requirement: no Android device interaction was needed for
+  this docs-accounting slice. No `flutter run` terminal is attached.
 
 ## Dirty Files To Preserve
 
 - Expected current slice files:
   - `docs/qa/whole-app-phone-map-2026-07-04.md`
-  - `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-04b-smart-root-after-dock-fix.png`
-  - `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-04b-smart-root-after-dock-fix.xml`
-  - `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-smart-after-dock-fix-logcat-tail.txt`
-  - `docs/agent/DEVICE_OWNERSHIP.md`
+  - `docs/qa/whole-app-tablet-map-2026-07-04.md`
+  - `docs/agent/ACTIVE_HANDOFF.md`
   - `docs/agent/SLICE_LOG.md`
   - `docs/agent/FINISH_MAP.md`
   - `docs/agent/SCREEN_INVENTORY.md`
@@ -123,6 +122,18 @@ Last updated: 2026-07-04 after phone Smart root recapture
   clearance `47px`.
 - Fresh logcat tail scan found no `FATAL EXCEPTION`, `AndroidRuntime: FATAL`,
   `E/flutter`, `RenderFlex overflowed`, or `ANR in` entries.
+- Docs-accounting follow-up:
+  - `git fetch --prune origin` completed without output.
+  - `git rev-list --left-right --count HEAD...@{u}` reported `0 0`.
+  - `git status --short -uall` was clean before this docs-only slice.
+  - Current map docs now account for all 96 `SCREEN_INVENTORY.md` rows with
+    29 `Pass` and 67 `Gap` entries per form factor.
+  - `git diff --check` passed.
+  - `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+    passed.
+  - `flutter analyze` passed.
+  - Docs policy keyword scan found only pre-existing policy references.
+  - `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs` passed.
 
 ## Device And Preview State
 
@@ -130,24 +141,30 @@ Last updated: 2026-07-04 after phone Smart root recapture
 - Tablet target: `danio_tablet_api36`, serial `emulator-5556`.
 - Physical phone `RFCY8022D5R`: still `unauthorized`; do not use without user
   authorization and ADB authorization.
-- Device ownership for `QA-2026-07-04-004` is released after evidence capture.
-  The dedicated Danio emulators were left running; do not kill or wipe them.
+- Device ownership for `QA-2026-07-04-004` was released after evidence capture.
+  `QA-2026-07-04-005` did not claim device ownership. The dedicated Danio
+  emulators may still be running; do not kill or wipe them.
 
 ## Blockers
 
-- CL-QA-001 and CL-QA-002 are still in progress, not complete.
+- CL-QA-001 and CL-QA-002 are still in progress as current visual audits.
+- Completed locally: every `SCREEN_INVENTORY.md` row now has phone/tablet
+  `Pass` or `Gap` accounting in the map docs.
 - Resolved locally: Smart root Fish & Plant ID now clears the persistent bottom
   dock on the phone recapture, and the smoke helper avoids bottom-dock false
   positives for route assertions, tap centers, and lower More hub scroll
   positions.
-- Full `SCREEN_INVENTORY.md` coverage remains pending beyond the current
-  19-surface direct QA deep-link set.
+- Remaining gap: 67 phone rows and 67 tablet rows still need direct current
+  capture or route-smoke evidence before the audits can be treated as complete
+  current visual evidence.
 
 ## Next Action
 
-Recommended clean checkpoint:
+Recommended next slice:
 
-1. Finish CL-QA-001 and CL-QA-002 by extending coverage to every remaining
-   `SCREEN_INVENTORY.md` surface with pass/fail/gap notes.
-2. Keep using `DEVICE_OWNERSHIP.md` before installs, taps, screenshots, logcat,
+1. Capture or route-smoke the 67 phone and 67 tablet `Gap` rows, prioritizing
+   normal-user routes before debug-only surfaces.
+2. Consider extending debug QA deep links for high-value normal-user gaps before
+   doing manual route capture.
+3. Keep using `DEVICE_OWNERSHIP.md` before installs, taps, screenshots, logcat,
    Patrol, Maestro, or live-preview control.

@@ -9,14 +9,17 @@ Evidence root: `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`
 
 ## Result
 
-Status: In progress, not complete.
+Status: Coverage accounting complete; current visual capture gaps remain.
 
 This pass captured a current 19-surface tablet screenshot/XML set through debug
 QA deep links, plus pre-fix smoke-failure evidence. A follow-up hardened the
 tablet route helper with selected-tab checks, outside-dock assertions, and
-screen-relative swipes, then the tablet black-box smoke rerun passed. It does
-not close CL-QA-002 because the full tablet inventory still needs
-route-by-route layout review.
+screen-relative swipes, then the tablet black-box smoke rerun passed. The full
+`SCREEN_INVENTORY.md` surface set is now accounted for below with `Pass` or
+`Gap` results. `Pass` means this slice has current paired screenshot/XML
+evidence or a current black-box route assertion; `Gap` means the surface still
+needs direct tablet capture or a dedicated route assertion before it can be
+treated as current tablet visual evidence.
 
 ## Checks
 
@@ -61,11 +64,114 @@ route-by-route layout review.
 | FAQ | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-18-faq.png` / `.xml` | Pass | FAQ opens through QA deep link. |
 | Debug Menu | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-19-debug-menu.png` / `.xml` | Pass | Debug Menu opens through QA deep link; debug-only surface, not normal-user product evidence. |
 
+## Full Inventory Accounting
+
+Summary: 96 `SCREEN_INVENTORY.md` rows checked; 29 current tablet passes; 67
+tablet gaps remain for future capture.
+
+| Surface | Result | Current tablet evidence or gap note |
+| --- | --- | --- |
+| App shell / tab navigator | Pass | Represented by the five current tablet tab root captures and selected-tab smoke checks. |
+| Learn tab | Pass | Paired root capture: `tablet-01-learn-root.png` / `.xml`. |
+| Practice tab | Pass | Paired root capture: `tablet-02-practice-root.png` / `.xml`. |
+| Tank tab | Pass | Paired settled root capture: `tablet-03-tank-root.png` / `.xml`. |
+| Smart tab | Pass | Paired root capture: `tablet-04-smart-root.png` / `.xml`. |
+| More / settings hub | Pass | Paired root capture: `tablet-05-more-root.png` / `.xml`. |
+| Onboarding coordinator | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Consent | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Age blocked | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Welcome | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Region and units | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Experience level | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Tank status | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Goals | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Micro lesson | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| XP celebration | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Fish select | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Aha moment | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Feature summary | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Push permission | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Warm entry | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Today Board | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Create Tank | Pass | Paired capture: `tablet-08-create-tank.png` / `.xml`. |
+| Tank Detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Tank Settings | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Add Log | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Logs | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Log Detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Tank Journal | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Photo Gallery | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Water Charts | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Analytics | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Compare Tanks | Pass | Paired capture: `tablet-16-compare-tanks.png` / `.xml`. |
+| Tasks | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Maintenance Checklist | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Equipment | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Livestock | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Livestock Detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Livestock Value | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Reminders | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Backup and Restore | Pass | Current tablet black-box smoke asserted Backup/Restore, Export Data, Import Data, and ZIP export entry; no paired PNG/XML in this map. |
+| Learning path detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Lesson reader | Pass | Paired lesson capture plus quiz states: `tablet-09-lesson.png`, `tablet-10-lesson-quiz-hint.png`, `tablet-11-lesson-quiz-selected.png` with XML. |
+| Unlock celebration | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Story Browser | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Story Play | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Spaced Repetition | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Review Session | Pass | Paired debug practice-session capture: `tablet-12-practice-session.png` / `.xml`. |
+| Difficulty Settings | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Aquarium Intelligence | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Symptom Triage | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Weekly Plan | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Fish ID | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Workshop | Pass | Paired root capture: `tablet-06-workshop-root.png` / `.xml`. |
+| Water Change | Pass | Current tablet black-box smoke opened Water Change Calculator; no paired PNG/XML in this map. |
+| Tank Volume | Pass | Current tablet black-box smoke opened Tank Volume; no paired PNG/XML in this map. |
+| Dosing | Pass | Current tablet black-box smoke opened Dosing; no paired PNG/XML in this map. |
+| CO2 | Pass | Current tablet black-box smoke opened CO2 Calculator; no paired PNG/XML in this map. |
+| Lighting | Pass | Current tablet black-box smoke opened Lighting; no paired PNG/XML in this map. |
+| Stocking | Pass | Current tablet black-box smoke opened Stocking; no paired PNG/XML in this map. |
+| Compatibility | Pass | Current tablet black-box smoke opened Compatibility; no paired PNG/XML in this map. |
+| Cycling Assistant | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Unit Converter | Pass | Current tablet black-box smoke opened Unit Converter; no paired PNG/XML in this map. |
+| Cost Tracker | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Fish Species Browser | Pass | Paired capture: `tablet-14-species-browser.png` / `.xml`. |
+| Plant Browser | Pass | Paired capture: `tablet-15-plant-browser.png` / `.xml`. |
+| Shop Street | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Wishlist | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Gem Shop | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Inventory | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Achievements | Pass | Paired capture: `tablet-13-achievements.png` / `.xml`; also smoke-opened from More. |
+| Emergency Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Acclimation Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Feeding Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Quarantine Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Disease Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Parameter Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Equipment Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Algae Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Breeding Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Vacation Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Quick Start Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Nitrogen Cycle Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Substrate Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Hardscape Guide | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Troubleshooting | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Search | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Notification Settings | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Account / Offline Data | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| About | Pass | Current tablet black-box smoke opened About and checked Privacy/Terms from it; no paired PNG/XML in this map. |
+| FAQ | Pass | Paired capture: `tablet-18-faq.png` / `.xml`. |
+| Privacy Policy | Pass | Current tablet black-box smoke opened Privacy Policy from About; no paired PNG/XML in this map. |
+| Terms of Service | Pass | Current tablet black-box smoke opened Terms of Service from About; no paired PNG/XML in this map. |
+| Glossary | Pass | Paired capture: `tablet-17-glossary.png` / `.xml`. |
+| Debug Menu | Pass | Paired debug-only capture: `tablet-19-debug-menu.png` / `.xml`. |
+| Debug QA Seeds | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+
 ## Gaps
 
-- Full CL-QA-002 is still open. Remaining inventory rows in
-  `docs/agent/SCREEN_INVENTORY.md` need either direct current tablet evidence
-  or a specific `Gap` result in a later full map.
+- Full CL-QA-002 accounting is complete, but direct current tablet evidence is
+  still missing for 67 inventory rows listed as `Gap` above.
 - Calculator/tool detail screens beyond Workshop root were exercised by the
   passing black-box smoke rerun, but were not added as paired screenshot/XML
   inventory evidence in this map.

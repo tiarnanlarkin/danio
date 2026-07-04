@@ -158,12 +158,14 @@ that with assumptions.
 
 ## Open Inventory Work
 
-- Complete CL-QA-001 phone whole-app screenshot/XML audit. Current partial
-  evidence: `docs/qa/whole-app-phone-map-2026-07-04.md` and
-  `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/`.
-- Complete CL-QA-002 tablet whole-app screenshot/XML audit. Current partial
-  evidence: `docs/qa/whole-app-tablet-map-2026-07-04.md` and
-  `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`.
+- Continue CL-QA-001 phone whole-app screenshot/XML audit. Current accounting
+  covers all 96 rows in `docs/qa/whole-app-phone-map-2026-07-04.md`; 67 rows
+  remain explicit phone `Gap` entries needing current capture or route-smoke
+  evidence.
+- Continue CL-QA-002 tablet whole-app screenshot/XML audit. Current accounting
+  covers all 96 rows in `docs/qa/whole-app-tablet-map-2026-07-04.md`; 67 rows
+  remain explicit tablet `Gap` entries needing current capture or route-smoke
+  evidence.
 - Replace `Needs evidence` rows only with committed local evidence.
 - Add route/deep-link details as navigation is centralized beyond the current
   partial `AppRoutes` helper.
