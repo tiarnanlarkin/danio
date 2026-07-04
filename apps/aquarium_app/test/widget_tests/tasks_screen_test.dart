@@ -311,6 +311,47 @@ void main() {
       expect(find.text('Rinse prefilter added.'), findsOneWidget);
     });
 
+    testWidgets('stale task edit ids are not recreated by save', (
+      tester,
+    ) async {
+      const tankId = 'tank-task-stale-edit';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+      final task = Task(
+        id: 'task-stale-edit',
+        tankId: tankId,
+        title: 'Rinse prefilter',
+        recurrence: RecurrenceType.weekly,
+        dueDate: _now.add(const Duration(days: 1)),
+        priority: TaskPriority.normal,
+        isEnabled: true,
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveTask(task);
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Edit').last);
+      await tester.pumpAndSettle();
+
+      await svc.deleteTask(task.id);
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+
+      await tester.tap(find.text('Save').last);
+      await _advance(tester);
+
+      expect(await svc.getTasksForTank(tankId), isEmpty);
+      expect(find.text('Edit Task'), findsOneWidget);
+      expect(
+        find.text('Couldn\'t complete that action. Try again!'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('deleting a task shows undo and restores the task', (
       tester,
     ) async {

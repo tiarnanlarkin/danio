@@ -929,9 +929,21 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       final storage = widget.ref.read(storageServiceProvider);
       final now = DateTime.now();
       final interval = int.tryParse(_intervalController.text);
+      final existing = widget.existing;
+      if (existing != null) {
+        final currentEquipment = await storage.getEquipmentForTank(
+          widget.tankId,
+        );
+        final hasCurrentEquipment = currentEquipment.any(
+          (equipment) => equipment.id == existing.id,
+        );
+        if (!hasCurrentEquipment) {
+          throw StateError('Cannot edit missing equipment ${existing.id}');
+        }
+      }
 
       final equipment = Equipment(
-        id: widget.existing?.id ?? _uuid.v4(),
+        id: existing?.id ?? _uuid.v4(),
         tankId: widget.tankId,
         type: _type,
         name: name,
@@ -939,10 +951,9 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
             ? _brandController.text.trim()
             : null,
         maintenanceIntervalDays: interval,
-        lastServiced:
-            widget.existing?.lastServiced ?? (interval != null ? now : null),
-        installedDate: widget.existing?.installedDate ?? now,
-        createdAt: widget.existing?.createdAt ?? now,
+        lastServiced: existing?.lastServiced ?? (interval != null ? now : null),
+        installedDate: existing?.installedDate ?? now,
+        createdAt: existing?.createdAt ?? now,
         updatedAt: now,
       );
       pendingEquipment = equipment;

@@ -748,6 +748,44 @@ void main() {
       expect(find.byType(Scaffold), findsOneWidget);
     });
 
+    testWidgets('stale equipment edit ids are not recreated by save', (
+      tester,
+    ) async {
+      const tankId = 'tank-equipment-stale-edit';
+      final svc = InMemoryStorageService();
+      await svc.saveTank(_makeTank(id: tankId));
+      final equipment = Equipment(
+        id: 'equip-stale-edit',
+        tankId: tankId,
+        type: EquipmentType.filter,
+        name: 'Canister filter',
+        createdAt: _now,
+        updatedAt: _now,
+      );
+      await svc.saveEquipment(equipment);
+
+      await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+      await _advance(tester);
+
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Edit').last);
+      await tester.pumpAndSettle();
+
+      await svc.deleteEquipment(equipment.id);
+      expect(await svc.getEquipmentForTank(tankId), isEmpty);
+
+      await tester.tap(find.text('Save').last);
+      await _advance(tester);
+
+      expect(await svc.getEquipmentForTank(tankId), isEmpty);
+      expect(find.text('Edit Equipment'), findsOneWidget);
+      expect(
+        find.text('Couldn\'t do that. Give it another go!'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('undoing equipment removal restores its maintenance task', (
       tester,
     ) async {
