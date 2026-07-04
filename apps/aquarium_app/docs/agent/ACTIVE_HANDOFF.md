@@ -34,8 +34,8 @@ Last updated: 2026-07-04 during PLAN-2026-07-04-001 finish-line roadmap
 
 ## Dirty Files To Preserve
 
-All dirty files should belong to `PLAN-2026-07-04-001` until the roadmap
-commit lands. Preserve these paths if interrupted:
+No dirty files are expected after `PLAN-2026-07-04-001` is committed and
+pushed. If this slice is interrupted before cleanup, preserve these paths:
 
 - `docs/ROADMAP.md`
 - `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
@@ -84,7 +84,7 @@ focused Tank Detail tests, targeted analysis, `Full` quality gate, post-doc
 
 ## Next Action
 
-After this docs-only planning slice is verified and committed, next:
+Planning is verified, committed, and pushed. Next:
 
 1. Start `DS-2026-07-04-018` from the new `Finish-Line Roadmap Snapshot -
    2026-07-04` in `FINISH_MAP.md`.

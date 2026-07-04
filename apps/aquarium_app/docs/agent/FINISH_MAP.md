@@ -88,8 +88,9 @@ detailed backlog acceptance history.
 
 Current baseline:
 
-- Source of truth is `main` at `e246fa3f docs: finalize housekeeping handoff`,
-  aligned with `origin/main` at `0 0`.
+- Source of truth is `main`; it was fetched and confirmed aligned with
+  `origin/main` before this roadmap was written, and this planning slice is
+  intended to leave `main` pushed and clean.
 - Current phone and tablet whole-app maps are locally verified with all 96
   `SCREEN_INVENTORY.md` rows accounted for and 0 current visual capture gaps.
 - The last broad product/docs verification passed `git diff --check`,
