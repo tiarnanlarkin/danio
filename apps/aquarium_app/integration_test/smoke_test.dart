@@ -1,4 +1,4 @@
-// Patrol Smoke Test Suite — Danio Aquarium App
+// Patrol Smoke Test Suite - Danio Aquarium App
 //
 // These tests verify the most critical user flows work without crashes.
 // Run with: patrol test -t integration_test/smoke_test.dart
@@ -11,131 +11,101 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:patrol/patrol.dart';
+
 import 'package:danio/main.dart' as app;
 
-const _dockKey = ValueKey('danio-bottom-dock');
-const _tabIds = ['learn', 'practice', 'tank', 'smart', 'more'];
-
-ValueKey<String> _tabKey(String tabId) {
-  return ValueKey('danio-bottom-dock-item-$tabId');
-}
+import 'smoke_test_harness.dart';
 
 void main() {
-  patrolSetUp(() async {
-    // Any per-test setup goes here
-  });
+  patrolSetUp(() async {});
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 1: App launches without crashing
-  // ─────────────────────────────────────────────────────────────────────────
   patrolTest('App launches and displays initial screen', ($) async {
     app.main();
-
-    // Wait for the app to settle (onboarding OR main tabs)
     await $.pumpAndSettle(timeout: const Duration(seconds: 15));
 
-    // The app should show SOMETHING — either onboarding or the tab navigator
-    // We just verify no crash occurred and a Scaffold is present
     expect($(Scaffold), findsWidgets);
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 2: Bottom navigation tabs are accessible
-  // ─────────────────────────────────────────────────────────────────────────
   patrolTest('Can navigate through all bottom tabs without crash', ($) async {
     app.main();
     await $.pumpAndSettle(timeout: const Duration(seconds: 15));
 
-    // If we're on onboarding, skip it first (tap through to main app)
-    // Check for Danio bottom dock (main tabs) — if not present, we're on onboarding
-    if ($(_dockKey).exists) {
-      // Already on main tabs — test each tab
-      await _tapAllTabs($);
-    } else {
-      // Might be on onboarding — just verify no crash on this screen
-      expect($(Scaffold), findsWidgets);
-      // Skip tab navigation test if onboarding is active
-    }
+    await _tapAllTabs($);
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 3: Learn tab loads content
-  // ─────────────────────────────────────────────────────────────────────────
   patrolTest('Learn tab displays content without crash', ($) async {
     app.main();
     await $.pumpAndSettle(timeout: const Duration(seconds: 15));
 
-    if ($(_dockKey).exists) {
-      await $(_tabKey('learn')).tap();
-      await $.pumpAndSettle();
-
-      // Verify we see scrollable content
-      expect($(Scaffold), findsWidgets);
-    }
+    await _tapTabAndExpectScaffold($, 'learn');
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 4: Tank tab loads
-  // ─────────────────────────────────────────────────────────────────────────
   patrolTest('Tank tab loads without crash', ($) async {
     app.main();
     await $.pumpAndSettle(timeout: const Duration(seconds: 15));
 
-    if ($(_dockKey).exists) {
-      await $(_tabKey('tank')).tap();
-      await $.pumpAndSettle();
-
-      expect($(Scaffold), findsWidgets);
-    }
+    await _tapTabAndExpectScaffold($, 'tank');
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 5: Settings/More tab loads
-  // ─────────────────────────────────────────────────────────────────────────
   patrolTest('Settings (More) tab loads without crash', ($) async {
     app.main();
     await $.pumpAndSettle(timeout: const Duration(seconds: 15));
 
-    if ($(_dockKey).exists) {
-      await $(_tabKey('more')).tap();
-      await $.pumpAndSettle();
-
-      expect($(Scaffold), findsWidgets);
-    }
+    await _tapTabAndExpectScaffold($, 'more');
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 6: Back button doesn't crash from any main tab
-  // ─────────────────────────────────────────────────────────────────────────
   patrolTest('Back button from main tabs shows exit confirmation, not crash', (
     $,
   ) async {
     app.main();
     await $.pumpAndSettle(timeout: const Duration(seconds: 15));
 
-    if ($(_dockKey).exists) {
-      // Press back — should either show snackbar "press back again" or do nothing
-      // ignore: deprecated_member_use
-      await $.native.pressBack();
-      await $.pump(const Duration(seconds: 2));
+    _expectMainTabsReady($);
 
-      // App should still be alive
-      expect($(Scaffold), findsWidgets);
-    }
+    // ignore: deprecated_member_use
+    await $.native.pressBack();
+    await $.pump(const Duration(seconds: 2));
+
+    expect($(Scaffold), findsWidgets);
   });
 }
 
-/// Helper: tap through all 5 bottom navigation tabs
 Future<void> _tapAllTabs(PatrolIntegrationTester $) async {
-  for (final tabId in _tabIds) {
-    await $(_tabKey(tabId)).tap();
-    await $.pumpAndSettle(timeout: const Duration(seconds: 5));
+  _expectMainTabsReady($);
 
-    // Just verify no crash — Scaffold should exist
+  for (final tabId in smokeTabIds) {
+    await _tapTabAndExpectScaffold($, tabId);
+  }
+}
+
+Future<void> _tapTabAndExpectScaffold(
+  PatrolIntegrationTester $,
+  String tabId,
+) async {
+  _expectMainTabsReady($);
+
+  await $(smokeTabKey(tabId)).tap();
+  await $.pumpAndSettle(timeout: const Duration(seconds: 5));
+
+  expect(
+    $(Scaffold),
+    findsWidgets,
+    reason: 'Tab $tabId should display without crash',
+  );
+}
+
+void _expectMainTabsReady(PatrolIntegrationTester $) {
+  expect(
+    $(smokeDockKey),
+    findsOneWidget,
+    reason: smokeMainTabsRequiredMessage,
+  );
+
+  for (final tabId in smokeTabIds) {
     expect(
-      $(Scaffold),
-      findsWidgets,
-      reason: 'Tab $tabId should display without crash',
+      $(smokeTabKey(tabId)),
+      findsOneWidget,
+      reason: 'Smoke tab selector for $tabId must be available.',
     );
   }
 }

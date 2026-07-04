@@ -1,79 +1,71 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after DS-2026-07-04-011 backup import no-tank preference guard slice
+Last updated: 2026-07-04 after QA-2026-07-04-009 integration smoke truthfulness slice
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `DS-2026-07-04-011` backup import no-tank
-  preference guard.
+- Latest completed slice: `QA-2026-07-04-009` integration smoke tab-flow
+  truthfulness.
 - Latest implementation checkpoint:
-  Current commit after DS-2026-07-04-011 is committed and pushed.
+  Current commit after QA-2026-07-04-009 is committed and pushed.
 - Prior implementation checkpoint before this slice:
-  `c1e6c0bf fix: surface bulk tank delete failures`.
+  `f46e17d8 fix: skip no-tank backup preference restores`.
 - Current uncommitted slice: none expected after this handoff cleanup is
   committed and pushed; verify with `git status --short -uall` before new work.
 
 ## Current Slice
 
-- Slice: DS-2026-07-04-011 for CL-P1-009/CL-QA-006 local data resilience.
-- Scope completed: Backup & Restore import flow now skips app-wide
-  SharedPreferences/profile/progress restore when a selected backup imports
-  zero local tanks.
-- Product behavior changes: a no-tank backup still shows the existing "No tanks
-  found in this backup file." warning, but no longer silently replaces profile,
-  learning, gems, settings, or other app-wide preference data.
+- Slice: QA-2026-07-04-009 for CL-QA-001/CL-QA-002/CL-QA-004 smoke
+  truthfulness.
+- Scope completed: Flutter integration and Patrol smoke tab-flow tests now
+  require the main bottom dock and all configured tab keys before tab-flow
+  checks can pass.
+- Product behavior changes: none. This is an executable QA-harness change only.
 - Inventory state: no screen inventory or visual evidence changes in this
-  non-visual provider data-safety slice.
+  non-visual harness slice.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
 - Live preview/device requirement: not required. No emulator, ADB, physical
   device, live-preview, or `flutter run` ownership was used.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the DS-2026-07-04-011 handoff cleanup. If
+No dirty files are expected after the QA-2026-07-04-009 handoff cleanup. If
 resuming from an interrupted pre-commit copy, preserve these paths:
 
-- `lib/screens/backup_restore_screen.dart`
-- `lib/services/backup_import_service.dart`
-- `test/services/backup_import_service_test.dart`
+- `integration_test/smoke_test.dart`
+- `integration_test/smoke_test_v2.dart`
+- `integration_test/smoke_test_harness.dart`
+- `test/integration_smoke_contract_test.dart`
 - `docs/agent/ACTIVE_HANDOFF.md`
-- `docs/agent/FINISH_MAP.md`
 - `docs/agent/SLICE_LOG.md`
-- `docs/agent/plans/2026-07-04-complete-local-delivery.md`
-- `docs/agent/plans/DS-2026-07-04-011-data-resilience-slice-contract.md`
-- `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
-- `docs/product/danio-complete-local-current-audit-2026-06-13.md`
+- `docs/agent/plans/QA-2026-07-04-009-smoke-truthfulness-slice-contract.md`
 
 ## Last Checks
 
-- Repo/remote preflight before DS-2026-07-04-011 was clean and aligned with
-  `origin/qa/production-tool-audit-2026-05-25` (`0 0` ahead/behind) at
-  `c1e6c0bf`.
+- Repo/remote preflight before QA-2026-07-04-009 was clean and aligned with
+  `origin/qa/production-tool-audit-2026-05-25` at `f46e17d8`.
 - TDD RED:
-  `flutter test test/services/backup_import_service_test.dart --name "skips preference restore when backup imports no tanks" --reporter compact`
-  failed before the production change because `BackupRestoreImportFlow` did not
-  exist yet.
+  `flutter test test/integration_smoke_contract_test.dart --reporter compact`
+  failed before the harness change because `integration_test/smoke_test.dart`
+  still allowed absent main tabs to pass through an onboarding/no-crash skip.
 - TDD GREEN:
-  the same named service test passed after the production change.
-- Focused service/widget coverage:
-  `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  `flutter test test/integration_smoke_contract_test.dart --reporter compact`
+  passed after both smoke files required the main tab shell.
+- Focused script/source coverage:
+  `flutter test test/scripts/android_blackbox_smoke_script_test.dart --reporter compact`
   passed, and
-  `flutter test test/widget_tests/backup_restore_screen_test.dart --reporter compact`
-  passed after the screen wiring change.
-- Targeted analysis:
-  `flutter analyze lib/services/backup_import_service.dart lib/screens/backup_restore_screen.dart test/services/backup_import_service_test.dart`
+  `flutter test test/scripts/integration_smoke_script_test.dart --reporter compact`
   passed.
-- Full local quality gate:
-  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` passed,
-  including focused tests, dependency validation, Danio custom lint, full
-  Flutter test suite, `flutter analyze`, and debug APK build. The debug build
-  emitted the repo-documented future Kotlin Gradle Plugin warning and Java
-  source/target deprecation warnings only.
-- Documentation checks after slice evidence updates passed: `git diff --check`
-  and
-  `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`.
+- Targeted analysis:
+  `flutter analyze integration_test/smoke_test.dart integration_test/smoke_test_v2.dart integration_test/smoke_test_harness.dart test/integration_smoke_contract_test.dart`
+  passed.
+- Local quality gate:
+  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`
+  passed after LF normalization of touched Dart files; the first run failed only
+  on `git diff --check` trailing-whitespace reports caused by CRLF line endings.
+- Documentation/whitespace check: `git diff --check` passed.
 
 ## Device And Preview State
 
@@ -85,7 +77,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Blockers
 
-- No current blocker for DS-2026-07-04-011.
+- No current blocker for QA-2026-07-04-009.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   create/delete, restore, migration, and any future app-kill flush coverage
   found in review.
@@ -94,8 +86,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 Recommended next slice:
 
-1. Harden integration smoke truthfulness so main-tab flows fail if they are not
-   actually exercised.
-2. Continue security/product-honesty
-   slices for AI proxy, direct OpenAI release policy, cloud backup encryption
-   copy, privacy copy, and AI disclosure scope.
+1. Continue security/product-honesty slices for AI proxy, direct OpenAI release
+   policy, cloud backup encryption copy, privacy copy, and AI disclosure scope.
+2. If a higher-priority local data-loss, restore, backup, or false-success risk
+   is found during review, take that data-resilience slice before polish work.

@@ -1,4 +1,4 @@
-// Smoke Test Suite — Danio Aquarium App (integration_test, no Patrol native deps)
+// Smoke Test Suite - Danio Aquarium App (integration_test, no Patrol native deps)
 //
 // Run with:
 //   flutter test integration_test/smoke_test_v2.dart -d emulator-5554
@@ -19,89 +19,41 @@ Future<void> _launchApp(WidgetTester tester) async {
   await waitForSmokeReady(tester);
 }
 
-Future<void> _pumpAfterInput(WidgetTester tester) async {
-  await tester.pump();
-  await tester.pump(const Duration(seconds: 2));
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 1: App launches without crashing
-  // ─────────────────────────────────────────────────────────────────────────
   testWidgets('App launches and displays initial screen', (tester) async {
     await _launchApp(tester);
 
-    // The app should show SOMETHING — a Scaffold should be present
     expect(find.byType(Scaffold), findsWidgets);
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 2: Bottom navigation tabs are accessible
-  // ─────────────────────────────────────────────────────────────────────────
   testWidgets('Can navigate through all bottom tabs without crash', (
     tester,
   ) async {
     await _launchApp(tester);
 
-    // Check if we're on the main screen (has Danio bottom dock)
-    final dock = smokeDockFinder();
-    if (dock.evaluate().isNotEmpty) {
-      for (final tabId in smokeTabIds) {
-        await tester.tap(smokeTabFinder(tabId));
-        await _pumpAfterInput(tester);
-        expect(
-          find.byType(Scaffold),
-          findsWidgets,
-          reason: 'Tab $tabId should display without crash',
-        );
-      }
-    } else {
-      // On onboarding — just verify no crash
-      expect(find.byType(Scaffold), findsWidgets);
+    expectSmokeMainTabsReady();
+    for (final tabId in smokeTabIds) {
+      await tapSmokeTabAndExpectScaffold(tester, tabId);
     }
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 3: Learn tab loads content
-  // ─────────────────────────────────────────────────────────────────────────
   testWidgets('Learn tab displays content without crash', (tester) async {
     await _launchApp(tester);
 
-    final dock = smokeDockFinder();
-    if (dock.evaluate().isNotEmpty) {
-      await tester.tap(smokeTabFinder('learn'));
-      await _pumpAfterInput(tester);
-      expect(find.byType(Scaffold), findsWidgets);
-    }
+    await tapSmokeTabAndExpectScaffold(tester, 'learn');
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 4: Tank tab loads
-  // ─────────────────────────────────────────────────────────────────────────
   testWidgets('Tank tab loads without crash', (tester) async {
     await _launchApp(tester);
 
-    final dock = smokeDockFinder();
-    if (dock.evaluate().isNotEmpty) {
-      await tester.tap(smokeTabFinder('tank'));
-      await _pumpAfterInput(tester);
-      expect(find.byType(Scaffold), findsWidgets);
-    }
+    await tapSmokeTabAndExpectScaffold(tester, 'tank');
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Test 5: Settings (More) tab loads
-  // ─────────────────────────────────────────────────────────────────────────
   testWidgets('Settings (More) tab loads without crash', (tester) async {
     await _launchApp(tester);
 
-    final dock = smokeDockFinder();
-    if (dock.evaluate().isNotEmpty) {
-      await tester.tap(smokeTabFinder('more'));
-      await _pumpAfterInput(tester);
-      expect(find.byType(Scaffold), findsWidgets);
-    }
+    await tapSmokeTabAndExpectScaffold(tester, 'more');
   });
 }

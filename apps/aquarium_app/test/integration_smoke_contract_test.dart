@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,6 +77,58 @@ void main() {
           smokeTabFinder(tabId),
           findsOneWidget,
           reason: 'Smoke tab selector for $tabId must match TabNavigator.',
+        );
+      }
+    });
+
+    test('main-tab smoke tests cannot pass by skipping absent tabs', () {
+      final harness = File(
+        'integration_test/smoke_test_harness.dart',
+      ).readAsStringSync();
+      final sources = {
+        'Patrol smoke': File(
+          'integration_test/smoke_test.dart',
+        ).readAsStringSync(),
+        'Flutter integration smoke': File(
+          'integration_test/smoke_test_v2.dart',
+        ).readAsStringSync(),
+      };
+
+      expect(
+        harness,
+        contains('Smoke main tabs must be visible before tab-flow checks.'),
+      );
+
+      for (final entry in sources.entries) {
+        expect(
+          entry.value,
+          anyOf(
+            contains('Smoke main tabs must be visible before tab-flow checks.'),
+            contains('smokeMainTabsRequiredMessage'),
+            contains('expectSmokeMainTabsReady'),
+          ),
+          reason: '${entry.key} must fail when the bottom dock is absent.',
+        );
+        expect(
+          entry.value,
+          isNot(contains('Skip tab navigation test if onboarding is active')),
+          reason: '${entry.key} cannot skip the named tab-flow test.',
+        );
+        expect(
+          entry.value,
+          isNot(contains('just verify no crash')),
+          reason:
+              '${entry.key} must exercise tabs, not only launch a Scaffold.',
+        );
+        expect(
+          entry.value,
+          isNot(contains(r'if ($(_dockKey).exists)')),
+          reason: '${entry.key} cannot conditionally skip tab coverage.',
+        );
+        expect(
+          entry.value,
+          isNot(contains('if (dock.evaluate().isNotEmpty)')),
+          reason: '${entry.key} cannot conditionally skip tab coverage.',
         );
       }
     });
