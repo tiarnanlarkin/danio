@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +11,16 @@ void main() {
   group('CloudBackupService', () {
     setUp(() {
       SharedPreferences.setMockInitialValues({});
+    });
+
+    test('source comments describe account-keyed encryption boundary', () {
+      final source = File(
+        'lib/services/cloud_backup_service.dart',
+      ).readAsStringSync();
+
+      expect(source, contains('Account-keyed cloud backup'));
+      expect(source, contains('not user-held or end-to-end backup encryption'));
+      expect(source, isNot(contains("In production you'd use PBKDF2")));
     });
 
     test('export includes SharedPreferences-backed app state', () async {

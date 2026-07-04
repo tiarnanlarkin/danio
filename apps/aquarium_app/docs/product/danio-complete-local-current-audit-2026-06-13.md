@@ -168,6 +168,10 @@ Fixed:
 - Optional account/cloud backup copy now says cloud services are optional and
   not configured for local builds instead of promising background sync or
   sounding broken.
+- Signed-in Account cloud backup copy no longer calls the current backup lane
+  "encrypted" in user-facing text; the service docs now name the account-keyed
+  encryption boundary and state that it is not user-held or end-to-end backup
+  encryption.
 - Signed-in account management copy now frames sign-out and deletion around
   optional cloud backup/account data instead of "resume syncing" or "synced
   cloud data".
@@ -4034,7 +4038,7 @@ P0 status:
 | --- | --- | --- |
 | CL-P0-001 | Done | Returning users now land on Tank by default. |
 | CL-P0-002 | Done | Canonical docs now point at complete-local as the active finish line. |
-| CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
+| CL-P0-003 | Done | Local/offline account copy, optional account/cloud backup copy, account-keyed backup encryption copy, optional cloud account failure copy, signed-in account cloud-data copy, weekly-progress tier copy, returning-user milestone upgrade wording, age-blocked account-setup wording, generic server-error wording, onboarding feature-summary paywall-stub/subscription wording, settings data feedback copy, bulk livestock feedback copy, reward/shop honesty, Shop Street planning copy, Privacy local-build/local-version copy, Delete My Data privacy/help copy, stale social comments, visible debug crash controls, debug sync shell diagnostics, dead sync-status scaffolds, dormant backend-sync queue code, dormant social reward/referral mechanics, unsupported marine setup choices/scope copy, legacy marine profile copy, Optional AI server-config/setup/version copy, Smart optional-AI copy, and current README/registry/data-resilience docs honesty fixed and tested. Future walkthrough findings should be filed against their feature area. |
 | CL-P0-004 | Done | First-run now captures region/units, experience, tank stage, goals, quick-start sample handoff, setup-context repair prompts, tablet-constrained reading/CTA surfaces, adaptive Fish Select, and final Android phone/tablet walkthrough evidence under `docs/qa/screenshots/2026-06-22/cl-p0-004-first-run/`. |
 | CL-P0-005 | Done | Tank now acts as the daily ritual surface with care priority, next-best action, direct feeding feedback, visible Today Board quick care, phone/tablet layout guardrails, Android quick-care semantics, readable dark Tank contrast, and final phone/tablet visual QA under `docs/qa/screenshots/2026-06-22/cl-p0-005-tank-daily-loop/`. |
 | CL-P0-006 | Done | Emergency Guide is now directly reachable from Tank top bar, unsafe-water Tank alerts, Smart Hub, global search, More, LessonScreen, species detail sheets, and unsafe water-test save flows. |

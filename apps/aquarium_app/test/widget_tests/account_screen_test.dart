@@ -157,5 +157,14 @@ void main() {
       expect(source, contains('use cloud backup again'));
       expect(source, contains('cloud-stored account data'));
     });
+
+    test('cloud backup account copy does not overpromise encryption', () {
+      final source = File('lib/screens/account_screen.dart').readAsStringSync();
+
+      expect(source, isNot(contains('encrypted cloud backup')));
+      expect(source, isNot(contains('Creating encrypted backup')));
+      expect(source, contains('Create a cloud backup copy for this account'));
+      expect(source, contains('Restore your cloud backup into this device'));
+    });
   });
 }

@@ -12,9 +12,12 @@ import 'storage_service.dart';
 import 'supabase_service.dart';
 import '../utils/logger.dart';
 
-/// Encrypted backup service - serialises all local data to JSON, encrypts with
-/// AES-256 using a key derived from the user's UID + a salt, and uploads to
-/// Supabase Storage.
+/// Account-keyed cloud backup service.
+///
+/// The optional cloud lane serialises local data, encrypts the backup blob with
+/// AES-256 using a key derived from the signed-in Supabase user id and app salt,
+/// and uploads it to Supabase Storage. This avoids plaintext backup blobs, but
+/// it is not user-held or end-to-end backup encryption.
 ///
 /// Restore flow: download -> decrypt -> merge with local (local wins on
 /// conflict).
@@ -40,7 +43,7 @@ class CloudBackupService {
   // Backup: serialise -> encrypt -> upload
   // ---------------------------------------------------------------------------
 
-  /// Create an encrypted backup of all local data and upload to Supabase.
+  /// Create an account-keyed backup of all local data and upload to Supabase.
   Future<void> createAndUploadBackup() async {
     if (!SupabaseService.isInitialised) {
       throw StateError('Supabase not initialised');
@@ -56,7 +59,7 @@ class CloudBackupService {
     final jsonString = const JsonEncoder.withIndent('  ').convert(exportData);
     final plainBytes = utf8.encode(jsonString);
 
-    // 3. Derive encryption key from userId (deterministic)
+    // 3. Derive the account-scoped encryption key from userId (deterministic)
     final key = _deriveKey(userId);
     final iv = encrypt_pkg.IV.fromSecureRandom(16);
 
@@ -85,7 +88,7 @@ class CloudBackupService {
   // Restore: download -> decrypt -> merge
   // ---------------------------------------------------------------------------
 
-  /// Download the encrypted backup and merge into local storage.
+  /// Download the account-keyed backup and merge into local storage.
   ///
   /// Merge strategy: local data wins on conflict (based on id).
   Future<CloudBackupRestoreResult> downloadAndRestoreBackup() async {
@@ -362,11 +365,12 @@ class CloudBackupService {
   // Key derivation
   // ---------------------------------------------------------------------------
 
-  /// Derive an AES-256 key from the user's ID using SHA-256.
+  /// Derive an AES-256 key from the account id using SHA-256.
   ///
-  /// In production you'd use PBKDF2 with the user's password; here we use
-  /// the UID as a deterministic key source so the same user can always
-  /// decrypt their own backups across devices.
+  /// This deterministic account key lets the same signed-in cloud account
+  /// restore across devices. A future user-held recovery-key design would need a
+  /// migration and a clear recovery UX before the product could claim
+  /// end-to-end backup encryption.
   encrypt_pkg.Key _deriveKey(String userId) {
     const salt = 'aquarium-app-backup-v1';
     final hash = sha256.convert(utf8.encode('$salt:$userId'));

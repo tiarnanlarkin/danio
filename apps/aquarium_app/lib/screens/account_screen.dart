@@ -321,14 +321,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             ListTile(
               leading: const Icon(Icons.cloud_upload),
               title: const Text('Backup Now'),
-              subtitle: const Text('Create an encrypted cloud backup copy'),
+              subtitle: const Text(
+                'Create a cloud backup copy for this account',
+              ),
               onTap: () => _createBackup(context),
             ),
             const Divider(height: 1),
             ListTile(
               leading: const Icon(Icons.cloud_download),
               title: const Text('Restore from Backup'),
-              subtitle: const Text('Restore your encrypted cloud backup'),
+              subtitle: const Text(
+                'Restore your cloud backup into this device',
+              ),
               onTap: () => _restoreBackup(context),
             ),
           ],
@@ -395,7 +399,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
   Future<void> _createBackup(BuildContext context) async {
     try {
-      DanioSnackBar.info(context, 'Creating encrypted backup...');
+      DanioSnackBar.info(context, 'Creating cloud backup...');
       await CloudBackupService.instance.createAndUploadBackup();
       if (context.mounted) {
         DanioSnackBar.success(context, 'Backup uploaded successfully');
