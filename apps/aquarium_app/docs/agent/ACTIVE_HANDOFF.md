@@ -1,99 +1,98 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after DS-2026-07-04-017 Tank Detail quick-feeding parent-tank boundary
+Last updated: 2026-07-04 during HSK-2026-07-04-001 repository housekeeping
 
 ## Branch
 
-- Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `DS-2026-07-04-017` Tank Detail quick-feeding
-  parent-tank boundary.
-- Latest implementation checkpoint:
-  Current commit after DS-2026-07-04-017 is committed and pushed.
-- Prior implementation checkpoint before this slice:
-  `6e572a8a fix: guard tank journal saves against missing tanks`.
-- Current uncommitted slice: none expected after this handoff cleanup is
-  committed and pushed; verify with `git status --short -uall` before new work.
+- Source-of-truth branch: `main`.
+- `main` was fast-forwarded to `qa/production-tool-audit-2026-05-25` at
+  `9d64de38 fix: guard tank quick feeding against missing tanks`.
+- The former QA branch had no commits missing from `main` after the
+  fast-forward.
+- Temporary branch cleanup is expected after this housekeeping commit is
+  verified and pushed.
 
 ## Current Slice
 
-- Slice: DS-2026-07-04-017 for Tank Detail quick-feeding data resilience.
-- Scope completed: `TankDetailScreen._quickLogFeeding()` now checks
-  `storage.getTank(tankId)` before saving a feeding `LogEntry`.
-- Product behavior changes: if Tank Detail remains open after the durable tank
-  was deleted, tapping Quick actions > Log Feeding shows the existing retry
-  feedback and does not create an orphan local feeding log.
-- Product behavior not changed: normal quick-feeding creation, feeding pulse
-  feedback, Tank Detail task completion, tank deletion, and navigation are
-  unchanged.
-- Inventory state: no screen inventory or visual evidence changes in this
-  non-visual data-safety slice.
+- Slice: `HSK-2026-07-04-001` repository housekeeping and source-of-truth
+  consolidation.
+- Scope:
+  - Make `main` the single buildable branch source of truth.
+  - Archive stale root-level reports, old roadmap/workflow files, old
+    top-level `memory/` plans, and stray top-level `danio/` research files.
+  - Replace root/docs entry points with short links to the current app,
+    product, and agent control docs.
+  - Leave unclear functional references, such as `contracts/`, in place.
+- Product behavior changes: none intended.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
-- Live preview/device requirement: not required. No emulator, ADB, physical
-  device, live-preview, or `flutter run` ownership was used.
+- Live preview/device requirement: not required for the housekeeping slice.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the DS-2026-07-04-017 handoff cleanup. If
-resuming from an interrupted pre-commit copy, preserve these paths:
+All dirty files should belong to `HSK-2026-07-04-001` until the housekeeping
+commit lands. Preserve these paths if interrupted:
 
-- `lib/screens/tank_detail/tank_detail_screen.dart`
-- `test/widget_tests/tank_detail_screen_test.dart`
-- `docs/agent/ACTIVE_HANDOFF.md`
-- `docs/agent/FINISH_MAP.md`
-- `docs/agent/SLICE_LOG.md`
-- `docs/agent/plans/DS-2026-07-04-017-data-resilience-slice-contract.md`
-- `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
-- `docs/product/danio-complete-local-current-audit-2026-06-13.md`
+- `README.md`
+- `CLAUDE.md`
+- `GIT_WORKFLOW.md`
+- `save_work.bat`
+- `save_work.sh`
+- `docs/README.md`
+- `docs/ROADMAP.md`
+- `docs/development/CODEX_SAFE_WORKFLOW.md`
+- `docs/archive/root-legacy-2026-07-04/`
+- `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
+- `apps/aquarium_app/docs/agent/HOUSEKEEPING.md`
+- `apps/aquarium_app/docs/agent/SLICE_LOG.md`
+- `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
 
 ## Last Checks
 
-- Repo/remote preflight before DS-2026-07-04-017 was clean and aligned with
-  `origin/qa/production-tool-audit-2026-05-25` at `6e572a8a`.
-- TDD RED:
-  `flutter test test/widget_tests/tank_detail_screen_test.dart --name "missing tank ids do not create orphan quick feeding logs" --reporter compact`
-  failed because one orphan `LogEntry` was saved when the stale open Tank Detail
-  route's durable parent tank was absent from storage.
-- TDD GREEN:
-  `flutter test test/widget_tests/tank_detail_screen_test.dart --name "missing tank ids do not create orphan quick feeding logs" --reporter compact`
-  passed after adding the parent-tank check.
-- Focused widget coverage and targeted analysis:
-  `flutter test test/widget_tests/tank_detail_screen_test.dart --reporter compact`
-  and
-  `flutter analyze lib/screens/tank_detail/tank_detail_screen.dart test/widget_tests/tank_detail_screen_test.dart`
-  passed.
-- Required data-safety local gate:
-  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` passed.
-  The debug APK build emitted Flutter's existing Kotlin Gradle Plugin migration
-  warning and Java source/target deprecation warnings.
-- Post-doc checks:
-  `git diff --check` and
-  `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
-  passed.
+Passed for this slice:
+
+- `git diff --check`
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+- `flutter analyze`
+- `flutter build apk --debug --target lib/main.dart`
+
+Notes:
+
+- `flutter test`, `flutter analyze`, and `flutter build apk --debug` reported
+  existing dependency update notices.
+- The debug APK build also reported Flutter's existing Kotlin Gradle Plugin
+  migration warning for the app/plugins; the build still completed.
+
+The immediately prior data-safety slice, `DS-2026-07-04-017`, passed its
+focused Tank Detail tests, targeted analysis, `Full` quality gate, post-doc
+`git diff --check`, and current-doc truth test before being fast-forwarded into
+`main`.
 
 ## Device And Preview State
 
-- No device ownership was claimed for DS-2026-07-04-017.
-- No emulator, physical phone, ADB install, screenshot capture, Patrol,
-  Maestro, or live-preview session was used.
+- The connected physical phone `RFCY8022D5R` was used before this housekeeping
+  slice to clean-install and launch a release APK from `9d64de38`.
+- No emulator, screenshot, logcat evidence, or live-preview ownership was used
+  for this housekeeping slice.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
   installs, taps, screenshots, logcat, Patrol, Maestro, or live-preview control.
 
 ## Blockers
 
-- No current blocker for DS-2026-07-04-017.
+- No current housekeeping blocker.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
-  create/edit/delete, restore, migration, and any future app-kill flush coverage
+  create/edit/delete, restore, migration, and future app-kill flush coverage
   found in review.
 - Remaining AI confirmation work is still any future AI changes to tank data,
   tasks, and reminders.
 
 ## Next Action
 
-Recommended next slice:
+After housekeeping is committed, pushed, and temporary branches are removed:
 
-1. Continue data-resilience slices per `FINISH_MAP.md` priority while any
-   data-loss, restore, backup, false-success, or orphan-child risk is known.
-2. If no higher-priority local data-safety gap is found in review, continue the
-   remaining AI confirmation work for any future AI changes to tank data, tasks,
-   and reminders.
+1. Start a fresh session.
+2. Rebuild context from `AGENTS.md`, this handoff, `FINISH_MAP.md`,
+   `QUALITY_LADDER.md`, `SCREEN_INVENTORY.md`, and the product audit/backlog.
+3. Study the current build from source, tests, and available device evidence.
+4. Produce the updated finish-line roadmap before starting the next development
+   push.

@@ -2,12 +2,13 @@
 setlocal
 
 REM Safe Danio save helper. Refuses to commit from main.
-cd /d "C:\Users\larki\Documents\Danio Aquarium App Project\repo"
+pushd "%~dp0"
 
 for /f "delims=" %%b in ('git branch --show-current') do set BRANCH=%%b
 
 if "%BRANCH%"=="" (
     echo Error: could not determine current branch.
+    popd
     exit /b 1
 )
 
@@ -15,6 +16,7 @@ if "%BRANCH%"=="main" (
     echo Refusing to commit or push directly from main.
     echo Create a branch first, for example:
     echo   git checkout -b fix/short-description
+    popd
     exit /b 1
 )
 
@@ -31,12 +33,19 @@ if "%WORKTREE_DIFF%"=="0" if "%INDEX_DIFF%"=="0" (
 ) else (
     git add -A
     git commit -m "Work session: %date% %time%"
-    if errorlevel 1 exit /b 1
+    if errorlevel 1 (
+        popd
+        exit /b 1
+    )
 )
 
 echo Pushing %BRANCH% to origin...
 git push -u origin %BRANCH%
-if errorlevel 1 exit /b 1
+if errorlevel 1 (
+    popd
+    exit /b 1
+)
 
 echo Work saved to GitHub on branch %BRANCH%.
-echo Remote: https://github.com/tiarnanlarkin/danio
+git remote get-url origin
+popd

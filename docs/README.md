@@ -1,36 +1,30 @@
-# 📚 Aquarium App Documentation
+# Danio Documentation
 
-## 🎯 Start Here
+Most current development and product-control docs now live under
+`apps/aquarium_app/docs/agent/` and `apps/aquarium_app/docs/product/`.
 
-| Document | Description |
-|----------|-------------|
-| **[ROADMAP.md](ROADMAP.md)** | Master roadmap - product and development direction |
-| **[development/CODEX_SAFE_WORKFLOW.md](development/CODEX_SAFE_WORKFLOW.md)** | Current safe workflow for Codex, Git, testing, and Android launch checks |
-| [FEATURE_LIST.md](FEATURE_LIST.md) | Complete feature inventory (150+ features) |
-| [DECISIONS.md](DECISIONS.md) | Key architectural decisions |
+## Start Here
 
-## 📁 Active Folders
+| Document | Purpose |
+| --- | --- |
+| `../README.md` | Repository entry point and build commands. |
+| `../AGENTS.md` | Current Codex working rules. |
+| `../apps/aquarium_app/README.md` | App architecture and local-first product overview. |
+| `../apps/aquarium_app/docs/agent/FINISH_MAP.md` | Completion control layer and next-slice priority order. |
+| `../apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md` | Current branch, checks, blockers, and resume point. |
+| `../apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md` | Current complete-local audit baseline and status history. |
+| `../apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md` | Detailed backlog and acceptance history. |
 
-| Folder | Contents |
-|--------|----------|
-| `planning/` | Research & design docs (market research, room concepts) |
-| `development/` | Active development and agent workflow |
-| `guides/` | User-facing guides |
-| `completed/` | Completion reports for finished work |
-| `testing/` | Test reports and QA |
-| `legal/` | Privacy policy, terms |
-| `research/` | Competitor and market research |
-| `review/` | Code review notes |
+## Folder Guide
 
-## 📦 Archive
+| Folder | Status |
+| --- | --- |
+| `legal/` | Legal source markdown and setup notes. |
+| `guides/` | Historical and user-facing guide material. |
+| `testing/`, `qa/`, `review/`, `audit/`, `completed/` | Historical evidence and review material. Use current agent/product docs first. |
+| `planning/`, `plans/`, `progress/`, `research/` | Background planning and research; validate against current source before using. |
+| `archive/` | Historical docs retained for reference only. |
 
-Old planning documents consolidated into ROADMAP.md:
-
-| Folder | Contents |
-|--------|----------|
-| `archive/planning/` | Legacy roadmaps, UI audits, planning docs |
-| `archive/ui-audit/` | Detailed UI/UX audit specs (reference only) |
-
----
-
-*Last updated: 2026-05-02*
+`ROADMAP.md` is now a pointer to the active planning sources. The old roadmap
+and old root workflow notes were archived under
+`archive/root-legacy-2026-07-04/`.

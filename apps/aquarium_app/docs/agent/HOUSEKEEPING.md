@@ -84,6 +84,15 @@ the path in `ACTIVE_HANDOFF.md`, compare with `git status` and `git rev-parse
 When a doc is superseded, link it to the current source of truth instead of
 deleting historical context.
 
+Root-level historical reports and old workflow notes live under:
+
+```text
+docs/archive/root-legacy-2026-07-04/
+```
+
+Do not treat files in that archive as current roadmap, branch policy, build
+instructions, or product status.
+
 ## Cleanup Cadence
 
 At the end of each committed slice:
@@ -100,4 +109,3 @@ Before release-candidate work:
 - Check stale screenshot/log folders.
 - Confirm docs do not claim fake cloud, fake premium, or unsupported AI.
 - Run the release-candidate row in `QUALITY_LADDER.md`.
-

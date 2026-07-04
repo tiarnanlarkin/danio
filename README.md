@@ -1,69 +1,49 @@
-# 🐠 Aquarium Hobby App - Development Workspace
+# Danio
 
-**Main Repository:** `repo/` folder  
-**Remote Backup:** https://github.com/tiarnanlarkin/aquarium-app
+Danio is a local-first Flutter app for aquarium hobbyists. The active app lives
+under `apps/aquarium_app`, and the current source-of-truth branch is `main`.
 
----
+## Start Here
 
-## ⚠️ IMPORTANT: File Organization Rule
+- `AGENTS.md` - repo working rules for Codex sessions.
+- `apps/aquarium_app/README.md` - app overview, architecture, build commands,
+  and local-first product scope.
+- `apps/aquarium_app/docs/agent/FINISH_MAP.md` - current completion control
+  layer and next-slice priority order.
+- `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
+  - current complete-local audit baseline and status history.
+- `apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
+  - detailed backlog and acceptance history.
+- `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md` - current branch, checks,
+  blockers, and exact resume point.
 
-**ALL project files must live inside the `repo/` folder.**
+## Build
 
-### ✅ Correct Structure:
-```
-Aquarium App Dev/
-└── repo/                          ← Everything goes here
-    ├── apps/aquarium_app/         ← Source code
-    ├── docs/                      ← ALL documentation
-    │   ├── planning/
-    │   ├── testing/
-    │   ├── guides/
-    │   ├── legal/
-    │   ├── completed/
-    │   └── research/
-    └── [other project files]
-```
+Run app commands from `apps/aquarium_app`:
 
-### ❌ Do NOT Store Files:
-- Outside the `repo/` folder
-- In parent `Aquarium App Dev/` folder
-- In WSL `/home/tiarnanlarkin/clawd/`
-- In `/tmp/` (except temporary screenshots)
-
-### Why This Rule Exists:
-1. **No Lost Files** - Everything version-controlled
-2. **Automatic Backup** - Git push backs up everything
-3. **Complete History** - See how project evolved
-4. **Easy Sharing** - Clone repo, get everything
-5. **One Source of Truth** - No hunting for scattered files
-
----
-
-## 🔄 Workflow
-
-### Daily Development:
-1. Work on files inside `repo/`
-2. Test, build, iterate
-3. Run `save_work.bat` to commit & push
-
-### When Creating New Files:
-1. **Code** → `apps/aquarium_app/lib/...`
-2. **Documentation** → `docs/[appropriate subfolder]/`
-3. **Test Screenshots** → `docs/testing/screenshots/`
-4. **Planning Docs** → `docs/planning/`
-
-### Before Ending Session:
-```cmd
-cd repo
-save_work.bat
+```powershell
+flutter pub get
+flutter test
+flutter analyze
+flutter build apk --debug --target lib/main.dart
+flutter build apk --release --target lib/main.dart
 ```
 
-This commits all changes and pushes to GitHub.
+The local quality wrapper is:
 
----
+```powershell
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused
+.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full
+```
 
-**Decision Made:** 2026-02-11  
-**Applies To:** Aquarium App (and all future projects)  
-**Enforced By:** Molt (AI Agent)
+## Repository Shape
 
-**Never lose work again.** 🔥
+- `apps/aquarium_app/` - Flutter source, app docs, tests, scripts, assets, and
+  QA evidence.
+- `docs/` - repository-level public/legal/planning archive docs.
+- `contracts/` - retained schema references that are not part of the Flutter
+  build path.
+- `docs/archive/root-legacy-2026-07-04/` - historical root-level reports and
+  old workflow notes kept for reference only.
+
+Do not use archived docs as current roadmap or workflow authority.

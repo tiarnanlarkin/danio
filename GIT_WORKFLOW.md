@@ -1,82 +1,50 @@
-# Git Workflow - Danio
+# Danio Git Workflow
 
-Last updated: 2026-05-02
+Current source of truth:
 
-The old `master` / `aquarium-app` workflow is retired. The current source of truth is:
-
-- Local repo: `C:\Users\larki\Documents\Danio Aquarium App Project\repo`
-- Remote: `https://github.com/tiarnanlarkin/danio.git`
-- Default branch: `main`
+- Branch: `main`
 - App path: `apps/aquarium_app`
+- Remote mirror: use `git remote -v` for the current URL
+- Handoff: `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
 
 ## Safe Start
 
 ```powershell
-cd "C:\Users\larki\Documents\Danio Aquarium App Project\repo"
-git status --short --branch
-git fetch origin
-git log --oneline --decorate --max-count=5
+git fetch --all --prune --tags
+git status --short -uall
+git status -sb
+git branch -vv --all
+git worktree list
 ```
 
-Do not run `git pull --rebase`, `git reset --hard`, or `git checkout -- <file>` unless the user explicitly asks for that operation.
+If the remote is ahead, stop and reconcile before new work. If the worktree is
+dirty with changes you did not make, preserve them.
 
-## Branch Per Fix
+## Branches
 
-Create a branch for every fix or audit implementation:
+`main` is the buildable source-of-truth branch. Use short-lived feature or fix
+branches for normal development slices when isolation is useful, then merge
+verified work back into `main`, push the mirror, and delete merged temporary
+branches.
+
+Do not keep long-running branch stacks around as hidden source-of-truth copies.
+
+## Verification
+
+Run commands from `apps/aquarium_app` unless a repo doc says otherwise.
 
 ```powershell
-git checkout -b fix/short-description
-```
-
-Use small branches. One user-visible issue or workflow improvement per branch is the default.
-
-## Before Committing
-
-From `apps/aquarium_app`, run the appropriate checks:
-
-```powershell
-flutter analyze --no-pub
 flutter test
-flutter build apk --debug --target-platform android-arm64 --no-pub
+flutter analyze
+flutter build apk --debug --target lib/main.dart
+git diff --check
 ```
 
-For release readiness, also run:
+Use `apps/aquarium_app/docs/agent/QUALITY_LADDER.md` to choose the smallest
+safe gate for the slice. Product/data-safety changes usually need the local
+quality wrapper, not only ad hoc commands.
 
-```powershell
-flutter build appbundle --release
-```
+## Legacy
 
-For UI/navigation/Tank/onboarding changes, run Android device smoke tests once Android tooling is available.
-
-## Saving Work
-
-The helper scripts now refuse to commit from `main`. Use them only from a feature/fix branch:
-
-```powershell
-.\save_work.bat
-```
-
-or:
-
-```bash
-./save_work.sh
-```
-
-They commit and push the current branch to `origin`.
-
-## GitHub
-
-Open PRs against `main` after local checks pass. GitHub Actions must be green before treating the branch as release-ready. If CI fails before runner steps start, check GitHub account/billing status before assuming the app is broken.
-
-## Recovery
-
-Prefer non-destructive inspection first:
-
-```powershell
-git status --short --branch
-git diff --stat
-git diff
-git log --oneline --decorate --max-count=10
-```
-
-Ask before any destructive recovery. The repo may contain local work that is intentionally ahead of GitHub.
+The previous workflow note was archived at
+`docs/archive/root-legacy-2026-07-04/GIT_WORKFLOW.legacy.md`.

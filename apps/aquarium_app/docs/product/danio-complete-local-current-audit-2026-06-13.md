@@ -4,15 +4,25 @@ Status: Active current-state audit
 Created: 2026-06-13
 Scope: Android local completion workstream
 
+Maintenance note 2026-07-04:
+
+- The source-of-truth branch was consolidated to `main` after the
+  `qa/production-tool-audit-2026-05-25` branch was fast-forwarded in.
+- The verification baseline below is retained as dated audit history. Use
+  `docs/agent/FINISH_MAP.md` and `docs/agent/ACTIVE_HANDOFF.md` for the current
+  branch and next-action state.
+
 ## 1. Verification Baseline
 
-Environment:
+Environment from the original 2026-06-13 audit pass:
 
 - Flutter 3.44.0 stable, Dart 3.12.0.
-- Branch: `qa/production-tool-audit-2026-05-25`.
+- Original branch: `qa/production-tool-audit-2026-05-25`; current
+  source-of-truth branch after housekeeping is `main`.
 - Android emulator configured: `danio_api36`.
-- Physical Android device visible as `RFCY8022D5R`, but currently unauthorized
-  over ADB in this Windows-reset environment.
+- Physical Android authorization changes over time. Check
+  `docs/agent/DEVICE_OWNERSHIP.md` and current `adb devices` output before any
+  device work.
 
 Passing checks in this pass:
 

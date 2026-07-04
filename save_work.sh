@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # Safe Danio save helper. Refuses to commit from main.
-cd "/mnt/c/Users/larki/Documents/Danio Aquarium App Project/repo"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$script_dir"
 
 branch="$(git branch --show-current)"
 if [[ -z "$branch" ]]; then
@@ -31,4 +32,4 @@ echo "Pushing $branch to origin..."
 git push -u origin "$branch"
 
 echo "Work saved to GitHub on branch $branch."
-echo "Remote: https://github.com/tiarnanlarkin/danio"
+git remote get-url origin

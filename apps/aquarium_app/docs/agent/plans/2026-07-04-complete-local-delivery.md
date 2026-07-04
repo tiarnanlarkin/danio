@@ -1,9 +1,16 @@
 # Danio Complete-Local Delivery Execution Plan
 
-Status: Active execution control
+Status: Archived execution-control snapshot after 2026-07-04 housekeeping
 Created: 2026-07-04
-Branch: `qa/production-tool-audit-2026-05-25`
+Original branch: `qa/production-tool-audit-2026-05-25`
 Finish line: complete-local before public release or store/account execution
+
+Maintenance note 2026-07-04:
+
+- This plan is retained as historical execution context.
+- `main` is now the source-of-truth branch.
+- Use `../FINISH_MAP.md`, `../ACTIVE_HANDOFF.md`, and the product audit/backlog
+  for current slice selection.
 
 ## Operating Model
 
@@ -20,7 +27,8 @@ Finish line: complete-local before public release or store/account execution
 ## Preflight
 
 - Repo root: `C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\repo`
-- Source branch: `qa/production-tool-audit-2026-05-25`
+- Source branch at the time: `qa/production-tool-audit-2026-05-25`; current
+  source-of-truth branch is `main`.
 - Preflight command set:
   - `git status --short -uall`
   - `git fetch --all --prune`
@@ -60,9 +68,9 @@ Finish line: complete-local before public release or store/account execution
 6. Release hardening: Android AAB/signing/config hygiene, screenshots,
    notification icon QA, and final local release signoff.
 
-## Active Slice
+## Historical Active Slice
 
-- Current slice: `DS-2026-07-04-011`
+- Current slice at the time: `DS-2026-07-04-011`
 - Contract:
   `docs/agent/plans/DS-2026-07-04-011-data-resilience-slice-contract.md`
 - Goal: no-tank backup imports must not restore app-wide preferences.
