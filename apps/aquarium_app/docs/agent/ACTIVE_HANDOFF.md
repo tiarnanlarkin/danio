@@ -12,8 +12,8 @@ Last updated: 2026-07-04 during HSK-2026-07-04-001 repository housekeeping
   docs`.
 - The former QA branch had no commits missing from `main` after the
   fast-forward.
-- Temporary branch cleanup is expected after this housekeeping commit is
-  verified and pushed.
+- The former QA branch was deleted locally and from `origin` after `main` was
+  pushed.
 
 ## Current Slice
 
@@ -90,7 +90,7 @@ focused Tank Detail tests, targeted analysis, `Full` quality gate, post-doc
 
 ## Next Action
 
-After housekeeping is committed, pushed, and temporary branches are removed:
+Housekeeping is committed, pushed, and temporary branches are removed. Next:
 
 1. Start a fresh session.
 2. Rebuild context from `AGENTS.md`, this handoff, `FINISH_MAP.md`,
