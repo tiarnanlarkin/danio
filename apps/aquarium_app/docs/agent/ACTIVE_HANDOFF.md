@@ -8,6 +8,8 @@ Last updated: 2026-07-04 during HSK-2026-07-04-001 repository housekeeping
 - Source-of-truth branch: `main`.
 - `main` was fast-forwarded to `qa/production-tool-audit-2026-05-25` at
   `9d64de38 fix: guard tank quick feeding against missing tanks`.
+- Housekeeping commit: `8e1e0ac0 chore: consolidate main and archive legacy
+  docs`.
 - The former QA branch had no commits missing from `main` after the
   fast-forward.
 - Temporary branch cleanup is expected after this housekeeping commit is
