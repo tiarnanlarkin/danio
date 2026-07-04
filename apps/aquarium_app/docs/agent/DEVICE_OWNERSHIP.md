@@ -16,8 +16,8 @@ Other agents must stop at compile, test, analyze, or `AndroidPrep` checks.
 
 | Device | Intended use | Current durable owner | Notes |
 | --- | --- | --- | --- |
-| `danio_api36` | Phone live preview and phone Android QA | Unclaimed after `QA-2026-07-04-001` | Last verified as `emulator-5554`; use explicit device serial after checking `adb devices`. |
-| `danio_tablet_api36` | Tablet layout QA and screenshots | Unclaimed after `QA-2026-07-04-001` | Last verified as `emulator-5556`; use explicit device serial after checking `adb devices`. |
+| `danio_api36` | Phone live preview and phone Android QA | Unclaimed after `QA-2026-07-04-002` | Last verified as `emulator-5554`; use explicit device serial after checking `adb devices`. |
+| `danio_tablet_api36` | Tablet layout QA and screenshots | Unclaimed after `QA-2026-07-04-002` | Last verified as `emulator-5556`; use explicit device serial after checking `adb devices`. |
 | Physical phone `RFCY8022D5R` | Do not use unless user authorizes and ADB is authorized | Unclaimed | Observed as `unauthorized` on 2026-07-04; not used. |
 
 This file is a durable coordination record, not a real-time lock. At the start
@@ -85,6 +85,8 @@ Add a row when a committed slice uses Android evidence:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-04-001` | CheckOnly launch, debug APK install, app launch, screenshot, focus dump, logcat | `docs/qa/screenshots/live-preview/2026-07-04/` | Yes |
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-001` | CheckOnly launch, debug APK install, app launch, screenshot, focus dump, logcat | `docs/qa/screenshots/live-preview/2026-07-04/` | Yes |
+| 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-04-002` | CheckOnly, AndroidPrep, debug APK install/launch, black-box smoke attempt, 19-surface screenshot/XML capture, logcat tail, passing black-box smoke rerun | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/` | Yes |
+| 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-002` | CheckOnly, AndroidPrep, debug APK install/launch, black-box smoke attempt, 19-surface screenshot/XML capture, logcat tail, passing black-box smoke rerun | `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/` | Yes |
 
 ## Release Rule
 

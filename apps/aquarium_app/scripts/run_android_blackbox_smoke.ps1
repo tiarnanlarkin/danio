@@ -181,6 +181,33 @@ function Tap-Percent {
   Start-Sleep -Milliseconds 900
 }
 
+function Swipe-Percent {
+  param(
+    [double]$StartX,
+    [double]$StartY,
+    [double]$EndX,
+    [double]$EndY,
+    [int]$DurationMs = 500
+  )
+
+  Ensure-AppForeground
+  $startPx = [int][math]::Round($script:Screen.Width * $StartX / 100)
+  $startPy = [int][math]::Round($script:Screen.Height * $StartY / 100)
+  $endPx = [int][math]::Round($script:Screen.Width * $EndX / 100)
+  $endPy = [int][math]::Round($script:Screen.Height * $EndY / 100)
+  Invoke-Adb @(
+    "shell",
+    "input",
+    "swipe",
+    "$startPx",
+    "$startPy",
+    "$endPx",
+    "$endPy",
+    "$DurationMs"
+  ) | Out-Null
+  Start-Sleep -Milliseconds 1200
+}
+
 function Press-Back {
   Ensure-AppForeground
   Invoke-Adb @("shell", "input", "keyevent", "KEYCODE_BACK") | Out-Null
@@ -357,14 +384,142 @@ function Try-WaitFirstVisibleAppState {
 function Get-BoundsCenter {
   param([Parameter(Mandatory = $true)][string]$Bounds)
 
+  $rect = Get-BoundsRect $Bounds
+
+  [pscustomobject]@{
+    X = $rect.CenterX
+    Y = $rect.CenterY
+  }
+}
+
+function Get-BoundsRect {
+  param([Parameter(Mandatory = $true)][string]$Bounds)
+
   if ($Bounds -notmatch "\[(\d+),(\d+)\]\[(\d+),(\d+)\]") {
     throw "Could not parse UI bounds: $Bounds"
   }
 
+  $left = [int]$Matches[1]
+  $top = [int]$Matches[2]
+  $right = [int]$Matches[3]
+  $bottom = [int]$Matches[4]
+
   [pscustomobject]@{
-    X = [int][math]::Round(([int]$Matches[1] + [int]$Matches[3]) / 2)
-    Y = [int][math]::Round(([int]$Matches[2] + [int]$Matches[4]) / 2)
+    Left = $left
+    Top = $top
+    Right = $right
+    Bottom = $bottom
+    CenterX = [int][math]::Round(($left + $right) / 2)
+    CenterY = [int][math]::Round(($top + $bottom) / 2)
   }
+}
+
+function Get-BottomDockTop {
+  param([Parameter(Mandatory = $true)][xml]$Doc)
+
+  $dockTop = $null
+  $nodes = $Doc.SelectNodes("//*[@content-desc]")
+  foreach ($node in $nodes) {
+    $label = $node.GetAttribute("content-desc")
+    if ($label -notmatch "Tab [1-5] of 5") {
+      continue
+    }
+
+    $rect = Get-BoundsRect $node.GetAttribute("bounds")
+    if ($null -eq $dockTop -or $rect.Top -lt $dockTop) {
+      $dockTop = $rect.Top
+    }
+  }
+
+  return $dockTop
+}
+
+function Adjust-TapCenterForDock {
+  param(
+    [Parameter(Mandatory = $true)][pscustomobject]$Center,
+    [Parameter(Mandatory = $true)][string]$Bounds,
+    [Parameter(Mandatory = $true)][xml]$Doc
+  )
+
+  $dockTop = Get-BottomDockTop $Doc
+  if ($null -eq $dockTop) {
+    return $Center
+  }
+
+  $rect = Get-BoundsRect $Bounds
+  $top = $rect.Top
+  if ($center.Y -ge $dockTop) {
+    if ($top -ge $dockTop) {
+      throw "Tap target is fully covered by the bottom dock: $Bounds"
+    }
+
+    $center.Y = [int][math]::Max($top + 8, $dockTop - 24)
+    if ($center.Y -ge $dockTop) {
+      throw "Tap target is fully covered by the bottom dock: $Bounds"
+    }
+  }
+
+  return $Center
+}
+
+function Assert-SelectedTab {
+  param(
+    [string]$TabLabel,
+    [int]$TimeoutSeconds = 6
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  do {
+    Ensure-AppForeground
+    [xml]$doc = Get-Hierarchy
+    $nodes = $doc.SelectNodes("//*[@content-desc]")
+    foreach ($node in $nodes) {
+      if (
+        $node.GetAttribute("selected") -eq "true" -and
+        $node.GetAttribute("content-desc") -match "$TabLabel Tab [1-5] of 5"
+      ) {
+        return
+      }
+    }
+
+    Start-Sleep -Milliseconds 300
+  } while ((Get-Date) -lt $deadline)
+
+  throw "Expected selected tab not visible within $TimeoutSeconds seconds: $TabLabel"
+}
+
+function Assert-VisibleOutsideBottomDock {
+  param(
+    [string]$Pattern,
+    [int]$TimeoutSeconds = 6
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  do {
+    Ensure-AppForeground
+    [xml]$doc = Get-Hierarchy
+    $dockTop = Get-BottomDockTop $doc
+    $nodes = $doc.SelectNodes("//*[@content-desc or @text or @hint]")
+    foreach ($node in $nodes) {
+      $label = "$($node.GetAttribute("content-desc")) $($node.GetAttribute("text")) $($node.GetAttribute("hint"))"
+      if ($label -notmatch $Pattern) {
+        continue
+      }
+
+      if ($label -match "Tab [1-5] of 5") {
+        continue
+      }
+
+      $rect = Get-BoundsRect $node.GetAttribute("bounds")
+      if ($null -eq $dockTop -or $rect.Bottom -le $dockTop) {
+        return
+      }
+    }
+
+    Start-Sleep -Milliseconds 300
+  } while ((Get-Date) -lt $deadline)
+
+  throw "Expected UI pattern outside bottom dock not visible within $TimeoutSeconds seconds: $Pattern"
 }
 
 function Tap-Visible {
@@ -408,6 +563,7 @@ function Tap-Visible {
               $center.X = [int][math]::Min($center.X, $left + 96)
             }
           }
+          $center = Adjust-TapCenterForDock $center ($tapNode.GetAttribute("bounds")) $doc
           Invoke-Adb @("shell", "input", "tap", "$($center.X)", "$($center.Y)") | Out-Null
           Start-Sleep -Milliseconds 900
           return
@@ -512,7 +668,7 @@ function Check-QaDeepLinks {
   Assert-Visible "Question|Need a hint|Check Answer|Lesson|Nitrogen" 15
 
   if (Try-Tap-Visible "Need a hint|Show hint" 3) {
-    Assert-Visible "Look for keywords|hint" 6
+    Assert-Visible "Use this care clue|Hint shown" 6
   }
   else {
     Write-Host "Lesson opened, but hint control was not visible in the current lesson state."
@@ -524,7 +680,7 @@ function Check-QaDeepLinks {
   Assert-Visible "QA Lesson Quiz" 12
   Assert-Visible "Need a hint\\?|Show hint" 12
   Tap-Visible "Need a hint\\?|Show hint" 8
-  Assert-Visible "Look for keywords|Hint shown|correct answer often relates" 8
+  Assert-Visible "Use this care clue|Hint shown" 8
   Press-Back
 
   Open-QaDeepLink "danio://qa/lesson-quiz?state=selected-correct"
@@ -556,11 +712,11 @@ function Open-ToolAndReturn {
     [string]$ExpectedPattern
   )
 
-  Assert-Visible "Workshop|Tools.*calculators" 10
+  Assert-VisibleOutsideBottomDock "Workshop|Tools.*calculators" 10
   Tap-Visible $TapPattern 20
-  Assert-Visible $ExpectedPattern 10
+  Assert-VisibleOutsideBottomDock $ExpectedPattern 10
   Press-Back
-  Assert-Visible "Workshop|Tools.*calculators" 10
+  Assert-VisibleOutsideBottomDock "Workshop|Tools.*calculators" 10
   Start-Sleep -Milliseconds 1800
 }
 
@@ -655,7 +811,8 @@ Assert-Visible "Learning Paths|Tank Toolbox|Smart|More|Build your review deck|St
 
 Write-Host "Checking bottom tabs..."
 Tap-Percent 30 92
-Assert-Visible "Practice Modes|Build your review deck|Start Review|Standard Review|All caught up" 12
+Assert-SelectedTab "Practice" 12
+Assert-VisibleOutsideBottomDock "Practice Modes|Build your review deck|Start Review|Standard Review|All caught up" 12
 if (Try-Tap-Visible "Standard Practice|Quick Review" 2) {
   Assert-Visible "Practice Session|Review this concept" 10
   if (Try-Tap-Visible "Exit Session" 2) {
@@ -673,22 +830,27 @@ else {
   Write-Host "Practice session smoke skipped: no enabled review mode was visible."
 }
 Tap-Percent 50 92
-Assert-Visible "Tank Toolbox" 12
+Assert-SelectedTab "Tank" 12
+Assert-VisibleOutsideBottomDock "Tank Toolbox" 12
 Tap-Percent 70 92
-Assert-Visible "Smart" 12
+Assert-SelectedTab "Smart" 12
+Assert-VisibleOutsideBottomDock "Aquarium Intelligence|Optional AI tools" 12
 if (Try-Tap-Visible "Fish & Plant ID" 4) {
   Assert-Visible "Set up Smart Hub|Open Preferences" 8
   if (-not (Try-Tap-Visible "Not now" 2)) {
     Press-Back
   }
-  Assert-Visible "Smart" 8
+  Assert-SelectedTab "Smart" 8
 }
 Tap-Percent 90 92
-Assert-Visible "More" 12
+Assert-SelectedTab "More" 12
+Assert-VisibleOutsideBottomDock "Workshop|Preferences|Settings|Backup" 12
 
 Write-Host "Checking Workshop routes..."
+Swipe-Percent 50 82 50 52 500
+Assert-VisibleOutsideBottomDock "Workshop" 10
 Tap-Visible "Workshop" 10
-Assert-Visible "Workshop|Tools.*calculators" 12
+Assert-VisibleOutsideBottomDock "Workshop|Tools.*calculators" 12
 Start-Sleep -Milliseconds 1800
 
 Open-ToolAndReturn "Water Change" "Water Change Calculator"
@@ -713,14 +875,15 @@ Press-Back
 Assert-Visible "More"
 Start-Sleep -Milliseconds 1800
 
+Swipe-Percent 50 82 50 52 500
+Assert-VisibleOutsideBottomDock "Preferences|Settings" 10
 Tap-Visible "Preferences|Settings"
 Assert-Visible "Preferences|Settings"
 Press-Back
 Assert-Visible "More"
 Start-Sleep -Milliseconds 1800
 
-Invoke-Adb @("shell", "input", "swipe", "540", "1900", "540", "1100", "500") | Out-Null
-Start-Sleep -Milliseconds 1200
+Swipe-Percent 50 82 50 48 500
 Assert-Visible "Backup"
 Tap-Visible "Backup"
 Assert-Visible "Backup|Restore" 10
@@ -740,10 +903,11 @@ Press-Back
 Assert-Visible "More"
 Start-Sleep -Milliseconds 1800
 
+Swipe-Percent 50 82 50 45 500
+Assert-VisibleOutsideBottomDock "About|Version" 10
 Tap-Visible "About|Version"
 Assert-Visible "About|Version"
-Invoke-Adb @("shell", "input", "swipe", "540", "1900", "540", "700", "500") | Out-Null
-Start-Sleep -Milliseconds 1200
+Swipe-Percent 50 82 50 35 500
 
 Tap-Visible "Privacy"
 Assert-Visible "Privacy Policy"
@@ -763,7 +927,7 @@ Assert-Visible "More"
 if ($IncludeQaDeepLinks) {
   Check-QaDeepLinks
   Tap-Percent 90 92
-  Assert-Visible "More" 12
+  Assert-SelectedTab "More" 12
 }
 
 Write-Host "Checking logcat for crash signatures..."

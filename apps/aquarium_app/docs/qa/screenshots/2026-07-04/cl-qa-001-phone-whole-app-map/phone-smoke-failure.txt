@@ -1,0 +1,1 @@
+﻿Expected UI pattern not visible within 8 seconds: Set up Smart Hub|Open Preferences

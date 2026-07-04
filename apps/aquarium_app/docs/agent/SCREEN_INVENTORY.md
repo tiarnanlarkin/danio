@@ -158,11 +158,14 @@ that with assumptions.
 
 ## Open Inventory Work
 
-- Complete CL-QA-001 phone whole-app screenshot/XML audit.
-- Complete CL-QA-002 tablet whole-app screenshot/XML audit.
+- Complete CL-QA-001 phone whole-app screenshot/XML audit. Current partial
+  evidence: `docs/qa/whole-app-phone-map-2026-07-04.md` and
+  `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/`.
+- Complete CL-QA-002 tablet whole-app screenshot/XML audit. Current partial
+  evidence: `docs/qa/whole-app-tablet-map-2026-07-04.md` and
+  `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`.
 - Replace `Needs evidence` rows only with committed local evidence.
 - Add route/deep-link details as navigation is centralized beyond the current
   partial `AppRoutes` helper.
 - Keep this file updated when screens are added, removed, renamed, or given new
   current evidence.
-

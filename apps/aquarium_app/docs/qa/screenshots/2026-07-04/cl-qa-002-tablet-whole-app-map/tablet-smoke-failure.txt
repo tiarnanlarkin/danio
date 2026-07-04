@@ -1,0 +1,1 @@
+﻿Expected UI pattern not visible within 12 seconds: Workshop|Tools.*calculators

@@ -14,32 +14,38 @@ void main() {
     expect(source, contains('"install", "-r"'));
   });
 
-  test('blackbox smoke script can clean install to avoid stale emulator state', () {
-    final source = File(
-      'scripts/run_android_blackbox_smoke.ps1',
-    ).readAsStringSync();
+  test(
+    'blackbox smoke script can clean install to avoid stale emulator state',
+    () {
+      final source = File(
+        'scripts/run_android_blackbox_smoke.ps1',
+      ).readAsStringSync();
 
-    expect(source, contains(r'if ($CleanInstall)'));
-    expect(source, contains('Clean install requested'));
-    expect(source, contains(r'Invoke-Adb @("shell", "pm", "path", $AppId)'));
-    expect(source, contains(r'Invoke-Adb @("uninstall", $AppId)'));
-    expect(
-      source,
-      contains(r'No installed $AppId package found before clean install.'),
-    );
-  });
+      expect(source, contains(r'if ($CleanInstall)'));
+      expect(source, contains('Clean install requested'));
+      expect(source, contains(r'Invoke-Adb @("shell", "pm", "path", $AppId)'));
+      expect(source, contains(r'Invoke-Adb @("uninstall", $AppId)'));
+      expect(
+        source,
+        contains(r'No installed $AppId package found before clean install.'),
+      );
+    },
+  );
 
-  test('blackbox smoke script retries install after emulator storage refusal', () {
-    final source = File(
-      'scripts/run_android_blackbox_smoke.ps1',
-    ).readAsStringSync();
+  test(
+    'blackbox smoke script retries install after emulator storage refusal',
+    () {
+      final source = File(
+        'scripts/run_android_blackbox_smoke.ps1',
+      ).readAsStringSync();
 
-    expect(source, contains('INSTALL_FAILED_INSUFFICIENT_STORAGE'));
-    expect(source, contains('"cmd", "package", "trim-caches", "2G"'));
-    expect(source, contains('Existing package blocks install'));
-    expect(source, contains(r'Invoke-Adb @("shell", "pm", "path", $AppId)'));
-    expect(source, contains(r'Invoke-Adb @("uninstall", $AppId)'));
-  });
+      expect(source, contains('INSTALL_FAILED_INSUFFICIENT_STORAGE'));
+      expect(source, contains('"cmd", "package", "trim-caches", "2G"'));
+      expect(source, contains('Existing package blocks install'));
+      expect(source, contains(r'Invoke-Adb @("shell", "pm", "path", $AppId)'));
+      expect(source, contains(r'Invoke-Adb @("uninstall", $AppId)'));
+    },
+  );
 
   test('blackbox smoke script waits for any first visible app state', () {
     final source = File(
@@ -139,9 +145,17 @@ void main() {
       'scripts/run_android_blackbox_smoke.ps1',
     ).readAsStringSync();
 
-    expect(source, contains('Assert-Visible "Workshop|Tools.*calculators" 10'));
+    expect(
+      source,
+      contains(
+        'Assert-VisibleOutsideBottomDock "Workshop|Tools.*calculators" 10',
+      ),
+    );
     expect(source, contains(r'Tap-Visible $TapPattern 20'));
-    expect(source, contains(r'Assert-Visible $ExpectedPattern 10'));
+    expect(
+      source,
+      contains(r'Assert-VisibleOutsideBottomDock $ExpectedPattern 10'),
+    );
   });
 
   test('blackbox smoke script gives tab transitions enough Android time', () {
@@ -149,10 +163,51 @@ void main() {
       'scripts/run_android_blackbox_smoke.ps1',
     ).readAsStringSync();
 
-    expect(source, contains('Assert-Visible "Smart" 12'));
-    expect(source, contains('Assert-Visible "More" 12'));
+    expect(source, contains('Assert-SelectedTab "Smart" 12'));
+    expect(
+      source,
+      contains(
+        'Assert-VisibleOutsideBottomDock "Aquarium Intelligence|Optional AI tools" 12',
+      ),
+    );
+    expect(source, contains('Assert-SelectedTab "More" 12'));
     expect(source, contains('Tap-Visible "Workshop" 10'));
-    expect(source, contains('Assert-Visible "Workshop|Tools.*calculators" 12'));
+    expect(
+      source,
+      contains(
+        'Assert-VisibleOutsideBottomDock "Workshop|Tools.*calculators" 12',
+      ),
+    );
+  });
+
+  test('blackbox smoke script asserts selected tabs outside dock labels', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    expect(source, contains('function Assert-SelectedTab'));
+    expect(source, contains(r'$node.GetAttribute("selected") -eq "true"'));
+    expect(source, contains(r'$node.GetAttribute("content-desc") -match'));
+    expect(source, contains('Assert-SelectedTab "Practice" 12'));
+    expect(source, contains('Assert-SelectedTab "Tank" 12'));
+    expect(source, contains('Assert-SelectedTab "Smart" 12'));
+    expect(source, contains('Assert-SelectedTab "More" 12'));
+  });
+
+  test('blackbox smoke script adjusts taps covered by the bottom dock', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    expect(source, contains('function Get-BottomDockTop'));
+    expect(source, contains('function Adjust-TapCenterForDock'));
+    expect(source, contains('Tab [1-5] of 5'));
+    expect(source, contains(r'if ($center.Y -ge $dockTop)'));
+    expect(
+      source,
+      contains(r'$center.Y = [int][math]::Max($top + 8, $dockTop - 24)'),
+    );
+    expect(source, contains('Tap target is fully covered by the bottom dock'));
   });
 
   test('blackbox smoke script retries adb transport failures', () {
@@ -211,4 +266,83 @@ void main() {
       expect(source, contains('Assert-Visible "More"'));
     },
   );
+
+  test('blackbox smoke script scrolls About above the bottom dock before tap', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    final backupIndex = source.indexOf('Tap-Visible "Backup"');
+    final aboutIndex = source.indexOf('Tap-Visible "About|Version"');
+    final safeAboutIndex = source.indexOf(
+      'Assert-VisibleOutsideBottomDock "About|Version" 10',
+    );
+
+    expect(backupIndex, isNonNegative);
+    expect(aboutIndex, isNonNegative);
+    expect(safeAboutIndex, isNonNegative);
+    expect(safeAboutIndex, greaterThan(backupIndex));
+    expect(safeAboutIndex, lessThan(aboutIndex));
+  });
+
+  test('blackbox smoke script scrolls Workshop above the tablet dock before tap', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    final sectionIndex = source.indexOf('Write-Host "Checking Workshop routes..."');
+    final workshopTapIndex = source.indexOf('Tap-Visible "Workshop" 10');
+    final swipeIndex = source.indexOf('Swipe-Percent 50 82 50 52 500');
+    final safeWorkshopIndex = source.indexOf(
+      'Assert-VisibleOutsideBottomDock "Workshop" 10',
+    );
+
+    expect(sectionIndex, isNonNegative);
+    expect(workshopTapIndex, isNonNegative);
+    expect(swipeIndex, isNonNegative);
+    expect(safeWorkshopIndex, isNonNegative);
+    expect(swipeIndex, greaterThan(sectionIndex));
+    expect(swipeIndex, lessThan(workshopTapIndex));
+    expect(safeWorkshopIndex, greaterThan(swipeIndex));
+    expect(safeWorkshopIndex, lessThan(workshopTapIndex));
+  });
+
+  test('blackbox smoke script scrolls Preferences above the tablet dock before tap', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    final achievementsBackIndex = source.indexOf(
+      'Assert-Visible "More"',
+      source.indexOf('Tap-Visible "Trophy Case|Achievements"'),
+    );
+    final preferencesTapIndex = source.indexOf('Tap-Visible "Preferences|Settings"');
+    final swipeIndex = source.indexOf(
+      'Swipe-Percent 50 82 50 52 500',
+      achievementsBackIndex + 1,
+    );
+    final safePreferencesIndex = source.indexOf(
+      'Assert-VisibleOutsideBottomDock "Preferences|Settings" 10',
+    );
+
+    expect(achievementsBackIndex, isNonNegative);
+    expect(preferencesTapIndex, isNonNegative);
+    expect(swipeIndex, isNonNegative);
+    expect(safePreferencesIndex, isNonNegative);
+    expect(swipeIndex, greaterThan(achievementsBackIndex));
+    expect(swipeIndex, lessThan(preferencesTapIndex));
+    expect(safePreferencesIndex, greaterThan(swipeIndex));
+    expect(safePreferencesIndex, lessThan(preferencesTapIndex));
+  });
+
+  test('blackbox smoke script accepts current care-clue hint copy', () {
+    final source = File(
+      'scripts/run_android_blackbox_smoke.ps1',
+    ).readAsStringSync();
+
+    expect(
+      source,
+      contains('Assert-Visible "Use this care clue|Hint shown" 8'),
+    );
+  });
 }

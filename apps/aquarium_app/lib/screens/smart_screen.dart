@@ -41,14 +41,25 @@ void _showOfflineSnackBar(BuildContext context) {
 
 /// Smart Hub - local aquarium intelligence with optional AI tools.
 class SmartScreen extends ConsumerStatefulWidget {
-  const SmartScreen({super.key});
+  final bool hasPersistentBottomDock;
+
+  const SmartScreen({super.key, this.hasPersistentBottomDock = false});
 
   @override
   ConsumerState<SmartScreen> createState() => _SmartScreenState();
 }
 
 class _SmartScreenState extends ConsumerState<SmartScreen> {
+  static const double _fishIdDockMargin = 12;
+  static const int _fishIdScrollMaxAttempts = 8;
+  static const Duration _fishIdScrollRetryDelay = Duration(milliseconds: 120);
+
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _fishIdCardKey = GlobalKey();
   final _askController = TextEditingController();
+  Timer? _fishIdRetryTimer;
+  bool _hasScrolledToFishIdCard = false;
+  bool _fishIdScrollScheduled = false;
   String? _askResponse;
   bool _askLoading = false;
   bool _showTooltip = true;
@@ -70,8 +81,108 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
   @override
   void dispose() {
+    _fishIdRetryTimer?.cancel();
+    _scrollController.dispose();
     _askController.dispose();
     super.dispose();
+  }
+
+  bool get _isVisibleTab => TickerMode.valuesOf(context).enabled;
+
+  void _maybeScrollFishIdAboveDock() {
+    if (!widget.hasPersistentBottomDock) return;
+    if (!_isVisibleTab) return;
+    if (_hasScrolledToFishIdCard) return;
+    if (_fishIdScrollScheduled) return;
+
+    _scheduleFishIdScroll(duration: const Duration(milliseconds: 500));
+  }
+
+  void _scheduleFishIdScroll({required Duration duration, int attempt = 0}) {
+    if (attempt == 0) {
+      if (_fishIdScrollScheduled) return;
+      _fishIdScrollScheduled = true;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (!_isVisibleTab) {
+        _fishIdScrollScheduled = false;
+        _fishIdRetryTimer?.cancel();
+        _fishIdRetryTimer = null;
+        return;
+      }
+
+      final keyContext = _fishIdCardKey.currentContext;
+      final settled =
+          keyContext != null &&
+          _scrollFishIdAboveFloatingDock(keyContext, duration: duration);
+
+      if (settled) {
+        _hasScrolledToFishIdCard = true;
+        _fishIdScrollScheduled = false;
+        _fishIdRetryTimer?.cancel();
+        _fishIdRetryTimer = null;
+        return;
+      }
+
+      if (attempt >= _fishIdScrollMaxAttempts) {
+        _fishIdScrollScheduled = false;
+        _fishIdRetryTimer?.cancel();
+        _fishIdRetryTimer = null;
+        return;
+      }
+
+      _fishIdRetryTimer?.cancel();
+      _fishIdRetryTimer = Timer(duration + _fishIdScrollRetryDelay, () {
+        _fishIdRetryTimer = null;
+        if (!mounted) return;
+        _scheduleFishIdScroll(duration: duration, attempt: attempt + 1);
+      });
+    });
+  }
+
+  bool _scrollFishIdAboveFloatingDock(
+    BuildContext targetContext, {
+    required Duration duration,
+  }) {
+    if (!_scrollController.hasClients) return false;
+    final renderObject = targetContext.findRenderObject();
+    if (renderObject is! RenderBox || !renderObject.hasSize) {
+      return false;
+    }
+
+    final mediaQuery = MediaQuery.maybeOf(context);
+    if (mediaQuery == null) {
+      return false;
+    }
+
+    final targetBottom = renderObject
+        .localToGlobal(Offset(0, renderObject.size.height))
+        .dy;
+    final clearBottom =
+        mediaQuery.size.height -
+        mediaQuery.viewPadding.bottom -
+        DanioBottomDock.contentClearance -
+        _fishIdDockMargin;
+    final overlap = targetBottom - clearBottom;
+    if (overlap <= 0) {
+      return true;
+    }
+
+    final position = _scrollController.position;
+    final targetOffset = (position.pixels + overlap).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
+    if ((targetOffset - position.pixels).abs() < 0.5) return true;
+
+    position.animateTo(
+      targetOffset,
+      duration: duration,
+      curve: Curves.easeOutCubic,
+    );
+    return false;
   }
 
   Future<void> _askDanio() async {
@@ -240,24 +351,27 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
       // Feature cards gated behind API key (CA-004) + connectivity
-      _FeatureCard(
-        icon: Icons.camera_alt,
-        title: 'Fish & Plant ID',
-        subtitle: aiConfigured
-            ? 'Snap a photo to identify species'
-            : 'Optional AI setup in Preferences',
-        color: AppColors.primary,
-        isLocked: !aiConfigured,
-        onTap: aiConfigured
-            ? () {
-                if (!ref.read(isOnlineProvider)) {
-                  _showOfflineSnackBar(context);
-                  return;
+      KeyedSubtree(
+        key: _fishIdCardKey,
+        child: _FeatureCard(
+          icon: Icons.camera_alt,
+          title: 'Fish & Plant ID',
+          subtitle: aiConfigured
+              ? 'Snap a photo to identify species'
+              : 'Optional AI setup in Preferences',
+          color: AppColors.primary,
+          isLocked: !aiConfigured,
+          onTap: aiConfigured
+              ? () {
+                  if (!ref.read(isOnlineProvider)) {
+                    _showOfflineSnackBar(context);
+                    return;
+                  }
+                  AppRoutes.toFishId(context);
                 }
-                AppRoutes.toFishId(context);
-              }
-            : () => _showAiSetupSheet(context),
-      ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
+              : () => _showAiSetupSheet(context),
+        ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
+      ),
 
       _FeatureCard(
         icon: Icons.healing,
@@ -428,11 +542,14 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       ],
     ];
 
+    _maybeScrollFishIdAboveDock();
+
     return GestureDetector(
       excludeFromSemantics: true,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         body: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             // Themed Smart Header
             ThemedTabHeader(
@@ -477,8 +594,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               ),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) =>
-                      _SmartReadableFrame(child: items[index]),
+                  (context, index) => _SmartReadableFrame(child: items[index]),
                   childCount: items.length,
                 ),
               ),

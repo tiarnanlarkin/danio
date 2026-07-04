@@ -65,12 +65,14 @@ Widget _wrap({
   int dueCards = 0,
   UserProfile? profile,
   bool learnGuidanceSeen = true,
+  bool smartGuidanceSeen = false,
   int? initialTab,
 }) {
   SharedPreferences.setMockInitialValues({
     if (profile != null) 'user_profile': jsonEncode(profile.toJson()),
     if (profile != null && learnGuidanceSeen)
       'guidance_seen_learnFirstVisit': true,
+    if (smartGuidanceSeen) 'guidance_seen_smartFirstVisit': true,
     if (dueCards > 0)
       'spaced_repetition_cards': jsonEncode(
         _dueReviewCards(dueCards).map((card) => card.toJson()).toList(),
@@ -386,7 +388,7 @@ void main() {
         tester.view.resetDevicePixelRatio();
       });
 
-      await tester.pumpWidget(_wrap(initialTab: 3));
+      await tester.pumpWidget(_wrap(smartGuidanceSeen: true, initialTab: 3));
       await _advance(tester);
 
       final intelligenceFinder = find.text('Aquarium Intelligence');
@@ -402,6 +404,42 @@ void main() {
 
       expect(intelligenceRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(emergencyRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Smart locked AI cards start clear of the bottom dock', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 2.625;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        _wrap(profile: _profile(), smartGuidanceSeen: true),
+      );
+      await _advance(tester);
+      await tester.tap(
+        find.byKey(const ValueKey('danio-bottom-dock-item-smart')),
+      );
+      await _advance(tester);
+
+      final fishIdCardFinder = find
+          .ancestor(
+            of: find.text('Fish & Plant ID'),
+            matching: find.byType(Card),
+          )
+          .first;
+      final dockFinder = find.byKey(const ValueKey('danio-bottom-dock'));
+      expect(fishIdCardFinder, findsOneWidget);
+      expect(dockFinder, findsOneWidget);
+
+      final fishIdCardRect = tester.getRect(fishIdCardFinder);
+      final dockRect = tester.getRect(dockFinder);
+
+      expect(fishIdCardRect.bottom, lessThanOrEqualTo(dockRect.top - 12));
       expect(tester.takeException(), isNull);
     });
 

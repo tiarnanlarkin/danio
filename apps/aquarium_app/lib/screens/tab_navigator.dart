@@ -208,7 +208,9 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                           key: _navigatorKeys[3],
                           onGenerateRoute: (settings) {
                             return MaterialPageRoute(
-                              builder: (context) => const SmartScreen(),
+                              builder: (context) => const SmartScreen(
+                                hasPersistentBottomDock: true,
+                              ),
                               settings: settings,
                             );
                           },
