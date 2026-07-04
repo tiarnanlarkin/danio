@@ -249,6 +249,15 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
 
     try {
       final storage = ref.read(storageServiceProvider);
+      final tank = await storage.getTank(tankId);
+      if (tank == null) {
+        if (!mounted) return;
+        DanioSnackBar.warning(
+          context,
+          'Could not save to journal. Please try again.',
+        );
+        return;
+      }
       await storage.saveLog(entry);
       await _recordConfirmedAIHistory();
       if (!mounted) return;

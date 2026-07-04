@@ -93,12 +93,16 @@ class _SymptomTriageStorage implements StorageService {
 
   final Tank tank;
   final savedLogs = <LogEntry>[];
+  bool tankExists = true;
 
   @override
-  Future<List<Tank>> getAllTanks() async => [tank];
+  Future<List<Tank>> getAllTanks() async => tankExists ? [tank] : [];
 
   @override
-  Future<Tank?> getTank(String id) async => id == tank.id ? tank : null;
+  Future<Tank?> getTank(String id) async {
+    if (!tankExists) return null;
+    return id == tank.id ? tank : null;
+  }
 
   @override
   Future<void> saveTank(Tank tank) async {}
@@ -250,6 +254,37 @@ void main() {
       expect(find.byType(SymptomTriageScreen), findsOneWidget);
     },
   );
+
+  testWidgets('stale tanks do not create orphan symptom triage journal logs', (
+    tester,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final storage = _SymptomTriageStorage(_tank());
+
+    await tester.pumpWidget(_wrap(storage: storage, prefs: prefs));
+    await tester.pump();
+
+    await _generateDiagnosis(tester);
+    storage.tankExists = false;
+
+    await tester.tap(
+      find.widgetWithText(AppButton, 'Save to Journal').hitTestable(),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Save AI Diagnosis?'), findsOneWidget);
+
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(storage.savedLogs, isEmpty);
+    expect(prefs.getStringList('ai_interaction_history'), isNull);
+    expect(
+      find.text('Could not save to journal. Please try again.'),
+      findsOneWidget,
+    );
+    expect(find.byType(SymptomTriageScreen), findsOneWidget);
+  });
 
   testWidgets('failed disclosure save does not request diagnosis', (
     tester,

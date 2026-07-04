@@ -3030,6 +3030,16 @@ CL-P1-009GO Cycling Assistant reminder parent-tank boundary:
 - Focused widget coverage verifies both the missing-parent failure path and the
   normal phase-aware reminder create path.
 
+CL-P1-009GQ Symptom Triage journal parent-tank boundary:
+
+- Symptom Triage now rechecks the selected tank in storage before saving a
+  confirmed AI diagnosis journal log or recording confirmed AI history.
+- If the screen has a stale cached tank list after the durable tank was deleted,
+  the journal log and AI history entry are not saved and existing retry feedback
+  is shown.
+- Focused widget coverage verifies the stale-tank failure path keeps local
+  journal logs and `ai_interaction_history` empty.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4268,9 +4278,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   maintenance-task sync fails, while secondary progress-write failures no longer
   undo durable equipment adds. Livestock adds now keep durable livestock and
   timeline-log saves when only secondary progress writes fail. Bulk livestock
-  adds now reject missing parent tanks before saving, and bulk/single livestock
-  adds now roll back partial livestock/log records when timeline-log persistence
-  fails. Quick Water Test now keeps saved
+  adds and Symptom Triage confirmed journal saves now reject missing parent
+  tanks before saving, and bulk/single livestock adds now roll back partial
+  livestock/log records when timeline-log persistence fails. Quick Water Test
+  now keeps saved
   water-test logs when only the secondary profile-XP write fails, and user
   profile reset rejects failed local preference removals before exposing reset
   state. Practice-mode lessons no longer claim XP when profile XP persistence
@@ -4299,7 +4310,8 @@ High-confidence P1/P2 gaps from code/docs evidence:
   zero local tanks now skip app-wide SharedPreferences restore while keeping the
   existing no-tanks warning. Cycling Assistant reminder create actions now reject
   missing parent tank IDs before saving, preventing orphan local tasks after
-  tank deletion.
+  tank deletion, and Symptom Triage confirmed journal saves now reject missing
+  parent tank IDs before saving local AI diagnosis logs or history.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
@@ -4319,11 +4331,13 @@ High-confidence P1/P2 gaps from code/docs evidence:
   supported. Remaining profile/preferences work is any final AI/provider
   walkthrough gaps.
 - Optional AI confirmation has started: Symptom Triage now asks before saving
-  an AI-generated diagnosis to the tank journal, Weekly Plan now asks before
-  caching an AI-generated care plan, and Ask Danio now asks before saving a
-  typed-question summary to Recent AI Activity. Focused widget coverage verifies
-  canceling those confirmations writes no journal log, leaves
-  `ai_interaction_history` untouched for Symptom Triage and Ask Danio, and
+  an AI-generated diagnosis to the tank journal, rejects stale missing-parent
+  tank saves before writing the journal or AI history, Weekly Plan now asks
+  before caching an AI-generated care plan, and Ask Danio now asks before saving
+  a typed-question summary to Recent AI Activity. Focused widget coverage
+  verifies canceling those confirmations writes no journal log, stale Symptom
+  Triage saves leave logs and `ai_interaction_history` empty, canceling Ask
+  Danio leaves `ai_interaction_history` untouched, and canceling Weekly Plan
   leaves `weekly_plan_cache` empty. Remaining AI confirmation work is any future
   AI changes to tank data, tasks, and reminders.
 - Global search now has complete-local coverage for app destinations, tools,
