@@ -3,10 +3,16 @@ import 'package:uuid/uuid.dart';
 import '../models/models.dart';
 import '../utils/logger.dart';
 import 'backup_import_relationships.dart';
+import 'shared_preferences_backup.dart';
 import 'storage_service.dart';
 
 typedef BackupImportIdFactory = String Function();
 typedef BackupImportClock = DateTime Function();
+typedef BackupPreferencesRestore =
+    Future<int> Function(
+      Map<String, dynamic> data,
+    );
+typedef BackupImportInvalidation = void Function();
 
 class BackupImportException implements Exception {
   final String message;
@@ -44,6 +50,75 @@ class BackupImportResult {
     required this.equipmentIdMap,
     required this.taskIdMap,
   });
+}
+
+class BackupRestoreImportFlowResult {
+  final int importedTanks;
+  final bool preferencesRestored;
+  final bool preferencesRestoreFailed;
+  final Object? preferencesRestoreError;
+  final StackTrace? preferencesRestoreStackTrace;
+
+  const BackupRestoreImportFlowResult({
+    required this.importedTanks,
+    required this.preferencesRestored,
+    required this.preferencesRestoreFailed,
+    this.preferencesRestoreError,
+    this.preferencesRestoreStackTrace,
+  });
+}
+
+class BackupRestoreImportFlow {
+  final BackupImportService importService;
+  final BackupPreferencesRestore restorePreferences;
+  final BackupImportInvalidation? onTanksImported;
+  final BackupImportInvalidation? onPreferencesRestored;
+
+  BackupRestoreImportFlow({
+    required this.importService,
+    BackupPreferencesRestore? restorePreferences,
+    this.onTanksImported,
+    this.onPreferencesRestored,
+  }) : restorePreferences =
+           restorePreferences ??
+           ((data) => SharedPreferencesBackup.restoreFromJson(data));
+
+  Future<BackupRestoreImportFlowResult> importBackupData(
+    Map<String, dynamic> backupData,
+  ) async {
+    final importResult = await importService.importTankScopedData(backupData);
+    final imported = importResult.importedTanks;
+    if (imported > 0) {
+      onTanksImported?.call();
+    }
+
+    var preferencesRestored = false;
+    var preferencesRestoreFailed = false;
+    Object? preferencesRestoreError;
+    StackTrace? preferencesRestoreStackTrace;
+    final prefsData = backupData['sharedPreferences'];
+    if (imported > 0 &&
+        prefsData != null &&
+        prefsData is Map<String, dynamic>) {
+      try {
+        await restorePreferences(prefsData);
+        preferencesRestored = true;
+        onPreferencesRestored?.call();
+      } catch (error, stackTrace) {
+        preferencesRestoreFailed = true;
+        preferencesRestoreError = error;
+        preferencesRestoreStackTrace = stackTrace;
+      }
+    }
+
+    return BackupRestoreImportFlowResult(
+      importedTanks: imported,
+      preferencesRestored: preferencesRestored,
+      preferencesRestoreFailed: preferencesRestoreFailed,
+      preferencesRestoreError: preferencesRestoreError,
+      preferencesRestoreStackTrace: preferencesRestoreStackTrace,
+    );
+  }
 }
 
 class BackupImportService {

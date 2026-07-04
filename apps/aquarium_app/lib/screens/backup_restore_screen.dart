@@ -639,33 +639,26 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       // Import all tank-scoped data with proper tankId remapping.
       // NOTE: BackupService.getBackupData() already resolves portable photo
       // references (photos/<filename>) to this device's documents/photos path.
-      final importResult = await BackupImportService(
-        storage: ref.read(storageServiceProvider),
-      ).importTankScopedData(backupData);
+      final importResult = await BackupRestoreImportFlow(
+        importService: BackupImportService(
+          storage: ref.read(storageServiceProvider),
+        ),
+        onTanksImported: () => ref.invalidate(tanksProvider),
+        onPreferencesRestored: () => invalidateRestoredPreferenceProviders(ref),
+      ).importBackupData(backupData);
       final imported = importResult.importedTanks;
-      if (imported > 0) {
-        ref.invalidate(tanksProvider);
-      }
-
-      // Restore SharedPreferences (profile, gems, settings, etc.)
-      var preferencesRestoreFailed = false;
-      final prefsData = backupData['sharedPreferences'];
-      if (prefsData != null && prefsData is Map<String, dynamic>) {
-        try {
-          await SharedPreferencesBackup.restoreFromJson(prefsData);
-          invalidateRestoredPreferenceProviders(ref);
-        } catch (e) {
-          preferencesRestoreFailed = true;
-          logError(
-            'SharedPreferences restore warning: $e',
-            tag: 'BackupRestoreScreen',
-          );
-        }
+      if (importResult.preferencesRestoreFailed) {
+        logError(
+          'SharedPreferences restore warning: '
+          '${importResult.preferencesRestoreError}',
+          stackTrace: importResult.preferencesRestoreStackTrace,
+          tag: 'BackupRestoreScreen',
+        );
       }
 
       if (mounted) {
         if (imported > 0) {
-          if (preferencesRestoreFailed) {
+          if (importResult.preferencesRestoreFailed) {
             AppFeedback.showWarning(
               context,
               'Imported $imported tank${imported == 1 ? '' : 's'}, but profile and preferences could not be restored.',

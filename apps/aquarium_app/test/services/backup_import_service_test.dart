@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:danio/models/models.dart';
 import 'package:danio/services/backup_import_service.dart';
@@ -284,5 +285,38 @@ void main() {
         expect(storage.tasks, isEmpty);
       },
     );
+
+    test('skips preference restore when backup imports no tanks', () async {
+      SharedPreferences.setMockInitialValues({
+        'theme_mode': 0,
+        'use_metric': true,
+      });
+      var tanksInvalidated = false;
+      var preferencesInvalidated = false;
+      final flow = BackupRestoreImportFlow(
+        importService: BackupImportService(storage: _RecordingStorageService()),
+        onTanksImported: () => tanksInvalidated = true,
+        onPreferencesRestored: () => preferencesInvalidated = true,
+      );
+
+      final result = await flow.importBackupData({
+        'tanks': <Object?>[],
+        'sharedPreferences': {
+          'entries': {
+            'theme_mode': 2,
+            'use_metric': false,
+          },
+        },
+      });
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(result.importedTanks, 0);
+      expect(result.preferencesRestored, isFalse);
+      expect(result.preferencesRestoreFailed, isFalse);
+      expect(tanksInvalidated, isFalse);
+      expect(preferencesInvalidated, isFalse);
+      expect(prefs.getInt('theme_mode'), 0);
+      expect(prefs.getBool('use_metric'), isTrue);
+    });
   });
 }

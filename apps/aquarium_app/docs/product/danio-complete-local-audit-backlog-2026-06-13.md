@@ -383,6 +383,9 @@ Recent CL-P1-009 continuation note:
   load I/O errors instead of reporting a successful loaded state.
 - CL-P1-009GK makes failed bulk tank permanent delete writes restore visible
   tank state with normal retry feedback instead of only logging the failure.
+- CL-P1-009GL makes backup imports that import zero local tanks skip app-wide
+  profile, learning, gem, settings, and preference restore while keeping the
+  existing no-tanks warning.
 
 ## 7. P2 Work - Presentation System
 

@@ -2422,6 +2422,17 @@ CL-P1-009GK Bulk tank delete retry feedback:
 - Focused provider coverage verifies a failed permanent bulk soft delete both
   restores tank visibility and publishes `tankDeleteFailureFeedbackProvider`.
 
+CL-P1-009GL Backup import no-tank preference guard:
+
+- Backup & Restore now routes confirmed imports through a tested import-flow
+  helper that only restores app-wide SharedPreferences after at least one local
+  tank imports.
+- Backups with zero tanks keep profile, learning, gems, settings, and other
+  app-wide preference data unchanged while showing the existing "No tanks found
+  in this backup file." warning.
+- Focused service coverage verifies zero-tank imports skip preference restore
+  and provider invalidation callbacks.
+
 CL-P1-009DG Backup & Restore local recovery surface:
 
 - Backup & Restore now surfaces a local recovery card when the local JSON
@@ -4216,7 +4227,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   returning-user prompts now check failed dismissal seen-flag writes, and all
   current OpenAI request
   surfaces stop before sending any Optional AI request when the disclosure
-  acceptance flag cannot be saved.
+  acceptance flag cannot be saved. Backup imports that import zero local tanks
+  now skip app-wide SharedPreferences restore while keeping the existing
+  no-tanks warning.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

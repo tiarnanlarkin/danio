@@ -28,7 +28,7 @@ Finish line: complete-local before public release or store/account execution
   - confirm `ACTIVE_HANDOFF.md`, `FINISH_MAP.md`, `QUALITY_LADDER.md`, and
     `MULTI_AGENT_WORKFLOW.md`
 - Latest observed start condition: branch was aligned with upstream at `0 0`
-  before DS-2026-07-04-010 implementation.
+  before DS-2026-07-04-011 implementation.
 
 ## Initial Read-Only Research Wave
 
@@ -62,13 +62,14 @@ Finish line: complete-local before public release or store/account execution
 
 ## Active Slice
 
-- Current slice: `DS-2026-07-04-010`
+- Current slice: `DS-2026-07-04-011`
 - Contract:
-  `docs/agent/plans/DS-2026-07-04-010-data-resilience-slice-contract.md`
-- Goal: failed bulk tank permanent delete writes must surface retry feedback.
+  `docs/agent/plans/DS-2026-07-04-011-data-resilience-slice-contract.md`
+- Goal: no-tank backup imports must not restore app-wide preferences.
 - Owned files:
-  - `lib/providers/tank_provider.dart`
-  - `test/providers/tank_provider_test.dart`
+  - `lib/services/backup_import_service.dart`
+  - `lib/screens/backup_restore_screen.dart`
+  - `test/services/backup_import_service_test.dart`
   - relevant agent/product status docs
 
 ## Maintenance Checkpoints
