@@ -13,19 +13,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/stories.dart';
 import '../features/smart/fish_id/fish_id_screen.dart';
 import '../features/smart/intelligence/aquarium_intelligence_screen.dart';
 import '../features/smart/symptom_triage/symptom_triage_screen.dart';
 import '../features/smart/weekly_plan/weekly_plan_screen.dart';
-import '../models/wishlist.dart';
+import '../models/models.dart';
 import '../providers/lesson_provider.dart';
+import '../providers/storage_provider.dart';
+import '../providers/tank_provider.dart';
 import '../screens/about_screen.dart';
 import '../screens/account_screen.dart';
 import '../screens/acclimation_guide_screen.dart';
 import '../screens/achievements_screen.dart';
+import '../screens/add_log_screen.dart';
 import '../screens/algae_guide_screen.dart';
+import '../screens/analytics/analytics_screen.dart';
 import '../screens/backup_restore_screen.dart';
 import '../screens/breeding_guide_screen.dart';
+import '../screens/charts_screen.dart';
 import '../screens/co2_calculator_screen.dart';
 import '../screens/compatibility_checker_screen.dart';
 import '../screens/cost_tracker_screen.dart';
@@ -34,7 +40,9 @@ import '../screens/debug_menu_screen.dart';
 import '../screens/debug_qa_seed_screen.dart';
 import '../screens/disease_guide_screen.dart';
 import '../screens/dosing_calculator_screen.dart';
+import '../screens/difficulty_settings_screen.dart';
 import '../screens/emergency_guide_screen.dart';
+import '../screens/equipment_screen.dart';
 import '../screens/equipment_guide_screen.dart';
 import '../screens/faq_screen.dart';
 import '../screens/feeding_guide_screen.dart';
@@ -42,24 +50,41 @@ import '../screens/gem_shop_screen.dart';
 import '../screens/glossary_screen.dart';
 import '../screens/hardscape_guide_screen.dart';
 import '../screens/inventory_screen.dart';
+import '../screens/journal_screen.dart';
+import '../screens/learn/learning_path_detail_screen.dart';
+import '../screens/learn/unlock_celebration_screen.dart';
 import '../screens/lesson/lesson_screen.dart';
 import '../screens/lighting_schedule_screen.dart';
+import '../screens/livestock/livestock_screen.dart';
+import '../screens/livestock_detail_screen.dart';
+import '../screens/livestock_value_screen.dart';
+import '../screens/log_detail_screen.dart';
+import '../screens/logs_screen.dart';
+import '../screens/maintenance_checklist_screen.dart';
 import '../screens/nitrogen_cycle_guide_screen.dart';
 import '../screens/notification_settings_screen.dart';
 import '../screens/parameter_guide_screen.dart';
 import '../screens/plant_browser_screen.dart';
+import '../screens/photo_gallery_screen.dart';
 import '../screens/privacy_policy_screen.dart';
 import '../screens/quarantine_guide_screen.dart';
 import '../screens/quick_start_guide_screen.dart';
+import '../screens/reminders_screen.dart';
 import '../screens/search_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/shop_street_screen.dart';
 import '../screens/species_browser_screen.dart';
+import '../screens/spaced_repetition_practice_screen.dart';
 import '../screens/stocking_calculator_screen.dart';
+import '../screens/story/story_browser_screen.dart';
+import '../screens/story/story_play_screen.dart';
 import '../screens/substrate_guide_screen.dart';
 import '../screens/tab_navigator.dart'; // currentTabProvider, tabNavigatorKeysProvider
 import '../screens/tank_comparison_screen.dart';
+import '../screens/tank_detail/tank_detail_screen.dart';
+import '../screens/tank_settings_screen.dart';
 import '../screens/tank_volume_calculator_screen.dart';
+import '../screens/tasks_screen.dart';
 import '../screens/terms_of_service_screen.dart';
 import '../screens/troubleshooting_screen.dart';
 import '../screens/unit_converter_screen.dart';
@@ -67,6 +92,7 @@ import '../screens/vacation_guide_screen.dart';
 import '../screens/water_change_calculator_screen.dart';
 import '../screens/wishlist_screen.dart';
 import '../screens/workshop_screen.dart';
+import '../screens/cycling_assistant_screen.dart';
 
 /// Method channel used by [MainActivity] (debug build only) to pass the
 /// launch-intent URI back to Flutter.
@@ -157,7 +183,31 @@ class DebugDeepLinkService {
       nav.push(MaterialPageRoute(builder: (_) => screen));
     }
 
+    void pushSeededDemo(Widget Function(_QaDemoTankState data) build) {
+      _seedQaDemoTank(ref)
+          .then((data) {
+            if (!context.mounted) return;
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).push(MaterialPageRoute(builder: (_) => build(data)));
+          })
+          .catchError((Object e) {
+            debugPrint('[QA] Failed to seed demo tank for $route: $e');
+          });
+    }
+
     switch (route) {
+      case 'demo-tank':
+      case 'today-board':
+        _seedQaDemoTank(ref)
+            .then((_) {
+              ref.read(currentTabProvider.notifier).state = 2;
+            })
+            .catchError((Object e) {
+              debugPrint('[QA] Failed to seed demo tank root: $e');
+            });
+
       case 'debug':
         nav.push(MaterialPageRoute(builder: (_) => const DebugMenuScreen()));
 
@@ -229,6 +279,84 @@ class DebugDeepLinkService {
       case 'inventory':
         push(const InventoryScreen());
 
+      case 'tank-detail':
+        pushSeededDemo((data) => TankDetailScreen(tankId: data.tank.id));
+
+      case 'tank-settings':
+        pushSeededDemo((data) => TankSettingsScreen(tankId: data.tank.id));
+
+      case 'add-log':
+        pushSeededDemo(
+          (data) => AddLogScreen(
+            tankId: data.tank.id,
+            initialType: LogType.waterTest,
+          ),
+        );
+
+      case 'logs':
+        pushSeededDemo((data) => LogsScreen(tankId: data.tank.id));
+
+      case 'log-detail':
+        pushSeededDemo(
+          (data) => LogDetailScreen(
+            tankId: data.tank.id,
+            logId: data.logs.first.id,
+          ),
+        );
+
+      case 'tank-journal':
+        pushSeededDemo((data) => JournalScreen(tankId: data.tank.id));
+
+      case 'photo-gallery':
+        pushSeededDemo(
+          (data) => PhotoGalleryScreen(
+            tankId: data.tank.id,
+            tankName: data.tank.name,
+          ),
+        );
+
+      case 'water-charts':
+        pushSeededDemo((data) => ChartsScreen(tankId: data.tank.id));
+
+      case 'analytics':
+        push(const AnalyticsScreen());
+
+      case 'tasks':
+        pushSeededDemo((data) => TasksScreen(tankId: data.tank.id));
+
+      case 'maintenance-checklist':
+        pushSeededDemo(
+          (data) => MaintenanceChecklistScreen(
+            tankId: data.tank.id,
+            tankName: data.tank.name,
+          ),
+        );
+
+      case 'equipment':
+        pushSeededDemo((data) => EquipmentScreen(tankId: data.tank.id));
+
+      case 'livestock':
+        pushSeededDemo((data) => LivestockScreen(tankId: data.tank.id));
+
+      case 'livestock-detail':
+        pushSeededDemo(
+          (data) => LivestockDetailScreen(
+            tankId: data.tank.id,
+            livestock: data.livestock.first,
+          ),
+        );
+
+      case 'livestock-value':
+        pushSeededDemo(
+          (data) => LivestockValueScreen(
+            tankId: data.tank.id,
+            tankName: data.tank.name,
+          ),
+        );
+
+      case 'reminders':
+        push(const RemindersScreen());
+
       case 'aquarium-intelligence':
         push(const AquariumIntelligenceScreen());
 
@@ -261,6 +389,9 @@ class DebugDeepLinkService {
 
       case 'compatibility':
         push(const CompatibilityCheckerScreen());
+
+      case 'cycling-assistant':
+        pushSeededDemo((data) => CyclingAssistantScreen(tankId: data.tank.id));
 
       case 'unit-converter':
         push(const UnitConverterScreen());
@@ -312,6 +443,35 @@ class DebugDeepLinkService {
 
       case 'troubleshooting':
         push(const TroubleshootingScreen());
+
+      case 'learning-path-detail':
+        ref.read(currentTabProvider.notifier).state = 0;
+        _navigateToLearningPath(
+          uri.queryParameters['path'] ?? 'nitrogen_cycle',
+          context,
+          ref,
+        );
+
+      case 'unlock-celebration':
+        push(const UnlockCelebrationScreen(speciesId: 'neon_tetra'));
+
+      case 'story-browser':
+        push(const StoryBrowserScreen());
+
+      case 'story-play':
+        push(StoryPlayScreen(story: Stories.newTankSetup));
+
+      case 'spaced-repetition':
+        ref.read(currentTabProvider.notifier).state = 1;
+        push(const SpacedRepetitionPracticeScreen());
+
+      case 'difficulty-settings':
+        push(
+          DifficultySettingsScreen(
+            skillProfile: UserSkillProfile.empty(),
+            onProfileUpdated: (_) async => true,
+          ),
+        );
 
       case 'lesson':
         ref.read(currentTabProvider.notifier).state = 0;
@@ -372,4 +532,58 @@ class DebugDeepLinkService {
       debugPrint('[QA] Failed to navigate to lesson for path "$pathId": $e');
     }
   }
+
+  Future<void> _navigateToLearningPath(
+    String pathId,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    try {
+      final notifier = ref.read(lessonProvider.notifier);
+      await notifier.loadPath(pathId);
+      final lessonState = ref.read(lessonProvider);
+      final path = lessonState.getPath(pathId);
+      if (path == null) {
+        debugPrint('[QA] Path "$pathId" not found');
+        return;
+      }
+      if (!context.mounted) return;
+      Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(
+          builder: (_) => LearningPathDetailScreen(
+            path: path,
+            completedLessonIds: const [],
+          ),
+        ),
+      );
+    } catch (e) {
+      debugPrint('[QA] Failed to navigate to learning path "$pathId": $e');
+    }
+  }
+
+  Future<_QaDemoTankState> _seedQaDemoTank(WidgetRef ref) async {
+    final tank = await ref.read(tankActionsProvider).addDemoTank();
+    final storage = ref.read(storageServiceProvider);
+    final livestock = await storage.getLivestockForTank(tank.id);
+    final logs = await storage.getLogsForTank(tank.id);
+    if (livestock.isEmpty) {
+      throw StateError('QA demo tank has no livestock.');
+    }
+    if (logs.isEmpty) {
+      throw StateError('QA demo tank has no logs.');
+    }
+    return _QaDemoTankState(tank: tank, livestock: livestock, logs: logs);
+  }
+}
+
+class _QaDemoTankState {
+  final Tank tank;
+  final List<Livestock> livestock;
+  final List<LogEntry> logs;
+
+  const _QaDemoTankState({
+    required this.tank,
+    required this.livestock,
+    required this.logs,
+  });
 }

@@ -1,0 +1,25 @@
+﻿QA-007 fixed-build tablet route batch on emulator-5556
+tablet-59-today-board	danio://qa/today-board
+tablet-60-tank-detail	danio://qa/tank-detail
+tablet-61-tank-settings	danio://qa/tank-settings
+tablet-62-add-log	danio://qa/add-log
+tablet-63-logs	danio://qa/logs
+tablet-64-log-detail	danio://qa/log-detail
+tablet-65-tank-journal	danio://qa/tank-journal
+tablet-66-photo-gallery	danio://qa/photo-gallery
+tablet-67-water-charts	danio://qa/water-charts
+tablet-68-analytics	danio://qa/analytics
+tablet-69-tasks	danio://qa/tasks
+tablet-70-maintenance-checklist	danio://qa/maintenance-checklist
+tablet-71-equipment	danio://qa/equipment
+tablet-72-livestock	danio://qa/livestock
+tablet-73-livestock-detail	danio://qa/livestock-detail
+tablet-74-livestock-value	danio://qa/livestock-value
+tablet-75-reminders	danio://qa/reminders
+tablet-76-learning-path-detail	danio://qa/learning-path-detail
+tablet-77-unlock-celebration	danio://qa/unlock-celebration
+tablet-78-story-browser	danio://qa/story-browser
+tablet-79-story-play	danio://qa/story-play
+tablet-80-spaced-repetition	danio://qa/spaced-repetition
+tablet-81-difficulty-settings	danio://qa/difficulty-settings
+tablet-82-cycling-assistant	danio://qa/cycling-assistant

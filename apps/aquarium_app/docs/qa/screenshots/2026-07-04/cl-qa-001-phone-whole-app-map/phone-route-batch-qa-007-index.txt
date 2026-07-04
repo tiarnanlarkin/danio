@@ -1,0 +1,25 @@
+﻿QA-007 fixed-build phone route batch on emulator-5554
+phone-59-today-board	danio://qa/today-board
+phone-60-tank-detail	danio://qa/tank-detail
+phone-61-tank-settings	danio://qa/tank-settings
+phone-62-add-log	danio://qa/add-log
+phone-63-logs	danio://qa/logs
+phone-64-log-detail	danio://qa/log-detail
+phone-65-tank-journal	danio://qa/tank-journal
+phone-66-photo-gallery	danio://qa/photo-gallery
+phone-67-water-charts	danio://qa/water-charts
+phone-68-analytics	danio://qa/analytics
+phone-69-tasks	danio://qa/tasks
+phone-70-maintenance-checklist	danio://qa/maintenance-checklist
+phone-71-equipment	danio://qa/equipment
+phone-72-livestock	danio://qa/livestock
+phone-73-livestock-detail	danio://qa/livestock-detail
+phone-74-livestock-value	danio://qa/livestock-value
+phone-75-reminders	danio://qa/reminders
+phone-76-learning-path-detail	danio://qa/learning-path-detail
+phone-77-unlock-celebration	danio://qa/unlock-celebration
+phone-78-story-browser	danio://qa/story-browser
+phone-79-story-play	danio://qa/story-play
+phone-80-spaced-repetition	danio://qa/spaced-repetition
+phone-81-difficulty-settings	danio://qa/difficulty-settings
+phone-82-cycling-assistant	danio://qa/cycling-assistant

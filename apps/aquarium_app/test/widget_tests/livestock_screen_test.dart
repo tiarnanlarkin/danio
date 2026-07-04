@@ -2,6 +2,7 @@
 //
 // Run: flutter test test/widget_tests/livestock_screen_test.dart
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -152,6 +153,33 @@ Widget _wrap({AsyncValue<List<Livestock>>? livestockOverride}) {
   return ProviderScope(
     overrides: overrides,
     child: MaterialApp(home: LivestockScreen(tankId: _fakeTankId)),
+  );
+}
+
+Widget _wrapWithLoadingLivestock() {
+  final loadingLivestock = Completer<List<Livestock>>();
+  return ProviderScope(
+    overrides: [
+      storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+      tankProvider.overrideWith(
+        (ref, tankId) async => _makeTank(id: tankId, name: 'My Tank'),
+      ),
+      livestockProvider.overrideWith((ref, tankId) => loadingLivestock.future),
+    ],
+    child: MaterialApp(
+      home: Builder(
+        builder: (context) => TextButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const LivestockScreen(tankId: _fakeTankId),
+              ),
+            );
+          },
+          child: const Text('Open livestock'),
+        ),
+      ),
+    ),
   );
 }
 
@@ -386,6 +414,16 @@ void main() {
   }
 
   group('LivestockScreen — empty state', () {
+    testWidgets('loading skeleton does not register duplicate hero tags', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrapWithLoadingLivestock());
+      await tester.tap(find.text('Open livestock'));
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('renders without throwing', (tester) async {
       suppressAvatarError();
       await tester.pumpWidget(_wrap());

@@ -18,10 +18,12 @@ screen-relative swipes, then the tablet black-box smoke rerun passed. The full
 `SCREEN_INVENTORY.md` surface set is now accounted for below with `Pass` or
 `Gap` results. A follow-up QA-006 route batch added 39 more tablet
 screenshot/XML pairs for standalone normal-user routes that do not require
-seeded tank IDs. `Pass` means this slice has current paired screenshot/XML
-evidence or a current black-box route assertion; `Gap` means the surface still
-needs direct tablet capture or a dedicated route assertion before it can be
-treated as current tablet visual evidence.
+seeded tank IDs. QA-007 added 24 more fixed-build tablet screenshot/XML pairs
+for seeded tank, learning, story, and cycling routes. `Pass` means this slice
+has current paired screenshot/XML evidence or a current black-box route
+assertion; `Gap` means the surface still needs direct tablet capture or a
+dedicated route assertion before it can be treated as current tablet visual
+evidence.
 
 ## Checks
 
@@ -33,8 +35,10 @@ treated as current tablet visual evidence.
 | Tablet black-box smoke with QA deep links | Pass after fix | Final rerun passed with `.\scripts\run_android_blackbox_smoke.ps1 -DeviceId emulator-5556 -InstallApkPath build\app\outputs\flutter-apk\app-debug.apk -IncludeQaDeepLinks -ArtifactDir build\qa-artifacts\android-blackbox-tablet-2026-07-04`. Earlier pre-fix failure evidence remains in `tablet-smoke-failure.txt`, `tablet-smoke-failure-workshop-route.png`, and `tablet-smoke-failure-workshop-route.xml`. |
 | Direct QA deep-link capture | Pass for captured set | 19 `.png` files and 19 paired `.xml` files were saved; every XML contains a `<hierarchy>` root. `tablet-03-tank-root` was recaptured after the tablet root finished loading. |
 | QA-006 standalone route capture | Pass | Added 39 paired tablet PNG/XML captures, `tablet-20` through `tablet-58`, using new `danio://qa/...` routes. Every new XML contains a `<hierarchy>` root. |
+| QA-007 seeded route capture | Pass | Added 24 paired fixed-build tablet PNG/XML captures, `tablet-59` through `tablet-82`, using seeded `danio://qa/...` routes for tank, care, learning, story, and cycling surfaces. Every new XML contains a `<hierarchy>` root. |
 | Narrow crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, or `ANR in` in `tablet-logcat-tail.txt`. |
 | QA-006 crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, or `ANR in` in `tablet-route-batch-qa-006-logcat-tail.txt`. |
+| QA-007 crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, `ANR in`, app error-boundary text, or the duplicate-Hero signature in `tablet-route-batch-qa-007-logcat-tail.txt`; XML validation also rejected error-boundary text in the 24 new states. |
 | System transition warnings | Note | `tablet-logcat-tail.txt` includes two `BLASTSyncEngine` `Application ANR likely to follow` transition warnings. No `ANR in` or app fatal signature accompanied them. |
 
 ## Findings
@@ -43,6 +47,7 @@ treated as current tablet visual evidence.
 | --- | --- | --- | --- | --- |
 | CL-QA-002-F1 | P1 | Tablet black-box smoke failed before Workshop route verification. Follow-up reruns also showed lower More hub items present in the UI hierarchy while partly behind the persistent dock. | `tablet-smoke-failure.txt`; `tablet-smoke-failure-workshop-route.png`; `tablet-smoke-failure-workshop-route.xml` | Resolved locally with selected-tab assertions, outside-dock route checks, dock-aware tap centers, and screen-relative More hub swipes; final tablet black-box smoke rerun passed. |
 | CL-QA-002-F2 | P2 | Tablet Tank can show an app splash/loading state for several seconds after a force-start before the Tank hierarchy is available. The settled Tank root did load after waiting and was recaptured. | Earlier replaced capture; final evidence `tablet-03-tank-root.png` / `.xml` | Use condition-based waits for selected tab or screen-specific semantics instead of fixed sleeps in tablet capture scripts. |
+| CL-QA-002-F3 | P1 | The initial QA-007 `danio://qa/livestock` tablet capture hit Flutter's duplicate `Hero` tag assertion because loading skeleton livestock rows reused the same placeholder ID. | Pre-fix diagnostics were captured under `build/qa-artifacts/qa-007-livestock-error.*`; fixed-build evidence is `tablet-72-livestock.png` / `.xml`. | Resolved locally by giving skeleton livestock placeholders unique IDs and adding a regression widget test for loading-skeleton route transitions. |
 
 ## Captured Inventory
 
@@ -112,9 +117,38 @@ treated as current tablet visual evidence.
 | Vacation Guide | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-57-vacation-guide.png` / `.xml` | Pass | Opened from `danio://qa/vacation-guide`. |
 | Troubleshooting | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-58-troubleshooting.png` / `.xml` | Pass | Opened from `danio://qa/troubleshooting`. |
 
+## QA-007 Route Batch Inventory
+
+| Surface | Evidence | Result | Notes |
+| --- | --- | --- | --- |
+| Today Board | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-59-today-board.png` / `.xml` | Pass | Opened from `danio://qa/today-board` with seeded demo tank data. |
+| Tank Detail | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-60-tank-detail.png` / `.xml` | Pass | Opened from `danio://qa/tank-detail` with seeded demo tank data. |
+| Tank Settings | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-61-tank-settings.png` / `.xml` | Pass | Opened from `danio://qa/tank-settings` with seeded demo tank data. |
+| Add Log | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-62-add-log.png` / `.xml` | Pass | Opened from `danio://qa/add-log` with seeded demo tank data. |
+| Logs | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-63-logs.png` / `.xml` | Pass | Opened from `danio://qa/logs` with seeded demo tank data. |
+| Log Detail | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-64-log-detail.png` / `.xml` | Pass | Opened from `danio://qa/log-detail` with seeded demo log data. |
+| Tank Journal | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-65-tank-journal.png` / `.xml` | Pass | Opened from `danio://qa/tank-journal` with seeded demo tank data. |
+| Photo Gallery | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-66-photo-gallery.png` / `.xml` | Pass | Opened from `danio://qa/photo-gallery` with seeded demo tank data. |
+| Water Charts | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-67-water-charts.png` / `.xml` | Pass | Opened from `danio://qa/water-charts` with seeded demo tank data. |
+| Analytics | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-68-analytics.png` / `.xml` | Pass | Opened from `danio://qa/analytics` with seeded demo tank data. |
+| Tasks | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-69-tasks.png` / `.xml` | Pass | Opened from `danio://qa/tasks` with seeded demo task data. |
+| Maintenance Checklist | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-70-maintenance-checklist.png` / `.xml` | Pass | Opened from `danio://qa/maintenance-checklist` with seeded demo task data. |
+| Equipment | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-71-equipment.png` / `.xml` | Pass | Opened from `danio://qa/equipment` with seeded demo equipment data. |
+| Livestock | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-72-livestock.png` / `.xml` | Pass | Opened from `danio://qa/livestock` after the fixed-build skeleton Hero regression fix. |
+| Livestock Detail | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-73-livestock-detail.png` / `.xml` | Pass | Opened from `danio://qa/livestock-detail` with seeded demo livestock data. |
+| Livestock Value | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-74-livestock-value.png` / `.xml` | Pass | Opened from `danio://qa/livestock-value` with seeded demo livestock data. |
+| Reminders | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-75-reminders.png` / `.xml` | Pass | Opened from `danio://qa/reminders` with seeded demo tank data. |
+| Learning path detail | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-76-learning-path-detail.png` / `.xml` | Pass | Opened from `danio://qa/learning-path-detail`. |
+| Unlock celebration | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-77-unlock-celebration.png` / `.xml` | Pass | Opened from `danio://qa/unlock-celebration`. |
+| Story Browser | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-78-story-browser.png` / `.xml` | Pass | Opened from `danio://qa/story-browser`. |
+| Story Play | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-79-story-play.png` / `.xml` | Pass | Opened from `danio://qa/story-play`. |
+| Spaced Repetition | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-80-spaced-repetition.png` / `.xml` | Pass | Opened from `danio://qa/spaced-repetition`. |
+| Difficulty Settings | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-81-difficulty-settings.png` / `.xml` | Pass | Opened from `danio://qa/difficulty-settings`. |
+| Cycling Assistant | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-82-cycling-assistant.png` / `.xml` | Pass | Opened from `danio://qa/cycling-assistant`. |
+
 ## Full Inventory Accounting
 
-Summary: 96 `SCREEN_INVENTORY.md` rows checked; 56 current tablet passes; 40
+Summary: 96 `SCREEN_INVENTORY.md` rows checked; 80 current tablet passes; 16
 tablet gaps remain for future capture.
 
 | Surface | Result | Current tablet evidence or gap note |
@@ -140,34 +174,34 @@ tablet gaps remain for future capture.
 | Feature summary | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
 | Push permission | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
 | Warm entry | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Today Board | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Today Board | Pass | Paired QA-007 capture: `tablet-59-today-board.png` / `.xml`. |
 | Create Tank | Pass | Paired capture: `tablet-08-create-tank.png` / `.xml`. |
-| Tank Detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Tank Settings | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Add Log | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Logs | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Log Detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Tank Journal | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Photo Gallery | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Water Charts | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Analytics | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Tank Detail | Pass | Paired QA-007 capture: `tablet-60-tank-detail.png` / `.xml`. |
+| Tank Settings | Pass | Paired QA-007 capture: `tablet-61-tank-settings.png` / `.xml`. |
+| Add Log | Pass | Paired QA-007 capture: `tablet-62-add-log.png` / `.xml`. |
+| Logs | Pass | Paired QA-007 capture: `tablet-63-logs.png` / `.xml`. |
+| Log Detail | Pass | Paired QA-007 capture: `tablet-64-log-detail.png` / `.xml`. |
+| Tank Journal | Pass | Paired QA-007 capture: `tablet-65-tank-journal.png` / `.xml`. |
+| Photo Gallery | Pass | Paired QA-007 capture: `tablet-66-photo-gallery.png` / `.xml`. |
+| Water Charts | Pass | Paired QA-007 capture: `tablet-67-water-charts.png` / `.xml`. |
+| Analytics | Pass | Paired QA-007 capture: `tablet-68-analytics.png` / `.xml`. |
 | Compare Tanks | Pass | Paired capture: `tablet-16-compare-tanks.png` / `.xml`. |
-| Tasks | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Maintenance Checklist | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Equipment | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Livestock | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Livestock Detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Livestock Value | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Reminders | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Tasks | Pass | Paired QA-007 capture: `tablet-69-tasks.png` / `.xml`. |
+| Maintenance Checklist | Pass | Paired QA-007 capture: `tablet-70-maintenance-checklist.png` / `.xml`. |
+| Equipment | Pass | Paired QA-007 capture: `tablet-71-equipment.png` / `.xml`. |
+| Livestock | Pass | Paired QA-007 capture: `tablet-72-livestock.png` / `.xml`. |
+| Livestock Detail | Pass | Paired QA-007 capture: `tablet-73-livestock-detail.png` / `.xml`. |
+| Livestock Value | Pass | Paired QA-007 capture: `tablet-74-livestock-value.png` / `.xml`. |
+| Reminders | Pass | Paired QA-007 capture: `tablet-75-reminders.png` / `.xml`. |
 | Backup and Restore | Pass | Paired capture: `tablet-20-backup-restore.png` / `.xml`. |
-| Learning path detail | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Learning path detail | Pass | Paired QA-007 capture: `tablet-76-learning-path-detail.png` / `.xml`. |
 | Lesson reader | Pass | Paired lesson capture plus quiz states: `tablet-09-lesson.png`, `tablet-10-lesson-quiz-hint.png`, `tablet-11-lesson-quiz-selected.png` with XML. |
-| Unlock celebration | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Story Browser | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Story Play | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Spaced Repetition | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Unlock celebration | Pass | Paired QA-007 capture: `tablet-77-unlock-celebration.png` / `.xml`. |
+| Story Browser | Pass | Paired QA-007 capture: `tablet-78-story-browser.png` / `.xml`. |
+| Story Play | Pass | Paired QA-007 capture: `tablet-79-story-play.png` / `.xml`. |
+| Spaced Repetition | Pass | Paired QA-007 capture: `tablet-80-spaced-repetition.png` / `.xml`. |
 | Review Session | Pass | Paired debug practice-session capture: `tablet-12-practice-session.png` / `.xml`. |
-| Difficulty Settings | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Difficulty Settings | Pass | Paired QA-007 capture: `tablet-81-difficulty-settings.png` / `.xml`. |
 | Aquarium Intelligence | Pass | Paired capture: `tablet-31-aquarium-intelligence.png` / `.xml`. |
 | Symptom Triage | Pass | Paired capture: `tablet-32-symptom-triage.png` / `.xml`. |
 | Weekly Plan | Pass | Paired capture: `tablet-33-weekly-plan.png` / `.xml`. |
@@ -180,7 +214,7 @@ tablet gaps remain for future capture.
 | Lighting | Pass | Paired capture: `tablet-39-lighting.png` / `.xml`. |
 | Stocking | Pass | Paired capture: `tablet-40-stocking.png` / `.xml`. |
 | Compatibility | Pass | Paired capture: `tablet-41-compatibility.png` / `.xml`. |
-| Cycling Assistant | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Cycling Assistant | Pass | Paired QA-007 capture: `tablet-82-cycling-assistant.png` / `.xml`. |
 | Unit Converter | Pass | Paired capture: `tablet-42-unit-converter.png` / `.xml`. |
 | Cost Tracker | Pass | Paired capture: `tablet-43-cost-tracker.png` / `.xml`. |
 | Fish Species Browser | Pass | Paired capture: `tablet-14-species-browser.png` / `.xml`. |
@@ -219,11 +253,12 @@ tablet gaps remain for future capture.
 ## Gaps
 
 - Full CL-QA-002 accounting is complete, but direct current tablet evidence is
-  still missing for 40 inventory rows listed as `Gap` above.
+  still missing for 16 inventory rows listed as `Gap` above.
 - The QA-006 route batch added paired tablet evidence for standalone Smart
   detail, Workshop tool, guide, legal/settings, shop/reward, and search
   surfaces.
-- Tablet-specific review remains pending for Tank detail, add-log, livestock,
-  equipment, reminders, onboarding, story/learning detail, tank-specific data,
-  and data-resilience walkthroughs.
+- The QA-007 route batch added fixed-build paired tablet evidence for seeded
+  tank/detail, add-log, livestock, equipment, reminders, learning/story, SRS,
+  and Cycling Assistant surfaces.
+- Remaining tablet gaps are onboarding/first-run states plus Debug QA Seeds.
 - The physical phone `RFCY8022D5R` remained unauthorized and was not used.

@@ -20,6 +20,24 @@ void main() {
       'wishlist',
       'gem-shop',
       'inventory',
+      'demo-tank',
+      'today-board',
+      'tank-detail',
+      'tank-settings',
+      'add-log',
+      'logs',
+      'log-detail',
+      'tank-journal',
+      'photo-gallery',
+      'water-charts',
+      'analytics',
+      'tasks',
+      'maintenance-checklist',
+      'equipment',
+      'livestock',
+      'livestock-detail',
+      'livestock-value',
+      'reminders',
       'aquarium-intelligence',
       'symptom-triage',
       'weekly-plan',
@@ -31,6 +49,7 @@ void main() {
       'lighting',
       'stocking',
       'compatibility',
+      'cycling-assistant',
       'unit-converter',
       'cost-tracker',
       'emergency-guide',
@@ -48,6 +67,12 @@ void main() {
       'hardscape-guide',
       'vacation-guide',
       'troubleshooting',
+      'learning-path-detail',
+      'unlock-celebration',
+      'story-browser',
+      'story-play',
+      'spaced-repetition',
+      'difficulty-settings',
     ];
 
     for (final route in routes) {
@@ -60,6 +85,9 @@ void main() {
 
     expect(source, contains('WishlistCategory.fish'));
     expect(source, contains('AquariumIntelligenceScreen'));
+    expect(source, contains('tankActionsProvider'));
+    expect(source, contains('LearningPathDetailScreen'));
+    expect(source, contains('StoryPlayScreen'));
     expect(source, contains('TroubleshootingScreen'));
   });
 }

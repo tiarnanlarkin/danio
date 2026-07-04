@@ -22,8 +22,10 @@ class SkeletonPlaceholders {
   );
 
   /// List of placeholder livestock items
-  static List<Livestock> get livestockList =>
-      List.generate(5, (i) => livestock);
+  static List<Livestock> get livestockList => List.generate(
+    5,
+    (i) => livestock.copyWith(id: 'skeleton-livestock-$i'),
+  );
 
   /// Placeholder equipment for skeleton display
   static Equipment get equipment => Equipment(

@@ -19,10 +19,12 @@ black-box smoke rerun passed. A later phone recapture confirmed Fish & Plant ID
 now clears the dock on `danio_api36`. The full `SCREEN_INVENTORY.md` surface set
 is now accounted for below with `Pass` or `Gap` results. A follow-up QA-006
 route batch added 39 more phone screenshot/XML pairs for standalone normal-user
-routes that do not require seeded tank IDs. `Pass` means this slice
-has current paired screenshot/XML evidence or a current black-box route
-assertion; `Gap` means the surface still needs direct phone capture or a
-dedicated route assertion before it can be treated as current visual evidence.
+routes that do not require seeded tank IDs. QA-007 added 24 more fixed-build
+phone screenshot/XML pairs for seeded tank, learning, story, and cycling routes.
+`Pass` means this slice has current paired screenshot/XML evidence or a current
+black-box route assertion; `Gap` means the surface still needs direct phone
+capture or a dedicated route assertion before it can be treated as current
+visual evidence.
 
 ## Checks
 
@@ -35,8 +37,10 @@ dedicated route assertion before it can be treated as current visual evidence.
 | Phone Smart root recapture | Pass | `phone-04b-smart-root-after-dock-fix.png` / `.xml` captured from `danio://qa/smart` after installing the current debug APK. XML bounds show Fish & Plant ID bottom `2080`, bottom dock top `2127`, for `47px` clearance. |
 | Direct QA deep-link capture | Pass for captured set | 19 original `.png` files and 19 paired `.xml` files were saved, plus the after-fix Smart recapture; every XML contains a `<hierarchy>` root. |
 | QA-006 standalone route capture | Pass | Added 39 paired phone PNG/XML captures, `phone-20` through `phone-58`, using new `danio://qa/...` routes. Every new XML contains a `<hierarchy>` root. |
+| QA-007 seeded route capture | Pass | Added 24 paired fixed-build phone PNG/XML captures, `phone-59` through `phone-82`, using seeded `danio://qa/...` routes for tank, care, learning, story, and cycling surfaces. Every new XML contains a `<hierarchy>` root. |
 | Narrow crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, or `ANR in` in `phone-logcat-tail.txt` or `phone-smart-after-dock-fix-logcat-tail.txt`. |
 | QA-006 crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, or `ANR in` in `phone-route-batch-qa-006-logcat-tail.txt`. |
+| QA-007 crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, `ANR in`, app error-boundary text, or the duplicate-Hero signature in `phone-route-batch-qa-007-logcat-tail.txt`; XML validation also rejected error-boundary text in the 24 new states. |
 | System transition warnings | Note | `phone-logcat-tail.txt` includes one `BLASTSyncEngine` `Application ANR likely to follow` transition warning. No `ANR in` or app fatal signature accompanied it. |
 
 ## Findings
@@ -45,6 +49,7 @@ dedicated route assertion before it can be treated as current visual evidence.
 | --- | --- | --- | --- | --- |
 | CL-QA-001-F1 | P1 | Phone Smart root placed the `Fish & Plant ID` card partly behind the bottom dock. The smoke helper tapped the center of the card's semantics bounds, which landed on the dock/Tank tab and returned to Tank instead of opening the optional-AI setup path. | Pre-fix: `phone-04-smart-root.png`, `phone-smoke-failure-smart-overlap.png`, `phone-smoke-failure-smart-overlap.xml`. After fix: `phone-04b-smart-root-after-dock-fix.png`, `phone-04b-smart-root-after-dock-fix.xml`. | Resolved locally. Phone recapture shows Fish & Plant ID clears the dock by `47px`, and the phone black-box smoke rerun passed. |
 | CL-QA-001-F2 | P2 | The black-box smoke helper could report a tab as loaded when only the bottom-nav content description matched. This allowed `Assert-Visible "Smart"` to pass while the next tap could still be captured by the dock. | `phone-smoke-failure.txt`; `phone-smoke-failure-smart-overlap.xml` | Resolved locally by using selected-tab assertions and screen-specific outside-dock checks in the smoke helper. |
+| CL-QA-001-F3 | P1 | The initial QA-007 `danio://qa/livestock` phone capture hit Flutter's duplicate `Hero` tag assertion because loading skeleton livestock rows reused the same placeholder ID. | Pre-fix diagnostics were captured under `build/qa-artifacts/qa-007-livestock-error.*`; fixed-build evidence is `phone-72-livestock.png` / `.xml`. | Resolved locally by giving skeleton livestock placeholders unique IDs and adding a regression widget test for loading-skeleton route transitions. |
 
 ## Captured Inventory
 
@@ -114,9 +119,38 @@ dedicated route assertion before it can be treated as current visual evidence.
 | Vacation Guide | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-57-vacation-guide.png` / `.xml` | Pass | Opened from `danio://qa/vacation-guide`. |
 | Troubleshooting | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-58-troubleshooting.png` / `.xml` | Pass | Opened from `danio://qa/troubleshooting`. |
 
+## QA-007 Route Batch Inventory
+
+| Surface | Evidence | Result | Notes |
+| --- | --- | --- | --- |
+| Today Board | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-59-today-board.png` / `.xml` | Pass | Opened from `danio://qa/today-board` with seeded demo tank data. |
+| Tank Detail | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-60-tank-detail.png` / `.xml` | Pass | Opened from `danio://qa/tank-detail` with seeded demo tank data. |
+| Tank Settings | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-61-tank-settings.png` / `.xml` | Pass | Opened from `danio://qa/tank-settings` with seeded demo tank data. |
+| Add Log | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-62-add-log.png` / `.xml` | Pass | Opened from `danio://qa/add-log` with seeded demo tank data. |
+| Logs | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-63-logs.png` / `.xml` | Pass | Opened from `danio://qa/logs` with seeded demo tank data. |
+| Log Detail | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-64-log-detail.png` / `.xml` | Pass | Opened from `danio://qa/log-detail` with seeded demo log data. |
+| Tank Journal | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-65-tank-journal.png` / `.xml` | Pass | Opened from `danio://qa/tank-journal` with seeded demo tank data. |
+| Photo Gallery | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-66-photo-gallery.png` / `.xml` | Pass | Opened from `danio://qa/photo-gallery` with seeded demo tank data. |
+| Water Charts | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-67-water-charts.png` / `.xml` | Pass | Opened from `danio://qa/water-charts` with seeded demo tank data. |
+| Analytics | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-68-analytics.png` / `.xml` | Pass | Opened from `danio://qa/analytics` with seeded demo tank data. |
+| Tasks | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-69-tasks.png` / `.xml` | Pass | Opened from `danio://qa/tasks` with seeded demo task data. |
+| Maintenance Checklist | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-70-maintenance-checklist.png` / `.xml` | Pass | Opened from `danio://qa/maintenance-checklist` with seeded demo task data. |
+| Equipment | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-71-equipment.png` / `.xml` | Pass | Opened from `danio://qa/equipment` with seeded demo equipment data. |
+| Livestock | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-72-livestock.png` / `.xml` | Pass | Opened from `danio://qa/livestock` after the fixed-build skeleton Hero regression fix. |
+| Livestock Detail | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-73-livestock-detail.png` / `.xml` | Pass | Opened from `danio://qa/livestock-detail` with seeded demo livestock data. |
+| Livestock Value | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-74-livestock-value.png` / `.xml` | Pass | Opened from `danio://qa/livestock-value` with seeded demo livestock data. |
+| Reminders | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-75-reminders.png` / `.xml` | Pass | Opened from `danio://qa/reminders` with seeded demo tank data. |
+| Learning path detail | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-76-learning-path-detail.png` / `.xml` | Pass | Opened from `danio://qa/learning-path-detail`. |
+| Unlock celebration | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-77-unlock-celebration.png` / `.xml` | Pass | Opened from `danio://qa/unlock-celebration`. |
+| Story Browser | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-78-story-browser.png` / `.xml` | Pass | Opened from `danio://qa/story-browser`. |
+| Story Play | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-79-story-play.png` / `.xml` | Pass | Opened from `danio://qa/story-play`. |
+| Spaced Repetition | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-80-spaced-repetition.png` / `.xml` | Pass | Opened from `danio://qa/spaced-repetition`. |
+| Difficulty Settings | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-81-difficulty-settings.png` / `.xml` | Pass | Opened from `danio://qa/difficulty-settings`. |
+| Cycling Assistant | `screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/phone-82-cycling-assistant.png` / `.xml` | Pass | Opened from `danio://qa/cycling-assistant`. |
+
 ## Full Inventory Accounting
 
-Summary: 96 `SCREEN_INVENTORY.md` rows checked; 56 current phone passes; 40
+Summary: 96 `SCREEN_INVENTORY.md` rows checked; 80 current phone passes; 16
 phone gaps remain for future capture.
 
 | Surface | Result | Current phone evidence or gap note |
@@ -142,34 +176,34 @@ phone gaps remain for future capture.
 | Feature summary | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
 | Push permission | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
 | Warm entry | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Today Board | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
+| Today Board | Pass | Paired QA-007 capture: `phone-59-today-board.png` / `.xml`. |
 | Create Tank | Pass | Paired capture: `phone-08-create-tank.png` / `.xml`. |
-| Tank Detail | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Tank Settings | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Add Log | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Logs | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Log Detail | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Tank Journal | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Photo Gallery | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Water Charts | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Analytics | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
+| Tank Detail | Pass | Paired QA-007 capture: `phone-60-tank-detail.png` / `.xml`. |
+| Tank Settings | Pass | Paired QA-007 capture: `phone-61-tank-settings.png` / `.xml`. |
+| Add Log | Pass | Paired QA-007 capture: `phone-62-add-log.png` / `.xml`. |
+| Logs | Pass | Paired QA-007 capture: `phone-63-logs.png` / `.xml`. |
+| Log Detail | Pass | Paired QA-007 capture: `phone-64-log-detail.png` / `.xml`. |
+| Tank Journal | Pass | Paired QA-007 capture: `phone-65-tank-journal.png` / `.xml`. |
+| Photo Gallery | Pass | Paired QA-007 capture: `phone-66-photo-gallery.png` / `.xml`. |
+| Water Charts | Pass | Paired QA-007 capture: `phone-67-water-charts.png` / `.xml`. |
+| Analytics | Pass | Paired QA-007 capture: `phone-68-analytics.png` / `.xml`. |
 | Compare Tanks | Pass | Paired capture: `phone-16-compare-tanks.png` / `.xml`. |
-| Tasks | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Maintenance Checklist | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Equipment | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Livestock | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Livestock Detail | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Livestock Value | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Reminders | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
+| Tasks | Pass | Paired QA-007 capture: `phone-69-tasks.png` / `.xml`. |
+| Maintenance Checklist | Pass | Paired QA-007 capture: `phone-70-maintenance-checklist.png` / `.xml`. |
+| Equipment | Pass | Paired QA-007 capture: `phone-71-equipment.png` / `.xml`. |
+| Livestock | Pass | Paired QA-007 capture: `phone-72-livestock.png` / `.xml`. |
+| Livestock Detail | Pass | Paired QA-007 capture: `phone-73-livestock-detail.png` / `.xml`. |
+| Livestock Value | Pass | Paired QA-007 capture: `phone-74-livestock-value.png` / `.xml`. |
+| Reminders | Pass | Paired QA-007 capture: `phone-75-reminders.png` / `.xml`. |
 | Backup and Restore | Pass | Paired capture: `phone-20-backup-restore.png` / `.xml`. |
-| Learning path detail | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
+| Learning path detail | Pass | Paired QA-007 capture: `phone-76-learning-path-detail.png` / `.xml`. |
 | Lesson reader | Pass | Paired lesson capture plus quiz states: `phone-09-lesson.png`, `phone-10-lesson-quiz-hint.png`, `phone-11-lesson-quiz-selected.png` with XML. |
-| Unlock celebration | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Story Browser | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Story Play | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
-| Spaced Repetition | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
+| Unlock celebration | Pass | Paired QA-007 capture: `phone-77-unlock-celebration.png` / `.xml`. |
+| Story Browser | Pass | Paired QA-007 capture: `phone-78-story-browser.png` / `.xml`. |
+| Story Play | Pass | Paired QA-007 capture: `phone-79-story-play.png` / `.xml`. |
+| Spaced Repetition | Pass | Paired QA-007 capture: `phone-80-spaced-repetition.png` / `.xml`. |
 | Review Session | Pass | Paired debug practice-session capture: `phone-12-practice-session.png` / `.xml`. |
-| Difficulty Settings | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
+| Difficulty Settings | Pass | Paired QA-007 capture: `phone-81-difficulty-settings.png` / `.xml`. |
 | Aquarium Intelligence | Pass | Paired capture: `phone-31-aquarium-intelligence.png` / `.xml`. |
 | Symptom Triage | Pass | Paired capture: `phone-32-symptom-triage.png` / `.xml`. |
 | Weekly Plan | Pass | Paired capture: `phone-33-weekly-plan.png` / `.xml`. |
@@ -182,7 +216,7 @@ phone gaps remain for future capture.
 | Lighting | Pass | Paired capture: `phone-39-lighting.png` / `.xml`. |
 | Stocking | Pass | Paired capture: `phone-40-stocking.png` / `.xml`. |
 | Compatibility | Pass | Paired capture: `phone-41-compatibility.png` / `.xml`. |
-| Cycling Assistant | Gap | No current CL-QA-001 phone evidence captured; keep as a target for route/deep-link or manual capture. |
+| Cycling Assistant | Pass | Paired QA-007 capture: `phone-82-cycling-assistant.png` / `.xml`. |
 | Unit Converter | Pass | Paired capture: `phone-42-unit-converter.png` / `.xml`. |
 | Cost Tracker | Pass | Paired capture: `phone-43-cost-tracker.png` / `.xml`. |
 | Fish Species Browser | Pass | Paired capture: `phone-14-species-browser.png` / `.xml`. |
@@ -221,11 +255,12 @@ phone gaps remain for future capture.
 ## Gaps
 
 - Full CL-QA-001 accounting is complete, but direct current phone evidence is
-  still missing for 40 inventory rows listed as `Gap` above.
+  still missing for 16 inventory rows listed as `Gap` above.
 - The QA-006 route batch added paired phone evidence for standalone Smart
   detail, Workshop tool, guide, legal/settings, shop/reward, and search
   surfaces.
-- Tank detail, add-log, livestock, equipment, reminders, onboarding,
-  story/learning detail, tank-specific data, and data-resilience walkthroughs
-  remain pending for a full phone map.
+- The QA-007 route batch added fixed-build paired phone evidence for seeded
+  tank/detail, add-log, livestock, equipment, reminders, learning/story, SRS,
+  and Cycling Assistant surfaces.
+- Remaining phone gaps are onboarding/first-run states plus Debug QA Seeds.
 - The physical phone `RFCY8022D5R` remained unauthorized and was not used.
