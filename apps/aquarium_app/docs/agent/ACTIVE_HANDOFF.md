@@ -1,32 +1,31 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after DS-2026-07-04-015 Species care-task parent-tank boundary
+Last updated: 2026-07-04 after DS-2026-07-04-016 Tank Journal parent-tank boundary
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `DS-2026-07-04-015` Species detail care-task
+- Latest completed slice: `DS-2026-07-04-016` Tank Journal manual-entry
   parent-tank boundary.
 - Latest implementation checkpoint:
-  Current commit after DS-2026-07-04-015 is committed and pushed.
+  Current commit after DS-2026-07-04-016 is committed and pushed.
 - Prior implementation checkpoint before this slice:
-  `c75b2df9 fix: guard symptom triage journal saves against missing tanks`.
+  `346d0c72 fix: guard species care tasks against missing tanks`.
 - Current uncommitted slice: none expected after this handoff cleanup is
   committed and pushed; verify with `git status --short -uall` before new work.
 
 ## Current Slice
 
-- Slice: DS-2026-07-04-015 for Species detail care-task data resilience.
-- Scope completed: `_CareActionsCard._createCareTask()` now checks
-  `storage.getTank(selectedTank.id)` before creating or updating the weekly
-  species care task.
-- Product behavior changes: if Species detail has a stale cached tank list
-  after the durable tank was deleted, tapping `Create care task` shows the
-  existing retry feedback and does not create an orphan local task.
-- Product behavior not changed: species database content, Species detail
-  layout, Emergency Guide link, wishlist save, Stocking Calculator handoff,
-  Add to Tank dialog opening, and normal care-task creation are unchanged.
+- Slice: DS-2026-07-04-016 for Tank Journal manual-entry data resilience.
+- Scope completed: `JournalScreen._addJournalEntry()` now checks
+  `storage.getTank(tankId)` before saving a manual observation `LogEntry`.
+- Product behavior changes: if Tank Journal remains open after the durable tank
+  was deleted, tapping `Save Entry` shows the existing retry feedback and does
+  not create an orphan local journal log.
+- Product behavior not changed: journal timeline rendering, special-entry
+  labels, water-test/task/tool/milestone/AI-note display, and normal manual
+  journal entry creation are unchanged.
 - Inventory state: no screen inventory or visual evidence changes in this
   non-visual data-safety slice.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
@@ -35,33 +34,33 @@ Last updated: 2026-07-04 after DS-2026-07-04-015 Species care-task parent-tank b
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the DS-2026-07-04-015 handoff cleanup. If
+No dirty files are expected after the DS-2026-07-04-016 handoff cleanup. If
 resuming from an interrupted pre-commit copy, preserve these paths:
 
-- `lib/screens/species_browser_screen.dart`
-- `test/widget_tests/species_browser_screen_test.dart`
+- `lib/screens/journal_screen.dart`
+- `test/widget_tests/journal_screen_test.dart`
 - `docs/agent/ACTIVE_HANDOFF.md`
 - `docs/agent/FINISH_MAP.md`
 - `docs/agent/SLICE_LOG.md`
-- `docs/agent/plans/DS-2026-07-04-015-data-resilience-slice-contract.md`
+- `docs/agent/plans/DS-2026-07-04-016-data-resilience-slice-contract.md`
 - `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
 - `docs/product/danio-complete-local-current-audit-2026-06-13.md`
 
 ## Last Checks
 
-- Repo/remote preflight before DS-2026-07-04-015 was clean and aligned with
-  `origin/qa/production-tool-audit-2026-05-25` at `c75b2df9`.
+- Repo/remote preflight before DS-2026-07-04-016 was clean and aligned with
+  `origin/qa/production-tool-audit-2026-05-25` at `346d0c72`.
 - TDD RED:
-  `flutter test test/widget_tests/species_browser_screen_test.dart --name "stale tank selections do not create orphan species care tasks" --reporter compact`
-  failed because one orphan `Task` was saved when the stale cached tank was
-  absent from storage.
+  `flutter test test/widget_tests/journal_screen_test.dart --name "missing tank ids do not create orphan journal entries" --reporter compact`
+  failed because one orphan `LogEntry` was saved when the stale open Journal
+  route's durable parent tank was absent from storage.
 - TDD GREEN:
-  `flutter test test/widget_tests/species_browser_screen_test.dart --name "stale tank selections do not create orphan species care tasks" --reporter compact`
+  `flutter test test/widget_tests/journal_screen_test.dart --name "missing tank ids do not create orphan journal entries" --reporter compact`
   passed after adding the parent-tank check.
 - Focused widget coverage and targeted analysis:
-  `flutter test test/widget_tests/species_browser_screen_test.dart --reporter compact`
+  `flutter test test/widget_tests/journal_screen_test.dart --reporter compact`
   and
-  `flutter analyze lib/screens/species_browser_screen.dart test/widget_tests/species_browser_screen_test.dart`
+  `flutter analyze lib/screens/journal_screen.dart test/widget_tests/journal_screen_test.dart`
   passed.
 - Required data-safety local gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` passed.
@@ -74,7 +73,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Device And Preview State
 
-- No device ownership was claimed for DS-2026-07-04-015.
+- No device ownership was claimed for DS-2026-07-04-016.
 - No emulator, physical phone, ADB install, screenshot capture, Patrol,
   Maestro, or live-preview session was used.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
@@ -82,7 +81,7 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Blockers
 
-- No current blocker for DS-2026-07-04-015.
+- No current blocker for DS-2026-07-04-016.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   create/edit/delete, restore, migration, and any future app-kill flush coverage
   found in review.

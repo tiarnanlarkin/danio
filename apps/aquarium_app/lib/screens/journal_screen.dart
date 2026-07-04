@@ -122,6 +122,13 @@ class JournalScreen extends ConsumerWidget {
           );
 
           final storage = ref.read(storageServiceProvider);
+          final tank = await storage.getTank(tankId);
+          if (tank == null) {
+            throw StateError(
+              'Cannot save journal entry for missing tank $tankId',
+            );
+          }
+
           await storage.saveLog(entry);
           ref.invalidate(allLogsProvider(tankId));
           ref.invalidate(logsProvider(tankId));

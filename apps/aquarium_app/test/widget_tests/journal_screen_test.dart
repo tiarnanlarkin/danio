@@ -18,6 +18,7 @@ import 'package:danio/models/models.dart';
 // ---------------------------------------------------------------------------
 
 const _fakeTankId = 'tank-journal-001';
+final _now = DateTime(2024, 7, 1);
 
 Widget _wrap({List<LogEntry>? logs, StorageService? storage}) {
   final memStorage = storage ?? InMemoryStorageService();
@@ -32,6 +33,8 @@ Widget _wrap({List<LogEntry>? logs, StorageService? storage}) {
 
 class _FailingSaveLogStorage implements StorageService {
   final InMemoryStorageService _delegate = InMemoryStorageService();
+
+  Future<void> seedTank(Tank tank) => _delegate.saveTank(tank);
 
   @override
   Future<List<Tank>> getAllTanks() => _delegate.getAllTanks();
@@ -86,6 +89,17 @@ class _FailingSaveLogStorage implements StorageService {
   @override
   Future<void> deleteTask(String id) => _delegate.deleteTask(id);
 }
+
+Tank _tank({String id = _fakeTankId}) => Tank(
+  id: id,
+  name: 'Journal Test Tank',
+  type: TankType.freshwater,
+  volumeLitres: 100,
+  startDate: _now,
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: _now,
+  updatedAt: _now,
+);
 
 LogEntry _journalEntry({
   String id = 'j-001',
@@ -316,7 +330,10 @@ void main() {
     testWidgets('failed new entry save keeps sheet open with feedback', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(storage: _FailingSaveLogStorage()));
+      final storage = _FailingSaveLogStorage();
+      await storage.seedTank(_tank());
+
+      await tester.pumpWidget(_wrap(storage: storage));
       await _advance(tester);
 
       await tester.tap(find.byTooltip('Add journal entry'));
@@ -328,6 +345,35 @@ void main() {
       await tester.tap(find.text('Save Entry'));
       await tester.pump();
 
+      expect(
+        find.text("Couldn't save that journal entry. Try again."),
+        findsOneWidget,
+      );
+      expect(find.text('New Journal Entry'), findsOneWidget);
+    });
+
+    testWidgets('missing tank ids do not create orphan journal entries', (
+      tester,
+    ) async {
+      final storage = InMemoryStorageService();
+      await storage.saveTank(_tank());
+
+      await tester.pumpWidget(_wrap(storage: storage));
+      await _advance(tester);
+
+      await storage.deleteTank(_fakeTankId);
+      expect(await storage.getTank(_fakeTankId), isNull);
+
+      await tester.tap(find.byTooltip('Add journal entry'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.enterText(find.byType(TextField), 'Water looks cloudy.');
+      await tester.pump();
+
+      await tester.tap(find.text('Save Entry'));
+      await tester.pump();
+
+      expect(await storage.getLogsForTank(_fakeTankId), isEmpty);
       expect(
         find.text("Couldn't save that journal entry. Try again."),
         findsOneWidget,

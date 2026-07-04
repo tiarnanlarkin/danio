@@ -3049,6 +3049,15 @@ CL-P1-009GR Species care-task parent-tank boundary:
 - Focused widget coverage verifies the stale-tank failure path keeps local
   species care tasks empty while normal care-task creation still works.
 
+CL-P1-009GS Tank Journal manual-entry parent-tank boundary:
+
+- Tank Journal now rechecks the current tank in storage before saving a manual
+  observation log from the New Journal Entry sheet.
+- If the Journal route remains open after the durable tank was deleted, the log
+  is not saved and the existing sheet-level retry feedback is shown.
+- Focused widget coverage verifies the stale-tank failure path keeps local
+  journal logs empty while preserving the separate save-failure feedback path.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4321,9 +4330,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   existing no-tanks warning. Cycling Assistant reminder create actions now reject
   missing parent tank IDs before saving, preventing orphan local tasks after
   tank deletion, Symptom Triage confirmed journal saves now reject missing
-  parent tank IDs before saving local AI diagnosis logs or history, and Species
+  parent tank IDs before saving local AI diagnosis logs or history, Species
   detail care-task actions now reject missing parent tank IDs before saving
-  local weekly care tasks.
+  local weekly care tasks, and Tank Journal manual-entry saves now reject
+  missing parent tank IDs before saving local observation logs.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
