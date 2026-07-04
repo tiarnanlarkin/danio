@@ -1,63 +1,65 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-04 after SEC-2026-07-04-012 Optional AI privacy scope copy slice
+Last updated: 2026-07-04 after AI-2026-07-04-011 Ask Danio disclosure gate slice
 
 ## Branch
 
 - Branch: `qa/production-tool-audit-2026-05-25`
-- Latest completed slice: `SEC-2026-07-04-012` Optional AI privacy scope copy.
+- Latest completed slice: `AI-2026-07-04-011` Ask Danio disclosure gate.
 - Latest implementation checkpoint:
-  Current commit after SEC-2026-07-04-012 is committed and pushed.
+  Current commit after AI-2026-07-04-011 is committed and pushed.
 - Prior implementation checkpoint before this slice:
-  `0bfc451e fix: clarify cloud backup keying copy`.
+  `ed260fcf fix: clarify optional ai privacy scope`.
 - Current uncommitted slice: none expected after this handoff cleanup is
   committed and pushed; verify with `git status --short -uall` before new work.
 
 ## Current Slice
 
-- Slice: SEC-2026-07-04-012 for Optional AI privacy request-scope copy.
-- Scope completed: the in-app Privacy Policy no longer describes Optional AI as
-  Fish ID/photo-only. It now says current Optional AI can send Fish ID photos,
-  symptom descriptions, stocking or compatibility requests, and weekly-plan tank
-  context after disclosure, and it uses current OpenAI API retention/training
-  wording.
-- Product behavior changes: no AI provider, API key, disclosure-gate, cloud
-  account, request, or storage behavior changed. This is a privacy copy/source
-  contract slice.
+- Slice: AI-2026-07-04-011 for Ask Danio Optional AI disclosure gating.
+- Scope completed: `SmartScreen._askDanio()` now calls the shared
+  `ensureOpenAIDisclosureAccepted` gate before configuration, connectivity,
+  rate-limit, or OpenAI request checks can send a typed Ask Danio question
+  off-device.
+- Product behavior changes: Ask Danio now shows the existing OpenAI data
+  disclosure before its first typed-text request. If the disclosure flag cannot
+  be saved, the request stops and the Ask Danio card shows retryable feedback.
+- Product behavior not changed: no AI provider, API key, proxy, cloud account,
+  prompt, history-cache, rate-limit, or storage behavior changed beyond the
+  missing disclosure gate.
 - Inventory state: no screen inventory or visual evidence changes in this
-  non-visual Privacy Policy copy slice.
+  non-visual behavior/source-contract slice.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
 - Live preview/device requirement: not required. No emulator, ADB, physical
   device, live-preview, or `flutter run` ownership was used.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after the SEC-2026-07-04-012 handoff cleanup. If
+No dirty files are expected after the AI-2026-07-04-011 handoff cleanup. If
 resuming from an interrupted pre-commit copy, preserve these paths:
 
-- `lib/screens/privacy_policy_screen.dart`
-- `test/widget_tests/privacy_policy_screen_test.dart`
+- `lib/screens/smart_screen.dart`
+- `test/widget_tests/smart_ai_setup_copy_contract_test.dart`
 - `docs/agent/ACTIVE_HANDOFF.md`
 - `docs/agent/FINISH_MAP.md`
 - `docs/agent/SLICE_LOG.md`
-- `docs/agent/plans/SEC-2026-07-04-012-optional-ai-privacy-scope-copy-slice-contract.md`
+- `docs/agent/plans/AI-2026-07-04-011-ask-danio-disclosure-gate-slice-contract.md`
 - `docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
 - `docs/product/danio-complete-local-current-audit-2026-06-13.md`
 
 ## Last Checks
 
-- Repo/remote preflight before SEC-2026-07-04-012 was clean and aligned with
-  `origin/qa/production-tool-audit-2026-05-25` at `0bfc451e`.
+- Repo/remote preflight before AI-2026-07-04-011 was clean and aligned with
+  `origin/qa/production-tool-audit-2026-05-25` at `ed260fcf`.
 - TDD RED:
-  `flutter test test/widget_tests/privacy_policy_screen_test.dart --reporter compact`
-  failed before the copy change because the policy still used Fish-ID-only
-  Optional AI wording and did not name text/tank-context request scope.
+  `flutter test test/widget_tests/smart_ai_setup_copy_contract_test.dart --reporter compact`
+  failed because `lib/screens/smart_screen.dart` did not call
+  `ensureOpenAIDisclosureAccepted`.
 - TDD GREEN:
-  `flutter test test/widget_tests/privacy_policy_screen_test.dart --reporter compact`
-  passed after the copy change.
+  `flutter test test/widget_tests/smart_ai_setup_copy_contract_test.dart --reporter compact`
+  passed after adding the Ask Danio disclosure gate.
 - Targeted analysis:
-  `flutter analyze lib/screens/privacy_policy_screen.dart test/widget_tests/privacy_policy_screen_test.dart`
+  `flutter analyze lib/screens/smart_screen.dart test/widget_tests/smart_ai_setup_copy_contract_test.dart`
   passed.
 - Local quality gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`
@@ -66,11 +68,12 @@ resuming from an interrupted pre-commit copy, preserve these paths:
   `git diff --check`,
   `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`,
   `flutter test test/widget_tests/smart_ai_setup_copy_contract_test.dart --reporter compact`,
-  and source/status-doc stale Fish-ID-only copy scan passed.
+  and `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Focused`
+  passed.
 
 ## Device And Preview State
 
-- No device ownership was claimed for SEC-2026-07-04-011.
+- No device ownership was claimed for AI-2026-07-04-011.
 - No emulator, physical phone, ADB install, screenshot capture, Patrol,
   Maestro, or live-preview session was used.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
@@ -78,10 +81,12 @@ resuming from an interrupted pre-commit copy, preserve these paths:
 
 ## Blockers
 
-- No current blocker for SEC-2026-07-04-012.
+- No current blocker for AI-2026-07-04-011.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   create/delete, restore, migration, and any future app-kill flush coverage
   found in review.
+- Remaining AI confirmation work is still any future AI changes to tank data,
+  tasks, and reminders.
 
 ## Next Action
 

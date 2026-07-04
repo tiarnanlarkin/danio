@@ -386,6 +386,8 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009GL makes backup imports that import zero local tanks skip app-wide
   profile, learning, gem, settings, and preference restore while keeping the
   existing no-tanks warning.
+- CL-P1-009GM makes Ask Danio typed questions use the shared Optional AI
+  disclosure gate before any OpenAI request can send text off-device.
 
 ## 7. P2 Work - Presentation System
 

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/smart/models/smart_models.dart';
 import '../features/smart/intelligence/aquarium_intelligence_section.dart';
+import '../features/smart/openai_disclosure_gate.dart';
 import '../features/smart/smart_providers.dart';
 import '../navigation/app_routes.dart';
 import '../providers/guidance_provider.dart';
@@ -185,12 +186,31 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     return false;
   }
 
+  Future<bool> _ensureOpenAIDisclosure() {
+    return ensureOpenAIDisclosureAccepted(
+      ref: ref,
+      context: context,
+      logTag: 'SmartScreen',
+      message:
+          'The text you enter in Ask Danio is sent to OpenAI servers in the US '
+          'for aquarium advice. OpenAI may retain API inputs and outputs for '
+          'abuse monitoring for up to 30 days, and does not use API data for '
+          'model training unless the API account opts in.',
+      onSaveFailure: (message) {
+        if (mounted) setState(() => _askResponse = message);
+      },
+    );
+  }
+
   Future<void> _askDanio() async {
     final question = _askController.text.trim();
     if (question.isEmpty) {
       setState(() => _askResponse = 'Ask a fishkeeping question first.');
       return;
     }
+
+    final accepted = await _ensureOpenAIDisclosure();
+    if (!accepted || !mounted) return;
 
     final openai = ref.read(openAIServiceProvider);
     if (!await openai.isConfiguredAsync()) return;

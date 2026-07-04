@@ -2984,14 +2984,24 @@ CL-P1-009FD Fish ID disclosure acceptance boundary:
 
 CL-P1-009FE Shared Optional AI disclosure gate:
 
-- Weekly Plan, Symptom Triage, Fish ID, AI Stocking Suggestions, and AI
-  Compatibility Advice now use one shared disclosure gate before making OpenAI
-  requests.
+- Weekly Plan, Symptom Triage, Fish ID, Ask Danio, AI Stocking Suggestions, and
+  AI Compatibility Advice now use one shared disclosure gate before making
+  OpenAI requests.
 - The gate catches failed local saves of `openai_disclosure_accepted`, logs the
   failure with the feature tag, gives normal retry feedback, and returns `false`
   before any request can send photos, text, species, or tank context off-device.
 - Focused source coverage now requires every current OpenAI request surface to
   call `ensureOpenAIDisclosureAccepted`.
+
+CL-P1-009GM Ask Danio disclosure gate:
+
+- Ask Danio now routes typed aquarium questions through the shared Optional AI
+  disclosure gate before checking configuration, connectivity, rate limits, or
+  sending the OpenAI chat request.
+- Disclosure-save failures surface retryable inline Ask Danio feedback and
+  return before any typed question can leave the device.
+- Focused source-contract coverage now includes `lib/screens/smart_screen.dart`
+  alongside the other current OpenAI request surfaces.
 
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
@@ -4255,11 +4265,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   unlock-list writes before showing success. Debug Clear All Data now rejects
   false local preference-clear results before showing restart copy. Tank
   returning-user prompts now check failed dismissal seen-flag writes, and all
-  current OpenAI request
-  surfaces stop before sending any Optional AI request when the disclosure
-  acceptance flag cannot be saved. Backup imports that import zero local tanks
-  now skip app-wide SharedPreferences restore while keeping the existing
-  no-tanks warning.
+  current OpenAI request surfaces, including Ask Danio typed questions, use the
+  shared disclosure gate and stop before sending any Optional AI request when
+  the disclosure acceptance flag cannot be saved. Backup imports that import
+  zero local tanks now skip app-wide SharedPreferences restore while keeping the
+  existing no-tanks warning.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
