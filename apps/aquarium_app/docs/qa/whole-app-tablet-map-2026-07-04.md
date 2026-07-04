@@ -3,27 +3,27 @@
 Date: 2026-07-04
 Branch: `qa/production-tool-audit-2026-05-25`
 Commit tested: `20f14eee`
+Latest onboarding/debug capture source: `QA-2026-07-04-008`
 Device: `danio_tablet_api36`, `emulator-5556`, 2560x1600
 Build: `build/app/outputs/flutter-apk/app-debug.apk`
 Evidence root: `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`
 
 ## Result
 
-Status: Coverage accounting complete; current visual capture gaps remain.
+Status: Coverage complete; no current tablet visual capture gaps remain.
 
 This pass captured a current 19-surface tablet screenshot/XML set through debug
 QA deep links, plus pre-fix smoke-failure evidence. A follow-up hardened the
 tablet route helper with selected-tab checks, outside-dock assertions, and
 screen-relative swipes, then the tablet black-box smoke rerun passed. The full
-`SCREEN_INVENTORY.md` surface set is now accounted for below with `Pass` or
-`Gap` results. A follow-up QA-006 route batch added 39 more tablet
+`SCREEN_INVENTORY.md` surface set is now accounted for below with `Pass`
+results. A follow-up QA-006 route batch added 39 more tablet
 screenshot/XML pairs for standalone normal-user routes that do not require
 seeded tank IDs. QA-007 added 24 more fixed-build tablet screenshot/XML pairs
-for seeded tank, learning, story, and cycling routes. `Pass` means this slice
-has current paired screenshot/XML evidence or a current black-box route
-assertion; `Gap` means the surface still needs direct tablet capture or a
-dedicated route assertion before it can be treated as current tablet visual
-evidence.
+for seeded tank, learning, story, and cycling routes. QA-008 added 16
+first-run/onboarding and Debug QA Seeds tablet captures by walking a clean local
+app state on `emulator-5556`. `Pass` means this slice has current paired
+screenshot/XML evidence or a current black-box route assertion.
 
 ## Checks
 
@@ -36,9 +36,11 @@ evidence.
 | Direct QA deep-link capture | Pass for captured set | 19 `.png` files and 19 paired `.xml` files were saved; every XML contains a `<hierarchy>` root. `tablet-03-tank-root` was recaptured after the tablet root finished loading. |
 | QA-006 standalone route capture | Pass | Added 39 paired tablet PNG/XML captures, `tablet-20` through `tablet-58`, using new `danio://qa/...` routes. Every new XML contains a `<hierarchy>` root. |
 | QA-007 seeded route capture | Pass | Added 24 paired fixed-build tablet PNG/XML captures, `tablet-59` through `tablet-82`, using seeded `danio://qa/...` routes for tank, care, learning, story, and cycling surfaces. Every new XML contains a `<hierarchy>` root. |
+| QA-008 onboarding/debug capture | Pass | Added 16 paired tablet PNG/XML captures, `tablet-83` through `tablet-98`, by clearing only Danio app data on `emulator-5556`, walking first-run onboarding, and opening `danio://qa/debug` for Debug QA Seeds. Every new XML contains a `<hierarchy>` root. |
 | Narrow crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, or `ANR in` in `tablet-logcat-tail.txt`. |
 | QA-006 crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, or `ANR in` in `tablet-route-batch-qa-006-logcat-tail.txt`. |
 | QA-007 crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, `ANR in`, app error-boundary text, or the duplicate-Hero signature in `tablet-route-batch-qa-007-logcat-tail.txt`; XML validation also rejected error-boundary text in the 24 new states. |
+| QA-008 crash signature scan | Pass | No matches for `FATAL EXCEPTION`, `AndroidRuntime: FATAL`, `E/flutter`, `RenderFlex overflowed`, `ANR in`, or app error-boundary text in `tablet-onboarding-qa-008-logcat-tail.txt`; generic `AndroidRuntime` lines are the shell UIAutomator process lifecycle only. |
 | System transition warnings | Note | `tablet-logcat-tail.txt` includes two `BLASTSyncEngine` `Application ANR likely to follow` transition warnings. No `ANR in` or app fatal signature accompanied them. |
 
 ## Findings
@@ -146,9 +148,30 @@ evidence.
 | Difficulty Settings | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-81-difficulty-settings.png` / `.xml` | Pass | Opened from `danio://qa/difficulty-settings`. |
 | Cycling Assistant | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-82-cycling-assistant.png` / `.xml` | Pass | Opened from `danio://qa/cycling-assistant`. |
 
+## QA-008 Onboarding And Debug Inventory
+
+| Surface | Evidence | Result | Notes |
+| --- | --- | --- | --- |
+| Onboarding coordinator | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-83-onboarding-coordinator.png` / `.xml` | Pass | Captured during a clean first-run local onboarding walkthrough. |
+| Consent | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-84-consent.png` / `.xml` | Pass | Captured before accepting local consent. |
+| Age blocked | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-85-age-blocked.png` / `.xml` | Pass | Captured by selecting the under-13 branch. |
+| Welcome | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-86-welcome.png` / `.xml` | Pass | Captured from the first onboarding page. |
+| Region and units | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-87-region-and-units.png` / `.xml` | Pass | Captured during the first-run preferences flow. |
+| Experience level | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-88-experience-level.png` / `.xml` | Pass | Captured during the first-run profile flow. |
+| Tank status | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-89-tank-status.png` / `.xml` | Pass | Captured during the first-run tank-stage flow. |
+| Goals | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-90-goals.png` / `.xml` | Pass | Captured before applying the recommended goal. |
+| Micro lesson | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-91-micro-lesson.png` / `.xml` | Pass | Captured during the onboarding learning moment. |
+| XP celebration | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-92-xp-celebration.png` / `.xml` | Pass | Captured after first lesson completion. |
+| Fish select | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-93-fish-select.png` / `.xml` | Pass | Captured from the popular starter fish grid. |
+| Aha moment | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-94-aha-moment.png` / `.xml` | Pass | Captured after selecting Neon Tetra. |
+| Feature summary | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-95-feature-summary.png` / `.xml` | Pass | Captured on the honest feature summary page. |
+| Push permission | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-96-push-permission.png` / `.xml` | Pass | Captured before choosing the optional reminder path. |
+| Warm entry | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-97-warm-entry.png` / `.xml` | Pass | Captured as the post-skip warm cards after dismissing an emulator handwriting tutorial overlay. |
+| Debug QA Seeds | `screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/tablet-98-debug-qa-seeds.png` / `.xml` | Pass | Captured from `danio://qa/debug`; debug-only evidence, not normal-user product surface evidence. |
+
 ## Full Inventory Accounting
 
-Summary: 96 `SCREEN_INVENTORY.md` rows checked; 80 current tablet passes; 16
+Summary: 96 `SCREEN_INVENTORY.md` rows checked; 96 current tablet passes; 0
 tablet gaps remain for future capture.
 
 | Surface | Result | Current tablet evidence or gap note |
@@ -159,21 +182,21 @@ tablet gaps remain for future capture.
 | Tank tab | Pass | Paired settled root capture: `tablet-03-tank-root.png` / `.xml`. |
 | Smart tab | Pass | Paired root capture: `tablet-04-smart-root.png` / `.xml`. |
 | More / settings hub | Pass | Paired root capture: `tablet-05-more-root.png` / `.xml`. |
-| Onboarding coordinator | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Consent | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Age blocked | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Welcome | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Region and units | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Experience level | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Tank status | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Goals | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Micro lesson | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| XP celebration | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Fish select | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Aha moment | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Feature summary | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Push permission | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
-| Warm entry | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Onboarding coordinator | Pass | Paired QA-008 capture: `tablet-83-onboarding-coordinator.png` / `.xml`. |
+| Consent | Pass | Paired QA-008 capture: `tablet-84-consent.png` / `.xml`. |
+| Age blocked | Pass | Paired QA-008 capture: `tablet-85-age-blocked.png` / `.xml`. |
+| Welcome | Pass | Paired QA-008 capture: `tablet-86-welcome.png` / `.xml`. |
+| Region and units | Pass | Paired QA-008 capture: `tablet-87-region-and-units.png` / `.xml`. |
+| Experience level | Pass | Paired QA-008 capture: `tablet-88-experience-level.png` / `.xml`. |
+| Tank status | Pass | Paired QA-008 capture: `tablet-89-tank-status.png` / `.xml`. |
+| Goals | Pass | Paired QA-008 capture: `tablet-90-goals.png` / `.xml`. |
+| Micro lesson | Pass | Paired QA-008 capture: `tablet-91-micro-lesson.png` / `.xml`. |
+| XP celebration | Pass | Paired QA-008 capture: `tablet-92-xp-celebration.png` / `.xml`. |
+| Fish select | Pass | Paired QA-008 capture: `tablet-93-fish-select.png` / `.xml`. |
+| Aha moment | Pass | Paired QA-008 capture: `tablet-94-aha-moment.png` / `.xml`. |
+| Feature summary | Pass | Paired QA-008 capture: `tablet-95-feature-summary.png` / `.xml`. |
+| Push permission | Pass | Paired QA-008 capture: `tablet-96-push-permission.png` / `.xml`. |
+| Warm entry | Pass | Paired QA-008 capture: `tablet-97-warm-entry.png` / `.xml`. |
 | Today Board | Pass | Paired QA-007 capture: `tablet-59-today-board.png` / `.xml`. |
 | Create Tank | Pass | Paired capture: `tablet-08-create-tank.png` / `.xml`. |
 | Tank Detail | Pass | Paired QA-007 capture: `tablet-60-tank-detail.png` / `.xml`. |
@@ -248,17 +271,18 @@ tablet gaps remain for future capture.
 | Terms of Service | Pass | Paired capture: `tablet-26-terms-of-service.png` / `.xml`. |
 | Glossary | Pass | Paired capture: `tablet-17-glossary.png` / `.xml`. |
 | Debug Menu | Pass | Paired debug-only capture: `tablet-19-debug-menu.png` / `.xml`. |
-| Debug QA Seeds | Gap | No current CL-QA-002 tablet evidence captured; keep as a target for route/deep-link or manual capture. |
+| Debug QA Seeds | Pass | Paired QA-008 debug-only capture: `tablet-98-debug-qa-seeds.png` / `.xml`. |
 
 ## Gaps
 
-- Full CL-QA-002 accounting is complete, but direct current tablet evidence is
-  still missing for 16 inventory rows listed as `Gap` above.
+- Full CL-QA-002 accounting is complete; no current tablet visual capture gaps
+  remain across the 96 `SCREEN_INVENTORY.md` rows.
 - The QA-006 route batch added paired tablet evidence for standalone Smart
   detail, Workshop tool, guide, legal/settings, shop/reward, and search
   surfaces.
 - The QA-007 route batch added fixed-build paired tablet evidence for seeded
   tank/detail, add-log, livestock, equipment, reminders, learning/story, SRS,
   and Cycling Assistant surfaces.
-- Remaining tablet gaps are onboarding/first-run states plus Debug QA Seeds.
+- QA-008 closed the remaining onboarding/first-run states and Debug QA Seeds;
+  Debug QA Seeds remains debug-only evidence, not normal-user product evidence.
 - The physical phone `RFCY8022D5R` remained unauthorized and was not used.

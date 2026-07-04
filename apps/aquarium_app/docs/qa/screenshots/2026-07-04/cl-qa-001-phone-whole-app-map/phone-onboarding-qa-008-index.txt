@@ -1,0 +1,19 @@
+﻿Danio QA-2026-07-04-008 phone onboarding/debug seeded route capture
+device	emulator-5554
+size	1080x2400
+phone-84-consent	Consent	Your Privacy Matters|Share Crash Reports|No Thanks
+phone-85-age-blocked	Age blocked	Age Requirement|Close Danio|Privacy Policy
+phone-83-onboarding-coordinator	Onboarding coordinator	Your fish deserve better than guesswork|Let.?s get started
+phone-86-welcome	Welcome	Your fish deserve better than guesswork|Let.?s get started
+phone-87-region-and-units	Region and units	Where are you based|Preferred units|United States
+phone-88-experience-level	Experience level	How long have you kept fish|Just starting out
+phone-89-tank-status	Tank status	What.?s your tank situation|Thinking about getting one|Setting it up
+phone-90-goals	Goals	What should Danio help with first|Use recommendation|Keep fish healthy
+phone-91-micro-lesson	Micro lesson	Quick Lesson|Uncycled water|Why do most beginner fish die
+phone-92-xp-celebration	XP celebration	First lesson complete|Add my fish
+phone-93-fish-select	Fish select	Popular starter fish|Neon Tetra
+phone-94-aha-moment	Aha moment	Your Neon Tetra Profile|Start your journey
+phone-95-feature-summary	Feature summary	Everything you need|Continue to setup
+phone-96-push-permission	Push permission	Reminders are optional|Set up later|Continue
+phone-97-warm-entry	Warm entry	Almost there|What would you like to be called|Skip
+phone-98-debug-qa-seeds	Debug QA Seeds	QA State Setup|Seed Demo Tank|Seed Tablet QA State
