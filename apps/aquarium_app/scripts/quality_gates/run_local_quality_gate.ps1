@@ -267,6 +267,7 @@ function Clear-CustomLintGeneratedOutputs {
   $paths = @(
     "build",
     "android\app\mnt",
+    "ios\Flutter\ephemeral",
     "linux\flutter\ephemeral",
     "macos\Flutter\ephemeral",
     "windows\flutter\ephemeral"

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 export 'app_colors.dart';
 export 'app_spacing.dart';
@@ -78,21 +77,24 @@ class AppTheme {
   /// Nunito (lesson aliases) is NOT in the Material TextTheme because 300+ call sites use
   /// textTheme for UI chrome. Lesson styles are exposed via AppTypography.lesson* aliases.
   /// See plans/typography-spec.md for full rationale. (Lora removed R-089)
-  static TextTheme get _textTheme => TextTheme(
+  static TextTheme get _textTheme => const TextTheme(
     // ── Display (Fredoka — hero/splash, largest impact text) ──────
-    displayLarge: GoogleFonts.fredoka(
+    displayLarge: TextStyle(
+      fontFamily: AppTypography.displayFontFamily,
       fontSize: 40,
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
       height: 1.2,
     ),
-    displayMedium: GoogleFonts.fredoka(
+    displayMedium: TextStyle(
+      fontFamily: AppTypography.displayFontFamily,
       fontSize: 34,
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
       height: 1.2,
     ),
-    displaySmall: GoogleFonts.fredoka(
+    displaySmall: TextStyle(
+      fontFamily: AppTypography.displayFontFamily,
       fontSize: 28,
       fontWeight: FontWeight.w600,
       letterSpacing: 0,
@@ -100,19 +102,22 @@ class AppTheme {
     ),
 
     // ── Headline (Fredoka — section headings, card titles) ────────
-    headlineLarge: GoogleFonts.fredoka(
+    headlineLarge: TextStyle(
+      fontFamily: AppTypography.displayFontFamily,
       fontSize: 32,
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
       height: 1.2,
     ),
-    headlineMedium: GoogleFonts.fredoka(
+    headlineMedium: TextStyle(
+      fontFamily: AppTypography.displayFontFamily,
       fontSize: 24,
       fontWeight: FontWeight.w600,
       letterSpacing: 0,
       height: 1.3,
     ),
-    headlineSmall: GoogleFonts.fredoka(
+    headlineSmall: TextStyle(
+      fontFamily: AppTypography.displayFontFamily,
       fontSize: 20,
       fontWeight: FontWeight.w600,
       letterSpacing: 0,
@@ -120,19 +125,22 @@ class AppTheme {
     ),
 
     // ── Title (Fredoka large, Nunito medium/small) ────────────────
-    titleLarge: GoogleFonts.fredoka(
+    titleLarge: TextStyle(
+      fontFamily: AppTypography.displayFontFamily,
       fontSize: 22,
       fontWeight: FontWeight.w600,
       letterSpacing: 0,
       height: 1.3,
     ),
-    titleMedium: GoogleFonts.nunito(
+    titleMedium: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 18,
       fontWeight: FontWeight.w700,
       letterSpacing: 0,
       height: 1.3,
     ),
-    titleSmall: GoogleFonts.nunito(
+    titleSmall: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 16,
       fontWeight: FontWeight.w600,
       letterSpacing: 0,
@@ -140,34 +148,40 @@ class AppTheme {
     ),
 
     // ── Body (Nunito — readable, friendly UI prose) ───────────────
-    bodyLarge: GoogleFonts.nunito(
+    bodyLarge: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 17,
       fontWeight: FontWeight.w400,
       height: 1.5,
     ),
-    bodyMedium: GoogleFonts.nunito(
+    bodyMedium: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 15,
       fontWeight: FontWeight.w400,
       height: 1.5,
     ),
-    bodySmall: GoogleFonts.nunito(
+    bodySmall: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 13,
       fontWeight: FontWeight.w400,
       height: 1.4,
     ),
 
     // ── Label (Nunito — buttons, chips, navigation) ───────────────
-    labelLarge: GoogleFonts.nunito(
+    labelLarge: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 15,
       fontWeight: FontWeight.w700,
       letterSpacing: 0.1,
     ),
-    labelMedium: GoogleFonts.nunito(
+    labelMedium: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 13,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.1,
     ),
-    labelSmall: GoogleFonts.nunito(
+    labelSmall: TextStyle(
+      fontFamily: AppTypography.fontFamily,
       fontSize: 11,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.2,

@@ -170,7 +170,23 @@ void main() {
     expect(appPubspec, contains('danio_custom_lints:'));
     expect(appPubspec, isNot(contains('dependency_validator:\n  exclude:')));
     expect(dependencyValidatorConfig, contains('build/**'));
+    expect(
+      dependencyValidatorConfig,
+      contains('ios/Flutter/ephemeral/**'),
+    );
+    expect(
+      dependencyValidatorConfig,
+      contains('linux/flutter/ephemeral/**'),
+    );
+    expect(
+      dependencyValidatorConfig,
+      contains('macos/Flutter/ephemeral/**'),
+    );
     expect(dependencyValidatorConfig, contains('tool/danio_custom_lints/**'));
+    expect(
+      dependencyValidatorConfig,
+      contains('windows/flutter/ephemeral/**'),
+    );
     expect(dependencyValidatorConfig, contains('danio_custom_lints'));
 
     expect(
@@ -203,6 +219,7 @@ void main() {
     );
     expect(gateSource, contains('danio_aquarium_lint_root'));
     expect(gateSource, contains(r'android\app\mnt'));
+    expect(gateSource, contains(r'ios\Flutter\ephemeral'));
     expect(gateSource, isNot(contains('dcm analyze lib')));
   });
 

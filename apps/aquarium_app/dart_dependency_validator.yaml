@@ -4,6 +4,10 @@
 # rather than normal Dart imports, so it needs an explicit ignore.
 exclude:
   - build/**
+  - ios/Flutter/ephemeral/**
+  - linux/flutter/ephemeral/**
+  - macos/Flutter/ephemeral/**
   - tool/danio_custom_lints/**
+  - windows/flutter/ephemeral/**
 ignore:
   - danio_custom_lints

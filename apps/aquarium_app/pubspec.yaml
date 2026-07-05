@@ -30,9 +30,6 @@ dependencies:
   # Charts
   fl_chart: ^0.69.2
   
-  # Typography
-  google_fonts: ^6.2.1
-
   # Animations
   flutter_animate: ^4.5.0
   rive: ^0.13.0
@@ -107,10 +104,9 @@ flutter:
     - family: Nunito
       fonts:
         - asset: assets/fonts/Nunito-Regular.ttf
-        # R-089: Map w300 (Light) to Regular — no separate Light file is
+        # R-089: Map w300 (Light) to Regular - no separate Light file is
         # bundled. Without this entry, Flutter falls back to the system font
-        # for FontWeight.w300 when GoogleFonts.config.allowRuntimeFetching
-        # is false (our GDPR config). Mapping it to Regular is the correct
+        # for FontWeight.w300. Mapping it to Regular is the correct
         # fallback: visually imperceptible, zero crash risk.
         - asset: assets/fonts/Nunito-Regular.ttf
           weight: 300
@@ -131,7 +127,7 @@ flutter:
           weight: 600
         - asset: assets/fonts/Fredoka-Bold.ttf
           weight: 700
-    # Lora bundled font removed — app_typography.dart uses GoogleFonts.lora() (CDN) instead.
+    # Lora bundled font removed; lesson styles use bundled Nunito aliases.
 
 # App Icon Configuration
 flutter_launcher_icons:

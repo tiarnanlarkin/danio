@@ -26,7 +26,6 @@ import 'services/hearts_service.dart';
 import 'services/celebration_service.dart';
 import 'services/xp_animation_service.dart';
 import 'services/supabase_service.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
@@ -72,10 +71,8 @@ Future<void> main() async {
     ),
   );
 
-  // Fonts are bundled locally in assets/fonts/ (GDPR compliance — no runtime
-  // network requests to Google servers). GoogleFonts will serve from the
-  // bundled assets automatically.
-  GoogleFonts.config.allowRuntimeFetching = false;
+  // Fonts are declared under flutter.fonts in pubspec.yaml and resolved from
+  // bundled local files, so startup has no runtime font fetch path.
 
   // Lock orientation to portrait (lightweight, keeps first frame fast)
   await SystemChrome.setPreferredOrientations([

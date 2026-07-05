@@ -18,6 +18,7 @@ import 'package:danio/models/resolved_question.dart';
 import 'package:danio/models/spaced_repetition.dart';
 import 'package:danio/screens/spaced_repetition_practice/widgets/mc_card_widget.dart';
 
+import '../helpers/danio_test_fonts.dart';
 import 'golden_test_helpers.dart';
 
 // ---------------------------------------------------------------------------
@@ -41,7 +42,8 @@ ReviewCard _makeCard() {
 MultipleChoiceQuestion _makeQuestion() {
   return MultipleChoiceQuestion(
     card: _makeCard(),
-    questionText: 'What is the ideal pH range for most tropical freshwater fish?',
+    questionText:
+        'What is the ideal pH range for most tropical freshwater fish?',
     options: const [
       '5.0 - 5.5',
       '6.0 - 6.5',
@@ -60,6 +62,8 @@ MultipleChoiceQuestion _makeQuestion() {
 // ---------------------------------------------------------------------------
 
 void main() {
+  setUpAll(loadDanioTestFonts);
+
   group('McCardWidget golden tests', () {
     testWidgets('unanswered state', (tester) async {
       tester.view.physicalSize = kGoldenTestSurfaceSize;

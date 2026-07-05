@@ -23,6 +23,8 @@ import 'package:danio/screens/home/widgets/empty_room_scene.dart';
 import 'package:danio/screens/home/widgets/setup_path_selector.dart';
 import 'package:danio/services/storage_service.dart';
 
+import '../helpers/danio_test_fonts.dart';
+
 // Full-phone surface — the scene is layout-sensitive, so a real phone aspect
 // ratio matters more than the 400x800 used for component tests.
 const Size _sceneSurfaceSize = Size(400, 860);
@@ -41,7 +43,7 @@ const Size _sceneSurfaceSize = Size(400, 860);
 class _FakeSettingsNotifier extends StateNotifier<AppSettings>
     implements SettingsNotifier {
   _FakeSettingsNotifier()
-      : super(const AppSettings(ambientLightingEnabled: false));
+    : super(const AppSettings(ambientLightingEnabled: false));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -69,6 +71,8 @@ Widget _fullScreenWrapper(Widget child) {
 }
 
 void main() {
+  setUpAll(loadDanioTestFonts);
+
   group('EmptyRoomScene golden', () {
     testWidgets('concept-A empty-tank scene', (tester) async {
       tester.view.physicalSize = _sceneSurfaceSize;
