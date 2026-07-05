@@ -520,7 +520,13 @@ class BackupImportService {
     for (final source in sourceJson) {
       final sourceMap = _mapFrom(source, sourceLabel);
       final value = sourceMap[field];
-      if (value is! String || value.isEmpty) continue;
+      if (value == null) continue;
+      if (value is! String) {
+        throw FormatException(
+          'Invalid backup: $sourceCollection $field values must be strings',
+        );
+      }
+      if (value.isEmpty) continue;
 
       final targetTankId = targetTankIds[value];
       if (targetTankId == null) continue;

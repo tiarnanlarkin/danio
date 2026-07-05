@@ -11,6 +11,7 @@ class _RecordingStorageService implements StorageService {
   final Map<String, Equipment> equipment = {};
   final Map<String, LogEntry> logs = {};
   final Map<String, Task> tasks = {};
+  final List<String> savedTankIds = [];
 
   bool failAfterSaveTank = false;
   bool failOnSaveLog = false;
@@ -101,6 +102,7 @@ class _RecordingStorageService implements StorageService {
 
   @override
   Future<void> saveTank(Tank tank) async {
+    savedTankIds.add(tank.id);
     tanks[tank.id] = tank;
     if (failAfterSaveTank) {
       throw StateError('simulated tank save failure');
@@ -757,6 +759,7 @@ void main() {
           expect(storage.equipment, isEmpty);
           expect(storage.logs, isEmpty);
           expect(storage.tasks, isEmpty);
+          expect(storage.savedTankIds, isEmpty);
         }
       },
     );
