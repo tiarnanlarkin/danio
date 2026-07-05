@@ -43,12 +43,19 @@ void main() {
 
   test('Preferences does not duplicate the More backup hub', () {
     final source = _source('lib/screens/settings/settings_screen.dart');
+    final dataSectionSource = _source(
+      'lib/screens/settings/settings_data_section.dart',
+    );
     final notificationsSource = _source(
       'lib/screens/settings/settings_notifications_section.dart',
     );
 
     expect(source, isNot(contains('BackupRestoreScreen')));
     expect(source, isNot(contains('Backup & Restore')));
+    expect(dataSectionSource, isNot(contains('Export All Data')));
+    expect(dataSectionSource, isNot(contains('Import Data')));
+    expect(dataSectionSource, isNot(contains('FilePicker.platform.pickFiles')));
+    expect(dataSectionSource, isNot(contains('writeAsString(contents)')));
     expect(notificationsSource, contains('Phone Notifications'));
     expect(source, contains('OpenAI API key'));
     expect(source, contains('Light/Dark Mode'));

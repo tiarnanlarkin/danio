@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../services/onboarding_service.dart';
@@ -16,7 +13,7 @@ import '../../widgets/core/app_dialog.dart';
 import '../../utils/logger.dart';
 
 /// Data section for the settings screen.
-/// Handles export, import, photo storage info, and clear/delete data actions.
+/// Handles photo storage info. Backup export/import lives in Backup & Restore.
 class SettingsDataSection extends StatelessWidget {
   final WidgetRef ref;
 
@@ -28,18 +25,6 @@ class SettingsDataSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         AppListTile(
-          leading: const Icon(Icons.upload_outlined),
-          title: 'Export All Data',
-          subtitle: 'Share your aquarium data as JSON',
-          onTap: () => exportData(context),
-        ),
-        AppListTile(
-          leading: const Icon(Icons.download_outlined),
-          title: 'Import Data',
-          subtitle: 'Replace all app data with a backup file',
-          onTap: () => importData(context),
-        ),
-        AppListTile(
           leading: const Icon(Icons.photo_library_outlined),
           title: 'Photo Storage',
           subtitle: 'View where photos are stored',
@@ -47,148 +32,6 @@ class SettingsDataSection extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-/// Export all data as a JSON file.
-Future<void> exportData(BuildContext context) async {
-  if (!context.mounted) return;
-
-  AppFeedback.showLoading(context, 'Preparing export...');
-  var dismissLoadingInFinally = true;
-
-  try {
-    final dir = await getApplicationDocumentsDirectory();
-    final dataFile = File('${dir.path}/aquarium_data.json');
-
-    if (!await dataFile.exists()) {
-      if (context.mounted) {
-        AppFeedback.dismiss(context);
-        dismissLoadingInFinally = false;
-        AppFeedback.showInfo(
-          context,
-          'Nothing to export yet. Start logging to build your data!',
-        );
-      }
-      return;
-    }
-
-    await Share.shareXFiles([
-      XFile(dataFile.path),
-    ], subject: 'Danio Data Export');
-  } catch (e, st) {
-    logError(
-      'SettingsDataSection: export failed: $e',
-      stackTrace: st,
-      tag: 'SettingsDataSection',
-    );
-    if (context.mounted) {
-      AppFeedback.dismiss(context);
-      dismissLoadingInFinally = false;
-      AppFeedback.showError(
-        context,
-        'Export didn\'t work. Give it another go!',
-      );
-    }
-  } finally {
-    if (context.mounted && dismissLoadingInFinally) {
-      AppFeedback.dismiss(context);
-    }
-  }
-}
-
-/// Import data from a user-selected JSON file.
-Future<void> importData(BuildContext context) async {
-  final confirm = await showAppDestructiveDialog(
-    context: context,
-    title: 'Replace all data?',
-    message:
-        'This will overwrite your current tanks, fish, logs, and settings with the backup file. This cannot be undone.',
-    destructiveLabel: 'Replace',
-  );
-
-  if (confirm != true || !context.mounted) return;
-
-  final result = await FilePicker.platform.pickFiles(
-    type: FileType.custom,
-    allowedExtensions: ['json'],
-  );
-
-  if (result == null || result.files.isEmpty || !context.mounted) return;
-
-  final filePath = result.files.single.path;
-  if (filePath == null) {
-    AppFeedback.showError(context, 'Could not access selected file');
-    return;
-  }
-
-  AppFeedback.showLoading(context, 'Importing data...');
-  var dismissLoadingInFinally = true;
-
-  try {
-    final file = File(filePath);
-    final contents = await file.readAsString();
-
-    dynamic decoded;
-    try {
-      decoded = jsonDecode(contents);
-    } on FormatException {
-      if (context.mounted) {
-        AppFeedback.dismiss(context);
-        dismissLoadingInFinally = false;
-        AppFeedback.showError(
-          context,
-          'Invalid backup file. Expected Danio export format',
-        );
-      }
-      return;
-    }
-
-    if (decoded is! Map ||
-        !decoded.containsKey('tanks') ||
-        !decoded.containsKey('livestock') ||
-        !decoded.containsKey('logs')) {
-      if (context.mounted) {
-        AppFeedback.dismiss(context);
-        dismissLoadingInFinally = false;
-        AppFeedback.showError(
-          context,
-          'Invalid backup file. Expected Danio export format',
-        );
-      }
-      return;
-    }
-
-    final dir = await getApplicationDocumentsDirectory();
-    final dataFile = File('${dir.path}/aquarium_data.json');
-    await dataFile.writeAsString(contents);
-
-    if (context.mounted) {
-      AppFeedback.dismiss(context);
-      dismissLoadingInFinally = false;
-      AppFeedback.showSuccess(
-        context,
-        'Data imported! Restart the app to see changes.',
-      );
-    }
-  } catch (e, st) {
-    logError(
-      'SettingsDataSection: import failed: $e',
-      stackTrace: st,
-      tag: 'SettingsDataSection',
-    );
-    if (context.mounted) {
-      AppFeedback.dismiss(context);
-      dismissLoadingInFinally = false;
-      AppFeedback.showError(
-        context,
-        'Import failed. The file may be invalid or corrupted.',
-      );
-    }
-  } finally {
-    if (context.mounted && dismissLoadingInFinally) {
-      AppFeedback.dismiss(context);
-    }
   }
 }
 

@@ -34,6 +34,24 @@ void main() {
     expect(source, contains('lib/main.dart'));
   });
 
+  test('local quality gate does not fail successful Flutter stderr warnings', () {
+    final source = File(scriptPath).readAsStringSync();
+
+    expect(source, contains('Get-Command flutter -ErrorAction Stop'));
+    expect(
+      source,
+      contains(r'$previousErrorActionPreference = $ErrorActionPreference'),
+    );
+    expect(source, contains(r'$ErrorActionPreference = "Continue"'));
+    expect(source, contains(r'$flutterExitCode = $global:LASTEXITCODE'));
+    expect(
+      source,
+      contains(
+        r"flutter $($Arguments -join ' ') failed with exit code $flutterExitCode",
+      ),
+    );
+  });
+
   test(
     'local quality gate can run focused, docs, full, and visual profiles',
     () {

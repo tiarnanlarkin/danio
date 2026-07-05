@@ -95,9 +95,20 @@ function Invoke-Step {
 function Invoke-Flutter {
   param([string[]]$Arguments)
 
-  & flutter @Arguments
-  if ($global:LASTEXITCODE -ne 0) {
-    throw "flutter $($Arguments -join ' ') failed with exit code $global:LASTEXITCODE"
+  Get-Command flutter -ErrorAction Stop | Out-Null
+  $previousErrorActionPreference = $ErrorActionPreference
+  $flutterExitCode = 1
+  try {
+    # Flutter can print documented build warnings to stderr while exiting 0.
+    $ErrorActionPreference = "Continue"
+    & flutter @Arguments
+    $flutterExitCode = $global:LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
+  if ($flutterExitCode -ne 0) {
+    throw "flutter $($Arguments -join ' ') failed with exit code $flutterExitCode"
   }
 }
 
