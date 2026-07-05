@@ -3,6 +3,8 @@ param(
   [string]$AppId = "com.tiarnanlarkin.danio",
   [string]$Target = "lib/main.dart",
   [string]$DeviceId = "",
+  [switch]$UseLocalEnv,
+  [string]$EnvFile = "",
   [switch]$LaunchEmulator,
   [switch]$CheckOnly,
   [int]$WaitSeconds = 90
@@ -14,6 +16,7 @@ Set-StrictMode -Version Latest
 $ScriptPath = $MyInvocation.MyCommand.Path
 $ScriptsDir = Split-Path -Parent $ScriptPath
 $AppRoot = Split-Path -Parent $ScriptsDir
+$RepoRoot = (Resolve-Path -LiteralPath (Join-Path $AppRoot "..\..")).Path
 
 function Resolve-Tool {
   param(
@@ -36,6 +39,56 @@ function Resolve-Tool {
   throw "$Name was not found on PATH or in the expected local SDK paths."
 }
 
+function Resolve-LocalEnvFile {
+  if ($EnvFile) {
+    if ([System.IO.Path]::IsPathRooted($EnvFile)) {
+      return $EnvFile
+    }
+
+    return (Join-Path $RepoRoot $EnvFile)
+  }
+
+  return (Join-Path $RepoRoot ".env.local")
+}
+
+function Assert-LocalEnvFileSafe {
+  param([Parameter(Mandatory = $true)][string]$Path)
+
+  if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+    throw "Local env file not found at '$Path'."
+  }
+
+  $hasOpenAiKey = $false
+  foreach ($line in [System.IO.File]::ReadLines($Path)) {
+    if ($line -match "^\s*OPENAI_API_KEY\s*=\s*(.+)\s*$") {
+      $value = $Matches[1].Trim()
+      if ($value -and $value -ne '""' -and $value -ne "''") {
+        $hasOpenAiKey = $true
+      }
+      break
+    }
+  }
+
+  if (-not $hasOpenAiKey) {
+    throw "Local env file does not contain a non-empty OPENAI_API_KEY entry."
+  }
+
+  $resolvedPath = (Resolve-Path -LiteralPath $Path).Path
+  $repoRootPrefix = $RepoRoot.TrimEnd("\", "/")
+  if (-not $resolvedPath.StartsWith("$repoRootPrefix\", [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Local env file must stay inside the repo root."
+  }
+  $relativePath = $resolvedPath.Substring($repoRootPrefix.Length).TrimStart("\", "/")
+  $relativePath = $relativePath -replace "\\", "/"
+
+  & git -C $RepoRoot check-ignore -q -- $relativePath
+  if ($LASTEXITCODE -ne 0) {
+    throw "Local env file '$relativePath' is not git-ignored."
+  }
+
+  return $resolvedPath
+}
+
 function Resolve-EmulatorTool {
   $paths = @(
     (Join-Path $env:LOCALAPPDATA "Android\Sdk\emulator\emulator.exe"),
@@ -53,7 +106,7 @@ $script:Adb = Resolve-Tool -Name "adb" -FallbackPaths @(
   (Join-Path $env:LOCALAPPDATA "Android\Sdk\platform-tools\adb.exe")
 )
 $script:Emulator = Resolve-EmulatorTool
-Write-Host "Supported switches: -CheckOnly, -LaunchEmulator, -WaitSeconds."
+Write-Host "Supported switches: -CheckOnly, -LaunchEmulator, -UseLocalEnv, -EnvFile, -WaitSeconds."
 
 function Invoke-Adb {
   param(
@@ -221,6 +274,12 @@ function Resolve-DanioDevice {
 
 Push-Location -LiteralPath $AppRoot
 try {
+  $localEnvFile = ""
+  if ($UseLocalEnv) {
+    $localEnvFile = Assert-LocalEnvFileSafe -Path (Resolve-LocalEnvFile)
+    Write-Host "Using git-ignored local env file for debug defines: $localEnvFile"
+  }
+
   $device = Resolve-DanioDevice
   Write-Host "Danio live preview device: $($device.Serial)"
   Write-Host "AVD: $($device.Avd)"
@@ -232,7 +291,14 @@ try {
   }
 
   $flutterArgs = @("run", "-d", $device.Serial, "--target", $Target)
+  if ($UseLocalEnv) {
+    $flutterArgs += @("--dart-define-from-file=$localEnvFile")
+  }
+
   Write-Host "flutter run -d $($device.Serial) --target $Target"
+  if ($UseLocalEnv) {
+    Write-Host "Includes --dart-define-from-file=<local env file>; values are not printed."
+  }
   Write-Host "Controls: r hot reload, R hot restart, q quit."
   & $script:Flutter @flutterArgs
   if ($LASTEXITCODE -ne 0) {
