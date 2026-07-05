@@ -509,6 +509,80 @@ void main() {
       },
     );
 
+    test(
+      'rejects missing backup relationship ids before reporting import success',
+      () async {
+        for (final scenario in const [
+          (
+            collection: 'tasks',
+            field: 'relatedEquipmentId',
+            missingId: 'missing-filter',
+            targetLabel: 'equipment',
+          ),
+          (
+            collection: 'logs',
+            field: 'relatedEquipmentId',
+            missingId: 'missing-filter',
+            targetLabel: 'equipment',
+          ),
+          (
+            collection: 'logs',
+            field: 'relatedLivestockId',
+            missingId: 'missing-fish',
+            targetLabel: 'livestock',
+          ),
+          (
+            collection: 'logs',
+            field: 'relatedTaskId',
+            missingId: 'missing-task',
+            targetLabel: 'task',
+          ),
+        ]) {
+          final storage = _RecordingStorageService();
+          final service = BackupImportService(
+            storage: storage,
+            newId: _idSequence([
+              'new-tank',
+              'new-fish',
+              'new-filter',
+              'new-task',
+              'new-log',
+            ]),
+            now: () => DateTime.utc(2026, 6, 22, 12),
+          );
+          final backupData = _backupData();
+          final entries = (backupData[scenario.collection] as List)
+              .map((entry) => Map<String, dynamic>.from(entry as Map))
+              .toList();
+          entries.first[scenario.field] = scenario.missingId;
+          backupData[scenario.collection] = entries;
+
+          await expectLater(
+            service.importTankScopedData(backupData),
+            throwsA(
+              isA<BackupImportException>().having(
+                (error) => error.originalError,
+                'originalError',
+                isA<FormatException>().having(
+                  (error) => error.message,
+                  'message',
+                  contains(
+                    'Invalid backup: ${scenario.collection} ${scenario.field} values must reference imported ${scenario.targetLabel} records',
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          expect(storage.tanks.keys, isNot(contains('new-tank')));
+          expect(storage.livestock, isEmpty);
+          expect(storage.equipment, isEmpty);
+          expect(storage.logs, isEmpty);
+          expect(storage.tasks, isEmpty);
+        }
+      },
+    );
+
     test('skips preference restore when backup imports no tanks', () async {
       SharedPreferences.setMockInitialValues({
         'theme_mode': 0,

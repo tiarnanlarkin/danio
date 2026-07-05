@@ -23,23 +23,30 @@ void main() {
     });
 
     test(
-      'drops log relationships when the referenced entity was not imported',
+      'rejects log relationships when the referenced entity was not imported',
       () {
-        final remapped = remapBackupLogRelationships(
-          {
-            'id': 'old-log',
-            'relatedEquipmentId': 'missing-equipment',
-            'relatedLivestockId': 'missing-fish',
-            'relatedTaskId': 'missing-task',
-          },
-          equipmentIdMap: const {},
-          livestockIdMap: const {},
-          taskIdMap: const {},
+        expect(
+          () => remapBackupLogRelationships(
+            {
+              'id': 'old-log',
+              'relatedEquipmentId': 'missing-equipment',
+              'relatedLivestockId': 'missing-fish',
+              'relatedTaskId': 'missing-task',
+            },
+            equipmentIdMap: const {},
+            livestockIdMap: const {},
+            taskIdMap: const {},
+          ),
+          throwsA(
+            isA<FormatException>().having(
+              (error) => error.message,
+              'message',
+              contains(
+                'Invalid backup: logs relatedEquipmentId values must reference imported equipment records',
+              ),
+            ),
+          ),
         );
-
-        expect(remapped['relatedEquipmentId'], isNull);
-        expect(remapped['relatedLivestockId'], isNull);
-        expect(remapped['relatedTaskId'], isNull);
       },
     );
 
@@ -51,5 +58,26 @@ void main() {
 
       expect(remapped['relatedEquipmentId'], 'new-equipment');
     });
+
+    test(
+      'rejects task equipment relationships when equipment was not imported',
+      () {
+        expect(
+          () => remapBackupTaskRelationships(
+            {'id': 'old-task', 'relatedEquipmentId': 'missing-equipment'},
+            equipmentIdMap: const {},
+          ),
+          throwsA(
+            isA<FormatException>().having(
+              (error) => error.message,
+              'message',
+              contains(
+                'Invalid backup: tasks relatedEquipmentId values must reference imported equipment records',
+              ),
+            ),
+          ),
+        );
+      },
+    );
   });
 }
