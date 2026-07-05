@@ -1,16 +1,17 @@
 # Danio Active Handoff
 
-Status: DS-2026-07-05-040 verification in progress on temporary branch
-Last updated: 2026-07-05 after DS-2026-07-05-040 dirty-branch Full gate
+Status: Clean DS-2026-07-05-040 checkpoint ready for manual continuation
+Last updated: 2026-07-05 after DS-2026-07-05-040 merge and clean-main Full gate
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Current slice branch:
-  `ds-2026-07-05-040-ignore-unreferenced-duplicate-photos`.
+- Current branch after closeout: `main`.
+- DS-2026-07-05-040 behavior commit: `e090d5a6`
+  (`Ignore duplicate unreferenced backup photos`).
 - DS-2026-07-05-040 closeout docs: this handoff, `FINISH_MAP.md`,
   `SLICE_LOG.md`, the DS-040 slice contract, and product audit/backlog notes.
-- Expected final state for the next session after closeout:
+- Final state for the next session:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
@@ -84,6 +85,25 @@ Focused proof:
   tests, dependency validation, custom lint, the full Flutter test suite,
   `flutter analyze`, and the debug APK build.
 
+Branch gate:
+
+- Branch clean-worktree Full gate:
+  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
+  passed on behavior commit `e090d5a6`. This covered worktree visibility,
+  whitespace, focused tests, dependency validation, custom lint, the full
+  Flutter test suite, `flutter analyze`, and the debug APK build.
+
+Docs and clean-main gate:
+
+- `git diff --check` passed after DS-040 documentation updates.
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed after DS-040 documentation updates.
+- Clean-main Full gate:
+  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
+  passed after DS-040 was merged to `main`. This covered worktree visibility,
+  whitespace, focused tests, dependency validation, custom lint, the full
+  Flutter test suite, `flutter analyze`, and the debug APK build.
+
 ## Device And Preview State
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
@@ -106,12 +126,14 @@ Focused proof:
 
 ## Next Action
 
-Finish DS-2026-07-05-040 closeout: run post-doc checks, commit, run the branch
-clean-worktree Full gate, fast-forward merge to `main`, run the clean-main Full
-gate, push `origin/main`, delete the temporary branch, and verify clean
-alignment.
+The approved autonomous successor budget is exhausted after DS-2026-07-05-040.
+Do not create another autonomous successor from this handoff unless the user
+provides a new explicit numeric continuation budget and project-scoped launch
+instruction.
 
-After that checkpoint, do not create another autonomous successor from this
-handoff unless the user provides a new explicit numeric continuation budget and
-project-scoped launch instruction. Recommended next manual action remains a
-fresh repo-scoped data-resilience gap selection audit from live repo evidence.
+Recommended next manual action: start a fresh repo-scoped session, rebuild
+truth from repo docs and live git state, and continue the read-only
+data-resilience gap selection audit only if the user explicitly requests more
+Danio complete-local work. Prefer restore, migration, create/delete,
+relationship integrity, and future debounced-writer gaps only when fresh source
+and test evidence proves a specific missing behavior and proof setup.
