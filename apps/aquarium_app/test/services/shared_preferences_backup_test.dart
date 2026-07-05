@@ -199,5 +199,75 @@ void main() {
         },
       );
     }
+
+    for (final scenario in [
+      (
+        label: 'integer preference with decimal value',
+        existingKey: 'theme_mode',
+        seed: () async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('theme_mode', 2);
+        },
+        entries: {'theme_mode': 1.5},
+        message: 'Invalid backup: preference theme_mode must be an integer',
+        assertUnchanged: () async {
+          final prefs = await SharedPreferences.getInstance();
+          expect(prefs.getInt('theme_mode'), 2);
+        },
+      ),
+      (
+        label: 'boolean preference with string value',
+        existingKey: 'use_metric',
+        seed: () async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('use_metric', true);
+        },
+        entries: {'use_metric': 'false'},
+        message: 'Invalid backup: preference use_metric must be a boolean',
+        assertUnchanged: () async {
+          final prefs = await SharedPreferences.getInstance();
+          expect(prefs.getBool('use_metric'), isTrue);
+        },
+      ),
+      (
+        label: 'string preference with string-list value',
+        existingKey: 'aquarium_reminders',
+        seed: () async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('aquarium_reminders', '[]');
+        },
+        entries: {
+          'aquarium_reminders': ['morning'],
+        },
+        message:
+            'Invalid backup: preference aquarium_reminders must be a string',
+        assertUnchanged: () async {
+          final prefs = await SharedPreferences.getInstance();
+          expect(prefs.getString('aquarium_reminders'), '[]');
+        },
+      ),
+    ]) {
+      test(
+        'restore rejects ${scenario.label} before clearing ${scenario.existingKey}',
+        () async {
+          await scenario.seed();
+
+          await expectLater(
+            SharedPreferencesBackup.restoreFromJson({
+              'entries': scenario.entries,
+            }),
+            throwsA(
+              isA<FormatException>().having(
+                (error) => error.message,
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+
+          await scenario.assertUnchanged();
+        },
+      );
+    }
   });
 }

@@ -509,6 +509,64 @@ void main() {
       );
     }
 
+    for (final scenario in [
+      (
+        field: 'integer type',
+        sharedPreferences: {
+          'entries': {
+            'theme_mode': 1.5,
+          },
+        },
+        message: 'Invalid backup: preference theme_mode must be an integer',
+      ),
+      (
+        field: 'boolean type',
+        sharedPreferences: {
+          'entries': {
+            'use_metric': 'false',
+          },
+        },
+        message: 'Invalid backup: preference use_metric must be a boolean',
+      ),
+      (
+        field: 'string type',
+        sharedPreferences: {
+          'entries': {
+            'aquarium_reminders': ['morning'],
+          },
+        },
+        message:
+            'Invalid backup: preference aquarium_reminders must be a string',
+      ),
+    ]) {
+      test(
+        'getBackupData rejects sharedPreferences entries with invalid ${scenario.field}',
+        () async {
+          final service = BackupService(
+            getDocumentsDirectory: () async => sourceDocs,
+            getTemporaryDirectory: () async => tempDir,
+          );
+          final zipPath = await service.createBackup({
+            'tanks': [
+              {'id': 'tank-1', 'name': 'Main tank'},
+            ],
+            'sharedPreferences': scenario.sharedPreferences,
+          });
+
+          await expectLater(
+            service.getBackupData(zipPath),
+            throwsA(
+              isA<Exception>().having(
+                (error) => error.toString(),
+                'message',
+                contains(scenario.message),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     test(
       'getBackupData ignores malformed non-exportable sharedPreferences values',
       () async {

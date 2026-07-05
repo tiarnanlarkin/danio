@@ -349,6 +349,13 @@ class BackupService {
             'Invalid format: sharedPreferences string-list values must contain only strings',
           );
         }
+        final typeError = SharedPreferencesBackup.restorableEntryTypeError(
+          key,
+          value,
+        );
+        if (typeError != null) {
+          throw Exception(typeError);
+        }
         continue;
       }
 
@@ -356,6 +363,13 @@ class BackupService {
         throw Exception(
           'Invalid format: sharedPreferences entry values must be strings, numbers, booleans, or string arrays',
         );
+      }
+      final typeError = SharedPreferencesBackup.restorableEntryTypeError(
+        key,
+        value,
+      );
+      if (typeError != null) {
+        throw Exception(typeError);
       }
     }
   }

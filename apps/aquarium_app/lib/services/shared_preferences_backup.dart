@@ -45,6 +45,45 @@ class SharedPreferencesBackup {
     'aquarium_reminders',
   ];
 
+  static const _boolPreferenceKeys = {
+    'use_metric',
+    'notifications_enabled',
+    'ambient_lighting_enabled',
+    'haptic_feedback_enabled',
+    'onboarding_completed',
+    'reduced_motion_override',
+  };
+
+  static const _intPreferenceKeys = {
+    'theme_mode',
+    'room_theme',
+  };
+
+  static const _stringPreferenceKeys = {
+    'user_profile',
+    'user_skill_profile',
+    'gems_state',
+    'gems_cumulative',
+    'shop_inventory',
+    'weekly_plan_cache',
+    'streak_freeze',
+    'achievement_progress',
+    'unlocked_tank_decorations_v1',
+    'equipped_tank_decoration_v1',
+    'unlocked_species_v1',
+    'wishlist_items',
+    'shop_budget',
+    'local_shops',
+    'cost_tracker_expenses',
+    'cost_tracker_currency',
+    'aquarium_reminders',
+  };
+
+  static const _stringListPreferenceKeys = {
+    'ai_interaction_history',
+    'anomaly_history',
+  };
+
   /// Prefixes for grouped user data keys.
   static const _exportablePrefixes = [
     'onboarding_',
@@ -193,6 +232,10 @@ class SharedPreferencesBackup {
             'Invalid backup: string list preference $key contains non-string values',
           );
         }
+        final typeError = restorableEntryTypeError(key, value);
+        if (typeError != null) {
+          throw FormatException(typeError);
+        }
         continue;
       }
 
@@ -204,12 +247,37 @@ class SharedPreferencesBackup {
           'Invalid backup: unsupported preference value for $key',
         );
       }
+      final typeError = restorableEntryTypeError(key, value);
+      if (typeError != null) {
+        throw FormatException(typeError);
+      }
     }
+  }
+
+  static String? restorableEntryTypeError(String key, Object? value) {
+    if (!_isExportable(key)) return null;
+
+    final expectedType = _expectedValueType(key);
+    if (expectedType == null || expectedType.matches(value)) return null;
+
+    return 'Invalid backup: preference $key must be ${expectedType.label}';
   }
 
   /// Check whether a given SharedPreferences key should be included in
   /// backups.
   static bool isExportableKey(String key) => _isExportable(key);
+
+  static _PreferenceValueType? _expectedValueType(String key) {
+    if (_boolPreferenceKeys.contains(key)) {
+      return _PreferenceValueType.boolean;
+    }
+    if (_intPreferenceKeys.contains(key)) return _PreferenceValueType.integer;
+    if (_stringPreferenceKeys.contains(key)) return _PreferenceValueType.string;
+    if (_stringListPreferenceKeys.contains(key)) {
+      return _PreferenceValueType.stringList;
+    }
+    return null;
+  }
 
   static bool _isExportable(String key) {
     // Skip our own metadata key.
@@ -219,5 +287,26 @@ class SharedPreferencesBackup {
 
     return _exportableExactKeys.contains(key) ||
         _exportablePrefixes.any((prefix) => key.startsWith(prefix));
+  }
+}
+
+enum _PreferenceValueType {
+  boolean('a boolean'),
+  integer('an integer'),
+  string('a string'),
+  stringList('a string list');
+
+  const _PreferenceValueType(this.label);
+
+  final String label;
+
+  bool matches(Object? value) {
+    return switch (this) {
+      _PreferenceValueType.boolean => value is bool,
+      _PreferenceValueType.integer => value is int,
+      _PreferenceValueType.string => value is String,
+      _PreferenceValueType.stringList =>
+        value is List && value.every((item) => item is String),
+    };
   }
 }
