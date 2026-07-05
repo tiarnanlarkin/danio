@@ -404,6 +404,9 @@ Recent CL-P1-009 continuation note:
   IDs before saving, preventing orphan local journal logs after tank deletion.
 - CL-P1-009GT makes Tank Detail quick-feeding saves reject missing parent tank
   IDs before saving, preventing orphan local feeding logs after tank deletion.
+- CL-P1-009GU makes Equipment delete Undo reject missing parent tank IDs before
+  restoring equipment or generated maintenance tasks, preventing orphan local
+  records after tank deletion.
 
 ## 7. P2 Work - Presentation System
 

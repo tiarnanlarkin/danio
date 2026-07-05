@@ -3077,6 +3077,17 @@ CL-P1-009GT Tank Detail quick-feeding parent-tank boundary:
 - Focused widget coverage verifies the stale-tank failure path keeps local
   feeding logs empty while preserving normal quick-feeding behavior.
 
+CL-P1-009GU Equipment delete Undo parent-tank boundary:
+
+- Equipment delete Undo now rechecks the current tank in storage before
+  restoring the deleted equipment or its generated maintenance task.
+- If the Equipment route remains open after the durable tank was deleted, Undo
+  leaves equipment and tasks deleted and shows the existing restore-failure
+  feedback.
+- Focused widget coverage verifies the stale-tank undo path keeps local
+  equipment and task records empty while preserving normal equipment Undo
+  behavior.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4353,9 +4364,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   parent tank IDs before saving local AI diagnosis logs or history, Species
   detail care-task actions now reject missing parent tank IDs before saving
   local weekly care tasks, Tank Journal manual-entry saves now reject missing
-  parent tank IDs before saving local observation logs, and Tank Detail
+  parent tank IDs before saving local observation logs, Tank Detail
   quick-feeding saves now reject missing parent tank IDs before saving local
-  feeding logs.
+  feeding logs, and Equipment delete Undo now rejects missing parent tanks
+  before restoring equipment or generated maintenance tasks.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

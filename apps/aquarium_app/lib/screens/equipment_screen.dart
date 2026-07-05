@@ -457,6 +457,12 @@ class EquipmentScreen extends ConsumerWidget {
               actionLabel: 'Undo',
               onAction: () async {
                 try {
+                  final parentTank = await storage.getTank(equipment.tankId);
+                  if (parentTank == null) {
+                    throw StateError(
+                      'Cannot restore equipment for missing parent tank',
+                    );
+                  }
                   await storage.saveEquipment(equipment);
                   if (maintenanceTask != null) {
                     await storage.saveTask(maintenanceTask);
