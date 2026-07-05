@@ -21,6 +21,8 @@ import 'shared_preferences_backup.dart';
 class BackupService {
   static const String _jsonFileName = 'backup.json';
   static const String _photosFolder = 'photos';
+  static const String _imageUrlField = 'imageUrl';
+  static const String _photoUrlsField = 'photoUrls';
 
   /// Holds progress information for export/import operations.
   final void Function(String status, double progress)? onProgress;
@@ -1258,12 +1260,20 @@ class BackupService {
     };
   }
 
-  /// Extract all photo paths/refs from export data.
+  /// Extract all photo paths/refs from export data photo-bearing fields.
   void _extractPhotoPaths(dynamic data, Set<String> paths) {
     if (data is Map) {
-      for (final value in data.values) {
-        if (value is String && _isPhotoRef(value)) {
+      for (final entry in data.entries) {
+        final key = entry.key.toString();
+        final value = entry.value;
+        if (key == _imageUrlField && value is String && _isPhotoRef(value)) {
           paths.add(value);
+        } else if (key == _photoUrlsField && value is List) {
+          for (final item in value) {
+            if (item is String && _isPhotoRef(item)) {
+              paths.add(item);
+            }
+          }
         } else if (value is List || value is Map) {
           _extractPhotoPaths(value, paths);
         }
@@ -1272,8 +1282,6 @@ class BackupService {
       for (final item in data) {
         _extractPhotoPaths(item, paths);
       }
-    } else if (data is String && _isPhotoRef(data)) {
-      paths.add(data);
     }
   }
 
@@ -1302,13 +1310,16 @@ class BackupService {
     return '$_photosFolder/${p.basename(value)}';
   }
 
-  /// Returns a deep-copied structure where any photo paths are converted into
+  /// Returns a deep-copied structure where photo-field paths are converted into
   /// portable refs.
   dynamic _makePhotoRefsPortable(dynamic data) {
     if (data is Map) {
       return {
         for (final entry in data.entries)
-          entry.key.toString(): _makePhotoRefsPortable(entry.value),
+          entry.key.toString(): _makePhotoFieldRefsPortable(
+            entry.key.toString(),
+            entry.value,
+          ),
       };
     }
 
@@ -1316,11 +1327,19 @@ class BackupService {
       return data.map(_makePhotoRefsPortable).toList();
     }
 
-    if (data is String) {
-      return _toPortablePhotoRef(data);
-    }
-
     return data;
+  }
+
+  dynamic _makePhotoFieldRefsPortable(String key, dynamic value) {
+    if (key == _imageUrlField && value is String) {
+      return _toPortablePhotoRef(value);
+    }
+    if (key == _photoUrlsField && value is List) {
+      return value
+          .map((item) => item is String ? _toPortablePhotoRef(item) : item)
+          .toList();
+    }
+    return _makePhotoRefsPortable(value);
   }
 
   /// Resolve any photo refs in [data] to absolute paths under the current
@@ -1332,19 +1351,34 @@ class BackupService {
     final photosDir = await _getPhotosDirectory();
     final restorePrefix = await _restorePhotoPrefix(zipPath);
 
-    dynamic resolve(dynamic v) {
+    String resolvePhotoString(String value) {
+      if (_isPhotoRef(value)) {
+        final filename = _restoredPhotoFilename(restorePrefix, value);
+        return p.join(photosDir.path, filename);
+      }
+      return value;
+    }
+
+    dynamic resolve(dynamic v, {String? field}) {
+      if (field == _imageUrlField && v is String) {
+        return resolvePhotoString(v);
+      }
+      if (field == _photoUrlsField && v is List) {
+        return v
+            .map((item) => item is String ? resolvePhotoString(item) : item)
+            .toList();
+      }
       if (v is Map) {
         return {
           for (final entry in v.entries)
-            entry.key.toString(): resolve(entry.value),
+            entry.key.toString(): resolve(
+              entry.value,
+              field: entry.key.toString(),
+            ),
         };
       }
       if (v is List) {
         return v.map(resolve).toList();
-      }
-      if (v is String && _isPhotoRef(v)) {
-        final filename = _restoredPhotoFilename(restorePrefix, v);
-        return p.join(photosDir.path, filename);
       }
       return v;
     }

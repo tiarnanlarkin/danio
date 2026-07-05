@@ -56,6 +56,40 @@ void main() {
     });
 
     test(
+      'createBackup ignores free-text photo-like strings outside photo fields',
+      () async {
+        final sourcePhotos = Directory(p.join(sourceDocs.path, 'photos'));
+        await sourcePhotos.create(recursive: true);
+        final sourcePhoto = File(p.join(sourcePhotos.path, 'fish.jpg'));
+        await sourcePhoto.writeAsString('backup photo');
+
+        final service = BackupService(
+          getDocumentsDirectory: () async => sourceDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+
+        final zipPath = await service.createBackup({
+          'tanks': [
+            {
+              'id': 'tank-1',
+              'imageUrl': sourcePhoto.path,
+              'notes': 'Original note referenced C:/old/photos/orphan.jpg',
+            },
+          ],
+        });
+
+        final resolvedData = await service.getBackupData(zipPath);
+        final resolvedTank = (resolvedData['tanks'] as List).single as Map;
+
+        expect(resolvedTank['imageUrl'], isNot(sourcePhoto.path));
+        expect(
+          resolvedTank['notes'],
+          'Original note referenced C:/old/photos/orphan.jpg',
+        );
+      },
+    );
+
+    test(
       'restores same-basename photos without overwriting local files',
       () async {
         final sourcePhotos = Directory(p.join(sourceDocs.path, 'photos'));
@@ -248,6 +282,44 @@ void main() {
         expect(await restoredPhoto.readAsString(), 'referenced backup photo');
         expect(restoredFilenames, [p.basename(restoredPhoto.path)]);
         expect(restoreService.lastRestoredPhotoPaths, [restoredPhoto.path]);
+      },
+    );
+
+    test(
+      'getBackupData ignores free-text photo-like strings outside photo fields',
+      () async {
+        final zipPath = p.join(tempDir.path, 'free_text_photo_string.zip');
+        await _writeBackupZip(
+          zipPath,
+          data: {
+            'tanks': [
+              {
+                'id': 'tank-1',
+                'imageUrl': 'photos/fish.jpg',
+                'notes': 'Original note referenced C:/old/photos/orphan.jpg',
+              },
+            ],
+          },
+          files: {'photos/fish.jpg': 'referenced backup photo'},
+        );
+
+        final restoreService = BackupService(
+          getDocumentsDirectory: () async => restoreDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+
+        final resolvedData = await restoreService.getBackupData(zipPath);
+        final resolvedTank = (resolvedData['tanks'] as List).single as Map;
+        final restoredPhoto = File(resolvedTank['imageUrl'] as String);
+
+        final restoredTankCount = await restoreService.restoreBackup(zipPath);
+
+        expect(restoredTankCount, 1);
+        expect(await restoredPhoto.readAsString(), 'referenced backup photo');
+        expect(
+          resolvedTank['notes'],
+          'Original note referenced C:/old/photos/orphan.jpg',
+        );
       },
     );
 
