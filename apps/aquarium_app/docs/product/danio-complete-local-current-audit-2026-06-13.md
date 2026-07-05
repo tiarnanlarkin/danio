@@ -4437,7 +4437,12 @@ High-confidence P1/P2 gaps from code/docs evidence:
   `photos/` paths without blocking valid backup export, preview, or restore.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
-  walkthrough QA.
+  walkthrough QA. DS-2026-07-05-044 verified that the current durable
+  debounced local writers are gems and achievement progress, both covered by
+  lifecycle flush evidence; the profile lifecycle observer flushes the
+  already-visible profile snapshot after immediate saves and is not an open
+  debounced-writer target. Future app-kill work should reopen only when a new
+  durable debounced local writer is added or lifecycle evidence changes.
 - Profile/preferences now centralises units, region, tank stage, experience
   level, and goals. Tank Settings water-profile labels are readable and
   source-safe. The Haptic Feedback preference now controls shared snackbar

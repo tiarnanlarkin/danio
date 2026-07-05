@@ -1,37 +1,40 @@
 # Danio Active Handoff
 
-Status: Clean WF-2026-07-05-003 workflow checkpoint ready for next successor
-Last updated: 2026-07-05 after anti-circling workflow docs and local gates
+Status: Clean DS-2026-07-05-044 data-resilience checkpoint ready for next successor
+Last updated: 2026-07-05 after debounced-writer inventory verification and local gates
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Current branch after workflow closeout: `main`.
-- Latest product/data-safety slice: DS-2026-07-05-043.
+- Current branch after slice closeout: `main`.
+- Latest product/data-safety slice: DS-2026-07-05-044.
 - Latest workflow slice: WF-2026-07-05-003.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - Temporary DS-043 and workflow branches have been deleted after merge.
+  - Temporary DS-044 branch has been deleted after merge.
 
 ## Completed Product Slice
 
-- Slice: DS-2026-07-05-043, Preflight Malformed Direct Import Relationship ID
-  Types.
+- Slice: DS-2026-07-05-044, Debounced Writer Inventory.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-043-import-relationship-preflight-slice-contract.md`.
-- Behavior changed:
-  - `_validateRelationshipTargetTank` now treats optional `null` and
-    empty-string relationship values as absent.
-  - Non-string `relatedEquipmentId`, `relatedLivestockId`, and `relatedTaskId`
-    values now throw `FormatException` during relationship preflight.
-  - `BackupImportService.importTankScopedData` now rejects malformed direct
-    import relationship ID types before any imported tank save is attempted for
-    that known-invalid backup shape.
-  - Backup photo handling, schema migration, UI layout, Android runtime
-    behavior, cloud/account behavior, paid services, API keys, and optional-AI
-    behavior were not changed.
+  `docs/agent/plans/DS-2026-07-05-044-debounced-writer-inventory-slice-contract.md`.
+- Result:
+  - Current durable debounced local writers are gems and achievement progress.
+  - Gems flushes pending debounced writes through the root lifecycle handler on
+    paused/inactive/detached.
+  - Achievement progress flushes pending debounced writes through
+    `_AchievementProgressLifecycleListener` on paused/detached and keeps failed
+    saves pending for lifecycle retry.
+  - The current profile lifecycle observer flushes the already-visible profile
+    snapshot after immediate saves; it is lifecycle coverage but not an open
+    debounced-writer target.
+  - `DCL-DR-005` is archived as no-current-gap/future-watch. Re-open only if a
+    new durable debounced local writer is added or lifecycle evidence changes.
+  - No production Dart behavior, UI, Android runtime, cloud/account behavior,
+    paid services, API keys, provider, premium, store, deploy, or optional-AI
+    behavior changed.
 
 ## Completed Workflow Slice
 
@@ -93,10 +96,28 @@ WF-2026-07-05-003:
   on the workflow branch.
 - Clean-main Full gate after merge.
 
+DS-2026-07-05-044:
+
+- Source inventory:
+  `rg -n "Debouncer\\(|Timer\\(kProviderSaveDebounce|flushPendingWrite|_AchievementProgressLifecycleListener|didChangeAppLifecycleState|AppLifecycleState\\.detached|AppLifecycleState\\.paused" ...`
+  found gems, achievement progress, and lifecycle observers; profile was
+  classified separately as immediate-save lifecycle coverage.
+- Profile classification:
+  `rg -n "_ProfileLifecycleListener|_saveImmediate|debounce|Timer|didChangeAppLifecycleState" lib/providers/user_profile_notifier.dart`
+  showed immediate `_saveImmediate` writes and no profile debounce/timer.
+- `flutter test test/screens/app_lifecycle_contract_test.dart --reporter compact`
+  passed.
+- `flutter test test/providers/achievement_provider_lifecycle_test.dart --reporter compact`
+  passed.
+- `flutter test test/providers/gems_persistence_test.dart --reporter compact`
+  passed.
+- `git diff --check`, docs guard, Docs profile, branch clean-worktree Full, and
+  clean-main Full gate passed before DS-044 was pushed.
+
 ## Device And Preview State
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
-  required for the workflow-doc slice.
+  required for DS-044 because it was a docs/evidence verification slice.
 - DS-043 startup preflight found Danio on `emulator-5556` and WGTR on
   `emulator-5554`; Danio live-preview `-CheckOnly -WaitSeconds 5` passed
   without taking runtime ownership.
@@ -106,11 +127,11 @@ WF-2026-07-05-003:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-043 or WF-2026-07-05-003.
+- No blocker remains for DS-2026-07-05-044 or WF-2026-07-05-003.
 - The next product slice should be selected from
   `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Highest-ranked open local lane remains data resilience:
-  `DCL-DR-001` through `DCL-DR-005`.
+  `DCL-DR-001` through `DCL-DR-004`.
 - Rows with `PRODUCT_DECISION` or `EXTERNAL_PARKED` disposition require a user
   decision and are not automatic implementation targets.
 
@@ -119,7 +140,7 @@ WF-2026-07-05-003:
 Create the next project-scoped successor only after this checkpoint is clean,
 pushed, aligned, and temporary branches are cleaned up. Use
 `docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md` and set the next remaining
-sequential session budget to 7 total, including that successor.
+sequential session budget to 6 total, including that successor.
 
 The next successor should:
 

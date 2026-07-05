@@ -110,6 +110,12 @@ Recent CL-P1-009 continuation note:
   descriptions can mention old `photos/` paths without blocking valid backup
   export, preview, or restore while real missing or duplicate referenced photos
   still fail safely.
+- CL-P1-009HE verifies the current durable debounced local-writer inventory:
+  gems and achievement progress both have lifecycle flush evidence, so
+  app-kill debounce work is a future-watch item until a new durable debounced
+  writer is added or lifecycle evidence changes. The current profile lifecycle
+  observer flushes immediate-save profile state and is not an open debounced
+  writer target.
 - CL-P1-009CI catches failed Reminder completion writes before visible-list
   changes or notification side effects.
 - CL-P1-009CJ makes first-run profile creation wait for the immediate local

@@ -14,13 +14,13 @@ stay parked outside complete-local.
 
 ## Forecast Summary
 
-Current estimate from repo evidence after DS-2026-07-05-043:
+Current estimate from repo evidence after DS-2026-07-05-044:
 
 | Range | Session Count | What It Assumes |
 | --- | --- | --- |
 | Minimum | 10 to 14 verified sessions | Data-resilience audit finds few remaining defects, several P1/P2 rows close by verification or accepted scope, and no major Android/device instability appears. |
-| Likely | 18 to 26 verified sessions | Data resilience needs several more fixes, AI/write and P1 depth need targeted slices, accessibility/visual/content/performance each need bounded proof, and final RC evidence gets its own pass. |
-| Upper bound | 35 to 45 verified sessions | User chooses deeper plant/reward/learning/asset scope, visual/accessibility work uncovers real defects, performance evidence needs iteration, or provider/premium work is reopened. |
+| Likely | 17 to 25 verified sessions | Data resilience needs several more fixes, AI/write and P1 depth need targeted slices, accessibility/visual/content/performance each need bounded proof, and final RC evidence gets its own pass. |
+| Upper bound | 34 to 44 verified sessions | User chooses deeper plant/reward/learning/asset scope, visual/accessibility work uncovers real defects, performance evidence needs iteration, or provider/premium work is reopened. |
 
 The fastest safe path is not "one issue per session forever". It is evidence
 first, then bundle 2 to 3 related micro-slices only when the proof setup is
@@ -30,7 +30,7 @@ shared and the stop conditions stay clear.
 
 | Epoch | Ledger IDs | Minimum | Likely | Upper | Exit Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1. Data-resilience closure | `DCL-DR-001` through `DCL-DR-005` | 3 | 5 to 7 | 12 | Restore, migration, create/delete/undo, relationship mapping, and debounced-writer inventory are fixed or verified with Full-gate evidence. |
+| 1. Data-resilience closure | `DCL-DR-001` through `DCL-DR-004` | 3 | 4 to 6 | 11 | Restore, migration, create/delete/undo, and relationship mapping are fixed or verified with Full-gate evidence. `DCL-DR-005` is a no-current-gap future-watch item after DS-2026-07-05-044. |
 | 2. Optional AI write audit | `DCL-AI-001`, `DCL-PREF-001` | 1 | 2 to 3 | 5 | Real current AI writes are confirmed-before-write or audited as no-current-gap; no fake AI path is created. |
 | 3. Normal-user P1 depth | `DCL-P1-001` through `DCL-P1-006` | 2 | 4 to 7 | 12 | User-scoped plant/reward/learning/species/guided-tool/timeline gaps are implemented or accepted as current local scope. |
 | 4. Content and rule confidence | `DCL-CONTENT-001`, `DCL-RULE-001` | 1 | 2 to 4 | 6 | Broader validators and rule tests cover the next concrete risk clusters without unsafe care-copy drift. |
