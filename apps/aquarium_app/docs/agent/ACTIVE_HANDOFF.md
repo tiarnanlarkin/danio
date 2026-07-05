@@ -1,16 +1,15 @@
 # Danio Active Handoff
 
 Status: Clean checkpoint handoff
-Last updated: 2026-07-05 after DS-2026-07-05-030 closeout
+Last updated: 2026-07-05 after DS-2026-07-05-031 closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- DS-2026-07-05-030 implementation commit:
-  `8e94aa7f` (`Guard single livestock move target tank`).
-- DS-2026-07-05-030 was fast-forward merged to `main`, pushed to
-  `origin/main`, and the temporary implementation branch
-  `ds-2026-07-05-030-single-livestock-move-parent` was deleted.
+- DS-2026-07-05-031 implementation commit:
+  `b23cd6b3` (`Guard backup preference restore types`).
+- DS-2026-07-05-031 was fast-forward merged to `main` after branch and
+  clean-main Full gates passed.
 - Final expected state after this handoff document is pushed:
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
@@ -18,21 +17,25 @@ Last updated: 2026-07-05 after DS-2026-07-05-030 closeout
 
 ## Completed Slice
 
-- Slice: DS-2026-07-05-030, Single Livestock Move Parent Guard.
+- Slice: DS-2026-07-05-031, Preference Type Restore Guard.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-030-single-livestock-move-parent-slice-contract.md`.
-- Plan context: Epoch 1 restore/migration candidates were inspected first.
-  Current backup import, photo restore, preferences rollback, schema migration,
-  and local JSON load-error tests already cover the nearest narrow service
-  gaps, so this session used one smaller ranked data-resilience
-  relationship-mapping guard.
-- Behavior changed: `TankActions.moveLivestock` now rejects missing target tank
-  IDs before saving the moved livestock record, matching the existing guarded
-  bulk-move target behavior.
-- Scope note: current source search shows `moveLivestock` is a provider API and
-  not a live UI caller today; this hardens the local data action but does not
-  count as restore/migration walkthrough evidence.
-- New accounts/tools/plugins/MCP/hooks/automations: none.
+  `docs/agent/plans/DS-2026-07-05-031-preference-type-restore-guard-slice-contract.md`.
+- Plan context: the session began with a read-only Epoch 1 data-resilience gap
+  selection audit. The nearest restore/migration risks for import rollback,
+  tank and child ID collisions, zero-tank preference restore, photo extraction,
+  schema stamps, and local JSON load I/O errors already had current source/test
+  coverage from DS-018 through DS-026.
+- Gap selected: backup preview and SharedPreferences restore validation accepted
+  any primitive value for any exportable preference key, even though the app
+  reads those exact keys with typed `getBool`, `getInt`, `getString`, and
+  `getStringList` calls.
+- Behavior changed:
+  - `SharedPreferencesBackup.restoreFromJson` now rejects wrong primitive types
+    for exact exportable preference keys before clearing existing preferences.
+  - `BackupService.getBackupData` now rejects malformed typed preference values
+    during backup preview/import validation.
+- No UI, Android runtime, cloud, paid service, API key, or account-backed
+  behavior changed.
 
 ## Dirty Files To Preserve
 
@@ -56,86 +59,112 @@ Startup and runtime ownership:
 Focused proof:
 
 - RED:
-  `flutter test test/providers/tank_provider_test.dart --name "rejects missing target tank ids before moving single livestock" --reporter compact`
-  failed for the expected reason: the future completed normally instead of
-  throwing.
-- GREEN:
-  `flutter test test/providers/tank_provider_test.dart --name "rejects missing target tank ids before moving single livestock" --reporter compact`
-- `dart format lib/providers/tank_provider.dart test/providers/tank_provider_test.dart`
-- `flutter test test/providers/tank_provider_test.dart --reporter compact`
-- `flutter analyze lib/providers/tank_provider.dart test/providers/tank_provider_test.dart`
+  `flutter test test/services/shared_preferences_backup_test.dart --name "restore rejects integer preference with decimal value before clearing theme_mode" --reporter compact`
+  failed because restore completed and changed the stored integer.
+- RED:
+  `flutter test test/services/backup_service_photo_restore_test.dart --name "getBackupData rejects sharedPreferences entries with invalid integer type" --reporter compact`
+  failed because preview accepted the malformed typed preference.
+- GREEN: both named tests passed after the guard.
+- `dart format lib/services/shared_preferences_backup.dart lib/services/backup_service.dart test/services/shared_preferences_backup_test.dart test/services/backup_service_photo_restore_test.dart`
+- `flutter test test/services/shared_preferences_backup_test.dart test/services/backup_service_photo_restore_test.dart --reporter compact`
+  passed with 142 tests.
+- `flutter analyze lib/services/shared_preferences_backup.dart lib/services/backup_service.dart test/services/shared_preferences_backup_test.dart test/services/backup_service_photo_restore_test.dart`
+  passed with no issues.
+- `git diff --check` passed before the implementation commit.
 
-Docs and closeout gates:
+Branch and clean-main gates:
 
-- `git diff --check`
-- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
 - Branch clean-worktree Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
   passed, including worktree visibility, whitespace diff check, focused
   Flutter tests, dependency validation, Danio custom lint, full Flutter suite
-  with 2,107 tests, Flutter analyze, and debug APK build.
-- Post-merge clean `main` Full gate passed with the same command and the same
-  major checks, including the full Flutter suite with 2,107 tests and debug APK
-  build.
-- This final handoff-doc correction was verified with `git diff --check`,
+  with 2,113 tests, Flutter analyze, and debug APK build.
+- Clean `main` Full gate passed after fast-forward merge with the same command,
+  including the full Flutter suite with 2,113 tests and debug APK build.
+- This final docs-only closeout is verified with `git diff --check`,
   `flutter test test/copy/current_docs_local_truth_test.dart --reporter
-  compact`, and the Docs quality gate before merge/push.
+  compact`, and the Docs quality gate before push.
 
 ## Device And Preview State
 
 - Startup live-preview CheckOnly passed before edits.
 - No live-preview refresh, install, tap, screenshot, or logcat capture was
-  required for this provider/test slice.
-- The previously observed returning-user prompt context-after-dispose exception
-  remains a follow-up only if current repo/runtime evidence shows it outranks
-  remaining data-resilience work.
+  required for this service-only validation slice.
 - If a future slice needs device work, use `DEVICE_OWNERSHIP.md` before
   installs, taps, screenshots, logcat, Patrol, Maestro, or live-preview
   control.
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-030 itself.
+- No blocker remains for DS-2026-07-05-031 itself.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   restore, migration, create/edit/delete, relationship-mapping, and future
   debounced-writer app-kill coverage.
-- Autonomous successor creation should stop here: this session did not prove a
-  next implementation target clear enough to chain safely. The single-move
-  provider source guard is possible, but `moveLivestock` currently has no live
-  UI caller; restore/migration work may require Android walkthrough ownership.
+- The previously observed returning-user prompt context-after-dispose exception
+  remains a follow-up only if current repo/runtime evidence shows it outranks
+  remaining data-resilience work.
 
 ## Next Action
 
-Remaining autonomous chain budget after DS-2026-07-05-030: 9 sequential
-verified sessions. No successor was created because the next target needs a
-fresh user choice or a fresh repo-grounded selection audit.
+Remaining autonomous chain budget after DS-2026-07-05-031: 8 sequential
+verified sessions.
 
-Direct question for the user: should the next verified session prioritize
-restore/migration Android walkthrough QA, continue provider relationship guards
-even where APIs currently have no UI caller, or do a read-only data-resilience
-gap selection audit first?
+Recommended next action: continue the read-only data-resilience gap selection
+audit from fresh repo evidence, starting with current restore, migration,
+create/delete, and relationship integrity surfaces. Implement exactly one small
+TDD-verifiable slice only if the next target is unambiguous, local-only, and
+safe within one service/test family. If multiple candidates remain plausible or
+runtime ownership is needed, ask one direct question instead of guessing.
 
-Paste-ready future prompt:
+Paste-ready successor prompt:
 
 ```text
-Use $verified-slice-runner in:
+Use $verified-slice-runner for the next Danio Aquarium complete-local epoch.
+
+Continuation mode: autonomous chain approved.
+Remaining sequential session budget: 8, including this successor only if this
+prompt is used as the next session's starting prompt. Do not run parallel repo
+sessions.
+
+Saved Codex project:
+C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project
+
+Start from:
 C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\repo
 
-Continuation mode: handoff-only
+Do not rely on prior chat memory. Rebuild context from repo-owned files, live
+git state, current command output, current installed skill instructions, and
+this prompt.
 
-Rebuild context from repo-owned docs, live git state, current command output,
-and installed skill instructions. Do not rely on prior chat memory.
+Required startup:
+1. Load and follow the latest installed $verified-slice-runner skill from disk.
+2. Confirm the actual repo root with git.
+3. Read applicable AGENTS.md / repo instructions from root to working
+   directory.
+4. Run git fetch --prune.
+5. Run git status --short -uall.
+6. Confirm source branch and upstream alignment first; stop if main...origin/main
+   is not 0 0.
+7. Read README, GIT_WORKFLOW.md,
+   apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md, FINISH_MAP.md,
+   QUALITY_LADDER.md, TESTING_CHECKLIST.md, SLICE_LOG.md, and
+   apps/aquarium_app/docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md
+   before editing. Also read any docs those files require.
+8. Preserve unrelated dirty work and inspect emulator/device/debug-server state
+   before any runtime action.
 
-Start with AGENTS.md, README.md, GIT_WORKFLOW.md,
-apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md, FINISH_MAP.md,
-QUALITY_LADDER.md, TESTING_CHECKLIST.md, SLICE_LOG.md, and
-apps/aquarium_app/docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md.
+Goal: continue Danio toward local-first, phone-first complete-local quality.
+Begin with a read-only data-resilience gap selection audit against the current
+Finish Map and DS-031 handoff. Prefer restore, migration, create/delete, and
+relationship integrity gaps only when fresh source/test evidence proves the
+specific missing behavior and proof setup. Implement exactly one small slice
+only if the next target is unambiguous, local-only, product-safe, and
+TDD-verifiable in one service/test family. If multiple candidates remain
+plausible, runtime ownership is needed, the target is already covered, or the
+next action requires product direction, stop and ask one direct question.
 
-Confirm git root, fetch/prune, require `main...origin/main` to be `0 0`, and
-inspect runtime ownership before any emulator/device action.
-
-Pick one concrete current data-resilience gap from fresh repo evidence before
-editing. If the next target is ambiguous between restore/migration walkthrough
-QA, provider relationship guards, and a read-only gap selection audit, stop and
-ask the user which lane to prioritize.
+Closeout: update repo-owned handoff/log docs, run focused proof and the
+documented local gates, commit, merge to main, push origin/main, clean temporary
+branches/worktrees, and decrement remaining chain budget if creating exactly
+one successor from a clean pushed aligned checkpoint.
 ```

@@ -94,7 +94,13 @@ The slice is done only when:
 
 ## Result
 
-- Commit: pending
-- Verification summary: pending
+- Commit: `b23cd6b3` (`Guard backup preference restore types`)
+- Verification summary:
+  - RED named SharedPreferences restore and backup preview tests failed for the
+    expected missing type guard.
+  - GREEN named tests, full touched service test pair, targeted analyze, branch
+    clean-worktree Full gate, and clean-main Full gate passed.
 - Evidence path: not applicable
-- Follow-up created: pending
+- Follow-up created: continue the read-only data-resilience gap selection audit
+  from fresh repo evidence; remaining chain budget after this slice is 8
+  sequential verified sessions.
