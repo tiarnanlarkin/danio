@@ -4387,6 +4387,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   whose backup targets belong to a different backup tank from the source
   task/log, preventing cross-tank relationship links from being preserved while
   the service reports success.
+  Backup Restore now extracts only archive `photos/` entries whose filenames
+  are referenced by validated backup data, preventing valid restores from
+  leaving unrelated archive-only photo files in local app storage or
+  cleanup-tracking state.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

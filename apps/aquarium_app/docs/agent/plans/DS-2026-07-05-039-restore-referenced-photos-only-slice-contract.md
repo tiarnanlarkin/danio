@@ -73,7 +73,11 @@ The slice is done only when:
 
 ## Result
 
-- Commit: pending
-- Verification summary: pending
-- Evidence path: not applicable
-- Follow-up created: pending
+- Commit: `31738cd7` (`Restore only referenced backup photos`).
+- Verification summary: focused RED/GREEN service proof passed, full
+  `backup_service_photo_restore_test.dart` passed with 134 tests, targeted
+  analyze passed, dirty-branch Full gate passed, branch clean-worktree Full
+  gate passed, docs checks passed, and clean-main Full gate passed after merge.
+- Evidence path: not applicable.
+- Follow-up created: none; autonomous chain budget is exhausted after this
+  successor.
