@@ -4383,6 +4383,10 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Direct tank-scoped backup imports now also reject duplicate backup tank IDs
   before saving imported tanks, preventing duplicate backup tanks from
   collapsing relationship mapping onto one regenerated local tank ID.
+  Direct tank-scoped backup imports now also reject task/log relationship IDs
+  whose backup targets belong to a different backup tank from the source
+  task/log, preventing cross-tank relationship links from being preserved while
+  the service reports success.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

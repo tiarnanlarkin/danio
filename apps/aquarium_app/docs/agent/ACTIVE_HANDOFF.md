@@ -1,46 +1,49 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-05-037 checkpoint ready for next data-resilience audit
-Last updated: 2026-07-05 after DS-2026-07-05-037 merge and clean-main Full gate
+Status: Clean DS-2026-07-05-038 checkpoint ready for next data-resilience audit
+Last updated: 2026-07-05 after DS-2026-07-05-038 merge and clean-main Full gate
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after closeout: `main`.
-- DS-2026-07-05-037 behavior commit: `9f0f6303`
-  (`Guard backup import duplicate tank IDs`).
-- DS-2026-07-05-037 closeout docs commit: `dc2de19f`
-  (`Update DS-037 handoff closeout`).
+- DS-2026-07-05-038 behavior commit: `faf912be`
+  (`Guard backup import cross-tank relationships`).
+- DS-2026-07-05-038 closeout docs: this handoff, `FINISH_MAP.md`,
+  `SLICE_LOG.md`, and the product audit/backlog notes.
 - Final state for the next session:
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - The temporary DS-037 branch has been deleted after merge.
+  - The temporary DS-038 branch has been deleted after merge.
 
 ## Completed Slice
 
-- Slice: DS-2026-07-05-037, Backup Import Duplicate Tank ID Guard.
+- Slice: DS-2026-07-05-038, Backup Import Cross-Tank Relationship Guard.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-037-import-duplicate-tank-id-guard-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-05-038-import-cross-tank-relationship-guard-slice-contract.md`.
 - Plan context: the session began with a read-only data-resilience gap
   selection audit against current docs, source, tests, git state, and the
-  DS-036 handoff. Recent restore, migration, child-tank, relationship-ID, and
-  duplicate-child import guards were rechecked before selecting another direct
-  tank-scoped import boundary gap in the same service/test family.
-- Gap selected: `BackupImportService.importTankScopedData` already had shared
-  ZIP-preview duplicate tank-ID validation upstream, but the lower direct
-  import boundary assigned `tankIdMap[oldTankId] = newTankId` without checking
-  duplicate backup tank IDs. A malformed direct call could save two local
-  imported tanks while relationships mapped only to the last duplicate backup
-  tank ID.
+  DS-037 handoff. Recent restore, migration, child-tank, relationship-ID,
+  duplicate-child, and duplicate-tank direct import guards were rechecked before
+  selecting one remaining lower-boundary relationship-integrity gap in the same
+  service/test family.
+- Gap selected: ZIP preview/import validation already rejected relationship
+  IDs whose backup targets belonged to a different backup tank, but the direct
+  `BackupImportService.importTankScopedData` boundary only checked whether the
+  related IDs were imported. A malformed direct call could import a task or log
+  under one tank while preserving a relationship to equipment, livestock, or a
+  task imported under another tank.
 - Behavior changed:
-  - Direct tank-scoped backup imports now reject duplicate backup tank IDs
-    before saving imported tanks.
-  - Duplicate backup tank IDs throw `FormatException`, are wrapped as
-    `BackupImportException`, and leave tank and child storage unchanged in the
-    focused service proof.
-  - Backup ZIP preview validation, SharedPreferences restore, UI layout,
-    Android runtime behavior, cloud/account behavior, paid services, API keys,
-    and optional-AI behavior were not changed.
+  - Direct tank-scoped backup imports now reject task and log relationship IDs
+    whose backup target records belong to a different backup tank from the
+    source task/log.
+  - Cross-tank `relatedEquipmentId`, `relatedLivestockId`, and `relatedTaskId`
+    values throw `FormatException`, are wrapped as `BackupImportException`, and
+    leave tank and child storage unchanged in the focused service proof.
+  - Missing relationship-ID handling, duplicate tank/child ID handling, ZIP
+    preview validation, SharedPreferences restore, UI layout, Android runtime
+    behavior, cloud/account behavior, paid services, API keys, and optional-AI
+    behavior were not changed.
 
 ## Dirty Files To Preserve
 
@@ -60,19 +63,23 @@ Startup:
 - `git branch -vv --all` showed local `main` tracking `origin/main`, aside
   from remote Dependabot branches.
 - `git worktree list --porcelain` showed only the main repo worktree.
-- No emulator, ADB, install, tap, screenshot, logcat, or live-preview action
-  was used; this was a pure service data-safety slice.
+- Read-only runtime preflight found `emulator-5554` and `emulator-5556`
+  connected, and `.\scripts\run_danio_live_preview.ps1 -CheckOnly` confirmed
+  Danio live preview on `emulator-5556` without taking device ownership or
+  performing installs, taps, screenshots, or logcat capture.
 
 Focused proof:
 
 - RED:
-  `flutter test test/services/backup_import_service_test.dart --name "rejects duplicate backup tank ids before reporting import success" --reporter compact`
+  `flutter test test/services/backup_import_service_test.dart --name "rejects cross-tank backup relationship ids before reporting import success" --reporter compact`
   failed because the import returned `BackupImportResult` instead of throwing.
-- GREEN: the same named service test passed after the duplicate-tank-ID guard.
+- GREEN: the same named service test passed after the same-tank relationship
+  guard.
 - `dart format lib\services\backup_import_service.dart test\services\backup_import_service_test.dart`
-  reported `0 changed`.
+  formatted `lib/services/backup_import_service.dart` and checked the service
+  test file.
 - `flutter test test/services/backup_import_service_test.dart --reporter compact`
-  passed with 11 tests.
+  passed with 12 tests.
 - `flutter analyze lib/services/backup_import_service.dart test/services/backup_import_service_test.dart`
   passed with no issues.
 - `git diff --check` passed before the behavior commit.
@@ -81,18 +88,18 @@ Branch gate:
 
 - Branch clean-worktree Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  passed on behavior commit `9f0f6303`. This covered worktree visibility,
+  passed on behavior commit `faf912be`. This covered worktree visibility,
   whitespace, focused tests, dependency validation, custom lint, the full
   Flutter test suite, `flutter analyze`, and the debug APK build.
 
 Docs and clean-main gate:
 
-- `git diff --check` passed after DS-037 documentation updates.
+- `git diff --check` passed after DS-038 documentation updates.
 - `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
-  passed after DS-037 documentation updates.
+  passed after DS-038 documentation updates.
 - Clean-main Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  passed after DS-037 was merged to `main`. This covered worktree visibility,
+  passed after DS-038 was merged to `main`. This covered worktree visibility,
   whitespace, focused tests, dependency validation, custom lint, the full
   Flutter test suite, `flutter analyze`, and the debug APK build.
 
@@ -106,18 +113,18 @@ Docs and clean-main gate:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-037 itself.
+- No blocker remains for DS-2026-07-05-038 itself.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
-  restore, migration, create/delete, any remaining relationship-mapping gaps
-  found from fresh evidence, and future debounced-writer app-kill coverage.
+  restore, migration, create/delete, relationship integrity gaps found from
+  fresh evidence, and future debounced-writer app-kill coverage.
 - The previously observed returning-user prompt context-after-dispose exception
   remains a follow-up only if current repo/runtime evidence shows it outranks
   remaining data-resilience work.
 
 ## Next Action
 
-Remaining autonomous chain budget after DS-2026-07-05-037: 2 sequential
-verified sessions, if final merge, push, cleanup, and source alignment complete
+Remaining autonomous chain budget after DS-2026-07-05-038: 1 sequential
+verified session, if final merge, push, cleanup, and source alignment complete
 cleanly.
 
 Recommended next action: continue the read-only data-resilience gap selection
@@ -135,7 +142,7 @@ Paste-ready successor prompt:
 Use $verified-slice-runner for the next Danio Aquarium complete-local epoch.
 
 Continuation mode: autonomous chain approved.
-Remaining sequential session budget: 2 total, including this successor. Do not
+Remaining sequential session budget: 1 total, including this successor. Do not
 run parallel repo sessions after this successor is running. Stop early if the
 app reaches the complete-local bar before the budget is exhausted. If more than
 the remaining budget would be needed, stop at a clean checkpoint and ask the
@@ -149,14 +156,14 @@ C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\repo
 
 Current checkpoint evidence from predecessor session:
 - Final source-of-truth branch: clean `main` tracking `origin/main`.
-- DS-037 behavior commit: `9f0f6303` (`Guard backup import duplicate tank IDs`).
-- DS-037 was merged, clean-main gated, pushed, and branch-cleaned before this
+- DS-038 behavior commit: `faf912be` (`Guard backup import cross-tank relationships`).
+- DS-038 was merged, clean-main gated, pushed, and branch-cleaned before this
   successor was created; do not trust this as current state, re-run the
   startup checks below.
-- DS-037 closed a direct `BackupImportService.importTankScopedData` lower-boundary
-  gap: duplicate backup tank IDs are rejected before imported tanks are saved,
-  so direct imports cannot report success while duplicate backup tanks collapse
-  relationship mapping to one regenerated local ID.
+- DS-038 closed a direct `BackupImportService.importTankScopedData`
+  lower-boundary gap: task/log relationship IDs are rejected when the backup
+  target belongs to a different backup tank from the source task/log, so direct
+  imports cannot report success while preserving cross-tank relationship links.
 
 Do not rely on prior chat memory. Rebuild context from repo-owned files, live
 git state, current command output, current installed skill instructions, and
@@ -181,7 +188,7 @@ Required startup:
 
 Goal: continue Danio toward local-first, phone-first complete-local quality.
 Begin with a read-only data-resilience gap selection audit against the current
-Finish Map and DS-037 handoff. Prefer restore, migration, create-delete,
+Finish Map and DS-038 handoff. Prefer restore, migration, create-delete,
 relationship integrity, and future debounced-writer gaps only when fresh source
 and test evidence proves the specific missing behavior and proof setup.
 Implement exactly one small slice only if the next target is unambiguous,
@@ -192,6 +199,6 @@ direct question.
 
 Closeout: update repo-owned handoff/log docs, run focused proof and the
 documented local gates, commit, merge to main, push origin/main, clean temporary
-branches/worktrees, and decrement remaining chain budget if creating exactly
-one successor from a clean pushed aligned checkpoint.
+branches/worktrees, and stop at that clean pushed aligned checkpoint because the
+approved autonomous chain budget is exhausted after this successor.
 ```
