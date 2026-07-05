@@ -407,6 +407,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009GU makes Equipment delete Undo reject missing parent tank IDs before
   restoring equipment or generated maintenance tasks, preventing orphan local
   records after tank deletion.
+- CL-P1-009GV makes delayed Livestock removal timeline logs recheck the parent
+  tank before saving, preventing orphan local removal logs after the tank is
+  deleted during the undo window.
 
 ## 7. P2 Work - Presentation System
 

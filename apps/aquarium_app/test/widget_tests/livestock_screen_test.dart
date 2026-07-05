@@ -1024,6 +1024,63 @@ void main() {
       await tester.pump();
     });
 
+    testWidgets(
+      'expired livestock removal does not log after parent tank deletion',
+      (tester) async {
+        suppressAvatarError();
+        const tankId = 'single-delete-missing-parent-tank';
+        const livestockId = 'single-delete-missing-parent-neons';
+        final storage = InMemoryStorageService();
+        await storage.saveTank(_makeTank(id: tankId, name: 'Community Tank'));
+        await storage.saveLivestock(
+          _makeLivestock(
+            id: livestockId,
+            tankId: tankId,
+            name: 'Neon Tetra',
+            count: 8,
+          ),
+        );
+
+        await tester.pumpWidget(
+          _wrapWithStorage(
+            storage: storage,
+            tankId: tankId,
+            disableAnimations: true,
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        final livestockTile = find.ancestor(
+          of: find.text('Neon Tetra'),
+          matching: find.byType(ListTile),
+        );
+        await tester.tap(
+          find.descendant(
+            of: livestockTile,
+            matching: find.byTooltip('Livestock actions'),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Remove'));
+        await tester.pump();
+
+        expect(find.text('8x Neon Tetra removed'), findsOneWidget);
+
+        await storage.deleteTank(tankId);
+        expect(await storage.getTank(tankId), isNull);
+
+        await tester.pump(const Duration(seconds: 6));
+        await tester.pump();
+
+        final logs = await storage.getLogsForTank(tankId);
+        expect(
+          logs.where((log) => log.type == LogType.livestockRemoved),
+          isEmpty,
+        );
+      },
+    );
+
     testWidgets('expired bulk removal writes timeline logs', (tester) async {
       suppressAvatarError();
       const tankId = 'bulk-delete-log-tank';

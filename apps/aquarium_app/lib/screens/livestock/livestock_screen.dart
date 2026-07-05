@@ -552,6 +552,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   ) async {
     final storage = ref.read(storageServiceProvider);
     try {
+      final parentTank = await storage.getTank(widget.tankId);
+      if (parentTank == null) {
+        return;
+      }
       await storage.saveLog(
         LogEntry(
           id: _uuid.v4(),

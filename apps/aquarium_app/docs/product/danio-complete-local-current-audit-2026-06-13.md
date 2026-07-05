@@ -4367,7 +4367,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   parent tank IDs before saving local observation logs, Tank Detail
   quick-feeding saves now reject missing parent tank IDs before saving local
   feeding logs, and Equipment delete Undo now rejects missing parent tanks
-  before restoring equipment or generated maintenance tasks.
+  before restoring equipment or generated maintenance tasks. Delayed Livestock
+  removal timeline logs now recheck the parent tank before saving, preventing
+  orphan local removal logs after the tank is deleted during the undo window.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

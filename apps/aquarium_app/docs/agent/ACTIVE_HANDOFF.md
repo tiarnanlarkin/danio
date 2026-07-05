@@ -1,15 +1,15 @@
 # Danio Active Handoff
 
 Status: Clean checkpoint handoff
-Last updated: 2026-07-05 after DS-2026-07-05-032 closeout
+Last updated: 2026-07-05 after DS-2026-07-05-033 closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- DS-2026-07-05-032 implementation commit: current pushed `main` commit after
+- DS-2026-07-05-033 implementation commit: current pushed `main` commit after
   closeout.
-- DS-2026-07-05-032 was fast-forward merged to `main` after branch and
-  clean-main Full gates passed.
+- DS-2026-07-05-033 is expected to be fast-forward merged to `main` after
+  branch and clean-main Full gates pass.
 - Final expected state after this handoff document is pushed:
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
@@ -17,26 +17,28 @@ Last updated: 2026-07-05 after DS-2026-07-05-032 closeout
 
 ## Completed Slice
 
-- Slice: DS-2026-07-05-032, Import Flow Malformed Preference Payload Guard.
+- Slice: DS-2026-07-05-033, Livestock Removal Log Parent Guard.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-032-import-flow-malformed-prefs-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-05-033-livestock-removal-log-parent-slice-contract.md`.
 - Plan context: the session began with a read-only Epoch 1 data-resilience gap
-  selection audit. Current restore/migration/create-delete candidates were
-  checked against source and tests before selecting a small service-only backup
-  import honesty gap.
-- Gap selected: `BackupRestoreImportFlow` imported tanks successfully but
-  silently ignored a malformed non-object `sharedPreferences` payload, leaving
-  callers without the same preference-restore warning behavior used by the
-  direct backup and cloud restore paths.
+  selection audit against current source, tests, docs, git, and runtime
+  ownership state. Backup import/restore, preference restore, schema stamp, ID
+  collision, and several parent/undo candidates were checked before selecting a
+  small widget/service boundary relationship gap.
+- Gap selected: `_saveLivestockRemovalLog` saved a delayed
+  `LogType.livestockRemoved` timeline log after the undo window without
+  rechecking the durable parent tank. A stale Livestock route could therefore
+  create an orphan local timeline log if its tank was deleted while the
+  livestock-removal undo window was still open.
 - Behavior changed:
-  - `BackupRestoreImportFlow.importBackupData` now treats a non-map
-    `sharedPreferences` payload as a preference-restore failure after a
-    successful tank import.
-  - The result sets `preferencesRestoreFailed` and preserves a `FormatException`
-    with the message `Invalid format: sharedPreferences must be an object`.
-  - Existing tank import behavior, rollback coverage, UI layout, Android
-    runtime behavior, cloud/account behavior, paid services, API keys, and
-    optional-AI behavior were not changed.
+  - Delayed livestock removal timeline logs now recheck
+    `storage.getTank(widget.tankId)` before saving.
+  - If the parent tank is missing, the delayed removal side effect returns
+    without writing a timeline log.
+  - Existing successful removal logs, failed permanent-delete retry feedback,
+    add/edit/bulk move behavior, UI layout, Android runtime behavior,
+    cloud/account behavior, paid services, API keys, and optional-AI behavior
+    were not changed.
 
 ## Dirty Files To Preserve
 
@@ -60,15 +62,17 @@ Startup and runtime ownership:
 Focused proof:
 
 - RED:
-  `flutter test test/services/backup_import_service_test.dart --name "reports malformed preference payloads after importing tanks" --reporter compact`
-  failed because `preferencesRestoreFailed` remained `false`.
-- GREEN: the same named test passed after the guard.
-- `dart format lib/services/backup_import_service.dart test/services/backup_import_service_test.dart`
-- `flutter test test/services/backup_import_service_test.dart --reporter compact`
-  passed with 7 tests.
-- `flutter analyze lib/services/backup_import_service.dart test/services/backup_import_service_test.dart`
+  `flutter test test/widget_tests/livestock_screen_test.dart --plain-name "expired livestock removal does not log after parent tank deletion" --reporter compact`
+  failed because a `livestockRemoved` log was saved after the tank was deleted.
+- GREEN: the same named test passed after the parent-tank guard.
+- `dart format lib/screens/livestock/livestock_screen.dart test/widget_tests/livestock_screen_test.dart`
+- `flutter test test/widget_tests/livestock_screen_test.dart --reporter compact`
+  passed with 21 tests.
+- `flutter analyze lib/screens/livestock/livestock_screen.dart test/widget_tests/livestock_screen_test.dart`
   passed with no issues.
 - `git diff --check` passed before the implementation commit.
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed before the implementation commit.
 
 Branch and clean-main gates:
 
@@ -83,14 +87,14 @@ Branch and clean-main gates:
 
 - Startup live-preview CheckOnly passed before edits.
 - No live-preview refresh, install, tap, screenshot, or logcat capture was
-  required for this service-only validation slice.
+  required for this widget/service data-safety slice.
 - If a future slice needs device work, use `DEVICE_OWNERSHIP.md` before
   installs, taps, screenshots, logcat, Patrol, Maestro, or live-preview
   control.
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-032 itself.
+- No blocker remains for DS-2026-07-05-033 itself.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   restore, migration, create/delete, relationship-mapping, and future
   debounced-writer app-kill coverage.
@@ -100,15 +104,16 @@ Branch and clean-main gates:
 
 ## Next Action
 
-Remaining autonomous chain budget after DS-2026-07-05-032: 7 sequential
+Remaining autonomous chain budget after DS-2026-07-05-033: 6 sequential
 verified sessions.
 
 Recommended next action: continue the read-only data-resilience gap selection
 audit from fresh repo evidence, starting with current restore, migration,
-create/delete, and relationship integrity surfaces. Implement exactly one small
-TDD-verifiable slice only if the next target is unambiguous, local-only, and
-safe within one service/test family. If multiple candidates remain plausible or
-runtime ownership is needed, ask one direct question instead of guessing.
+create/delete, relationship integrity, and future debounced-writer surfaces.
+Implement exactly one small TDD-verifiable slice only if the next target is
+unambiguous, local-only, and safe within one service/test family. If multiple
+candidates remain plausible or runtime ownership is needed, ask one direct
+question instead of guessing.
 
 Paste-ready successor prompt:
 
@@ -116,7 +121,7 @@ Paste-ready successor prompt:
 Use $verified-slice-runner for the next Danio Aquarium complete-local epoch.
 
 Continuation mode: autonomous chain approved.
-Remaining sequential session budget: 7, including this successor only if this
+Remaining sequential session budget: 6, including this successor only if this
 prompt is used as the next session's starting prompt. Do not run parallel repo
 sessions.
 
@@ -149,7 +154,7 @@ Required startup:
 
 Goal: continue Danio toward local-first, phone-first complete-local quality.
 Begin with a read-only data-resilience gap selection audit against the current
-Finish Map and DS-032 handoff. Prefer restore, migration, create/delete, and
+Finish Map and DS-033 handoff. Prefer restore, migration, create/delete, and
 relationship integrity gaps only when fresh source/test evidence proves the
 specific missing behavior and proof setup. Implement exactly one small slice
 only if the next target is unambiguous, local-only, product-safe, and
