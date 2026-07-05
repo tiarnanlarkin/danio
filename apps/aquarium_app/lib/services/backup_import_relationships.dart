@@ -5,7 +5,13 @@ String? remapBackupRelatedId(
   required String field,
   required String targetLabel,
 }) {
-  if (oldId is! String || oldId.isEmpty) return null;
+  if (oldId == null) return null;
+  if (oldId is! String) {
+    throw FormatException(
+      'Invalid backup: $sourceCollection $field values must be strings',
+    );
+  }
+  if (oldId.isEmpty) return null;
   final newId = idMap[oldId];
   if (newId == null) {
     throw FormatException(

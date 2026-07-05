@@ -708,6 +708,60 @@ void main() {
     );
 
     test(
+      'rejects malformed relationship id types before reporting import success',
+      () async {
+        for (final scenario in const [
+          (collection: 'tasks', field: 'relatedEquipmentId'),
+          (collection: 'logs', field: 'relatedEquipmentId'),
+          (collection: 'logs', field: 'relatedLivestockId'),
+          (collection: 'logs', field: 'relatedTaskId'),
+        ]) {
+          final storage = _RecordingStorageService();
+          final service = BackupImportService(
+            storage: storage,
+            newId: _idSequence([
+              'new-tank',
+              'new-fish',
+              'new-filter',
+              'new-task',
+              'new-log',
+            ]),
+            now: () => DateTime.utc(2026, 6, 22, 12),
+          );
+          final backupData = _backupData();
+          final entries = (backupData[scenario.collection] as List)
+              .map((entry) => Map<String, dynamic>.from(entry as Map))
+              .toList();
+          entries.first[scenario.field] = 42;
+          backupData[scenario.collection] = entries;
+
+          await expectLater(
+            service.importTankScopedData(backupData),
+            throwsA(
+              isA<BackupImportException>().having(
+                (error) => error.originalError,
+                'originalError',
+                isA<FormatException>().having(
+                  (error) => error.message,
+                  'message',
+                  contains(
+                    'Invalid backup: ${scenario.collection} ${scenario.field} values must be strings',
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          expect(storage.tanks, isEmpty);
+          expect(storage.livestock, isEmpty);
+          expect(storage.equipment, isEmpty);
+          expect(storage.logs, isEmpty);
+          expect(storage.tasks, isEmpty);
+        }
+      },
+    );
+
+    test(
       'rejects duplicate backup child ids before reporting import success',
       () async {
         for (final scenario in const [

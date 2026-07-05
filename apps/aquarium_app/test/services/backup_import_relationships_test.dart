@@ -50,6 +50,87 @@ void main() {
       },
     );
 
+    test(
+      'rejects malformed relationship id types instead of clearing them',
+      () {
+        expect(
+          () => remapBackupLogRelationships(
+            {'id': 'old-log', 'relatedEquipmentId': 42},
+            equipmentIdMap: const {'old-equipment': 'new-equipment'},
+            livestockIdMap: const {'old-fish': 'new-fish'},
+            taskIdMap: const {'old-task': 'new-task'},
+          ),
+          throwsA(
+            isA<FormatException>().having(
+              (error) => error.message,
+              'message',
+              contains(
+                'Invalid backup: logs relatedEquipmentId values must be strings',
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          () => remapBackupLogRelationships(
+            {
+              'id': 'old-log',
+              'relatedLivestockId': ['old-fish'],
+            },
+            equipmentIdMap: const {'old-equipment': 'new-equipment'},
+            livestockIdMap: const {'old-fish': 'new-fish'},
+            taskIdMap: const {'old-task': 'new-task'},
+          ),
+          throwsA(
+            isA<FormatException>().having(
+              (error) => error.message,
+              'message',
+              contains(
+                'Invalid backup: logs relatedLivestockId values must be strings',
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          () => remapBackupLogRelationships(
+            {
+              'id': 'old-log',
+              'relatedTaskId': {'id': 'old-task'},
+            },
+            equipmentIdMap: const {'old-equipment': 'new-equipment'},
+            livestockIdMap: const {'old-fish': 'new-fish'},
+            taskIdMap: const {'old-task': 'new-task'},
+          ),
+          throwsA(
+            isA<FormatException>().having(
+              (error) => error.message,
+              'message',
+              contains(
+                'Invalid backup: logs relatedTaskId values must be strings',
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          () => remapBackupTaskRelationships(
+            {'id': 'old-task', 'relatedEquipmentId': 42},
+            equipmentIdMap: const {'old-equipment': 'new-equipment'},
+          ),
+          throwsA(
+            isA<FormatException>().having(
+              (error) => error.message,
+              'message',
+              contains(
+                'Invalid backup: tasks relatedEquipmentId values must be strings',
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
     test('remaps task equipment relationship to regenerated equipment ID', () {
       final remapped = remapBackupTaskRelationships(
         {'id': 'old-task', 'relatedEquipmentId': 'old-equipment'},
