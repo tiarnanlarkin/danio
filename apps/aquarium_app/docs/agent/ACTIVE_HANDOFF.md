@@ -1,66 +1,66 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-05 during DS-2026-07-05-020 data-resilience closeout
+Last updated: 2026-07-05 during DS-2026-07-05-021 data-resilience closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Session preflight for DS-2026-07-05-020:
+- Session preflight for DS-2026-07-05-021:
   - `git fetch --prune` completed.
   - `git status --short -uall` was clean before the slice.
   - `main...origin/main` was `0 0`, so local `main` was not behind the GitHub
     mirror.
   - `git worktree list --porcelain` showed only the main worktree.
   - The slice branch was created from clean `main`.
-- Slice branch used: `ds-2026-07-05-020-zero-tank-photo-restore`.
+- Slice branch used: `ds-2026-07-05-021-log-undo-parent-guard`.
 - Closeout target: merge verified work into `main`, push `main`, then delete
   the temporary slice branch if safely merged.
 
 ## Current Slice
 
-- Slice: `DS-2026-07-05-020` zero-tank backup restores must not copy photos.
+- Slice: `DS-2026-07-05-021` Log Detail undo must not recreate orphan
+  journal data.
 - Scope:
-  - Add a focused service regression for a zero-tank backup archive that still
-    contains a `photos/` entry.
-  - Make `BackupService.restoreBackup` return `0` before creating or restoring
-    the local photos folder when the validated backup has no tanks.
-  - Keep the Backup & Restore import flow, UI copy, SharedPreferences restore
-    internals, and account/cloud restore paths unchanged.
-- Product behavior changes: importing a backup with no tanks can no longer
-  leave orphan restored photo files while the app reports that no tanks were
-  found.
+  - Add a focused Log Detail widget regression for deleting a log, deleting its
+    parent tank before snackbar Undo, and tapping Undo.
+  - Make the undo restore path recheck the parent tank in durable storage before
+    calling `saveLog`.
+  - Keep broader log editing, backup/restore internals, Android evidence, and
+    UI redesign out of scope.
+- Product behavior changes: undoing a deleted Log Detail entry can no longer
+  recreate orphan local journal data after the parent tank has been deleted.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
 - Live preview/device requirement: not required; this is a non-visual
   service-level data-safety slice.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after DS-2026-07-05-020 is committed, merged,
+No dirty files are expected after DS-2026-07-05-021 is committed, merged,
 pushed, and the temporary branch is cleaned up. If this slice is interrupted
 before cleanup, preserve these paths:
 
-- `apps/aquarium_app/lib/services/backup_service.dart`
-- `apps/aquarium_app/test/services/backup_service_photo_restore_test.dart`
+- `apps/aquarium_app/lib/screens/log_detail_screen.dart`
+- `apps/aquarium_app/test/widget_tests/log_detail_screen_test.dart`
 - `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
 - `apps/aquarium_app/docs/agent/SLICE_LOG.md`
-- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-020-data-resilience-slice-contract.md`
+- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-021-data-resilience-slice-contract.md`
 
 ## Last Checks
 
 Passed for this slice:
 
-- RED: `flutter test test/services/backup_service_photo_restore_test.dart
-  --plain-name "restoreBackup skips photo extraction when a backup has no
-  tanks" --reporter compact` failed because an orphan photo file was restored.
-- GREEN: same focused command passed after the restore path returned before
-  photo extraction for zero-tank backups.
-- `flutter test test/services/backup_service_photo_restore_test.dart --reporter
+- RED: `flutter test test/widget_tests/log_detail_screen_test.dart
+  --plain-name "undo does not restore a log after its parent tank was deleted"
+  --reporter compact` failed because the undo path restored the orphan log.
+- GREEN: same focused command passed after Log Detail rechecked the parent tank
+  before saving the restored log.
+- `flutter test test/widget_tests/log_detail_screen_test.dart --reporter
   compact`
-- `dart format lib/services/backup_service.dart
-  test/services/backup_service_photo_restore_test.dart`
-- `flutter analyze lib/services/backup_service.dart
-  test/services/backup_service_photo_restore_test.dart`
+- `dart format lib/screens/log_detail_screen.dart
+  test/widget_tests/log_detail_screen_test.dart`
+- `flutter analyze lib/screens/log_detail_screen.dart
+  test/widget_tests/log_detail_screen_test.dart`
 - `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full`
 - Post-doc checks for closeout:
   - `git diff --check`
@@ -73,17 +73,17 @@ Notes:
   the full Flutter test suite, `flutter analyze`, `git diff --check`, and a
   debug APK build.
 - `FINISH_MAP.md` and the product backlog were not changed because this slice
-  adds evidence within the Backup and restore/Data resilience rows but does not
-  change either row's completion status.
+  adds one more data-resilience guard but does not change the row's completion
+  status.
 
 ## Device And Preview State
 
 - No emulator, screenshot, logcat evidence, or live-preview ownership was used
-  for this non-visual service slice.
+  for this non-visual widget data-safety slice.
 - Startup runtime preflight:
-  - `adb devices -l` showed no attached devices.
+  - `adb devices -l` showed `emulator-5554` as `offline`.
   - `.\scripts\run_danio_live_preview.ps1 -CheckOnly` reported AVD
-    `danio_api36` was not running.
+    `danio_api36` was not running or usable without explicit launch ownership.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
   installs, taps, screenshots, logcat, Patrol, Maestro, or live-preview control.
 
@@ -98,7 +98,7 @@ Notes:
 
 ## Next Action
 
-DS-2026-07-05-020 is verified. Next:
+DS-2026-07-05-021 is verified. Next:
 
 1. Start the next fresh slice from `FINISH_MAP.md`, `QUALITY_LADDER.md`,
    `TESTING_CHECKLIST.md`, and the current `git status --short -uall`.

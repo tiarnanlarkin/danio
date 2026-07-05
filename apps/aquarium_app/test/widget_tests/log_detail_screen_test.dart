@@ -30,6 +30,17 @@ LogEntry _fakeLog() => LogEntry(
   createdAt: DateTime(2024, 6, 15),
 );
 
+Tank _fakeTank() => Tank(
+  id: _fakeTankId,
+  name: 'Log Detail Tank',
+  type: TankType.freshwater,
+  volumeLitres: 60,
+  startDate: DateTime(2024, 1, 1),
+  targets: WaterTargets.freshwaterTropical(),
+  createdAt: DateTime(2024, 1, 1),
+  updatedAt: DateTime(2024, 1, 1),
+);
+
 class _ThrowingLogDeleteStorage implements StorageService {
   final InMemoryStorageService _delegate = InMemoryStorageService();
 
@@ -89,11 +100,29 @@ class _ThrowingLogDeleteStorage implements StorageService {
 
 class _ThrowingLogRestoreStorage extends _ThrowingLogDeleteStorage {
   @override
+  Future<Tank?> getTank(String id) async => _fakeTank();
+
+  @override
   Future<void> deleteLog(String id) => _delegate.deleteLog(id);
 
   @override
   Future<void> saveLog(LogEntry log) async {
     throw StateError('local log restore unavailable');
+  }
+}
+
+class _MissingParentOnLogUndoStorage extends _ThrowingLogDeleteStorage {
+  final restoredLogs = <LogEntry>[];
+
+  @override
+  Future<Tank?> getTank(String id) async => null;
+
+  @override
+  Future<void> deleteLog(String id) async {}
+
+  @override
+  Future<void> saveLog(LogEntry log) async {
+    restoredLogs.add(log);
   }
 }
 
@@ -214,5 +243,32 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'undo does not restore a log after its parent tank was deleted',
+      (
+        tester,
+      ) async {
+        final storage = _MissingParentOnLogUndoStorage();
+        await tester.pumpWidget(_wrap(storage: storage));
+        await _advance(tester);
+
+        await tester.tap(find.byIcon(Icons.delete_outline));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Delete Log'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        await tester.tap(find.text('Undo'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(storage.restoredLogs, isEmpty);
+        expect(
+          find.text("Couldn't restore that log. Try again in a moment."),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

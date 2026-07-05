@@ -193,6 +193,10 @@ class LogDetailScreen extends ConsumerWidget {
         actionLabel: 'Undo',
         onAction: () async {
           try {
+            final parentTank = await storage.getTank(log.tankId);
+            if (parentTank == null) {
+              throw StateError('Cannot restore log for missing parent tank');
+            }
             await storage.saveLog(log);
             ref.invalidate(logsProvider(tankId));
             ref.invalidate(allLogsProvider(tankId));
