@@ -9,7 +9,8 @@ Last updated: 2026-07-05 after DS-2026-07-05-037 branch Full gate
 - Current branch after closeout: `main`.
 - DS-2026-07-05-037 behavior commit: `9f0f6303`
   (`Guard backup import duplicate tank IDs`).
-- DS-2026-07-05-037 closeout docs commit: pending.
+- DS-2026-07-05-037 closeout docs commit: `dc2de19f`
+  (`Update DS-037 handoff closeout`).
 - Expected final state for the next session:
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
