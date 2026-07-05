@@ -1417,6 +1417,10 @@ CL-P1-009G Backup child record ID validation:
 - The same shared validator also rejects duplicate child record IDs within each
   tank-scoped collection, preventing import remapping from silently skipping or
   overwriting child records.
+- The lower direct `BackupImportService.importTankScopedData` boundary now also
+  rejects duplicate `livestock`, `equipment`, `tasks`, and `logs` backup IDs
+  before saving imported tanks, so service-level callers cannot collapse
+  duplicate backup child records onto one regenerated local ID.
 - Focused coverage verifies missing child IDs and duplicate child IDs fail with
   `Invalid format: <collection> entries must include an id` or
   `Invalid format: duplicate <collection> id`.

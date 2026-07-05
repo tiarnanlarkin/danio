@@ -91,7 +91,14 @@ The slice is done only when:
 
 ## Result
 
-- Commit: pending
-- Verification summary: pending
+- Commit: `50ddba57` (`Guard backup import duplicate child IDs`)
+- Verification summary:
+  - RED: `flutter test test/services/backup_import_service_test.dart --name "rejects duplicate backup child ids before reporting import success" --reporter compact` failed because the import returned `BackupImportResult`.
+  - GREEN: same named service test passed.
+  - `dart format lib\services\backup_import_service.dart test\services\backup_import_service_test.dart`
+  - `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  - `flutter analyze lib/services/backup_import_service.dart test/services/backup_import_service_test.dart`
+  - `git diff --check`
+  - Branch clean-worktree Full gate: `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
 - Evidence path: not applicable
-- Follow-up created: pending
+- Follow-up created: DS-036 handoff points the next successor at a fresh read-only data-resilience gap selection audit with 3 sequential verified sessions remaining in the autonomous chain.

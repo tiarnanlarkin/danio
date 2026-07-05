@@ -418,6 +418,10 @@ Recent CL-P1-009 continuation note:
   relationship IDs whose backup targets are absent from the imported ID maps,
   rolling back instead of reporting success while silently clearing
   `relatedEquipmentId`, `relatedLivestockId`, or `relatedTaskId` links.
+- CL-P1-009GY makes direct tank-scoped backup imports reject duplicate
+  `livestock`, `equipment`, `tasks`, and `logs` backup IDs before saving
+  imported tanks, preventing duplicate backup child records from collapsing
+  onto one regenerated local ID while the service reports success.
 
 ## 7. P2 Work - Presentation System
 
