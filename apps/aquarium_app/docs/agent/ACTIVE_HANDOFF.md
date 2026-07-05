@@ -1,48 +1,51 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-05-040 checkpoint ready for manual continuation
-Last updated: 2026-07-05 after DS-2026-07-05-040 merge and clean-main Full gate
+Status: Clean DS-2026-07-05-041 checkpoint ready for autonomous continuation
+Last updated: 2026-07-05 after DS-2026-07-05-041 merge and clean-main Full gate
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after closeout: `main`.
-- DS-2026-07-05-040 behavior commit: `e090d5a6`
-  (`Ignore duplicate unreferenced backup photos`).
-- DS-2026-07-05-040 closeout docs: this handoff, `FINISH_MAP.md`,
-  `SLICE_LOG.md`, the DS-040 slice contract, and product audit/backlog notes.
+- DS-2026-07-05-041 behavior commit: `ccd024bd`
+  (`Scope backup photo refs to photo fields`).
+- DS-2026-07-05-041 closeout docs: this handoff, `FINISH_MAP.md`,
+  `SLICE_LOG.md`, the DS-041 slice contract, and product audit/backlog notes.
 - Final state for the next session:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - The temporary DS-040 branch has been deleted after merge.
+  - The temporary DS-041 branch has been deleted after merge.
 
 ## Completed Slice
 
-- Slice: DS-2026-07-05-040, Ignore Unreferenced Duplicate Backup Photos.
+- Slice: DS-2026-07-05-041, Scope Backup Photo References To Photo Fields.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-040-ignore-unreferenced-duplicate-photos-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-05-041-backup-photo-field-scope-slice-contract.md`.
 - Plan context: the session began with a read-only data-resilience gap
   selection audit against current docs, source, tests, git state, and the
-  DS-039 handoff. DS-039 made backup restore extract only referenced archive
-  photos. Fresh source review then found one follow-on preview/restore boundary
-  in `BackupService`: duplicate archive photo basename validation still ran
-  across every `photos/` entry before referenced-photo filtering.
-- Gap selected: an otherwise valid backup could be rejected when duplicate
-  photo basenames existed only in stale or archive-only `photos/` entries that
-  validated backup data did not reference and restore would ignore.
+  DS-040 handoff. DS-040 made backup preview/restore ignore duplicate archive
+  photo basenames that validated backup data does not reference.
+- Gap selected: `BackupService` still scanned every string in backup payloads
+  while collecting, validating, making portable, and resolving photo
+  references. A normal free-text field such as `notes` containing an old path
+  like `C:/old/photos/orphan.jpg` could make backup export or preview fail as
+  though `orphan.jpg` were a required bundled photo.
 - Behavior changed:
-  - Backup preview/restore now derives the referenced photo filename set from
-    validated backup data before duplicate archive-photo basename validation.
-  - Duplicate archive photo basenames are still rejected when the duplicate
-    basename is referenced by backup data, because restore would have ambiguous
-    source content.
-  - Duplicate archive photo basenames are ignored when backup data never
-    references that basename.
-  - Restore still extracts only referenced photos and tracks only newly restored
-    referenced paths.
-  - Backup export, schema migration, SharedPreferences restore, backup import
-    transaction mapping, UI layout, Android runtime behavior, cloud/account
+  - Backup photo reference extraction now treats only `imageUrl` strings and
+    `photoUrls` string lists as photo-bearing fields.
+  - Portable photo-reference conversion now rewrites only those photo-bearing
+    fields.
+  - Backup preview/restore resolution now resolves only those photo-bearing
+    fields into restored local paths.
+  - Free-text fields such as `notes`, `title`, `name`, and descriptions remain
+    unchanged even when their text includes path-like `photos/` strings.
+  - Existing DS-039 and DS-040 boundaries remain intact: missing real photo
+    references still fail safely, duplicate referenced archive basenames still
+    fail safely, and archive-only or free-text-only photo-like strings do not
+    block valid backup operations.
+  - Backup schema, import transaction mapping, SharedPreferences restore,
+    schema migration, UI layout, Android runtime behavior, cloud/account
     behavior, paid services, API keys, and optional-AI behavior were not
     changed.
 
@@ -68,41 +71,41 @@ Startup:
 Focused proof:
 
 - RED:
-  `flutter test test/services/backup_service_photo_restore_test.dart --plain-name "getBackupData ignores duplicate unreferenced archive photo filenames" --reporter compact`
-  failed with `Invalid backup: duplicate photo filename "orphan.jpg"`.
-- GREEN: the same named service test passed after duplicate photo basename
-  validation was restricted to referenced photo filenames.
+  `flutter test test/services/backup_service_photo_restore_test.dart --plain-name "createBackup ignores free-text photo-like strings outside photo fields" --reporter compact`
+  failed with `Cannot create backup: referenced photo "orphan.jpg" was not found`.
+- RED:
+  `flutter test test/services/backup_service_photo_restore_test.dart --plain-name "getBackupData ignores free-text photo-like strings outside photo fields" --reporter compact`
+  failed with `Invalid backup: referenced photo "orphan.jpg" is missing from archive`.
+- GREEN: both named service tests passed after traversal was scoped to
+  `imageUrl` and `photoUrls`.
 - `dart format lib\services\backup_service.dart test\services\backup_service_photo_restore_test.dart`
   checked both changed Dart files.
 - `flutter test test/services/backup_service_photo_restore_test.dart --reporter compact`
-  passed with 135 tests.
+  passed with 137 tests.
 - `flutter analyze lib/services/backup_service.dart test/services/backup_service_photo_restore_test.dart`
   passed with no issues.
 - `git diff --check` passed before documentation updates.
 - Dirty-branch Full gate:
-  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full`
-  passed before commit, covering worktree visibility, whitespace, focused
-  tests, dependency validation, custom lint, the full Flutter test suite,
-  `flutter analyze`, and the debug APK build.
+  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` from
+  `apps\aquarium_app` passed before commit, covering worktree visibility,
+  whitespace, focused tests, dependency validation, custom lint, the full
+  Flutter test suite with 2125 tests, `flutter analyze`, and the debug APK
+  build.
 
 Branch gate:
 
 - Branch clean-worktree Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  passed on behavior commit `e090d5a6`. This covered worktree visibility,
-  whitespace, focused tests, dependency validation, custom lint, the full
-  Flutter test suite, `flutter analyze`, and the debug APK build.
+  from `apps\aquarium_app` passed on the DS-041 branch after closeout docs.
 
 Docs and clean-main gate:
 
-- `git diff --check` passed after DS-040 documentation updates.
+- `git diff --check` passed after DS-041 documentation updates.
 - `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
-  passed after DS-040 documentation updates.
+  passed after DS-041 documentation updates.
 - Clean-main Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  passed after DS-040 was merged to `main`. This covered worktree visibility,
-  whitespace, focused tests, dependency validation, custom lint, the full
-  Flutter test suite, `flutter analyze`, and the debug APK build.
+  from `apps\aquarium_app` passed after DS-041 was merged to `main`.
 
 ## Device And Preview State
 
@@ -116,7 +119,7 @@ Docs and clean-main gate:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-040 itself.
+- No blocker remains for DS-2026-07-05-041 itself.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   restore, migration, create/delete, relationship integrity gaps found from
   fresh evidence, and future debounced-writer app-kill coverage.
@@ -126,14 +129,14 @@ Docs and clean-main gate:
 
 ## Next Action
 
-The approved autonomous successor budget is exhausted after DS-2026-07-05-040.
-Do not create another autonomous successor from this handoff unless the user
-provides a new explicit numeric continuation budget and project-scoped launch
-instruction.
+The approved autonomous chain has 9 remaining sequential sessions after
+DS-2026-07-05-041, including the next successor. Do not run parallel repo
+sessions. The next successor should rebuild truth from repo docs and live state,
+then continue the read-only data-resilience gap selection audit only if a
+specific local-only, product-safe, TDD-verifiable target is unambiguous.
 
-Recommended next manual action: start a fresh repo-scoped session, rebuild
-truth from repo docs and live git state, and continue the read-only
-data-resilience gap selection audit only if the user explicitly requests more
-Danio complete-local work. Prefer restore, migration, create/delete,
-relationship integrity, and future debounced-writer gaps only when fresh source
-and test evidence proves a specific missing behavior and proof setup.
+Prefer restore, migration, create/delete, relationship integrity, and future
+debounced-writer gaps only when fresh source and test evidence proves a
+specific missing behavior and proof setup. Stop early and ask one direct
+question if multiple candidates remain plausible, runtime ownership is needed,
+the target is already covered, or the next action requires product direction.

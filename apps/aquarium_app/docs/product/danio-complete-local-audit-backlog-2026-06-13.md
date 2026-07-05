@@ -105,6 +105,11 @@ These establish the shape of the finished local product.
 
 Recent CL-P1-009 continuation note:
 
+- CL-P1-009HD scopes backup photo reference handling to current `imageUrl` and
+  `photoUrls` fields, so normal free-text notes, titles, names, and
+  descriptions can mention old `photos/` paths without blocking valid backup
+  export, preview, or restore while real missing or duplicate referenced photos
+  still fail safely.
 - CL-P1-009CI catches failed Reminder completion writes before visible-list
   changes or notification side effects.
 - CL-P1-009CJ makes first-run profile creation wait for the immediate local

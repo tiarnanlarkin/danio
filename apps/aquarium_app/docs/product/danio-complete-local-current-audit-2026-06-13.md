@@ -3092,6 +3092,17 @@ CL-P1-009GU Equipment delete Undo parent-tank boundary:
   equipment and task records empty while preserving normal equipment Undo
   behavior.
 
+CL-P1-009HD Backup photo-field reference scope:
+
+- BackupService now treats only current `imageUrl` and `photoUrls` fields as
+  photo-bearing backup references when collecting, validating, making portable,
+  and resolving restored paths.
+- Normal free-text fields such as `notes`, `title`, `name`, and descriptions
+  stay unchanged even if they mention old `photos/` paths.
+- Focused service coverage verifies both export and preview/restore ignore
+  free-text photo-like strings while actual photo fields still resolve and
+  restore correctly.
+
 CL-P1-009FF Stage sheet hint failed-save boundary:
 
 - The Tank stage sheet first-use hint now checks the
@@ -4394,6 +4405,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Backup Restore duplicate-photo validation now ignores duplicate archive
   `photos/` basenames that backup data does not reference, while still
   rejecting duplicate referenced photo sources.
+  Backup photo reference handling is now scoped to current `imageUrl` and
+  `photoUrls` fields, so free-text notes/descriptions can mention old
+  `photos/` paths without blocking valid backup export, preview, or restore.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.
