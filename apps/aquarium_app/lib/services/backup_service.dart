@@ -194,6 +194,11 @@ class BackupService {
     _updateProgress('Extracting data...', 0.1);
 
     final data = _readValidatedBackupData(archive);
+    final tankCount = (data['tanks'] as List).length;
+    if (tankCount == 0) {
+      _updateProgress('No tanks found in backup', 1.0);
+      return 0;
+    }
 
     _updateProgress('Restoring photos...', 0.2);
 
@@ -212,7 +217,7 @@ class BackupService {
       if (totalPhotos == 0) {
         _updateProgress('No photos found in backup', 0.9);
         _updateProgress('Import complete!', 1.0);
-        return (data['tanks'] as List).length;
+        return tankCount;
       }
 
       for (var i = 0; i < totalPhotos; i++) {
@@ -240,7 +245,7 @@ class BackupService {
       }
 
       _updateProgress('Import complete!', 1.0);
-      return (data['tanks'] as List).length;
+      return tankCount;
     } catch (_) {
       await cleanupLastRestoredPhotos();
       rethrow;

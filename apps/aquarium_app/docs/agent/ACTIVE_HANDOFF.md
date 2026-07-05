@@ -1,80 +1,66 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-05 during DS-2026-07-05-019 data-resilience closeout
+Last updated: 2026-07-05 during DS-2026-07-05-020 data-resilience closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Session preflight for DS-2026-07-05-019:
+- Session preflight for DS-2026-07-05-020:
   - `git fetch --prune` completed.
   - `git status --short -uall` was clean before the slice.
   - `main...origin/main` was `0 0`, so local `main` was not behind the GitHub
     mirror.
-  - `DS-2026-07-04-018` was already complete on `main`; this slice selected the
-    next current data-resilience action.
-- Slice branch used: `ds-2026-07-05-019-remove-settings-json-import`.
+  - `git worktree list --porcelain` showed only the main worktree.
+  - The slice branch was created from clean `main`.
+- Slice branch used: `ds-2026-07-05-020-zero-tank-photo-restore`.
 - Closeout target: merge verified work into `main`, push `main`, then delete
   the temporary slice branch if safely merged.
 
 ## Current Slice
 
-- Slice: `DS-2026-07-05-019` remove legacy direct JSON import/export from
-  Preferences.
+- Slice: `DS-2026-07-05-020` zero-tank backup restores must not copy photos.
 - Scope:
-  - Remove the Settings data-section `Export All Data` and `Import Data`
-    controls that wrote selected JSON directly to `aquarium_data.json`.
-  - Keep non-destructive Photo Storage information in Preferences.
-  - Keep backup/restore available through the existing Backup & Restore hub.
-  - Fix the local quality gate wrapper so documented Flutter stderr warnings
-    from a successful debug APK build do not fail the gate under Windows
-    PowerShell 5.1.
-- Product behavior changes: Preferences no longer exposes the legacy direct JSON
-  backup import/export path that bypassed the hardened Backup & Restore flow.
-- Verification tooling changes: `Invoke-Flutter` now verifies `flutter` exists,
-  temporarily allows Flutter native stderr, and fails on Flutter's captured exit
-  code instead of the presence of non-fatal warning text.
+  - Add a focused service regression for a zero-tank backup archive that still
+    contains a `photos/` entry.
+  - Make `BackupService.restoreBackup` return `0` before creating or restoring
+    the local photos folder when the validated backup has no tanks.
+  - Keep the Backup & Restore import flow, UI copy, SharedPreferences restore
+    internals, and account/cloud restore paths unchanged.
+- Product behavior changes: importing a backup with no tanks can no longer
+  leave orphan restored photo files while the app reports that no tanks were
+  found.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
 - Live preview/device requirement: not required; this is a non-visual
-  data-safety and local tooling slice.
+  service-level data-safety slice.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after DS-2026-07-05-019 is committed, merged,
+No dirty files are expected after DS-2026-07-05-020 is committed, merged,
 pushed, and the temporary branch is cleaned up. If this slice is interrupted
 before cleanup, preserve these paths:
 
-- `apps/aquarium_app/lib/screens/settings/settings_data_section.dart`
-- `apps/aquarium_app/scripts/quality_gates/run_local_quality_gate.ps1`
-- `apps/aquarium_app/test/copy/settings_data_copy_test.dart`
-- `apps/aquarium_app/test/screens/tool_entry_points_contract_test.dart`
-- `apps/aquarium_app/test/scripts/local_quality_gate_script_test.dart`
+- `apps/aquarium_app/lib/services/backup_service.dart`
+- `apps/aquarium_app/test/services/backup_service_photo_restore_test.dart`
 - `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
 - `apps/aquarium_app/docs/agent/SLICE_LOG.md`
-- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-019-data-resilience-slice-contract.md`
+- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-020-data-resilience-slice-contract.md`
 
 ## Last Checks
 
 Passed for this slice:
 
-- RED: `flutter test test/copy/settings_data_copy_test.dart
-  test/screens/tool_entry_points_contract_test.dart --reporter compact` failed
-  while Settings still contained `Export All Data`.
-- GREEN: same focused source-contract command passed after removing the legacy
-  Preferences JSON import/export code.
-- RED/GREEN: `flutter test test/scripts/local_quality_gate_script_test.dart
-  --plain-name "local quality gate does not fail successful Flutter stderr
-  warnings" --reporter compact`.
-- `dart format test/scripts/local_quality_gate_script_test.dart
-  test/copy/settings_data_copy_test.dart
-  test/screens/tool_entry_points_contract_test.dart`
-- `flutter test test/copy/settings_data_copy_test.dart
-  test/screens/tool_entry_points_contract_test.dart
-  test/scripts/local_quality_gate_script_test.dart --reporter compact`
-- `flutter analyze lib/screens/settings/settings_data_section.dart
-  test/copy/settings_data_copy_test.dart
-  test/screens/tool_entry_points_contract_test.dart
-  test/scripts/local_quality_gate_script_test.dart`
+- RED: `flutter test test/services/backup_service_photo_restore_test.dart
+  --plain-name "restoreBackup skips photo extraction when a backup has no
+  tanks" --reporter compact` failed because an orphan photo file was restored.
+- GREEN: same focused command passed after the restore path returned before
+  photo extraction for zero-tank backups.
+- `flutter test test/services/backup_service_photo_restore_test.dart --reporter
+  compact`
+- `dart format lib/services/backup_service.dart
+  test/services/backup_service_photo_restore_test.dart`
+- `flutter analyze lib/services/backup_service.dart
+  test/services/backup_service_photo_restore_test.dart`
 - `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full`
 - Post-doc checks for closeout:
   - `git diff --check`
@@ -83,15 +69,9 @@ Passed for this slice:
 
 Notes:
 
-- The first controlled `Full` gate exposed a wrapper problem: the debug APK
-  build exited 0 and produced `build\app\outputs\flutter-apk\app-debug.apk`,
-  but Windows PowerShell 5.1 promoted Flutter's known Kotlin Gradle Plugin
-  warning on stderr into a terminating script error.
-- The local gate wrapper now matches `TESTING_CHECKLIST.md`: the KGP warning is
-  visible, but it does not block a successful debug build.
-- The corrected `Full` gate passed focused docs/content/script tests,
-  dependency validation, Danio custom lint, the full Flutter test suite,
-  `flutter analyze`, `git diff --check`, and a debug APK build.
+- The Full gate passed focused tests, dependency validation, Danio custom lint,
+  the full Flutter test suite, `flutter analyze`, `git diff --check`, and a
+  debug APK build.
 - `FINISH_MAP.md` and the product backlog were not changed because this slice
   adds evidence within the Backup and restore/Data resilience rows but does not
   change either row's completion status.
@@ -99,7 +79,11 @@ Notes:
 ## Device And Preview State
 
 - No emulator, screenshot, logcat evidence, or live-preview ownership was used
-  for this non-visual slice.
+  for this non-visual service slice.
+- Startup runtime preflight:
+  - `adb devices -l` showed no attached devices.
+  - `.\scripts\run_danio_live_preview.ps1 -CheckOnly` reported AVD
+    `danio_api36` was not running.
 - If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
   installs, taps, screenshots, logcat, Patrol, Maestro, or live-preview control.
 
@@ -114,7 +98,7 @@ Notes:
 
 ## Next Action
 
-DS-2026-07-05-019 is verified. Next:
+DS-2026-07-05-020 is verified. Next:
 
 1. Start the next fresh slice from `FINISH_MAP.md`, `QUALITY_LADDER.md`,
    `TESTING_CHECKLIST.md`, and the current `git status --short -uall`.

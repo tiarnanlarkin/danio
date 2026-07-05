@@ -180,6 +180,34 @@ void main() {
     );
 
     test(
+      'restoreBackup skips photo extraction when a backup has no tanks',
+      () async {
+        final zipPath = p.join(tempDir.path, 'zero_tank_photo_backup.zip');
+        await _writeBackupZip(
+          zipPath,
+          data: {'tanks': <Object?>[]},
+          files: {'photos/orphan.jpg': 'orphan backup photo'},
+        );
+
+        final restoreService = BackupService(
+          getDocumentsDirectory: () async => restoreDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+
+        final restoredTankCount = await restoreService.restoreBackup(zipPath);
+        final restorePhotos = Directory(p.join(restoreDocs.path, 'photos'));
+        final restoredFiles = <FileSystemEntity>[];
+        if (await restorePhotos.exists()) {
+          restoredFiles.addAll(await restorePhotos.list().toList());
+        }
+
+        expect(restoredTankCount, 0);
+        expect(restoredFiles, isEmpty);
+        expect(restoreService.lastRestoredPhotoPaths, isEmpty);
+      },
+    );
+
+    test(
       'getBackupData rejects photo entries with duplicate restored filenames',
       () async {
         final zipPath = p.join(tempDir.path, 'duplicate_photo_backup.zip');
