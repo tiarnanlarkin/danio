@@ -1,7 +1,7 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-05 during DS-2026-07-05-022 data-resilience slice
+Last updated: 2026-07-05 during DS-2026-07-05-022 data-resilience closeout
 
 ## Branch
 
@@ -14,8 +14,8 @@ Last updated: 2026-07-05 during DS-2026-07-05-022 data-resilience slice
   - `git worktree list` showed only the main worktree.
   - The slice branch was created from clean `main`.
 - Slice branch used: `ds-2026-07-05-022-bulk-move-target-guard`.
-- Closeout target: merge verified work into `main`, push `main`, then delete
-  the temporary slice branch if safely merged.
+- Closeout result: verified work was merged into `main`, `main` was pushed, and
+  the temporary slice branch was deleted after it was safely merged.
 
 ## Current Slice
 
@@ -49,7 +49,7 @@ before cleanup, preserve these paths:
 
 ## Last Checks
 
-Passed so far for this slice:
+Passed for this slice:
 
 - RED: `flutter test test/providers/tank_provider_test.dart --name "rejects
   missing target tank ids before moving livestock" --reporter compact` failed
@@ -65,6 +65,7 @@ Passed so far for this slice:
   passed from the slice branch, including worktree visibility, whitespace diff
   check, focused Flutter tests, dependency validation, Danio custom lint, full
   Flutter test suite, Flutter analyze, and debug APK build.
+- The same Full gate passed again on merged `main` before pushing.
 - Post-doc closeout checks:
   - `git diff --check`
   - `flutter test test/copy/current_docs_local_truth_test.dart --reporter
@@ -72,8 +73,7 @@ Passed so far for this slice:
 
 Notes:
 
-- A final Full gate rerun on merged `main` is required before pushing if the
-  merge completes.
+- `main...origin/main` was `0 0` after push and only the main worktree remained.
 - `FINISH_MAP.md` and the product backlog do not need status changes unless the
   final gate changes the Data resilience row's completion status.
 
@@ -99,7 +99,7 @@ Notes:
 
 ## Next Action
 
-After DS-2026-07-05-022 closes, next:
+DS-2026-07-05-022 is verified and pushed. Next:
 
 1. Start the next fresh slice from `FINISH_MAP.md`, `QUALITY_LADDER.md`,
    `TESTING_CHECKLIST.md`, and the current `git status --short -uall`.
