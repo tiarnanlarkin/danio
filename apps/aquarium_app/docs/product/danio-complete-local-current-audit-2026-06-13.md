@@ -1659,6 +1659,16 @@ CL-P1-009AE Backup cross-tank relationship validation:
   `relatedLivestockId`, and `relatedTaskId` references fail before preview,
   photo restore, or import proceeds.
 
+CL-P1-009HE Direct import relationship type validation:
+
+- Direct tank-scoped backup import now rejects malformed non-string
+  `relatedEquipmentId`, `relatedLivestockId`, and `relatedTaskId` values before
+  reporting success.
+- Optional absent relationship values remain valid when they are `null` or an
+  empty string.
+- Focused coverage verifies malformed relationship ID types fail before direct
+  import can silently clear links or save imported tank data.
+
 CL-P1-009AF Backup export missing-photo guard:
 
 - Backup export now rejects tank/log photo references when the referenced local
@@ -4398,6 +4408,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   whose backup targets belong to a different backup tank from the source
   task/log, preventing cross-tank relationship links from being preserved while
   the service reports success.
+  Direct tank-scoped backup imports now also reject malformed non-string
+  relationship ID values before reporting success, preventing invalid backup
+  relationship fields from being silently cleared.
   Backup Restore now extracts only archive `photos/` entries whose filenames
   are referenced by validated backup data, preventing valid restores from
   leaving unrelated archive-only photo files in local app storage or

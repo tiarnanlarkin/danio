@@ -76,7 +76,11 @@ The slice is done only when:
 
 ## Result
 
-- Commit: Pending.
-- Verification summary: Pending.
+- Commit: `87112c00` (`Guard backup import relationship id types`).
+- Verification summary: focused RED/GREEN service tests passed; touched service
+  test files passed; targeted analyzer passed; dirty-branch Full gate passed;
+  branch clean-worktree Full gate passed; post-doc `git diff --check` and
+  current-docs truth test passed; clean-main Full gate passed after merge and
+  closeout docs.
 - Evidence path: Not applicable.
-- Follow-up created: Pending.
+- Follow-up created: Pending project-scoped successor creation.

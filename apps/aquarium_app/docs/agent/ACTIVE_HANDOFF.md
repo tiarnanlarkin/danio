@@ -1,53 +1,46 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-05-041 checkpoint ready for autonomous continuation
-Last updated: 2026-07-05 after DS-2026-07-05-041 merge and clean-main Full gate
+Status: Clean DS-2026-07-05-042 checkpoint ready for autonomous continuation
+Last updated: 2026-07-05 after DS-2026-07-05-042 merge and clean-main Full gate
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after closeout: `main`.
-- DS-2026-07-05-041 behavior commit: `ccd024bd`
-  (`Scope backup photo refs to photo fields`).
-- DS-2026-07-05-041 closeout docs: this handoff, `FINISH_MAP.md`,
-  `SLICE_LOG.md`, the DS-041 slice contract, and product audit/backlog notes.
+- DS-2026-07-05-042 behavior commit: `87112c00`
+  (`Guard backup import relationship id types`).
+- DS-2026-07-05-042 closeout docs: this handoff, `FINISH_MAP.md`,
+  `SLICE_LOG.md`, the DS-042 slice contract, and product audit/backlog notes.
 - Final state for the next session:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - The temporary DS-041 branch has been deleted after merge.
+  - The temporary DS-042 branch has been deleted after merge.
 
 ## Completed Slice
 
-- Slice: DS-2026-07-05-041, Scope Backup Photo References To Photo Fields.
+- Slice: DS-2026-07-05-042, Guard Malformed Direct Import Relationship ID Types.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-041-backup-photo-field-scope-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-05-042-import-relationship-type-guard-slice-contract.md`.
 - Plan context: the session began with a read-only data-resilience gap
   selection audit against current docs, source, tests, git state, and the
-  DS-040 handoff. DS-040 made backup preview/restore ignore duplicate archive
-  photo basenames that validated backup data does not reference.
-- Gap selected: `BackupService` still scanned every string in backup payloads
-  while collecting, validating, making portable, and resolving photo
-  references. A normal free-text field such as `notes` containing an old path
-  like `C:/old/photos/orphan.jpg` could make backup export or preview fail as
-  though `orphan.jpg` were a required bundled photo.
+  DS-041 handoff. DS-041 scoped backup photo references to actual photo fields.
+- Gap selected: direct tank-scoped backup import relationship remapping treated
+  non-string, non-null relationship IDs as absent. A malformed field such as
+  `relatedEquipmentId: 42` could therefore be silently cleared while the import
+  reported success.
 - Behavior changed:
-  - Backup photo reference extraction now treats only `imageUrl` strings and
-    `photoUrls` string lists as photo-bearing fields.
-  - Portable photo-reference conversion now rewrites only those photo-bearing
-    fields.
-  - Backup preview/restore resolution now resolves only those photo-bearing
-    fields into restored local paths.
-  - Free-text fields such as `notes`, `title`, `name`, and descriptions remain
-    unchanged even when their text includes path-like `photos/` strings.
-  - Existing DS-039 and DS-040 boundaries remain intact: missing real photo
-    references still fail safely, duplicate referenced archive basenames still
-    fail safely, and archive-only or free-text-only photo-like strings do not
-    block valid backup operations.
-  - Backup schema, import transaction mapping, SharedPreferences restore,
-    schema migration, UI layout, Android runtime behavior, cloud/account
-    behavior, paid services, API keys, and optional-AI behavior were not
-    changed.
+  - `remapBackupRelatedId` now keeps optional `null` and empty-string
+    relationship values absent.
+  - Non-string `relatedEquipmentId`, `relatedLivestockId`, and `relatedTaskId`
+    values now throw `FormatException` with collection/field context.
+  - `BackupImportService.importTankScopedData` now rejects malformed direct
+    import relationship ID types before reporting success.
+  - Existing relationship guards remain intact: missing backup targets and
+    cross-tank targets still fail safely.
+  - Backup photo handling, schema migration, UI layout, Android runtime
+    behavior, cloud/account behavior, paid services, API keys, and optional-AI
+    behavior were not changed.
 
 ## Dirty Files To Preserve
 
@@ -71,41 +64,45 @@ Startup:
 Focused proof:
 
 - RED:
-  `flutter test test/services/backup_service_photo_restore_test.dart --plain-name "createBackup ignores free-text photo-like strings outside photo fields" --reporter compact`
-  failed with `Cannot create backup: referenced photo "orphan.jpg" was not found`.
+  `flutter test test/services/backup_import_relationships_test.dart --plain-name "rejects malformed relationship id types instead of clearing them" --reporter compact`
+  failed because malformed relationship IDs were cleared instead of rejected.
 - RED:
-  `flutter test test/services/backup_service_photo_restore_test.dart --plain-name "getBackupData ignores free-text photo-like strings outside photo fields" --reporter compact`
-  failed with `Invalid backup: referenced photo "orphan.jpg" is missing from archive`.
-- GREEN: both named service tests passed after traversal was scoped to
-  `imageUrl` and `photoUrls`.
-- `dart format lib\services\backup_service.dart test\services\backup_service_photo_restore_test.dart`
-  checked both changed Dart files.
-- `flutter test test/services/backup_service_photo_restore_test.dart --reporter compact`
-  passed with 137 tests.
-- `flutter analyze lib/services/backup_service.dart test/services/backup_service_photo_restore_test.dart`
+  `flutter test test/services/backup_import_service_test.dart --plain-name "rejects malformed relationship id types before reporting import success" --reporter compact`
+  failed because the direct import returned `BackupImportResult`.
+- GREEN: both named tests passed after non-string relationship ID values were
+  rejected.
+- `dart format lib\services\backup_import_relationships.dart test\services\backup_import_relationships_test.dart test\services\backup_import_service_test.dart`
+  checked all changed Dart files.
+- `flutter test test/services/backup_import_relationships_test.dart --reporter compact`
+  passed with 5 tests.
+- `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  passed with 13 tests.
+- `flutter analyze lib/services/backup_import_relationships.dart test/services/backup_import_relationships_test.dart test/services/backup_import_service_test.dart`
   passed with no issues.
-- `git diff --check` passed before documentation updates.
+- `git diff --check` passed before the behavior commit.
 - Dirty-branch Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` from
   `apps\aquarium_app` passed before commit, covering worktree visibility,
   whitespace, focused tests, dependency validation, custom lint, the full
-  Flutter test suite with 2125 tests, `flutter analyze`, and the debug APK
+  Flutter test suite with 2127 tests, `flutter analyze`, and the debug APK
   build.
 
 Branch gate:
 
 - Branch clean-worktree Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  from `apps\aquarium_app` passed on the DS-041 branch after closeout docs.
+  from `apps\aquarium_app` passed on the DS-042 branch after the behavior
+  commit.
 
 Docs and clean-main gate:
 
-- `git diff --check` passed after DS-041 documentation updates.
+- `git diff --check` passed after DS-042 documentation updates.
 - `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
-  passed after DS-041 documentation updates.
+  passed after DS-042 documentation updates.
 - Clean-main Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  from `apps\aquarium_app` passed after DS-041 was merged to `main`.
+  from `apps\aquarium_app` passed after DS-042 was merged to `main` and the
+  closeout docs were committed.
 
 ## Device And Preview State
 
@@ -119,7 +116,7 @@ Docs and clean-main gate:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-041 itself.
+- No blocker remains for DS-2026-07-05-042 itself.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   restore, migration, create/delete, relationship integrity gaps found from
   fresh evidence, and future debounced-writer app-kill coverage.
@@ -129,8 +126,8 @@ Docs and clean-main gate:
 
 ## Next Action
 
-The approved autonomous chain has 9 remaining sequential sessions after
-DS-2026-07-05-041, including the next successor. Do not run parallel repo
+The approved autonomous chain has 8 remaining sequential sessions after
+DS-2026-07-05-042, including the next successor. Do not run parallel repo
 sessions. The next successor should rebuild truth from repo docs and live state,
 then continue the read-only data-resilience gap selection audit only if a
 specific local-only, product-safe, TDD-verifiable target is unambiguous.
