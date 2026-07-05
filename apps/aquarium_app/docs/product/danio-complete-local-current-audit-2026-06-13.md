@@ -4391,6 +4391,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   are referenced by validated backup data, preventing valid restores from
   leaving unrelated archive-only photo files in local app storage or
   cleanup-tracking state.
+  Backup Restore duplicate-photo validation now ignores duplicate archive
+  `photos/` basenames that backup data does not reference, while still
+  rejecting duplicate referenced photo sources.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

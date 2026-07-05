@@ -434,6 +434,9 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009HB makes Backup Restore extract only archive `photos/` entries whose
   filenames are referenced by validated backup data, preventing valid restores
   from leaving unrelated archive-only photo files in local app storage.
+- CL-P1-009HC makes Backup Restore duplicate-photo validation ignore duplicate
+  archive `photos/` basenames that backup data does not reference, while still
+  rejecting duplicate referenced photo sources.
 
 ## 7. P2 Work - Presentation System
 

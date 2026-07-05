@@ -285,7 +285,6 @@ class BackupService {
     if (jsonFile == null) {
       throw Exception('Invalid backup: missing $_jsonFileName');
     }
-    _validatePhotoArchiveEntries(archive);
 
     final jsonString = utf8.decode(jsonFile.content as List<int>);
     final decoded = jsonDecode(jsonString);
@@ -326,6 +325,7 @@ class BackupService {
       _validateTankScopedCollection(data, collectionName, seenTankIds);
     }
     _validateChildRelationshipTargets(data);
+    _validatePhotoArchiveEntries(archive, _referencedPhotoFilenames(data));
     _validateReferencedPhotoEntries(data, archive);
 
     return data;
@@ -517,7 +517,10 @@ class BackupService {
     }
   }
 
-  void _validatePhotoArchiveEntries(Archive archive) {
+  void _validatePhotoArchiveEntries(
+    Archive archive,
+    Set<String> referencedPhotoFilenames,
+  ) {
     final seenPhotoFilenames = <String>{};
     for (final file in archive.files) {
       if (!file.isFile) continue;
@@ -533,6 +536,8 @@ class BackupService {
       }
 
       final normalizedFilename = filename.toLowerCase();
+      if (!referencedPhotoFilenames.contains(normalizedFilename)) continue;
+
       if (!seenPhotoFilenames.add(normalizedFilename)) {
         throw Exception('Invalid backup: duplicate photo filename "$filename"');
       }
