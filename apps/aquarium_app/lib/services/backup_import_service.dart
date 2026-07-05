@@ -185,6 +185,11 @@ class BackupImportService {
     final tasksJson = _listFrom(backupData, 'tasks');
     final logsJson = _listFrom(backupData, 'logs');
 
+    _validateUniqueChildIds(livestockJson, 'livestock');
+    _validateUniqueChildIds(equipmentJson, 'equipment');
+    _validateUniqueChildIds(tasksJson, 'task');
+    _validateUniqueChildIds(logsJson, 'log');
+
     for (final tankJson in tanksJson) {
       final tankMap = _mapFrom(tankJson, 'tank');
       final oldTankId = _requiredString(tankMap, 'id', 'tank');
@@ -398,6 +403,17 @@ class BackupImportService {
       );
     }
     return newTankId;
+  }
+
+  void _validateUniqueChildIds(List<dynamic> jsonItems, String label) {
+    final seenIds = <String>{};
+    for (final item in jsonItems) {
+      final itemMap = _mapFrom(item, label);
+      final id = _requiredString(itemMap, 'id', label);
+      if (!seenIds.add(id)) {
+        throw FormatException('Invalid backup: duplicate $label id "$id"');
+      }
+    }
   }
 
   void _prepareEntityIdMap(
