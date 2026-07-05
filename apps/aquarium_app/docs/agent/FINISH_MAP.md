@@ -100,6 +100,15 @@ Current baseline:
 - The next development push should not reopen broad screen-mapping work unless
   a surface changes or release signoff begins.
 
+Acceleration note:
+
+- The approved faster path is documented in
+  `docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md`.
+  Future agents may use bounded epoch mode for 1 to 3 related micro-slices per
+  session when the plan's startup checks, proof requirements, stop conditions,
+  and closeout gates are satisfied. This changes session shape only; it does
+  not lower the test, Full gate, docs, merge, push, or device-ownership bar.
+
 ### Ranked Roadmap
 
 | Rank | Lane | Why it comes here | Exit evidence |

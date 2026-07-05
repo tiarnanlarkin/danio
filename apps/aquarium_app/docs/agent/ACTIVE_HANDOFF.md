@@ -1,7 +1,7 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-05 during DS-2026-07-05-029 equipment undo parent-guard closeout
+Last updated: 2026-07-05 after accelerated complete-local epoch plan
 
 ## Branch
 
@@ -16,50 +16,41 @@ Last updated: 2026-07-05 during DS-2026-07-05-029 equipment undo parent-guard cl
   - `git worktree list --porcelain` showed only the main worktree.
   - Local branches/worktrees were clean except remote Dependabot branches.
   - Repo/device workflow docs were reread before edits.
-- Slice branch used: `ds-2026-07-05-029-equipment-undo-parent`.
-- Closeout expectation: after the documented gates, merge this verified branch
-  into `main`, push `origin/main`, confirm `main...origin/main` is `0 0`, and
-  delete the temporary branch after it is safely merged.
+- DS-2026-07-05-029 was merged to `main`, pushed to `origin/main`, and its
+  temporary branch was deleted.
+- Current planning branch: `plan-accelerated-complete-local-epochs`.
+- Closeout expectation for this docs-only planning slice: run docs checks,
+  merge the plan to `main`, push `origin/main`, confirm `main...origin/main` is
+  `0 0`, and delete the temporary planning branch after it is safely merged.
 
-## Current Slice
+## Current Plan
 
-- Slice: `DS-2026-07-05-029` Prevent Equipment undo from restoring orphan
-  records after parent tank deletion.
+- Plan: accelerated complete-local epoch execution.
 - Scope:
-  - Add widget coverage for deleting equipment, deleting the parent tank before
-    snackbar Undo, and confirming Undo does not recreate the equipment or its
-    generated maintenance task.
-  - Recheck the durable parent tank before Equipment delete Undo restores
-    captured equipment/task records.
-  - Update CL-P1-009 data-resilience breadcrumbs in agent/product docs.
-  - Keep visual redesign, live-preview install/reload/screenshot, optional AI,
-    cloud/account tooling, release/store work, and broader restore/migration
-    walkthrough QA out of scope.
-- Product behavior changes: Equipment delete Undo now fails safely if the
-  parent tank no longer exists, leaving local equipment/task records deleted and
-  showing the existing restore-failure feedback.
+  - Add
+    `docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md`.
+  - Link the plan from `FINISH_MAP.md` so future agents find it during slice
+    selection.
+  - Keep the plan local-first, no-cost by default, and explicit about stop
+    conditions, Full gate requirements, and device ownership.
+- Product behavior changes: none; this is documentation-only planning.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
-- Live preview/device requirement: CheckOnly workflow was inspected before work.
-  No install/reload/screenshot was required for this data-safety widget slice.
+- Live preview/device requirement: not required for this docs-only planning
+  slice.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after DS-2026-07-05-029 is committed, merged,
-pushed, and the temporary branch is cleaned up. If this slice is interrupted
-before cleanup, preserve these paths:
+No dirty files are expected after the accelerated plan is committed, merged,
+pushed, and the temporary branch is cleaned up. If this planning slice is
+interrupted before cleanup, preserve these paths:
 
-- `apps/aquarium_app/lib/screens/equipment_screen.dart`
-- `apps/aquarium_app/test/widget_tests/equipment_screen_test.dart`
 - `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
 - `apps/aquarium_app/docs/agent/FINISH_MAP.md`
-- `apps/aquarium_app/docs/agent/SLICE_LOG.md`
-- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-029-equipment-undo-parent-slice-contract.md`
-- `apps/aquarium_app/docs/product/danio-complete-local-audit-backlog-2026-06-13.md`
-- `apps/aquarium_app/docs/product/danio-complete-local-current-audit-2026-06-13.md`
+- `apps/aquarium_app/docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md`
 
 ## Last Checks
 
-Passed for this slice before final clean-branch gate:
+Passed before this planning slice started:
 
 - Runtime preflight: `adb devices` showed `emulator-5554` and `emulator-5556`;
   `.\scripts\run_danio_live_preview.ps1 -CheckOnly` selected `emulator-5556`
@@ -77,17 +68,19 @@ Passed for this slice before final clean-branch gate:
 - `flutter test test/widget_tests/equipment_screen_test.dart --reporter compact`
 - `flutter analyze lib/screens/equipment_screen.dart
   test/widget_tests/equipment_screen_test.dart`
-- `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full` passed,
-  including worktree visibility, whitespace diff check, focused Flutter tests,
-  dependency validation, Danio custom lint, full Flutter suite, Flutter analyze,
-  and debug APK build.
+- Branch Full gate and post-merge clean `main` Full gate passed for
+  DS-2026-07-05-029, including worktree visibility, whitespace diff check,
+  focused Flutter tests, dependency validation, Danio custom lint, full Flutter
+  suite, Flutter analyze, and debug APK build.
 - `git diff --check`
 - `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
 
-Clean-checkout gates still required before merge/push:
+Docs-only closeout checks required for this planning slice:
 
-- clean branch gate: `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-- post-merge clean `main` gate with `-RequireCleanWorktree`
+- `git diff --check`
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+- `flutter analyze`
+- `rg -n "paid|cloud|OpenAI API calls|Maestro Cloud|fake premium|fake social" AGENTS.md apps/aquarium_app/docs/agent`
 
 ## Device And Preview State
 
@@ -95,8 +88,8 @@ Clean-checkout gates still required before merge/push:
   - `emulator-5556` is `danio_api36`.
   - `com.tiarnanlarkin.danio` is foregrounded.
   - `emulator-5554` is also connected and was not touched.
-- No live-preview refresh, install, tap, screenshot, or logcat capture was
-  needed for DS-2026-07-05-029.
+- No live-preview refresh, install, tap, screenshot, or logcat capture is
+  needed for the accelerated plan docs-only slice.
 - The previously observed returning-user prompt context-after-dispose exception
   around `lib/screens/home/home_screen.dart` lines 148-149 remains a follow-up
   only if current repo evidence shows it outranks remaining data-resilience
@@ -115,20 +108,26 @@ Clean-checkout gates still required before merge/push:
 
 ## Next Action
 
-Autonomous chain mode stops after DS-2026-07-05-029 because the approved
-remaining session budget reaches zero. Do not create another successor thread.
+Finish the docs-only accelerated epoch plan slice:
+
+1. Run the docs-only closeout checks listed above.
+2. Commit the plan branch.
+3. Merge to `main`, push `origin/main`, confirm `main...origin/main` is `0 0`,
+   and delete `plan-accelerated-complete-local-epochs`.
 
 For a future manual session:
 
 1. Use `$verified-slice-runner`, rebuild context from repo-owned docs and live
    git/device state, and stay in this saved Danio project.
-2. Treat the equipment undo parent-guard candidate as completed by
-   DS-2026-07-05-029 unless current repo evidence proves otherwise.
-3. Pick one concrete remaining slice from the ranked data-resilience lane in
+2. Read
+   `docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md`.
+3. Use bounded epoch mode only when the plan's startup checks, proof
+   requirements, stop conditions, and closeout gates can be satisfied.
+4. Pick the next concrete epoch from the ranked data-resilience lane in
    `FINISH_MAP.md`: restore, migration, create/delete, relationship mapping, or
    future debounced-writer app-kill persistence coverage.
-4. Consider the returning-user prompt context-after-dispose runtime follow-up
+5. Consider the returning-user prompt context-after-dispose runtime follow-up
    only if fresh repo/runtime evidence shows it outranks the remaining
    data-resilience lane.
-5. Run focused failing/guard proof first where behavior changes, then the
+6. Run focused failing/guard proof first where behavior changes, then the
    required `QUALITY_LADDER.md` gate before commit.
