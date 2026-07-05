@@ -70,7 +70,12 @@ The slice is done only when:
 
 ## Result
 
-- Commit: pending
-- Verification summary: pending
+- Commit: `8a290ef6`
+- Verification summary: RED proved malformed relationship types attempted
+  `saveTank` before rejection; GREEN rejects the malformed values in
+  relationship preflight before any imported tank save. Full touched service
+  test, targeted analyze, dirty-branch Full gate, and branch clean-worktree
+  Full gate passed.
 - Evidence path: none
-- Follow-up created: pending
+- Follow-up created: after DS-043 reaches clean pushed `main`, implement the
+  user-requested anti-circling workflow docs before creating a successor thread.

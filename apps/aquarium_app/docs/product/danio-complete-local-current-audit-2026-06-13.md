@@ -1667,7 +1667,18 @@ CL-P1-009HE Direct import relationship type validation:
 - Optional absent relationship values remain valid when they are `null` or an
   empty string.
 - Focused coverage verifies malformed relationship ID types fail before direct
-  import can silently clear links or save imported tank data.
+  import can silently clear links.
+
+CL-P1-009HF Direct import relationship pre-save validation:
+
+- Direct tank-scoped backup import now rejects malformed non-string
+  `relatedEquipmentId`, `relatedLivestockId`, and `relatedTaskId` values during
+  relationship preflight before any imported tank save is attempted.
+- Optional absent relationship values remain valid when they are `null` or an
+  empty string, and existing missing-target and cross-tank relationship guards
+  remain unchanged.
+- Focused service coverage records attempted tank saves and verifies malformed
+  relationship payloads fail without calling `saveTank`.
 
 CL-P1-009AF Backup export missing-photo guard:
 
@@ -4411,6 +4422,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Direct tank-scoped backup imports now also reject malformed non-string
   relationship ID values before reporting success, preventing invalid backup
   relationship fields from being silently cleared.
+  Direct tank-scoped backup imports now reject those malformed relationship
+  field types during pre-save relationship validation, preventing any imported
+  tank save from being attempted for a known-invalid backup relationship shape.
   Backup Restore now extracts only archive `photos/` entries whose filenames
   are referenced by validated backup data, preventing valid restores from
   leaving unrelated archive-only photo files in local app storage or
