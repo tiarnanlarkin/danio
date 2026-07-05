@@ -56,7 +56,7 @@ category.
 | Guided tools | In progress | Major calculators have tank-context handoffs, explanations, warnings, and save/apply paths. | Close any remaining tool-specific save/apply gaps found by walkthroughs. |
 | Multi-tank | Done | Current local scope has priority overview, recent activity, swap action, and Android walkthrough evidence. | Recheck if tank switching, comparison, or all-tanks priority logic changes. |
 | Timeline and journal | In progress | Unified timeline, tool result labels, milestone labels, AI note labels, and contextual strips exist. | Finish future source-specific guided-tool and optional-AI save handoff walkthroughs. |
-| Backup and restore | In progress | Extensive validation, rollback, undo, import transaction, no-tank preference-restore guard, migration, corruption recovery, and account-keyed cloud backup copy honesty work exists. | Continue edit/delete/undo coverage plus restore and migration Android walkthrough QA. |
+| Backup and restore | In progress | Extensive validation, rollback, undo, import transaction, no-tank preference-restore guard, malformed import preference-payload reporting, migration, corruption recovery, and account-keyed cloud backup copy honesty work exists. | Continue edit/delete/undo coverage plus restore and migration Android walkthrough QA. |
 | Preferences | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Finish final AI/provider walkthrough gaps. |
 | Global search | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
@@ -147,6 +147,10 @@ local tests and `Full` gate first; use Android walkthrough evidence only after
 
 ## Current Data-Resilience Note
 
+- DS-2026-07-05-032 closes a Backup Restore import-flow malformed-preferences
+  warning gap: after a tank import succeeds, non-object `sharedPreferences`
+  payloads now set `preferencesRestoreFailed` with a `FormatException` instead
+  of being silently treated as absent.
 - DS-2026-07-05-031 closes a backup preference type-restore gap:
   backup preview and SharedPreferences restore now reject exact exportable
   preference keys backed by the wrong primitive value type before preview,

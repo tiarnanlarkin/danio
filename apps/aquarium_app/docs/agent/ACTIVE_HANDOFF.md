@@ -1,14 +1,14 @@
 # Danio Active Handoff
 
 Status: Clean checkpoint handoff
-Last updated: 2026-07-05 after DS-2026-07-05-031 closeout
+Last updated: 2026-07-05 after DS-2026-07-05-032 closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- DS-2026-07-05-031 implementation commit:
-  `b23cd6b3` (`Guard backup preference restore types`).
-- DS-2026-07-05-031 was fast-forward merged to `main` after branch and
+- DS-2026-07-05-032 implementation commit: current pushed `main` commit after
+  closeout.
+- DS-2026-07-05-032 was fast-forward merged to `main` after branch and
   clean-main Full gates passed.
 - Final expected state after this handoff document is pushed:
   - `git status --short -uall` is clean.
@@ -17,25 +17,26 @@ Last updated: 2026-07-05 after DS-2026-07-05-031 closeout
 
 ## Completed Slice
 
-- Slice: DS-2026-07-05-031, Preference Type Restore Guard.
+- Slice: DS-2026-07-05-032, Import Flow Malformed Preference Payload Guard.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-031-preference-type-restore-guard-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-05-032-import-flow-malformed-prefs-slice-contract.md`.
 - Plan context: the session began with a read-only Epoch 1 data-resilience gap
-  selection audit. The nearest restore/migration risks for import rollback,
-  tank and child ID collisions, zero-tank preference restore, photo extraction,
-  schema stamps, and local JSON load I/O errors already had current source/test
-  coverage from DS-018 through DS-026.
-- Gap selected: backup preview and SharedPreferences restore validation accepted
-  any primitive value for any exportable preference key, even though the app
-  reads those exact keys with typed `getBool`, `getInt`, `getString`, and
-  `getStringList` calls.
+  selection audit. Current restore/migration/create-delete candidates were
+  checked against source and tests before selecting a small service-only backup
+  import honesty gap.
+- Gap selected: `BackupRestoreImportFlow` imported tanks successfully but
+  silently ignored a malformed non-object `sharedPreferences` payload, leaving
+  callers without the same preference-restore warning behavior used by the
+  direct backup and cloud restore paths.
 - Behavior changed:
-  - `SharedPreferencesBackup.restoreFromJson` now rejects wrong primitive types
-    for exact exportable preference keys before clearing existing preferences.
-  - `BackupService.getBackupData` now rejects malformed typed preference values
-    during backup preview/import validation.
-- No UI, Android runtime, cloud, paid service, API key, or account-backed
-  behavior changed.
+  - `BackupRestoreImportFlow.importBackupData` now treats a non-map
+    `sharedPreferences` payload as a preference-restore failure after a
+    successful tank import.
+  - The result sets `preferencesRestoreFailed` and preserves a `FormatException`
+    with the message `Invalid format: sharedPreferences must be an object`.
+  - Existing tank import behavior, rollback coverage, UI layout, Android
+    runtime behavior, cloud/account behavior, paid services, API keys, and
+    optional-AI behavior were not changed.
 
 ## Dirty Files To Preserve
 
@@ -59,16 +60,13 @@ Startup and runtime ownership:
 Focused proof:
 
 - RED:
-  `flutter test test/services/shared_preferences_backup_test.dart --name "restore rejects integer preference with decimal value before clearing theme_mode" --reporter compact`
-  failed because restore completed and changed the stored integer.
-- RED:
-  `flutter test test/services/backup_service_photo_restore_test.dart --name "getBackupData rejects sharedPreferences entries with invalid integer type" --reporter compact`
-  failed because preview accepted the malformed typed preference.
-- GREEN: both named tests passed after the guard.
-- `dart format lib/services/shared_preferences_backup.dart lib/services/backup_service.dart test/services/shared_preferences_backup_test.dart test/services/backup_service_photo_restore_test.dart`
-- `flutter test test/services/shared_preferences_backup_test.dart test/services/backup_service_photo_restore_test.dart --reporter compact`
-  passed with 142 tests.
-- `flutter analyze lib/services/shared_preferences_backup.dart lib/services/backup_service.dart test/services/shared_preferences_backup_test.dart test/services/backup_service_photo_restore_test.dart`
+  `flutter test test/services/backup_import_service_test.dart --name "reports malformed preference payloads after importing tanks" --reporter compact`
+  failed because `preferencesRestoreFailed` remained `false`.
+- GREEN: the same named test passed after the guard.
+- `dart format lib/services/backup_import_service.dart test/services/backup_import_service_test.dart`
+- `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  passed with 7 tests.
+- `flutter analyze lib/services/backup_import_service.dart test/services/backup_import_service_test.dart`
   passed with no issues.
 - `git diff --check` passed before the implementation commit.
 
@@ -76,14 +74,10 @@ Branch and clean-main gates:
 
 - Branch clean-worktree Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  passed, including worktree visibility, whitespace diff check, focused
-  Flutter tests, dependency validation, Danio custom lint, full Flutter suite
-  with 2,113 tests, Flutter analyze, and debug APK build.
-- Clean `main` Full gate passed after fast-forward merge with the same command,
-  including the full Flutter suite with 2,113 tests and debug APK build.
-- This final docs-only closeout is verified with `git diff --check`,
-  `flutter test test/copy/current_docs_local_truth_test.dart --reporter
-  compact`, and the Docs quality gate before push.
+  passed after the docs update and implementation commit were clean.
+- Clean `main` Full gate passed after fast-forward merge with the same command.
+- Docs closeout checks passed with `git diff --check` and
+  `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`.
 
 ## Device And Preview State
 
@@ -96,9 +90,9 @@ Branch and clean-main gates:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-031 itself.
+- No blocker remains for DS-2026-07-05-032 itself.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
-  restore, migration, create/edit/delete, relationship-mapping, and future
+  restore, migration, create/delete, relationship-mapping, and future
   debounced-writer app-kill coverage.
 - The previously observed returning-user prompt context-after-dispose exception
   remains a follow-up only if current repo/runtime evidence shows it outranks
@@ -106,7 +100,7 @@ Branch and clean-main gates:
 
 ## Next Action
 
-Remaining autonomous chain budget after DS-2026-07-05-031: 8 sequential
+Remaining autonomous chain budget after DS-2026-07-05-032: 7 sequential
 verified sessions.
 
 Recommended next action: continue the read-only data-resilience gap selection
@@ -122,7 +116,7 @@ Paste-ready successor prompt:
 Use $verified-slice-runner for the next Danio Aquarium complete-local epoch.
 
 Continuation mode: autonomous chain approved.
-Remaining sequential session budget: 8, including this successor only if this
+Remaining sequential session budget: 7, including this successor only if this
 prompt is used as the next session's starting prompt. Do not run parallel repo
 sessions.
 
@@ -155,7 +149,7 @@ Required startup:
 
 Goal: continue Danio toward local-first, phone-first complete-local quality.
 Begin with a read-only data-resilience gap selection audit against the current
-Finish Map and DS-031 handoff. Prefer restore, migration, create/delete, and
+Finish Map and DS-032 handoff. Prefer restore, migration, create/delete, and
 relationship integrity gaps only when fresh source/test evidence proves the
 specific missing behavior and proof setup. Implement exactly one small slice
 only if the next target is unambiguous, local-only, product-safe, and

@@ -484,5 +484,52 @@ void main() {
       expect(prefs.getInt('theme_mode'), 0);
       expect(prefs.getBool('use_metric'), isTrue);
     });
+
+    test(
+      'reports malformed preference payloads after importing tanks',
+      () async {
+        SharedPreferences.setMockInitialValues({'theme_mode': 0});
+        final storage = _RecordingStorageService();
+        var tanksInvalidated = false;
+        var preferencesInvalidated = false;
+        final flow = BackupRestoreImportFlow(
+          importService: BackupImportService(
+            storage: storage,
+            newId: _idSequence([
+              'new-tank',
+              'new-fish',
+              'new-filter',
+              'new-task',
+              'new-log',
+            ]),
+            now: () => DateTime.utc(2026, 6, 22, 12),
+          ),
+          onTanksImported: () => tanksInvalidated = true,
+          onPreferencesRestored: () => preferencesInvalidated = true,
+        );
+
+        final result = await flow.importBackupData({
+          ..._backupData(),
+          'sharedPreferences': 'not-preferences',
+        });
+
+        final prefs = await SharedPreferences.getInstance();
+        expect(result.importedTanks, 1);
+        expect(result.preferencesRestored, isFalse);
+        expect(result.preferencesRestoreFailed, isTrue);
+        expect(
+          result.preferencesRestoreError,
+          isA<FormatException>().having(
+            (error) => error.message,
+            'message',
+            'Invalid format: sharedPreferences must be an object',
+          ),
+        );
+        expect(tanksInvalidated, isTrue);
+        expect(preferencesInvalidated, isFalse);
+        expect(storage.tanks.keys, contains('new-tank'));
+        expect(prefs.getInt('theme_mode'), 0);
+      },
+    );
   });
 }

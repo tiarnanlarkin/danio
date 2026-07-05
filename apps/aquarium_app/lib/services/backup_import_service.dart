@@ -97,11 +97,14 @@ class BackupRestoreImportFlow {
     Object? preferencesRestoreError;
     StackTrace? preferencesRestoreStackTrace;
     final prefsData = backupData['sharedPreferences'];
-    if (imported > 0 &&
-        prefsData != null &&
-        prefsData is Map<String, dynamic>) {
+    if (imported > 0 && prefsData != null) {
       try {
-        await restorePreferences(prefsData);
+        if (prefsData is! Map) {
+          throw const FormatException(
+            'Invalid format: sharedPreferences must be an object',
+          );
+        }
+        await restorePreferences(Map<String, dynamic>.from(prefsData));
         preferencesRestored = true;
         onPreferencesRestored?.call();
       } catch (error, stackTrace) {
