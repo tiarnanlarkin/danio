@@ -11,8 +11,11 @@ keeps the app local-first, research-first, live-preview-aware, handoff-proof,
 and quality-gated without making optional paid or account-backed tools part of
 the product.
 
-`FINISH_MAP.md` remains the product roadmap. This charter controls how agents
-choose and complete slices from that roadmap.
+`FINISH_MAP.md` remains the product roadmap.
+`COMPLETE_LOCAL_CLOSURE_LEDGER.md` owns traceable finding IDs, and
+`VERIFIED_SLICE_EXECUTION_CONTRACT.md` owns the local proof discipline for
+autonomous slices. This charter controls how agents choose and complete slices
+from those docs.
 
 ## Operating Order
 
@@ -22,12 +25,15 @@ Every non-trivial Danio session follows this order:
    session is long, usage-limited, heavily compacted, or about to begin a broad
    slice, pause at the next clean checkpoint and recommend a fresh session.
 2. Rebuild context from repo truth, not old chat history. Read `AGENTS.md`,
-   this charter, `ACTIVE_HANDOFF.md`, `FINISH_MAP.md`, the current audit,
-   the backlog, relevant source, and nearby tests.
+   this charter, `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
+   `VERIFIED_SLICE_EXECUTION_CONTRACT.md`, `COMPLETE_LOCAL_FORECAST.md`,
+   `ACTIVE_HANDOFF.md`, `FINISH_MAP.md`, the current audit, the backlog,
+   relevant source, and nearby tests.
 3. Run `git status --short -uall` before editing, before staging, and before
    committing.
-4. Define the slice from `SLICE_CONTRACT_TEMPLATE.md` when the work is more
-   than a tiny doc or mechanical fix.
+4. Select the ledger ID the slice advances. Define the slice from
+   `SLICE_CONTRACT_TEMPLATE.md` when the work is more than a tiny doc or
+   mechanical fix.
 5. Use `RESEARCH_PROTOCOL.md` before implementation when framework, platform,
    testing, accessibility, AI, security, workflow, or tooling decisions matter.
 6. For substantial app, UI, navigation, product behavior, Android, or visual
@@ -56,6 +62,8 @@ Every non-trivial Danio session follows this order:
 Before implementation, the agent must be able to state:
 
 - The exact `FINISH_MAP.md` row or housekeeping purpose the slice advances.
+- The `COMPLETE_LOCAL_CLOSURE_LEDGER.md` ID the slice advances, or the reason
+  the slice is workflow-only.
 - The current dirty files and which ones must not be touched.
 - The source files and tests that define current behavior.
 - The current best-practice sources checked, if the slice needs research.
@@ -110,7 +118,11 @@ agent can continue without chat history:
 - `SLICE_LOG.md` for completed slice evidence and commit references.
 - `SCREEN_INVENTORY.md` when screen coverage, visual proof, or route ownership
   changes.
+- `COMPLETE_LOCAL_CLOSURE_LEDGER.md` when a new finding is discovered or a
+  finding's disposition/done condition changes.
 - `FINISH_MAP.md` only when completion status changes.
+- `AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md` when successor startup discipline or
+  chain handoff requirements change.
 
 ## Stop Rules
 
@@ -123,4 +135,5 @@ Stop and ask before:
 - Creating, pasting, or persisting secrets.
 - Making a product decision not covered by the current slice.
 - Taking control of a device or emulator without ownership clarity.
-
+- Implementing a finding whose ledger disposition is `PRODUCT_DECISION` or
+  `EXTERNAL_PARKED`.

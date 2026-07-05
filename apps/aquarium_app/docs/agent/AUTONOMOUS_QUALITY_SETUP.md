@@ -32,6 +32,9 @@ Profiles:
 ## Operating Docs
 
 Use `WORKFLOW_CHARTER.md` as the master working agreement,
+`COMPLETE_LOCAL_CLOSURE_LEDGER.md` for finite finding IDs,
+`VERIFIED_SLICE_EXECUTION_CONTRACT.md` for local-only proof rules,
+`COMPLETE_LOCAL_FORECAST.md` for remaining epoch/session expectations,
 `RESEARCH_PROTOCOL.md` for planning research, `ACTIVE_HANDOFF.md` for current
 session state, `SCREEN_INVENTORY.md` for no-guessing visual/page coverage,
 `SLICE_LOG.md` for breadcrumbs, `HOUSEKEEPING.md` for repo hygiene, and

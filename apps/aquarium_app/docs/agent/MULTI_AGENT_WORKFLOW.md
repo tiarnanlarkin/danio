@@ -5,9 +5,10 @@ main coordinator remains responsible for repo state, integration, verification,
 commits, and pushes.
 
 This workflow is subordinate to `WORKFLOW_CHARTER.md`,
-`RESEARCH_PROTOCOL.md`, `ACTIVE_HANDOFF.md`, `SLICE_LOG.md`, and
-`QUALITY_LADDER.md`. Use `SCREEN_INVENTORY.md` when subagents audit or review
-screen/page coverage.
+`COMPLETE_LOCAL_CLOSURE_LEDGER.md`, `VERIFIED_SLICE_EXECUTION_CONTRACT.md`,
+`COMPLETE_LOCAL_FORECAST.md`, `RESEARCH_PROTOCOL.md`, `ACTIVE_HANDOFF.md`,
+`SLICE_LOG.md`, and `QUALITY_LADDER.md`. Use `SCREEN_INVENTORY.md` when
+subagents audit or review screen/page coverage.
 
 ## Standard Agent Layout
 

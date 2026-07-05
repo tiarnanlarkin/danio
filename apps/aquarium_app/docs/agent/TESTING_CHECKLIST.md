@@ -4,15 +4,23 @@ Use this checklist before committing Danio changes. It is local-first and
 quality-first: local gates are mandatory, and paid/account-backed checks are
 optional evidence only after explicit approval.
 
-For the full operating rules, use `WORKFLOW_CHARTER.md`. For research gates,
-use `RESEARCH_PROTOCOL.md`. For current dirty files and active blockers, check
-`ACTIVE_HANDOFF.md`. For change-type gates, use `QUALITY_LADDER.md`. For visual
-and page evidence gaps, use `SCREEN_INVENTORY.md`.
+For the full operating rules, use `WORKFLOW_CHARTER.md`. For verified slices,
+use `VERIFIED_SLICE_EXECUTION_CONTRACT.md`. For remaining gap IDs, use
+`COMPLETE_LOCAL_CLOSURE_LEDGER.md` and `COMPLETE_LOCAL_FORECAST.md`. For
+research gates, use `RESEARCH_PROTOCOL.md`. For current dirty files and active
+blockers, check `ACTIVE_HANDOFF.md`. For change-type gates, use
+`QUALITY_LADDER.md`. For visual and page evidence gaps, use
+`SCREEN_INVENTORY.md`.
 
 ## Before Editing
 
 - Run `git status --short -uall`.
 - Check `docs/agent/FINISH_MAP.md` and identify the row this slice advances.
+- Check `docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md` and identify the finding
+  ID this slice advances. Add new findings to the ledger before implementing
+  them.
+- Check `docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md` for the current local
+  proof contract.
 - Start from `docs/agent/SLICE_CONTRACT_TEMPLATE.md` for non-trivial slices.
 - For substantial implementation, complete the slice contract's research and
   planning section before editing. Current best-practice checks should use
@@ -335,9 +343,9 @@ Before committing product or docs changes, confirm:
 - Required gates passed for the type of change.
 - `git diff --check` passed.
 - `git status --short` contains only files intended for the commit.
-- Finish Map, paid-tool ledger, or device ownership docs were updated when the
-  slice changed completion status, used an external tool, or captured Android
-  evidence.
+- Finish Map, closure ledger, paid-tool ledger, or device ownership docs were
+  updated when the slice changed completion status, changed a finding
+  disposition, used an external tool, or captured Android evidence.
 - Research that changed implementation direction was recorded in the slice
   contract, active handoff, or relevant agent docs.
 - Commit message is specific.

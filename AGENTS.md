@@ -175,6 +175,10 @@ that make new build/readiness claims.
 - Workflow charter: `apps/aquarium_app/docs/agent/WORKFLOW_CHARTER.md`
 - Research protocol: `apps/aquarium_app/docs/agent/RESEARCH_PROTOCOL.md`
 - Active handoff: `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
+- Complete-local closure ledger: `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md`
+- Verified slice execution contract: `apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md`
+- Complete-local forecast: `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_FORECAST.md`
+- Autonomous chain handoff prompt: `apps/aquarium_app/docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md`
 - Screen inventory: `apps/aquarium_app/docs/agent/SCREEN_INVENTORY.md`
 - Slice log: `apps/aquarium_app/docs/agent/SLICE_LOG.md`
 - Housekeeping: `apps/aquarium_app/docs/agent/HOUSEKEEPING.md`

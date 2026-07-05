@@ -109,6 +109,17 @@ Acceleration note:
   and closeout gates are satisfied. This changes session shape only; it does
   not lower the test, Full gate, docs, merge, push, or device-ownership bar.
 
+Traceability note:
+
+- The finite closure list is now owned by
+  `docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md`. Future implementation slices
+  must link to the ledger finding ID they advance before editing product code.
+  The local proof rules are in
+  `docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md`, and the expected remaining
+  epoch count is in `docs/agent/COMPLETE_LOCAL_FORECAST.md`. If this roadmap,
+  the ledger, handoff, and source/test evidence disagree, stop and reconcile
+  the docs before implementing.
+
 ### Ranked Roadmap
 
 | Rank | Lane | Why it comes here | Exit evidence |

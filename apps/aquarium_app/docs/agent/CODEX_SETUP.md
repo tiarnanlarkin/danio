@@ -56,6 +56,12 @@ Start with these docs for autonomous work:
 - `RESEARCH_PROTOCOL.md`: research lanes and stop-and-ask tooling rules.
 - `ACTIVE_HANDOFF.md`: current branch, dirty files, live-preview state, last
   checks, active slice, blockers, and next action.
+- `COMPLETE_LOCAL_CLOSURE_LEDGER.md`: finite complete-local finding IDs,
+  dispositions, owners, and done conditions.
+- `VERIFIED_SLICE_EXECUTION_CONTRACT.md`: local-only verified-slice proof
+  rules, TDD expectations, gates, and closeout contract.
+- `COMPLETE_LOCAL_FORECAST.md`: remaining complete-local epoch and session
+  forecast with stop-and-ask decisions.
 - `SCREEN_INVENTORY.md`: known screen/page map and evidence gaps.
 - `SLICE_LOG.md`: append-only completed-slice breadcrumbs.
 - `HOUSEKEEPING.md`: screenshots, logs, build artifacts, stale docs, and
