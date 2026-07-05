@@ -414,6 +414,10 @@ Recent CL-P1-009 continuation note:
   whose tank IDs are absent from the imported backup tank map, rolling back
   instead of reporting partial success while silently skipping livestock,
   equipment, task, or log rows.
+- CL-P1-009GX makes direct tank-scoped backup imports reject task/log
+  relationship IDs whose backup targets are absent from the imported ID maps,
+  rolling back instead of reporting success while silently clearing
+  `relatedEquipmentId`, `relatedLivestockId`, or `relatedTaskId` links.
 
 ## 7. P2 Work - Presentation System
 
