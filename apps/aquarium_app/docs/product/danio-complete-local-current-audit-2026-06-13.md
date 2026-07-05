@@ -4370,6 +4370,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   before restoring equipment or generated maintenance tasks. Delayed Livestock
   removal timeline logs now recheck the parent tank before saving, preventing
   orphan local removal logs after the tank is deleted during the undo window.
+  Direct tank-scoped backup imports now reject child rows whose tank IDs are
+  absent from the imported tank map, rolling back instead of reporting success
+  while silently skipping livestock, equipment, task, or log data.
   Remaining
   backup/data work is broader edit/delete/undo coverage and restore/migration
   walkthrough QA.

@@ -1,15 +1,15 @@
 # Danio Active Handoff
 
 Status: Clean checkpoint handoff
-Last updated: 2026-07-05 after DS-2026-07-05-033 closeout
+Last updated: 2026-07-05 after DS-2026-07-05-034 closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- DS-2026-07-05-033 implementation commit: current pushed `main` commit after
+- DS-2026-07-05-034 implementation commit: `c529954a`
+  (`Guard backup import child tank IDs`).
+- DS-2026-07-05-034 docs closeout commit: current pushed `main` commit after
   closeout.
-- DS-2026-07-05-033 is expected to be fast-forward merged to `main` after
-  branch and clean-main Full gates pass.
 - Final expected state after this handoff document is pushed:
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
@@ -17,28 +17,29 @@ Last updated: 2026-07-05 after DS-2026-07-05-033 closeout
 
 ## Completed Slice
 
-- Slice: DS-2026-07-05-033, Livestock Removal Log Parent Guard.
+- Slice: DS-2026-07-05-034, Backup Import Child Tank Guard.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-033-livestock-removal-log-parent-slice-contract.md`.
-- Plan context: the session began with a read-only Epoch 1 data-resilience gap
-  selection audit against current source, tests, docs, git, and runtime
-  ownership state. Backup import/restore, preference restore, schema stamp, ID
-  collision, and several parent/undo candidates were checked before selecting a
-  small widget/service boundary relationship gap.
-- Gap selected: `_saveLivestockRemovalLog` saved a delayed
-  `LogType.livestockRemoved` timeline log after the undo window without
-  rechecking the durable parent tank. A stale Livestock route could therefore
-  create an orphan local timeline log if its tank was deleted while the
-  livestock-removal undo window was still open.
+  `docs/agent/plans/DS-2026-07-05-034-import-child-tank-guard-slice-contract.md`.
+- Plan context: the session began with a read-only data-resilience gap
+  selection audit against current docs, source, tests, git state, and runtime
+  ownership evidence. Recent backup preference, import-flow, and relationship
+  guards were rechecked before selecting a direct tank-scoped import boundary
+  gap.
+- Gap selected: `BackupImportService.importTankScopedData` silently skipped
+  livestock, equipment, task, and log rows whose backup `tankId` was absent
+  from the imported tank map. ZIP preview validation already rejects this class
+  of malformed backup data, but the lower tank-scoped import boundary could
+  still report success after importing tanks while dropping child records.
 - Behavior changed:
-  - Delayed livestock removal timeline logs now recheck
-    `storage.getTank(widget.tankId)` before saving.
-  - If the parent tank is missing, the delayed removal side effect returns
-    without writing a timeline log.
-  - Existing successful removal logs, failed permanent-delete retry feedback,
-    add/edit/bulk move behavior, UI layout, Android runtime behavior,
-    cloud/account behavior, paid services, API keys, and optional-AI behavior
-    were not changed.
+  - Tank-scoped backup imports now require every livestock, equipment, task,
+    and log row to resolve to an imported tank ID.
+  - Unknown child `tankId` values throw `FormatException`, are wrapped as
+    `BackupImportException`, and trigger the existing rollback path.
+  - Newly imported tanks and any partial child data are removed instead of
+    reporting a partial successful import.
+  - ZIP preview validation, shared-preferences restore, UI layout, Android
+    runtime behavior, cloud/account behavior, paid services, API keys, and
+    optional-AI behavior were not changed.
 
 ## Dirty Files To Preserve
 
@@ -53,8 +54,11 @@ Startup and runtime ownership:
 - `git fetch --prune`
 - `git status --short -uall` was clean before edits.
 - `git rev-list --left-right --count main...origin/main` was `0 0`.
+- `git branch -vv --all` showed only local `main` tracking `origin/main`,
+  aside from remote Dependabot branches.
 - `git worktree list --porcelain` showed only the main worktree.
-- `adb devices` showed `emulator-5554` and `emulator-5556`.
+- `adb devices` showed `emulator-5554`, `emulator-5556`, and
+  `emulator-5558`.
 - `.\scripts\run_danio_live_preview.ps1 -CheckOnly` selected
   `emulator-5556` as `danio_api36` with
   `com.tiarnanlarkin.danio` foregrounded.
@@ -62,13 +66,13 @@ Startup and runtime ownership:
 Focused proof:
 
 - RED:
-  `flutter test test/widget_tests/livestock_screen_test.dart --plain-name "expired livestock removal does not log after parent tank deletion" --reporter compact`
-  failed because a `livestockRemoved` log was saved after the tank was deleted.
-- GREEN: the same named test passed after the parent-tank guard.
-- `dart format lib/screens/livestock/livestock_screen.dart test/widget_tests/livestock_screen_test.dart`
-- `flutter test test/widget_tests/livestock_screen_test.dart --reporter compact`
-  passed with 21 tests.
-- `flutter analyze lib/screens/livestock/livestock_screen.dart test/widget_tests/livestock_screen_test.dart`
+  `flutter test test/services/backup_import_service_test.dart --name "rejects child entries with unknown backup tank ids before reporting import success" --reporter compact`
+  failed because the import returned `BackupImportResult` instead of throwing.
+- GREEN: the same named test passed after the child tank-ID guard.
+- `dart format lib\services\backup_import_service.dart test\services\backup_import_service_test.dart`
+- `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  passed with 8 tests.
+- `flutter analyze lib/services/backup_import_service.dart test/services/backup_import_service_test.dart`
   passed with no issues.
 - `git diff --check` passed before the implementation commit.
 - `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
@@ -78,23 +82,26 @@ Branch and clean-main gates:
 
 - Branch clean-worktree Full gate:
   `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
-  passed after the docs update and implementation commit were clean.
-- Clean `main` Full gate passed after fast-forward merge with the same command.
+  passed on the behavior commit. This covered worktree visibility, whitespace,
+  focused tests, dependency validation, custom lint, the full Flutter test
+  suite, `flutter analyze`, and the debug APK build.
 - Docs closeout checks passed with `git diff --check` and
   `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`.
+- Clean `main` Full gate passed after fast-forward merge and docs closeout
+  with the same `Full -RequireCleanWorktree` command.
 
 ## Device And Preview State
 
 - Startup live-preview CheckOnly passed before edits.
 - No live-preview refresh, install, tap, screenshot, or logcat capture was
-  required for this widget/service data-safety slice.
+  required for this service data-safety slice.
 - If a future slice needs device work, use `DEVICE_OWNERSHIP.md` before
   installs, taps, screenshots, logcat, Patrol, Maestro, or live-preview
   control.
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-033 itself.
+- No blocker remains for DS-2026-07-05-034 itself.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
   restore, migration, create/delete, relationship-mapping, and future
   debounced-writer app-kill coverage.
@@ -104,7 +111,7 @@ Branch and clean-main gates:
 
 ## Next Action
 
-Remaining autonomous chain budget after DS-2026-07-05-033: 6 sequential
+Remaining autonomous chain budget after DS-2026-07-05-034: 5 sequential
 verified sessions.
 
 Recommended next action: continue the read-only data-resilience gap selection
@@ -121,7 +128,7 @@ Paste-ready successor prompt:
 Use $verified-slice-runner for the next Danio Aquarium complete-local epoch.
 
 Continuation mode: autonomous chain approved.
-Remaining sequential session budget: 6, including this successor only if this
+Remaining sequential session budget: 5, including this successor only if this
 prompt is used as the next session's starting prompt. Do not run parallel repo
 sessions.
 
@@ -154,7 +161,7 @@ Required startup:
 
 Goal: continue Danio toward local-first, phone-first complete-local quality.
 Begin with a read-only data-resilience gap selection audit against the current
-Finish Map and DS-033 handoff. Prefer restore, migration, create/delete, and
+Finish Map and DS-034 handoff. Prefer restore, migration, create/delete, and
 relationship integrity gaps only when fresh source/test evidence proves the
 specific missing behavior and proof setup. Implement exactly one small slice
 only if the next target is unambiguous, local-only, product-safe, and
