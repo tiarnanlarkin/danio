@@ -202,14 +202,18 @@ class BackupService {
 
     _updateProgress('Restoring photos...', 0.2);
 
-    final photosDir = await _getPhotosDirectory();
-    if (!await photosDir.exists()) {
-      await photosDir.create(recursive: true);
-    }
     final restorePrefix = await _restorePhotoPrefix(zipPath);
+    final referencedPhotoFilenames = _referencedPhotoFilenames(data);
 
     final photoFiles = archive.files
-        .where((f) => f.isFile && f.name.startsWith('$_photosFolder/'))
+        .where(
+          (f) =>
+              f.isFile &&
+              f.name.replaceAll(r'\', '/').startsWith('$_photosFolder/') &&
+              referencedPhotoFilenames.contains(
+                _photoEntryFilename(f.name).toLowerCase(),
+              ),
+        )
         .toList();
 
     final totalPhotos = photoFiles.length;
@@ -218,6 +222,11 @@ class BackupService {
         _updateProgress('No photos found in backup', 0.9);
         _updateProgress('Import complete!', 1.0);
         return tankCount;
+      }
+
+      final photosDir = await _getPhotosDirectory();
+      if (!await photosDir.exists()) {
+        await photosDir.create(recursive: true);
       }
 
       for (var i = 0; i < totalPhotos; i++) {
@@ -1232,6 +1241,16 @@ class BackupService {
 
   void _updateProgress(String status, double progress) {
     onProgress?.call(status, progress.clamp(0.0, 1.0));
+  }
+
+  Set<String> _referencedPhotoFilenames(Map<String, dynamic> data) {
+    final photoRefs = <String>{};
+    _extractPhotoPaths(data, photoRefs);
+    return {
+      for (final photoRef in photoRefs)
+        if (_photoEntryFilename(photoRef).isNotEmpty)
+          _photoEntryFilename(photoRef).toLowerCase(),
+    };
   }
 
   /// Extract all photo paths/refs from export data.

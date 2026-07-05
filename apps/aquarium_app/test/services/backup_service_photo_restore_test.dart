@@ -208,6 +208,50 @@ void main() {
     );
 
     test(
+      'restoreBackup ignores archive photos that backup data does not reference',
+      () async {
+        final zipPath = p.join(tempDir.path, 'referenced_photo_backup.zip');
+        await _writeBackupZip(
+          zipPath,
+          data: {
+            'tanks': [
+              {'id': 'tank-1', 'imageUrl': 'photos/fish.jpg'},
+            ],
+          },
+          files: {
+            'photos/fish.jpg': 'referenced backup photo',
+            'photos/orphan.jpg': 'orphan backup photo',
+          },
+        );
+
+        final restoreService = BackupService(
+          getDocumentsDirectory: () async => restoreDocs,
+          getTemporaryDirectory: () async => tempDir,
+        );
+        final resolvedData = await restoreService.getBackupData(zipPath);
+        final restoredPhoto = File(
+          (resolvedData['tanks'] as List).first['imageUrl'] as String,
+        );
+
+        final restoredTankCount = await restoreService.restoreBackup(zipPath);
+        final restorePhotos = Directory(p.join(restoreDocs.path, 'photos'));
+        final restoredFiles = await restorePhotos
+            .list()
+            .where((entity) => entity is File)
+            .cast<File>()
+            .toList();
+        final restoredFilenames = restoredFiles.map((file) {
+          return p.basename(file.path);
+        }).toList()..sort();
+
+        expect(restoredTankCount, 1);
+        expect(await restoredPhoto.readAsString(), 'referenced backup photo');
+        expect(restoredFilenames, [p.basename(restoredPhoto.path)]);
+        expect(restoreService.lastRestoredPhotoPaths, [restoredPhoto.path]);
+      },
+    );
+
+    test(
       'getBackupData rejects photo entries with duplicate restored filenames',
       () async {
         final zipPath = p.join(tempDir.path, 'duplicate_photo_backup.zip');
