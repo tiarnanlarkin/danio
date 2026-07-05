@@ -686,6 +686,13 @@ class TankActions {
     final movedOriginals = <Livestock>[];
 
     try {
+      final sourceTank = await storage.getTank(fromTankId);
+      if (sourceTank == null) {
+        throw StateError(
+          'Cannot move livestock from missing tank $fromTankId.',
+        );
+      }
+
       final targetTank = await storage.getTank(toTankId);
       if (targetTank == null) {
         throw StateError('Cannot move livestock to missing tank $toTankId.');

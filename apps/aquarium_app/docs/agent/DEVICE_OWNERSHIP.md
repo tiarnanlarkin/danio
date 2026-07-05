@@ -94,6 +94,7 @@ Add a row when a committed slice uses Android evidence:
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-007` | CheckOnly, debug APK install, 24 seeded QA deep-link screenshot/XML captures, route-index/XML hierarchy/screen-anchor validation, logcat tail and error-boundary scans | `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/` | Yes |
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5554` | `danio_api36` | `QA-2026-07-04-008` | CheckOnly, debug APK install, Danio-only app-data reset, first-run/onboarding walkthrough, age-blocked branch capture, Debug QA Seeds capture, XML hierarchy/logcat/error-boundary scans | `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/` | Yes |
 | 2026-07-04 | `danio_android_qa_owner` current Codex session | `emulator-5556` | `danio_tablet_api36` | `QA-2026-07-04-008` | CheckOnly, debug APK install, Danio-only app-data reset, first-run/onboarding walkthrough, age-blocked branch capture, Debug QA Seeds capture, XML hierarchy/logcat/error-boundary scans | `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/` | Yes |
+| 2026-07-05 | Coordinator current Codex session | `emulator-5556` | `danio_api36` | `DS-2026-07-05-023` | CheckOnly, LaunchEmulator with extended wait, debug APK install/launch through live-preview helper, foreground and pid checks | `docs/agent/ACTIVE_HANDOFF.md` | Yes; app left visible |
 
 ## Release Rule
 

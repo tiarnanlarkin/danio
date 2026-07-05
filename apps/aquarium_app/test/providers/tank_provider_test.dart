@@ -882,6 +882,43 @@ void main() {
   });
 
   group('TankActions - bulkMoveLivestock', () {
+    test('rejects missing source tank ids before moving livestock', () async {
+      const sourceTankId = 'bulk-move-missing-source';
+      const targetTankId = 'bulk-move-missing-source-target';
+      const livestockId = 'bulk-move-missing-source-neons';
+      final storage = _TestStorageService();
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      final now = DateTime.now();
+      await storage.saveTank(_makeTank(id: sourceTankId, name: 'Source Tank'));
+      await storage.saveTank(_makeTank(id: targetTankId, name: 'Target Tank'));
+      await storage.saveLivestock(
+        Livestock(
+          id: livestockId,
+          tankId: sourceTankId,
+          commonName: 'Neon Tetra',
+          count: 8,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.deleteTank(sourceTankId);
+      await _settle();
+
+      await expectLater(
+        container
+            .read(tankActionsProvider)
+            .bulkMoveLivestock([livestockId], sourceTankId, targetTankId),
+        throwsA(isA<StateError>()),
+      );
+      await _settle();
+
+      expect(await storage.getTank(sourceTankId), isNull);
+      expect(await storage.getLivestockForTank(targetTankId), isEmpty);
+    });
+
     test('rejects missing target tank ids before moving livestock', () async {
       const sourceTankId = 'bulk-move-missing-target-source';
       const targetTankId = 'bulk-move-missing-target';
