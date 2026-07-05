@@ -71,7 +71,12 @@ The slice is done only when:
 
 ## Result
 
-- Commit: Pending
-- Verification summary: Pending
+- Commit: `9f0f6303`
+- Verification summary: RED/GREEN focused backup import service test passed,
+  full `backup_import_service_test.dart` passed with 11 tests, targeted
+  `flutter analyze` passed, `git diff --check` passed, and the branch
+  clean-worktree Full gate passed.
 - Evidence path: Not applicable
-- Follow-up created: Pending
+- Follow-up created: Continue broader data-resilience restore, migration,
+  create/delete, relationship-mapping, and future debounced-writer app-kill
+  audit from fresh source/test evidence.
