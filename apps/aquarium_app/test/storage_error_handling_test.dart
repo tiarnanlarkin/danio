@@ -313,6 +313,35 @@ void main() {
         );
       },
     );
+
+    test(
+      'load I/O errors stay in ioError instead of reporting empty success',
+      () async {
+        final service = LocalJsonStorageService();
+        final dataPath =
+            '${root.path}${Platform.pathSeparator}aquarium_data.json';
+        final dataFile = File(dataPath);
+        if (await dataFile.exists()) {
+          await dataFile.delete();
+        }
+        await Directory(dataPath).create();
+
+        await expectLater(
+          service.retryLoad(),
+          throwsA(isA<FileSystemException>()),
+        );
+
+        expect(service.state, StorageState.ioError);
+        expect(service.hasError, isTrue);
+        expect(service.lastError?.state, StorageState.ioError);
+        expect(service.lastError?.message, contains('I/O error'));
+
+        await expectLater(
+          service.getAllTanks(),
+          throwsA(isA<FileSystemException>()),
+        );
+      },
+    );
   });
 
   group('LocalJsonStorageService singleton', () {

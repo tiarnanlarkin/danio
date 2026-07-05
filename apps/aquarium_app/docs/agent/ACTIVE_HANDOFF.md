@@ -1,70 +1,70 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-05 during DS-2026-07-05-025 data-resilience closeout
+Last updated: 2026-07-05 during DS-2026-07-05-026 data-resilience closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Session preflight for DS-2026-07-05-025:
+- Session preflight for DS-2026-07-05-026:
   - `git fetch --prune` completed.
   - `git status --short -uall` was clean before the slice.
   - `main...origin/main` was `0 0`, so local `main` was not behind the GitHub
     mirror.
   - `git worktree list` showed only the main worktree.
   - The slice branch was created from clean `main`.
-- Slice branch used: `ds-2026-07-05-025-backup-import-child-id-collisions`.
-- Closeout result: verified work was merged into `main`, `main` was pushed, and
-  the temporary slice branch was deleted after it was safely merged.
+- Slice branch used: `ds-2026-07-05-026-local-json-load-io-error`.
+- Closeout expectation: after the documented gates, merge this verified branch
+  into `main`, push `origin/main`, confirm `main...origin/main` is `0 0`, and
+  delete the temporary branch after it is safely merged.
 
 ## Current Slice
 
-- Slice: `DS-2026-07-05-025` Backup import must avoid generated child ID
-  collisions before saving.
+- Slice: `DS-2026-07-05-026` Surface local JSON load I/O failures instead of
+  empty-data success.
 - Scope:
-  - Add a focused backup import service regression for generated livestock,
-    equipment, task, and log IDs that already exist in local storage.
-  - Make `BackupImportService` preload existing local child IDs by type and
-    regenerate imported child IDs until it finds unused IDs before saving
-    imported child data.
-  - Keep Backup & Restore UI redesign, Android screenshots, and broader
-    restore/migration walkthrough QA out of scope.
-- Product behavior changes: a backup import cannot overwrite existing local
-  livestock, equipment, task, or log records when generated child IDs collide
-  with saved data.
+  - Add a focused local JSON storage regression for an unreadable data path when
+    `aquarium_data.json` exists as a directory.
+  - Keep `LocalJsonStorageService` in `ioError` and rethrow the load failure
+    instead of marking storage loaded with empty aquarium data.
+  - Keep Backup & Restore UI redesign, Android screenshots, broader recovery UX,
+    and optional AI/cloud/account-backed work out of scope.
+- Product behavior changes: if Danio cannot read the local JSON data file
+  because the data path is not a readable file, providers now see the storage
+  error instead of a false successful empty aquarium load.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
-- Live preview/device requirement: existing live preview was inspected with the
-  repo-owned CheckOnly workflow. No install/reload/screenshot was required for
-  this service-level data-safety slice.
+- Live preview/device requirement: repo-owned CheckOnly workflow was inspected
+  before work. No install/reload/screenshot was required for this service-level
+  data-safety slice.
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after DS-2026-07-05-025 is committed, merged,
+No dirty files are expected after DS-2026-07-05-026 is committed, merged,
 pushed, and the temporary branch is cleaned up. If this slice is interrupted
 before cleanup, preserve these paths:
 
-- `apps/aquarium_app/lib/services/backup_import_service.dart`
-- `apps/aquarium_app/test/services/backup_import_service_test.dart`
+- `apps/aquarium_app/lib/services/local_json_storage_service.dart`
+- `apps/aquarium_app/test/storage_error_handling_test.dart`
 - `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
 - `apps/aquarium_app/docs/agent/SLICE_LOG.md`
-- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-025-data-resilience-slice-contract.md`
+- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-026-data-resilience-slice-contract.md`
 
 ## Last Checks
 
 Passed for this slice:
 
-- RED: `flutter test test/services/backup_import_service_test.dart --name
-  "regenerates imported child ids that already exist locally" --reporter
-  compact` failed because the import mapped `old-fish` to the colliding
-  `existing-fish`.
-- GREEN: same focused command passed after `BackupImportService` generated
-  unused local child IDs before saving imported child records.
-- `dart format lib/services/backup_import_service.dart
-  test/services/backup_import_service_test.dart`
-- `flutter test test/services/backup_import_service_test.dart --reporter
-  compact`
-- `flutter analyze lib/services/backup_import_service.dart
-  test/services/backup_import_service_test.dart`
+- RED: `flutter test test/storage_error_handling_test.dart --plain-name
+  "load I/O errors stay in ioError instead of reporting empty success"
+  --reporter compact` failed because `retryLoad()` completed after logging
+  `No data file found, starting fresh`.
+- GREEN: same focused command passed after `LocalJsonStorageService` detected a
+  directory at the data-file path, set `StorageState.ioError`, and rethrew the
+  load failure.
+- `dart format lib/services/local_json_storage_service.dart
+  test/storage_error_handling_test.dart`
+- `flutter test test/storage_error_handling_test.dart --reporter compact`
+- `flutter analyze lib/services/local_json_storage_service.dart
+  test/storage_error_handling_test.dart`
 - Live preview/device preflight:
   - `.\scripts\run_danio_live_preview.ps1 -CheckOnly` passed.
   - `adb` confirmed `emulator-5556` is `danio_api36` with
@@ -72,7 +72,7 @@ Passed for this slice:
   - `adb` confirmed `emulator-5554` is `wgtr_codex_api36` with WGTR
     foregrounded; it was not touched.
   - No live-preview refresh was required because this slice changed
-    service-level import behavior only.
+    service-level storage behavior only.
 - `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full`
   passed from the slice branch, including worktree visibility, whitespace diff
   check, focused Flutter tests, dependency validation, Danio custom lint, full
@@ -84,9 +84,10 @@ Passed for this slice:
 
 Notes:
 
-- `main...origin/main` was `0 0` after push and only the main worktree remained.
 - `FINISH_MAP.md` and the product backlog do not need status changes unless the
   final gate changes the Data resilience row's completion status.
+- The remaining autonomous chain budget is zero after this verified slice. Do
+  not create another successor thread from this closeout.
 
 ## Device And Preview State
 
@@ -96,18 +97,19 @@ Notes:
   - No live-preview terminal is owned by this session.
 - The other connected emulator was confirmed as `wgtr_codex_api36` on
   `emulator-5554`, foregrounded on WGTR. Do not use or disturb that device.
-- The first live-preview launch log surfaced an existing returning-user prompt
-  exception from `lib/screens/home/home_screen.dart` around lines 148-149 after
-  app launch/user interaction. It was recorded as a follow-up only, because
-  DS-2026-07-05-023 is a provider-level bulk-move data-safety slice.
-- If the next slice needs device work, use `DEVICE_OWNERSHIP.md` before
+- The first live-preview launch log in an earlier data-resilience slice surfaced
+  an existing returning-user prompt exception from
+  `lib/screens/home/home_screen.dart` around lines 148-149 after app
+  launch/user interaction. It remains recorded as a follow-up only because this
+  slice was a service-level local JSON load data-safety fix.
+- If a future slice needs device work, use `DEVICE_OWNERSHIP.md` before
   installs, taps, screenshots, logcat, Patrol, Maestro, or live-preview control.
 
 ## Blockers
 
 - No current roadmap blocker for the ranked data-resilience lane.
 - Broader CL-P1-009/CL-QA-006 data resilience remains open for remaining
-  create/edit/delete, restore, migration, and future app-kill flush coverage
+  restore, migration, create/edit/delete, and future app-kill flush coverage
   found in review.
 - Remaining AI confirmation work is still any future AI changes to tank data,
   tasks, and reminders.
@@ -117,10 +119,13 @@ Notes:
 
 ## Next Action
 
-DS-2026-07-05-025 is verified and pushed. Next:
+DS-2026-07-05-026 is the final approved autonomous-chain slice for this run.
+After closeout, stop chain mode rather than creating another successor. Future
+work should start from a fresh user-approved session:
 
-1. Start the next fresh slice from `FINISH_MAP.md`, `QUALITY_LADDER.md`,
-   `TESTING_CHECKLIST.md`, and the current `git status --short -uall`.
+1. Rebuild context from `AGENTS.md`, `README.md`, `GIT_WORKFLOW.md`,
+   `FINISH_MAP.md`, `QUALITY_LADDER.md`, `TESTING_CHECKLIST.md`, this handoff,
+   `SLICE_LOG.md`, and current `git status --short -uall`.
 2. Stay in the ranked data-resilience lane unless a higher-priority local-first
    or product-honesty regression is found.
 3. Pick one concrete remaining restore, migration, create/delete, or future

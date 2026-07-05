@@ -131,6 +131,10 @@ class LocalJsonStorageService
       throw _lastError!.originalError ??
           StorageCorruptionException(_lastError!.message);
     }
+    if (_state == StorageState.ioError) {
+      throw _lastError!.originalError ??
+          FileSystemException(_lastError!.message);
+    }
 
     // If loading is in progress, wait for it
     if (_loadFuture != null) {
@@ -155,6 +159,13 @@ class LocalJsonStorageService
 
     try {
       final file = await _dataFile();
+
+      if (await FileSystemEntity.isDirectory(file.path)) {
+        throw FileSystemException(
+          'Local storage data path is a directory, not a JSON file',
+          file.path,
+        );
+      }
 
       // File doesn't exist - this is a fresh install
       if (!await file.exists()) {
@@ -360,7 +371,7 @@ class LocalJsonStorageService
         tag: 'LocalJsonStorageService',
       );
 
-      // Store error but allow service to continue with empty data
+      // Store error and keep storage blocked until an explicit retry succeeds.
       _lastError = StorageError(
         state: StorageState.ioError,
         message: 'I/O error: ${e.toString()}',
@@ -368,12 +379,12 @@ class LocalJsonStorageService
         originalError: e,
       );
 
-      // Mark as loaded with empty data (soft fail for I/O errors)
-      _state = StorageState.loaded;
+      _state = StorageState.ioError;
       appLog(
-        '⚠️  Continuing with empty data due to I/O error',
+        'Storage load blocked due to I/O error',
         tag: 'LocalJsonStorageService',
       );
+      Error.throwWithStackTrace(e, stackTrace);
     }
   }
 
