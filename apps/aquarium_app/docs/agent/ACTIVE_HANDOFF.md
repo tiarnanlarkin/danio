@@ -1,36 +1,37 @@
 # Danio Active Handoff
 
 Status: Active current-session handoff
-Last updated: 2026-07-05 during DS-2026-07-05-024 data-resilience closeout
+Last updated: 2026-07-05 during DS-2026-07-05-025 data-resilience closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Session preflight for DS-2026-07-05-024:
+- Session preflight for DS-2026-07-05-025:
   - `git fetch --prune` completed.
   - `git status --short -uall` was clean before the slice.
   - `main...origin/main` was `0 0`, so local `main` was not behind the GitHub
     mirror.
   - `git worktree list` showed only the main worktree.
   - The slice branch was created from clean `main`.
-- Slice branch used: `ds-2026-07-05-024-backup-import-id-collision`.
+- Slice branch used: `ds-2026-07-05-025-backup-import-child-id-collisions`.
 - Closeout result: verified work was merged into `main`, `main` was pushed, and
   the temporary slice branch was deleted after it was safely merged.
 
 ## Current Slice
 
-- Slice: `DS-2026-07-05-024` Backup import must avoid generated tank ID
+- Slice: `DS-2026-07-05-025` Backup import must avoid generated child ID
   collisions before saving.
 - Scope:
-  - Add a focused backup import service regression for a generated local import
-    tank ID that already exists in storage.
-  - Make `BackupImportService` regenerate imported tank IDs until it finds an
-    unused local tank ID before saving imported tank data.
-  - Keep child ID collision hardening, Backup & Restore UI redesign, and
-    Android screenshots
-    out of scope.
-- Product behavior changes: a backup import cannot overwrite an existing local
-  tank when the generated local import tank ID collides with saved data.
+  - Add a focused backup import service regression for generated livestock,
+    equipment, task, and log IDs that already exist in local storage.
+  - Make `BackupImportService` preload existing local child IDs by type and
+    regenerate imported child IDs until it finds unused IDs before saving
+    imported child data.
+  - Keep Backup & Restore UI redesign, Android screenshots, and broader
+    restore/migration walkthrough QA out of scope.
+- Product behavior changes: a backup import cannot overwrite existing local
+  livestock, equipment, task, or log records when generated child IDs collide
+  with saved data.
 - New accounts/tools/plugins/MCP/hooks/automations: none.
 - Live preview/device requirement: existing live preview was inspected with the
   repo-owned CheckOnly workflow. No install/reload/screenshot was required for
@@ -38,7 +39,7 @@ Last updated: 2026-07-05 during DS-2026-07-05-024 data-resilience closeout
 
 ## Dirty Files To Preserve
 
-No dirty files are expected after DS-2026-07-05-024 is committed, merged,
+No dirty files are expected after DS-2026-07-05-025 is committed, merged,
 pushed, and the temporary branch is cleaned up. If this slice is interrupted
 before cleanup, preserve these paths:
 
@@ -46,18 +47,18 @@ before cleanup, preserve these paths:
 - `apps/aquarium_app/test/services/backup_import_service_test.dart`
 - `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md`
 - `apps/aquarium_app/docs/agent/SLICE_LOG.md`
-- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-024-data-resilience-slice-contract.md`
+- `apps/aquarium_app/docs/agent/plans/DS-2026-07-05-025-data-resilience-slice-contract.md`
 
 ## Last Checks
 
 Passed for this slice:
 
 - RED: `flutter test test/services/backup_import_service_test.dart --name
-  "regenerates imported tank ids that already exist locally" --reporter
-  compact` failed because the import mapped `old-tank` to the colliding
-  `new-tank`.
+  "regenerates imported child ids that already exist locally" --reporter
+  compact` failed because the import mapped `old-fish` to the colliding
+  `existing-fish`.
 - GREEN: same focused command passed after `BackupImportService` generated
-  unused local tank IDs before saving imported tanks.
+  unused local child IDs before saving imported child records.
 - `dart format lib/services/backup_import_service.dart
   test/services/backup_import_service_test.dart`
 - `flutter test test/services/backup_import_service_test.dart --reporter
@@ -116,13 +117,13 @@ Notes:
 
 ## Next Action
 
-DS-2026-07-05-024 is verified and pushed. Next:
+DS-2026-07-05-025 is verified and pushed. Next:
 
 1. Start the next fresh slice from `FINISH_MAP.md`, `QUALITY_LADDER.md`,
    `TESTING_CHECKLIST.md`, and the current `git status --short -uall`.
 2. Stay in the ranked data-resilience lane unless a higher-priority local-first
    or product-honesty regression is found.
-3. Pick one concrete remaining restore, migration, create/delete, child-ID
-   collision, or future debounced-writer app-kill persistence gap.
+3. Pick one concrete remaining restore, migration, create/delete, or future
+   debounced-writer app-kill persistence gap.
 4. Use the data-safety row in `QUALITY_LADDER.md`: focused failing test first,
    fix green, then `Full` gate before commit.

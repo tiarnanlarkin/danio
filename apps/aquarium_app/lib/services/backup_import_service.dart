@@ -122,7 +122,7 @@ class BackupRestoreImportFlow {
 }
 
 class BackupImportService {
-  static const int _maxTankIdGenerationAttempts = 20;
+  static const int _maxIdGenerationAttempts = 20;
 
   final StorageService storage;
   final BackupImportIdFactory newId;
@@ -174,6 +174,7 @@ class BackupImportService {
     final livestockIdMap = <String, String>{};
     final equipmentIdMap = <String, String>{};
     final taskIdMap = <String, String>{};
+    final existingChildIds = await _loadExistingChildIds();
 
     final tanksJson = _listFrom(backupData, 'tanks');
     final livestockJson = _listFrom(backupData, 'livestock');
@@ -198,9 +199,27 @@ class BackupImportService {
       await storage.saveTank(tank);
     }
 
-    _prepareEntityIdMap(livestockJson, tankIdMap, livestockIdMap);
-    _prepareEntityIdMap(equipmentJson, tankIdMap, equipmentIdMap);
-    _prepareEntityIdMap(tasksJson, tankIdMap, taskIdMap);
+    _prepareEntityIdMap(
+      livestockJson,
+      tankIdMap,
+      livestockIdMap,
+      existingChildIds.livestockIds,
+      'livestock',
+    );
+    _prepareEntityIdMap(
+      equipmentJson,
+      tankIdMap,
+      equipmentIdMap,
+      existingChildIds.equipmentIds,
+      'equipment',
+    );
+    _prepareEntityIdMap(
+      tasksJson,
+      tankIdMap,
+      taskIdMap,
+      existingChildIds.taskIds,
+      'task',
+    );
 
     for (final itemJson in livestockJson) {
       final itemMap = _mapFrom(itemJson, 'livestock');
@@ -274,7 +293,7 @@ class BackupImportService {
           livestockIdMap: livestockIdMap,
           taskIdMap: taskIdMap,
         ),
-        'id': newId(),
+        'id': _newUnusedChildId(existingChildIds.logIds, 'log'),
         'tankId': newTankId,
         'createdAt': importTime.toIso8601String(),
       });
@@ -292,7 +311,7 @@ class BackupImportService {
   }
 
   Future<String> _newUnusedTankId() async {
-    for (var attempt = 0; attempt < _maxTankIdGenerationAttempts; attempt++) {
+    for (var attempt = 0; attempt < _maxIdGenerationAttempts; attempt++) {
       final candidateId = newId();
       if (await storage.getTank(candidateId) == null) {
         return candidateId;
@@ -300,6 +319,46 @@ class BackupImportService {
     }
     throw StateError(
       'Could not generate an unused tank id for backup import',
+    );
+  }
+
+  String _newUnusedChildId(Set<String> usedIds, String label) {
+    for (var attempt = 0; attempt < _maxIdGenerationAttempts; attempt++) {
+      final candidateId = newId();
+      if (usedIds.add(candidateId)) {
+        return candidateId;
+      }
+    }
+    throw StateError(
+      'Could not generate an unused $label id for backup import',
+    );
+  }
+
+  Future<_ExistingChildIds> _loadExistingChildIds() async {
+    final existingTanks = await storage.getAllTanks();
+    final livestockIds = <String>{};
+    final equipmentIds = <String>{};
+    final logIds = <String>{};
+
+    for (final tank in existingTanks) {
+      livestockIds.addAll(
+        (await storage.getLivestockForTank(tank.id)).map((item) => item.id),
+      );
+      equipmentIds.addAll(
+        (await storage.getEquipmentForTank(tank.id)).map((item) => item.id),
+      );
+      logIds.addAll(
+        (await storage.getLogsForTank(tank.id)).map((item) => item.id),
+      );
+    }
+
+    return _ExistingChildIds(
+      livestockIds: livestockIds,
+      equipmentIds: equipmentIds,
+      logIds: logIds,
+      taskIds: (await storage.getTasksForTank(
+        null,
+      )).map((item) => item.id).toSet(),
     );
   }
 
@@ -340,6 +399,8 @@ class BackupImportService {
     List<dynamic> jsonItems,
     Map<String, String> tankIdMap,
     Map<String, String> output,
+    Set<String> usedIds,
+    String label,
   ) {
     for (final item in jsonItems) {
       final itemMap = _mapFrom(item, 'child');
@@ -347,7 +408,10 @@ class BackupImportService {
       final oldTankId = itemMap['tankId'];
       if (oldId is! String || oldId.isEmpty) continue;
       if (oldTankId is! String || !tankIdMap.containsKey(oldTankId)) continue;
-      output.putIfAbsent(oldId, newId);
+      output.putIfAbsent(
+        oldId,
+        () => _newUnusedChildId(usedIds, label),
+      );
     }
   }
 
@@ -467,4 +531,18 @@ class BackupImportService {
     createdAt: DateTime.parse(m['createdAt'] as String),
     updatedAt: DateTime.parse(m['updatedAt'] as String),
   );
+}
+
+class _ExistingChildIds {
+  final Set<String> livestockIds;
+  final Set<String> equipmentIds;
+  final Set<String> logIds;
+  final Set<String> taskIds;
+
+  const _ExistingChildIds({
+    required this.livestockIds,
+    required this.equipmentIds,
+    required this.logIds,
+    required this.taskIds,
+  });
 }

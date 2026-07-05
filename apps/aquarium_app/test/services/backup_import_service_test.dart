@@ -287,6 +287,107 @@ void main() {
     );
 
     test(
+      'regenerates imported child ids that already exist locally',
+      () async {
+        final storage = _RecordingStorageService();
+        final existingTank = Tank(
+          id: 'local-tank',
+          name: 'Existing Tank',
+          type: TankType.freshwater,
+          volumeLitres: 60,
+          startDate: DateTime.utc(2026, 1, 1),
+          targets: WaterTargets.freshwaterTropical(),
+          createdAt: DateTime.utc(2026, 1, 1),
+          updatedAt: DateTime.utc(2026, 1, 1),
+        );
+        await storage.saveTank(existingTank);
+        await storage.saveLivestock(
+          Livestock(
+            id: 'existing-fish',
+            tankId: existingTank.id,
+            commonName: 'Existing guppy',
+            scientificName: null,
+            count: 2,
+            dateAdded: DateTime.utc(2026, 1, 2),
+            createdAt: DateTime.utc(2026, 1, 2),
+            updatedAt: DateTime.utc(2026, 1, 2),
+          ),
+        );
+        await storage.saveEquipment(
+          Equipment(
+            id: 'existing-filter',
+            tankId: existingTank.id,
+            type: EquipmentType.filter,
+            name: 'Existing sponge filter',
+            createdAt: DateTime.utc(2026, 1, 3),
+            updatedAt: DateTime.utc(2026, 1, 3),
+          ),
+        );
+        await storage.saveTask(
+          Task(
+            id: 'existing-task',
+            tankId: existingTank.id,
+            title: 'Existing task',
+            recurrence: RecurrenceType.none,
+            priority: TaskPriority.normal,
+            createdAt: DateTime.utc(2026, 1, 4),
+            updatedAt: DateTime.utc(2026, 1, 4),
+          ),
+        );
+        await storage.saveLog(
+          LogEntry(
+            id: 'existing-log',
+            tankId: existingTank.id,
+            type: LogType.observation,
+            timestamp: DateTime.utc(2026, 1, 5),
+            title: 'Existing log',
+            createdAt: DateTime.utc(2026, 1, 5),
+          ),
+        );
+        final service = BackupImportService(
+          storage: storage,
+          newId: _idSequence([
+            'new-tank',
+            'existing-fish',
+            'fresh-fish',
+            'existing-filter',
+            'fresh-filter',
+            'existing-task',
+            'fresh-task',
+            'existing-log',
+            'fresh-log',
+          ]),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+
+        final result = await service.importTankScopedData(_backupData());
+
+        expect(result.importedTanks, 1);
+        expect(result.livestockIdMap, {'old-fish': 'fresh-fish'});
+        expect(result.equipmentIdMap, {'old-filter': 'fresh-filter'});
+        expect(result.taskIdMap, {'old-task': 'fresh-task'});
+        expect(
+          storage.livestock['existing-fish']?.commonName,
+          'Existing guppy',
+        );
+        expect(
+          storage.equipment['existing-filter']?.name,
+          'Existing sponge filter',
+        );
+        expect(storage.tasks['existing-task']?.title, 'Existing task');
+        expect(storage.logs['existing-log']?.title, 'Existing log');
+        expect(storage.livestock['fresh-fish']?.tankId, 'new-tank');
+        expect(storage.equipment['fresh-filter']?.tankId, 'new-tank');
+        expect(storage.tasks['fresh-task']?.tankId, 'new-tank');
+        expect(storage.tasks['fresh-task']?.relatedEquipmentId, 'fresh-filter');
+        expect(storage.logs['fresh-log']?.tankId, 'new-tank');
+        expect(storage.logs['fresh-log']?.relatedLivestockId, 'fresh-fish');
+        expect(storage.logs['fresh-log']?.relatedEquipmentId, 'fresh-filter');
+        expect(storage.logs['fresh-log']?.relatedTaskId, 'fresh-task');
+      },
+    );
+
+    test(
       'rolls back imported tanks and children when a later save fails',
       () async {
         final storage = _RecordingStorageService()..failOnSaveLog = true;
