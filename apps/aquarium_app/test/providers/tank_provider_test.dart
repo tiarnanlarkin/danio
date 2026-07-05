@@ -882,6 +882,48 @@ void main() {
   });
 
   group('TankActions - bulkMoveLivestock', () {
+    test('rejects missing target tank ids before moving livestock', () async {
+      const sourceTankId = 'bulk-move-missing-target-source';
+      const targetTankId = 'bulk-move-missing-target';
+      const livestockId = 'bulk-move-missing-target-neons';
+      final storage = _TestStorageService();
+      final container = _makeContainer(storage: storage);
+      addTearDown(container.dispose);
+
+      final now = DateTime.now();
+      await storage.saveTank(_makeTank(id: sourceTankId, name: 'Source Tank'));
+      await storage.saveTank(_makeTank(id: targetTankId, name: 'Target Tank'));
+      await storage.saveLivestock(
+        Livestock(
+          id: livestockId,
+          tankId: sourceTankId,
+          commonName: 'Neon Tetra',
+          count: 8,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await storage.deleteTank(targetTankId);
+      await _settle();
+
+      await expectLater(
+        container
+            .read(tankActionsProvider)
+            .bulkMoveLivestock([livestockId], sourceTankId, targetTankId),
+        throwsA(isA<StateError>()),
+      );
+      await _settle();
+
+      expect(
+        (await storage.getLivestockForTank(
+          sourceTankId,
+        )).map((livestock) => livestock.id),
+        contains(livestockId),
+      );
+      expect(await storage.getLivestockForTank(targetTankId), isEmpty);
+    });
+
     test('rolls back earlier moves when a later save fails', () async {
       const sourceTankId = 'bulk-move-rollback-source';
       const targetTankId = 'bulk-move-rollback-target';
