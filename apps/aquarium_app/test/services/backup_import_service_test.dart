@@ -249,6 +249,44 @@ void main() {
     );
 
     test(
+      'regenerates imported tank ids that already exist locally',
+      () async {
+        final storage = _RecordingStorageService();
+        final existing = Tank(
+          id: 'new-tank',
+          name: 'Existing Tank',
+          type: TankType.freshwater,
+          volumeLitres: 60,
+          startDate: DateTime.utc(2026, 1, 1),
+          targets: WaterTargets.freshwaterTropical(),
+          createdAt: DateTime.utc(2026, 1, 1),
+          updatedAt: DateTime.utc(2026, 1, 1),
+        );
+        await storage.saveTank(existing);
+        final service = BackupImportService(
+          storage: storage,
+          newId: _idSequence([
+            'new-tank',
+            'fresh-tank',
+            'new-fish',
+            'new-filter',
+            'new-task',
+            'new-log',
+          ]),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+
+        final result = await service.importTankScopedData(_backupData());
+
+        expect(result.importedTanks, 1);
+        expect(result.tankIdMap, {'old-tank': 'fresh-tank'});
+        expect(storage.tanks['new-tank']?.name, 'Existing Tank');
+        expect(storage.tanks['fresh-tank']?.name, 'Backup Tank');
+        expect(storage.livestock['new-fish']?.tankId, 'fresh-tank');
+      },
+    );
+
+    test(
       'rolls back imported tanks and children when a later save fails',
       () async {
         final storage = _RecordingStorageService()..failOnSaveLog = true;

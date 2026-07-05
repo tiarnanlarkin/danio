@@ -122,6 +122,8 @@ class BackupRestoreImportFlow {
 }
 
 class BackupImportService {
+  static const int _maxTankIdGenerationAttempts = 20;
+
   final StorageService storage;
   final BackupImportIdFactory newId;
   final BackupImportClock now;
@@ -182,7 +184,7 @@ class BackupImportService {
     for (final tankJson in tanksJson) {
       final tankMap = _mapFrom(tankJson, 'tank');
       final oldTankId = _requiredString(tankMap, 'id', 'tank');
-      final newTankId = newId();
+      final newTankId = await _newUnusedTankId();
       tankIdMap[oldTankId] = newTankId;
 
       final tank = Tank.fromJson({
@@ -286,6 +288,18 @@ class BackupImportService {
       livestockIdMap: Map.unmodifiable(livestockIdMap),
       equipmentIdMap: Map.unmodifiable(equipmentIdMap),
       taskIdMap: Map.unmodifiable(taskIdMap),
+    );
+  }
+
+  Future<String> _newUnusedTankId() async {
+    for (var attempt = 0; attempt < _maxTankIdGenerationAttempts; attempt++) {
+      final candidateId = newId();
+      if (await storage.getTank(candidateId) == null) {
+        return candidateId;
+      }
+    }
+    throw StateError(
+      'Could not generate an unused tank id for backup import',
     );
   }
 
