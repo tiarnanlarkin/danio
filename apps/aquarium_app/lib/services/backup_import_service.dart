@@ -227,7 +227,6 @@ class BackupImportService {
     for (final itemJson in livestockJson) {
       final itemMap = _mapFrom(itemJson, 'livestock');
       final newTankId = _mappedTankId(itemMap, tankIdMap, 'livestock');
-      if (newTankId == null) continue;
       final oldLivestockId = _requiredString(itemMap, 'id', 'livestock');
       final newLivestockId = livestockIdMap[oldLivestockId];
       if (newLivestockId == null) continue;
@@ -246,7 +245,6 @@ class BackupImportService {
     for (final itemJson in equipmentJson) {
       final itemMap = _mapFrom(itemJson, 'equipment');
       final newTankId = _mappedTankId(itemMap, tankIdMap, 'equipment');
-      if (newTankId == null) continue;
       final oldEquipmentId = _requiredString(itemMap, 'id', 'equipment');
       final newEquipmentId = equipmentIdMap[oldEquipmentId];
       if (newEquipmentId == null) continue;
@@ -265,7 +263,6 @@ class BackupImportService {
     for (final itemJson in tasksJson) {
       final itemMap = _mapFrom(itemJson, 'task');
       final newTankId = _mappedTankId(itemMap, tankIdMap, 'task');
-      if (newTankId == null) continue;
       final oldTaskId = _requiredString(itemMap, 'id', 'task');
       final newTaskId = taskIdMap[oldTaskId];
       if (newTaskId == null) continue;
@@ -287,7 +284,6 @@ class BackupImportService {
     for (final itemJson in logsJson) {
       final itemMap = _mapFrom(itemJson, 'log');
       final newTankId = _mappedTankId(itemMap, tankIdMap, 'log');
-      if (newTankId == null) continue;
 
       final log = _logFromJson({
         ...remapBackupLogRelationships(
@@ -389,13 +385,19 @@ class BackupImportService {
     throw FormatException('Invalid backup: $label entries must include $key');
   }
 
-  String? _mappedTankId(
+  String _mappedTankId(
     Map<String, dynamic> item,
     Map<String, String> tankIdMap,
     String label,
   ) {
     final oldTankId = _requiredString(item, 'tankId', label);
-    return tankIdMap[oldTankId];
+    final newTankId = tankIdMap[oldTankId];
+    if (newTankId == null) {
+      throw FormatException(
+        'Invalid backup: $label entries reference unknown tank id "$oldTankId"',
+      );
+    }
+    return newTankId;
   }
 
   void _prepareEntityIdMap(

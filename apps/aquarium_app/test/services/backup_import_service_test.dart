@@ -452,6 +452,63 @@ void main() {
       },
     );
 
+    test(
+      'rejects child entries with unknown backup tank ids before reporting import success',
+      () async {
+        for (final scenario in const [
+          (collection: 'livestock', label: 'livestock'),
+          (collection: 'equipment', label: 'equipment'),
+          (collection: 'tasks', label: 'task'),
+          (collection: 'logs', label: 'log'),
+        ]) {
+          final storage = _RecordingStorageService();
+          final service = BackupImportService(
+            storage: storage,
+            newId: _idSequence([
+              'new-tank',
+              'new-fish',
+              'new-filter',
+              'new-task',
+              'new-log',
+            ]),
+            now: () => DateTime.utc(2026, 6, 22, 12),
+          );
+          final backupData = {
+            ..._backupData(),
+            scenario.collection: [
+              {
+                'id': '${scenario.collection}-orphan',
+                'tankId': 'missing-tank',
+              },
+            ],
+          };
+
+          await expectLater(
+            service.importTankScopedData(backupData),
+            throwsA(
+              isA<BackupImportException>().having(
+                (error) => error.originalError,
+                'originalError',
+                isA<FormatException>().having(
+                  (error) => error.message,
+                  'message',
+                  contains(
+                    'Invalid backup: ${scenario.label} entries reference unknown tank id "missing-tank"',
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          expect(storage.tanks.keys, isNot(contains('new-tank')));
+          expect(storage.livestock, isEmpty);
+          expect(storage.equipment, isEmpty);
+          expect(storage.logs, isEmpty);
+          expect(storage.tasks, isEmpty);
+        }
+      },
+    );
+
     test('skips preference restore when backup imports no tanks', () async {
       SharedPreferences.setMockInitialValues({
         'theme_mode': 0,
