@@ -427,6 +427,15 @@ class TasksScreen extends ConsumerWidget {
               actionLabel: 'Undo',
               onAction: () async {
                 try {
+                  final parentTankId = task.tankId;
+                  if (parentTankId != null) {
+                    final parentTank = await storage.getTank(parentTankId);
+                    if (parentTank == null) {
+                      throw StateError(
+                        'Cannot restore task for missing parent tank',
+                      );
+                    }
+                  }
                   await storage.saveTask(task);
                   ref.invalidate(tasksProvider(tankId));
                 } catch (e, st) {

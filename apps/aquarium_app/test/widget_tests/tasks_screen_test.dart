@@ -429,6 +429,57 @@ void main() {
       expect(find.text('Rinse prefilter'), findsOneWidget);
     });
 
+    testWidgets(
+      'undo does not restore a task after its parent tank was deleted',
+      (
+        tester,
+      ) async {
+        const tankId = 'tank-task-undo-missing-parent';
+        final svc = InMemoryStorageService();
+        await svc.saveTank(_makeTank(id: tankId));
+        final task = Task(
+          id: 'task-undo-missing-parent',
+          tankId: tankId,
+          title: 'Rinse prefilter',
+          recurrence: RecurrenceType.weekly,
+          dueDate: _now.add(const Duration(days: 1)),
+          priority: TaskPriority.normal,
+          isEnabled: true,
+          createdAt: _now,
+          updatedAt: _now,
+        );
+        await svc.saveTask(task);
+
+        await tester.pumpWidget(_wrap(storage: svc, tankId: tankId));
+        await _advance(tester);
+
+        await tester.tap(find.byType(PopupMenuButton<String>).first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Delete').last);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Delete Task'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(await svc.getTasksForTank(tankId), isEmpty);
+        expect(find.text('Undo'), findsOneWidget);
+
+        await svc.deleteTank(tankId);
+        expect(await svc.getTank(tankId), isNull);
+
+        await tester.tap(find.text('Undo'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+
+        expect(tester.takeException(), isNull);
+        expect(await svc.getTasksForTank(tankId), isEmpty);
+        expect(
+          find.text('Couldn\'t restore that task. Try again.'),
+          findsOneWidget,
+        );
+      },
+    );
+
     testWidgets('failed delete undo keeps task deleted with error feedback', (
       tester,
     ) async {
