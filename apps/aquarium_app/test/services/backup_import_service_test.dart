@@ -287,6 +287,52 @@ void main() {
     );
 
     test(
+      'rejects duplicate backup tank ids before reporting import success',
+      () async {
+        final storage = _RecordingStorageService();
+        final service = BackupImportService(
+          storage: storage,
+          newId: _idSequence([
+            'new-tank',
+            'new-tank-two',
+            'new-fish',
+            'new-filter',
+            'new-task',
+            'new-log',
+          ]),
+          now: () => DateTime.utc(2026, 6, 22, 12),
+        );
+        final backupData = _backupData();
+        final tanks = (backupData['tanks'] as List)
+            .map((entry) => Map<String, dynamic>.from(entry as Map))
+            .toList();
+        tanks.add({...tanks.first, 'name': 'Duplicate Backup Tank'});
+        backupData['tanks'] = tanks;
+
+        await expectLater(
+          service.importTankScopedData(backupData),
+          throwsA(
+            isA<BackupImportException>().having(
+              (error) => error.originalError,
+              'originalError',
+              isA<FormatException>().having(
+                (error) => error.message,
+                'message',
+                contains('Invalid backup: duplicate tank id "old-tank"'),
+              ),
+            ),
+          ),
+        );
+
+        expect(storage.tanks, isEmpty);
+        expect(storage.livestock, isEmpty);
+        expect(storage.equipment, isEmpty);
+        expect(storage.logs, isEmpty);
+        expect(storage.tasks, isEmpty);
+      },
+    );
+
+    test(
       'regenerates imported child ids that already exist locally',
       () async {
         final storage = _RecordingStorageService();
