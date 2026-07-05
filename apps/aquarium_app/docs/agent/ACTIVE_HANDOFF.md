@@ -1,19 +1,20 @@
 # Danio Active Handoff
 
-Status: DS-2026-07-05-036 closeout in progress
-Last updated: 2026-07-05 after DS-2026-07-05-036 branch Full gate
+Status: Clean DS-2026-07-05-036 checkpoint; ready for next data-resilience audit
+Last updated: 2026-07-05 after DS-2026-07-05-036 merge closeout
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Current slice branch: `ds-2026-07-05-036-import-duplicate-child-id-guard`.
+- Current branch: `main`.
 - DS-2026-07-05-036 behavior commit: `50ddba57`
   (`Guard backup import duplicate child IDs`).
-- Final expected state after closeout:
-  - `main` is fast-forwarded to include DS-036.
+- DS-2026-07-05-036 closeout docs commit: `38844a01`
+  (`Update DS-036 handoff closeout`).
+- Expected final state for the next session:
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - The temporary DS-036 branch is deleted after merge.
+  - The temporary DS-036 branch has been deleted after merge.
 
 ## Completed Slice
 
@@ -82,6 +83,15 @@ Branch gate:
   passed on behavior commit `50ddba57`. This covered worktree visibility,
   whitespace, focused tests, dependency validation, custom lint, the full
   Flutter test suite, `flutter analyze`, and the debug APK build.
+
+Docs and clean-main gate:
+
+- `git diff --check` passed after DS-036 documentation updates.
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed after DS-036 documentation updates.
+- Clean-main Full gate:
+  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
+  passed after DS-036 was merged to `main`.
 
 ## Device And Preview State
 
