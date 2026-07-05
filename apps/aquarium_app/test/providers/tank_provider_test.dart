@@ -881,6 +881,56 @@ void main() {
     });
   });
 
+  group('TankActions - moveLivestock', () {
+    test(
+      'rejects missing target tank ids before moving single livestock',
+      () async {
+        const sourceTankId = 'single-move-missing-target-source';
+        const targetTankId = 'single-move-missing-target';
+        const livestockId = 'single-move-missing-target-neons';
+        final storage = _TestStorageService();
+        final container = _makeContainer(storage: storage);
+        addTearDown(container.dispose);
+
+        final now = DateTime.now();
+        await storage.saveTank(
+          _makeTank(id: sourceTankId, name: 'Source Tank'),
+        );
+        await storage.saveTank(
+          _makeTank(id: targetTankId, name: 'Target Tank'),
+        );
+        final livestock = Livestock(
+          id: livestockId,
+          tankId: sourceTankId,
+          commonName: 'Neon Tetra',
+          count: 8,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        );
+        await storage.saveLivestock(livestock);
+        await storage.deleteTank(targetTankId);
+        await _settle();
+
+        await expectLater(
+          container
+              .read(tankActionsProvider)
+              .moveLivestock(livestock, targetTankId),
+          throwsA(isA<StateError>()),
+        );
+        await _settle();
+
+        expect(
+          (await storage.getLivestockForTank(
+            sourceTankId,
+          )).map((livestock) => livestock.id),
+          contains(livestockId),
+        );
+        expect(await storage.getLivestockForTank(targetTankId), isEmpty);
+      },
+    );
+  });
+
   group('TankActions - bulkMoveLivestock', () {
     test('rejects missing source tank ids before moving livestock', () async {
       const sourceTankId = 'bulk-move-missing-source';

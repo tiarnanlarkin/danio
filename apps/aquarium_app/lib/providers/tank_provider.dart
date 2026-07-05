@@ -660,6 +660,11 @@ class TankActions {
   /// Move livestock to a different tank
   Future<void> moveLivestock(Livestock livestock, String newTankId) async {
     try {
+      final targetTank = await _storage.getTank(newTankId);
+      if (targetTank == null) {
+        throw StateError('Cannot move livestock to missing tank $newTankId.');
+      }
+
       final moved = livestock.copyWith(tankId: newTankId);
       await _storage.saveLivestock(moved);
 
