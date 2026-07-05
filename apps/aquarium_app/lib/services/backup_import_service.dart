@@ -190,6 +190,12 @@ class BackupImportService {
     _validateUniqueChildIds(equipmentJson, 'equipment');
     _validateUniqueChildIds(tasksJson, 'task');
     _validateUniqueChildIds(logsJson, 'log');
+    _validateSameTankRelationshipTargets(
+      logsJson: logsJson,
+      tasksJson: tasksJson,
+      equipmentJson: equipmentJson,
+      livestockJson: livestockJson,
+    );
 
     for (final tankJson in tanksJson) {
       final tankMap = _mapFrom(tankJson, 'tank');
@@ -445,6 +451,86 @@ class BackupImportService {
         oldId,
         () => _newUnusedChildId(usedIds, label),
       );
+    }
+  }
+
+  void _validateSameTankRelationshipTargets({
+    required List<dynamic> logsJson,
+    required List<dynamic> tasksJson,
+    required List<dynamic> equipmentJson,
+    required List<dynamic> livestockJson,
+  }) {
+    final equipmentTankIds = _backupChildTankIds(equipmentJson, 'equipment');
+    final livestockTankIds = _backupChildTankIds(livestockJson, 'livestock');
+    final taskTankIds = _backupChildTankIds(tasksJson, 'task');
+
+    _validateRelationshipTargetTank(
+      logsJson,
+      sourceCollection: 'logs',
+      sourceLabel: 'log',
+      field: 'relatedEquipmentId',
+      targetTankIds: equipmentTankIds,
+    );
+    _validateRelationshipTargetTank(
+      logsJson,
+      sourceCollection: 'logs',
+      sourceLabel: 'log',
+      field: 'relatedLivestockId',
+      targetTankIds: livestockTankIds,
+    );
+    _validateRelationshipTargetTank(
+      logsJson,
+      sourceCollection: 'logs',
+      sourceLabel: 'log',
+      field: 'relatedTaskId',
+      targetTankIds: taskTankIds,
+    );
+    _validateRelationshipTargetTank(
+      tasksJson,
+      sourceCollection: 'tasks',
+      sourceLabel: 'task',
+      field: 'relatedEquipmentId',
+      targetTankIds: equipmentTankIds,
+    );
+  }
+
+  Map<String, String> _backupChildTankIds(
+    List<dynamic> jsonItems,
+    String label,
+  ) {
+    final tankIdsByChildId = <String, String>{};
+    for (final item in jsonItems) {
+      final itemMap = _mapFrom(item, label);
+      tankIdsByChildId[_requiredString(itemMap, 'id', label)] = _requiredString(
+        itemMap,
+        'tankId',
+        label,
+      );
+    }
+    return tankIdsByChildId;
+  }
+
+  void _validateRelationshipTargetTank(
+    List<dynamic> sourceJson, {
+    required String sourceCollection,
+    required String sourceLabel,
+    required String field,
+    required Map<String, String> targetTankIds,
+  }) {
+    for (final source in sourceJson) {
+      final sourceMap = _mapFrom(source, sourceLabel);
+      final value = sourceMap[field];
+      if (value is! String || value.isEmpty) continue;
+
+      final targetTankId = targetTankIds[value];
+      if (targetTankId == null) continue;
+
+      final sourceTankId = _requiredString(sourceMap, 'tankId', sourceLabel);
+      if (targetTankId != sourceTankId) {
+        throw FormatException(
+          'Invalid backup: $sourceCollection $field values must reference records in the same backup tank',
+        );
+      }
     }
   }
 
