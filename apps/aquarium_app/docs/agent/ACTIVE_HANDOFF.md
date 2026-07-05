@@ -1,7 +1,7 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-05-037 checkpoint pending merge closeout
-Last updated: 2026-07-05 after DS-2026-07-05-037 branch Full gate
+Status: Clean DS-2026-07-05-037 checkpoint ready for next data-resilience audit
+Last updated: 2026-07-05 after DS-2026-07-05-037 merge and clean-main Full gate
 
 ## Branch
 
@@ -11,7 +11,7 @@ Last updated: 2026-07-05 after DS-2026-07-05-037 branch Full gate
   (`Guard backup import duplicate tank IDs`).
 - DS-2026-07-05-037 closeout docs commit: `dc2de19f`
   (`Update DS-037 handoff closeout`).
-- Expected final state for the next session:
+- Final state for the next session:
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
   - The temporary DS-037 branch has been deleted after merge.
@@ -90,8 +90,11 @@ Docs and clean-main gate:
 - `git diff --check` passed after DS-037 documentation updates.
 - `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
   passed after DS-037 documentation updates.
-- Pending for this closeout:
-  - Clean-main Full gate after merge to `main`.
+- Clean-main Full gate:
+  `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Full -RequireCleanWorktree`
+  passed after DS-037 was merged to `main`. This covered worktree visibility,
+  whitespace, focused tests, dependency validation, custom lint, the full
+  Flutter test suite, `flutter analyze`, and the debug APK build.
 
 ## Device And Preview State
 
@@ -145,10 +148,11 @@ Start from:
 C:\Users\larki\OneDrive\Documents\App Projects\Danio Aquarium App Project\repo
 
 Current checkpoint evidence from predecessor session:
-- Expected final source-of-truth branch: clean `main` tracking `origin/main`.
+- Final source-of-truth branch: clean `main` tracking `origin/main`.
 - DS-037 behavior commit: `9f0f6303` (`Guard backup import duplicate tank IDs`).
-- DS-037 should be merged, pushed, and branch-cleaned before this successor
-  starts; do not trust this as current state, re-run the startup checks below.
+- DS-037 was merged, clean-main gated, pushed, and branch-cleaned before this
+  successor was created; do not trust this as current state, re-run the
+  startup checks below.
 - DS-037 closed a direct `BackupImportService.importTankScopedData` lower-boundary
   gap: duplicate backup tank IDs are rejected before imported tanks are saved,
   so direct imports cannot report success while duplicate backup tanks collapse
