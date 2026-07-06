@@ -2511,6 +2511,15 @@ CL-P1-009DH Backup restored-photo import rollback:
   `BackupRestoreImportFlow` runs the restored-photo cleanup callback when
   tank import fails after photo extraction.
 
+CL-P1-009HH Backup restore cleanup failure reporting:
+
+- `BackupRestoreImportFlow` now treats restored-photo cleanup as best-effort
+  after a tank import failure.
+- If cleanup also fails, Danio logs the cleanup error and preserves the
+  original tank import failure with its original stack trace.
+- Focused service coverage verifies cleanup callback failures no longer mask
+  the original `BackupImportException`.
+
 CL-P1-009DI Profile/preferences restore rollback:
 
 - `SharedPreferencesBackup.restoreFromJson` now snapshots existing exportable
@@ -4450,6 +4459,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   `photos/` paths without blocking valid backup export, preview, or restore.
   DS-2026-07-05-045 adds executable restore/import failure evidence that newly
   restored photos are cleaned when tank import fails after extraction.
+  DS-2026-07-06-049 adds executable restore/import failure evidence that
+  cleanup callback failures are logged without masking the original tank import
+  failure.
   Remaining backup/data work is broader edit/delete/undo coverage and
   restore/migration walkthrough QA. DS-2026-07-05-044 verified that the current
   durable

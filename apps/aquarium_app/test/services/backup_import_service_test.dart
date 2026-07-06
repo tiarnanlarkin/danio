@@ -1102,5 +1102,48 @@ void main() {
         expect(storage.tanks.keys, isNot(contains('new-tank')));
       },
     );
+
+    test(
+      'preserves tank import failure when restored photo cleanup also fails',
+      () async {
+        final storage = _RecordingStorageService()..failOnSaveLog = true;
+        var cleanupCalls = 0;
+        final flow = BackupRestoreImportFlow(
+          importService: BackupImportService(
+            storage: storage,
+            newId: _idSequence([
+              'new-tank',
+              'new-fish',
+              'new-filter',
+              'new-task',
+              'new-log',
+            ]),
+            now: () => DateTime.utc(2026, 6, 22, 12),
+          ),
+          onImportFailureCleanup: () async {
+            cleanupCalls += 1;
+            throw StateError('cleanup failed');
+          },
+        );
+
+        await expectLater(
+          flow.importBackupData(_backupData()),
+          throwsA(
+            isA<BackupImportException>().having(
+              (error) => error.originalError,
+              'originalError',
+              isA<StateError>().having(
+                (error) => error.message,
+                'message',
+                'simulated log save failure',
+              ),
+            ),
+          ),
+        );
+
+        expect(cleanupCalls, 1);
+        expect(storage.tanks.keys, isNot(contains('new-tank')));
+      },
+    );
   });
 }

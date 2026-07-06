@@ -94,7 +94,15 @@ class BackupRestoreImportFlow {
     try {
       importResult = await importService.importTankScopedData(backupData);
     } catch (error, stackTrace) {
-      await onImportFailureCleanup?.call();
+      try {
+        await onImportFailureCleanup?.call();
+      } catch (cleanupError, cleanupStackTrace) {
+        logError(
+          'Backup import failure cleanup failed: $cleanupError',
+          stackTrace: cleanupStackTrace,
+          tag: 'BackupRestoreImportFlow',
+        );
+      }
       Error.throwWithStackTrace(error, stackTrace);
     }
 

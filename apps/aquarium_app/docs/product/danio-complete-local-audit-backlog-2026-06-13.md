@@ -172,6 +172,8 @@ Recent CL-P1-009 continuation note:
   import fails after photo extraction, while preserving any pre-existing local
   photos; DS-2026-07-05-045 adds executable import-flow coverage for this
   cleanup callback.
+- CL-P1-009HH logs restored-photo cleanup callback failures while preserving
+  the original tank import failure and stack trace.
 - CL-P1-009DI rolls back previous exportable profile/preferences values if a
   platform preference write fails mid-restore.
 - CL-P1-009DJ shows normal retry feedback when single livestock removal expiry

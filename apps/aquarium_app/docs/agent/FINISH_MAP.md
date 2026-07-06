@@ -159,6 +159,10 @@ local tests and `Full` gate first; use Android walkthrough evidence only after
 
 ## Current Data-Resilience Note
 
+- DS-2026-07-06-049 advances `DCL-DR-001` restore failure evidence:
+  `BackupRestoreImportFlow` now treats restored-photo cleanup as best-effort
+  after tank import failure, logs cleanup errors, and preserves the original
+  tank import failure for user-visible/error handling.
 - DS-2026-07-06-048 advances `DCL-DR-001` and `DCL-DR-004` import preflight
   evidence: direct tank-scoped imports now reject whitespace-only required
   backup tank and child record IDs before any imported tank save is attempted.
