@@ -2520,6 +2520,15 @@ CL-P1-009HH Backup restore cleanup failure reporting:
 - Focused service coverage verifies cleanup callback failures no longer mask
   the original `BackupImportException`.
 
+CL-P1-009HI Backup restore screen cleanup failure boundary:
+
+- `BackupRestoreScreen` now routes its outer restored-photo cleanup through a
+  best-effort helper before reporting import failure.
+- If screen-level cleanup also fails, Danio logs the cleanup error and still
+  reaches the normal import-failed logging and user feedback path.
+- Focused widget-test coverage verifies cleanup helper failures are swallowed
+  after one cleanup attempt and the screen catch is wired through the helper.
+
 CL-P1-009DI Profile/preferences restore rollback:
 
 - `SharedPreferencesBackup.restoreFromJson` now snapshots existing exportable
@@ -4462,6 +4471,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   DS-2026-07-06-049 adds executable restore/import failure evidence that
   cleanup callback failures are logged without masking the original tank import
   failure.
+  DS-2026-07-06-050 adds executable restore/import screen evidence that
+  screen-level restored-photo cleanup failures are logged without blocking the
+  normal import-failed reporting path.
   Remaining backup/data work is broader edit/delete/undo coverage and
   restore/migration walkthrough QA. DS-2026-07-05-044 verified that the current
   durable

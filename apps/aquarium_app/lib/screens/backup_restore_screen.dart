@@ -28,6 +28,24 @@ import 'tab_navigator.dart';
 
 const double _maxBackupRestoreReadableWidth = 720;
 
+@visibleForTesting
+Future<void> cleanupRestoredPhotosBestEffort({
+  required bool shouldCleanup,
+  required Future<void> Function()? cleanup,
+}) async {
+  if (!shouldCleanup || cleanup == null) return;
+
+  try {
+    await cleanup();
+  } catch (error, stackTrace) {
+    logError(
+      'Backup restore cleanup failed: $error',
+      stackTrace: stackTrace,
+      tag: 'BackupRestoreScreen',
+    );
+  }
+}
+
 class BackupRestoreScreen extends ConsumerStatefulWidget {
   const BackupRestoreScreen({super.key});
 
@@ -630,9 +648,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       restoredPhotosForImport = backupService.lastRestoredPhotoPaths.isNotEmpty;
 
       if (!mounted) {
-        if (restoredPhotosForImport) {
-          await backupService.cleanupLastRestoredPhotos();
-        }
+        await cleanupRestoredPhotosBestEffort(
+          shouldCleanup: restoredPhotosForImport,
+          cleanup: backupService.cleanupLastRestoredPhotos,
+        );
         return;
       }
 
@@ -646,9 +665,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         onTanksImported: () => ref.invalidate(tanksProvider),
         onPreferencesRestored: () => invalidateRestoredPreferenceProviders(ref),
         onImportFailureCleanup: () async {
-          if (restoredPhotosForImport) {
-            await backupService.cleanupLastRestoredPhotos();
-          }
+          await cleanupRestoredPhotosBestEffort(
+            shouldCleanup: restoredPhotosForImport,
+            cleanup: backupService.cleanupLastRestoredPhotos,
+          );
         },
       ).importBackupData(backupData);
       final imported = importResult.importedTanks;
@@ -682,9 +702,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         }
       }
     } catch (e, st) {
-      if (restoredPhotosForImport) {
-        await importBackupService?.cleanupLastRestoredPhotos();
-      }
+      await cleanupRestoredPhotosBestEffort(
+        shouldCleanup: restoredPhotosForImport,
+        cleanup: importBackupService?.cleanupLastRestoredPhotos,
+      );
       logError(
         'BackupRestoreScreen: backup import failed: $e',
         stackTrace: st,

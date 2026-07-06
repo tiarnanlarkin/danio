@@ -313,6 +313,45 @@ void main() {
         lessThan(source.indexOf('BackupRestoreScreen: backup import failed')),
       );
     });
+
+    test(
+      'restore screen cleanup helper keeps cleanup failures best effort',
+      () async {
+        var cleanupCalls = 0;
+
+        await cleanupRestoredPhotosBestEffort(
+          shouldCleanup: true,
+          cleanup: () async {
+            cleanupCalls += 1;
+            throw StateError('cleanup failed');
+          },
+        );
+
+        expect(cleanupCalls, 1);
+
+        final source = File(
+          'lib/screens/backup_restore_screen.dart',
+        ).readAsStringSync();
+        final failureLogIndex = source.indexOf(
+          'BackupRestoreScreen: backup import failed',
+        );
+        expect(failureLogIndex, isNonNegative);
+        final catchIndex = source.lastIndexOf(
+          '} catch (e, st) {',
+          failureLogIndex,
+        );
+        expect(catchIndex, isNonNegative);
+
+        final catchBody = source.substring(catchIndex, failureLogIndex);
+        expect(catchBody, contains('cleanupRestoredPhotosBestEffort'));
+        expect(
+          catchBody,
+          isNot(
+            contains('await importBackupService?.cleanupLastRestoredPhotos()'),
+          ),
+        );
+      },
+    );
   });
 
   group('BackupRestoreScreen - local storage recovery', () {

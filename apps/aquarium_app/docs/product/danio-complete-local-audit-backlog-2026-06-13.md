@@ -174,6 +174,9 @@ Recent CL-P1-009 continuation note:
   cleanup callback.
 - CL-P1-009HH logs restored-photo cleanup callback failures while preserving
   the original tank import failure and stack trace.
+- CL-P1-009HI keeps the Backup & Restore screen's outer restored-photo cleanup
+  best-effort, so cleanup failures are logged without replacing the normal
+  import-failed feedback path.
 - CL-P1-009DI rolls back previous exportable profile/preferences values if a
   platform preference write fails mid-restore.
 - CL-P1-009DJ shows normal retry feedback when single livestock removal expiry

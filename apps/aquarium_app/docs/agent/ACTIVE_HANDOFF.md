@@ -1,32 +1,34 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-06-049 data-resilience checkpoint ready for next successor
-Last updated: 2026-07-06 after restore cleanup failure proof and local gates
+Status: Clean DS-2026-07-06-050 data-resilience checkpoint ready for manual continuation
+Last updated: 2026-07-06 after restore screen cleanup failure proof and local gates
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
-- Latest product/data-safety slice: DS-2026-07-06-049.
+- Latest product/data-safety slice: DS-2026-07-06-050.
 - Latest workflow slice: WF-2026-07-05-003.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - Temporary DS-049 branch has been deleted after merge.
+  - Temporary DS-050 branch has been deleted after merge.
 
 ## Completed Product Slice
 
-- Slice: DS-2026-07-06-049, Restore Cleanup Error Preserves Import Failure.
+- Slice: DS-2026-07-06-050, Restore Screen Cleanup Best Effort.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-06-049-restore-cleanup-error-preserves-import-failure-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-06-050-restore-screen-cleanup-best-effort-slice-contract.md`.
 - Result:
-  - `DCL-DR-001` advanced with restore/import failure handling proof.
-  - `BackupRestoreImportFlow` now treats restored-photo cleanup as a
-    best-effort follow-up after tank import failure: cleanup errors are logged,
-    and the original tank import failure is rethrown with its original stack.
-  - Focused RED/GREEN service coverage verifies a cleanup callback failure no
-    longer masks the original `BackupImportException`.
+  - `DCL-DR-001` advanced with screen-level restore/import failure handling
+    proof.
+  - `BackupRestoreScreen` now routes restored-photo cleanup through a
+    best-effort helper in the outer failure catch, so cleanup errors are logged
+    and cannot block the normal import-failed reporting path.
+  - Focused RED/GREEN widget-test coverage verifies the helper swallows a
+    cleanup failure after one cleanup attempt and that the screen failure path
+    is wired through that helper.
   - No UI layout, Android runtime, cloud/account behavior, paid services, API
     keys, provider, premium, store, deploy, or optional-AI behavior changed.
 
@@ -65,6 +67,21 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+DS-2026-07-06-050:
+
+- RED:
+  `flutter test test/widget_tests/backup_restore_screen_test.dart --plain-name "restore screen cleanup helper keeps cleanup failures best effort" --reporter compact`
+  failed because `cleanupRestoredPhotosBestEffort` was missing from
+  `BackupRestoreScreen`.
+- GREEN: the same named test passed after the screen cleanup helper caught and
+  logged cleanup failures without rethrowing.
+- `flutter test test/widget_tests/backup_restore_screen_test.dart --reporter compact`
+  passed with 13 tests.
+- Targeted analyze passed for the touched screen and widget-test files.
+- Dirty-branch Full gate passed with 2132 Flutter tests, Flutter analyze, and
+  debug APK build. Existing expected negative-path test logs and Kotlin/Java
+  dependency warnings were not failures.
 
 DS-2026-07-06-049:
 
@@ -186,6 +203,9 @@ DS-2026-07-05-044:
 ## Device And Preview State
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
+  required for DS-050 because it was a screen failure-boundary data-safety proof
+  with no visual/layout behavior change.
+- No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-049 because it was a service/failure-boundary data-safety
   proof.
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
@@ -213,28 +233,27 @@ DS-2026-07-05-044:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-06-049, DS-2026-07-06-048,
+- No blocker remains for DS-2026-07-06-050, DS-2026-07-06-049,
+  DS-2026-07-06-048,
   DS-2026-07-06-047,
   DS-2026-07-06-046, or
   WF-2026-07-05-003.
 - The next product slice should be selected from
   `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Highest-ranked open local lane remains data resilience:
-  `DCL-DR-001` through `DCL-DR-004`; DS-049 added proof that restored-photo
-  cleanup failure cannot mask the original tank import failure, but broader
-  restore/migration, create/delete, and final relationship-mapping closure
-  evidence remains open.
+  `DCL-DR-001` through `DCL-DR-004`; DS-050 added proof that screen-level
+  restored-photo cleanup failure cannot block the normal import-failed
+  reporting path, but broader restore/migration, create/delete, and final
+  relationship-mapping closure evidence remains open.
 - Rows with `PRODUCT_DECISION` or `EXTERNAL_PARKED` disposition require a user
   decision and are not automatic implementation targets.
 
 ## Next Action
 
-Create the next project-scoped successor only after this checkpoint is clean,
-pushed, aligned, and temporary branches are cleaned up. Use
-`docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md` and set the next remaining
-sequential session budget to 1 total, including that successor.
+Autonomous chain budget is now 0 after DS-050. Do not create another successor
+thread unless the user explicitly approves more budget in the current thread.
 
-The next successor should:
+The next manual/fresh session should:
 
 - use `$verified-slice-runner`;
 - read `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
