@@ -1680,6 +1680,16 @@ CL-P1-009HF Direct import relationship pre-save validation:
 - Focused service coverage records attempted tank saves and verifies malformed
   relationship payloads fail without calling `saveTank`.
 
+CL-P1-009HG Direct import child tank pre-save validation:
+
+- Direct tank-scoped backup import now rejects livestock, equipment, task, and
+  log rows whose `tankId` is absent from the imported backup tank IDs before any
+  imported tank save is attempted.
+- The existing rollback guard remains for later storage failures, but known
+  invalid child tank references no longer require a write-then-rollback path.
+- Focused service coverage records attempted tank saves and verifies unknown
+  child backup tank IDs leave `savedTankIds` empty.
+
 CL-P1-009AF Backup export missing-photo guard:
 
 - Backup export now rejects tank/log photo references when the referenced local
@@ -4409,8 +4419,9 @@ High-confidence P1/P2 gaps from code/docs evidence:
   removal timeline logs now recheck the parent tank before saving, preventing
   orphan local removal logs after the tank is deleted during the undo window.
   Direct tank-scoped backup imports now reject child rows whose tank IDs are
-  absent from the imported tank map, rolling back instead of reporting success
-  while silently skipping livestock, equipment, task, or log data.
+  absent from the imported tank map before any imported tank save is attempted,
+  preventing known-invalid livestock, equipment, task, or log references from
+  requiring write-then-rollback import work.
   Direct tank-scoped backup imports also now reject task/log relationship IDs
   whose backup targets are absent from the imported ID maps, rolling back
   instead of reporting success while silently clearing relationship links.

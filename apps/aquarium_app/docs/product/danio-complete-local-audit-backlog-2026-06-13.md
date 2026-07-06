@@ -456,6 +456,10 @@ Recent CL-P1-009 continuation note:
 - CL-P1-009HF moves that direct-import malformed relationship ID type rejection
   into pre-save relationship validation, preventing any imported tank save from
   being attempted for a known-invalid relationship field shape.
+- CL-P1-009HG moves direct-import child `tankId` rejection into pre-save
+  validation, preventing any imported tank save from being attempted when a
+  livestock, equipment, task, or log row references a tank absent from the
+  backup.
 
 ## 7. P2 Work - Presentation System
 

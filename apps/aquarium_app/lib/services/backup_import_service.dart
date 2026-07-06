@@ -196,11 +196,15 @@ class BackupImportService {
     final tasksJson = _listFrom(backupData, 'tasks');
     final logsJson = _listFrom(backupData, 'logs');
 
-    _validateUniqueTankIds(tanksJson);
+    final backupTankIds = _validateUniqueTankIds(tanksJson);
     _validateUniqueChildIds(livestockJson, 'livestock');
     _validateUniqueChildIds(equipmentJson, 'equipment');
     _validateUniqueChildIds(tasksJson, 'task');
     _validateUniqueChildIds(logsJson, 'log');
+    _validateChildTankReferences(livestockJson, backupTankIds, 'livestock');
+    _validateChildTankReferences(equipmentJson, backupTankIds, 'equipment');
+    _validateChildTankReferences(tasksJson, backupTankIds, 'task');
+    _validateChildTankReferences(logsJson, backupTankIds, 'log');
     _validateSameTankRelationshipTargets(
       logsJson: logsJson,
       tasksJson: tasksJson,
@@ -434,13 +438,30 @@ class BackupImportService {
     }
   }
 
-  void _validateUniqueTankIds(List<dynamic> jsonItems) {
+  Set<String> _validateUniqueTankIds(List<dynamic> jsonItems) {
     final seenIds = <String>{};
     for (final item in jsonItems) {
       final itemMap = _mapFrom(item, 'tank');
       final id = _requiredString(itemMap, 'id', 'tank');
       if (!seenIds.add(id)) {
         throw FormatException('Invalid backup: duplicate tank id "$id"');
+      }
+    }
+    return seenIds;
+  }
+
+  void _validateChildTankReferences(
+    List<dynamic> jsonItems,
+    Set<String> backupTankIds,
+    String label,
+  ) {
+    for (final item in jsonItems) {
+      final itemMap = _mapFrom(item, label);
+      final tankId = _requiredString(itemMap, 'tankId', label);
+      if (!backupTankIds.contains(tankId)) {
+        throw FormatException(
+          'Invalid backup: $label entries reference unknown tank id "$tankId"',
+        );
       }
     }
   }

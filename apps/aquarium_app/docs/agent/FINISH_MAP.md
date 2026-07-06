@@ -164,6 +164,10 @@ local tests and `Full` gate first; use Android walkthrough evidence only after
   Backup & Restore wires it to `BackupService.cleanupLastRestoredPhotos()` for
   restore attempts that created local photo files, and focused service coverage
   verifies the callback runs when tank import fails after photo extraction.
+- DS-2026-07-06-046 advances `DCL-DR-001` and `DCL-DR-004` import preflight
+  evidence: direct tank-scoped imports now validate every child row `tankId`
+  against the backup tank IDs before saving imported tanks, so known-invalid
+  child references fail before any imported tank write is attempted.
 - DS-2026-07-05-044 closes the current debounced-writer inventory gap:
   source audit found the durable debounced local writers are gems and
   achievement progress; gems flush on root paused/inactive/detached, achievement

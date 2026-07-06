@@ -549,6 +549,7 @@ void main() {
           );
 
           expect(storage.tanks.keys, isNot(contains('new-tank')));
+          expect(storage.savedTankIds, isEmpty);
           expect(storage.livestock, isEmpty);
           expect(storage.equipment, isEmpty);
           expect(storage.logs, isEmpty);

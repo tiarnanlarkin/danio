@@ -1,35 +1,33 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-05-045 data-resilience checkpoint ready for next successor
-Last updated: 2026-07-05 after restore import photo-cleanup proof and local gates
+Status: Clean DS-2026-07-06-046 data-resilience checkpoint ready for next successor
+Last updated: 2026-07-06 after import child tank preflight proof and local gates
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
-- Latest product/data-safety slice: DS-2026-07-05-045.
+- Latest product/data-safety slice: DS-2026-07-06-046.
 - Latest workflow slice: WF-2026-07-05-003.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - Temporary DS-045 branch has been deleted after merge.
+  - Temporary DS-046 branch has been deleted after merge.
 
 ## Completed Product Slice
 
-- Slice: DS-2026-07-05-045, Restore Import Photo Cleanup Proof.
+- Slice: DS-2026-07-06-046, Import Child Tank Preflight.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-045-restore-import-photo-cleanup-proof-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-06-046-import-child-tank-preflight-slice-contract.md`.
 - Result:
-  - `DCL-DR-001` advanced with executable restore/import failure cleanup proof.
-  - `BackupRestoreImportFlow` now accepts an import-failure cleanup callback and
-    invokes it before rethrowing tank-scoped import failures.
-  - Backup & Restore passes that callback only when the current restore attempt
-    created local photo files, so failed tank imports clean newly restored
-    photos through the existing `BackupService.cleanupLastRestoredPhotos()`
-    path.
-  - Focused RED/GREEN service coverage verifies the cleanup callback runs once
-    when tank import fails and the import rollback keeps the new tank absent.
+  - `DCL-DR-001` and `DCL-DR-004` advanced with direct backup import
+    pre-save child tank reference proof.
+  - `BackupImportService` now validates `livestock`, `equipment`, `tasks`, and
+    `logs` child row `tankId` values against the imported backup tank ID set
+    before the imported tank save loop.
+  - Focused RED/GREEN service coverage verifies unknown child backup tank IDs
+    are rejected before any imported tank save is attempted.
   - No UI layout, Android runtime, cloud/account behavior, paid services, API
     keys, provider, premium, store, deploy, or optional-AI behavior changed.
 
@@ -68,6 +66,21 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+DS-2026-07-06-046:
+
+- RED:
+  `flutter test test/services/backup_import_service_test.dart --plain-name "rejects child entries with unknown backup tank ids before reporting import success" --reporter compact`
+  failed because `storage.savedTankIds` contained `['new-tank']`.
+- GREEN: the same named test passed after `BackupImportService` validated all
+  child backup `tankId` values before imported tank saves.
+- `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  passed with 14 tests.
+- Targeted analyze passed for the touched service and service-test files.
+- Dirty-branch Full gate passed with 2128 Flutter tests, Flutter analyze, and
+  debug APK build.
+- Post-doc `git diff --check`, docs guard, branch clean-worktree Full, and
+  clean-main Full gate passed before DS-046 was pushed.
 
 DS-2026-07-05-045:
 
@@ -129,6 +142,11 @@ DS-2026-07-05-044:
 ## Device And Preview State
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
+  required for DS-046 because it was a service/failure-boundary data-safety
+  proof.
+- DS-046 startup preflight found attached devices `emulator-5554` and
+  `emulator-5556`; no runtime ownership was taken.
+- No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-045 because it was a service/failure-boundary data-safety
   proof.
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
@@ -142,13 +160,13 @@ DS-2026-07-05-044:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-045, DS-2026-07-05-044, or
+- No blocker remains for DS-2026-07-06-046, DS-2026-07-05-045, or
   WF-2026-07-05-003.
 - The next product slice should be selected from
   `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Highest-ranked open local lane remains data resilience:
-  `DCL-DR-001` through `DCL-DR-004`; DS-045 added proof for one
-  restore/import failure cleanup boundary, but broader restore/migration and
+  `DCL-DR-001` through `DCL-DR-004`; DS-046 added pre-save child tank
+  reference proof for direct imports, but broader restore/migration and
   create/delete/relationship closure evidence remains open.
 - Rows with `PRODUCT_DECISION` or `EXTERNAL_PARKED` disposition require a user
   decision and are not automatic implementation targets.
@@ -158,7 +176,7 @@ DS-2026-07-05-044:
 Create the next project-scoped successor only after this checkpoint is clean,
 pushed, aligned, and temporary branches are cleaned up. Use
 `docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md` and set the next remaining
-sequential session budget to 5 total, including that successor.
+sequential session budget to 4 total, including that successor.
 
 The next successor should:
 
