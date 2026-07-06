@@ -1,33 +1,32 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-06-047 data-resilience checkpoint ready for next successor
-Last updated: 2026-07-06 after missing relationship target preflight proof and local gates
+Status: Clean DS-2026-07-06-048 data-resilience checkpoint ready for next successor
+Last updated: 2026-07-06 after trim-empty required ID preflight proof and local gates
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
-- Latest product/data-safety slice: DS-2026-07-06-047.
+- Latest product/data-safety slice: DS-2026-07-06-048.
 - Latest workflow slice: WF-2026-07-05-003.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - Temporary DS-047 branch has been deleted after merge.
+  - Temporary DS-048 branch has been deleted after merge.
 
 ## Completed Product Slice
 
-- Slice: DS-2026-07-06-047, Import Missing Relationship Preflight.
+- Slice: DS-2026-07-06-048, Import Required ID Trim Preflight.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-06-047-import-missing-relationship-preflight-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-06-048-import-required-id-trim-preflight-slice-contract.md`.
 - Result:
-  - `DCL-DR-004` advanced with direct backup import pre-save missing
-    relationship target proof.
-  - `BackupImportService` now validates non-empty `relatedEquipmentId`,
-    `relatedLivestockId`, and `relatedTaskId` values against imported backup
-    child IDs during relationship preflight, before the imported tank save loop.
-  - Focused RED/GREEN service coverage verifies missing relationship targets
-    are rejected before any imported tank save is attempted.
+  - `DCL-DR-001` and `DCL-DR-004` advanced with direct backup import
+    trim-empty required ID preflight proof.
+  - `BackupImportService` now rejects whitespace-only required backup tank and
+    child record IDs during pre-save validation.
+  - Focused RED/GREEN service coverage verifies blank-looking required IDs are
+    rejected before any imported tank save is attempted.
   - No UI layout, Android runtime, cloud/account behavior, paid services, API
     keys, provider, premium, store, deploy, or optional-AI behavior changed.
 
@@ -66,6 +65,21 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+DS-2026-07-06-048:
+
+- RED:
+  `flutter test test/services/backup_import_service_test.dart --plain-name "rejects trim-empty required backup ids before imported tank saves" --reporter compact`
+  failed because the import returned `BackupImportResult` for a whitespace-only
+  tank ID instead of throwing.
+- GREEN: the same named test passed after `BackupImportService` treated
+  whitespace-only required strings as missing.
+- `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  passed with 16 tests.
+- Targeted analyze passed for the touched service and service-test files.
+- Dirty-branch Full gate passed with 2130 Flutter tests, Flutter analyze, and
+  debug APK build. Existing expected negative-path test logs and Kotlin/Java
+  dependency warnings were not failures.
 
 DS-2026-07-06-047:
 
@@ -157,6 +171,9 @@ DS-2026-07-05-044:
 ## Device And Preview State
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
+  required for DS-048 because it was a service/failure-boundary data-safety
+  proof.
+- No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-047 because it was a service/failure-boundary data-safety
   proof.
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
@@ -178,14 +195,15 @@ DS-2026-07-05-044:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-06-047, DS-2026-07-06-046, or
+- No blocker remains for DS-2026-07-06-048, DS-2026-07-06-047,
+  DS-2026-07-06-046, or
   WF-2026-07-05-003.
 - The next product slice should be selected from
   `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Highest-ranked open local lane remains data resilience:
-  `DCL-DR-001` through `DCL-DR-004`; DS-047 added pre-save missing
-  relationship target proof for direct imports, but broader restore/migration,
-  create/delete, and final relationship-mapping closure evidence remains open.
+  `DCL-DR-001` through `DCL-DR-004`; DS-048 added pre-save trim-empty required
+  ID proof for direct imports, but broader restore/migration, create/delete,
+  and final relationship-mapping closure evidence remains open.
 - Rows with `PRODUCT_DECISION` or `EXTERNAL_PARKED` disposition require a user
   decision and are not automatic implementation targets.
 
@@ -194,7 +212,7 @@ DS-2026-07-05-044:
 Create the next project-scoped successor only after this checkpoint is clean,
 pushed, aligned, and temporary branches are cleaned up. Use
 `docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md` and set the next remaining
-sequential session budget to 3 total, including that successor.
+sequential session budget to 2 total, including that successor.
 
 The next successor should:
 

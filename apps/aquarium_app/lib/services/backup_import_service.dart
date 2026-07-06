@@ -408,7 +408,7 @@ class BackupImportService {
     String label,
   ) {
     final value = item[key];
-    if (value is String && value.isNotEmpty) return value;
+    if (value is String && value.trim().isNotEmpty) return value;
     throw FormatException('Invalid backup: $label entries must include $key');
   }
 

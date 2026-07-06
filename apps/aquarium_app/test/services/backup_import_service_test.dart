@@ -559,6 +559,102 @@ void main() {
     );
 
     test(
+      'rejects trim-empty required backup ids before imported tank saves',
+      () async {
+        for (final scenario in const [
+          (collection: 'tanks', label: 'tank'),
+          (collection: 'livestock', label: 'livestock'),
+          (collection: 'equipment', label: 'equipment'),
+          (collection: 'tasks', label: 'task'),
+          (collection: 'logs', label: 'log'),
+        ]) {
+          final storage = _RecordingStorageService();
+          final service = BackupImportService(
+            storage: storage,
+            newId: _idSequence([
+              'new-tank',
+              'new-fish',
+              'new-filter',
+              'new-task',
+              'new-log',
+            ]),
+            now: () => DateTime.utc(2026, 6, 22, 12),
+          );
+          final backupData = _backupData();
+
+          if (scenario.collection == 'tanks') {
+            final tanks = (backupData['tanks'] as List)
+                .map((entry) => Map<String, dynamic>.from(entry as Map))
+                .toList();
+            tanks.first['id'] = '   ';
+            backupData['tanks'] = tanks;
+            backupData['livestock'] = <Map<String, dynamic>>[];
+            backupData['equipment'] = <Map<String, dynamic>>[];
+            backupData['tasks'] = <Map<String, dynamic>>[];
+            backupData['logs'] = <Map<String, dynamic>>[];
+          } else {
+            final entries = (backupData[scenario.collection] as List)
+                .map((entry) => Map<String, dynamic>.from(entry as Map))
+                .toList();
+            entries.first['id'] = '   ';
+            backupData[scenario.collection] = entries;
+
+            if (scenario.collection == 'livestock') {
+              final logs = (backupData['logs'] as List)
+                  .map((entry) => Map<String, dynamic>.from(entry as Map))
+                  .toList();
+              logs.first.remove('relatedLivestockId');
+              backupData['logs'] = logs;
+            }
+            if (scenario.collection == 'equipment') {
+              final tasks = (backupData['tasks'] as List)
+                  .map((entry) => Map<String, dynamic>.from(entry as Map))
+                  .toList();
+              final logs = (backupData['logs'] as List)
+                  .map((entry) => Map<String, dynamic>.from(entry as Map))
+                  .toList();
+              tasks.first.remove('relatedEquipmentId');
+              logs.first.remove('relatedEquipmentId');
+              backupData['tasks'] = tasks;
+              backupData['logs'] = logs;
+            }
+            if (scenario.collection == 'tasks') {
+              final logs = (backupData['logs'] as List)
+                  .map((entry) => Map<String, dynamic>.from(entry as Map))
+                  .toList();
+              logs.first.remove('relatedTaskId');
+              backupData['logs'] = logs;
+            }
+          }
+
+          await expectLater(
+            service.importTankScopedData(backupData),
+            throwsA(
+              isA<BackupImportException>().having(
+                (error) => error.originalError,
+                'originalError',
+                isA<FormatException>().having(
+                  (error) => error.message,
+                  'message',
+                  contains(
+                    'Invalid backup: ${scenario.label} entries must include id',
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          expect(storage.savedTankIds, isEmpty);
+          expect(storage.tanks, isEmpty);
+          expect(storage.livestock, isEmpty);
+          expect(storage.equipment, isEmpty);
+          expect(storage.logs, isEmpty);
+          expect(storage.tasks, isEmpty);
+        }
+      },
+    );
+
+    test(
       'rejects missing backup relationship ids before reporting import success',
       () async {
         for (final scenario in const [
