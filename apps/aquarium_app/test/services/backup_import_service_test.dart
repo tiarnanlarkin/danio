@@ -898,5 +898,37 @@ void main() {
         expect(prefs.getInt('theme_mode'), 0);
       },
     );
+
+    test(
+      'runs restored photo cleanup when tank import fails',
+      () async {
+        final storage = _RecordingStorageService()..failOnSaveLog = true;
+        var cleanupCalls = 0;
+        final flow = BackupRestoreImportFlow(
+          importService: BackupImportService(
+            storage: storage,
+            newId: _idSequence([
+              'new-tank',
+              'new-fish',
+              'new-filter',
+              'new-task',
+              'new-log',
+            ]),
+            now: () => DateTime.utc(2026, 6, 22, 12),
+          ),
+          onImportFailureCleanup: () async {
+            cleanupCalls += 1;
+          },
+        );
+
+        await expectLater(
+          flow.importBackupData(_backupData()),
+          throwsA(isA<BackupImportException>()),
+        );
+
+        expect(cleanupCalls, 1);
+        expect(storage.tanks.keys, isNot(contains('new-tank')));
+      },
+    );
   });
 }

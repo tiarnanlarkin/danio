@@ -68,17 +68,21 @@ class BackupRestoreImportFlowResult {
   });
 }
 
+typedef BackupImportFailureCleanup = Future<void> Function();
+
 class BackupRestoreImportFlow {
   final BackupImportService importService;
   final BackupPreferencesRestore restorePreferences;
   final BackupImportInvalidation? onTanksImported;
   final BackupImportInvalidation? onPreferencesRestored;
+  final BackupImportFailureCleanup? onImportFailureCleanup;
 
   BackupRestoreImportFlow({
     required this.importService,
     BackupPreferencesRestore? restorePreferences,
     this.onTanksImported,
     this.onPreferencesRestored,
+    this.onImportFailureCleanup,
   }) : restorePreferences =
            restorePreferences ??
            ((data) => SharedPreferencesBackup.restoreFromJson(data));
@@ -86,7 +90,14 @@ class BackupRestoreImportFlow {
   Future<BackupRestoreImportFlowResult> importBackupData(
     Map<String, dynamic> backupData,
   ) async {
-    final importResult = await importService.importTankScopedData(backupData);
+    late final BackupImportResult importResult;
+    try {
+      importResult = await importService.importTankScopedData(backupData);
+    } catch (error, stackTrace) {
+      await onImportFailureCleanup?.call();
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+
     final imported = importResult.importedTanks;
     if (imported > 0) {
       onTanksImported?.call();

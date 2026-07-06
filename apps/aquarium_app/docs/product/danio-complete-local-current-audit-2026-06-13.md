@@ -2496,8 +2496,10 @@ CL-P1-009DH Backup restored-photo import rollback:
   cleaned up instead of being left as orphaned local files.
 - Existing local photos with matching restored filenames are not overwritten and
   are not removed by the cleanup path.
-- Focused service coverage verifies cleanup removes only newly restored photos,
-  and Backup & Restore screen coverage guards the import failure cleanup path.
+- Focused service coverage verifies cleanup removes only newly restored photos.
+- DS-2026-07-05-045 adds executable import-flow coverage that verifies
+  `BackupRestoreImportFlow` runs the restored-photo cleanup callback when
+  tank import fails after photo extraction.
 
 CL-P1-009DI Profile/preferences restore rollback:
 
@@ -4435,9 +4437,11 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Backup photo reference handling is now scoped to current `imageUrl` and
   `photoUrls` fields, so free-text notes/descriptions can mention old
   `photos/` paths without blocking valid backup export, preview, or restore.
-  Remaining
-  backup/data work is broader edit/delete/undo coverage and restore/migration
-  walkthrough QA. DS-2026-07-05-044 verified that the current durable
+  DS-2026-07-05-045 adds executable restore/import failure evidence that newly
+  restored photos are cleaned when tank import fails after extraction.
+  Remaining backup/data work is broader edit/delete/undo coverage and
+  restore/migration walkthrough QA. DS-2026-07-05-044 verified that the current
+  durable
   debounced local writers are gems and achievement progress, both covered by
   lifecycle flush evidence; the profile lifecycle observer flushes the
   already-visible profile snapshot after immediate saves and is not an open

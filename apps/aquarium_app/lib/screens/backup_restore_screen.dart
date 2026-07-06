@@ -645,6 +645,11 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         ),
         onTanksImported: () => ref.invalidate(tanksProvider),
         onPreferencesRestored: () => invalidateRestoredPreferenceProviders(ref),
+        onImportFailureCleanup: () async {
+          if (restoredPhotosForImport) {
+            await backupService.cleanupLastRestoredPhotos();
+          }
+        },
       ).importBackupData(backupData);
       final imported = importResult.importedTanks;
       if (importResult.preferencesRestoreFailed) {

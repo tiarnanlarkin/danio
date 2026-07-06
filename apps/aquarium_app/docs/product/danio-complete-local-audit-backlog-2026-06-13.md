@@ -170,7 +170,8 @@ Recent CL-P1-009 continuation note:
   normal-user copy, retry, and confirmed start-fresh actions.
 - CL-P1-009DH cleans up newly restored backup photo files if a tank-scoped
   import fails after photo extraction, while preserving any pre-existing local
-  photos.
+  photos; DS-2026-07-05-045 adds executable import-flow coverage for this
+  cleanup callback.
 - CL-P1-009DI rolls back previous exportable profile/preferences values if a
   platform preference write fails mid-restore.
 - CL-P1-009DJ shows normal retry feedback when single livestock removal expiry

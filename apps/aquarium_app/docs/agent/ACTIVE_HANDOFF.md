@@ -1,40 +1,37 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-05-044 data-resilience checkpoint ready for next successor
-Last updated: 2026-07-05 after debounced-writer inventory verification and local gates
+Status: Clean DS-2026-07-05-045 data-resilience checkpoint ready for next successor
+Last updated: 2026-07-05 after restore import photo-cleanup proof and local gates
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
-- Latest product/data-safety slice: DS-2026-07-05-044.
+- Latest product/data-safety slice: DS-2026-07-05-045.
 - Latest workflow slice: WF-2026-07-05-003.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - Temporary DS-044 branch has been deleted after merge.
+  - Temporary DS-045 branch has been deleted after merge.
 
 ## Completed Product Slice
 
-- Slice: DS-2026-07-05-044, Debounced Writer Inventory.
+- Slice: DS-2026-07-05-045, Restore Import Photo Cleanup Proof.
 - Slice contract:
-  `docs/agent/plans/DS-2026-07-05-044-debounced-writer-inventory-slice-contract.md`.
+  `docs/agent/plans/DS-2026-07-05-045-restore-import-photo-cleanup-proof-slice-contract.md`.
 - Result:
-  - Current durable debounced local writers are gems and achievement progress.
-  - Gems flushes pending debounced writes through the root lifecycle handler on
-    paused/inactive/detached.
-  - Achievement progress flushes pending debounced writes through
-    `_AchievementProgressLifecycleListener` on paused/detached and keeps failed
-    saves pending for lifecycle retry.
-  - The current profile lifecycle observer flushes the already-visible profile
-    snapshot after immediate saves; it is lifecycle coverage but not an open
-    debounced-writer target.
-  - `DCL-DR-005` is archived as no-current-gap/future-watch. Re-open only if a
-    new durable debounced local writer is added or lifecycle evidence changes.
-  - No production Dart behavior, UI, Android runtime, cloud/account behavior,
-    paid services, API keys, provider, premium, store, deploy, or optional-AI
-    behavior changed.
+  - `DCL-DR-001` advanced with executable restore/import failure cleanup proof.
+  - `BackupRestoreImportFlow` now accepts an import-failure cleanup callback and
+    invokes it before rethrowing tank-scoped import failures.
+  - Backup & Restore passes that callback only when the current restore attempt
+    created local photo files, so failed tank imports clean newly restored
+    photos through the existing `BackupService.cleanupLastRestoredPhotos()`
+    path.
+  - Focused RED/GREEN service coverage verifies the cleanup callback runs once
+    when tank import fails and the import rollback keeps the new tank absent.
+  - No UI layout, Android runtime, cloud/account behavior, paid services, API
+    keys, provider, premium, store, deploy, or optional-AI behavior changed.
 
 ## Completed Workflow Slice
 
@@ -71,6 +68,21 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+DS-2026-07-05-045:
+
+- RED:
+  `flutter test test/services/backup_import_service_test.dart --plain-name "runs restored photo cleanup when tank import fails" --reporter compact`
+  failed because `BackupRestoreImportFlow` did not expose
+  `onImportFailureCleanup`.
+- GREEN: the same named test passed after `BackupRestoreImportFlow` invoked the
+  cleanup callback before rethrowing tank import failures.
+- `flutter test test/services/backup_import_service_test.dart --reporter compact`
+  passed with 14 tests.
+- Targeted analyze passed for the touched screen, service, and service-test
+  files.
+- `git diff --check`, docs guard, dirty-branch Full, branch clean-worktree
+  Full, and clean-main Full gate passed before DS-045 was pushed.
 
 DS-2026-07-05-043:
 
@@ -117,6 +129,9 @@ DS-2026-07-05-044:
 ## Device And Preview State
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
+  required for DS-045 because it was a service/failure-boundary data-safety
+  proof.
+- No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-044 because it was a docs/evidence verification slice.
 - DS-043 startup preflight found Danio on `emulator-5556` and WGTR on
   `emulator-5554`; Danio live-preview `-CheckOnly -WaitSeconds 5` passed
@@ -127,11 +142,14 @@ DS-2026-07-05-044:
 
 ## Blockers
 
-- No blocker remains for DS-2026-07-05-044 or WF-2026-07-05-003.
+- No blocker remains for DS-2026-07-05-045, DS-2026-07-05-044, or
+  WF-2026-07-05-003.
 - The next product slice should be selected from
   `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Highest-ranked open local lane remains data resilience:
-  `DCL-DR-001` through `DCL-DR-004`.
+  `DCL-DR-001` through `DCL-DR-004`; DS-045 added proof for one
+  restore/import failure cleanup boundary, but broader restore/migration and
+  create/delete/relationship closure evidence remains open.
 - Rows with `PRODUCT_DECISION` or `EXTERNAL_PARKED` disposition require a user
   decision and are not automatic implementation targets.
 
@@ -140,7 +158,7 @@ DS-2026-07-05-044:
 Create the next project-scoped successor only after this checkpoint is clean,
 pushed, aligned, and temporary branches are cleaned up. Use
 `docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md` and set the next remaining
-sequential session budget to 6 total, including that successor.
+sequential session budget to 5 total, including that successor.
 
 The next successor should:
 
