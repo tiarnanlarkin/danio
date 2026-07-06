@@ -502,6 +502,7 @@ class BackupImportService {
       sourceLabel: 'log',
       field: 'relatedEquipmentId',
       targetTankIds: equipmentTankIds,
+      targetLabel: 'equipment',
     );
     _validateRelationshipTargetTank(
       logsJson,
@@ -509,6 +510,7 @@ class BackupImportService {
       sourceLabel: 'log',
       field: 'relatedLivestockId',
       targetTankIds: livestockTankIds,
+      targetLabel: 'livestock',
     );
     _validateRelationshipTargetTank(
       logsJson,
@@ -516,6 +518,7 @@ class BackupImportService {
       sourceLabel: 'log',
       field: 'relatedTaskId',
       targetTankIds: taskTankIds,
+      targetLabel: 'task',
     );
     _validateRelationshipTargetTank(
       tasksJson,
@@ -523,6 +526,7 @@ class BackupImportService {
       sourceLabel: 'task',
       field: 'relatedEquipmentId',
       targetTankIds: equipmentTankIds,
+      targetLabel: 'equipment',
     );
   }
 
@@ -548,6 +552,7 @@ class BackupImportService {
     required String sourceLabel,
     required String field,
     required Map<String, String> targetTankIds,
+    required String targetLabel,
   }) {
     for (final source in sourceJson) {
       final sourceMap = _mapFrom(source, sourceLabel);
@@ -561,7 +566,11 @@ class BackupImportService {
       if (value.isEmpty) continue;
 
       final targetTankId = targetTankIds[value];
-      if (targetTankId == null) continue;
+      if (targetTankId == null) {
+        throw FormatException(
+          'Invalid backup: $sourceCollection $field values must reference imported $targetLabel records',
+        );
+      }
 
       final sourceTankId = _requiredString(sourceMap, 'tankId', sourceLabel);
       if (targetTankId != sourceTankId) {
