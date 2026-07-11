@@ -34,6 +34,11 @@ const _otherContractPaths = <String>[
   '$_contractRoot/runner_compatibility.json',
 ];
 
+const _task3Paths = <String>[
+  'scripts/autonomous_completion/DanioAutonomousCompletion.psm1',
+  'test/scripts/autonomous_completion_behavior_test.ps1',
+];
+
 Map<String, dynamic> _readJson(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
 
@@ -56,6 +61,7 @@ void main() {
       ..._schemaPaths,
       ..._fixturePaths,
       ..._otherContractPaths,
+      ..._task3Paths,
     ]) {
       final file = File(path);
       expect(file.existsSync(), isTrue, reason: path);
@@ -159,5 +165,126 @@ void main() {
       isFalse,
       reason: 'Task 13 alone creates operational run state',
     );
+  });
+
+  test('pure PowerShell module exposes only the Task 3 validation surface', () {
+    final source = File(_task3Paths.first).readAsStringSync();
+
+    expect(source, contains('[CmdletBinding()]'));
+    expect(source, contains('Set-StrictMode -Version Latest'));
+    expect(source, contains(r'$ErrorActionPreference = "Stop"'));
+    for (final functionName in <String>[
+      'Resolve-DanioRepositoryRoot',
+      'Read-DanioLedgerClosureRows',
+      'Test-DanioLedgerClosureRows',
+      'Test-DanioRunState',
+      'Test-DanioRunStateTransition',
+      'Test-DanioCompletionReadiness',
+    ]) {
+      expect(source, contains('function $functionName'));
+      expect(source, contains('"$functionName"'));
+    }
+
+    for (final laterFunction in <String>[
+      'Get-DanioRepositoryObservation',
+      'Test-DanioRunnerCompatibility',
+      'New-DanioSynchronizationReceipt',
+      'Test-DanioSynchronizationReceipt',
+      'Test-DanioAutonomousReadiness',
+      'New-DanioWriterClaimPlan',
+      'New-DanioRehearsalReport',
+    ]) {
+      expect(source, isNot(contains('function $laterFunction')));
+    }
+
+    for (final mutation in <String>[
+      'git fetch',
+      'git add',
+      'git commit',
+      'git push',
+      'git worktree',
+      'Set-Content',
+      'Add-Content',
+      'Out-File',
+      'New-Item',
+      'Remove-Item',
+      'Start-Process',
+      'Invoke-RestMethod',
+      'Invoke-WebRequest',
+      'create_thread',
+      'adb ',
+    ]) {
+      expect(source, isNot(contains(mutation)), reason: mutation);
+    }
+  });
+
+  test('pure module carries the exact allowed transition matrix', () {
+    final source = File(_task3Paths.first).readAsStringSync();
+    const allowed = <String, String>{
+      'inactive>ready': 'launch',
+      'ready>active': 'claim',
+      'handoff_ready>active': 'claim',
+      'ready>stopped': 'preclaim_stop',
+      'handoff_ready>stopped': 'preclaim_stop',
+      'active>handoff_ready': 'closeout',
+      'active>paused': 'pause',
+      'active>stopped': 'stop',
+      'active>finalizing': 'finalize',
+      'finalizing>complete': 'complete',
+      'finalizing>stopped': 'finalization_stop',
+      'paused>ready': 'resume',
+      'stopped>ready': 'resume',
+      'handoff_ready>handoff_ready': 'administrative_sync',
+      'complete>complete': 'administrative_sync',
+    };
+
+    for (final entry in allowed.entries) {
+      expect(source, contains('"${entry.key}" = "${entry.value}"'));
+    }
+    expect(source, isNot(contains('"active>complete"')));
+    expect(source, isNot(contains('"active>active"')));
+    expect(source, isNot(contains('"STOP_PENDING" =')));
+  });
+
+  test('state fixtures encode claim and exactly-once charge semantics', () {
+    final inactive = _readJson(_fixturePaths[0]);
+    final ready = _readJson(_fixturePaths[1]);
+    final active = _readJson(_fixturePaths[2]);
+    final handoffReady = _readJson(_fixturePaths[3]);
+    final finalizing = _readJson(_fixturePaths[4]);
+    final complete = _readJson(_fixturePaths[5]);
+
+    Map<String, dynamic> budget(Map<String, dynamic> state) =>
+        state['budget'] as Map<String, dynamic>;
+    Map<String, dynamic> charge(Map<String, dynamic> state) =>
+        budget(state)['current_charge'] as Map<String, dynamic>;
+
+    expect(budget(inactive)['consumed_units'], 1);
+    expect(budget(inactive)['remaining_units_including_current'], 19);
+    expect(charge(inactive)['status'], 'none');
+    expect(budget(ready)['consumed_units'], 2);
+    expect(budget(ready)['remaining_units_including_current'], 18);
+    expect(charge(ready)['status'], 'none');
+    expect(budget(active)['consumed_units'], 2);
+    expect(budget(active)['remaining_units_including_current'], 18);
+    expect(charge(active)['status'], 'pending');
+    expect(active['owner'], isNotNull);
+    expect(
+      (active['owner'] as Map<String, dynamic>)['token_sha256'],
+      '5566cc56fcd32df88a240501e09417589eab91939aa46f6bfde7a4a2b806ea89',
+    );
+
+    for (final state in <Map<String, dynamic>>[
+      handoffReady,
+      finalizing,
+      complete,
+    ]) {
+      expect(budget(state)['consumed_units'], 3);
+      expect(budget(state)['remaining_units_including_current'], 17);
+      expect(charge(state)['status'], 'consumed');
+    }
+    expect(handoffReady['owner'], isNull);
+    expect(finalizing['owner'], isNotNull);
+    expect(complete['owner'], isNull);
   });
 }

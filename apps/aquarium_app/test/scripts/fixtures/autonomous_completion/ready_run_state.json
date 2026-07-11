@@ -65,8 +65,8 @@
   "owner": null,
   "budget": {
     "total_approved_units": 20,
-    "consumed_units": 1,
-    "remaining_units_including_current": 19,
+    "consumed_units": 2,
+    "remaining_units_including_current": 18,
     "current_charge": {
       "work_unit_id": null,
       "status": "none",

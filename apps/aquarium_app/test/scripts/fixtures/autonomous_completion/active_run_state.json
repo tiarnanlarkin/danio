@@ -64,25 +64,25 @@
   },
   "owner": {
     "task_id": "task-fixture-001",
-    "token_sha256": "1556a11602473e831e678541b73112b99a43a938428c9bab3bdfb0308d8755e5",
-    "claim_revision": 2,
+    "token_sha256": "5566cc56fcd32df88a240501e09417589eab91939aa46f6bfde7a4a2b806ea89",
+    "claim_revision": 1,
     "claim_parent_commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
     "claim_staged_tree_hash": "9119ad828ff570ccd42df26553e8142569919fb8",
-    "branch_name": "autonomy/danio-phone-complete-local-2026-07-11/DCL-DR-001-restore-matrix-audit/1556a1160247",
-    "worktree_id": "danio-phone-complete-local-2026-07-11-DCL-DR-001-restore-matrix-audit-1556a1160247",
-    "worktree_path": "C:/Users/larki/OneDrive/Documents/App Projects/Danio Aquarium App Project/.codex-worktrees/danio-phone-complete-local-2026-07-11-DCL-DR-001-restore-matrix-audit-1556a1160247",
+    "branch_name": "autonomy/danio-phone-complete-local-2026-07-11/DCL-DR-001-restore-matrix-audit/5566cc56fcd3",
+    "worktree_id": "danio-phone-complete-local-2026-07-11-DCL-DR-001-restore-matrix-audit-5566cc56fcd3",
+    "worktree_path": "C:/Users/larki/OneDrive/Documents/App Projects/Danio Aquarium App Project/.codex-worktrees/danio-phone-complete-local-2026-07-11-DCL-DR-001-restore-matrix-audit-5566cc56fcd3",
     "claimed_at_utc": "2026-07-11T12:01:00.0000000Z",
     "writer_lease_released": false,
     "android_lease_released": true
   },
   "budget": {
     "total_approved_units": 20,
-    "consumed_units": 1,
-    "remaining_units_including_current": 19,
+    "consumed_units": 2,
+    "remaining_units_including_current": 18,
     "current_charge": {
       "work_unit_id": "DCL-DR-001-restore-matrix-audit",
       "status": "pending",
-      "claimed_revision": 2,
+      "claimed_revision": 1,
       "consumed_revision": null
     }
   },

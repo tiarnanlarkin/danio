@@ -65,12 +65,12 @@
   "owner": null,
   "budget": {
     "total_approved_units": 20,
-    "consumed_units": 2,
-    "remaining_units_including_current": 18,
+    "consumed_units": 3,
+    "remaining_units_including_current": 17,
     "current_charge": {
       "work_unit_id": "DCL-DR-001-restore-matrix-audit",
       "status": "consumed",
-      "claimed_revision": 2,
+      "claimed_revision": 1,
       "consumed_revision": 3
     }
   },
