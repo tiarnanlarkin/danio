@@ -9,11 +9,14 @@
 **Goal:** Finish Danio as a polished, resilient, local-first Android phone app
 while keeping tablet and external product lanes explicitly parked.
 
-**Architecture:** Keep the repository ledger as the technical source of truth
-and the Figma phone atlas as the visual control surface. Work through one
-ranked closure lane at a time on a short-lived branch, using a focused
-read-only audit before each implementation slice and RED/GREEN proof for every
-behavior or persistence change.
+**Architecture:** This program is the only authority for ordered phase sequence.
+The closure ledger owns row closure state, disposition, evidence, and exact done
+conditions; the Finish Map owns category status and quality-bar summaries; live
+Git, source, tests, and fresh commands own factual truth. The Figma phone atlas
+is the downstream visual control surface. Work through one authorized closure
+lane at a time on a short-lived branch, using a focused read-only audit before
+each implementation slice and RED/GREEN proof for every behavior or persistence
+change.
 
 **Tech Stack:** Flutter, Dart, Riverpod, local JSON and SharedPreferences
 storage, PowerShell quality wrappers, Android local debug builds, local Figma
@@ -30,6 +33,8 @@ phone atlas evidence.
 - Do not create fake provider, premium, cloud, social, or release behavior.
 - Repository code, tests, ledger, and fresh gates remain authoritative when
   Figma or older docs disagree.
+- This program orders the phases. The ledger and Finish Map must not apply a
+  competing P0/P1/P2/P3 or disposition-based selector.
 - Every implementation slice must advance a named `DCL-*` row or close it by
   fresh verification.
 - Data safety, accessibility, visual, and performance rows cannot close from
@@ -96,11 +101,12 @@ Recalibrate after the data-resilience phase.
 | 3. Normal-user depth | `DCL-P1-003` through `DCL-P1-006`, constrained by Phase 0 | 2 to 5 | Guided tools, timeline, learning, and species/plants meet the accepted phone scope while Living Tank and rewards remain within their accepted boundaries. |
 | 4. Content and rules | `DCL-CONTENT-001`, `DCL-RULE-001` | 2 to 3 | The next concrete source, locked-content, recommendation, compatibility, emergency, unit, and calculator risk clusters have executable coverage. |
 | 5. Phone accessibility and visual quality | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | 3 to 5 | High-traffic phone clusters meet accessibility, visual, reduced-motion, and haptic acceptance with stable targeted baselines. |
-| 6. Phone performance | phone portion of `DCL-PERF-001` | 1 to 2 | Owned Android phone evidence covers the recorded startup, resume, tab, animation, scrolling, and image targets. |
+| 6. Phone performance | `DCL-PERF-001` | 1 to 2 | Owned Android phone evidence covers the recorded startup, resume, tab, animation, scrolling, and image targets. |
 | 7. Final phone candidate | `DCL-RC-001` | 1 to 2 | No higher phone row remains open; clean main passes the final local gate set and phone signoff packet. |
 
-`DCL-TAB-001` and the tablet portion of `DCL-PERF-001` are phase-parked and do
-not block Phase 7. `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
+`DCL-TAB-001` owns all later tablet implementation, tablet accessibility,
+tablet visual polish, and tablet performance. It is phase-parked and does not
+block Phase 7. `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
 `DCL-EXT-002` remain externally parked.
 
 ## Phase 1: Data Resilience
@@ -362,9 +368,12 @@ Every implementation slice must:
 - Keep tablet and external lanes on the parked page until the user reopens
   them.
 
-## Recommended Next Slice
+## First Product Slice After Workflow Setup And Explicit Launch
 
-When the user directs the next manual implementation session, start a fresh
-read-only `DCL-DR-001` restore matrix audit using Task 1.1. Implement only if
-that audit proves one specific current false-success, rollback, cleanup, or
-failure-feedback gap.
+Product work remains blocked until the autonomous workflow setup, rehearsal,
+Task 13 activation, and explicit launch readiness all pass. Automatic product
+successor creation is disabled during bootstrap.
+
+After explicit launch, start with a fresh read-only `DCL-DR-001` restore matrix
+audit using Task 1.1. Implement only if that audit proves one specific current
+false-success, rollback, cleanup, or failure-feedback gap.

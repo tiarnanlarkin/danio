@@ -10,10 +10,15 @@ Current phase: Android phone complete-local. Tablet evidence is required only
 after the user reopens the parked tablet phase. Historical tablet checks remain
 valid evidence but do not block the phone candidate.
 
+Within the active phase, `DCL-A11Y-001` and `DCL-PERF-001` are phone-only.
+All later tablet layout, accessibility, visual-polish, and performance work is
+owned by parked row `DCL-TAB-001`.
+
 ## Required Checks By Change Type
 
 | Change type | Required local checks | Evidence to record | Notes |
 | --- | --- | --- | --- |
+| Autonomy authority/bootstrap setup | Focused docs authority guard; `git diff --check`; `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`; `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs` | `ACTIVE_HANDOFF.md`, `SLICE_LOG.md`, exact bootstrap budget transition, and clean aligned Git proof | Keep automatic successor creation disabled except for one explicitly authorized project-scoped bootstrap handoff after durable closeout. No runtime proof is required. |
 | Docs-only workflow/setup | `git diff --check`; `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`; `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs` | Final response and `SLICE_LOG.md` when durable | No live preview required. |
 | Docs claiming product behavior | Docs-only checks plus focused product test or source inspection proving the claim | Link source/test in handoff or slice log | Do not assert new product state without proof. |
 | Tests-only | Focused test file; `git diff --check`; relevant gate if test changes shared setup | Final response | Keep paused/experimental tests separate from product commits. |

@@ -3,7 +3,8 @@
 - **Status:** Approved design for repository implementation planning
 - **Date:** 2026-07-11
 - **Decision owner:** User
-- **Implementation state:** Not started
+- **Implementation state:** Task 1 authority reconciliation implemented;
+  later setup tasks remain inactive
 - **Product scope:** Android phone complete-local only
 
 ## Purpose
@@ -14,9 +15,12 @@ truth, data safety, verification quality, context freshness, and explicit stop
 conditions.
 
 This design prepares the workflow for a later user-launched development push.
-It does not launch that push, authorize an autonomous-unit budget, change
-application behavior, take Android runtime ownership, or reopen parked product
-scope.
+Its original approval did not itself launch that push or authorize an
+autonomous-unit budget. The user subsequently approved a separate 20-unit
+sequential bootstrap/product budget while accepting the implementation plan.
+Task 1 records that bootstrap authorization without activating the operational
+run, changing application behavior, taking Android runtime ownership, or
+reopening parked product scope.
 
 ## Problem Statement
 
@@ -165,7 +169,7 @@ For planning fields, ownership is explicit:
 | Field | Canonical owner |
 | --- | --- |
 | Active product boundary and ordered completion phases | `plans/2026-07-11-phone-complete-local-completion-program.md` |
-| Closure IDs, dispositions, evidence, and exact done conditions | `COMPLETE_LOCAL_CLOSURE_LEDGER.md` |
+| Closure IDs, closure states, dispositions, evidence, and exact done conditions | `COMPLETE_LOCAL_CLOSURE_LEDGER.md` |
 | Category completion status and quality bar | `FINISH_MAP.md` |
 | Verification requirements | `QUALITY_LADDER.md` and `VERIFIED_SLICE_EXECUTION_CONTRACT.md` |
 | Latest human-readable checkpoint and next manual action | `ACTIVE_HANDOFF.md` |
@@ -181,17 +185,51 @@ The operational state stores identifiers and immutable references to these
 owners. It does not copy issue status, done conditions, feature status, the
 human next action, or the parked-scope list.
 
-Current repository docs contain a known ordering contradiction: the accepted
-phone completion program places Optional AI before normal-user P1 depth, while
-the generic Finish Map selector places P1 before P3 Optional AI and the ledger
-currently says the Finish Map owns rank. Repository implementation must
-reconcile those statements in favor of the user-approved phone completion
-program before any autonomous launch. Until that reconciliation passes its
-guard test, `AUTHORITY_CONFLICT` is a startup stop condition.
+The approved-design baseline contained an ordering contradiction: the accepted
+phone completion program placed Optional AI before normal-user P1 depth, while
+the generic Finish Map selector placed P1 before P3 Optional AI and the ledger
+said the Finish Map owned rank. Task 1 resolves those statements in favor of
+the user-approved phone completion program and protects the result with a docs
+authority guard. `AUTHORITY_CONFLICT` remains a startup stop condition for any
+future mismatch, but this known baseline conflict is no longer accepted state.
 
-The closure ledger also needs an explicit machine-verifiable closure state (or
-equivalent schema) before automation can infer completion. Disposition alone
-must not be overloaded to mean both work type and closed/open status.
+Task 1 also adds the ledger's explicit machine-verifiable `Closure State`
+column. Disposition remains the work/decision type and must not be overloaded
+to mean both work type and closed/open status.
+
+Canonical references and product completion use these single definitions:
+
+```text
+canonical_reference := { path, commit, blob_oid }
+product_complete := run_state.mode == "complete"
+```
+
+There is no second `product_complete` boolean. A canonical reference identifies
+the exact committed bytes that were validated; a later working-tree version is
+not silently substituted.
+
+## Task 1 bootstrap authority input snapshot
+
+The following immutable references pin the clean aligned parent from which
+Task 1 reconciled authority. The snapshot is evidence of the bootstrap inputs,
+not a claim that files modified by Task 1 still have these blob OIDs. The live
+run state created by Task 13 must pin then-current committed references after a
+fresh validation pass. This avoids a self-referential future commit hash.
+
+Validators resolve canonical references only from an already committed,
+aligned parent checkpoint. A staged authority or handoff output is validated as
+transition output against that parent and cannot name itself as a canonical
+reference. A later committed transition may pin the now-known prior commit.
+
+| Authority | Path | Commit | Blob OID |
+| --- | --- | --- | --- |
+| Ordered phone program | `apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md` | `d62a174a41bbd7814f27163b93c077336e171336` | `89c834f4cb2fb893086e184dc7b0760c8b668d3c` |
+| Closure ledger | `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md` | `d62a174a41bbd7814f27163b93c077336e171336` | `f331860f7bfe335e65cee3c78c0d730d772cdd28` |
+| Finish Map | `apps/aquarium_app/docs/agent/FINISH_MAP.md` | `d62a174a41bbd7814f27163b93c077336e171336` | `852420754061c1d814931e7c2819004b1f058915` |
+| Quality ladder | `apps/aquarium_app/docs/agent/QUALITY_LADDER.md` | `d62a174a41bbd7814f27163b93c077336e171336` | `91f4dd98e2b9953852bec632b86e78812e130291` |
+| Verified execution contract | `apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md` | `d62a174a41bbd7814f27163b93c077336e171336` | `0fd22199a62f9cf68e8f397af217f8a9f31f73f1` |
+| Active handoff | `apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md` | `d62a174a41bbd7814f27163b93c077336e171336` | `921e22a5fb1a05cbe45ce80062209f337326d58c` |
+| Device ownership policy | `apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md` | `d62a174a41bbd7814f27163b93c077336e171336` | `229a3471399b0cd270ee0f34ecd9379b45b18590` |
 
 ## Roles
 
@@ -1086,5 +1124,7 @@ The reviewers made no repository, runtime, Figma, or external-state changes.
 On 2026-07-11 the user selected and approved the recommended reliability model:
 one writing coordinator with parallel read-only auditors. The user then
 approved this design to proceed to a committed specification and subsequent
-implementation planning. No autonomous implementation budget is implied by
-that approval.
+implementation planning. That design approval alone implied no autonomous
+implementation budget. After reviewing the design, the user separately
+authorized 20 bounded sequential units including the planning unit; the
+bootstrap budget remains distinct from operational activation until Task 13.

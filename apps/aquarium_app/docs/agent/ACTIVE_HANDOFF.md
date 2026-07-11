@@ -1,19 +1,23 @@
 # Danio Active Handoff
 
-Status: Clean autonomy implementation-plan checkpoint with setup unit 1 authorized for project-scoped continuation
-Last updated: 2026-07-11 after the 20-unit sequential budget and detailed implementation plan were verified
+Status: WF-2026-07-11-008 authority-reconciliation closeout checkpoint; setup unit 2 is next after live Git closeout is verified
+Last updated: 2026-07-11 in the Task 1 closeout tree; live Git state remains the final merge/push authority
 
 ## Branch
 
 - Source-of-truth branch: `main`.
-- Current branch after slice closeout: `main`.
+- Current branch at durable slice closeout: `main`.
 - Latest product/data-safety slice: DS-2026-07-06-050.
-- Latest workflow slice: WF-2026-07-11-007.
-- Final state for the next action:
+- Latest workflow slice: WF-2026-07-11-008.
+- This handoff becomes authoritative only when its containing closeout commit is
+  on clean, pushed, aligned `main`. If read from a temporary branch, treat it as
+  a closeout candidate and use live Git commands instead.
+- Required durable state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - Temporary workflow branch has been deleted after merge.
+  - The WF-2026-07-11-008 temporary workflow branch is deleted after its
+    verified fast-forward merge.
 
 ## Completed Product Slice
 
@@ -153,13 +157,41 @@ Last updated: 2026-07-11 after the 20-unit sequential budget and detailed implem
 - No app Dart behavior, Android runtime, Figma file, account, paid service,
   secret, cloud/provider, store/deploy, or external product state changed.
 
+## Autonomous Workflow Setup Unit 1
+
+- Slice: `WF-2026-07-11-008`, Contain Chaining And Reconcile Canonical
+  Authority.
+- Plan scope: Task 1 only from
+  `docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`.
+- Clean parent input: `d62a174a41bbd7814f27163b93c077336e171336`.
+- Result:
+  - the phone completion program is the sole ordered phase authority;
+  - the closure ledger has one formal `Closure State` column with 18 `open`,
+    5 `parked`, 4 `closed`, and no initial `decision_required` rows;
+  - the Finish Map maps every category to exact ledger IDs or explicit `none`
+    for nine pre-ledger closed categories;
+  - `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001`, and
+    `DCL-PERF-001` are phone-only, while `DCL-TAB-001` owns later tablet
+    layout, accessibility, visual-polish, and performance work;
+  - the operating-model design defines one derived `product_complete` value
+    and pins the seven canonical bootstrap input references as path, parent
+    commit, and blob OID tuples;
+  - the bootstrap prompt and repo contracts keep automatic operational
+    successor creation disabled; only the exact user-authorized project-scoped
+    setup handoff may continue before Task 13.
+- Scope remained docs/tests only. No app behavior, Android runtime, Figma,
+  installed skill, operational run state, account, paid/cloud/provider,
+  store/deploy, or external product state changed.
+
 ## Autonomous Chain Authorization
 
 The user authorized 20 bounded sequential units on 2026-07-11. The count
 includes the unit currently being completed. WF-2026-07-11-007 consumed the
-planning unit once, so the next setup task starts with 19 including itself.
-This block is the bootstrap budget record until Task 13 creates operational run
-state; automatic operational chaining remains disabled meanwhile.
+planning unit once. WF-2026-07-11-008 consumes setup unit 1 exactly once when
+this closeout tree is merged, pushed, clean, and aligned on `main`. The next
+setup task then starts with 18 including itself. This block is the bootstrap
+budget record until Task 13 creates operational run state; automatic
+operational chaining remains disabled meanwhile.
 
 ```json
 {
@@ -167,9 +199,9 @@ state; automatic operational chaining remains disabled meanwhile.
   "schema_version": 1,
   "authorization_id": "danio-phone-complete-local-2026-07-11",
   "total_approved_units": 20,
-  "consumed_units": 1,
-  "remaining_units_including_current": 19,
-  "last_closed_unit_id": "WF-2026-07-11-007",
+  "consumed_units": 2,
+  "remaining_units_including_current": 18,
+  "last_closed_unit_id": "WF-2026-07-11-008",
   "operational_state_path": null
 }
 ```
@@ -180,6 +212,36 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+WF-2026-07-11-008:
+
+- Baseline `flutter test test/copy/current_docs_local_truth_test.dart --reporter
+  compact` passed with 4 tests before the Task 1 guard was added.
+- RED: the expanded guard failed with `Every ledger row needs an allowed
+  Closure State`, proving the missing authority field was detected before the
+  docs implementation.
+- GREEN: the expanded guard passed with 5 tests after authority, mapping,
+  phone-scope, runner-order, canonical-pin, and bootstrap-budget reconciliation.
+- Three repository-read-only auditors independently checked the closure-state
+  matrix, Finish Map mappings/parser guard, bootstrap containment, canonical
+  references, and budget semantics. Their validated findings were incorporated;
+  they made no repository, runtime, task, or external-state changes.
+- Final read-only review found one remaining active forecast split for
+  `DCL-PERF-001`. The expanded guard reproduced RED against that exact stale
+  row; `COMPLETE_LOCAL_FORECAST.md` now assigns all phone performance to
+  `DCL-PERF-001` and all later tablet performance to `DCL-TAB-001`, and the
+  focused guard returned GREEN with 5 tests.
+- The first Docs-profile attempt exposed one new test lint for a multiline
+  string. Targeted analysis reproduced the exact issue; the literal was changed
+  to adjacent strings and targeted `flutter analyze` then passed.
+- The final normal Docs profile rerun, including the forecast guard, passed: 40
+  focused Flutter tests, dependency validation, Danio custom lint, and Flutter
+  analysis all passed.
+- Final diff checks and the clean-worktree Docs profile on both the committed
+  branch and merged `main` remain mandatory before durable closeout.
+- No Full, Android, live-preview, Figma, installed-skill, cloud/account, or
+  external gate was required because Task 1 is a docs/test bootstrap authority
+  slice.
 
 WF-2026-07-11-007:
 
@@ -377,6 +439,9 @@ DS-2026-07-05-044:
   action. Reviewers were repository-read-only.
 - WF-2026-07-11-007 required no emulator, ADB, Figma, browser, or live-preview
   action. All delegated auditors were repository-read-only.
+- WF-2026-07-11-008 required no emulator, ADB, Figma, browser, live-preview,
+  installed-skill, account, or external-service action. All delegated auditors
+  were repository-read-only.
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-050 because it was a screen failure-boundary data-safety proof
@@ -414,39 +479,45 @@ DS-2026-07-05-044:
   DS-2026-07-06-047,
   DS-2026-07-06-046, or
   WF-2026-07-05-003. No blocker remains for WF-2026-07-11-006 or
-  WF-2026-07-11-007 itself.
+  WF-2026-07-11-007. WF-2026-07-11-008 has no content blocker; its budget
+  transition and successor authorization require the clean pushed closeout
+  stated above.
 - Product implementation remains deliberately blocked while workflow setup is
-  fail-closed. The current startup blockers are `AUTHORITY_CONFLICT` and
-  `RUNNER_INCOMPATIBLE`; Tasks 1 and 6 own those corrections.
-- Highest-ranked open local lane remains data resilience:
+  fail-closed. Task 1 resolves the known baseline `AUTHORITY_CONFLICT` and the
+  docs guard must keep it resolved. `RUNNER_INCOMPATIBLE` remains intentionally
+  open for Task 6; Tasks 2-5 may build pure contracts and validators without
+  claiming launch readiness.
+- The phone program's first product lane after setup and explicit launch is
+  data resilience:
   `DCL-DR-001` through `DCL-DR-004`; DS-050 added proof that screen-level
   restored-photo cleanup failure cannot block the normal import-failed
   reporting path, but broader restore/migration, create/delete, and final
   relationship-mapping closure evidence remains open.
-- No unresolved `PRODUCT_DECISION` row remains. Rows with `PHASE_PARKED` or
-  `EXTERNAL_PARKED` disposition are not automatic implementation targets.
-- `DCL-TAB-001` and the tablet portion of `DCL-PERF-001` are now
-  `PHASE_PARKED` and do not block the phone candidate.
-- Automatic task chaining and autonomous product launch remain blocked until
-  the coordinator-only workflow implementation, installed-runner pinning, and
-  no-product-change rehearsal pass. Explicit project-scoped bootstrap tasks are
-  authorized by the current 20-unit user approval.
+- No row is currently `decision_required`. Rows in `parked` closure state are
+  not automatic implementation targets.
+- `DCL-TAB-001` owns later tablet layout, accessibility, visual polish, and
+  performance; it remains parked and does not block the phone candidate.
+- Automatic operational task chaining and autonomous product launch remain
+  blocked until the coordinator-only workflow implementation, installed-runner
+  pinning, readiness validation, and no-product-change rehearsal pass. The
+  current 20-unit user approval authorizes only the exact sequential
+  project-scoped bootstrap handoffs before Task 13.
 
 ## Next Action
 
-Create or reuse exactly one saved-project local task for setup unit 1 with
-marker `danio-autonomy-bootstrap-2026-07-11/1`. The task has 19 sequential
+Create or reuse exactly one saved-project local task for setup unit 2 with
+marker `danio-autonomy-bootstrap-2026-07-11/2`. The task has 18 sequential
 units remaining including itself and must use the plan's Inline Execution
 model: one writing coordinator and repository-read-only auditors.
 
 The setup task must load `$danio-autonomous-slice-runner`,
 `$verified-slice-runner`, and `superpowers:executing-plans`; rebuild live Git
-and installed-runner truth; then implement Task 1 only from
+and installed-runner truth; then implement Tasks 2-3 only from
 `docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`.
-It must use RED/GREEN docs guards, end on clean pushed aligned `main`, and
-record the bootstrap budget exactly once.
+It must use RED/GREEN contract/behavior proof, end on clean pushed aligned
+`main`, and record the bootstrap budget exactly once.
 
 Do not start `DCL-DR-001`, take Android runtime ownership, edit Figma, update
 installed skills, create operational run state, or enable automatic chaining
-in setup unit 1. `DCL-DR-001` remains the first product lane only after Tasks
+in setup unit 2. `DCL-DR-001` remains the first product lane only after Tasks
 1-13 and explicit launch readiness pass.

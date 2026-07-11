@@ -170,6 +170,27 @@ that make new build/readiness claims.
 - Only one Android QA owner may control emulator, ADB, Patrol, Firebase Test
   Lab, or Android screenshot evidence at a time.
 
+## Autonomous Phone Bootstrap Containment
+
+- The phone completion program is the only ordered phase authority. The
+  closure ledger owns row closure state, disposition, evidence, and done
+  conditions. The Finish Map owns category status and quality-bar summaries.
+  Live Git, source, tests, and fresh command output remain factual truth.
+- Load `$danio-autonomous-slice-runner` first and
+  `$verified-slice-runner` second for every autonomous phone setup or product
+  unit.
+- Until the no-product-change rehearsal passes and Task 13 creates the live
+  run state, automatic operational chaining remains disabled. Setup units may
+  continue only through an explicit user-authorized project-scoped bootstrap
+  handoff with a positive integer budget and exact marker.
+- An explicit user-authorized project-scoped bootstrap handoff is not proof
+  that the operational product run is active. Do not select or implement a
+  product ledger row before Task 13 activation and launch readiness pass.
+- During bootstrap, the machine-readable budget block in `ACTIVE_HANDOFF.md`
+  is the temporary accounting authority. Each setup unit updates it once only
+  when its closeout reaches clean, pushed, aligned `main`; pre-closeout failure
+  consumes nothing.
+
 ## Documentation References
 
 - Workflow charter: `apps/aquarium_app/docs/agent/WORKFLOW_CHARTER.md`
@@ -179,6 +200,8 @@ that make new build/readiness claims.
 - Verified slice execution contract: `apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md`
 - Complete-local forecast: `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_FORECAST.md`
 - Phone completion program: `apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`
+- Autonomous operating-model design: `apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md`
+- Autonomous workflow implementation plan: `apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`
 - Autonomous chain handoff prompt: `apps/aquarium_app/docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md`
 - Screen inventory: `apps/aquarium_app/docs/agent/SCREEN_INVENTORY.md`
 - Slice log: `apps/aquarium_app/docs/agent/SLICE_LOG.md`

@@ -11,6 +11,10 @@ with `COMPLETE_LOCAL_CLOSURE_LEDGER.md`, `COMPLETE_LOCAL_FORECAST.md`,
 `ACTIVE_HANDOFF.md`, `FINISH_MAP.md`, `QUALITY_LADDER.md`,
 `TESTING_CHECKLIST.md`, and `SLICE_LOG.md`.
 
+For autonomous phone workflow setup and later product units, load
+`$danio-autonomous-slice-runner` first, then load
+`$verified-slice-runner` as its underlying verified-slice contract.
+
 ## Startup Contract
 
 Every verified Danio slice starts by rebuilding truth from the repo and current
@@ -41,16 +45,46 @@ apps/aquarium_app/docs/agent/QUALITY_LADDER.md
 apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md
 apps/aquarium_app/docs/agent/SLICE_LOG.md
 apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md
+apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md
+apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md
 ```
 
 Inspect runtime ownership before any Android, ADB, screenshot, Patrol, Maestro,
 or live-preview action. Docs-only and pure service/test slices may skip device
 work and record that no runtime ownership was needed.
 
+## Bootstrap Continuation Contract
+
+Until the no-product-change rehearsal passes and Task 13 creates the live run
+state, automatic operational chaining remains disabled. The temporary
+machine-readable budget block in `ACTIVE_HANDOFF.md` is the bootstrap accounting
+authority only when that document is committed on clean, pushed, aligned
+`main`.
+
+Setup continuation is allowed only through an explicit user-authorized
+project-scoped bootstrap handoff that names the exact unique marker, the
+positive remaining integer budget including the next task, the saved Danio
+project, the selected implementation-plan task(s), closeout rules, and stop
+conditions. The handoff may create or reuse exactly one matching local task
+only after durable closeout. Ambiguous lookup, project binding, or create
+outcome means create nothing and return the paste-ready prompt.
+
+Each cleanly closed setup unit increments `consumed_units`, decrements
+`remaining_units_including_current`, records the same unique unit ID once in
+`SLICE_LOG.md`, and updates `last_closed_unit_id`. A pre-closeout bootstrap
+failure changes none of those fields. Task 13 atomically moves authority to the
+live run state; the bootstrap block becomes historical after that transition.
+
 ## Selection Contract
 
-- Pick exactly one ledger target unless the phone completion program allows a
-  small group of related micro-slices.
+- Before Task 13, select only the exact setup task(s) assigned by the autonomous
+  workflow implementation plan. Do not select a product ledger target.
+- After activation, the phone completion program is the only ordered phase
+  authority. Pick exactly one eligible ledger target unless that program
+  allows a small group of related micro-slices.
+- The closure ledger owns row closure state, disposition, evidence, and done
+  conditions. The Finish Map owns category status and quality-bar summaries;
+  neither may reorder the phone program.
 - Link the selected `DCL-*` ledger ID in the slice contract, handoff, or slice
   log before implementation.
 - No implementation starts from "seems likely". The missing behavior must be

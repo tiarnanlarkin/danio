@@ -39,12 +39,13 @@ shared and the stop conditions stay clear.
 | 3. Normal-user P1 depth | `DCL-P1-003` through `DCL-P1-006` | 2 | 2 to 5 | 8 | Guided-tool, timeline, learning, and species/plant gaps are implemented or accepted within the current phone scope. |
 | 4. Content and rule confidence | `DCL-CONTENT-001`, `DCL-RULE-001` | 1 | 2 to 3 | 5 | Broader validators and rule tests cover the next concrete risk clusters without unsafe care-copy drift. |
 | 5. Phone accessibility, visual, motion | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | 2 | 3 to 5 | 8 | Current phone screenshots/Figma targets and focused proof close bounded visual, accessibility, reduced-motion, and haptic gaps. |
-| 6. Phone performance evidence | phone portion of `DCL-PERF-001` | 1 | 1 to 2 | 3 | Owned Android phone evidence covers startup, resume, tab switching, tank animation, scrolling, and image first paint against local targets. |
+| 6. Phone performance evidence | `DCL-PERF-001` | 1 | 1 to 2 | 3 | Owned Android phone evidence covers startup, resume, tab switching, tank animation, scrolling, and image first paint against local targets. |
 | 7. Final phone candidate | `DCL-RC-001` | 1 | 1 to 2 | 3 | Clean `main` passes the final local gate set, AndroidPrep, affected phone-state recheck, product truth scan, and final phone QA note. |
 
 Phase-parked and external rows are not counted unless the user explicitly
-reopens them: `DCL-TAB-001`, the tablet portion of `DCL-PERF-001`,
-`DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and `DCL-EXT-002`.
+reopens them: `DCL-TAB-001`, `DCL-QA-001`, `DCL-EXT-001`,
+`DCL-PREMIUM-001`, and `DCL-EXT-002`. All later tablet performance belongs to
+`DCL-TAB-001`; `DCL-PERF-001` is phone-only.
 
 ## Stop-And-Ask Conditions
 
@@ -67,7 +68,7 @@ Ask one direct question instead of implementing when:
 | --- | --- | --- |
 | Whether dedicated plant inventory and broader seasonal living-tank variants are required for phone completion. | `DCL-P1-001` | Resolved 2026-07-11: current data-derived plant/decor/seasonal cues are accepted; expansion is parked. |
 | Whether seasonal cosmetics and deeper plant/decor collections are required for phone completion. | `DCL-P1-002` | Resolved 2026-07-11: current room vibes, badges, inventory, and equipped decorations are accepted; expansion is parked. |
-| Tablet sequencing. | `DCL-TAB-001`, tablet portion of `DCL-PERF-001` | Decided 2026-07-11: park until phone complete-local closes. |
+| Tablet sequencing. | `DCL-TAB-001` | Decided 2026-07-11: park layout, accessibility, visual polish, and performance until phone complete-local closes. |
 | Whether to reopen non-OpenAI providers, premium AI, keyed-AI seed states, store/release, cloud, deploy, or account-backed work. | `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, `DCL-EXT-002` | Park outside complete-local. |
 
 ## How To Make It Faster
