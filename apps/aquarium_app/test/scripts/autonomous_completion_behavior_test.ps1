@@ -1130,6 +1130,28 @@ $foreignCleanupParameters = @{} + $finalizationReadinessParameters
 $foreignCleanupParameters.Cleanup = $foreignFinalizationCleanup
 $foreignFinalization = Test-DanioAutonomousReadiness @foreignCleanupParameters
 Assert-Equal -Actual $foreignFinalization.stop_reason_code -Expected "COMPLETION_NOT_READY" -Message "Retained foreign lease did not block Finalization readiness."
+
+$multiFailureFinalizationParameters = @{} + $missingEvidenceParameters
+$multiFailureFinalizationParameters.RunnerValidation = New-TestValidationResult `
+  -Valid $false `
+  -Code "RUNNER_INCOMPATIBLE" `
+  -Details @("runner mismatch")
+$multiFailureFinalizationParameters.RuntimeRequired = $true
+$multiFailureFinalizationParameters.RuntimeOwnershipClear = $false
+$multiFailureFinalization = Test-DanioAutonomousReadiness @multiFailureFinalizationParameters
+Assert-Equal `
+  -Actual $multiFailureFinalization.stop_reason_code `
+  -Expected "RUNNER_INCOMPATIBLE" `
+  -Message "Finalization precedence did not select runner mismatch before runtime and completion."
+
+$runtimeBeforeCompletionParameters = @{} + $missingEvidenceParameters
+$runtimeBeforeCompletionParameters.RuntimeRequired = $true
+$runtimeBeforeCompletionParameters.RuntimeOwnershipClear = $false
+$runtimeBeforeCompletion = Test-DanioAutonomousReadiness @runtimeBeforeCompletionParameters
+Assert-Equal `
+  -Actual $runtimeBeforeCompletion.stop_reason_code `
+  -Expected "RUNTIME_OWNERSHIP_CONFLICT" `
+  -Message "Finalization precedence did not select runtime ownership before completion readiness."
 Assert-True `
   -Condition (
     [string]$finalize.last_verified_checkpoint.product_commit -cne $finalProductCommit -and

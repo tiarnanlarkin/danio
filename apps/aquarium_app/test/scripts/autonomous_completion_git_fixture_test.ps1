@@ -192,6 +192,7 @@ if (-not (Test-Path -LiteralPath $syncScriptPath -PathType Leaf)) {
 if (-not (Test-Path -LiteralPath $readinessScriptPath -PathType Leaf)) {
   throw "Expected readiness wrapper is missing: $readinessScriptPath"
 }
+Import-Module -Name (Join-Path $appRoot "scripts/autonomous_completion/DanioAutonomousCompletion.psm1") -Force
 
 $tempBase = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath())
 $tempRoot = Join-Path $tempBase "danio-autonomy-$([Guid]::NewGuid().ToString('N'))"
@@ -286,9 +287,69 @@ try {
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("worktree", "remove", $foreignWorktreeRoot))
   [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("branch", "-D", "fixture-foreign-worktree"))
 
-  $handoffPath = Join-Path $cloneTwoRoot "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
-  Add-Content -LiteralPath $handoffPath -Value "`nFixture remote advance."
-  [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("add", "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"))
+  $ownedWorktreeRoot = Join-Path $tempRoot "owned-worktree"
+  $ownedBranch = "autonomy/fixture-run/fixture-unit/000000000000"
+  [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @(
+    "worktree",
+    "add",
+    "-b",
+    $ownedBranch,
+    $ownedWorktreeRoot,
+    "main"
+  ))
+  $ownedState = [pscustomobject]@{
+    owner = [pscustomobject]@{
+      branch_name = $ownedBranch
+      worktree_path = $ownedWorktreeRoot.Replace("\", "/")
+    }
+    authority = [pscustomobject]@{}
+  }
+  $ownedObservation = Get-DanioRepositoryObservation `
+    -RepositoryRoot $cloneOneRoot `
+    -State $ownedState
+  Assert-True `
+    -Condition $ownedObservation.ownership_clear `
+    -Message "The exact recorded owner branch/worktree was classified as foreign."
+  [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("worktree", "remove", $ownedWorktreeRoot))
+  [void](Invoke-Git -RepositoryRoot $cloneOneRoot -GitArguments @("branch", "-D", $ownedBranch))
+
+  $authorityPaths = [ordered]@{
+    phone_completion_program = "apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md"
+    closure_ledger = "apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md"
+    finish_map = "apps/aquarium_app/docs/agent/FINISH_MAP.md"
+    quality_ladder = "apps/aquarium_app/docs/agent/QUALITY_LADDER.md"
+    verified_slice_execution_contract = "apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md"
+    active_handoff = "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
+    device_ownership_policy = "apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md"
+  }
+  $authorityCommit = Invoke-Git `
+    -RepositoryRoot $cloneOneRoot `
+    -GitArguments @("rev-parse", "origin/main")
+  $authorityReferences = [ordered]@{}
+  foreach ($authorityName in $authorityPaths.Keys) {
+    $authorityPath = $authorityPaths[$authorityName]
+    $authorityReferences[$authorityName] = [pscustomobject]@{
+      path = $authorityPath
+      commit = $authorityCommit
+      blob_oid = Invoke-Git `
+        -RepositoryRoot $cloneOneRoot `
+        -GitArguments @("rev-parse", "${authorityCommit}:$authorityPath")
+    }
+  }
+  $authorityState = [pscustomobject]@{
+    authority = [pscustomobject]$authorityReferences
+  }
+  $authorityBeforeAdvance = Get-DanioRepositoryObservation `
+    -RepositoryRoot $cloneOneRoot `
+    -State $authorityState
+  Assert-True `
+    -Condition $authorityBeforeAdvance.authority_validation.valid `
+    -Message "Canonical authority pins were invalid before origin/main moved."
+
+  $programRelativePath = $authorityPaths.phone_completion_program
+  $programPath = Join-Path $cloneTwoRoot $programRelativePath
+  Add-Content -LiteralPath $programPath -Value "`nFixture remote authority advance."
+  [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("add", $programRelativePath))
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("commit", "-m", "fixture: advance remote"))
   [void](Invoke-Git -RepositoryRoot $cloneTwoRoot -GitArguments @("push", "origin", "main"))
   Assert-ReadinessNoMutation `
@@ -299,11 +360,28 @@ try {
     -ExpectedStopReason "REMOTE_DIVERGED" `
     -Scenario "remote divergence"
 
+  $beforeAuthorityObservation = Get-RepositorySnapshot -RepositoryRoot $cloneOneRoot
+  $authorityAfterAdvance = Get-DanioRepositoryObservation `
+    -RepositoryRoot $cloneOneRoot `
+    -State $authorityState
+  $afterAuthorityObservation = Get-RepositorySnapshot -RepositoryRoot $cloneOneRoot
+  Assert-SnapshotEqual `
+    -Before $beforeAuthorityObservation `
+    -After $afterAuthorityObservation `
+    -Scenario "authority movement observation"
+  Assert-True `
+    -Condition (-not $authorityAfterAdvance.authority_validation.valid) `
+    -Message "Authority validation accepted a program blob that moved on origin/main."
+  Assert-Equal `
+    -Actual $authorityAfterAdvance.authority_validation.code `
+    -Expected "AUTHORITY_CONFLICT" `
+    -Message "Authority movement returned the wrong validation code."
+
   [pscustomobject]@{
     document_type = "danio_autonomous_completion_git_fixture_test_result"
     schema_version = 1
     passed = $true
-    scenarios = 5
+    scenarios = 6
     mutations_performed_by_readiness = $false
   } | ConvertTo-Json -Compress
 } finally {

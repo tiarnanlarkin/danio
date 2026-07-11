@@ -1792,6 +1792,23 @@ function Test-DanioAuthorityReferences {
         -Code "AUTHORITY_CONFLICT" `
         -Details @("Authority '$($authorityProperty.Name)' blob moved.")
     }
+
+    try {
+      $currentOriginBlob = Invoke-DanioGitReadOnly `
+        -RepositoryRoot $RepositoryRoot `
+        -Arguments @("rev-parse", "origin/main:$($reference.path)")
+    } catch {
+      return New-DanioValidationResult `
+        -Valid $false `
+        -Code "AUTHORITY_CONFLICT" `
+        -Details @("Authority '$($authorityProperty.Name)' is absent from origin/main.")
+    }
+    if ([string]$currentOriginBlob -cne [string]$reference.blob_oid) {
+      return New-DanioValidationResult `
+        -Valid $false `
+        -Code "AUTHORITY_CONFLICT" `
+        -Details @("Authority '$($authorityProperty.Name)' blob moved on origin/main.")
+    }
   }
 
   return New-DanioValidationResult -Valid $true -Code "AUTHORITY_VALID"
@@ -1855,11 +1872,35 @@ function Get-DanioRepositoryObservation {
       ConvertTo-DanioOutputLines -Value $branchText |
         Where-Object { $_ -cne "main" }
     )
-    $ownershipClear = (
-      $worktrees.Count -eq 1 -and
-      [string]$worktrees[0] -ceq $normalizedRoot -and
-      $temporaryBranches.Count -eq 0
+    $allowedWorktrees = @($normalizedRoot)
+    $allowedTemporaryBranches = @()
+    $stateHasOwner = (
+      $null -ne $State -and
+      @($State.PSObject.Properties.Name) -ccontains "owner" -and
+      $null -ne $State.owner -and
+      @($State.owner.PSObject.Properties.Name) -ccontains "branch_name" -and
+      @($State.owner.PSObject.Properties.Name) -ccontains "worktree_path" -and
+      -not [string]::IsNullOrWhiteSpace([string]$State.owner.branch_name) -and
+      -not [string]::IsNullOrWhiteSpace([string]$State.owner.worktree_path)
     )
+    if ($stateHasOwner) {
+      $allowedTemporaryBranches = @([string]$State.owner.branch_name)
+      $allowedWorktrees += @(
+        ConvertTo-DanioForwardSlashPath -Path ([string]$State.owner.worktree_path)
+      )
+    }
+
+    $ownershipClear = $worktrees -ccontains $normalizedRoot
+    foreach ($worktree in $worktrees) {
+      if ($allowedWorktrees -cnotcontains [string]$worktree) {
+        $ownershipClear = $false
+      }
+    }
+    foreach ($temporaryBranch in $temporaryBranches) {
+      if ($allowedTemporaryBranches -cnotcontains [string]$temporaryBranch) {
+        $ownershipClear = $false
+      }
+    }
 
     $handoffPath = Join-Path $resolvedRoot "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
     $bootstrapRemaining = $null
@@ -2360,10 +2401,10 @@ function Test-DanioAutonomousReadiness {
     "REMOTE_DIVERGED",
     "DIRTY_UNOWNED",
     "AUTHORITY_CONFLICT",
-    "COMPLETION_NOT_READY",
     "RUNNER_INCOMPATIBLE",
     "BUDGET_EXHAUSTED",
-    "RUNTIME_OWNERSHIP_CONFLICT"
+    "RUNTIME_OWNERSHIP_CONFLICT",
+    "COMPLETION_NOT_READY"
   )
   foreach ($code in $precedence) {
     if (@($failedChecks | Where-Object { $_.code -ceq $code }).Count -gt 0) {
