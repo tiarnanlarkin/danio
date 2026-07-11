@@ -716,11 +716,9 @@ void main() {
     ).readAsStringSync();
 
     for (final path in <String>[
-      'apps/aquarium_app/docs/agent/autonomous_completion/'
-          'phone_completion_run_state.json',
+      'apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json',
       'apps/aquarium_app/docs/agent/autonomous_completion/schemas/',
-      'apps/aquarium_app/docs/agent/autonomous_completion/'
-          'runner_compatibility.json',
+      'apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json',
       'apps/aquarium_app/test/scripts/fixtures/autonomous_completion/',
     ]) {
       expect(runbook, contains(path), reason: path);
