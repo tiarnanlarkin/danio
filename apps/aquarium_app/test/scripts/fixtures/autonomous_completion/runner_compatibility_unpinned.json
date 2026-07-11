@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "manifest_id": "danio-phone-autonomy-runners",
+  "manifest_revision": 1,
+  "authorizes_launch": false,
+  "runner_compatible": false,
+  "launch_proof": null,
+  "design": {
+    "path": "apps/aquarium_app/docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md",
+    "commit": "81be4c93444cfd47a80cf47730cbc76e9b8464ff",
+    "blob_oid": "7a0921a215da64277d8141871008e556c8478bb3",
+    "sha256": "E9AAFCD0B0E1A4D9261E6FE08FCD4306E396C1BA9FF0E921C0A240924496F928"
+  },
+  "install_root": {
+    "environment": "CODEX_HOME",
+    "fallback": "%USERPROFILE%\\.codex"
+  },
+  "runner_order": [
+    "danio-autonomous-slice-runner",
+    "verified-slice-runner"
+  ],
+  "skills": [
+    {
+      "name": "danio-autonomous-slice-runner",
+      "role": "orchestrator",
+      "skill_path": "skills/danio-autonomous-slice-runner/SKILL.md",
+      "skill_sha256": null,
+      "contract_path": "skills/danio-autonomous-slice-runner/references/compatibility-contract.json",
+      "contract_sha256": null,
+      "contract_version": "1.0.0"
+    },
+    {
+      "name": "verified-slice-runner",
+      "role": "base",
+      "skill_path": "skills/verified-slice-runner/SKILL.md",
+      "skill_sha256": null,
+      "contract_path": "skills/verified-slice-runner/references/compatibility-contract.json",
+      "contract_sha256": null,
+      "contract_version": "1.0.0"
+    }
+  ],
+  "writer_policy": {
+    "repository_writer": "coordinator_only",
+    "claim_required": true,
+    "parallel_write_agents": false,
+    "android_repository_writes": false
+  },
+  "budget_policy": {
+    "unit": "claimed_task_unit",
+    "remaining_includes_current": true,
+    "claim_state": "pending",
+    "consume_on": [
+      "handoff_ready",
+      "paused",
+      "stopped",
+      "finalizing"
+    ],
+    "do_not_consume_on": [
+      "preclaim_exit",
+      "WRITER_CLAIM_LOST"
+    ],
+    "abandoned_pending": "consume_on_user_approved_recovery",
+    "exactly_once": true
+  },
+  "failure_policy": {
+    "digest_or_semantic_mismatch": "RUNNER_INCOMPATIBLE",
+    "successor_on_stop": false,
+    "auto_repair_installed_skill": false
+  },
+  "handoff_policy": {
+    "eligible_mode": "handoff_ready",
+    "positive_remaining_required": true,
+    "marker_format": "run_id/handoff_generation",
+    "lookup_before_create": true,
+    "saved_project_only": true,
+    "decrement_on_transfer": false,
+    "ambiguous_or_unavailable": "paste_ready_handoff_only",
+    "unknown_create_result": "reconcile_without_retry"
+  },
+  "thread_capabilities": {
+    "required": [
+      "list_threads",
+      "read_thread",
+      "create_thread.project_target"
+    ],
+    "recovery_only": [
+      "send_message_to_thread"
+    ],
+    "not_for_successors": [
+      "fork_thread"
+    ]
+  },
+  "validation": {
+    "hash_algorithm": "sha256",
+    "hash_scope": "exact_file_bytes",
+    "reject_path_escape": true,
+    "reject_unknown_fields": true
+  }
+}

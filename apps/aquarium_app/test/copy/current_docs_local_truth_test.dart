@@ -166,6 +166,7 @@ void main() {
       'docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md',
       'docs/agent/COMPLETE_LOCAL_FORECAST.md',
       'docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
+      'docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md',
       'docs/agent/SCREEN_INVENTORY.md',
       'docs/agent/SLICE_LOG.md',
       'docs/agent/HOUSEKEEPING.md',
@@ -597,5 +598,38 @@ void main() {
       'Autonomy authority/bootstrap setup',
       'automatic successor creation disabled',
     ]);
+
+    final runbook = _source(
+      'docs/agent/AUTONOMOUS_PHONE_COMPLETION_RUNBOOK.md',
+    );
+    expect(
+      runbook,
+      contains(
+        'inactive ready active handoff_ready paused stopped finalizing complete',
+      ),
+    );
+    expect(
+      runbook,
+      contains('product_complete := run_state.mode == "complete"'),
+    );
+    expect(runbook, contains('Only Task 13 may create'));
+
+    final compatibility =
+        jsonDecode(
+              _source(
+                'docs/agent/autonomous_completion/runner_compatibility.json',
+              ),
+            )
+            as Map<String, dynamic>;
+    expect(compatibility['runner_compatible'], isFalse);
+    expect(compatibility['authorizes_launch'], isFalse);
+    expect(compatibility['launch_proof'], isNull);
+    expect(
+      _exists(
+        'docs/agent/autonomous_completion/phone_completion_run_state.json',
+      ),
+      isFalse,
+      reason: 'Task 13 alone creates operational run state',
+    );
   });
 }

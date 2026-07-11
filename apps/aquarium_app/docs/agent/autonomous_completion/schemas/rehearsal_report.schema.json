@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://danio.local/schemas/rehearsal_report.schema.json",
+  "title": "Danio autonomous completion rehearsal report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_type",
+    "schema_version",
+    "rehearsal_run_id",
+    "task_id",
+    "created_at_utc",
+    "repository_root",
+    "base_commit",
+    "proposed",
+    "before",
+    "after",
+    "previews",
+    "mutations",
+    "overall_status"
+  ],
+  "properties": {
+    "document_type": { "const": "danio_autonomous_completion_rehearsal_report" },
+    "schema_version": { "const": 1 },
+    "rehearsal_run_id": { "$ref": "#/$defs/safe_identifier" },
+    "task_id": { "$ref": "#/$defs/safe_identifier" },
+    "created_at_utc": { "$ref": "#/$defs/strict_utc" },
+    "repository_root": { "$ref": "#/$defs/absolute_windows_path" },
+    "base_commit": { "$ref": "#/$defs/git_oid" },
+    "proposed": { "$ref": "#/$defs/proposed" },
+    "before": { "$ref": "#/$defs/observation" },
+    "after": { "$ref": "#/$defs/observation" },
+    "previews": { "$ref": "#/$defs/previews" },
+    "mutations": { "$ref": "#/$defs/mutations" },
+    "overall_status": { "type": "string", "enum": ["pass", "fail"] }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "git_oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "strict_utc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{7}Z$"
+    },
+    "absolute_windows_path": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^[A-Za-z]:/(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "proposed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["autonomous_units", "work_unit_id", "ledger_row_ids"],
+      "properties": {
+        "autonomous_units": { "type": "integer", "minimum": 1 },
+        "work_unit_id": { "$ref": "#/$defs/safe_identifier" },
+        "ledger_row_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^DCL-[A-Z0-9]+-[0-9]{3}$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_sha256",
+        "index_tree",
+        "local_refs_sha256",
+        "remote_refs_sha256",
+        "worktrees_sha256"
+      ],
+      "properties": {
+        "status_sha256": { "$ref": "#/$defs/sha256" },
+        "index_tree": { "$ref": "#/$defs/git_oid" },
+        "local_refs_sha256": { "$ref": "#/$defs/sha256" },
+        "remote_refs_sha256": { "$ref": "#/$defs/sha256" },
+        "worktrees_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "code", "mutations_performed"],
+      "properties": {
+        "eligible": { "type": "boolean" },
+        "code": { "$ref": "#/$defs/code" },
+        "mutations_performed": { "const": false }
+      }
+    },
+    "previews": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["launch", "claim", "closeout"],
+      "properties": {
+        "launch": { "$ref": "#/$defs/preview" },
+        "claim": { "$ref": "#/$defs/preview" },
+        "closeout": { "$ref": "#/$defs/preview" }
+      }
+    },
+    "mutations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_files",
+        "index",
+        "local_refs",
+        "remote_refs",
+        "worktrees",
+        "successor_tasks",
+        "android_runtime",
+        "figma",
+        "external_services"
+      ],
+      "properties": {
+        "repository_files": { "const": false },
+        "index": { "const": false },
+        "local_refs": { "const": false },
+        "remote_refs": { "const": false },
+        "worktrees": { "const": false },
+        "successor_tasks": { "const": false },
+        "android_runtime": { "const": false },
+        "figma": { "const": false },
+        "external_services": { "const": false }
+      }
+    }
+  }
+}

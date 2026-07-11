@@ -1,0 +1,83 @@
+{
+  "document_type": "danio_phone_completion_run_state",
+  "schema_version": 1,
+  "run_id": "danio-phone-complete-local-2026-07-11",
+  "state_revision": 0,
+  "mode": "inactive",
+  "transition": null,
+  "authority": {
+    "phone_completion_program": {
+      "path": "apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md",
+      "commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+      "blob_oid": "d633a318b0c467cffb8c4ea3a5ac54bd4b7dfa3a"
+    },
+    "closure_ledger": {
+      "path": "apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md",
+      "commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+      "blob_oid": "d556ac6f2c6f3910d93f440db967913906f4bede"
+    },
+    "finish_map": {
+      "path": "apps/aquarium_app/docs/agent/FINISH_MAP.md",
+      "commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+      "blob_oid": "e6b939f60e042c8bcfecdbdd2b62df9e39a3a241"
+    },
+    "quality_ladder": {
+      "path": "apps/aquarium_app/docs/agent/QUALITY_LADDER.md",
+      "commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+      "blob_oid": "ac5feb82798950064a16ef5344023171e75be073"
+    },
+    "verified_slice_execution_contract": {
+      "path": "apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md",
+      "commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+      "blob_oid": "8829dd2b5b8bf799b7cc27a8ad833326cbee026a"
+    },
+    "active_handoff": {
+      "path": "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md",
+      "commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+      "blob_oid": "1f2ba50cab6440672c220bcf2ff526b844660cc6"
+    },
+    "device_ownership_policy": {
+      "path": "apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md",
+      "commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+      "blob_oid": "229a3471399b0cd270ee0f34ecd9379b45b18590"
+    }
+  },
+  "authorization": {
+    "authorization_id": "danio-phone-complete-local-2026-07-11",
+    "continuation_mode": "autonomous_chain_approved",
+    "saved_project_root": "C:/Users/larki/OneDrive/Documents/App Projects/Danio Aquarium App Project",
+    "repository_root": "C:/Users/larki/OneDrive/Documents/App Projects/Danio Aquarium App Project/repo",
+    "authorized_at_utc": "2026-07-11T10:00:00.0000000Z"
+  },
+  "cursor": {
+    "phase": "workflow-setup",
+    "work_unit_id": "WF-2026-07-11-activation",
+    "ledger_row_ids": []
+  },
+  "owner": null,
+  "budget": {
+    "total_approved_units": 20,
+    "consumed_units": 1,
+    "remaining_units_including_current": 19,
+    "current_charge": {
+      "work_unit_id": null,
+      "status": "none",
+      "claimed_revision": null,
+      "consumed_revision": null
+    }
+  },
+  "handoff_generation": 0,
+  "last_verified_checkpoint": null,
+  "repeated_failure": null,
+  "stop_reason_code": null,
+  "recovery": null,
+  "control_surface_sync": {
+    "status": "not_required",
+    "target_commit": null,
+    "figma_file_id": null,
+    "figma_node_ids": [],
+    "attempted_at_utc": null,
+    "evidence_sha256": null,
+    "failure_code": null
+  }
+}

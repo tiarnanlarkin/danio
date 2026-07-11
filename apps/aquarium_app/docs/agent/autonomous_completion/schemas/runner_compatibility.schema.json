@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://danio.local/schemas/runner_compatibility.schema.json",
+  "title": "Danio runner compatibility manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "manifest_revision",
+    "authorizes_launch",
+    "runner_compatible",
+    "launch_proof",
+    "design",
+    "install_root",
+    "runner_order",
+    "skills",
+    "writer_policy",
+    "budget_policy",
+    "failure_policy",
+    "handoff_policy",
+    "thread_capabilities",
+    "validation"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "manifest_id": { "const": "danio-phone-autonomy-runners" },
+    "manifest_revision": { "type": "integer", "minimum": 1 },
+    "authorizes_launch": { "type": "boolean" },
+    "runner_compatible": { "type": "boolean" },
+    "launch_proof": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/launch_proof" }
+      ]
+    },
+    "design": { "$ref": "#/$defs/design_reference" },
+    "install_root": { "$ref": "#/$defs/install_root" },
+    "runner_order": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "danio-autonomous-slice-runner" },
+        { "const": "verified-slice-runner" }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "skills": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/skill" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "writer_policy": { "$ref": "#/$defs/writer_policy" },
+    "budget_policy": { "$ref": "#/$defs/budget_policy" },
+    "failure_policy": { "$ref": "#/$defs/failure_policy" },
+    "handoff_policy": { "$ref": "#/$defs/handoff_policy" },
+    "thread_capabilities": { "$ref": "#/$defs/thread_capabilities" },
+    "validation": { "$ref": "#/$defs/validation" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["authorizes_launch"],
+        "properties": { "authorizes_launch": { "const": false } }
+      },
+      "then": {
+        "properties": { "launch_proof": { "type": "null" } }
+      }
+    },
+    {
+      "if": {
+        "required": ["authorizes_launch"],
+        "properties": { "authorizes_launch": { "const": true } }
+      },
+      "then": {
+        "properties": {
+          "runner_compatible": { "const": true },
+          "launch_proof": { "$ref": "#/$defs/launch_proof" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+    },
+    "git_oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9A-Fa-f]{64}$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/sha256" }
+      ]
+    },
+    "design_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "commit", "blob_oid", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/repo_path" },
+        "commit": { "$ref": "#/$defs/git_oid" },
+        "blob_oid": { "$ref": "#/$defs/git_oid" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "install_root": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment", "fallback"],
+      "properties": {
+        "environment": { "const": "CODEX_HOME" },
+        "fallback": { "const": "%USERPROFILE%\\.codex" }
+      }
+    },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "role",
+        "skill_path",
+        "skill_sha256",
+        "contract_path",
+        "contract_sha256",
+        "contract_version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [
+            "danio-autonomous-slice-runner",
+            "verified-slice-runner"
+          ]
+        },
+        "role": { "type": "string", "enum": ["orchestrator", "base"] },
+        "skill_path": { "$ref": "#/$defs/repo_path" },
+        "skill_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "contract_path": { "$ref": "#/$defs/repo_path" },
+        "contract_sha256": { "$ref": "#/$defs/nullable_sha256" },
+        "contract_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      }
+    },
+    "writer_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_writer",
+        "claim_required",
+        "parallel_write_agents",
+        "android_repository_writes"
+      ],
+      "properties": {
+        "repository_writer": { "const": "coordinator_only" },
+        "claim_required": { "const": true },
+        "parallel_write_agents": { "const": false },
+        "android_repository_writes": { "const": false }
+      }
+    },
+    "budget_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit",
+        "remaining_includes_current",
+        "claim_state",
+        "consume_on",
+        "do_not_consume_on",
+        "abandoned_pending",
+        "exactly_once"
+      ],
+      "properties": {
+        "unit": { "const": "claimed_task_unit" },
+        "remaining_includes_current": { "const": true },
+        "claim_state": { "const": "pending" },
+        "consume_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["handoff_ready", "paused", "stopped", "finalizing"]
+          },
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "do_not_consume_on": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["preclaim_exit", "WRITER_CLAIM_LOST"]
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "abandoned_pending": {
+          "const": "consume_on_user_approved_recovery"
+        },
+        "exactly_once": { "const": true }
+      }
+    },
+    "failure_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digest_or_semantic_mismatch",
+        "successor_on_stop",
+        "auto_repair_installed_skill"
+      ],
+      "properties": {
+        "digest_or_semantic_mismatch": { "const": "RUNNER_INCOMPATIBLE" },
+        "successor_on_stop": { "const": false },
+        "auto_repair_installed_skill": { "const": false }
+      }
+    },
+    "handoff_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eligible_mode",
+        "positive_remaining_required",
+        "marker_format",
+        "lookup_before_create",
+        "saved_project_only",
+        "decrement_on_transfer",
+        "ambiguous_or_unavailable",
+        "unknown_create_result"
+      ],
+      "properties": {
+        "eligible_mode": { "const": "handoff_ready" },
+        "positive_remaining_required": { "const": true },
+        "marker_format": { "const": "run_id/handoff_generation" },
+        "lookup_before_create": { "const": true },
+        "saved_project_only": { "const": true },
+        "decrement_on_transfer": { "const": false },
+        "ambiguous_or_unavailable": { "const": "paste_ready_handoff_only" },
+        "unknown_create_result": { "const": "reconcile_without_retry" }
+      }
+    },
+    "thread_capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "recovery_only", "not_for_successors"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3,
+          "uniqueItems": true
+        },
+        "recovery_only": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "not_for_successors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hash_algorithm",
+        "hash_scope",
+        "reject_path_escape",
+        "reject_unknown_fields"
+      ],
+      "properties": {
+        "hash_algorithm": { "const": "sha256" },
+        "hash_scope": { "const": "exact_file_bytes" },
+        "reject_path_escape": { "const": true },
+        "reject_unknown_fields": { "const": true }
+      }
+    },
+    "launch_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_path", "report_sha256", "report_commit"],
+      "properties": {
+        "report_path": { "$ref": "#/$defs/repo_path" },
+        "report_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "report_commit": { "$ref": "#/$defs/git_oid" }
+      }
+    }
+  }
+}

@@ -1,0 +1,450 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://danio.local/schemas/run_state.schema.json",
+  "title": "Danio autonomous phone completion run state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_type",
+    "schema_version",
+    "run_id",
+    "state_revision",
+    "mode",
+    "transition",
+    "authority",
+    "authorization",
+    "cursor",
+    "owner",
+    "budget",
+    "handoff_generation",
+    "last_verified_checkpoint",
+    "repeated_failure",
+    "stop_reason_code",
+    "recovery",
+    "control_surface_sync"
+  ],
+  "properties": {
+    "document_type": { "const": "danio_phone_completion_run_state" },
+    "schema_version": { "const": 1 },
+    "run_id": { "$ref": "#/$defs/safe_identifier" },
+    "state_revision": { "type": "integer", "minimum": 0 },
+    "mode": { "$ref": "#/$defs/mode" },
+    "transition": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/transition" }
+      ]
+    },
+    "authority": { "$ref": "#/$defs/authority" },
+    "authorization": { "$ref": "#/$defs/authorization" },
+    "cursor": { "$ref": "#/$defs/cursor" },
+    "owner": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/owner" }
+      ]
+    },
+    "budget": { "$ref": "#/$defs/budget" },
+    "handoff_generation": { "type": "integer", "minimum": 0 },
+    "last_verified_checkpoint": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/verified_checkpoint" }
+      ]
+    },
+    "repeated_failure": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/repeated_failure" }
+      ]
+    },
+    "stop_reason_code": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/reason_code" }
+      ]
+    },
+    "recovery": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/recovery" }
+      ]
+    },
+    "control_surface_sync": { "$ref": "#/$defs/control_surface_sync" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["mode"],
+        "properties": {
+          "mode": { "enum": ["active", "finalizing"] }
+        }
+      },
+      "then": {
+        "properties": { "owner": { "$ref": "#/$defs/owner" } }
+      },
+      "else": {
+        "properties": { "owner": { "type": "null" } }
+      }
+    }
+  ],
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "reason_code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "git_oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "strict_utc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{7}Z$"
+    },
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+    },
+    "absolute_windows_path": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^[A-Za-z]:/(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "inactive",
+        "ready",
+        "active",
+        "handoff_ready",
+        "paused",
+        "stopped",
+        "finalizing",
+        "complete"
+      ]
+    },
+    "canonical_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "commit", "blob_oid"],
+      "properties": {
+        "path": { "$ref": "#/$defs/repo_path" },
+        "commit": { "$ref": "#/$defs/git_oid" },
+        "blob_oid": { "$ref": "#/$defs/git_oid" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phone_completion_program",
+        "closure_ledger",
+        "finish_map",
+        "quality_ladder",
+        "verified_slice_execution_contract",
+        "active_handoff",
+        "device_ownership_policy"
+      ],
+      "properties": {
+        "phone_completion_program": {
+          "$ref": "#/$defs/canonical_reference"
+        },
+        "closure_ledger": { "$ref": "#/$defs/canonical_reference" },
+        "finish_map": { "$ref": "#/$defs/canonical_reference" },
+        "quality_ladder": { "$ref": "#/$defs/canonical_reference" },
+        "verified_slice_execution_contract": {
+          "$ref": "#/$defs/canonical_reference"
+        },
+        "active_handoff": { "$ref": "#/$defs/canonical_reference" },
+        "device_ownership_policy": {
+          "$ref": "#/$defs/canonical_reference"
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorization_id",
+        "continuation_mode",
+        "saved_project_root",
+        "repository_root",
+        "authorized_at_utc"
+      ],
+      "properties": {
+        "authorization_id": { "$ref": "#/$defs/safe_identifier" },
+        "continuation_mode": { "const": "autonomous_chain_approved" },
+        "saved_project_root": { "$ref": "#/$defs/absolute_windows_path" },
+        "repository_root": { "$ref": "#/$defs/absolute_windows_path" },
+        "authorized_at_utc": { "$ref": "#/$defs/strict_utc" }
+      }
+    },
+    "cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase", "work_unit_id", "ledger_row_ids"],
+      "properties": {
+        "phase": { "$ref": "#/$defs/safe_identifier" },
+        "work_unit_id": { "$ref": "#/$defs/safe_identifier" },
+        "ledger_row_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^DCL-[A-Z0-9]+-[0-9]{3}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "token_sha256",
+        "claim_revision",
+        "claim_parent_commit",
+        "claim_staged_tree_hash",
+        "branch_name",
+        "worktree_id",
+        "worktree_path",
+        "claimed_at_utc",
+        "writer_lease_released",
+        "android_lease_released"
+      ],
+      "properties": {
+        "task_id": { "$ref": "#/$defs/safe_identifier" },
+        "token_sha256": { "$ref": "#/$defs/sha256" },
+        "claim_revision": { "type": "integer", "minimum": 1 },
+        "claim_parent_commit": { "$ref": "#/$defs/git_oid" },
+        "claim_staged_tree_hash": { "$ref": "#/$defs/git_oid" },
+        "branch_name": {
+          "type": "string",
+          "pattern": "^autonomy/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+/[0-9a-f]{12}$"
+        },
+        "worktree_id": { "$ref": "#/$defs/safe_identifier" },
+        "worktree_path": { "$ref": "#/$defs/absolute_windows_path" },
+        "claimed_at_utc": { "$ref": "#/$defs/strict_utc" },
+        "writer_lease_released": { "const": false },
+        "android_lease_released": { "type": "boolean" }
+      }
+    },
+    "current_charge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "work_unit_id",
+        "status",
+        "claimed_revision",
+        "consumed_revision"
+      ],
+      "properties": {
+        "work_unit_id": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/safe_identifier" }
+          ]
+        },
+        "status": { "type": "string", "enum": ["none", "pending", "consumed"] },
+        "claimed_revision": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "integer", "minimum": 1 }
+          ]
+        },
+        "consumed_revision": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "integer", "minimum": 1 }
+          ]
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_approved_units",
+        "consumed_units",
+        "remaining_units_including_current",
+        "current_charge"
+      ],
+      "properties": {
+        "total_approved_units": { "type": "integer", "minimum": 1 },
+        "consumed_units": { "type": "integer", "minimum": 0 },
+        "remaining_units_including_current": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_charge": { "$ref": "#/$defs/current_charge" }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "from_mode",
+        "to_mode",
+        "parent_state_revision",
+        "work_unit_id",
+        "reason_code",
+        "occurred_at_utc"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "launch",
+            "claim",
+            "preclaim_stop",
+            "closeout",
+            "pause",
+            "stop",
+            "finalize",
+            "complete",
+            "finalization_stop",
+            "resume",
+            "administrative_sync"
+          ]
+        },
+        "from_mode": { "$ref": "#/$defs/mode" },
+        "to_mode": { "$ref": "#/$defs/mode" },
+        "parent_state_revision": { "type": "integer", "minimum": 0 },
+        "work_unit_id": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/safe_identifier" }
+          ]
+        },
+        "reason_code": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/reason_code" }
+          ]
+        },
+        "occurred_at_utc": { "$ref": "#/$defs/strict_utc" }
+      }
+    },
+    "verified_checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_commit",
+        "evidence_manifest_path",
+        "verified_at_utc"
+      ],
+      "properties": {
+        "product_commit": { "$ref": "#/$defs/git_oid" },
+        "evidence_manifest_path": { "$ref": "#/$defs/repo_path" },
+        "verified_at_utc": { "$ref": "#/$defs/strict_utc" }
+      }
+    },
+    "repeated_failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signature", "attempt_count", "last_failed_at_utc"],
+      "properties": {
+        "signature": { "$ref": "#/$defs/sha256" },
+        "attempt_count": { "type": "integer", "minimum": 1 },
+        "last_failed_at_utc": { "$ref": "#/$defs/strict_utc" }
+      }
+    },
+    "recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "branch_name",
+        "worktree_path",
+        "dirty_paths",
+        "relevant_processes",
+        "commands",
+        "last_clean_commit"
+      ],
+      "properties": {
+        "branch_name": { "type": ["string", "null"] },
+        "worktree_path": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/absolute_windows_path" }
+          ]
+        },
+        "dirty_paths": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/repo_path" },
+          "uniqueItems": true
+        },
+        "relevant_processes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "commands": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "last_clean_commit": { "$ref": "#/$defs/git_oid" }
+      }
+    },
+    "control_surface_sync": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "target_commit",
+        "figma_file_id",
+        "figma_node_ids",
+        "attempted_at_utc",
+        "evidence_sha256",
+        "failure_code"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["not_required", "pending", "synced", "failed"]
+        },
+        "target_commit": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/git_oid" }
+          ]
+        },
+        "figma_file_id": { "type": ["string", "null"] },
+        "figma_node_ids": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "attempted_at_utc": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/strict_utc" }
+          ]
+        },
+        "evidence_sha256": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/sha256" }
+          ]
+        },
+        "failure_code": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/reason_code" }
+          ]
+        }
+      }
+    }
+  }
+}

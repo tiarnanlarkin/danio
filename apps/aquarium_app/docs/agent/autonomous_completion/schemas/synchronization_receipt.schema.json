@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://danio.local/schemas/synchronization_receipt.schema.json",
+  "title": "Danio synchronization receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_type",
+    "schema_version",
+    "invocation_nonce",
+    "repository_root",
+    "command",
+    "exit_code",
+    "completed_at_utc",
+    "origin_main_commit",
+    "ahead_behind"
+  ],
+  "properties": {
+    "document_type": { "const": "danio_synchronization_receipt" },
+    "schema_version": { "const": 1 },
+    "invocation_nonce": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "repository_root": { "$ref": "#/$defs/absolute_windows_path" },
+    "command": { "$ref": "#/$defs/command" },
+    "exit_code": { "type": "integer" },
+    "completed_at_utc": { "$ref": "#/$defs/strict_utc" },
+    "origin_main_commit": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/git_oid" }
+      ]
+    },
+    "ahead_behind": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/ahead_behind" }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["exit_code"],
+        "properties": { "exit_code": { "const": 0 } }
+      },
+      "then": {
+        "properties": {
+          "origin_main_commit": { "$ref": "#/$defs/git_oid" },
+          "ahead_behind": { "$ref": "#/$defs/ahead_behind" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "strict_utc": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{7}Z$"
+    },
+    "git_oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "absolute_windows_path": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^[A-Za-z]:/(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executable", "arguments"],
+      "properties": {
+        "executable": { "const": "git" },
+        "arguments": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "fetch" },
+            { "const": "--prune" }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "ahead_behind": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ahead", "behind"],
+      "properties": {
+        "ahead": { "type": "integer", "minimum": 0 },
+        "behind": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}
