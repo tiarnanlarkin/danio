@@ -40,7 +40,7 @@ apps/aquarium_app/docs/agent/FINISH_MAP.md
 apps/aquarium_app/docs/agent/QUALITY_LADDER.md
 apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md
 apps/aquarium_app/docs/agent/SLICE_LOG.md
-apps/aquarium_app/docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md
+apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md
 ```
 
 Inspect runtime ownership before any Android, ADB, screenshot, Patrol, Maestro,
@@ -49,7 +49,7 @@ work and record that no runtime ownership was needed.
 
 ## Selection Contract
 
-- Pick exactly one ledger target unless the accelerated epoch plan allows a
+- Pick exactly one ledger target unless the phone completion program allows a
   small group of related micro-slices.
 - Link the selected `DCL-*` ledger ID in the slice contract, handoff, or slice
   log before implementation.
@@ -98,9 +98,9 @@ Faster is allowed only when proof stays clear:
 
 ## External And Cleanup Contract
 
-- Keep cloud, account, paid, API-key, provider, premium, store, deploy, and
-  hosted CI work parked unless the current thread explicitly approves it and
-  the paid-tool ledger covers the exact use.
+- Keep tablet, cloud, account, paid, API-key, provider, premium, store, deploy,
+  hosted CI, and iOS work parked unless the current thread explicitly approves
+  it and the paid-tool ledger covers the exact external use.
 - Do not delete, reset, clean, wipe, uninstall, or move unclear repo/device
   state. Cleanup must be scoped, safe, and supported by current evidence.
 - Temporary branches and worktrees are deleted only after their verified work

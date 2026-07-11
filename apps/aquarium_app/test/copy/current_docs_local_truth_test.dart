@@ -67,6 +67,7 @@ void main() {
       'docs/agent/HOUSEKEEPING.md',
       'docs/agent/QUALITY_LADDER.md',
       'docs/agent/SOURCE_REFERENCES.md',
+      'docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md',
     ];
 
     for (final path in requiredDocs) {
@@ -84,6 +85,7 @@ void main() {
         'AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
         'SCREEN_INVENTORY.md',
         'QUALITY_LADDER.md',
+        '2026-07-11-phone-complete-local-completion-program.md',
       ],
       'docs/agent/CODEX_SETUP.md': [
         'WORKFLOW_CHARTER.md',
@@ -131,11 +133,34 @@ void main() {
         'COMPLETE_LOCAL_FORECAST.md',
         'SCREEN_INVENTORY.md',
         'SLICE_LOG.md',
+        '2026-07-11-phone-complete-local-completion-program.md',
       ],
     };
 
     for (final entry in entryDocs.entries) {
       _expectContainsAll(entry.key, entry.value);
     }
+  });
+
+  test('phone completion scope keeps tablet and external lanes parked', () {
+    _expectContainsAll(
+      'docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md',
+      [
+        'Android phone only',
+        'DCL-DR-001',
+        'DCL-P1-001',
+        'DCL-P1-002',
+        'DCL-TAB-001',
+        'JnSwJlWnisxF6xtiwK6nFc',
+      ],
+    );
+    _expectContainsAll('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md', [
+      'PHASE_PARKED',
+      'Current Phone Completion Boundary',
+    ]);
+    _expectContainsAll('docs/agent/QUALITY_LADDER.md', [
+      'Current phase: Android phone complete-local',
+      'Phone release candidate',
+    ]);
   });
 }

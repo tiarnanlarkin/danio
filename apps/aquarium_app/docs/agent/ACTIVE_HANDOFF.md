@@ -1,14 +1,14 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-06-050 data-resilience checkpoint ready for manual continuation
-Last updated: 2026-07-06 after restore screen cleanup failure proof and local gates
+Status: Clean DS-2026-07-06-050 product checkpoint with the 2026-07-11 phone completion plan ready for user decisions
+Last updated: 2026-07-11 after the phone atlas audit and phone-only planning reconciliation
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
 - Latest product/data-safety slice: DS-2026-07-06-050.
-- Latest workflow slice: WF-2026-07-05-003.
+- Latest workflow slice: WF-2026-07-11-004.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
@@ -60,6 +60,34 @@ Last updated: 2026-07-06 after restore screen cleanup failure proof and local ga
     and upper-bound session counts.
   - External/cloud/account/paid/API-key/store/deploy/provider/premium work is
     parked unless the user explicitly reopens it.
+
+## Completed Phone Planning Checkpoint
+
+- Slice: `WF-2026-07-11-004`, Phone Complete-Local Scope And Plan.
+- Active completion boundary:
+  - Android phone only.
+  - Tablet implementation/polish/performance is phase-parked until phone
+    complete-local closes.
+  - Cloud/accounts, API-key/provider expansion, premium, store/deploy, public
+    release, and iOS remain parked.
+- Repo-owned execution plan:
+  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`.
+- Visual control surface:
+  `https://www.figma.com/design/JnSwJlWnisxF6xtiwK6nFc`.
+- Figma evidence:
+  - 14 pages total: 13 audit/atlas pages plus `13 Phone Completion Plan`.
+  - 100 phone evidence images across atlas pages 02 through 11.
+  - All 96 screen-inventory rows accounted for.
+  - Navigation map, meaningful-state matrix, and parked-scope page built and
+    structurally checked with no loose images or clipped overflow.
+- Planning checkpoint verification passed 2,133 Flutter tests, Flutter
+  analysis, and a debug APK build.
+- Product decisions still required before P1 depth can close:
+  - `DCL-P1-001`: accept current Living Tank plant/seasonal cues or scope a
+    bounded expansion.
+  - `DCL-P1-002`: accept current rewards/collectibles depth or scope a bounded
+    expansion.
+- No application Dart code changed in this planning checkpoint.
 
 ## Dirty Files To Preserve
 
@@ -202,6 +230,12 @@ DS-2026-07-05-044:
 
 ## Device And Preview State
 
+- `QA-2026-07-11-001` used the dedicated `danio_api36` phone emulator on
+  `emulator-5554` to build the phone atlas capture set. Ownership was released
+  and the dedicated emulator was left running.
+- The planning reconciliation itself required no additional emulator, ADB,
+  install, tap, screenshot, logcat, Patrol, or live-preview action.
+
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-050 because it was a screen failure-boundary data-safety proof
   with no visual/layout behavior change.
@@ -247,13 +281,17 @@ DS-2026-07-05-044:
   relationship-mapping closure evidence remains open.
 - Rows with `PRODUCT_DECISION` or `EXTERNAL_PARKED` disposition require a user
   decision and are not automatic implementation targets.
+- `DCL-TAB-001` and the tablet portion of `DCL-PERF-001` are now
+  `PHASE_PARKED` and do not block the phone candidate.
 
 ## Next Action
 
-Autonomous chain budget is now 0 after DS-050. Do not create another successor
-thread unless the user explicitly approves more budget in the current thread.
+Autonomous chain budget remains 0. Do not create another successor thread or
+start product implementation unless the user explicitly directs it in the
+current thread.
 
-The next manual/fresh session should:
+After the two P1 product decisions are recorded, the next manual/fresh session
+should:
 
 - use `$verified-slice-runner`;
 - read `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
@@ -262,6 +300,9 @@ The next manual/fresh session should:
   `TESTING_CHECKLIST.md`, `SLICE_LOG.md`, and the accelerated epoch plan at
   startup;
 - begin with a read-only ledger-driven data-resilience gap selection audit;
+- use Task 1.1 in
+  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md` to
+  build the `DCL-DR-001` restore behavior matrix;
 - implement exactly one small local slice, or a bounded 2-3 micro-slice epoch
   only when the selected ledger IDs share one module, test family, proof setup,
   and risk boundary;

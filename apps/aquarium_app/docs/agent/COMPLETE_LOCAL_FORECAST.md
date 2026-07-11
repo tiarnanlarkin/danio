@@ -2,8 +2,11 @@
 
 Status: Active forecast
 Created: 2026-07-05
+Recalibrated: 2026-07-11 after DS-050, the phone atlas audit, and the confirmed
+phone-only completion boundary
 Evidence: `FINISH_MAP.md`, `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
-`SLICE_LOG.md`, and the 2026-07-05 accelerated epoch plan
+`SLICE_LOG.md`, and
+`plans/2026-07-11-phone-complete-local-completion-program.md`
 
 ## Purpose
 
@@ -14,13 +17,14 @@ stay parked outside complete-local.
 
 ## Forecast Summary
 
-Current estimate from repo evidence after DS-2026-07-05-044:
+Current estimate from repo evidence after DS-2026-07-06-050 and the 2026-07-11
+phone-only audit:
 
 | Range | Session Count | What It Assumes |
 | --- | --- | --- |
-| Minimum | 10 to 14 verified sessions | Data-resilience audit finds few remaining defects, several P1/P2 rows close by verification or accepted scope, and no major Android/device instability appears. |
-| Likely | 17 to 25 verified sessions | Data resilience needs several more fixes, AI/write and P1 depth need targeted slices, accessibility/visual/content/performance each need bounded proof, and final RC evidence gets its own pass. |
-| Upper bound | 34 to 44 verified sessions | User chooses deeper plant/reward/learning/asset scope, visual/accessibility work uncovers real defects, performance evidence needs iteration, or provider/premium work is reopened. |
+| Lower bound | 10 to 13 verified sessions | Several verification rows close without code, the recommended plant/reward boundaries are accepted, and no material phone accessibility or performance defects appear. |
+| Planning range | 13 to 22 verified sessions | Data resilience needs targeted fixes, phone visual/accessibility work finds bounded defects, and each high-risk phase receives its own closeout evidence. |
+| Expanded scope | 18 to 30 verified sessions | User chooses deeper plant/reward scope, visual assets need broad replacement, or phone performance/accessibility evidence requires iteration. |
 
 The fastest safe path is not "one issue per session forever". It is evidence
 first, then bundle 2 to 3 related micro-slices only when the proof setup is
@@ -30,23 +34,23 @@ shared and the stop conditions stay clear.
 
 | Epoch | Ledger IDs | Minimum | Likely | Upper | Exit Condition |
 | --- | --- | --- | --- | --- | --- |
-| 1. Data-resilience closure | `DCL-DR-001` through `DCL-DR-004` | 3 | 4 to 6 | 11 | Restore, migration, create/delete/undo, and relationship mapping are fixed or verified with Full-gate evidence. `DCL-DR-005` is a no-current-gap future-watch item after DS-2026-07-05-044. |
-| 2. Optional AI write audit | `DCL-AI-001`, `DCL-PREF-001` | 1 | 2 to 3 | 5 | Real current AI writes are confirmed-before-write or audited as no-current-gap; no fake AI path is created. |
-| 3. Normal-user P1 depth | `DCL-P1-001` through `DCL-P1-006` | 2 | 4 to 7 | 12 | User-scoped plant/reward/learning/species/guided-tool/timeline gaps are implemented or accepted as current local scope. |
-| 4. Content and rule confidence | `DCL-CONTENT-001`, `DCL-RULE-001` | 1 | 2 to 4 | 6 | Broader validators and rule tests cover the next concrete risk clusters without unsafe care-copy drift. |
-| 5. Accessibility, visual, tablet, motion | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-TAB-001`, `DCL-MOTION-001` | 2 | 4 to 7 | 12 | Current screenshots/goldens prove the bounded visual/accessibility/tablet/motion bar or identify exact follow-up rows. |
-| 6. Performance evidence | `DCL-PERF-001` | 1 | 1 to 2 | 4 | Owned Android evidence covers startup, resume, tab switching, tank animation, scrolling, and image first paint against the local targets. |
-| 7. Final RC packet | `DCL-RC-001` | 1 | 1 to 3 | 5 | Clean `main` passes final local gate set, AndroidPrep, product truth scan, and release QA note. |
+| 1. Data-resilience closure | `DCL-DR-001` through `DCL-DR-004` | 2 | 3 to 5 | 8 | Restore, migration/corruption, create/delete/undo, and relationship mapping are fixed or verified with Full-gate evidence. `DCL-DR-005` remains archived future-watch. |
+| 2. Optional AI and preferences | `DCL-AI-001`, `DCL-PREF-001` | 1 | 1 to 2 | 3 | Real current AI writes are confirmed-before-write or audited as no-current-gap; keyless/provider/privacy preferences remain honest. |
+| 3. Normal-user P1 depth | `DCL-P1-001` through `DCL-P1-006` | 2 | 2 to 5 | 8 | User-scoped plant/reward/learning/species/guided-tool/timeline gaps are implemented or accepted as current phone scope. |
+| 4. Content and rule confidence | `DCL-CONTENT-001`, `DCL-RULE-001` | 1 | 2 to 3 | 5 | Broader validators and rule tests cover the next concrete risk clusters without unsafe care-copy drift. |
+| 5. Phone accessibility, visual, motion | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | 2 | 3 to 5 | 8 | Current phone screenshots/Figma targets and focused proof close bounded visual, accessibility, reduced-motion, and haptic gaps. |
+| 6. Phone performance evidence | phone portion of `DCL-PERF-001` | 1 | 1 to 2 | 3 | Owned Android phone evidence covers startup, resume, tab switching, tank animation, scrolling, and image first paint against local targets. |
+| 7. Final phone candidate | `DCL-RC-001` | 1 | 1 to 2 | 3 | Clean `main` passes the final local gate set, AndroidPrep, affected phone-state recheck, product truth scan, and final phone QA note. |
 
-Parked rows are not counted in the local completion minimum unless the user
-explicitly reopens them: `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and
-`DCL-EXT-002`.
+Phase-parked and external rows are not counted unless the user explicitly
+reopens them: `DCL-TAB-001`, the tablet portion of `DCL-PERF-001`,
+`DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, and `DCL-EXT-002`.
 
 ## Stop-And-Ask Conditions
 
 Ask one direct question instead of implementing when:
 
-- A ledger row is `PRODUCT_DECISION` or `EXTERNAL_PARKED`.
+- A ledger row is `PRODUCT_DECISION`, `PHASE_PARKED`, or `EXTERNAL_PARKED`.
 - Source/tests prove the current candidate is already covered and no next
   highest ledger target is unambiguous.
 - A visible product-depth choice would change what "complete" means for users,
@@ -63,8 +67,7 @@ Ask one direct question instead of implementing when:
 | --- | --- | --- |
 | Whether dedicated plant inventory and seasonal living-tank variants are required for local completion. | `DCL-P1-001` | Keep existing data-derived plant/decor cues and ask before large product expansion. |
 | Whether seasonal cosmetics and deeper plant/decor collections are required. | `DCL-P1-002` | Keep existing local room vibes, badges, inventory, and equipped decorations. |
-| How far to expand richer learning visuals and species/plant depth before final local signoff. | `DCL-P1-005`, `DCL-P1-006` | Improve only concrete audit/test gaps; avoid broad redesign. |
-| Whether to accept current tablet evidence as enough or run another targeted tablet reconciliation pass. | `DCL-TAB-001` | Verify locally before code. |
+| Tablet sequencing. | `DCL-TAB-001`, tablet portion of `DCL-PERF-001` | Decided 2026-07-11: park until phone complete-local closes. |
 | Whether to reopen non-OpenAI providers, premium AI, keyed-AI seed states, store/release, cloud, deploy, or account-backed work. | `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, `DCL-EXT-002` | Park outside complete-local. |
 
 ## How To Make It Faster

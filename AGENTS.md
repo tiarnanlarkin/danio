@@ -178,6 +178,7 @@ that make new build/readiness claims.
 - Complete-local closure ledger: `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md`
 - Verified slice execution contract: `apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md`
 - Complete-local forecast: `apps/aquarium_app/docs/agent/COMPLETE_LOCAL_FORECAST.md`
+- Phone completion program: `apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`
 - Autonomous chain handoff prompt: `apps/aquarium_app/docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md`
 - Screen inventory: `apps/aquarium_app/docs/agent/SCREEN_INVENTORY.md`
 - Slice log: `apps/aquarium_app/docs/agent/SLICE_LOG.md`

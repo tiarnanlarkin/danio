@@ -16,23 +16,37 @@ backlog owns feature history and acceptance details. This map owns current
 completion status, evidence expectations, and the quality bar for each work
 category.
 
+## Current Completion Boundary
+
+The user confirmed on 2026-07-11 that the active complete-local target is a
+polished, resilient, local-first Android phone app. Tablet implementation,
+tablet polish, and tablet performance are parked until the phone phase closes.
+Cloud/accounts, API-key/provider expansion, premium, store/deploy, public
+release, and iOS also remain parked.
+
+Use `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`
+for the ordered execution phases and the Danio phone atlas in Figma for the
+visual state/gap control surface. Repository source, tests, ledger, and fresh
+gates remain authoritative.
+
 ## Status Values
 
 | Status | Meaning |
 | --- | --- |
 | Not started | No committed implementation exists for the complete-local bar. |
 | In progress | Implementation exists, but product depth, tests, visual proof, or Android evidence is incomplete. |
+| Parked | Intentionally outside the active phone phase; retained for later work and not a phone completion blocker. |
 | Implemented | The feature exists and works in source-level review or focused tests. |
 | Locally verified | Focused tests and the relevant local gate passed in the integration checkout. |
 | Externally reviewed | Optional external review or device-lab evidence has been collected after local gates. |
-| Done | Product, content, UI, accessibility, data safety, phone/tablet evidence, and tests meet the complete-local bar. |
+| Done | Product, content, UI, accessibility, data safety, phone evidence, and tests meet the active complete-local bar. |
 
 ## Definition Of Done By Slice Type
 
 | Slice type | Required proof before Done |
 | --- | --- |
 | Product behavior | Focused test, `Focused` gate, relevant widget/service coverage, no fake/dormant copy, and product docs updated when behavior changes. |
-| UI or visual | Current screenshot/golden/mockup target, focused UI test or golden where practical, `Visual` gate, phone check, tablet check, and no clipped/overlapping text. |
+| UI or visual | Current screenshot/golden/mockup target, focused UI test or golden where practical, `Visual` gate, phone check, and no clipped/overlapping text. Tablet proof resumes only when the tablet phase reopens. |
 | Content | Content validator passes, sources are traceable where claims need support, no placeholders, no unsafe care claims, and normal-user copy is readable. |
 | Data safety | Failure-path tests, rollback or retry behavior, no false success states, and `Full` gate before commit. |
 | Android QA | Device ownership is clear, `AndroidPrep` passes, screenshots or Patrol evidence are captured only from owned devices. |
@@ -48,8 +62,8 @@ category.
 | Tank daily loop | Done | Final phone/tablet evidence exists under `docs/qa/screenshots/2026-06-22/cl-p0-005-tank-daily-loop/`. | Recheck whenever Tank, Today Board, tasks, or feed/test/change actions change. |
 | Emergency access | Done | Emergency Guide is reachable from Tank, Smart, Search, More, lessons, species sheets, and unsafe water logging. | Keep emergency routes in smoke and search coverage. |
 | No-AI Smart Hub | Done | Local Aquarium Intelligence exists with risks, suggestions, compatibility, anomaly history, and checked reasons. | Expand only through guided save/apply depth and optional AI confirmation work. |
-| Living Tank | In progress | Water, stale-change, feeding, health, compatibility, aquascape, progression, and decoration cues exist. | Finish dedicated plant inventory, seasonal variants, and final phone/tablet visual QA. |
-| Rewards and collectibles | In progress | Room vibes, achievement cosmetics, inventory access, and earned decoration equip controls exist. | Add seasonal cosmetics and deeper plant/decor collections only when grounded in reward rules and visual targets. |
+| Living Tank | In progress | Water, stale-change, feeding, health, compatibility, aquascape, progression, and decoration cues exist. | Resolve `DCL-P1-001`: accept current plant/seasonal cues for phone complete-local or scope one bounded expansion, then run final phone visual QA. |
+| Rewards and collectibles | In progress | Room vibes, achievement cosmetics, inventory access, and earned decoration equip controls exist. | Resolve `DCL-P1-002`: accept current rewards depth for phone complete-local or scope one bounded expansion grounded in reward rules and visual targets. |
 | Species and plants | Implemented | Current guide pass includes profiles, care actions, wishlist/tank/task handoffs, source trails, and missing-species request path. | Expand database depth, image quality, and content sources during content-polish passes. |
 | Learning | In progress | Structured guide coverage exists for all current paths, placeholder placement CTA is hidden until a real flow exists, path-load failures show retryable errors, story play asks before leaving mid-story progress, locked story cards explain unlock requirements, and path cards now open a dedicated full-screen sequence view from a short inline preview. | Add richer visuals, practice links, scenarios, citations, and broader interaction variety. |
 | Practice | Implemented | Skill Drills and scenario practice cover parameters, diagnosis, compatibility, setup, and emergency decisions, with distinct Learn entry points, SR provider error coverage, and fallback-card reveal prompts. | Add persisted tool-result context only where walkthroughs prove it improves flow. |
@@ -60,17 +74,17 @@ category.
 | Preferences | In progress | Units, region, tank stage, goals, haptics, reduced motion, reminder intensity, privacy, AI disclosure controls, and Optional AI privacy-policy scope copy exist. | Finish final AI/provider walkthrough gaps. |
 | Global search | Done | Search covers destinations, tools, paths, guides, settings, species, equipment, livestock, logs, Tank entry, and More entry. | Add direct per-lesson deep links only if walkthrough evidence shows need. |
 | Demo mode | Done | Resettable sample tank exists with final phone/tablet evidence. | Recheck only if sample data, onboarding skip, or tank seeding changes. |
-| Tablet layout | In progress | Many surfaces have CL-P2-002 tablet readability slices through livestock detail. | Continue remaining stretched phone surfaces, starting with the next unaudited high-traffic screen. |
+| Tablet layout | Parked | Many surfaces have CL-P2-002 readability slices and the 96-row tablet map is locally verified. | No current action. Reopen after phone complete-local and define tablet polish/accessibility/performance from retained evidence. |
 | Visual asset quality | Not started | Older audit notes still identify weak or mismatched assets. | Audit current screenshots, regenerate weak headers/backgrounds/sprites, and add missing badges/decorations. |
-| Accessibility | In progress | Some 48dp, contrast, semantics, reduced-motion, and layout guardrails exist. | Run an app-wide accessibility pass with phone/tablet screenshots and focused tests. |
+| Accessibility | In progress | Some 48dp, contrast, semantics, reduced-motion, and layout guardrails exist. | Run the ordered phone-cluster accessibility pass from the 2026-07-11 completion program with current screenshots and focused tests. |
 | Motion and haptics | In progress | Feeding pulse, reduced motion, and haptics preference integration exist. | Add purposeful motion to rewards, warnings, onboarding, and tank life only where it improves clarity. |
-| Performance | In progress | Complete-local Android targets are recorded in `docs/agent/PERFORMANCE_TARGETS.md` and enforced by `test/utils/performance_targets_test.dart`; the debug performance monitor now uses the shared 60 FPS frame-budget constant. | Measure startup, tab switching, tank animation, scrolling, and image loading on Android phone/tablet when device ownership is clear. |
-| Optional AI providers | In progress | Optional AI setup names OpenAI as current BYO provider, disables other provider paths honestly, and treats build-time `OPENAI_API_KEY` as a local-dev-only fallback that is ignored in release builds. | Implement real non-OpenAI connectors before enabling those key paths. |
-| AI confirmation | In progress | Symptom Triage journal saves, Symptom Triage AI history writes, Weekly Plan care-plan cache saves, and Ask Danio Recent AI Activity saves now require confirmation before AI output becomes saved app data. | Continue confirm-before-write coverage for AI changes to tank data, tasks, and reminders. |
-| Premium AI path | Not started | Premium remains conceptual and must not appear as fake product behavior. | Design only after core app is excellent locally and real extra capability exists. |
+| Performance | In progress | Complete-local Android targets are recorded in `docs/agent/PERFORMANCE_TARGETS.md` and enforced by `test/utils/performance_targets_test.dart`; the debug performance monitor now uses the shared 60 FPS frame-budget constant. | Measure startup, warm resume, tab switching, tank animation, scrolling, and image loading on the owned Android phone target. Tablet measurement is parked. |
+| Optional AI providers | Parked | Optional AI setup names OpenAI as current BYO provider, disables other provider paths honestly, and treats build-time `OPENAI_API_KEY` as a local-dev-only fallback that is ignored in release builds. | No current action. Implement real non-OpenAI connectors only after explicit reopening. |
+| AI confirmation | In progress | Symptom Triage journal saves, Symptom Triage AI history writes, Weekly Plan care-plan cache saves, and Ask Danio Recent AI Activity saves now require confirmation before AI output becomes saved app data. | Audit every current AI write; add confirmation only for a real unconfirmed tank-data, task, or reminder write, or close the row with no-current-gap evidence. |
+| Premium AI path | Parked | Premium remains conceptual and must not appear as fake product behavior. | No current action. Reopen only after the local phone app is excellent and real extra capability exists. |
 | Citations | In progress | Species/plant source trails and lesson references exist in limited form. | Add subtle source trails where they improve trust without damaging visual quality. |
 | Whole-app phone audit | Locally verified | Current phone screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-001-phone-whole-app-map/`, with notes in `docs/qa/whole-app-phone-map-2026-07-04.md`; the Smart/Fish ID bottom-dock overlap and smoke tap false positive are fixed locally with tests, the phone black-box smoke rerun passed, `phone-04b-smart-root-after-dock-fix` recaptures Fish & Plant ID clearing the dock by `47px`, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have phone `Pass` accounting with 96 passes and 0 current gaps. | Recheck when app surfaces change or before release signoff. |
-| Whole-app tablet audit | Locally verified | Current tablet screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`, with notes in `docs/qa/whole-app-tablet-map-2026-07-04.md`; smoke route assertions/tap handling and lower More hub tablet swipes are hardened locally with tests, the tablet black-box smoke rerun passed, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have tablet `Pass` accounting with 96 passes and 0 current gaps. | Recheck when app surfaces change or before release signoff. |
+| Whole-app tablet audit | Locally verified | Current tablet screenshot/XML pass exists under `docs/qa/screenshots/2026-07-04/cl-qa-002-tablet-whole-app-map/`, with notes in `docs/qa/whole-app-tablet-map-2026-07-04.md`; smoke route assertions/tap handling and lower More hub tablet swipes are hardened locally with tests, the tablet black-box smoke rerun passed, QA-006 added 39 standalone deep-link captures, QA-007 added 24 fixed-build seeded tank/learning/story/cycling captures and fixed the Livestock skeleton duplicate-Hero regression, QA-008 added 16 first-run/onboarding/debug captures, and all 96 `SCREEN_INVENTORY.md` rows now have tablet `Pass` accounting with 96 passes and 0 current gaps. | Retain as later-phase evidence; do not recheck for the phone candidate unless tablet scope is explicitly reopened. |
 | Visual regression | In progress | Golden tests and visual baseline manifest exist. | Add selective core-surface goldens/screenshots after visual targets stabilize. |
 | Rule tests | In progress | Rule coverage exists for some local intelligence and tool paths. | Expand recommendation, compatibility, emergency, unit, and calculation tests. |
 | Content validation | In progress | Content validator exists and runs in the focused gate, including emergency/distress lesson checks for educational positioning, aquatic-vet/professional escalation copy, direct prerequisite-free access, UK-style litre/litres volume spelling, metric context for gallon and Fahrenheit references in learning copy, warning-section coverage for medical/emergency lessons, unsafe/product-endorsing care copy, brand-specific emergency-product certainty claims, brand-specific conditioner/test-kit product names, learning graph IDs/prerequisites, per-lesson source density, quiz answer indexes, lesson section presence, and lesson reward/duration ranges. | Expand validation for broader locked-content coverage and any remaining source/content-risk gaps found during future audits. |
@@ -102,8 +116,8 @@ Current baseline:
 
 Acceleration note:
 
-- The approved faster path is documented in
-  `docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md`.
+- The current phone-only path is documented in
+  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`.
   Future agents may use bounded epoch mode for 1 to 3 related micro-slices per
   session when the plan's startup checks, proof requirements, stop conditions,
   and closeout gates are satisfied. This changes session shape only; it does
@@ -128,10 +142,12 @@ Traceability note:
 | 2 | Optional AI confirmation closeout (`CL-P3-002`, Preferences/Smart) | Current AI writes to journal/history/cache now require confirmation, but the finish bar still requires confirmation before any AI-driven tank data, task, or reminder write. Do not create fake AI write paths just to close this; audit current surfaces and only add confirmation where a real current write exists. | Focused no-write/cancel tests, keyless/no-AI path test, relevant Focused or Full gate, and product docs updated if behavior changes. |
 | 3 | Normal-user P1 depth (`Living Tank`, `Guided tools`, `Timeline`, `Learning`, `Rewards`) | P0 spine, search, multi-tank, demo mode, and whole-app evidence are strong enough to resume user-value depth after reliability risks. Work should be narrow and grounded in current screenshots or walkthrough findings. | Per-surface focused tests, visual or Android evidence for UI changes, and status updates only when a row genuinely advances. |
 | 4 | Content and rule confidence (`CL-QA-005`, `Rule tests`, `Citations`) | The app has broad learning/species content and validation, but launch confidence still needs broader locked-content/source-risk checks and more rule coverage for recommendations, compatibility, emergency, units, and calculator behavior. | Content validation tests, targeted service/rule tests, source-trail updates where useful, and no unsafe care or veterinary-positioning drift. |
-| 5 | Accessibility, tablet, and visual polish (`CL-P2-001` through `CL-P2-005`, `CL-QA-003`) | The maps show current phone/tablet coverage, but accessibility, selective visual regression, weak assets, and remaining tablet polish are not done. Any material UI or asset change must start from a current screenshot, golden, mockup, or design doc. | Visual gate, focused accessibility/widget tests, selective goldens or screenshots, and updated `SCREEN_INVENTORY.md` evidence for changed surfaces. |
-| 6 | Performance measurement (`CL-P2-006`) | Performance targets and constants exist, but Android phone/tablet measurement has not yet closed the complete-local bar. This should follow reliability and major UI churn so measurements are stable. | Profile or release evidence for cold start, warm resume, tab switching, tank animation, scrolling, and local image first paint, recorded without noisy raw logs. |
-| 7 | Optional AI provider expansion and premium path (`CL-P3-001`, `Premium AI path`) | Provider expansion is explicitly downstream of local quality. Non-OpenAI connectors require real implementation and current approval for any paid/API/account workflow; premium remains conceptual and must stay invisible as product behavior until real value exists. | No-AI path still works, provider tests pass, paid-tool ledger covers any external lane, and unavailable provider paths remain honest until implemented. |
-| 8 | Final release-candidate evidence | This is last because it only has value after the open local quality lanes above are closed or explicitly deferred. | `Full` gate, `AndroidPrep`, current phone and tablet recheck, content validation, visual baseline checks, product-truth scan, and a release QA note. |
+| 5 | Phone accessibility and visual polish (`CL-P2-001`, `CL-P2-003` through `CL-P2-005`, `CL-QA-003`) | Phone routes are mapped, but accessibility, selective visual regression, weak assets, and motion/haptic acceptance remain open. Any material UI or asset change must start from a current screenshot, golden, Figma frame, or design doc. | Visual gate, focused accessibility/widget tests, selective goldens or screenshots, and updated evidence for changed phone surfaces. |
+| 6 | Phone performance measurement (`CL-P2-006`) | Performance targets and constants exist, but owned Android phone measurement has not yet closed the active complete-local bar. This follows reliability and major UI churn so measurements are stable. | Profile or release evidence for cold start, warm resume, tab switching, tank animation, scrolling, and local image first paint, recorded without noisy raw logs. |
+| 7 | Final phone release-candidate evidence | This is last because it only has value after the open phone quality lanes above are closed or explicitly accepted/parked. | `Full` gate, `AndroidPrep`, affected phone-state recheck, content validation, visual baseline checks, product-truth scan, and a final phone QA note. |
+
+Tablet, non-OpenAI provider, premium, keyed-AI seed, store/release, cloud,
+deploy, account-backed, and iOS work remain outside this ranked phone roadmap.
 
 ### Next Development Push
 

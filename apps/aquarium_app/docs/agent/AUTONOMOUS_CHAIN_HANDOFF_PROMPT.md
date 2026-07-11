@@ -55,18 +55,19 @@ Required startup:
    - apps/aquarium_app/docs/agent/QUALITY_LADDER.md
    - apps/aquarium_app/docs/agent/TESTING_CHECKLIST.md
    - apps/aquarium_app/docs/agent/SLICE_LOG.md
-   - apps/aquarium_app/docs/agent/plans/2026-07-05-accelerated-complete-local-epoch-plan.md
+   - apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md
    Also read any docs those files require for the selected lane.
 8. Preserve unrelated dirty work and inspect emulator/device/debug-server state
    before any runtime action.
 
-Goal: continue Danio toward local-first, phone-first complete-local quality.
+Goal: continue Danio toward local-first, phone-only complete-local quality.
 Begin with a read-only ledger-driven gap selection audit. Prefer the highest
 ranked open COMPLETE_LOCAL_CLOSURE_LEDGER.md item whose missing behavior is
 proven by fresh source/test evidence. Link every implementation slice to its
 ledger ID. New issues discovered during work must be added to the ledger before
-implementation. External/cloud/account/paid/API-key/store/deploy/provider/premium
-work stays parked unless the user explicitly approves it in the current thread.
+implementation. Tablet, external/cloud/account/paid/API-key/store/deploy,
+provider/premium, and iOS work stays parked unless the user explicitly approves
+it in the current thread.
 
 Implementation rule: implement exactly one small verified slice, or one bounded
 2-3 micro-slice epoch only when the selected ledger IDs share the same module,

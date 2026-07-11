@@ -24,6 +24,7 @@ evidence, and exact done conditions.
 | `FIX_LOCALLY` | Implement or repair local app behavior with focused proof. |
 | `VERIFY_LOCALLY` | The next work is evidence gathering, walkthrough, or audit before code. |
 | `PRODUCT_DECISION` | The app can only proceed after the user chooses scope or accepts a limitation. |
+| `PHASE_PARKED` | Intentionally sequenced outside the active phone completion phase; reopen only after the phase exit or fresh user direction. |
 | `EXTERNAL_PARKED` | Outside complete-local unless the user explicitly approves cloud, account, paid, key, store, or release work. |
 | `ACCEPTED_LOCAL_LIMITATION` | Documented as acceptable for complete-local; re-open only with new product direction. |
 | `NOT_CURRENT_ARCHIVED` | Older finding is superseded by newer repo evidence and is not a current slice target. |
@@ -40,6 +41,21 @@ evidence, and exact done conditions.
   complete-local path unless the user gives explicit current-thread approval.
 - Do not close a ledger row from stale chat memory. Use current repo docs,
   current source, current tests, and current command output.
+
+## Current Phone Completion Boundary
+
+Confirmed by the user on 2026-07-11:
+
+- The active complete-local target is a polished, resilient, local-first
+  Android phone app.
+- Tablet implementation, tablet polish, and tablet performance are parked
+  until the phone phase closes. Current tablet evidence is retained but does
+  not block the phone release-candidate row.
+- Cloud/accounts, API-key/provider expansion, premium, store/deploy, public
+  release, and iOS remain parked unless explicitly reopened.
+- The repo-owned execution plan is
+  `plans/2026-07-11-phone-complete-local-completion-program.md`; the visual
+  control surface is the Danio phone atlas in Figma.
 
 ## Active Findings
 
@@ -62,13 +78,13 @@ evidence, and exact done conditions.
 | DCL-A11Y-001 | App-wide accessibility pass remains open across contrast, touch targets, labels, text scaling, reduced motion, and non-colour-only status. | Finish Map keeps Accessibility in progress. | `FINISH_MAP.md` Accessibility row; backlog `CL-P2-004`. | `VERIFY_LOCALLY` | Accessibility, tablet, visual polish | No | A bounded screen cluster passes focused accessibility/widget evidence and local visual/accessibility checks; remaining clusters are tracked or closed. |
 | DCL-VIS-001 | Older audits still identify weak or mismatched visual assets and missing badges/decorations. | Finish Map marks Visual asset quality not started. | `FINISH_MAP.md` Visual asset quality row; backlog `CL-P2-003`. | `FIX_LOCALLY` | Accessibility, tablet, visual polish | Maybe | Current screenshots identify concrete weak assets; replacements use local/permissive/generated assets with source notes and Visual gate evidence. |
 | DCL-VIS-002 | Selective visual regression coverage remains incomplete. | Finish Map keeps Visual regression in progress. | `FINISH_MAP.md` Visual regression row; backlog `CL-QA-003`; `docs/design/BASELINES.md`. | `FIX_LOCALLY` | Accessibility, tablet, visual polish | No | Core surfaces get selective goldens/screenshots after visual targets stabilize, and the visual baseline manifest stays valid. |
-| DCL-TAB-001 | Tablet layout remains marked in progress despite current phone/tablet maps passing. | Finish Map keeps Tablet layout in progress and whole-app tablet audit locally verified. | `FINISH_MAP.md` Tablet layout row; `FINISH_MAP.md` Whole-app tablet audit row; `SCREEN_INVENTORY.md`. | `VERIFY_LOCALLY` | Accessibility, tablet, visual polish | No | A fresh audit reconciles the in-progress tablet row with current 96-row pass evidence, or records the next stretched surface with screenshot proof. |
+| DCL-TAB-001 | Tablet layout remains incomplete beyond the current 96-row route/evidence map, but the user has sequenced tablet after phone complete-local. | User confirmed phone-first completion on 2026-07-11; Finish Map and whole-app tablet evidence remain available for later resumption. | `FINISH_MAP.md` Tablet layout row; `FINISH_MAP.md` Whole-app tablet audit row; `SCREEN_INVENTORY.md`; `plans/2026-07-11-phone-complete-local-completion-program.md`. | `PHASE_PARKED` | Accessibility, tablet, visual polish | Yes | Does not block phone complete-local. Reopen after the phone candidate closes, then define the tablet polish/accessibility/performance boundary from retained evidence. |
 | DCL-MOTION-001 | Motion and haptics remain open for purposeful feedback on rewards, warnings, onboarding, and tank life. | Finish Map keeps Motion and haptics in progress. | `FINISH_MAP.md` Motion and haptics row; backlog `CL-P2-005`. | `FIX_LOCALLY` | Accessibility, tablet, visual polish | Maybe | A bounded motion slice is grounded in current UI evidence, respects reduced motion/haptics settings, and passes focused tests or visual proof. |
-| DCL-PERF-001 | Android performance measurement has targets but lacks final local phone/tablet evidence. | Finish Map keeps Performance in progress. | `FINISH_MAP.md` Performance row; `docs/agent/PERFORMANCE_TARGETS.md`; `test/utils/performance_targets_test.dart`. | `VERIFY_LOCALLY` | Performance | No | Startup, warm resume, tab switching, tank animation, scrolling, and local image first paint are measured on owned Android targets and summarized without noisy raw logs. |
+| DCL-PERF-001 | Android performance measurement has targets but lacks final local phone evidence for the active phase; tablet measurement is phase-parked. | Finish Map keeps Performance in progress and the user confirmed phone-first completion on 2026-07-11. | `FINISH_MAP.md` Performance row; `docs/agent/PERFORMANCE_TARGETS.md`; `test/utils/performance_targets_test.dart`; `plans/2026-07-11-phone-complete-local-completion-program.md`. | `VERIFY_LOCALLY` | Performance | No | Startup, warm resume, tab switching, tank animation, scrolling, and local image first paint are measured on the owned Android phone target and summarized without noisy raw logs. Tablet measurement resumes with `DCL-TAB-001`. |
 | DCL-QA-001 | Debug QA seed coverage has one remaining real keyed-AI seed only if it can avoid fake provider readiness. | Finish Map keeps Debug QA seeds in progress. | `FINISH_MAP.md` Debug QA seeds row; backlog `CL-QA-007`. | `EXTERNAL_PARKED` | Debug QA and Optional AI | Yes | Leave parked unless a local, honest keyed-AI seed can be created without secrets or fake readiness; otherwise accept no-key/no-AI seed evidence. |
 | DCL-EXT-001 | Non-OpenAI provider connectors are not implemented. | Finish Map parks provider expansion downstream of local quality and approval. | `FINISH_MAP.md` Optional AI providers row; backlog `CL-P3-001`; paid-tool ledger. | `EXTERNAL_PARKED` | Optional AI providers | Yes | Only proceed after explicit user approval and a real local/provider implementation plan; unavailable paths remain honest until then. |
 | DCL-PREMIUM-001 | Premium AI remains conceptual and must not appear as fake product behavior. | Finish Map marks Premium AI path not started. | `FINISH_MAP.md` Premium AI path row; backlog `CL-P3-003`. | `EXTERNAL_PARKED` | Premium and monetisation | Yes | Park until the core local app is excellent and the user approves premium scope; no visible fake premium behavior is added. |
-| DCL-RC-001 | Final release-candidate evidence is last and only valid after higher-ranked rows close or are explicitly deferred. | Finish Map ranks release-candidate evidence last. | `FINISH_MAP.md` Final release-candidate evidence rank; `QUALITY_LADDER.md` release candidate row. | `VERIFY_LOCALLY` | Final evidence | No | Full gate, AndroidPrep, phone/tablet recheck as needed, content validation, visual baseline checks, product-truth scan, and final QA note pass on clean main. |
+| DCL-RC-001 | Final phone release-candidate evidence is last and only valid after higher-ranked phone rows close or are explicitly accepted/parked. | Finish Map ranks release-candidate evidence last; the user confirmed tablet is outside the active phone phase. | `FINISH_MAP.md` final evidence rank; `QUALITY_LADDER.md` release candidate row; `plans/2026-07-11-phone-complete-local-completion-program.md`. | `VERIFY_LOCALLY` | Final evidence | No | Full gate, AndroidPrep, affected phone-state recheck, content validation, visual baseline checks, product-truth scan, and final phone QA note pass on clean main. Tablet and external work remain parked. |
 | DCL-EXT-002 | Public store/release/legal hosting/cloud/deploy work is outside complete-local until the app meets the local bar. | Backlog says no public launch/store/legal hosting resumes until complete-local is met. | Backlog section 4 non-negotiable finished bar; `AGENTS.md`; `PAID_TOOL_APPROVAL_LEDGER.md`. | `EXTERNAL_PARKED` | Release and external services | Yes | Do not start until complete-local is met and the user explicitly approves release/cloud/store work. |
 
 ## Archived Or Superseded Findings
@@ -88,9 +104,9 @@ higher risk:
 2. `DCL-AI-001`
 3. `DCL-P1-*` and `DCL-PREF-001`
 4. `DCL-CONTENT-001` and `DCL-RULE-001`
-5. `DCL-A11Y-001`, `DCL-VIS-*`, `DCL-TAB-001`, `DCL-MOTION-001`
+5. `DCL-A11Y-001`, `DCL-VIS-*`, and `DCL-MOTION-001`
 6. `DCL-PERF-001`
 7. `DCL-RC-001`
 
-Rows marked `PRODUCT_DECISION` or `EXTERNAL_PARKED` are stop-and-ask items, not
-automatic implementation targets.
+Rows marked `PRODUCT_DECISION`, `PHASE_PARKED`, or `EXTERNAL_PARKED` are
+stop-and-ask items, not automatic implementation targets.
