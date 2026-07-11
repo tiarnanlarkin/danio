@@ -38,6 +38,8 @@ const _implementedPowerShellPaths = <String>[
   'scripts/autonomous_completion/DanioAutonomousCompletion.psm1',
   'scripts/autonomous_completion/sync_autonomous_completion.ps1',
   'scripts/autonomous_completion/check_autonomous_completion_readiness.ps1',
+  'scripts/autonomous_completion/validate_autonomous_completion_transition.ps1',
+  'scripts/autonomous_completion/plan_autonomous_writer_claim.ps1',
   'test/scripts/autonomous_completion_behavior_test.ps1',
   'test/scripts/autonomous_completion_git_fixture_test.ps1',
 ];
@@ -942,7 +944,7 @@ void main() {
     );
   });
 
-  test('pure PowerShell module exposes the Task 4 validation surface', () {
+  test('pure PowerShell module exposes the Task 5 validation surface', () {
     final source = File(_implementedPowerShellPaths.first).readAsStringSync();
 
     expect(source, contains('[CmdletBinding()]'));
@@ -960,15 +962,13 @@ void main() {
       'New-DanioSynchronizationReceipt',
       'Test-DanioSynchronizationReceipt',
       'Test-DanioAutonomousReadiness',
+      'New-DanioWriterClaimPlan',
     ]) {
       expect(source, contains('function $functionName'));
       expect(source, contains('"$functionName"'));
     }
 
-    for (final laterFunction in <String>[
-      'New-DanioWriterClaimPlan',
-      'New-DanioRehearsalReport',
-    ]) {
+    for (final laterFunction in <String>['New-DanioRehearsalReport']) {
       expect(source, isNot(contains('function $laterFunction')));
     }
 

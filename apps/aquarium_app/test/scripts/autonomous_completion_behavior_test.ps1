@@ -276,6 +276,8 @@ $repoRoot = (Resolve-Path -LiteralPath (Join-Path $appRoot "../..")).Path
 $modulePath = Join-Path $appRoot "scripts/autonomous_completion/DanioAutonomousCompletion.psm1"
 $syncScriptPath = Join-Path $appRoot "scripts/autonomous_completion/sync_autonomous_completion.ps1"
 $readinessScriptPath = Join-Path $appRoot "scripts/autonomous_completion/check_autonomous_completion_readiness.ps1"
+$transitionScriptPath = Join-Path $appRoot "scripts/autonomous_completion/validate_autonomous_completion_transition.ps1"
+$claimPlannerScriptPath = Join-Path $appRoot "scripts/autonomous_completion/plan_autonomous_writer_claim.ps1"
 $fixtureRoot = Join-Path $testRoot "fixtures/autonomous_completion"
 $ledgerPath = Join-Path $appRoot "docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md"
 $ledgerHashBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $ledgerPath).Hash
@@ -288,6 +290,12 @@ if (-not (Test-Path -LiteralPath $syncScriptPath -PathType Leaf)) {
 }
 if (-not (Test-Path -LiteralPath $readinessScriptPath -PathType Leaf)) {
   throw "Expected readiness wrapper is missing: $readinessScriptPath"
+}
+if (-not (Test-Path -LiteralPath $transitionScriptPath -PathType Leaf)) {
+  throw "Expected transition validation wrapper is missing: $transitionScriptPath"
+}
+if (-not (Test-Path -LiteralPath $claimPlannerScriptPath -PathType Leaf)) {
+  throw "Expected claim planner wrapper is missing: $claimPlannerScriptPath"
 }
 
 Import-Module -Name $modulePath -Force
@@ -1361,6 +1369,158 @@ $emptyCheckpointCompletion = Test-DanioCompletionReadiness `
   -Cleanup $cleanup `
   -RepositoryObservation $emptyCheckpointRepository
 Assert-Equal -Actual $emptyCheckpointCompletion.code -Expected "COMPLETION_NOT_READY" -Message "Empty checkpoint values bypassed completion proof."
+
+$claimReadinessReport = [pscustomobject]@{
+  document_type = "danio_readiness_report"
+  schema_version = 1
+  intent = "Claim"
+  checked_at_utc = "2026-07-11T12:00:30.0000000Z"
+  eligible = $true
+  stop_reason_code = $null
+  checks = @(
+    [pscustomobject]@{
+      code = "CLAIM_READY"
+      status = "pass"
+      detail = "Claim prerequisites validate."
+    }
+  )
+}
+$claimWorktreeRoot = "$($ready.authorization.saved_project_root)/.codex-worktrees"
+$claimPlanParameters = @{
+  ReadinessReport = $claimReadinessReport
+  CurrentState = $ready
+  TaskId = "task-fixture-001"
+  ExpectedStateRevision = [int64]$ready.state_revision
+  RepositoryRoot = [string]$ready.authorization.repository_root
+  WorktreeRoot = $claimWorktreeRoot
+  BaseCommit = "f10b6021e083ba745fc2abf254f7ca91093d703e"
+  BaseTreeHash = "9119ad828ff570ccd42df26553e8142569919fb8"
+  PlannedAtUtc = "2026-07-11T12:01:00.0000000Z"
+  ExistingIdentityObservation = [pscustomobject]@{
+    status = "absent"
+    details = @()
+  }
+}
+
+$claimPlan = New-DanioWriterClaimPlan @claimPlanParameters
+$claimPlanAgain = New-DanioWriterClaimPlan @claimPlanParameters
+$claimPlanJson = $claimPlan | ConvertTo-Json -Depth 100 -Compress
+$claimPlanAgainJson = $claimPlanAgain | ConvertTo-Json -Depth 100 -Compress
+Assert-True -Condition $claimPlan.valid -Message "Valid deterministic claim input was rejected: $($claimPlan.details -join '; ')"
+Assert-Equal -Actual $claimPlan.code -Expected "CLAIM_PLAN_VALID" -Message "Valid claim plan code mismatch."
+Assert-Equal -Actual $claimPlan.mutations_performed -Expected $false -Message "Pure claim planner reported mutation."
+Assert-Equal -Actual $claimPlanJson -Expected $claimPlanAgainJson -Message "Identical claim inputs were not byte deterministic."
+Assert-Equal `
+  -Actual $claimPlan.next_run_state.owner.claim_staged_tree_hash `
+  -Expected $claimPlanParameters.BaseTreeHash `
+  -Message "Claim owner did not retain the clean parent tree hash."
+Assert-Equal `
+  -Actual $claimPlan.next_run_state.budget.consumed_units `
+  -Expected $ready.budget.consumed_units `
+  -Message "Claim decremented consumed budget before closeout."
+Assert-Equal `
+  -Actual $claimPlan.next_run_state.budget.remaining_units_including_current `
+  -Expected $ready.budget.remaining_units_including_current `
+  -Message "Claim decremented remaining budget before closeout."
+$claimTransitionValidation = Test-DanioRunStateTransition `
+  -PreviousState $ready `
+  -CandidateState $claimPlan.next_run_state
+Assert-True `
+  -Condition $claimTransitionValidation.valid `
+  -Message "Planner emitted an invalid claim transition: $($claimTransitionValidation.code)."
+
+$distinctTaskParameters = @{} + $claimPlanParameters
+$distinctTaskParameters.TaskId = "task-fixture-002"
+$distinctTaskPlan = New-DanioWriterClaimPlan @distinctTaskParameters
+Assert-True -Condition $distinctTaskPlan.valid -Message "Second task identity was rejected."
+Assert-True `
+  -Condition ([string]$distinctTaskPlan.owner_token_sha256 -cne [string]$claimPlan.owner_token_sha256) `
+  -Message "Distinct task IDs produced the same owner token."
+Assert-True `
+  -Condition ([string]$distinctTaskPlan.branch_name -cne [string]$claimPlan.branch_name) `
+  -Message "Distinct task IDs produced the same branch."
+Assert-True `
+  -Condition ([string]$distinctTaskPlan.worktree_path -cne [string]$claimPlan.worktree_path) `
+  -Message "Distinct task IDs produced the same worktree path."
+
+$reuseParameters = @{} + $claimPlanParameters
+$reuseParameters.ExistingIdentityObservation = [pscustomobject]@{
+  status = "exact_reusable"
+  details = @("Exact quiescent identity matches the base commit.")
+}
+$reusePlan = New-DanioWriterClaimPlan @reuseParameters
+Assert-True -Condition $reusePlan.valid -Message "Exact reusable identity was rejected."
+Assert-Equal -Actual $reusePlan.owner_token_sha256 -Expected $claimPlan.owner_token_sha256 -Message "Exact reuse changed deterministic identity."
+
+$caseVariantParameters = @{} + $claimPlanParameters
+$caseVariantParameters.RepositoryRoot = "c:" + $claimPlanParameters.RepositoryRoot.Substring(2)
+$caseVariantParameters.WorktreeRoot = "c:" + $claimPlanParameters.WorktreeRoot.Substring(2)
+$caseVariantPlan = New-DanioWriterClaimPlan @caseVariantParameters
+Assert-True `
+  -Condition $caseVariantPlan.valid `
+  -Message "Equivalent Windows path casing was rejected: $($caseVariantPlan.details -join '; ')"
+
+foreach ($identityStatus in @("conflict", "ambiguous")) {
+  $identityParameters = @{} + $claimPlanParameters
+  $identityParameters.ExistingIdentityObservation = [pscustomobject]@{
+    status = $identityStatus
+    details = @("Fixture identity is $identityStatus.")
+  }
+  $identityPlan = New-DanioWriterClaimPlan @identityParameters
+  Assert-Equal -Actual $identityPlan.valid -Expected $false -Message "Unsafe '$identityStatus' identity was accepted."
+  Assert-Equal -Actual $identityPlan.code -Expected "WRITER_IDENTITY_CONFLICT" -Message "Unsafe identity returned the wrong code."
+  Assert-Equal -Actual $identityPlan.mutations_performed -Expected $false -Message "Rejected identity reported mutation."
+  Assert-True -Condition ($null -eq $identityPlan.next_run_state) -Message "Rejected identity exposed candidate state."
+}
+
+$revisionMismatchParameters = @{} + $claimPlanParameters
+$revisionMismatchParameters.ExpectedStateRevision = [int64]$ready.state_revision + 1
+$revisionMismatchPlan = New-DanioWriterClaimPlan @revisionMismatchParameters
+Assert-Equal -Actual $revisionMismatchPlan.code -Expected "STATE_REVISION_INVALID" -Message "Revision mismatch was accepted."
+
+$wrongIntentParameters = @{} + $claimPlanParameters
+$wrongIntentParameters.ReadinessReport = Copy-JsonValue -Value $claimReadinessReport
+$wrongIntentParameters.ReadinessReport.intent = "Launch"
+$wrongIntentPlan = New-DanioWriterClaimPlan @wrongIntentParameters
+Assert-Equal -Actual $wrongIntentPlan.code -Expected "INVALID_READINESS_REPORT" -Message "Wrong readiness intent was accepted."
+
+$malformedReadinessParameters = @{} + $claimPlanParameters
+$malformedReadinessParameters.ReadinessReport = Copy-JsonValue -Value $claimReadinessReport
+$malformedReadinessParameters.ReadinessReport.PSObject.Properties.Remove("checks")
+$malformedReadinessPlan = New-DanioWriterClaimPlan @malformedReadinessParameters
+Assert-Equal -Actual $malformedReadinessPlan.code -Expected "INVALID_READINESS_REPORT" -Message "Malformed readiness report was accepted."
+
+$ineligibleParameters = @{} + $claimPlanParameters
+$ineligibleParameters.ReadinessReport = Copy-JsonValue -Value $claimReadinessReport
+$ineligibleParameters.ReadinessReport.eligible = $false
+$ineligibleParameters.ReadinessReport.stop_reason_code = "AUTHORITY_CONFLICT"
+$ineligibleParameters.ReadinessReport.checks[0].code = "AUTHORITY_CONFLICT"
+$ineligibleParameters.ReadinessReport.checks[0].status = "fail"
+$ineligiblePlan = New-DanioWriterClaimPlan @ineligibleParameters
+Assert-Equal -Actual $ineligiblePlan.code -Expected "AUTHORITY_CONFLICT" -Message "Ineligible readiness stop code was not propagated."
+
+$zeroBudgetState = Copy-JsonValue -Value $ready
+$zeroBudgetState.budget.total_approved_units = $zeroBudgetState.budget.consumed_units
+$zeroBudgetState.budget.remaining_units_including_current = 0
+$zeroBudgetParameters = @{} + $claimPlanParameters
+$zeroBudgetParameters.CurrentState = $zeroBudgetState
+$zeroBudgetPlan = New-DanioWriterClaimPlan @zeroBudgetParameters
+Assert-Equal -Actual $zeroBudgetPlan.code -Expected "BUDGET_EXHAUSTED" -Message "Zero claim budget was accepted."
+
+$wrongModeParameters = @{} + $claimPlanParameters
+$wrongModeParameters.CurrentState = $active
+$wrongModeParameters.ExpectedStateRevision = [int64]$active.state_revision
+$wrongModePlan = New-DanioWriterClaimPlan @wrongModeParameters
+Assert-Equal -Actual $wrongModePlan.code -Expected "TRANSITION_NOT_ALLOWED" -Message "Active state was allowed to claim again."
+
+$longIdentityState = Copy-JsonValue -Value $ready
+$longIdentityState.run_id = "r" * 80
+$longIdentityState.authorization.authorization_id = $longIdentityState.run_id
+$longIdentityState.cursor.work_unit_id = "w" * 80
+$longIdentityParameters = @{} + $claimPlanParameters
+$longIdentityParameters.CurrentState = $longIdentityState
+$longIdentityPlan = New-DanioWriterClaimPlan @longIdentityParameters
+Assert-Equal -Actual $longIdentityPlan.code -Expected "OWNER_IDENTITY_INVALID" -Message "Oversized combined writer identity was accepted."
 
 $ledgerHashAfter = (Get-FileHash -Algorithm SHA256 -LiteralPath $ledgerPath).Hash
 Assert-Equal -Actual $ledgerHashAfter -Expected $ledgerHashBefore -Message "Pure behavior tests changed the ledger."

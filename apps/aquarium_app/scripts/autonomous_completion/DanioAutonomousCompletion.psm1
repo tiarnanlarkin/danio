@@ -33,6 +33,8 @@ $script:DanioAllowedTransitions = @{
   "complete>complete" = "administrative_sync"
 }
 
+$script:DanioRunStatePath = "apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json"
+
 function New-DanioValidationResult {
   [CmdletBinding()]
   param(
@@ -1901,6 +1903,20 @@ function Get-DanioRepositoryObservation {
         $ownershipClear = $false
       }
     }
+    $activeOwnerRequired = (
+      $stateHasOwner -and
+      @($State.PSObject.Properties.Name) -ccontains "mode" -and
+      [string]$State.mode -ceq "active"
+    )
+    if (
+      $activeOwnerRequired -and
+      (
+        $worktrees -cnotcontains [string]$allowedWorktrees[1] -or
+        $temporaryBranches -cnotcontains [string]$allowedTemporaryBranches[0]
+      )
+    ) {
+      $ownershipClear = $false
+    }
 
     $handoffPath = Join-Path $resolvedRoot "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
     $bootstrapRemaining = $null
@@ -2427,6 +2443,307 @@ function Test-DanioAutonomousReadiness {
   }
 }
 
+function New-DanioWriterClaimPlanResult {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][bool]$Valid,
+    [Parameter(Mandatory = $true)][string]$Code,
+    [Parameter(Mandatory = $true)][string]$PlannedAtUtc,
+    [object[]]$Details = @(),
+    [AllowNull()]$Identity = $null,
+    [AllowNull()]$NextRunState = $null
+  )
+
+  return [pscustomobject][ordered]@{
+    document_type = "danio_writer_claim_plan"
+    schema_version = 1
+    planned_at_utc = $PlannedAtUtc
+    valid = $Valid
+    code = $Code
+    details = @($Details)
+    mutations_performed = $false
+    run_id = if ($Valid) { [string]$Identity.run_id } else { $null }
+    work_unit_id = if ($Valid) { [string]$Identity.work_unit_id } else { $null }
+    task_id = if ($Valid) { [string]$Identity.task_id } else { $null }
+    expected_state_revision = if ($Valid) { [int64]$Identity.expected_state_revision } else { $null }
+    owner_token_sha256 = if ($Valid) { [string]$Identity.owner_token_sha256 } else { $null }
+    branch_name = if ($Valid) { [string]$Identity.branch_name } else { $null }
+    worktree_id = if ($Valid) { [string]$Identity.worktree_id } else { $null }
+    worktree_path = if ($Valid) { [string]$Identity.worktree_path } else { $null }
+    base_commit = if ($Valid) { [string]$Identity.base_commit } else { $null }
+    state_path = $script:DanioRunStatePath
+    next_run_state = if ($Valid) { $NextRunState } else { $null }
+  }
+}
+
+function New-DanioWriterClaimPlan {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)]$ReadinessReport,
+    [Parameter(Mandatory = $true)]$CurrentState,
+    [Parameter(Mandatory = $true)][string]$TaskId,
+    [Parameter(Mandatory = $true)][int64]$ExpectedStateRevision,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$WorktreeRoot,
+    [Parameter(Mandatory = $true)][string]$BaseCommit,
+    [Parameter(Mandatory = $true)][string]$BaseTreeHash,
+    [Parameter(Mandatory = $true)][string]$PlannedAtUtc,
+    [Parameter(Mandatory = $true)]$ExistingIdentityObservation
+  )
+
+  $readinessFields = @(
+    "document_type",
+    "schema_version",
+    "intent",
+    "checked_at_utc",
+    "eligible",
+    "stop_reason_code",
+    "checks"
+  )
+  $readinessSet = Test-DanioExactPropertySet `
+    -Value $ReadinessReport `
+    -Allowed $readinessFields `
+    -Required $readinessFields
+  $readinessShapeValid = (
+    $readinessSet.valid -and
+    [string]$ReadinessReport.document_type -ceq "danio_readiness_report" -and
+    (Test-DanioInteger -Value $ReadinessReport.schema_version) -and
+    [int64]$ReadinessReport.schema_version -eq 1 -and
+    [string]$ReadinessReport.intent -ceq "Claim" -and
+    (Test-DanioStrictUtc -Value $ReadinessReport.checked_at_utc) -and
+    (Test-DanioBoolean -Value $ReadinessReport.eligible) -and
+    $ReadinessReport.checks -is [System.Array] -and
+    $ReadinessReport.checks.Count -gt 0
+  )
+  if ($readinessShapeValid) {
+    foreach ($check in @($ReadinessReport.checks)) {
+      $checkSet = Test-DanioExactPropertySet `
+        -Value $check `
+        -Allowed @("code", "status", "detail") `
+        -Required @("code", "status", "detail")
+      if (
+        -not $checkSet.valid -or
+        -not (Test-DanioReasonCode -Value $check.code) -or
+        @("pass", "fail") -cnotcontains [string]$check.status -or
+        $check.detail -isnot [string] -or
+        [string]::IsNullOrWhiteSpace([string]$check.detail)
+      ) {
+        $readinessShapeValid = $false
+      }
+    }
+  }
+  if (
+    -not $readinessShapeValid -or
+    (
+      [bool]$ReadinessReport.eligible -and
+      (
+        $null -ne $ReadinessReport.stop_reason_code -or
+        @($ReadinessReport.checks | Where-Object { [string]$_.status -cne "pass" }).Count -gt 0
+      )
+    ) -or
+    (
+      -not [bool]$ReadinessReport.eligible -and
+      (
+        -not (Test-DanioReasonCode -Value $ReadinessReport.stop_reason_code) -or
+        @($ReadinessReport.checks | Where-Object { [string]$_.status -ceq "fail" }).Count -eq 0
+      )
+    )
+  ) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "INVALID_READINESS_REPORT" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("Readiness report is malformed or does not authorize Claim.")
+  }
+  if (-not [bool]$ReadinessReport.eligible) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code ([string]$ReadinessReport.stop_reason_code) `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("Readiness report is ineligible for Claim.")
+  }
+
+  $stateValidation = Test-DanioRunState -State $CurrentState
+  if (-not $stateValidation.valid) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code ([string]$stateValidation.code) `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details $stateValidation.details
+  }
+  if (@("ready", "handoff_ready") -cnotcontains [string]$CurrentState.mode) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "TRANSITION_NOT_ALLOWED" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("Only ready or handoff_ready state may claim a writer.")
+  }
+  if ([int64]$CurrentState.state_revision -ne $ExpectedStateRevision) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "STATE_REVISION_INVALID" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("Expected state revision does not match the committed state.")
+  }
+  if ([int64]$CurrentState.budget.remaining_units_including_current -le 0) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "BUDGET_EXHAUSTED" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("A writer claim requires positive remaining budget.")
+  }
+
+  $normalizedRepositoryRoot = ConvertTo-DanioForwardSlashPath -Path $RepositoryRoot
+  $normalizedStateRepositoryRoot = ConvertTo-DanioForwardSlashPath `
+    -Path ([string]$CurrentState.authorization.repository_root)
+  $normalizedSavedProjectRoot = ConvertTo-DanioForwardSlashPath `
+    -Path ([string]$CurrentState.authorization.saved_project_root)
+  $normalizedWorktreeRoot = ConvertTo-DanioForwardSlashPath -Path $WorktreeRoot
+  $expectedWorktreeRoot = "$normalizedSavedProjectRoot/.codex-worktrees"
+  $runId = [string]$CurrentState.run_id
+  $workUnitId = [string]$CurrentState.cursor.work_unit_id
+  if (
+    -not (Test-DanioStrictUtc -Value $PlannedAtUtc) -or
+    -not (Test-DanioSafeIdentifier -Value $TaskId) -or
+    -not (Test-DanioSafeIdentifier -Value $runId) -or
+    -not (Test-DanioSafeIdentifier -Value $workUnitId) -or
+    -not (Test-DanioGitOid -Value $BaseCommit) -or
+    -not (Test-DanioGitOid -Value $BaseTreeHash) -or
+    -not (Test-DanioAbsoluteWindowsPath -Value $normalizedRepositoryRoot) -or
+    -not (Test-DanioAbsoluteWindowsPath -Value $normalizedSavedProjectRoot) -or
+    -not (Test-DanioAbsoluteWindowsPath -Value $normalizedWorktreeRoot) -or
+    -not [string]::Equals(
+      $normalizedRepositoryRoot,
+      $normalizedStateRepositoryRoot,
+      [StringComparison]::OrdinalIgnoreCase
+    ) -or
+    -not [string]::Equals(
+      $normalizedWorktreeRoot,
+      $expectedWorktreeRoot,
+      [StringComparison]::OrdinalIgnoreCase
+    )
+  ) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "OWNER_IDENTITY_INVALID" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("Claim identity, roots, commit, tree, or timestamp are invalid.")
+  }
+  $normalizedWorktreeRoot = $expectedWorktreeRoot
+
+  $ownerToken = Get-DanioOwnerToken `
+    -RunId $runId `
+    -WorkUnitId $workUnitId `
+    -TaskId $TaskId `
+    -ExpectedRevision $ExpectedStateRevision
+  $token12 = $ownerToken.Substring(0, 12)
+  $branchName = "autonomy/$runId/$workUnitId/$token12"
+  $worktreeId = "$runId-$workUnitId-$token12"
+  $worktreePath = "$normalizedWorktreeRoot/$worktreeId"
+  if (
+    -not (Test-DanioSafeIdentifier -Value $worktreeId) -or
+    $branchName.Length -gt 240 -or
+    -not (Test-DanioAbsoluteWindowsPath -Value $worktreePath) -or
+    -not $worktreePath.StartsWith("$normalizedWorktreeRoot/", [StringComparison]::Ordinal)
+  ) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "OWNER_IDENTITY_INVALID" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("Derived branch or worktree identity is invalid.")
+  }
+
+  $identityObservationSet = Test-DanioExactPropertySet `
+    -Value $ExistingIdentityObservation `
+    -Allowed @("status", "details") `
+    -Required @("status", "details")
+  $identityObservationValid = (
+    $identityObservationSet.valid -and
+    @("absent", "exact_reusable", "conflict", "ambiguous") -ccontains [string]$ExistingIdentityObservation.status -and
+    $ExistingIdentityObservation.details -is [System.Array]
+  )
+  if ($identityObservationValid) {
+    foreach ($detail in @($ExistingIdentityObservation.details)) {
+      if ($detail -isnot [string] -or [string]::IsNullOrWhiteSpace([string]$detail)) {
+        $identityObservationValid = $false
+      }
+    }
+  }
+  if (-not $identityObservationValid) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "OWNER_IDENTITY_INVALID" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @("Existing writer identity observation is malformed.")
+  }
+  if (@("absent", "exact_reusable") -cnotcontains [string]$ExistingIdentityObservation.status) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code "WRITER_IDENTITY_CONFLICT" `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details @($ExistingIdentityObservation.details)
+  }
+
+  $nextRunState = Copy-DanioJsonValue -Value $CurrentState
+  $nextRunState.state_revision = [int64]$CurrentState.state_revision + 1
+  $nextRunState.mode = "active"
+  $nextRunState.transition = [pscustomobject][ordered]@{
+    action = "claim"
+    from_mode = [string]$CurrentState.mode
+    to_mode = "active"
+    parent_state_revision = [int64]$CurrentState.state_revision
+    work_unit_id = $workUnitId
+    reason_code = $null
+    occurred_at_utc = $PlannedAtUtc
+  }
+  $nextRunState.owner = [pscustomobject][ordered]@{
+    task_id = $TaskId
+    token_sha256 = $ownerToken
+    claim_revision = $ExpectedStateRevision
+    claim_parent_commit = $BaseCommit
+    claim_staged_tree_hash = $BaseTreeHash
+    branch_name = $branchName
+    worktree_id = $worktreeId
+    worktree_path = $worktreePath
+    claimed_at_utc = $PlannedAtUtc
+    writer_lease_released = $false
+    android_lease_released = $true
+  }
+  $nextRunState.budget.current_charge.work_unit_id = $workUnitId
+  $nextRunState.budget.current_charge.status = "pending"
+  $nextRunState.budget.current_charge.claimed_revision = $ExpectedStateRevision
+  $nextRunState.budget.current_charge.consumed_revision = $null
+
+  $transitionValidation = Test-DanioRunStateTransition `
+    -PreviousState $CurrentState `
+    -CandidateState $nextRunState
+  if (-not $transitionValidation.valid) {
+    return New-DanioWriterClaimPlanResult `
+      -Valid $false `
+      -Code ([string]$transitionValidation.code) `
+      -PlannedAtUtc $PlannedAtUtc `
+      -Details $transitionValidation.details
+  }
+
+  $identity = [pscustomobject]@{
+    run_id = $runId
+    work_unit_id = $workUnitId
+    task_id = $TaskId
+    expected_state_revision = $ExpectedStateRevision
+    owner_token_sha256 = $ownerToken
+    branch_name = $branchName
+    worktree_id = $worktreeId
+    worktree_path = $worktreePath
+    base_commit = $BaseCommit
+  }
+  return New-DanioWriterClaimPlanResult `
+    -Valid $true `
+    -Code "CLAIM_PLAN_VALID" `
+    -PlannedAtUtc $PlannedAtUtc `
+    -Identity $identity `
+    -NextRunState $nextRunState
+}
+
 Export-ModuleMember -Function @(
   "Resolve-DanioRepositoryRoot",
   "Get-DanioRepositoryObservation",
@@ -2438,5 +2755,6 @@ Export-ModuleMember -Function @(
   "Test-DanioRunState",
   "Test-DanioRunStateTransition",
   "Test-DanioCompletionReadiness",
-  "Test-DanioAutonomousReadiness"
+  "Test-DanioAutonomousReadiness",
+  "New-DanioWriterClaimPlan"
 )
