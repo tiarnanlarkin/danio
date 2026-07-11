@@ -59,17 +59,19 @@ phone atlas evidence.
   source checkpoint. The planning-checkpoint Full gate later rebuilt the debug
   APK successfully.
 
-## Product Decision Gate
+## Product Decision Record
 
-Two decisions must be answered before the normal-user depth phase can close:
+Resolved on 2026-07-11. The user accepted both recommended phone-complete
+boundaries:
 
-| ID | Decision | Recommended phone-complete default | Effect if expanded |
-| --- | --- | --- | --- |
-| `DCL-P1-001` | Is fuller dedicated plant inventory and seasonal Living Tank variation required now? | Accept current data-derived plant, aquascape, decoration, progression, and seasonal cues for phone complete-local. Fix concrete defects only. | Add a separately scoped plant-inventory/seasonal-variant product plan and visual target. |
-| `DCL-P1-002` | Are seasonal cosmetics and deeper plant/decor collections required now? | Accept current room vibes, badges, inventory, earned decorations, and equip controls for phone complete-local. | Add a bounded rewards-depth plan grounded in reward rules and current screenshots. |
+| ID | Accepted phone-complete boundary | Parked expansion |
+| --- | --- | --- |
+| `DCL-P1-001` | Current data-derived plant, aquascape, decoration, progression, and seasonal cues are sufficient. Fix concrete defects only. | Dedicated plant inventory and broader seasonal variants require a fresh user-approved plan. |
+| `DCL-P1-002` | Current room vibes, badges, inventory, earned decorations, and equip controls are sufficient. Fix concrete defects only. | Seasonal cosmetics and deeper plant/decor collections require a fresh user-approved plan. |
 
-Until the user decides, the recommended defaults above are planning
-assumptions only. They do not close the ledger rows.
+Both ledger rows are closed as `ACCEPTED_LOCAL_LIMITATION`. These boundaries
+constrain Phase 3 but do not bypass later phone visual, accessibility, motion,
+performance, or final-candidate checks.
 
 ## Recalibrated Working Range
 
@@ -78,20 +80,20 @@ purposes. It is still a range, not a delivery promise.
 
 | Range | Verified sessions | Assumptions |
 | --- | --- | --- |
-| Lower bound | 10 to 13 | Several verification rows close without code, both product-depth recommendations are accepted, and no material accessibility or performance defects appear. |
+| Lower bound | 10 to 13 | Several verification rows close without code, both accepted product-depth boundaries remain stable, and no material accessibility or performance defects appear. |
 | Planning range | 13 to 22 | Data resilience needs targeted fixes, phone visual/accessibility work finds bounded defects, and each high-risk phase receives its own closeout evidence. |
-| Expanded scope | 18 to 30 | Plant/reward depth is expanded, visual assets need broad replacement, or performance/accessibility evidence requires iteration. |
+| Expanded scope | 18 to 30 | The accepted plant/reward boundary is later reopened, visual assets need broad replacement, or performance/accessibility evidence requires iteration. |
 
-Recalibrate after the data-resilience phase and the two product decisions.
+Recalibrate after the data-resilience phase.
 
 ## Ordered Completion Phases
 
 | Phase | Ledger rows | Working sessions | Exit condition |
 | --- | --- | --- | --- |
-| 0. Scope lock | `DCL-P1-001`, `DCL-P1-002` | User decision | Each row has an accepted current boundary or a separate bounded implementation plan. |
+| 0. Scope lock | `DCL-P1-001`, `DCL-P1-002` | Complete | Both current product-depth boundaries were accepted on 2026-07-11; broader expansion is parked. |
 | 1. Data resilience | `DCL-DR-001` through `DCL-DR-004` | 3 to 5 | Restore, migration/corruption, broader CRUD/undo, and import relationship mapping are fixed or closed by fresh proof; Full gate passes. |
 | 2. Optional AI and preferences | `DCL-AI-001`, `DCL-PREF-001` | 1 to 2 | Every real current AI write is confirmed-before-write or proven absent; keyless/provider/privacy preferences are honest and persistent. |
-| 3. Normal-user depth | `DCL-P1-003` through `DCL-P1-006`, plus decisions from Phase 0 | 2 to 5 | Guided tools, timeline, learning, species/plants, Living Tank, and rewards meet the accepted phone scope. |
+| 3. Normal-user depth | `DCL-P1-003` through `DCL-P1-006`, constrained by Phase 0 | 2 to 5 | Guided tools, timeline, learning, and species/plants meet the accepted phone scope while Living Tank and rewards remain within their accepted boundaries. |
 | 4. Content and rules | `DCL-CONTENT-001`, `DCL-RULE-001` | 2 to 3 | The next concrete source, locked-content, recommendation, compatibility, emergency, unit, and calculator risk clusters have executable coverage. |
 | 5. Phone accessibility and visual quality | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | 3 to 5 | High-traffic phone clusters meet accessibility, visual, reduced-motion, and haptic acceptance with stable targeted baselines. |
 | 6. Phone performance | phone portion of `DCL-PERF-001` | 1 to 2 | Owned Android phone evidence covers the recorded startup, resume, tab, animation, scrolling, and image targets. |
@@ -236,7 +238,8 @@ policy, and privacy copy are verified without enabling parked providers.
 
 ## Phase 3: Accepted Normal-User Depth
 
-- [ ] Resolve `DCL-P1-001` and `DCL-P1-002` before implementation.
+- [x] Treat `DCL-P1-001` and `DCL-P1-002` as accepted current-scope
+  boundaries; do not reopen their parked expansion during Phase 3.
 - [ ] Audit guided-tool save/apply handoffs for `DCL-P1-003` using calculator
   widget tests and page 07 atlas evidence.
 - [ ] Audit timeline/journal source labels and save handoffs for `DCL-P1-004`
@@ -361,6 +364,7 @@ Every implementation slice must:
 
 ## Recommended Next Slice
 
-After the product-decision response, start a fresh read-only `DCL-DR-001`
-restore matrix audit using Task 1.1. Implement only if that audit proves one
-specific current false-success, rollback, cleanup, or failure-feedback gap.
+When the user directs the next manual implementation session, start a fresh
+read-only `DCL-DR-001` restore matrix audit using Task 1.1. Implement only if
+that audit proves one specific current false-success, rollback, cleanup, or
+failure-feedback gap.

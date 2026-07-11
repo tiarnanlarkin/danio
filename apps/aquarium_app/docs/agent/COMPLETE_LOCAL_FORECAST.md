@@ -2,8 +2,8 @@
 
 Status: Active forecast
 Created: 2026-07-05
-Recalibrated: 2026-07-11 after DS-050, the phone atlas audit, and the confirmed
-phone-only completion boundary
+Recalibrated: 2026-07-11 after DS-050, the phone atlas audit, the confirmed
+phone-only completion boundary, and both accepted product-depth decisions
 Evidence: `FINISH_MAP.md`, `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
 `SLICE_LOG.md`, and
 `plans/2026-07-11-phone-complete-local-completion-program.md`
@@ -22,9 +22,9 @@ phone-only audit:
 
 | Range | Session Count | What It Assumes |
 | --- | --- | --- |
-| Lower bound | 10 to 13 verified sessions | Several verification rows close without code, the recommended plant/reward boundaries are accepted, and no material phone accessibility or performance defects appear. |
+| Lower bound | 10 to 13 verified sessions | Several verification rows close without code, the accepted plant/reward boundaries remain stable, and no material phone accessibility or performance defects appear. |
 | Planning range | 13 to 22 verified sessions | Data resilience needs targeted fixes, phone visual/accessibility work finds bounded defects, and each high-risk phase receives its own closeout evidence. |
-| Expanded scope | 18 to 30 verified sessions | User chooses deeper plant/reward scope, visual assets need broad replacement, or phone performance/accessibility evidence requires iteration. |
+| Expanded scope | 18 to 30 verified sessions | The accepted plant/reward boundary is later reopened, visual assets need broad replacement, or phone performance/accessibility evidence requires iteration. |
 
 The fastest safe path is not "one issue per session forever". It is evidence
 first, then bundle 2 to 3 related micro-slices only when the proof setup is
@@ -36,7 +36,7 @@ shared and the stop conditions stay clear.
 | --- | --- | --- | --- | --- | --- |
 | 1. Data-resilience closure | `DCL-DR-001` through `DCL-DR-004` | 2 | 3 to 5 | 8 | Restore, migration/corruption, create/delete/undo, and relationship mapping are fixed or verified with Full-gate evidence. `DCL-DR-005` remains archived future-watch. |
 | 2. Optional AI and preferences | `DCL-AI-001`, `DCL-PREF-001` | 1 | 1 to 2 | 3 | Real current AI writes are confirmed-before-write or audited as no-current-gap; keyless/provider/privacy preferences remain honest. |
-| 3. Normal-user P1 depth | `DCL-P1-001` through `DCL-P1-006` | 2 | 2 to 5 | 8 | User-scoped plant/reward/learning/species/guided-tool/timeline gaps are implemented or accepted as current phone scope. |
+| 3. Normal-user P1 depth | `DCL-P1-003` through `DCL-P1-006` | 2 | 2 to 5 | 8 | Guided-tool, timeline, learning, and species/plant gaps are implemented or accepted within the current phone scope. |
 | 4. Content and rule confidence | `DCL-CONTENT-001`, `DCL-RULE-001` | 1 | 2 to 3 | 5 | Broader validators and rule tests cover the next concrete risk clusters without unsafe care-copy drift. |
 | 5. Phone accessibility, visual, motion | `DCL-A11Y-001`, `DCL-VIS-001`, `DCL-VIS-002`, `DCL-MOTION-001` | 2 | 3 to 5 | 8 | Current phone screenshots/Figma targets and focused proof close bounded visual, accessibility, reduced-motion, and haptic gaps. |
 | 6. Phone performance evidence | phone portion of `DCL-PERF-001` | 1 | 1 to 2 | 3 | Owned Android phone evidence covers startup, resume, tab switching, tank animation, scrolling, and image first paint against local targets. |
@@ -61,12 +61,12 @@ Ask one direct question instead of implementing when:
   keys, hosted CI, store submission, or deploy work.
 - The ledger, Finish Map, active handoff, and source evidence disagree.
 
-## User Decisions Still Needed
+## Product Scope Decisions
 
-| Decision | Related IDs | Default Until User Decides |
+| Decision | Related IDs | Current status |
 | --- | --- | --- |
-| Whether dedicated plant inventory and seasonal living-tank variants are required for local completion. | `DCL-P1-001` | Keep existing data-derived plant/decor cues and ask before large product expansion. |
-| Whether seasonal cosmetics and deeper plant/decor collections are required. | `DCL-P1-002` | Keep existing local room vibes, badges, inventory, and equipped decorations. |
+| Whether dedicated plant inventory and broader seasonal living-tank variants are required for phone completion. | `DCL-P1-001` | Resolved 2026-07-11: current data-derived plant/decor/seasonal cues are accepted; expansion is parked. |
+| Whether seasonal cosmetics and deeper plant/decor collections are required for phone completion. | `DCL-P1-002` | Resolved 2026-07-11: current room vibes, badges, inventory, and equipped decorations are accepted; expansion is parked. |
 | Tablet sequencing. | `DCL-TAB-001`, tablet portion of `DCL-PERF-001` | Decided 2026-07-11: park until phone complete-local closes. |
 | Whether to reopen non-OpenAI providers, premium AI, keyed-AI seed states, store/release, cloud, deploy, or account-backed work. | `DCL-QA-001`, `DCL-EXT-001`, `DCL-PREMIUM-001`, `DCL-EXT-002` | Park outside complete-local. |
 

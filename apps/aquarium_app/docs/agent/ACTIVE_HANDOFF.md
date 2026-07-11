@@ -1,19 +1,19 @@
 # Danio Active Handoff
 
-Status: Clean DS-2026-07-06-050 product checkpoint with the 2026-07-11 phone completion plan ready for user decisions
-Last updated: 2026-07-11 after the phone atlas audit and phone-only planning reconciliation
+Status: Clean phone-planning checkpoint ready for a user-directed `DCL-DR-001` restore matrix audit
+Last updated: 2026-07-11 after both phone product-depth boundaries were accepted
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
 - Latest product/data-safety slice: DS-2026-07-06-050.
-- Latest workflow slice: WF-2026-07-11-004.
+- Latest workflow slice: WF-2026-07-11-005.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
   - `main...origin/main` is `0 0`.
-  - Temporary DS-050 branch has been deleted after merge.
+  - Temporary workflow branch has been deleted after merge.
 
 ## Completed Product Slice
 
@@ -82,12 +82,27 @@ Last updated: 2026-07-11 after the phone atlas audit and phone-only planning rec
     structurally checked with no loose images or clipped overflow.
 - Planning checkpoint verification passed 2,133 Flutter tests, Flutter
   analysis, and a debug APK build.
-- Product decisions still required before P1 depth can close:
-  - `DCL-P1-001`: accept current Living Tank plant/seasonal cues or scope a
-    bounded expansion.
-  - `DCL-P1-002`: accept current rewards/collectibles depth or scope a bounded
-    expansion.
-- No application Dart code changed in this planning checkpoint.
+
+## Accepted Phone Scope Checkpoint
+
+- Slice: `WF-2026-07-11-005`, Accepted Living Tank And Rewards Phone Scope.
+- Accepted product-depth boundaries, recorded on 2026-07-11:
+  - `DCL-P1-001`: current Living Tank plant, aquascape, decoration,
+    progression, and seasonal cues are sufficient for phone complete-local.
+  - `DCL-P1-002`: current room vibes, badges, inventory, earned decorations,
+    and equip controls are sufficient for phone complete-local.
+  - Broader plant inventory, seasonal variants/cosmetics, and deeper
+    plant/decor collections are parked unless the user explicitly reopens
+    them.
+- `DCL-P1-001` and `DCL-P1-002` are closed as
+  `ACCEPTED_LOCAL_LIMITATION`, and Living Tank plus rewards are now
+  `Implemented` for the accepted phone scope rather than unconditionally
+  `Done`.
+- The Figma completion page records zero open product decisions and directs
+  the next user-started session to a read-only `DCL-DR-001` restore matrix
+  audit.
+- No application Dart code or Android runtime state changed in either
+  planning checkpoint.
 
 ## Dirty Files To Preserve
 
@@ -95,6 +110,23 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+WF-2026-07-11-005:
+
+- Figma completion-page screenshot inspection passed with no visible clipping
+  or broken layout after the accepted-scope update.
+- File-wide Figma structural audit passed with 14 pages, 100 phone-atlas
+  evidence images, 110 total images, no loose top-level or image nodes, no
+  direct section overflow, and no clipped-child overflow.
+- `dart format test/copy/current_docs_local_truth_test.dart` made no changes.
+- `git diff --check` passed.
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed with 4 tests.
+- `flutter analyze` passed with no issues.
+- Docs gate passed.
+- Dirty-branch Full gate passed with 2,134 Flutter tests, custom lint, Flutter
+  analysis, and a debug APK build. Existing expected negative-path test logs
+  and Kotlin/Java dependency warnings were not failures.
 
 DS-2026-07-06-050:
 
@@ -279,8 +311,8 @@ DS-2026-07-05-044:
   restored-photo cleanup failure cannot block the normal import-failed
   reporting path, but broader restore/migration, create/delete, and final
   relationship-mapping closure evidence remains open.
-- Rows with `PRODUCT_DECISION` or `EXTERNAL_PARKED` disposition require a user
-  decision and are not automatic implementation targets.
+- No unresolved `PRODUCT_DECISION` row remains. Rows with `PHASE_PARKED` or
+  `EXTERNAL_PARKED` disposition are not automatic implementation targets.
 - `DCL-TAB-001` and the tablet portion of `DCL-PERF-001` are now
   `PHASE_PARKED` and do not block the phone candidate.
 
@@ -290,14 +322,14 @@ Autonomous chain budget remains 0. Do not create another successor thread or
 start product implementation unless the user explicitly directs it in the
 current thread.
 
-After the two P1 product decisions are recorded, the next manual/fresh session
-should:
+The next manual/fresh session should:
 
 - use `$verified-slice-runner`;
 - read `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
   `VERIFIED_SLICE_EXECUTION_CONTRACT.md`, `COMPLETE_LOCAL_FORECAST.md`,
   this handoff, `FINISH_MAP.md`, `QUALITY_LADDER.md`,
-  `TESTING_CHECKLIST.md`, `SLICE_LOG.md`, and the accelerated epoch plan at
+  `TESTING_CHECKLIST.md`, `SLICE_LOG.md`, and
+  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md` at
   startup;
 - begin with a read-only ledger-driven data-resilience gap selection audit;
 - use Task 1.1 in

@@ -163,4 +163,25 @@ void main() {
       'Phone release candidate',
     ]);
   });
+
+  test('accepted phone product-depth boundaries are recorded', () {
+    _expectContainsAll('docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md', [
+      'DCL-P1-001',
+      'DCL-P1-002',
+      'ACCEPTED_LOCAL_LIMITATION',
+      'current data-derived plant, aquascape, decoration, progression, and seasonal cues',
+      'current room vibes, badges, inventory, earned decorations, and equip controls',
+    ]);
+    _expectContainsAll(
+      'docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md',
+      [
+        'Resolved on 2026-07-11',
+        'Both ledger rows are closed as `ACCEPTED_LOCAL_LIMITATION`',
+      ],
+    );
+    _expectContainsAll('docs/agent/FINISH_MAP.md', [
+      'accepted the current Living Tank and rewards depth',
+      'Dedicated plant inventory, broader seasonal variants',
+    ]);
+  });
 }

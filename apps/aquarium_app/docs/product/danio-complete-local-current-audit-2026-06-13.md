@@ -4229,14 +4229,16 @@ High-confidence P1/P2 gaps from code/docs evidence:
   Runtime AI calls are still OpenAI-first until those connectors are built.
 - Living Tank visuals now react to latest water-test state, old water-change
   logs, feeding events, livestock health/compatibility cues, aquascape equipment
-  cues, earned species progression, and equipped earned decorations. Remaining
-  living-tank work is fuller plant inventory, seasonal variants, and final
-  phone/tablet visual QA.
+  cues, earned species progression, and equipped earned decorations. On
+  2026-07-11 the user accepted this current breadth for phone complete-local;
+  fuller plant inventory and broader seasonal variants are parked expansion.
+  Concrete defects remain subject to later phone quality checks.
 - Rewards now include local room-vibe unlock rules, achievement celebration
   feedback, a subtle achievement tank cosmetic cue, Inventory access to earned
   room vibes, and a local earned tank-decoration inventory with equip controls.
-  Remaining reward work is seasonal cosmetics and deeper plant/decor
-  collections.
+  On 2026-07-11 the user accepted this current breadth for phone complete-local;
+  seasonal cosmetics and deeper plant/decor collections are parked expansion.
+  Concrete defects remain subject to later phone quality checks.
 - Species and plant detail pages now have the first complete local guide pass:
   profiles, actions, watch-outs, wishlist saves, tank/task handoffs, missing
   species request guidance, and source trails. Future species work is content
