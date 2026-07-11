@@ -1,14 +1,14 @@
 # Danio Active Handoff
 
-Status: Clean phone-planning checkpoint ready for a user-directed `DCL-DR-001` restore matrix audit
-Last updated: 2026-07-11 after both phone product-depth boundaries were accepted
+Status: Clean autonomy-design checkpoint awaiting user review before implementation planning
+Last updated: 2026-07-11 after the autonomous phone-completion operating model was committed
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
 - Latest product/data-safety slice: DS-2026-07-06-050.
-- Latest workflow slice: WF-2026-07-11-005.
+- Latest workflow slice: WF-2026-07-11-006.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
@@ -32,7 +32,7 @@ Last updated: 2026-07-11 after both phone product-depth boundaries were accepted
   - No UI layout, Android runtime, cloud/account behavior, paid services, API
     keys, provider, premium, store, deploy, or optional-AI behavior changed.
 
-## Completed Workflow Slice
+## Completed Workflow Foundation Slice
 
 - Slice: WF-2026-07-05-003, Anti-Circling Complete-Local Workflow Ledger.
 - New workflow docs:
@@ -104,12 +104,55 @@ Last updated: 2026-07-11 after both phone product-depth boundaries were accepted
 - No application Dart code or Android runtime state changed in either
   planning checkpoint.
 
+## Autonomous Completion Operating Model Checkpoint
+
+- Slice: `WF-2026-07-11-006`, Autonomous Phone Completion Operating Model.
+- Committed specification:
+  `docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md`.
+- Design commit:
+  `81be4c93444cfd47a80cf47730cbc76e9b8464ff`.
+- Selected model:
+  - one writing coordinator;
+  - parallel repository-read-only auditors for independent analysis;
+  - one serialized Android QA owner only when runtime evidence is required;
+  - no concurrent writing agents.
+- The model defines canonical authority by field, finite work units, atomic
+  compare-and-swap writer claims, closeout-time budget charging, duplicate-safe
+  project handoff, fresh synchronization receipts, staged-tree state
+  validation, explicit stop states, and non-circular terminal finalization.
+- Installed runner semantics are deliberately fail-closed. A repository-owned
+  compatibility contract must reconcile chain creation and failed-unit charging
+  before any autonomous launch.
+- This checkpoint approves the design for user review only. The detailed
+  repository implementation plan has not been written, no autonomous budget
+  has been granted, and no app implementation has started.
+- No Android runtime, Figma file, account, paid tool, secret, cloud service, or
+  external state changed in this workflow slice.
+
 ## Dirty Files To Preserve
 
 No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+WF-2026-07-11-006:
+
+- Two parallel repository-read-only reviewers pressure-tested the draft; one
+  reviewer then rechecked the corrected state machine and reported no blocking
+  or high-severity findings.
+- The final reviewer spot-check passed after the remaining medium hardening for
+  DCL-RC finalization, unknown push outcomes, post-gate dirt checks,
+  `STOP_PENDING`, and runner charging compatibility.
+- `git diff --cached --check` passed.
+- ASCII validation passed for the new design document.
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed with 4 tests.
+- `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs` passed:
+  whitespace check, 39 focused Flutter tests, dependency validation, Danio
+  custom lint, and Flutter analysis all passed.
+- A Full gate was not required because the slice changed only workflow
+  documentation and the repository's Docs profile is the applicable gate.
 
 WF-2026-07-11-005:
 
@@ -267,6 +310,8 @@ DS-2026-07-05-044:
   and the dedicated emulator was left running.
 - The planning reconciliation itself required no additional emulator, ADB,
   install, tap, screenshot, logcat, Patrol, or live-preview action.
+- WF-2026-07-11-006 required no emulator, ADB, Figma, browser, or live-preview
+  action. Reviewers were repository-read-only.
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-050 because it was a screen failure-boundary data-safety proof
@@ -303,7 +348,7 @@ DS-2026-07-05-044:
   DS-2026-07-06-048,
   DS-2026-07-06-047,
   DS-2026-07-06-046, or
-  WF-2026-07-05-003.
+  WF-2026-07-05-003. No blocker remains for WF-2026-07-11-006 itself.
 - The next product slice should be selected from
   `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
 - Highest-ranked open local lane remains data resilience:
@@ -315,6 +360,12 @@ DS-2026-07-05-044:
   `EXTERNAL_PARKED` disposition are not automatic implementation targets.
 - `DCL-TAB-001` and the tablet portion of `DCL-PERF-001` are now
   `PHASE_PARKED` and do not block the phone candidate.
+- Workflow implementation planning is intentionally waiting for the user to
+  review the committed operating-model specification. This is a review gate,
+  not a product blocker.
+- Autonomous launch remains blocked until the later implementation reconciles
+  the installed Danio/verified runner contracts and passes a no-product-change
+  dry-run rehearsal.
 
 ## Next Action
 
@@ -322,21 +373,27 @@ Autonomous chain budget remains 0. Do not create another successor thread or
 start product implementation unless the user explicitly directs it in the
 current thread.
 
-The next manual/fresh session should:
+The next manual action is for the user to review
+`docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md`.
+After the user accepts or amends that committed specification, the next session
+should use the writing-plans workflow to produce the detailed repository
+implementation plan. It must not start the final product push or claim an
+autonomous budget.
+
+That implementation plan should:
 
 - use `$verified-slice-runner`;
 - read `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
   `VERIFIED_SLICE_EXECUTION_CONTRACT.md`, `COMPLETE_LOCAL_FORECAST.md`,
   this handoff, `FINISH_MAP.md`, `QUALITY_LADDER.md`,
   `TESTING_CHECKLIST.md`, `SLICE_LOG.md`, and
-  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md` at
-  startup;
-- begin with a read-only ledger-driven data-resilience gap selection audit;
-- use Task 1.1 in
-  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md` to
-  build the `DCL-DR-001` restore behavior matrix;
-- implement exactly one small local slice, or a bounded 2-3 micro-slice epoch
-  only when the selected ledger IDs share one module, test family, proof setup,
-  and risk boundary;
-- stop and ask one direct question if ledger, roadmap, source, or runtime
-  evidence disagree.
+  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`, and
+  the committed operating-model design at startup;
+- map each bounded implementation task to the design's repository surfaces and
+  tests, with no application feature work in the workflow-setup phase;
+- include authority reconciliation, machine ledger closure state, run-state
+  schema, runner compatibility, synchronization/readiness, writer claim,
+  duplicate-safe handoff, auditor policy, failure recovery, and dry-run
+  rehearsal; and
+- preserve `DCL-DR-001` as the first product lane after the workflow is fully
+  implemented, verified, reviewed, and separately launched by the user.
