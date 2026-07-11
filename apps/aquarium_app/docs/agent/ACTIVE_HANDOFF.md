@@ -1,14 +1,14 @@
 # Danio Active Handoff
 
-Status: Clean autonomy-design checkpoint awaiting user review before implementation planning
-Last updated: 2026-07-11 after the autonomous phone-completion operating model was committed
+Status: Clean autonomy implementation-plan checkpoint with setup unit 1 authorized for project-scoped continuation
+Last updated: 2026-07-11 after the 20-unit sequential budget and detailed implementation plan were verified
 
 ## Branch
 
 - Source-of-truth branch: `main`.
 - Current branch after slice closeout: `main`.
 - Latest product/data-safety slice: DS-2026-07-06-050.
-- Latest workflow slice: WF-2026-07-11-006.
+- Latest workflow slice: WF-2026-07-11-007.
 - Final state for the next action:
   - `main` is clean and tracking `origin/main`.
   - `git status --short -uall` is clean.
@@ -123,11 +123,56 @@ Last updated: 2026-07-11 after the autonomous phone-completion operating model w
 - Installed runner semantics are deliberately fail-closed. A repository-owned
   compatibility contract must reconcile chain creation and failed-unit charging
   before any autonomous launch.
-- This checkpoint approves the design for user review only. The detailed
-  repository implementation plan has not been written, no autonomous budget
-  has been granted, and no app implementation has started.
+- At the WF-006 checkpoint, the design was awaiting user review and no
+  autonomous budget had been granted. The user subsequently approved the
+  design, authorized 20 sequential units including the current planning unit,
+  and directed the workflow setup to proceed.
 - No Android runtime, Figma file, account, paid tool, secret, cloud service, or
   external state changed in this workflow slice.
+
+## Autonomous Workflow Implementation Plan Checkpoint
+
+- Slice: `WF-2026-07-11-007`, Autonomous Phone Completion Workflow
+  Implementation Plan.
+- Committed plan:
+  `docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`.
+- Plan commit: `129337d0`.
+- Plan SHA-256:
+  `754236361DC82FA822337A9254318AB3505E8486D22E5480E253E88D9B732A83`.
+- The plan defines 13 implementation tasks sequenced as eight workflow setup
+  units before product execution. Product work remains blocked until authority,
+  runner compatibility, coordinator-only writing, transition validation, and
+  the no-side-effect rehearsal all pass.
+- Independent review found three launch blockers in the draft: launch
+  authorization stayed false, initial launch was incorrectly treated as a
+  `handoff_ready` successor, and activation lacked an exact bootstrap charge.
+  All three were corrected and the reviewer confirmed they were resolved.
+- Setup unit 1 is Task 1 only: reconcile canonical authority, add durable ledger
+  closure state, formalize the bootstrap budget, and keep automatic successor
+  creation disabled.
+- No app Dart behavior, Android runtime, Figma file, account, paid service,
+  secret, cloud/provider, store/deploy, or external product state changed.
+
+## Autonomous Chain Authorization
+
+The user authorized 20 bounded sequential units on 2026-07-11. The count
+includes the unit currently being completed. WF-2026-07-11-007 consumed the
+planning unit once, so the next setup task starts with 19 including itself.
+This block is the bootstrap budget record until Task 13 creates operational run
+state; automatic operational chaining remains disabled meanwhile.
+
+```json
+{
+  "document_type": "danio_autonomy_bootstrap_budget",
+  "schema_version": 1,
+  "authorization_id": "danio-phone-complete-local-2026-07-11",
+  "total_approved_units": 20,
+  "consumed_units": 1,
+  "remaining_units_including_current": 19,
+  "last_closed_unit_id": "WF-2026-07-11-007",
+  "operational_state_path": null
+}
+```
 
 ## Dirty Files To Preserve
 
@@ -135,6 +180,24 @@ No unrelated dirty files are expected. If future startup shows dirty files,
 treat them as new/unrelated work unless current git history proves otherwise.
 
 ## Verification Evidence
+
+WF-2026-07-11-007:
+
+- Three repository-read-only auditors mapped script/test surfaces, authority
+  conflicts, closure state, and installed-runner compatibility before the plan
+  was written.
+- A separate final reviewer found three launch blockers in the draft. After the
+  corrections, its focused follow-up reported: `All three resolved.`
+- `git diff --cached --check` passed for the plan commit.
+- ASCII validation passed for the implementation plan.
+- The plan contains no unresolved TODO/FIXME/placeholder implementation prose.
+- `flutter test test/copy/current_docs_local_truth_test.dart --reporter compact`
+  passed with 4 tests.
+- `.\scripts\quality_gates\run_local_quality_gate.ps1 -Profile Docs` passed:
+  whitespace check, 39 focused Flutter tests, dependency validation, Danio
+  custom lint, and Flutter analysis all passed.
+- A Full gate was not required because this planning slice changed only
+  workflow documentation. No product implementation started.
 
 WF-2026-07-11-006:
 
@@ -312,6 +375,8 @@ DS-2026-07-05-044:
   install, tap, screenshot, logcat, Patrol, or live-preview action.
 - WF-2026-07-11-006 required no emulator, ADB, Figma, browser, or live-preview
   action. Reviewers were repository-read-only.
+- WF-2026-07-11-007 required no emulator, ADB, Figma, browser, or live-preview
+  action. All delegated auditors were repository-read-only.
 
 - No install, tap, screenshot, logcat capture, or live-preview refresh was
   required for DS-050 because it was a screen failure-boundary data-safety proof
@@ -348,9 +413,11 @@ DS-2026-07-05-044:
   DS-2026-07-06-048,
   DS-2026-07-06-047,
   DS-2026-07-06-046, or
-  WF-2026-07-05-003. No blocker remains for WF-2026-07-11-006 itself.
-- The next product slice should be selected from
-  `COMPLETE_LOCAL_CLOSURE_LEDGER.md`.
+  WF-2026-07-05-003. No blocker remains for WF-2026-07-11-006 or
+  WF-2026-07-11-007 itself.
+- Product implementation remains deliberately blocked while workflow setup is
+  fail-closed. The current startup blockers are `AUTHORITY_CONFLICT` and
+  `RUNNER_INCOMPATIBLE`; Tasks 1 and 6 own those corrections.
 - Highest-ranked open local lane remains data resilience:
   `DCL-DR-001` through `DCL-DR-004`; DS-050 added proof that screen-level
   restored-photo cleanup failure cannot block the normal import-failed
@@ -360,40 +427,26 @@ DS-2026-07-05-044:
   `EXTERNAL_PARKED` disposition are not automatic implementation targets.
 - `DCL-TAB-001` and the tablet portion of `DCL-PERF-001` are now
   `PHASE_PARKED` and do not block the phone candidate.
-- Workflow implementation planning is intentionally waiting for the user to
-  review the committed operating-model specification. This is a review gate,
-  not a product blocker.
-- Autonomous launch remains blocked until the later implementation reconciles
-  the installed Danio/verified runner contracts and passes a no-product-change
-  dry-run rehearsal.
+- Automatic task chaining and autonomous product launch remain blocked until
+  the coordinator-only workflow implementation, installed-runner pinning, and
+  no-product-change rehearsal pass. Explicit project-scoped bootstrap tasks are
+  authorized by the current 20-unit user approval.
 
 ## Next Action
 
-Autonomous chain budget remains 0. Do not create another successor thread or
-start product implementation unless the user explicitly directs it in the
-current thread.
+Create or reuse exactly one saved-project local task for setup unit 1 with
+marker `danio-autonomy-bootstrap-2026-07-11/1`. The task has 19 sequential
+units remaining including itself and must use the plan's Inline Execution
+model: one writing coordinator and repository-read-only auditors.
 
-The next manual action is for the user to review
-`docs/agent/plans/2026-07-11-autonomous-phone-completion-operating-model-design.md`.
-After the user accepts or amends that committed specification, the next session
-should use the writing-plans workflow to produce the detailed repository
-implementation plan. It must not start the final product push or claim an
-autonomous budget.
+The setup task must load `$danio-autonomous-slice-runner`,
+`$verified-slice-runner`, and `superpowers:executing-plans`; rebuild live Git
+and installed-runner truth; then implement Task 1 only from
+`docs/agent/plans/2026-07-11-autonomous-phone-completion-workflow-implementation-plan.md`.
+It must use RED/GREEN docs guards, end on clean pushed aligned `main`, and
+record the bootstrap budget exactly once.
 
-That implementation plan should:
-
-- use `$verified-slice-runner`;
-- read `COMPLETE_LOCAL_CLOSURE_LEDGER.md`,
-  `VERIFIED_SLICE_EXECUTION_CONTRACT.md`, `COMPLETE_LOCAL_FORECAST.md`,
-  this handoff, `FINISH_MAP.md`, `QUALITY_LADDER.md`,
-  `TESTING_CHECKLIST.md`, `SLICE_LOG.md`, and
-  `docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md`, and
-  the committed operating-model design at startup;
-- map each bounded implementation task to the design's repository surfaces and
-  tests, with no application feature work in the workflow-setup phase;
-- include authority reconciliation, machine ledger closure state, run-state
-  schema, runner compatibility, synchronization/readiness, writer claim,
-  duplicate-safe handoff, auditor policy, failure recovery, and dry-run
-  rehearsal; and
-- preserve `DCL-DR-001` as the first product lane after the workflow is fully
-  implemented, verified, reviewed, and separately launched by the user.
+Do not start `DCL-DR-001`, take Android runtime ownership, edit Figma, update
+installed skills, create operational run state, or enable automatic chaining
+in setup unit 1. `DCL-DR-001` remains the first product lane only after Tasks
+1-13 and explicit launch readiness pass.
