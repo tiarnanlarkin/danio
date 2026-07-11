@@ -75,7 +75,11 @@
     }
   },
   "handoff_generation": 0,
-  "last_verified_checkpoint": null,
+  "last_verified_checkpoint": {
+    "product_commit": "f10b6021e083ba745fc2abf254f7ca91093d703e",
+    "evidence_manifest_path": "apps/aquarium_app/docs/agent/autonomous_completion/evidence/f10b6021e083ba745fc2abf254f7ca91093d703e.json",
+    "verified_at_utc": "2026-07-11T12:02:30.0000000Z"
+  },
   "repeated_failure": null,
   "stop_reason_code": null,
   "recovery": null,

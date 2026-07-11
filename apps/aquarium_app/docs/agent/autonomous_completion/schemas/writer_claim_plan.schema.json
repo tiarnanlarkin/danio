@@ -35,35 +35,85 @@
       "items": { "type": "string", "minLength": 1 }
     },
     "mutations_performed": { "const": false },
-    "run_id": { "$ref": "#/$defs/safe_identifier" },
-    "work_unit_id": { "$ref": "#/$defs/safe_identifier" },
-    "task_id": { "$ref": "#/$defs/safe_identifier" },
-    "expected_state_revision": { "type": "integer", "minimum": 1 },
-    "owner_token_sha256": { "$ref": "#/$defs/sha256" },
-    "branch_name": {
-      "type": "string",
-      "pattern": "^autonomy/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+/[0-9a-f]{12}$"
+    "run_id": { "$ref": "#/$defs/nullable_safe_identifier" },
+    "work_unit_id": { "$ref": "#/$defs/nullable_safe_identifier" },
+    "task_id": { "$ref": "#/$defs/nullable_safe_identifier" },
+    "expected_state_revision": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "integer", "minimum": 1 }
+      ]
     },
-    "worktree_id": { "$ref": "#/$defs/safe_identifier" },
-    "worktree_path": { "$ref": "#/$defs/absolute_windows_path" },
-    "base_commit": { "$ref": "#/$defs/git_oid" },
+    "owner_token_sha256": { "$ref": "#/$defs/nullable_sha256" },
+    "branch_name": { "$ref": "#/$defs/nullable_branch_name" },
+    "worktree_id": { "$ref": "#/$defs/nullable_safe_identifier" },
+    "worktree_path": { "$ref": "#/$defs/nullable_absolute_windows_path" },
+    "base_commit": { "$ref": "#/$defs/nullable_git_oid" },
     "state_path": {
       "const": "apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json"
     },
     "next_run_state": {
-      "$ref": "run_state.schema.json"
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "run_state.schema.json" }
+      ]
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "required": ["valid"],
+        "properties": { "valid": { "const": true } }
+      },
+      "then": {
+        "properties": {
+          "run_id": { "$ref": "#/$defs/safe_identifier" },
+          "work_unit_id": { "$ref": "#/$defs/safe_identifier" },
+          "task_id": { "$ref": "#/$defs/safe_identifier" },
+          "expected_state_revision": { "type": "integer", "minimum": 1 },
+          "owner_token_sha256": { "$ref": "#/$defs/sha256" },
+          "branch_name": { "$ref": "#/$defs/branch_name" },
+          "worktree_id": { "$ref": "#/$defs/safe_identifier" },
+          "worktree_path": { "$ref": "#/$defs/absolute_windows_path" },
+          "base_commit": { "$ref": "#/$defs/git_oid" },
+          "next_run_state": { "$ref": "run_state.schema.json" }
+        }
+      },
+      "else": {
+        "properties": {
+          "run_id": { "type": "null" },
+          "work_unit_id": { "type": "null" },
+          "task_id": { "type": "null" },
+          "expected_state_revision": { "type": "null" },
+          "owner_token_sha256": { "type": "null" },
+          "branch_name": { "type": "null" },
+          "worktree_id": { "type": "null" },
+          "worktree_path": { "type": "null" },
+          "base_commit": { "type": "null" },
+          "next_run_state": { "type": "null" }
+        }
+      }
+    }
+  ],
   "$defs": {
     "strict_utc": {
       "type": "string",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{7}Z$"
+      "format": "date-time",
+      "minLength": 28,
+      "maxLength": 28,
+      "pattern": "^(?:(?:[0-9]{4}-(?:(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01]))|(?:(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30))|(?:02-(?:0[1-9]|1[0-9]|2[0-8]))))|(?:(?:(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26]))|(?:(?:0[48]|[2468][048]|[13579][26])00))-02-29))T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.[0-9]{7}Z$"
     },
     "safe_identifier": {
       "type": "string",
       "minLength": 1,
       "maxLength": 160,
       "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "nullable_safe_identifier": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/safe_identifier" }
+      ]
     },
     "code": {
       "type": "string",
@@ -73,14 +123,42 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
     },
+    "nullable_sha256": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/sha256" }
+      ]
+    },
     "git_oid": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
     },
+    "nullable_git_oid": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/git_oid" }
+      ]
+    },
+    "branch_name": {
+      "type": "string",
+      "pattern": "^autonomy/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+/[0-9a-f]{12}$"
+    },
+    "nullable_branch_name": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/branch_name" }
+      ]
+    },
     "absolute_windows_path": {
       "type": "string",
       "minLength": 4,
-      "pattern": "^[A-Za-z]:/(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+      "pattern": "^(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z]:/.+$"
+    },
+    "nullable_absolute_windows_path": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/absolute_windows_path" }
+      ]
     }
   }
 }

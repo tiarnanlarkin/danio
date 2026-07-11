@@ -50,7 +50,7 @@ function New-DanioValidationResult {
 
 function Test-DanioInteger {
   [CmdletBinding()]
-  param([Parameter(Mandatory = $true)]$Value)
+  param($Value)
 
   return (
     $Value -is [byte] -or
@@ -63,10 +63,103 @@ function Test-DanioInteger {
   )
 }
 
+function Test-DanioBoolean {
+  [CmdletBinding()]
+  param($Value)
+
+  return $Value -is [bool]
+}
+
+function Test-DanioStrictUtc {
+  [CmdletBinding()]
+  param($Value)
+
+  if (
+    $Value -isnot [string] -or
+    $Value.Length -ne 28 -or
+    $Value -notmatch '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{7}Z$'
+  ) {
+    return $false
+  }
+
+  $parsed = [DateTimeOffset]::MinValue
+  return [DateTimeOffset]::TryParseExact(
+    $Value,
+    "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    [Globalization.CultureInfo]::InvariantCulture,
+    [Globalization.DateTimeStyles]::AssumeUniversal -bor [Globalization.DateTimeStyles]::AdjustToUniversal,
+    [ref]$parsed
+  )
+}
+
+function Test-DanioGitOid {
+  [CmdletBinding()]
+  param($Value)
+
+  return $Value -is [string] -and $Value -cmatch '^[0-9a-f]{40}$'
+}
+
+function Test-DanioSha256 {
+  [CmdletBinding()]
+  param($Value)
+
+  return $Value -is [string] -and $Value -cmatch '^[0-9a-f]{64}$'
+}
+
+function Test-DanioReasonCode {
+  [CmdletBinding()]
+  param($Value)
+
+  return $Value -is [string] -and $Value -cmatch '^[A-Z][A-Z0-9_]*$'
+}
+
+function Test-DanioSafeIdentifier {
+  [CmdletBinding()]
+  param($Value)
+
+  return (
+    $Value -is [string] -and
+    $Value.Length -ge 1 -and
+    $Value.Length -le 160 -and
+    $Value -cmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$'
+  )
+}
+
+function Test-DanioAbsoluteWindowsPath {
+  [CmdletBinding()]
+  param($Value)
+
+  if (
+    $Value -isnot [string] -or
+    $Value -notmatch '^[A-Za-z]:/' -or
+    $Value.Contains("\")
+  ) {
+    return $false
+  }
+  return @($Value.Split("/") | Where-Object { $_ -ceq ".." }).Count -eq 0
+}
+
+function Test-DanioRepoPath {
+  [CmdletBinding()]
+  param($Value)
+
+  if (
+    $Value -isnot [string] -or
+    [string]::IsNullOrWhiteSpace($Value) -or
+    $Value.StartsWith("/") -or
+    $Value -match '^[A-Za-z]:' -or
+    $Value.Contains("\") -or
+    $Value -cnotmatch '^[A-Za-z0-9._/-]+$'
+  ) {
+    return $false
+  }
+  return @($Value.Split("/") | Where-Object { $_ -ceq ".." }).Count -eq 0
+}
+
 function Test-DanioExactPropertySet {
   [CmdletBinding()]
   param(
-    [Parameter(Mandatory = $true)]$Value,
+    $Value,
     [Parameter(Mandatory = $true)][string[]]$Allowed,
     [Parameter(Mandatory = $true)][string[]]$Required
   )
@@ -110,7 +203,7 @@ function Get-DanioOwnerToken {
     [Parameter(Mandatory = $true)][string]$RunId,
     [Parameter(Mandatory = $true)][string]$WorkUnitId,
     [Parameter(Mandatory = $true)][string]$TaskId,
-    [Parameter(Mandatory = $true)][int]$ExpectedRevision
+    [Parameter(Mandatory = $true)][int64]$ExpectedRevision
   )
 
   $tokenInput = @(
@@ -204,10 +297,29 @@ function Get-DanioMarkdownTable {
     }
   }
 
-  $tableLines = @(
-    $lines[$sectionStart..($sectionEnd - 1)] |
-      Where-Object { $_.Trim().StartsWith("|") }
-  )
+  $tableStart = -1
+  for ($index = $sectionStart; $index -lt $sectionEnd; $index += 1) {
+    if ($lines[$index].Trim().StartsWith("|")) {
+      $tableStart = $index
+      break
+    }
+  }
+  if ($tableStart -lt 0) {
+    throw "LEDGER_TABLE_INVALID: '$Heading' has no table."
+  }
+
+  $tableLineList = New-Object System.Collections.Generic.List[string]
+  for ($index = $tableStart; $index -lt $sectionEnd; $index += 1) {
+    $trimmedLine = $lines[$index].Trim()
+    if ([string]::IsNullOrWhiteSpace($trimmedLine)) {
+      break
+    }
+    if (-not $trimmedLine.StartsWith("|") -or -not $trimmedLine.EndsWith("|")) {
+      throw "LEDGER_MALFORMED_ROW: '$Heading' table row must begin and end with a pipe."
+    }
+    $tableLineList.Add($lines[$index])
+  }
+  $tableLines = @($tableLineList.ToArray())
   if ($tableLines.Count -lt 2) {
     throw "LEDGER_TABLE_INVALID: '$Heading' needs a header and separator."
   }
@@ -431,9 +543,77 @@ function Test-DanioLedgerClosureRows {
   }
 }
 
+function Test-DanioActiveScope {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][AllowEmptyCollection()][object[]]$Rows,
+    [Parameter(Mandatory = $true)][AllowEmptyCollection()][string[]]$ActivePhaseLedgerIds,
+    [switch]$RequireAllClosed,
+    [switch]$RequireNonReleaseCandidateClosed
+  )
+
+  if ($ActivePhaseLedgerIds.Count -eq 0) {
+    return New-DanioValidationResult -Valid $false -Code "ACTIVE_SCOPE_INVALID" -Details @("Active scope cannot be empty.")
+  }
+  $ledgerValidation = Test-DanioLedgerClosureRows `
+    -Rows $Rows `
+    -ActivePhaseLedgerIds $ActivePhaseLedgerIds
+  if (-not $ledgerValidation.valid) {
+    return $ledgerValidation
+  }
+
+  $expectedRows = @(
+    $Rows | Where-Object {
+      (
+        [string]$_.Table -ceq "Active Findings" -and
+        [string]$_.ClosureState -cne "parked"
+      ) -or
+      [string]$_.Disposition -ceq "ACCEPTED_LOCAL_LIMITATION"
+    }
+  )
+  $expectedIds = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+  foreach ($row in $expectedRows) {
+    [void]$expectedIds.Add([string]$row.Id)
+  }
+  if ($expectedIds.Count -ne $ActivePhaseLedgerIds.Count) {
+    return New-DanioValidationResult -Valid $false -Code "ACTIVE_SCOPE_INVALID" -Details @("Active scope does not match canonical non-parked active-table rows plus accepted limitations.")
+  }
+  foreach ($id in $ActivePhaseLedgerIds) {
+    if (-not $expectedIds.Contains($id)) {
+      return New-DanioValidationResult -Valid $false -Code "ACTIVE_SCOPE_INVALID" -Details @("Unexpected active-scope ID '$id'.")
+    }
+  }
+
+  foreach ($id in $ActivePhaseLedgerIds) {
+    $row = $Rows | Where-Object { $_.Id -ceq $id } | Select-Object -First 1
+    if (
+      $RequireAllClosed -and
+      [string]$row.ClosureState -cne "closed"
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "ACTIVE_SCOPE_OPEN" -Details @("Active row '$id' is not closed.")
+    }
+    if (
+      $RequireNonReleaseCandidateClosed -and
+      $id -cne "DCL-RC-001" -and
+      [string]$row.ClosureState -cne "closed"
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "FINALIZATION_SCOPE_INVALID" -Details @("Non-RC row '$id' is not closed.")
+    }
+  }
+
+  if ($RequireNonReleaseCandidateClosed) {
+    $releaseCandidate = $Rows | Where-Object { $_.Id -ceq "DCL-RC-001" } | Select-Object -First 1
+    if ($null -eq $releaseCandidate -or [string]$releaseCandidate.ClosureState -cne "open") {
+      return New-DanioValidationResult -Valid $false -Code "FINALIZATION_SCOPE_INVALID" -Details @("DCL-RC-001 must be the open terminal row when finalization begins.")
+    }
+  }
+
+  return New-DanioValidationResult -Valid $true -Code "ACTIVE_SCOPE_VALID"
+}
+
 function Test-DanioRunState {
   [CmdletBinding()]
-  param([Parameter(Mandatory = $true)]$State)
+  param([Parameter(Mandatory = $true)][AllowNull()]$State)
 
   $rootFields = @(
     "document_type",
@@ -462,8 +642,16 @@ function Test-DanioRunState {
     return New-DanioValidationResult -Valid $false -Code "STATE_MISSING_FIELD" -Details @("Missing state fields: $($rootSet.missing -join ', ').")
   }
 
-  if ($State.document_type -cne "danio_phone_completion_run_state" -or [int]$State.schema_version -ne 1) {
+  if (
+    $State.document_type -isnot [string] -or
+    $State.document_type -cne "danio_phone_completion_run_state" -or
+    -not (Test-DanioInteger -Value $State.schema_version) -or
+    [int64]$State.schema_version -ne 1
+  ) {
     return New-DanioValidationResult -Valid $false -Code "STATE_SCHEMA_INVALID" -Details @("Document type or schema version is invalid.")
+  }
+  if (-not (Test-DanioSafeIdentifier -Value $State.run_id)) {
+    return New-DanioValidationResult -Valid $false -Code "STATE_SCHEMA_INVALID" -Details @("run_id is invalid.")
   }
   if (
     -not (Test-DanioInteger -Value $State.state_revision) -or
@@ -473,6 +661,12 @@ function Test-DanioRunState {
   }
   if ($script:DanioModes -cnotcontains [string]$State.mode) {
     return New-DanioValidationResult -Valid $false -Code "STATE_MODE_INVALID" -Details @("Unknown mode '$($State.mode)'.")
+  }
+  if (
+    -not (Test-DanioInteger -Value $State.handoff_generation) -or
+    [int64]$State.handoff_generation -lt 0
+  ) {
+    return New-DanioValidationResult -Valid $false -Code "HANDOFF_GENERATION_INVALID" -Details @("handoff_generation must be a non-negative integer.")
   }
 
   $authorityFields = @(
@@ -495,19 +689,12 @@ function Test-DanioRunState {
     if (-not $referenceSet.valid) {
       return New-DanioValidationResult -Valid $false -Code "AUTHORITY_INVALID" -Details @("Authority '$field' is malformed.")
     }
-    $path = [string]$reference.path
-    if (
-      [string]::IsNullOrWhiteSpace($path) -or
-      $path.Contains("\") -or
-      $path.StartsWith("/") -or
-      $path -match '^[A-Za-z]:' -or
-      "/$path/" -match '/\.\./'
-    ) {
+    if (-not (Test-DanioRepoPath -Value $reference.path)) {
       return New-DanioValidationResult -Valid $false -Code "AUTHORITY_INVALID" -Details @("Authority '$field' path is unsafe.")
     }
     if (
-      [string]$reference.commit -notmatch '^[0-9a-f]{40}$' -or
-      [string]$reference.blob_oid -notmatch '^[0-9a-f]{40}$'
+      -not (Test-DanioGitOid -Value $reference.commit) -or
+      -not (Test-DanioGitOid -Value $reference.blob_oid)
     ) {
       return New-DanioValidationResult -Valid $false -Code "AUTHORITY_INVALID" -Details @("Authority '$field' Git identity is invalid.")
     }
@@ -530,13 +717,15 @@ function Test-DanioRunState {
   if ($State.authorization.continuation_mode -cne "autonomous_chain_approved") {
     return New-DanioValidationResult -Valid $false -Code "AUTHORIZATION_INVALID" -Details @("Continuation mode is invalid.")
   }
+  if (-not (Test-DanioSafeIdentifier -Value $State.authorization.authorization_id)) {
+    return New-DanioValidationResult -Valid $false -Code "AUTHORIZATION_INVALID" -Details @("Authorization ID is invalid.")
+  }
   foreach ($pathField in @("saved_project_root", "repository_root")) {
-    $absolutePath = [string]$State.authorization.$pathField
-    if ($absolutePath -notmatch '^[A-Za-z]:/' -or $absolutePath.Contains("\") -or "/$absolutePath/" -match '/\.\./') {
+    if (-not (Test-DanioAbsoluteWindowsPath -Value $State.authorization.$pathField)) {
       return New-DanioValidationResult -Valid $false -Code "AUTHORIZATION_INVALID" -Details @("Authorization path '$pathField' is unsafe.")
     }
   }
-  if ([string]$State.authorization.authorized_at_utc -notmatch '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{7}Z$') {
+  if (-not (Test-DanioStrictUtc -Value $State.authorization.authorized_at_utc)) {
     return New-DanioValidationResult -Valid $false -Code "AUTHORIZATION_INVALID" -Details @("Authorization timestamp is not strict UTC.")
   }
 
@@ -546,10 +735,19 @@ function Test-DanioRunState {
     return New-DanioValidationResult -Valid $false -Code "CURSOR_INVALID" -Details @("Cursor fields are missing or unknown.")
   }
   if (
-    [string]::IsNullOrWhiteSpace([string]$State.cursor.phase) -or
-    [string]::IsNullOrWhiteSpace([string]$State.cursor.work_unit_id)
+    -not (Test-DanioSafeIdentifier -Value $State.cursor.phase) -or
+    -not (Test-DanioSafeIdentifier -Value $State.cursor.work_unit_id)
   ) {
     return New-DanioValidationResult -Valid $false -Code "CURSOR_INVALID" -Details @("Cursor phase and work unit are required.")
+  }
+  if ($State.cursor.ledger_row_ids -isnot [System.Array]) {
+    return New-DanioValidationResult -Valid $false -Code "CURSOR_INVALID" -Details @("Cursor ledger row IDs must be an array.")
+  }
+  $cursorIds = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+  foreach ($id in @($State.cursor.ledger_row_ids)) {
+    if ($id -isnot [string] -or $id -cnotmatch '^DCL-[A-Z0-9]+-[0-9]{3}$' -or -not $cursorIds.Add($id)) {
+      return New-DanioValidationResult -Valid $false -Code "CURSOR_INVALID" -Details @("Cursor ledger row IDs are invalid or duplicated.")
+    }
   }
 
   $budgetFields = @(
@@ -600,8 +798,9 @@ function Test-DanioRunState {
   if (
     $charge.status -ceq "pending" -and
     (
-      [string]::IsNullOrWhiteSpace([string]$charge.work_unit_id) -or
-      $null -eq $charge.claimed_revision -or
+      -not (Test-DanioSafeIdentifier -Value $charge.work_unit_id) -or
+      -not (Test-DanioInteger -Value $charge.claimed_revision) -or
+      [int64]$charge.claimed_revision -lt 1 -or
       $null -ne $charge.consumed_revision
     )
   ) {
@@ -610,9 +809,11 @@ function Test-DanioRunState {
   if (
     $charge.status -ceq "consumed" -and
     (
-      [string]::IsNullOrWhiteSpace([string]$charge.work_unit_id) -or
-      $null -eq $charge.claimed_revision -or
-      $null -eq $charge.consumed_revision
+      -not (Test-DanioSafeIdentifier -Value $charge.work_unit_id) -or
+      -not (Test-DanioInteger -Value $charge.claimed_revision) -or
+      [int64]$charge.claimed_revision -lt 1 -or
+      -not (Test-DanioInteger -Value $charge.consumed_revision) -or
+      [int64]$charge.consumed_revision -lt 1
     )
   ) {
     return New-DanioValidationResult -Valid $false -Code "BUDGET_CHARGE_INVALID" -Details @("A consumed charge needs claim and consumed revisions.")
@@ -651,21 +852,44 @@ function Test-DanioRunState {
     ) {
       return New-DanioValidationResult -Valid $false -Code "OWNER_INVALID" -Details @("Owner claim revision is invalid.")
     }
+    if (
+      -not (Test-DanioSafeIdentifier -Value $State.owner.task_id) -or
+      -not (Test-DanioGitOid -Value $State.owner.claim_parent_commit) -or
+      -not (Test-DanioGitOid -Value $State.owner.claim_staged_tree_hash) -or
+      -not (Test-DanioStrictUtc -Value $State.owner.claimed_at_utc) -or
+      -not (Test-DanioBoolean -Value $State.owner.writer_lease_released) -or
+      -not (Test-DanioBoolean -Value $State.owner.android_lease_released)
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "OWNER_INVALID" -Details @("Owner identity types or evidence are invalid.")
+    }
+    if (
+      [int64]$State.owner.claim_revision -ne [int64]$charge.claimed_revision -or
+      [int64]$State.owner.claim_revision -ge [int64]$State.state_revision -or
+      (
+        $mode -ceq "active" -and
+        $null -ne $State.transition -and
+        [string]$State.transition.action -ceq "claim" -and
+        [int64]$State.owner.claim_revision -ne [int64]$State.transition.parent_state_revision
+      )
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "OWNER_REVISION_INVALID" -Details @("Owner revision must match the charge and claim parent revision.")
+    }
     $expectedToken = Get-DanioOwnerToken `
       -RunId ([string]$State.run_id) `
       -WorkUnitId ([string]$State.cursor.work_unit_id) `
       -TaskId ([string]$State.owner.task_id) `
-      -ExpectedRevision ([int]$State.owner.claim_revision)
+      -ExpectedRevision ([int64]$State.owner.claim_revision)
     if ([string]$State.owner.token_sha256 -cne $expectedToken) {
       return New-DanioValidationResult -Valid $false -Code "OWNER_TOKEN_INVALID" -Details @("Owner token does not match its exact input.")
     }
     $token12 = $expectedToken.Substring(0, 12)
     $expectedBranch = "autonomy/$($State.run_id)/$($State.cursor.work_unit_id)/$token12"
     $expectedWorktreeId = "$($State.run_id)-$($State.cursor.work_unit_id)-$token12"
+    $expectedWorktreePath = "$($State.authorization.saved_project_root)/.codex-worktrees/$expectedWorktreeId"
     if (
       [string]$State.owner.branch_name -cne $expectedBranch -or
       [string]$State.owner.worktree_id -cne $expectedWorktreeId -or
-      -not ([string]$State.owner.worktree_path).Replace("\", "/").EndsWith("/.codex-worktrees/$expectedWorktreeId")
+      [string]$State.owner.worktree_path -cne $expectedWorktreePath
     ) {
       return New-DanioValidationResult -Valid $false -Code "OWNER_IDENTITY_INVALID" -Details @("Owner branch or worktree identity is invalid.")
     }
@@ -687,6 +911,93 @@ function Test-DanioRunState {
     return New-DanioValidationResult -Valid $false -Code "BUDGET_CHARGE_INVALID" -Details @("Owner and charge work units must agree.")
   }
 
+  if ($null -ne $State.last_verified_checkpoint) {
+    $checkpointFields = @("product_commit", "evidence_manifest_path", "verified_at_utc")
+    $checkpointSet = Test-DanioExactPropertySet `
+      -Value $State.last_verified_checkpoint `
+      -Allowed $checkpointFields `
+      -Required $checkpointFields
+    if (
+      -not $checkpointSet.valid -or
+      -not (Test-DanioGitOid -Value $State.last_verified_checkpoint.product_commit) -or
+      -not (Test-DanioRepoPath -Value $State.last_verified_checkpoint.evidence_manifest_path) -or
+      -not (Test-DanioStrictUtc -Value $State.last_verified_checkpoint.verified_at_utc) -or
+      [string]$State.last_verified_checkpoint.evidence_manifest_path -cne
+        "apps/aquarium_app/docs/agent/autonomous_completion/evidence/$($State.last_verified_checkpoint.product_commit).json"
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "VERIFIED_CHECKPOINT_INVALID" -Details @("Verified checkpoint is malformed or not commit-keyed.")
+    }
+  } elseif (@("handoff_ready", "paused", "finalizing", "complete") -ccontains $mode) {
+    return New-DanioValidationResult -Valid $false -Code "VERIFIED_CHECKPOINT_REQUIRED" -Details @("Mode '$mode' requires a verified checkpoint.")
+  }
+
+  if ($null -ne $State.repeated_failure) {
+    $failureFields = @("signature", "attempt_count", "last_failed_at_utc")
+    $failureSet = Test-DanioExactPropertySet `
+      -Value $State.repeated_failure `
+      -Allowed $failureFields `
+      -Required $failureFields
+    if (
+      -not $failureSet.valid -or
+      -not (Test-DanioSha256 -Value $State.repeated_failure.signature) -or
+      -not (Test-DanioInteger -Value $State.repeated_failure.attempt_count) -or
+      [int64]$State.repeated_failure.attempt_count -lt 1 -or
+      -not (Test-DanioStrictUtc -Value $State.repeated_failure.last_failed_at_utc)
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "REPEATED_FAILURE_INVALID" -Details @("Repeated-failure evidence is malformed.")
+    }
+  }
+
+  if ($null -ne $State.recovery) {
+    $recoveryFields = @(
+      "branch_name",
+      "worktree_path",
+      "dirty_paths",
+      "relevant_processes",
+      "commands",
+      "last_clean_commit"
+    )
+    $recoverySet = Test-DanioExactPropertySet `
+      -Value $State.recovery `
+      -Allowed $recoveryFields `
+      -Required $recoveryFields
+    if (-not $recoverySet.valid) {
+      return New-DanioValidationResult -Valid $false -Code "RECOVERY_INVALID" -Details @("Recovery fields are missing or unknown.")
+    }
+    if (
+      ($null -ne $State.recovery.branch_name -and $State.recovery.branch_name -isnot [string]) -or
+      ($null -ne $State.recovery.worktree_path -and -not (Test-DanioAbsoluteWindowsPath -Value $State.recovery.worktree_path)) -or
+      $State.recovery.dirty_paths -isnot [System.Array] -or
+      $State.recovery.relevant_processes -isnot [System.Array] -or
+      $State.recovery.commands -isnot [System.Array] -or
+      @($State.recovery.commands).Count -lt 1 -or
+      -not (Test-DanioGitOid -Value $State.recovery.last_clean_commit)
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "RECOVERY_INVALID" -Details @("Recovery values are malformed.")
+    }
+    $recoveryPaths = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+    foreach ($path in @($State.recovery.dirty_paths)) {
+      if (-not (Test-DanioRepoPath -Value $path) -or -not $recoveryPaths.Add([string]$path)) {
+        return New-DanioValidationResult -Valid $false -Code "RECOVERY_INVALID" -Details @("Recovery dirty path is unsafe.")
+      }
+    }
+    $recoveryProcesses = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+    foreach ($entry in @($State.recovery.relevant_processes)) {
+      if (
+        $entry -isnot [string] -or
+        [string]::IsNullOrWhiteSpace($entry) -or
+        -not $recoveryProcesses.Add([string]$entry)
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "RECOVERY_INVALID" -Details @("Recovery process entry is invalid or duplicated.")
+      }
+    }
+    foreach ($entry in @($State.recovery.commands)) {
+      if ($entry -isnot [string] -or [string]::IsNullOrWhiteSpace($entry)) {
+        return New-DanioValidationResult -Valid $false -Code "RECOVERY_INVALID" -Details @("Recovery process or command entry is invalid.")
+      }
+    }
+  }
+
   if ($mode -ceq "inactive") {
     if ([int64]$State.state_revision -ne 0 -or $null -ne $State.transition) {
       return New-DanioValidationResult -Valid $false -Code "STATE_TRANSITION_INVALID" -Details @("Inactive fixture must be revision zero with null transition.")
@@ -706,10 +1017,42 @@ function Test-DanioRunState {
       return New-DanioValidationResult -Valid $false -Code "STATE_TRANSITION_INVALID" -Details @("Transition fields are missing or unknown.")
     }
     if (
+      -not (Test-DanioInteger -Value $State.transition.parent_state_revision) -or
+      [int64]$State.transition.parent_state_revision -lt 0 -or
+      -not (Test-DanioStrictUtc -Value $State.transition.occurred_at_utc) -or
+      (
+        $null -ne $State.transition.work_unit_id -and
+        -not (Test-DanioSafeIdentifier -Value $State.transition.work_unit_id)
+      ) -or
+      (
+        $null -ne $State.transition.reason_code -and
+        -not (Test-DanioReasonCode -Value $State.transition.reason_code)
+      )
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "STATE_TRANSITION_INVALID" -Details @("Transition field types are invalid.")
+    }
+    if (
       [string]$State.transition.to_mode -cne $mode -or
       [int64]$State.transition.parent_state_revision -ne ([int64]$State.state_revision - 1)
     ) {
       return New-DanioValidationResult -Valid $false -Code "STATE_TRANSITION_INVALID" -Details @("Transition metadata does not match state revision/mode.")
+    }
+    if ($null -ne $State.last_verified_checkpoint) {
+      $checkpointTime = [DateTimeOffset]::ParseExact(
+        [string]$State.last_verified_checkpoint.verified_at_utc,
+        "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+        [Globalization.CultureInfo]::InvariantCulture,
+        [Globalization.DateTimeStyles]::AssumeUniversal -bor [Globalization.DateTimeStyles]::AdjustToUniversal
+      )
+      $transitionTime = [DateTimeOffset]::ParseExact(
+        [string]$State.transition.occurred_at_utc,
+        "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+        [Globalization.CultureInfo]::InvariantCulture,
+        [Globalization.DateTimeStyles]::AssumeUniversal -bor [Globalization.DateTimeStyles]::AdjustToUniversal
+      )
+      if ($checkpointTime -gt $transitionTime) {
+        return New-DanioValidationResult -Valid $false -Code "VERIFIED_CHECKPOINT_INVALID" -Details @("Verified checkpoint cannot be later than its containing transition.")
+      }
     }
     $transitionKey = "$($State.transition.from_mode)>$($State.transition.to_mode)"
     if (-not $script:DanioAllowedTransitions.ContainsKey($transitionKey)) {
@@ -739,9 +1082,86 @@ function Test-DanioRunState {
   if (@("not_required", "pending", "synced", "failed") -cnotcontains [string]$State.control_surface_sync.status) {
     return New-DanioValidationResult -Valid $false -Code "CONTROL_SURFACE_INVALID" -Details @("Control-surface status is invalid.")
   }
+  if ($State.control_surface_sync.figma_node_ids -isnot [System.Array]) {
+    return New-DanioValidationResult -Valid $false -Code "CONTROL_SURFACE_INVALID" -Details @("Control-surface node IDs must be an array.")
+  }
+  $controlNodeIds = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+  foreach ($nodeId in @($State.control_surface_sync.figma_node_ids)) {
+    if (
+      $nodeId -isnot [string] -or
+      [string]::IsNullOrWhiteSpace($nodeId) -or
+      -not $controlNodeIds.Add([string]$nodeId)
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "CONTROL_SURFACE_INVALID" -Details @("Control-surface node ID is invalid.")
+    }
+  }
+  $controlStatus = [string]$State.control_surface_sync.status
+  $controlHasOutcomeIdentity = (
+    $State.control_surface_sync.figma_file_id -is [string] -and
+    -not [string]::IsNullOrWhiteSpace([string]$State.control_surface_sync.figma_file_id) -and
+    @($State.control_surface_sync.figma_node_ids).Count -gt 0 -and
+    (Test-DanioStrictUtc -Value $State.control_surface_sync.attempted_at_utc)
+  )
+  switch ($controlStatus) {
+    "not_required" {
+      if (
+        $null -ne $State.control_surface_sync.target_commit -or
+        $null -ne $State.control_surface_sync.figma_file_id -or
+        @($State.control_surface_sync.figma_node_ids).Count -ne 0 -or
+        $null -ne $State.control_surface_sync.attempted_at_utc -or
+        $null -ne $State.control_surface_sync.evidence_sha256 -or
+        $null -ne $State.control_surface_sync.failure_code
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "CONTROL_SURFACE_INVALID" -Details @("not_required control-surface state must use null/empty metadata.")
+      }
+    }
+    "pending" {
+      if (
+        -not (Test-DanioGitOid -Value $State.control_surface_sync.target_commit) -or
+        $null -ne $State.control_surface_sync.figma_file_id -or
+        @($State.control_surface_sync.figma_node_ids).Count -ne 0 -or
+        $null -ne $State.control_surface_sync.attempted_at_utc -or
+        $null -ne $State.control_surface_sync.evidence_sha256 -or
+        $null -ne $State.control_surface_sync.failure_code
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "CONTROL_SURFACE_INVALID" -Details @("pending control-surface state is malformed.")
+      }
+    }
+    "synced" {
+      if (
+        -not (Test-DanioGitOid -Value $State.control_surface_sync.target_commit) -or
+        -not $controlHasOutcomeIdentity -or
+        -not (Test-DanioSha256 -Value $State.control_surface_sync.evidence_sha256) -or
+        $null -ne $State.control_surface_sync.failure_code
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "CONTROL_SURFACE_INVALID" -Details @("synced control-surface evidence is malformed.")
+      }
+    }
+    "failed" {
+      if (
+        -not (Test-DanioGitOid -Value $State.control_surface_sync.target_commit) -or
+        -not $controlHasOutcomeIdentity -or
+        $null -ne $State.control_surface_sync.evidence_sha256 -or
+        -not (Test-DanioReasonCode -Value $State.control_surface_sync.failure_code)
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "CONTROL_SURFACE_INVALID" -Details @("failed control-surface evidence is malformed.")
+      }
+    }
+  }
 
-  if ($mode -ceq "stopped" -and $null -eq $State.stop_reason_code) {
-    return New-DanioValidationResult -Valid $false -Code "STOP_REASON_REQUIRED" -Details @("Durable stopped mode requires a stop reason.")
+  if ($null -ne $State.stop_reason_code -and -not (Test-DanioReasonCode -Value $State.stop_reason_code)) {
+    return New-DanioValidationResult -Valid $false -Code "STOP_REASON_INVALID" -Details @("Stop reason is malformed.")
+  }
+  if ($mode -ceq "stopped") {
+    if ($null -eq $State.stop_reason_code) {
+      return New-DanioValidationResult -Valid $false -Code "STOP_REASON_REQUIRED" -Details @("Durable stopped mode requires a stop reason.")
+    }
+    if ([string]$State.transition.reason_code -cne [string]$State.stop_reason_code) {
+      return New-DanioValidationResult -Valid $false -Code "STOP_REASON_INVALID" -Details @("Stopped state and transition reasons must agree.")
+    }
+    if ([string]$State.transition.action -ceq "finalization_stop" -and $null -eq $State.recovery) {
+      return New-DanioValidationResult -Valid $false -Code "RECOVERY_REQUIRED" -Details @("Finalization stop requires exact recovery evidence.")
+    }
   }
 
   return New-DanioValidationResult -Valid $true -Code "STATE_VALID"
@@ -750,8 +1170,11 @@ function Test-DanioRunState {
 function Test-DanioRunStateTransition {
   [CmdletBinding()]
   param(
-    [Parameter(Mandatory = $true)]$PreviousState,
-    [Parameter(Mandatory = $true)]$CandidateState
+    [Parameter(Mandatory = $true)][AllowNull()]$PreviousState,
+    [Parameter(Mandatory = $true)][AllowNull()]$CandidateState,
+    $LeaseRelease = $null,
+    [object[]]$LedgerRows = @(),
+    [string[]]$ActivePhaseLedgerIds = @()
   )
 
   $previousValidation = Test-DanioRunState -State $PreviousState
@@ -762,15 +1185,31 @@ function Test-DanioRunStateTransition {
       -Details @("$($previousValidation.code): $($previousValidation.details -join '; ')")
   }
 
-  if (
-    @("active", "finalizing") -ccontains [string]$PreviousState.mode -and
-    [string]$CandidateState.mode -ceq "stopped" -and
-    $null -ne $CandidateState.owner
-  ) {
-    return New-DanioValidationResult `
-      -Valid $false `
-      -Code "STOP_PENDING" `
-      -Details @("Writer lease release is unsafe or unproven; retain the durable owner.")
+  $candidateRootFields = @(
+    "document_type",
+    "schema_version",
+    "run_id",
+    "state_revision",
+    "mode",
+    "transition",
+    "authority",
+    "authorization",
+    "cursor",
+    "owner",
+    "budget",
+    "handoff_generation",
+    "last_verified_checkpoint",
+    "repeated_failure",
+    "stop_reason_code",
+    "recovery",
+    "control_surface_sync"
+  )
+  $candidateRootSet = Test-DanioExactPropertySet `
+    -Value $CandidateState `
+    -Allowed $candidateRootFields `
+    -Required $candidateRootFields
+  if (-not $candidateRootSet.valid) {
+    return New-DanioValidationResult -Valid $false -Code "CANDIDATE_STATE_INVALID" -Details @("Candidate state fields are missing or unknown.")
   }
 
   if (
@@ -785,6 +1224,22 @@ function Test-DanioRunStateTransition {
   if ($null -eq $CandidateState.transition) {
     return New-DanioValidationResult -Valid $false -Code "STATE_TRANSITION_INVALID" -Details @("Candidate transition is required.")
   }
+  $transitionFields = @(
+    "action",
+    "from_mode",
+    "to_mode",
+    "parent_state_revision",
+    "work_unit_id",
+    "reason_code",
+    "occurred_at_utc"
+  )
+  $candidateTransitionSet = Test-DanioExactPropertySet `
+    -Value $CandidateState.transition `
+    -Allowed $transitionFields `
+    -Required $transitionFields
+  if (-not $candidateTransitionSet.valid) {
+    return New-DanioValidationResult -Valid $false -Code "STATE_TRANSITION_INVALID" -Details @("Candidate transition fields are missing or unknown.")
+  }
 
   $transitionKey = "$($PreviousState.mode)>$($CandidateState.mode)"
   if (-not $script:DanioAllowedTransitions.ContainsKey($transitionKey)) {
@@ -797,9 +1252,13 @@ function Test-DanioRunStateTransition {
   if (
     [string]$CandidateState.transition.from_mode -cne [string]$PreviousState.mode -or
     [string]$CandidateState.transition.to_mode -cne [string]$CandidateState.mode -or
+    -not (Test-DanioInteger -Value $CandidateState.transition.parent_state_revision) -or
     [int64]$CandidateState.transition.parent_state_revision -ne [int64]$PreviousState.state_revision
   ) {
     return New-DanioValidationResult -Valid $false -Code "STATE_TRANSITION_INVALID" -Details @("Transition parent/mode metadata is invalid.")
+  }
+  if ([string]$CandidateState.transition.work_unit_id -cne [string]$PreviousState.cursor.work_unit_id) {
+    return New-DanioValidationResult -Valid $false -Code "WORK_UNIT_ATTRIBUTION_INVALID" -Details @("Transition must name the previously authorized work unit.")
   }
 
   $candidateValidation = Test-DanioRunState -State $CandidateState
@@ -808,6 +1267,55 @@ function Test-DanioRunStateTransition {
       -Valid $false `
       -Code $candidateValidation.code `
       -Details $candidateValidation.details
+  }
+
+  if (@("closeout", "pause", "stop", "complete", "finalization_stop") -ccontains $expectedAction) {
+    $releaseFields = @(
+      "owner_token",
+      "writer_released",
+      "worktree_released",
+      "android_released",
+      "processes_released"
+    )
+    $releaseSet = Test-DanioExactPropertySet `
+      -Value $LeaseRelease `
+      -Allowed $releaseFields `
+      -Required $releaseFields
+    if (
+      -not $releaseSet.valid -or
+      $null -eq $PreviousState.owner -or
+      [string]$LeaseRelease.owner_token -cne [string]$PreviousState.owner.token_sha256 -or
+      -not (Test-DanioBoolean -Value $LeaseRelease.writer_released) -or
+      -not (Test-DanioBoolean -Value $LeaseRelease.worktree_released) -or
+      -not (Test-DanioBoolean -Value $LeaseRelease.android_released) -or
+      -not (Test-DanioBoolean -Value $LeaseRelease.processes_released) -or
+      -not $LeaseRelease.writer_released -or
+      -not $LeaseRelease.worktree_released -or
+      -not $LeaseRelease.android_released -or
+      -not $LeaseRelease.processes_released
+    ) {
+      return New-DanioValidationResult `
+        -Valid $false `
+        -Code "STOP_PENDING" `
+        -Details @("Writer, worktree, Android, and process lease release must be proven for the exact owner token.")
+    }
+  }
+
+  if ($expectedAction -ceq "finalize") {
+    if (
+      [string]$PreviousState.cursor.work_unit_id -cnotmatch '^DCL-RC-001(?:-|$)' -or
+      @($PreviousState.cursor.ledger_row_ids).Count -ne 1 -or
+      [string]$PreviousState.cursor.ledger_row_ids[0] -cne "DCL-RC-001"
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "FINALIZATION_SCOPE_INVALID" -Details @("Only the DCL-RC-001 work unit may enter finalization.")
+    }
+    $finalizationScope = Test-DanioActiveScope `
+      -Rows $LedgerRows `
+      -ActivePhaseLedgerIds $ActivePhaseLedgerIds `
+      -RequireNonReleaseCandidateClosed
+    if (-not $finalizationScope.valid) {
+      return New-DanioValidationResult -Valid $false -Code "FINALIZATION_SCOPE_INVALID" -Details $finalizationScope.details
+    }
   }
 
   $previousBudget = $PreviousState.budget
@@ -830,12 +1338,49 @@ function Test-DanioRunStateTransition {
       }
     }
     "claim" {
+      $previousClaimScope = [ordered]@{
+        run_id = $PreviousState.run_id
+        authority = $PreviousState.authority
+        authorization = $PreviousState.authorization
+        cursor = $PreviousState.cursor
+        handoff_generation = $PreviousState.handoff_generation
+        last_verified_checkpoint = $PreviousState.last_verified_checkpoint
+        repeated_failure = $PreviousState.repeated_failure
+        stop_reason_code = $PreviousState.stop_reason_code
+        recovery = $PreviousState.recovery
+        control_surface_sync = $PreviousState.control_surface_sync
+      }
+      $candidateClaimScope = [ordered]@{
+        run_id = $CandidateState.run_id
+        authority = $CandidateState.authority
+        authorization = $CandidateState.authorization
+        cursor = $CandidateState.cursor
+        handoff_generation = $CandidateState.handoff_generation
+        last_verified_checkpoint = $CandidateState.last_verified_checkpoint
+        repeated_failure = $CandidateState.repeated_failure
+        stop_reason_code = $CandidateState.stop_reason_code
+        recovery = $CandidateState.recovery
+        control_surface_sync = $CandidateState.control_surface_sync
+      }
+      if (
+        (ConvertTo-DanioCanonicalJson -Value $candidateClaimScope) -cne
+          (ConvertTo-DanioCanonicalJson -Value $previousClaimScope)
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "CLAIM_SCOPE_INVALID" -Details @("Claim cannot replace committed run, authority, authorization, cursor, generation, or control identity.")
+      }
+      if ([int64]$previousBudget.remaining_units_including_current -le 0) {
+        return New-DanioValidationResult -Valid $false -Code "BUDGET_EXHAUSTED" -Details @("A writer claim requires positive remaining budget.")
+      }
       if (
         -not $budgetUnchanged -or
         [string]$candidateBudget.current_charge.status -cne "pending" -or
-        $null -eq $CandidateState.owner
+        $null -eq $CandidateState.owner -or
+        [string]$CandidateState.cursor.work_unit_id -cne [string]$PreviousState.cursor.work_unit_id -or
+        [string]$candidateBudget.current_charge.work_unit_id -cne [string]$PreviousState.cursor.work_unit_id -or
+        [int64]$candidateBudget.current_charge.claimed_revision -ne [int64]$PreviousState.state_revision -or
+        [int64]$CandidateState.owner.claim_revision -ne [int64]$PreviousState.state_revision
       ) {
-        return New-DanioValidationResult -Valid $false -Code "CLAIM_BUDGET_INVALID" -Details @("Claim must set pending ownership without decrement.")
+        return New-DanioValidationResult -Valid $false -Code "OWNER_REVISION_INVALID" -Details @("Claim must bind owner, charge, cursor, and token input to the exact parent revision and work unit.")
       }
     }
     "preclaim_stop" {
@@ -859,6 +1404,19 @@ function Test-DanioRunStateTransition {
         return New-DanioValidationResult -Valid $false -Code "UNIT_CONSUMPTION_INVALID" -Details @("Closeout/stop/finalize must consume the pending unit exactly once.")
       }
       if (
+        [string]$previousBudget.current_charge.work_unit_id -cne [string]$PreviousState.cursor.work_unit_id -or
+        [string]$candidateBudget.current_charge.work_unit_id -cne [string]$PreviousState.cursor.work_unit_id -or
+        [int64]$candidateBudget.current_charge.claimed_revision -ne [int64]$previousBudget.current_charge.claimed_revision
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "WORK_UNIT_ATTRIBUTION_INVALID" -Details @("Consumed charge must belong to the previously owned work unit.")
+      }
+      if (
+        $expectedAction -ceq "closeout" -and
+        [int64]$candidateBudget.remaining_units_including_current -le 0
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "BUDGET_EXHAUSTED" -Details @("Zero post-closeout budget requires durable stop without handoff.")
+      }
+      if (
         $expectedAction -ceq "finalize" -and
         [string]$CandidateState.owner.token_sha256 -cne [string]$PreviousState.owner.token_sha256
       ) {
@@ -879,10 +1437,41 @@ function Test-DanioRunStateTransition {
       ) {
         return New-DanioValidationResult -Valid $false -Code "FINALIZATION_DOUBLE_CHARGE" -Details @("Finalization exit must not consume twice.")
       }
+      if (
+        [string]$candidateBudget.current_charge.work_unit_id -cne [string]$PreviousState.cursor.work_unit_id -or
+        [string]$previousBudget.current_charge.work_unit_id -cne [string]$PreviousState.cursor.work_unit_id
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "WORK_UNIT_ATTRIBUTION_INVALID" -Details @("Finalization exit changed work-unit attribution.")
+      }
+      if (
+        $expectedAction -ceq "complete" -and
+        (ConvertTo-DanioCanonicalJson -Value $CandidateState.last_verified_checkpoint) -ceq
+          (ConvertTo-DanioCanonicalJson -Value $PreviousState.last_verified_checkpoint)
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "VERIFIED_CHECKPOINT_INVALID" -Details @("Terminal completion must advance from candidate-parent proof to final evidence.")
+      }
     }
     "resume" {
-      if (-not $budgetUnchanged) {
-        return New-DanioValidationResult -Valid $false -Code "RESUME_BUDGET_INVALID" -Details @("Resume cannot silently change budget.")
+      $approvedIncrease = [int64]$candidateBudget.total_approved_units - [int64]$previousBudget.total_approved_units
+      if (
+        $approvedIncrease -lt 0 -or
+        [int64]$candidateBudget.consumed_units -ne [int64]$previousBudget.consumed_units -or
+        [int64]$candidateBudget.remaining_units_including_current -ne
+          ([int64]$previousBudget.remaining_units_including_current + $approvedIncrease) -or
+        (ConvertTo-DanioCanonicalJson -Value $candidateBudget.current_charge) -cne
+          (ConvertTo-DanioCanonicalJson -Value $previousBudget.current_charge) -or
+        (
+          $approvedIncrease -gt 0 -and
+          (
+            [string]$CandidateState.authorization.authorization_id -ceq [string]$PreviousState.authorization.authorization_id -or
+            [string]$CandidateState.authorization.authorized_at_utc -ceq [string]$PreviousState.authorization.authorized_at_utc
+          )
+        )
+      ) {
+        return New-DanioValidationResult -Valid $false -Code "RESUME_BUDGET_INVALID" -Details @("Resume may only preserve budget or add explicitly approved units without changing prior consumption.")
+      }
+      if ([int64]$candidateBudget.remaining_units_including_current -le 0) {
+        return New-DanioValidationResult -Valid $false -Code "BUDGET_EXHAUSTED" -Details @("Resume requires positive remaining or newly approved budget.")
       }
     }
     "administrative_sync" {
@@ -905,45 +1494,59 @@ function Test-DanioRunStateTransition {
 function Test-DanioCompletionReadiness {
   [CmdletBinding()]
   param(
-    [Parameter(Mandatory = $true)]$State,
-    [Parameter(Mandatory = $true)][object[]]$LedgerRows,
-    [Parameter(Mandatory = $true)][string[]]$ActivePhaseLedgerIds,
-    [Parameter(Mandatory = $true)]$Evidence,
-    [Parameter(Mandatory = $true)]$Cleanup,
-    [Parameter(Mandatory = $true)]$RepositoryObservation
+    [Parameter(Mandatory = $true)][AllowNull()]$State,
+    [Parameter(Mandatory = $true)][AllowEmptyCollection()][object[]]$LedgerRows,
+    [Parameter(Mandatory = $true)][AllowEmptyCollection()][string[]]$ActivePhaseLedgerIds,
+    [Parameter(Mandatory = $true)][AllowNull()]$Evidence,
+    [Parameter(Mandatory = $true)][AllowNull()]$Cleanup,
+    [Parameter(Mandatory = $true)][AllowNull()]$RepositoryObservation
   )
 
   $details = New-Object System.Collections.Generic.List[string]
-  $stateValidation = Test-DanioRunState -State $State
-  if (-not $stateValidation.valid) {
-    $details.Add("State: $($stateValidation.code).")
-  }
-  if ([string]$State.mode -cne "finalizing") {
-    $details.Add("Candidate parent mode must be finalizing.")
-  }
-
-  $ledgerValidation = Test-DanioLedgerClosureRows `
-    -Rows $LedgerRows `
-    -ActivePhaseLedgerIds $ActivePhaseLedgerIds
-  if (-not $ledgerValidation.valid) {
-    $details.Add("Ledger: $($ledgerValidation.code).")
-  } else {
-    foreach ($id in $ActivePhaseLedgerIds) {
-      $row = $LedgerRows | Where-Object { $_.Id -ceq $id } | Select-Object -First 1
-      if ($null -eq $row -or [string]$row.ClosureState -cne "closed") {
-        $details.Add("Active row '$id' is not closed.")
-      }
+  $stateIsValid = $false
+  try {
+    $stateValidation = Test-DanioRunState -State $State
+    $stateIsValid = [bool]$stateValidation.valid
+    if (-not $stateIsValid) {
+      $details.Add("State: $($stateValidation.code).")
     }
-    foreach ($row in @($LedgerRows | Where-Object { $_.ClosureState -ceq "parked" })) {
-      if ($ActivePhaseLedgerIds -ccontains [string]$row.Id) {
-        $details.Add("Parked row '$($row.Id)' is inside active scope.")
-      }
+  } catch {
+    $details.Add("State validation rejected malformed input.")
+  }
+  if ($stateIsValid) {
+    if ([string]$State.mode -cne "finalizing") {
+      $details.Add("Candidate parent mode must be finalizing.")
+    }
+    if ($null -eq $State.owner) {
+      $details.Add("Finalizing owner token is missing.")
     }
   }
 
-  $evidenceFields = @("checkpoint_commit", "checks")
+  try {
+    $activeScope = Test-DanioActiveScope `
+      -Rows $LedgerRows `
+      -ActivePhaseLedgerIds $ActivePhaseLedgerIds `
+      -RequireAllClosed
+    if (-not $activeScope.valid) {
+      $details.Add("Ledger: $($activeScope.code).")
+    }
+  } catch {
+    $details.Add("Ledger validation rejected malformed input.")
+  }
+
+  $evidenceFields = @("product_commit", "manifest_path", "checkpoint_commit", "checks")
   $evidenceSet = Test-DanioExactPropertySet -Value $Evidence -Allowed $evidenceFields -Required $evidenceFields
-  if (-not $evidenceSet.valid) {
+  $evidenceIsValid = $evidenceSet.valid
+  if (
+    -not $evidenceIsValid -or
+    -not (Test-DanioGitOid -Value $Evidence.product_commit) -or
+    -not (Test-DanioRepoPath -Value $Evidence.manifest_path) -or
+    -not (Test-DanioGitOid -Value $Evidence.checkpoint_commit) -or
+    $Evidence.checks -isnot [System.Array] -or
+    [string]$Evidence.manifest_path -cne
+      "apps/aquarium_app/docs/agent/autonomous_completion/evidence/$($Evidence.product_commit).json"
+  ) {
+    $evidenceIsValid = $false
     $details.Add("Evidence fields are missing or unknown.")
   } else {
     $requiredChecks = @(
@@ -954,18 +1557,60 @@ function Test-DanioCompletionReadiness {
       "PRODUCT_TRUTH",
       "PHONE_QA"
     )
-    foreach ($code in $requiredChecks) {
-      $matches = @($Evidence.checks | Where-Object { $_.code -ceq $code })
-      if ($matches.Count -ne 1) {
-        $details.Add("Evidence '$code' must appear exactly once.")
-        continue
-      }
+    $seenEvidenceCodes = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::Ordinal)
+    foreach ($check in @($Evidence.checks)) {
+      $checkFields = @("code", "status", "product_commit")
+      $checkSet = Test-DanioExactPropertySet -Value $check -Allowed $checkFields -Required $checkFields
       if (
-        [string]$matches[0].status -cne "pass" -or
-        [string]$matches[0].checkpoint_commit -cne [string]$Evidence.checkpoint_commit
+        -not $checkSet.valid -or
+        $requiredChecks -cnotcontains [string]$check.code -or
+        -not $seenEvidenceCodes.Add([string]$check.code) -or
+        [string]$check.status -cne "pass" -or
+        -not (Test-DanioGitOid -Value $check.product_commit) -or
+        [string]$check.product_commit -cne [string]$Evidence.product_commit
       ) {
-        $details.Add("Evidence '$code' is stale or failed.")
+        $evidenceIsValid = $false
+        $details.Add("Evidence check is malformed, duplicated, stale, or failed.")
       }
+    }
+    foreach ($code in $requiredChecks) {
+      if (-not $seenEvidenceCodes.Contains($code)) {
+        $evidenceIsValid = $false
+        $details.Add("Evidence '$code' must appear exactly once.")
+      }
+    }
+  }
+
+  if ($stateIsValid -and $evidenceIsValid) {
+    $priorFinalizingCommit = [string]$State.last_verified_checkpoint.product_commit
+    $finalProductCommit = [string]$Evidence.product_commit
+    $evidenceLedgerParentCommit = [string]$Evidence.checkpoint_commit
+    if (
+      $priorFinalizingCommit -ceq $finalProductCommit -or
+      $finalProductCommit -ceq $evidenceLedgerParentCommit -or
+      $priorFinalizingCommit -ceq $evidenceLedgerParentCommit
+    ) {
+      $details.Add("Prior finalizing, final product, and evidence-ledger parent commits must be pairwise distinct.")
+    }
+  }
+
+  if ($evidenceIsValid) {
+    $releaseCandidate = $LedgerRows | Where-Object { $_.Id -ceq "DCL-RC-001" } | Select-Object -First 1
+    $releaseCandidateFields = if ($null -eq $releaseCandidate) {
+      @()
+    } else {
+      @($releaseCandidate.PSObject.Properties | ForEach-Object { $_.Name })
+    }
+    if (
+      $null -eq $releaseCandidate -or
+      $releaseCandidateFields -cnotcontains "Evidence" -or
+      [string]$releaseCandidate.ClosureState -cne "closed" -or
+      (
+        [string]$releaseCandidate.Evidence -cnotlike "*$($Evidence.product_commit)*" -and
+        [string]$releaseCandidate.Evidence -cnotlike "*$($Evidence.manifest_path)*"
+      )
+    ) {
+      $details.Add("DCL-RC-001 is not closed by the final evidence checkpoint.")
     }
   }
 
@@ -974,28 +1619,57 @@ function Test-DanioCompletionReadiness {
     -Value $RepositoryObservation `
     -Allowed $repositoryFields `
     -Required $repositoryFields
-  if (-not $repositorySet.valid) {
+  if (
+    -not $repositorySet.valid -or
+    -not (Test-DanioGitOid -Value $RepositoryObservation.parent_commit) -or
+    -not (Test-DanioGitOid -Value $RepositoryObservation.origin_main_commit) -or
+    -not (Test-DanioInteger -Value $RepositoryObservation.ahead) -or
+    -not (Test-DanioInteger -Value $RepositoryObservation.behind) -or
+    -not (Test-DanioBoolean -Value $RepositoryObservation.clean)
+  ) {
     $details.Add("Repository observation fields are missing or unknown.")
   } elseif (
-    -not [bool]$RepositoryObservation.clean -or
+    -not $RepositoryObservation.clean -or
     [int64]$RepositoryObservation.ahead -ne 0 -or
     [int64]$RepositoryObservation.behind -ne 0 -or
     [string]$RepositoryObservation.parent_commit -cne [string]$RepositoryObservation.origin_main_commit -or
+    -not $evidenceIsValid -or
     [string]$RepositoryObservation.parent_commit -cne [string]$Evidence.checkpoint_commit
   ) {
     $details.Add("Repository parent checkpoint is not clean and aligned with evidence.")
   }
 
-  $cleanupFields = @("owner_token", "branch_removed", "worktree_removed", "device_released")
+  $cleanupFields = @(
+    "owner_token",
+    "branch_name",
+    "worktree_id",
+    "worktree_path",
+    "branch_removed",
+    "worktree_removed",
+    "device_released"
+  )
   $cleanupSet = Test-DanioExactPropertySet -Value $Cleanup -Allowed $cleanupFields -Required $cleanupFields
-  if (-not $cleanupSet.valid) {
+  if (
+    -not $cleanupSet.valid -or
+    -not (Test-DanioSha256 -Value $Cleanup.owner_token) -or
+    $Cleanup.branch_name -isnot [string] -or
+    -not (Test-DanioSafeIdentifier -Value $Cleanup.worktree_id) -or
+    -not (Test-DanioAbsoluteWindowsPath -Value $Cleanup.worktree_path) -or
+    -not (Test-DanioBoolean -Value $Cleanup.branch_removed) -or
+    -not (Test-DanioBoolean -Value $Cleanup.worktree_removed) -or
+    -not (Test-DanioBoolean -Value $Cleanup.device_released)
+  ) {
     $details.Add("Cleanup fields are missing or unknown.")
   } elseif (
+    -not $stateIsValid -or
     $null -eq $State.owner -or
     [string]$Cleanup.owner_token -cne [string]$State.owner.token_sha256 -or
-    -not [bool]$Cleanup.branch_removed -or
-    -not [bool]$Cleanup.worktree_removed -or
-    -not [bool]$Cleanup.device_released
+    [string]$Cleanup.branch_name -cne [string]$State.owner.branch_name -or
+    [string]$Cleanup.worktree_id -cne [string]$State.owner.worktree_id -or
+    [string]$Cleanup.worktree_path -cne [string]$State.owner.worktree_path -or
+    -not $Cleanup.branch_removed -or
+    -not $Cleanup.worktree_removed -or
+    -not $Cleanup.device_released
   ) {
     $details.Add("Owned branch, worktree, device, or owner-token cleanup is unproven.")
   }

@@ -25,8 +25,9 @@ owns category status and quality-bar summaries.
 - Installed runner hashes and compatibility-contract hashes are unpinned and
   explicitly `null`.
 - No operational run-state file exists. Only Task 13 may create
-  `docs/agent/autonomous_completion/phone_completion_run_state.json`.
-- The JSON files under `test/scripts/fixtures/autonomous_completion/` are
+  `apps/aquarium_app/docs/agent/autonomous_completion/phone_completion_run_state.json`.
+- The JSON files under
+  `apps/aquarium_app/test/scripts/fixtures/autonomous_completion/` are
   normative test fixtures. They are not live leases, budget authority, or
   permission to perform product work.
 - Before Task 13, the bootstrap-budget block in `ACTIVE_HANDOFF.md` is the only
@@ -38,7 +39,8 @@ pure contracts and validators while this blocker remains.
 
 ## Machine Contract Inventory
 
-All machine schemas are under `docs/agent/autonomous_completion/schemas/`:
+All machine schemas are under
+`apps/aquarium_app/docs/agent/autonomous_completion/schemas/`:
 
 - `run_state.schema.json`
 - `synchronization_receipt.schema.json`
@@ -219,7 +221,8 @@ The guard does not require the candidate state already to be `complete`.
 
 ## Runner Compatibility
 
-`docs/agent/autonomous_completion/runner_compatibility.json` is the
+`apps/aquarium_app/docs/agent/autonomous_completion/runner_compatibility.json`
+is the
 repository-owned compatibility authority. While `authorizes_launch` is false,
 `launch_proof` must be null. If a later reviewed commit sets launch
 authorization true, `runner_compatible` must also be true and `launch_proof`
@@ -234,8 +237,9 @@ capability separately and do not fabricate runner incompatibility.
 
 Evidence manifests are named by the exact product commit plus `.json`. The
 filename and `product_commit` field must match. Each command record includes
-the command, exit code, strict UTC start and completion timestamps, environment
-identity, durable artifacts, and overall status.
+only the command, exit code, and strict UTC start and completion timestamps.
+Environment identity, durable artifacts, and overall status are manifest-level
+fields.
 
 The no-product-change rehearsal records before/after observations and proves
 all repository-file, index, local-ref, remote-ref, worktree, task, Android,

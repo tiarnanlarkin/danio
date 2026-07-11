@@ -86,6 +86,21 @@
       "else": {
         "properties": { "owner": { "type": "null" } }
       }
+    },
+    {
+      "if": {
+        "required": ["mode"],
+        "properties": {
+          "mode": { "enum": ["handoff_ready", "paused", "finalizing", "complete"] }
+        }
+      },
+      "then": {
+        "properties": {
+          "last_verified_checkpoint": {
+            "$ref": "#/$defs/verified_checkpoint"
+          }
+        }
+      }
     }
   ],
   "$defs": {
@@ -109,7 +124,10 @@
     },
     "strict_utc": {
       "type": "string",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{7}Z$"
+      "format": "date-time",
+      "minLength": 28,
+      "maxLength": 28,
+      "pattern": "^(?:(?:[0-9]{4}-(?:(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01]))|(?:(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30))|(?:02-(?:0[1-9]|1[0-9]|2[0-8]))))|(?:(?:(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26]))|(?:(?:0[48]|[2468][048]|[13579][26])00))-02-29))T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.[0-9]{7}Z$"
     },
     "repo_path": {
       "type": "string",
@@ -119,7 +137,7 @@
     "absolute_windows_path": {
       "type": "string",
       "minLength": 4,
-      "pattern": "^[A-Za-z]:/(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+      "pattern": "^(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z]:/.+$"
     },
     "mode": {
       "type": "string",
@@ -392,7 +410,8 @@
         },
         "commands": {
           "type": "array",
-          "items": { "type": "string", "minLength": 1 }
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1
         },
         "last_clean_commit": { "$ref": "#/$defs/git_oid" }
       }
@@ -444,7 +463,73 @@
             { "$ref": "#/$defs/reason_code" }
           ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["status"],
+            "properties": { "status": { "const": "not_required" } }
+          },
+          "then": {
+            "properties": {
+              "target_commit": { "type": "null" },
+              "figma_file_id": { "type": "null" },
+              "figma_node_ids": { "maxItems": 0 },
+              "attempted_at_utc": { "type": "null" },
+              "evidence_sha256": { "type": "null" },
+              "failure_code": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["status"],
+            "properties": { "status": { "const": "pending" } }
+          },
+          "then": {
+            "properties": {
+              "target_commit": { "$ref": "#/$defs/git_oid" },
+              "figma_file_id": { "type": "null" },
+              "figma_node_ids": { "maxItems": 0 },
+              "attempted_at_utc": { "type": "null" },
+              "evidence_sha256": { "type": "null" },
+              "failure_code": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["status"],
+            "properties": { "status": { "const": "synced" } }
+          },
+          "then": {
+            "properties": {
+              "target_commit": { "$ref": "#/$defs/git_oid" },
+              "figma_file_id": { "type": "string", "minLength": 1 },
+              "figma_node_ids": { "minItems": 1 },
+              "attempted_at_utc": { "$ref": "#/$defs/strict_utc" },
+              "evidence_sha256": { "$ref": "#/$defs/sha256" },
+              "failure_code": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["status"],
+            "properties": { "status": { "const": "failed" } }
+          },
+          "then": {
+            "properties": {
+              "target_commit": { "$ref": "#/$defs/git_oid" },
+              "figma_file_id": { "type": "string", "minLength": 1 },
+              "figma_node_ids": { "minItems": 1 },
+              "attempted_at_utc": { "$ref": "#/$defs/strict_utc" },
+              "evidence_sha256": { "type": "null" },
+              "failure_code": { "$ref": "#/$defs/reason_code" }
+            }
+          }
+        }
+      ]
     }
   }
 }

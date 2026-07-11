@@ -48,7 +48,59 @@
     },
     "skills": {
       "type": "array",
-      "items": { "$ref": "#/$defs/skill" },
+      "prefixItems": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "role",
+            "skill_path",
+            "skill_sha256",
+            "contract_path",
+            "contract_sha256",
+            "contract_version"
+          ],
+          "properties": {
+            "name": { "const": "danio-autonomous-slice-runner" },
+            "role": { "const": "orchestrator" },
+            "skill_path": {
+              "const": "skills/danio-autonomous-slice-runner/SKILL.md"
+            },
+            "skill_sha256": { "$ref": "#/$defs/nullable_sha256" },
+            "contract_path": {
+              "const": "skills/danio-autonomous-slice-runner/references/compatibility-contract.json"
+            },
+            "contract_sha256": { "$ref": "#/$defs/nullable_sha256" },
+            "contract_version": { "const": "1.0.0" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "role",
+            "skill_path",
+            "skill_sha256",
+            "contract_path",
+            "contract_sha256",
+            "contract_version"
+          ],
+          "properties": {
+            "name": { "const": "verified-slice-runner" },
+            "role": { "const": "base" },
+            "skill_path": { "const": "skills/verified-slice-runner/SKILL.md" },
+            "skill_sha256": { "$ref": "#/$defs/nullable_sha256" },
+            "contract_path": {
+              "const": "skills/verified-slice-runner/references/compatibility-contract.json"
+            },
+            "contract_sha256": { "$ref": "#/$defs/nullable_sha256" },
+            "contract_version": { "const": "1.0.0" }
+          }
+        }
+      ],
+      "items": false,
       "minItems": 2,
       "maxItems": 2
     },
@@ -78,6 +130,32 @@
         "properties": {
           "runner_compatible": { "const": true },
           "launch_proof": { "$ref": "#/$defs/launch_proof" }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["runner_compatible"],
+        "properties": { "runner_compatible": { "const": true } }
+      },
+      "then": {
+        "properties": {
+          "skills": {
+            "prefixItems": [
+              {
+                "properties": {
+                  "skill_sha256": { "$ref": "#/$defs/sha256" },
+                  "contract_sha256": { "$ref": "#/$defs/sha256" }
+                }
+              },
+              {
+                "properties": {
+                  "skill_sha256": { "$ref": "#/$defs/sha256" },
+                  "contract_sha256": { "$ref": "#/$defs/sha256" }
+                }
+              }
+            ]
+          }
         }
       }
     }
@@ -120,37 +198,6 @@
       "properties": {
         "environment": { "const": "CODEX_HOME" },
         "fallback": { "const": "%USERPROFILE%\\.codex" }
-      }
-    },
-    "skill": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "name",
-        "role",
-        "skill_path",
-        "skill_sha256",
-        "contract_path",
-        "contract_sha256",
-        "contract_version"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "enum": [
-            "danio-autonomous-slice-runner",
-            "verified-slice-runner"
-          ]
-        },
-        "role": { "type": "string", "enum": ["orchestrator", "base"] },
-        "skill_path": { "$ref": "#/$defs/repo_path" },
-        "skill_sha256": { "$ref": "#/$defs/nullable_sha256" },
-        "contract_path": { "$ref": "#/$defs/repo_path" },
-        "contract_sha256": { "$ref": "#/$defs/nullable_sha256" },
-        "contract_version": {
-          "type": "string",
-          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
-        }
       }
     },
     "writer_policy": {
@@ -255,23 +302,10 @@
       "required": ["required", "recovery_only", "not_for_successors"],
       "properties": {
         "required": {
-          "type": "array",
-          "items": { "type": "string" },
-          "minItems": 3,
-          "uniqueItems": true
+          "const": ["list_threads", "read_thread", "create_thread.project_target"]
         },
-        "recovery_only": {
-          "type": "array",
-          "items": { "type": "string" },
-          "minItems": 1,
-          "uniqueItems": true
-        },
-        "not_for_successors": {
-          "type": "array",
-          "items": { "type": "string" },
-          "minItems": 1,
-          "uniqueItems": true
-        }
+        "recovery_only": { "const": ["send_message_to_thread"] },
+        "not_for_successors": { "const": ["fork_thread"] }
       }
     },
     "validation": {

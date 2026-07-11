@@ -613,6 +613,13 @@ void main() {
       contains('product_complete := run_state.mode == "complete"'),
     );
     expect(runbook, contains('Only Task 13 may create'));
+    expect(
+      runbook,
+      contains(
+        'apps/aquarium_app/docs/agent/autonomous_completion/'
+        'phone_completion_run_state.json',
+      ),
+    );
 
     final compatibility =
         jsonDecode(
