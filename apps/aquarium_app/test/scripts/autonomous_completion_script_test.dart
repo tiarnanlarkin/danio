@@ -34,9 +34,12 @@ const _otherContractPaths = <String>[
   '$_contractRoot/runner_compatibility.json',
 ];
 
-const _task3Paths = <String>[
+const _implementedPowerShellPaths = <String>[
   'scripts/autonomous_completion/DanioAutonomousCompletion.psm1',
+  'scripts/autonomous_completion/sync_autonomous_completion.ps1',
+  'scripts/autonomous_completion/check_autonomous_completion_readiness.ps1',
   'test/scripts/autonomous_completion_behavior_test.ps1',
+  'test/scripts/autonomous_completion_git_fixture_test.ps1',
 ];
 
 Map<String, dynamic> _readJson(String path) =>
@@ -377,7 +380,7 @@ void main() {
       ..._schemaPaths,
       ..._fixturePaths,
       ..._otherContractPaths,
-      ..._task3Paths,
+      ..._implementedPowerShellPaths,
     ]) {
       final file = File(path);
       expect(file.existsSync(), isTrue, reason: path);
@@ -939,8 +942,8 @@ void main() {
     );
   });
 
-  test('pure PowerShell module exposes only the Task 3 validation surface', () {
-    final source = File(_task3Paths.first).readAsStringSync();
+  test('pure PowerShell module exposes the Task 4 validation surface', () {
+    final source = File(_implementedPowerShellPaths.first).readAsStringSync();
 
     expect(source, contains('[CmdletBinding()]'));
     expect(source, contains('Set-StrictMode -Version Latest'));
@@ -952,17 +955,17 @@ void main() {
       'Test-DanioRunState',
       'Test-DanioRunStateTransition',
       'Test-DanioCompletionReadiness',
+      'Get-DanioRepositoryObservation',
+      'Test-DanioRunnerCompatibility',
+      'New-DanioSynchronizationReceipt',
+      'Test-DanioSynchronizationReceipt',
+      'Test-DanioAutonomousReadiness',
     ]) {
       expect(source, contains('function $functionName'));
       expect(source, contains('"$functionName"'));
     }
 
     for (final laterFunction in <String>[
-      'Get-DanioRepositoryObservation',
-      'Test-DanioRunnerCompatibility',
-      'New-DanioSynchronizationReceipt',
-      'Test-DanioSynchronizationReceipt',
-      'Test-DanioAutonomousReadiness',
       'New-DanioWriterClaimPlan',
       'New-DanioRehearsalReport',
     ]) {
@@ -991,7 +994,7 @@ void main() {
   });
 
   test('pure module carries the exact allowed transition matrix', () {
-    final source = File(_task3Paths.first).readAsStringSync();
+    final source = File(_implementedPowerShellPaths.first).readAsStringSync();
     const allowed = <String, String>{
       'inactive>ready': 'launch',
       'ready>active': 'claim',

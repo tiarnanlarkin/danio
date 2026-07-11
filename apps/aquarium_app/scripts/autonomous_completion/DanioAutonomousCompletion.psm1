@@ -1689,11 +1689,713 @@ function Test-DanioCompletionReadiness {
   }
 }
 
+function ConvertTo-DanioForwardSlashPath {
+  [CmdletBinding()]
+  param([Parameter(Mandatory = $true)][string]$Path)
+
+  return $Path.Replace("\", "/").TrimEnd("/")
+}
+
+function Invoke-DanioGitReadOnly {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string[]]$Arguments
+  )
+
+  $output = @(& git -C $RepositoryRoot @Arguments 2>&1)
+  $exitCode = $LASTEXITCODE
+  if ($exitCode -ne 0) {
+    throw "GIT_OBSERVATION_FAILED: command exited ${exitCode}: $($output -join '; ')"
+  }
+  return ($output -join "`n").TrimEnd()
+}
+
+function ConvertTo-DanioOutputLines {
+  [CmdletBinding()]
+  param([AllowNull()][string]$Value)
+
+  if ([string]::IsNullOrWhiteSpace($Value)) {
+    return @()
+  }
+  return @($Value -split "`r?`n" | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+}
+
+function Test-DanioAuthorityReferences {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [AllowNull()]$State
+  )
+
+  if ($null -eq $State) {
+    $requiredPaths = @(
+      "apps/aquarium_app/docs/agent/plans/2026-07-11-phone-complete-local-completion-program.md",
+      "apps/aquarium_app/docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md",
+      "apps/aquarium_app/docs/agent/FINISH_MAP.md",
+      "apps/aquarium_app/docs/agent/QUALITY_LADDER.md",
+      "apps/aquarium_app/docs/agent/VERIFIED_SLICE_EXECUTION_CONTRACT.md",
+      "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md",
+      "apps/aquarium_app/docs/agent/DEVICE_OWNERSHIP.md"
+    )
+    $missing = @(
+      $requiredPaths | Where-Object {
+        -not (Test-Path -LiteralPath (Join-Path $RepositoryRoot $_) -PathType Leaf)
+      }
+    )
+    if ($missing.Count -gt 0) {
+      return New-DanioValidationResult `
+        -Valid $false `
+        -Code "AUTHORITY_CONFLICT" `
+        -Details @("Missing authority paths: $($missing -join ', ').")
+    }
+    return New-DanioValidationResult -Valid $true -Code "AUTHORITY_VALID"
+  }
+
+  $stateProperties = @($State.PSObject.Properties | ForEach-Object { $_.Name })
+  if ($stateProperties -cnotcontains "authority" -or $null -eq $State.authority) {
+    return New-DanioValidationResult -Valid $false -Code "AUTHORITY_CONFLICT" -Details @("State authority is missing.")
+  }
+
+  foreach ($authorityProperty in @($State.authority.PSObject.Properties)) {
+    $reference = $authorityProperty.Value
+    $referenceFields = @("path", "commit", "blob_oid")
+    $referenceSet = Test-DanioExactPropertySet `
+      -Value $reference `
+      -Allowed $referenceFields `
+      -Required $referenceFields
+    if (
+      -not $referenceSet.valid -or
+      -not (Test-DanioRepoPath -Value $reference.path) -or
+      -not (Test-DanioGitOid -Value $reference.commit) -or
+      -not (Test-DanioGitOid -Value $reference.blob_oid)
+    ) {
+      return New-DanioValidationResult `
+        -Valid $false `
+        -Code "AUTHORITY_CONFLICT" `
+        -Details @("Authority '$($authorityProperty.Name)' is malformed.")
+    }
+
+    try {
+      $observedBlob = Invoke-DanioGitReadOnly `
+        -RepositoryRoot $RepositoryRoot `
+        -Arguments @("rev-parse", "$($reference.commit):$($reference.path)")
+    } catch {
+      return New-DanioValidationResult `
+        -Valid $false `
+        -Code "AUTHORITY_CONFLICT" `
+        -Details @("Authority '$($authorityProperty.Name)' cannot be resolved.")
+    }
+    if ([string]$observedBlob -cne [string]$reference.blob_oid) {
+      return New-DanioValidationResult `
+        -Valid $false `
+        -Code "AUTHORITY_CONFLICT" `
+        -Details @("Authority '$($authorityProperty.Name)' blob moved.")
+    }
+  }
+
+  return New-DanioValidationResult -Valid $true -Code "AUTHORITY_VALID"
+}
+
+function Get-DanioRepositoryObservation {
+  [CmdletBinding()]
+  param(
+    [string]$RepositoryRoot,
+    [AllowNull()]$State = $null
+  )
+
+  $priorOptionalLocks = [Environment]::GetEnvironmentVariable(
+    "GIT_OPTIONAL_LOCKS",
+    [EnvironmentVariableTarget]::Process
+  )
+  $hadPriorOptionalLocks = $null -ne $priorOptionalLocks
+  [Environment]::SetEnvironmentVariable(
+    "GIT_OPTIONAL_LOCKS",
+    "0",
+    [EnvironmentVariableTarget]::Process
+  )
+
+  try {
+    $resolvedRoot = Resolve-DanioRepositoryRoot -RepositoryRoot $RepositoryRoot
+    $normalizedRoot = ConvertTo-DanioForwardSlashPath -Path $resolvedRoot
+    $observedRoot = ConvertTo-DanioForwardSlashPath -Path (
+      Invoke-DanioGitReadOnly -RepositoryRoot $resolvedRoot -Arguments @("rev-parse", "--show-toplevel")
+    )
+    if ($observedRoot -cne $normalizedRoot) {
+      throw "REPO_ROOT_INVALID: expected '$normalizedRoot', found '$observedRoot'."
+    }
+
+    $branch = Invoke-DanioGitReadOnly -RepositoryRoot $resolvedRoot -Arguments @("branch", "--show-current")
+    $headCommit = Invoke-DanioGitReadOnly -RepositoryRoot $resolvedRoot -Arguments @("rev-parse", "HEAD")
+    $originMainCommit = Invoke-DanioGitReadOnly -RepositoryRoot $resolvedRoot -Arguments @("rev-parse", "origin/main")
+    $countsText = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("rev-list", "--left-right", "--count", "main...origin/main")
+    $countParts = @($countsText -split '\s+' | Where-Object { $_ -ne "" })
+    if ($countParts.Count -ne 2) {
+      throw "GIT_OBSERVATION_FAILED: ahead/behind output was malformed."
+    }
+
+    $statusText = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("--no-optional-locks", "status", "--short", "-uall")
+    $statusPaths = @(ConvertTo-DanioOutputLines -Value $statusText)
+    $worktreeText = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("worktree", "list", "--porcelain")
+    $worktrees = @(
+      ConvertTo-DanioOutputLines -Value $worktreeText |
+        Where-Object { $_.StartsWith("worktree ", [StringComparison]::Ordinal) } |
+        ForEach-Object { ConvertTo-DanioForwardSlashPath -Path $_.Substring(9) }
+    )
+    $branchText = Invoke-DanioGitReadOnly `
+      -RepositoryRoot $resolvedRoot `
+      -Arguments @("branch", "--format=%(refname:short)")
+    $temporaryBranches = @(
+      ConvertTo-DanioOutputLines -Value $branchText |
+        Where-Object { $_ -cne "main" }
+    )
+    $ownershipClear = (
+      $worktrees.Count -eq 1 -and
+      [string]$worktrees[0] -ceq $normalizedRoot -and
+      $temporaryBranches.Count -eq 0
+    )
+
+    $handoffPath = Join-Path $resolvedRoot "apps/aquarium_app/docs/agent/ACTIVE_HANDOFF.md"
+    $bootstrapRemaining = $null
+    if (Test-Path -LiteralPath $handoffPath -PathType Leaf) {
+      $handoffContent = Get-Content -Raw -LiteralPath $handoffPath
+      $budgetMatch = [regex]::Match(
+        $handoffContent,
+        '"remaining_units_including_current"\s*:\s*(?<remaining>[0-9]+)'
+      )
+      if ($budgetMatch.Success) {
+        $bootstrapRemaining = [int64]$budgetMatch.Groups["remaining"].Value
+      }
+    }
+
+    return [pscustomobject]@{
+      repository_root = $normalizedRoot
+      branch = [string]$branch
+      head_commit = [string]$headCommit
+      origin_main_commit = [string]$originMainCommit
+      ahead = [int64]$countParts[0]
+      behind = [int64]$countParts[1]
+      clean = ($statusPaths.Count -eq 0)
+      status_paths = @($statusPaths)
+      worktrees = @($worktrees)
+      temporary_branches = @($temporaryBranches)
+      ownership_clear = [bool]$ownershipClear
+      authority_validation = Test-DanioAuthorityReferences `
+        -RepositoryRoot $resolvedRoot `
+        -State $State
+      bootstrap_remaining_units = $bootstrapRemaining
+    }
+  } finally {
+    if ($hadPriorOptionalLocks) {
+      [Environment]::SetEnvironmentVariable(
+        "GIT_OPTIONAL_LOCKS",
+        $priorOptionalLocks,
+        [EnvironmentVariableTarget]::Process
+      )
+    } else {
+      [Environment]::SetEnvironmentVariable(
+        "GIT_OPTIONAL_LOCKS",
+        $null,
+        [EnvironmentVariableTarget]::Process
+      )
+    }
+  }
+}
+
+function New-DanioSynchronizationReceipt {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$InvocationNonce,
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][int]$ExitCode,
+    [Parameter(Mandatory = $true)][string]$CompletedAtUtc,
+    [AllowNull()][string]$OriginMainCommit,
+    [AllowNull()]$Ahead,
+    [AllowNull()]$Behind
+  )
+
+  $normalizedRoot = ConvertTo-DanioForwardSlashPath -Path $RepositoryRoot
+  if ($InvocationNonce -cnotmatch '^[0-9a-f]{32}$') {
+    throw "INVALID_SYNC_RECEIPT: invocation nonce is malformed."
+  }
+  if (-not (Test-DanioAbsoluteWindowsPath -Value $normalizedRoot)) {
+    throw "INVALID_SYNC_RECEIPT: repository root is malformed."
+  }
+  if (-not (Test-DanioStrictUtc -Value $CompletedAtUtc)) {
+    throw "INVALID_SYNC_RECEIPT: completion timestamp is malformed."
+  }
+
+  $aheadBehind = $null
+  if ($ExitCode -eq 0) {
+    if (
+      -not (Test-DanioGitOid -Value $OriginMainCommit) -or
+      -not (Test-DanioInteger -Value $Ahead) -or
+      -not (Test-DanioInteger -Value $Behind) -or
+      [int64]$Ahead -lt 0 -or
+      [int64]$Behind -lt 0
+    ) {
+      throw "INVALID_SYNC_RECEIPT: successful synchronization evidence is malformed."
+    }
+    $aheadBehind = [pscustomobject]@{
+      ahead = [int64]$Ahead
+      behind = [int64]$Behind
+    }
+  } else {
+    $OriginMainCommit = $null
+  }
+
+  return [pscustomobject]@{
+    document_type = "danio_synchronization_receipt"
+    schema_version = 1
+    invocation_nonce = $InvocationNonce
+    repository_root = $normalizedRoot
+    command = [pscustomobject]@{
+      executable = "git"
+      arguments = @("fetch", "--prune")
+    }
+    exit_code = $ExitCode
+    completed_at_utc = $CompletedAtUtc
+    origin_main_commit = $OriginMainCommit
+    ahead_behind = $aheadBehind
+  }
+}
+
+function Test-DanioSynchronizationReceipt {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][AllowNull()]$Receipt,
+    [Parameter(Mandatory = $true)][string]$ExpectedInvocationNonce,
+    [Parameter(Mandatory = $true)][string]$ExpectedRepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$ExpectedOriginMainCommit,
+    [Parameter(Mandatory = $true)][int64]$ExpectedAhead,
+    [Parameter(Mandatory = $true)][int64]$ExpectedBehind,
+    [Parameter(Mandatory = $true)][string]$CheckedAtUtc,
+    [int64]$MaxReceiptAgeSeconds = 120
+  )
+
+  $details = New-Object System.Collections.Generic.List[string]
+  $receiptFields = @(
+    "document_type",
+    "schema_version",
+    "invocation_nonce",
+    "repository_root",
+    "command",
+    "exit_code",
+    "completed_at_utc",
+    "origin_main_commit",
+    "ahead_behind"
+  )
+  $receiptSet = Test-DanioExactPropertySet `
+    -Value $Receipt `
+    -Allowed $receiptFields `
+    -Required $receiptFields
+  if (-not $receiptSet.valid) {
+    return New-DanioValidationResult -Valid $false -Code "INVALID_SYNC_RECEIPT" -Details @("Receipt fields are missing or unknown.")
+  }
+
+  $commandFields = @("executable", "arguments")
+  $commandSet = Test-DanioExactPropertySet `
+    -Value $Receipt.command `
+    -Allowed $commandFields `
+    -Required $commandFields
+  $aheadBehindFields = @("ahead", "behind")
+  $aheadBehindSet = Test-DanioExactPropertySet `
+    -Value $Receipt.ahead_behind `
+    -Allowed $aheadBehindFields `
+    -Required $aheadBehindFields
+  $normalizedExpectedRoot = ConvertTo-DanioForwardSlashPath -Path $ExpectedRepositoryRoot
+  if (
+    [string]$Receipt.document_type -cne "danio_synchronization_receipt" -or
+    -not (Test-DanioInteger -Value $Receipt.schema_version) -or
+    [int64]$Receipt.schema_version -ne 1 -or
+    [string]$Receipt.invocation_nonce -cne $ExpectedInvocationNonce -or
+    [string]$Receipt.repository_root -cne $normalizedExpectedRoot -or
+    -not $commandSet.valid -or
+    [string]$Receipt.command.executable -cne "git" -or
+    $Receipt.command.arguments -isnot [System.Array] -or
+    $Receipt.command.arguments.Count -ne 2 -or
+    [string]$Receipt.command.arguments[0] -cne "fetch" -or
+    [string]$Receipt.command.arguments[1] -cne "--prune" -or
+    -not (Test-DanioInteger -Value $Receipt.exit_code) -or
+    [int64]$Receipt.exit_code -ne 0 -or
+    -not (Test-DanioStrictUtc -Value $Receipt.completed_at_utc) -or
+    [string]$Receipt.origin_main_commit -cne $ExpectedOriginMainCommit -or
+    -not (Test-DanioGitOid -Value $Receipt.origin_main_commit) -or
+    -not $aheadBehindSet.valid -or
+    -not (Test-DanioInteger -Value $Receipt.ahead_behind.ahead) -or
+    -not (Test-DanioInteger -Value $Receipt.ahead_behind.behind) -or
+    [int64]$Receipt.ahead_behind.ahead -ne $ExpectedAhead -or
+    [int64]$Receipt.ahead_behind.behind -ne $ExpectedBehind -or
+    $MaxReceiptAgeSeconds -lt 0 -or
+    -not (Test-DanioStrictUtc -Value $CheckedAtUtc)
+  ) {
+    return New-DanioValidationResult -Valid $false -Code "INVALID_SYNC_RECEIPT" -Details @("Receipt does not match the current invocation and repository observation.")
+  }
+
+  $completed = [DateTimeOffset]::MinValue
+  $checked = [DateTimeOffset]::MinValue
+  [void][DateTimeOffset]::TryParseExact(
+    [string]$Receipt.completed_at_utc,
+    "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    [Globalization.CultureInfo]::InvariantCulture,
+    [Globalization.DateTimeStyles]::AssumeUniversal -bor [Globalization.DateTimeStyles]::AdjustToUniversal,
+    [ref]$completed
+  )
+  [void][DateTimeOffset]::TryParseExact(
+    $CheckedAtUtc,
+    "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+    [Globalization.CultureInfo]::InvariantCulture,
+    [Globalization.DateTimeStyles]::AssumeUniversal -bor [Globalization.DateTimeStyles]::AdjustToUniversal,
+    [ref]$checked
+  )
+  $age = $checked.ToUniversalTime() - $completed.ToUniversalTime()
+  if ($age.Ticks -lt 0) {
+    return New-DanioValidationResult -Valid $false -Code "INVALID_SYNC_RECEIPT" -Details @("Receipt completion time is in the future.")
+  }
+  if ($age.Ticks -gt [TimeSpan]::FromSeconds($MaxReceiptAgeSeconds).Ticks) {
+    return New-DanioValidationResult -Valid $false -Code "STALE_SYNC_RECEIPT" -Details @("Receipt is older than $MaxReceiptAgeSeconds seconds.")
+  }
+
+  return New-DanioValidationResult -Valid $true -Code "SYNC_RECEIPT_VALID"
+}
+
+function Test-DanioRunnerCompatibility {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][AllowNull()]$Manifest,
+    [switch]$RequireLaunchAuthorization
+  )
+
+  $manifestFields = @(
+    "schema_version",
+    "manifest_id",
+    "manifest_revision",
+    "authorizes_launch",
+    "runner_compatible",
+    "launch_proof",
+    "design",
+    "install_root",
+    "runner_order",
+    "skills",
+    "writer_policy",
+    "budget_policy",
+    "failure_policy",
+    "handoff_policy",
+    "thread_capabilities",
+    "validation"
+  )
+  $manifestSet = Test-DanioExactPropertySet `
+    -Value $Manifest `
+    -Allowed $manifestFields `
+    -Required $manifestFields
+  if (
+    -not $manifestSet.valid -or
+    -not (Test-DanioBoolean -Value $Manifest.runner_compatible) -or
+    -not (Test-DanioBoolean -Value $Manifest.authorizes_launch) -or
+    -not $Manifest.runner_compatible -or
+    ($RequireLaunchAuthorization -and -not $Manifest.authorizes_launch) -or
+    $Manifest.skills -isnot [System.Array]
+  ) {
+    return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner compatibility is false, malformed, or unpinned.")
+  }
+
+  foreach ($skill in @($Manifest.skills)) {
+    $skillProperties = @($skill.PSObject.Properties | ForEach-Object { $_.Name })
+    if (
+      $skillProperties -cnotcontains "skill_sha256" -or
+      $skillProperties -cnotcontains "contract_sha256" -or
+      -not (Test-DanioSha256 -Value $skill.skill_sha256) -or
+      -not (Test-DanioSha256 -Value $skill.contract_sha256)
+    ) {
+      return New-DanioValidationResult -Valid $false -Code "RUNNER_INCOMPATIBLE" -Details @("Runner digest evidence is missing.")
+    }
+  }
+
+  return New-DanioValidationResult -Valid $true -Code "RUNNER_COMPATIBLE"
+}
+
+function New-DanioReadinessCheck {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$Code,
+    [Parameter(Mandatory = $true)][bool]$Passed,
+    [Parameter(Mandatory = $true)][string]$Detail
+  )
+
+  return [pscustomobject]@{
+    code = $Code
+    status = if ($Passed) { "pass" } else { "fail" }
+    detail = $Detail
+  }
+}
+
+function Test-DanioAutonomousReadiness {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)][string]$Intent,
+    [Parameter(Mandatory = $true)][AllowNull()]$SynchronizationReceipt,
+    [Parameter(Mandatory = $true)][string]$ExpectedInvocationNonce,
+    [Parameter(Mandatory = $true)][string]$ExpectedRepositoryRoot,
+    [Parameter(Mandatory = $true)]$RepositoryObservation,
+    [Parameter(Mandatory = $true)][AllowNull()]$State,
+    [Parameter(Mandatory = $true)]$AuthorityValidation,
+    [Parameter(Mandatory = $true)]$RunnerValidation,
+    [Parameter(Mandatory = $true)][int64]$RemainingUnitsIncludingCurrent,
+    [Parameter(Mandatory = $true)][string]$CheckedAtUtc,
+    [int64]$MaxReceiptAgeSeconds = 120,
+    [bool]$RuntimeRequired = $false,
+    [bool]$RuntimeOwnershipClear = $true,
+    [AllowEmptyCollection()][object[]]$LedgerRows = @(),
+    [AllowEmptyCollection()][string[]]$ActivePhaseLedgerIds = @(),
+    [AllowNull()]$Evidence = $null,
+    [AllowNull()]$Cleanup = $null
+  )
+
+  $checks = New-Object System.Collections.Generic.List[object]
+  $allowedIntents = @("Launch", "Claim", "Closeout", "Finalization", "AdministrativeSync")
+  if ($allowedIntents -cnotcontains $Intent) {
+    $checks.Add((New-DanioReadinessCheck -Code "AUTHORITY_CONFLICT" -Passed $false -Detail "Intent is not supported."))
+  }
+
+  $observationFields = @(
+    "repository_root",
+    "branch",
+    "head_commit",
+    "origin_main_commit",
+    "ahead",
+    "behind",
+    "clean",
+    "status_paths",
+    "worktrees",
+    "temporary_branches",
+    "ownership_clear"
+  )
+  $observationNames = if ($null -eq $RepositoryObservation) {
+    @()
+  } else {
+    @($RepositoryObservation.PSObject.Properties | ForEach-Object { $_.Name })
+  }
+  $observationShapeValid = $true
+  foreach ($field in $observationFields) {
+    if ($observationNames -cnotcontains $field) {
+      $observationShapeValid = $false
+    }
+  }
+
+  $receiptValidation = if ($observationShapeValid) {
+    Test-DanioSynchronizationReceipt `
+      -Receipt $SynchronizationReceipt `
+      -ExpectedInvocationNonce $ExpectedInvocationNonce `
+      -ExpectedRepositoryRoot $ExpectedRepositoryRoot `
+      -ExpectedOriginMainCommit ([string]$RepositoryObservation.origin_main_commit) `
+      -ExpectedAhead ([int64]$RepositoryObservation.ahead) `
+      -ExpectedBehind ([int64]$RepositoryObservation.behind) `
+      -CheckedAtUtc $CheckedAtUtc `
+      -MaxReceiptAgeSeconds $MaxReceiptAgeSeconds
+  } else {
+    New-DanioValidationResult -Valid $false -Code "INVALID_SYNC_RECEIPT" -Details @("Repository observation is malformed.")
+  }
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($receiptValidation.valid) { "SYNC_RECEIPT" } else { [string]$receiptValidation.code }) `
+    -Passed ([bool]$receiptValidation.valid) `
+    -Detail $(if ($receiptValidation.valid) { "Synchronization receipt is valid and fresh." } else { $receiptValidation.details -join "; " })))
+
+  $normalizedExpectedRoot = ConvertTo-DanioForwardSlashPath -Path $ExpectedRepositoryRoot
+  $rootValid = (
+    $observationShapeValid -and
+    [string]$RepositoryObservation.repository_root -ceq $normalizedExpectedRoot
+  )
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($rootValid) { "REPO_ROOT" } else { "REPO_ROOT_INVALID" }) `
+    -Passed $rootValid `
+    -Detail $(if ($rootValid) { "Nested repository root matches." } else { "Nested repository root does not match." })))
+
+  $branchValid = $observationShapeValid -and [string]$RepositoryObservation.branch -ceq "main"
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($branchValid) { "SOURCE_BRANCH" } else { "WRONG_SOURCE_BRANCH" }) `
+    -Passed $branchValid `
+    -Detail $(if ($branchValid) { "Source branch is main." } else { "Source branch is not main." })))
+
+  $remoteValid = (
+    $observationShapeValid -and
+    (Test-DanioGitOid -Value $RepositoryObservation.head_commit) -and
+    (Test-DanioGitOid -Value $RepositoryObservation.origin_main_commit) -and
+    (Test-DanioInteger -Value $RepositoryObservation.ahead) -and
+    (Test-DanioInteger -Value $RepositoryObservation.behind) -and
+    [int64]$RepositoryObservation.ahead -eq 0 -and
+    [int64]$RepositoryObservation.behind -eq 0
+  )
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($remoteValid) { "REMOTE_ALIGNMENT" } else { "REMOTE_DIVERGED" }) `
+    -Passed $remoteValid `
+    -Detail $(if ($remoteValid) { "Main and origin/main are aligned." } else { "Main and origin/main diverged." })))
+
+  $cleanValid = (
+    $observationShapeValid -and
+    (Test-DanioBoolean -Value $RepositoryObservation.clean) -and
+    [bool]$RepositoryObservation.clean -and
+    $RepositoryObservation.status_paths -is [System.Array] -and
+    $RepositoryObservation.status_paths.Count -eq 0
+  )
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($cleanValid) { "WORKTREE_CLEAN" } else { "DIRTY_UNOWNED" }) `
+    -Passed $cleanValid `
+    -Detail $(if ($cleanValid) { "Tracked and untracked status is clean." } else { "Tracked or untracked dirt is present." })))
+
+  $ownershipValid = (
+    $observationShapeValid -and
+    (Test-DanioBoolean -Value $RepositoryObservation.ownership_clear) -and
+    [bool]$RepositoryObservation.ownership_clear
+  )
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($ownershipValid) { "OWNERSHIP_CLEAR" } else { "DIRTY_UNOWNED" }) `
+    -Passed $ownershipValid `
+    -Detail $(if ($ownershipValid) { "No foreign temporary branch or worktree is present." } else { "Foreign branch or worktree ownership is present." })))
+
+  $stateValid = $false
+  $stateDetail = "State is invalid for intent '$Intent'."
+  if ($Intent -ceq "Launch" -and $null -eq $State) {
+    $stateValid = $true
+    $stateDetail = "Absent live state is valid for Launch."
+  } elseif ($null -ne $State) {
+    try {
+      $stateValidation = Test-DanioRunState -State $State
+      if ($stateValidation.valid) {
+        $allowedModes = switch ($Intent) {
+          "Launch" { @("inactive", "ready") }
+          "Claim" { @("ready", "handoff_ready") }
+          "Closeout" { @("active") }
+          "Finalization" { @("finalizing") }
+          "AdministrativeSync" { @("handoff_ready", "complete") }
+          default { @() }
+        }
+        $stateValid = (
+          $allowedModes -ccontains [string]$State.mode -and
+          [string]$State.authorization.repository_root -ceq $normalizedExpectedRoot
+        )
+        if ($stateValid) {
+          $stateDetail = "Run state is valid for intent '$Intent'."
+        }
+      } else {
+        $stateDetail = "State validation failed: $($stateValidation.code)."
+      }
+    } catch {
+      $stateDetail = "State validation rejected malformed input."
+    }
+  }
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($stateValid) { "RUN_STATE" } else { "AUTHORITY_CONFLICT" }) `
+    -Passed $stateValid `
+    -Detail $stateDetail))
+
+  $authorityValid = (
+    $null -ne $AuthorityValidation -and
+    ($AuthorityValidation.PSObject.Properties.Name -ccontains "valid") -and
+    [bool]$AuthorityValidation.valid
+  )
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($authorityValid) { "AUTHORITY" } else { "AUTHORITY_CONFLICT" }) `
+    -Passed $authorityValid `
+    -Detail $(if ($authorityValid) { "Canonical authority references validate." } else { $AuthorityValidation.details -join "; " })))
+
+  if ($Intent -ceq "Finalization") {
+    $completionRepositoryObservation = [pscustomobject]@{
+      parent_commit = if ($observationShapeValid) { [string]$RepositoryObservation.head_commit } else { "" }
+      origin_main_commit = if ($observationShapeValid) { [string]$RepositoryObservation.origin_main_commit } else { "" }
+      ahead = if ($observationShapeValid) { $RepositoryObservation.ahead } else { -1 }
+      behind = if ($observationShapeValid) { $RepositoryObservation.behind } else { -1 }
+      clean = if ($observationShapeValid) { $RepositoryObservation.clean } else { $false }
+    }
+    $completionValidation = Test-DanioCompletionReadiness `
+      -State $State `
+      -LedgerRows $LedgerRows `
+      -ActivePhaseLedgerIds $ActivePhaseLedgerIds `
+      -Evidence $Evidence `
+      -Cleanup $Cleanup `
+      -RepositoryObservation $completionRepositoryObservation
+    $checks.Add((New-DanioReadinessCheck `
+      -Code $(if ($completionValidation.ready) { "COMPLETION" } else { "COMPLETION_NOT_READY" }) `
+      -Passed ([bool]$completionValidation.ready) `
+      -Detail $(if ($completionValidation.ready) { "Terminal completion proof is ready." } else { $completionValidation.details -join "; " })))
+  } else {
+    $checks.Add((New-DanioReadinessCheck -Code "COMPLETION" -Passed $true -Detail "Completion proof is not required for this intent."))
+  }
+
+  $runnerValid = (
+    $null -ne $RunnerValidation -and
+    ($RunnerValidation.PSObject.Properties.Name -ccontains "valid") -and
+    [bool]$RunnerValidation.valid
+  )
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($runnerValid) { "RUNNER" } else { "RUNNER_INCOMPATIBLE" }) `
+    -Passed $runnerValid `
+    -Detail $(if ($runnerValid) { "Runner compatibility validates." } else { $RunnerValidation.details -join "; " })))
+
+  $budgetRequired = @("Launch", "Claim") -ccontains $Intent
+  $budgetValid = -not $budgetRequired -or $RemainingUnitsIncludingCurrent -gt 0
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($budgetValid) { "BUDGET" } else { "BUDGET_EXHAUSTED" }) `
+    -Passed $budgetValid `
+    -Detail $(if ($budgetValid) { "Autonomous unit budget permits this intent." } else { "No autonomous units remain for a new claim." })))
+
+  $runtimeValid = -not $RuntimeRequired -or $RuntimeOwnershipClear
+  $checks.Add((New-DanioReadinessCheck `
+    -Code $(if ($runtimeValid) { "RUNTIME" } else { "RUNTIME_OWNERSHIP_CONFLICT" }) `
+    -Passed $runtimeValid `
+    -Detail $(if ($runtimeValid) { "Runtime ownership is not required or is clear." } else { "Required runtime ownership is unclear." })))
+
+  $failedChecks = @($checks.ToArray() | Where-Object { $_.status -ceq "fail" })
+  $stopReason = $null
+  $precedence = @(
+    "INVALID_SYNC_RECEIPT",
+    "STALE_SYNC_RECEIPT",
+    "REPO_ROOT_INVALID",
+    "WRONG_SOURCE_BRANCH",
+    "REMOTE_DIVERGED",
+    "DIRTY_UNOWNED",
+    "AUTHORITY_CONFLICT",
+    "COMPLETION_NOT_READY",
+    "RUNNER_INCOMPATIBLE",
+    "BUDGET_EXHAUSTED",
+    "RUNTIME_OWNERSHIP_CONFLICT"
+  )
+  foreach ($code in $precedence) {
+    if (@($failedChecks | Where-Object { $_.code -ceq $code }).Count -gt 0) {
+      $stopReason = $code
+      break
+    }
+  }
+  if ($failedChecks.Count -gt 0 -and $null -eq $stopReason) {
+    $stopReason = "AUTHORITY_CONFLICT"
+  }
+
+  return [pscustomobject]@{
+    document_type = "danio_readiness_report"
+    schema_version = 1
+    intent = $Intent
+    checked_at_utc = $CheckedAtUtc
+    eligible = ($failedChecks.Count -eq 0)
+    stop_reason_code = $stopReason
+    checks = @($checks.ToArray())
+  }
+}
+
 Export-ModuleMember -Function @(
   "Resolve-DanioRepositoryRoot",
+  "Get-DanioRepositoryObservation",
   "Read-DanioLedgerClosureRows",
   "Test-DanioLedgerClosureRows",
+  "Test-DanioRunnerCompatibility",
+  "New-DanioSynchronizationReceipt",
+  "Test-DanioSynchronizationReceipt",
   "Test-DanioRunState",
   "Test-DanioRunStateTransition",
-  "Test-DanioCompletionReadiness"
+  "Test-DanioCompletionReadiness",
+  "Test-DanioAutonomousReadiness"
 )

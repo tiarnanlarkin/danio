@@ -223,16 +223,71 @@ function Read-Fixture {
   return Get-Content -Raw -LiteralPath $path | ConvertFrom-Json
 }
 
+function New-TestRepositoryObservation {
+  param(
+    [Parameter(Mandatory = $true)][string]$RepositoryRoot,
+    [Parameter(Mandatory = $true)][string]$Commit,
+    [string]$Branch = "main",
+    [int64]$Ahead = 0,
+    [int64]$Behind = 0,
+    [bool]$Clean = $true,
+    [string[]]$StatusPaths = @(),
+    [string[]]$Worktrees = @(),
+    [string[]]$TemporaryBranches = @(),
+    [bool]$OwnershipClear = $true
+  )
+
+  if ($Worktrees.Count -eq 0) {
+    $Worktrees = @($RepositoryRoot)
+  }
+
+  return [pscustomobject]@{
+    repository_root = $RepositoryRoot
+    branch = $Branch
+    head_commit = $Commit
+    origin_main_commit = $Commit
+    ahead = $Ahead
+    behind = $Behind
+    clean = $Clean
+    status_paths = @($StatusPaths)
+    worktrees = @($Worktrees)
+    temporary_branches = @($TemporaryBranches)
+    ownership_clear = $OwnershipClear
+  }
+}
+
+function New-TestValidationResult {
+  param(
+    [Parameter(Mandatory = $true)][bool]$Valid,
+    [Parameter(Mandatory = $true)][string]$Code,
+    [string[]]$Details = @()
+  )
+
+  return [pscustomobject]@{
+    valid = $Valid
+    code = $Code
+    details = @($Details)
+  }
+}
+
 $testRoot = (Resolve-Path -LiteralPath $PSScriptRoot).Path
 $appRoot = (Resolve-Path -LiteralPath (Join-Path $testRoot "../..")).Path
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $appRoot "../..")).Path
 $modulePath = Join-Path $appRoot "scripts/autonomous_completion/DanioAutonomousCompletion.psm1"
+$syncScriptPath = Join-Path $appRoot "scripts/autonomous_completion/sync_autonomous_completion.ps1"
+$readinessScriptPath = Join-Path $appRoot "scripts/autonomous_completion/check_autonomous_completion_readiness.ps1"
 $fixtureRoot = Join-Path $testRoot "fixtures/autonomous_completion"
 $ledgerPath = Join-Path $appRoot "docs/agent/COMPLETE_LOCAL_CLOSURE_LEDGER.md"
 $ledgerHashBefore = (Get-FileHash -Algorithm SHA256 -LiteralPath $ledgerPath).Hash
 
 if (-not (Test-Path -LiteralPath $modulePath -PathType Leaf)) {
   throw "Expected pure module is missing: $modulePath"
+}
+if (-not (Test-Path -LiteralPath $syncScriptPath -PathType Leaf)) {
+  throw "Expected synchronization wrapper is missing: $syncScriptPath"
+}
+if (-not (Test-Path -LiteralPath $readinessScriptPath -PathType Leaf)) {
+  throw "Expected readiness wrapper is missing: $readinessScriptPath"
 }
 
 Import-Module -Name $modulePath -Force
@@ -387,6 +442,230 @@ $complete = Read-Fixture -FixtureRoot $fixtureRoot -Name "complete_run_state.jso
 foreach ($fixture in @($inactive, $ready, $active, $handoffReady, $finalizing, $complete)) {
   $stateValidation = Test-DanioRunState -State $fixture
   Assert-True -Condition $stateValidation.valid -Message "Fixture '$($fixture.mode)' should validate: $($stateValidation.details -join '; ')"
+}
+
+$normalizedRepoRoot = $repoRoot.Replace("\", "/")
+$invocationNonce = "0123456789abcdef0123456789abcdef"
+$observationCommit = ("a" * 40)
+$receiptAt120 = New-DanioSynchronizationReceipt `
+  -InvocationNonce $invocationNonce `
+  -RepositoryRoot $normalizedRepoRoot `
+  -ExitCode 0 `
+  -CompletedAtUtc "2026-07-11T12:00:00.0000000Z" `
+  -OriginMainCommit $observationCommit `
+  -Ahead 0 `
+  -Behind 0
+$receiptAt120Validation = Test-DanioSynchronizationReceipt `
+  -Receipt $receiptAt120 `
+  -ExpectedInvocationNonce $invocationNonce `
+  -ExpectedRepositoryRoot $normalizedRepoRoot `
+  -ExpectedOriginMainCommit $observationCommit `
+  -ExpectedAhead 0 `
+  -ExpectedBehind 0 `
+  -CheckedAtUtc "2026-07-11T12:02:00.0000000Z" `
+  -MaxReceiptAgeSeconds 120
+Assert-True -Condition $receiptAt120Validation.valid -Message "A receipt exactly 120 seconds old must remain valid."
+Assert-Equal -Actual $receiptAt120Validation.code -Expected "SYNC_RECEIPT_VALID" -Message "120-second receipt code mismatch."
+
+$receiptAt121Validation = Test-DanioSynchronizationReceipt `
+  -Receipt $receiptAt120 `
+  -ExpectedInvocationNonce $invocationNonce `
+  -ExpectedRepositoryRoot $normalizedRepoRoot `
+  -ExpectedOriginMainCommit $observationCommit `
+  -ExpectedAhead 0 `
+  -ExpectedBehind 0 `
+  -CheckedAtUtc "2026-07-11T12:02:01.0000000Z" `
+  -MaxReceiptAgeSeconds 120
+Assert-Equal -Actual $receiptAt121Validation.code -Expected "STALE_SYNC_RECEIPT" -Message "A 121-second receipt did not expire."
+
+$futureReceipt = Copy-JsonValue -Value $receiptAt120
+$futureReceipt.completed_at_utc = "2026-07-11T12:02:01.0000000Z"
+$futureReceiptValidation = Test-DanioSynchronizationReceipt `
+  -Receipt $futureReceipt `
+  -ExpectedInvocationNonce $invocationNonce `
+  -ExpectedRepositoryRoot $normalizedRepoRoot `
+  -ExpectedOriginMainCommit $observationCommit `
+  -ExpectedAhead 0 `
+  -ExpectedBehind 0 `
+  -CheckedAtUtc "2026-07-11T12:02:00.0000000Z" `
+  -MaxReceiptAgeSeconds 120
+Assert-Equal -Actual $futureReceiptValidation.code -Expected "INVALID_SYNC_RECEIPT" -Message "Future receipt timestamp was accepted."
+
+foreach ($receiptMutation in @(
+  [pscustomobject]@{ Name = "nonce"; Apply = { param($value) $value.invocation_nonce = ("f" * 32) } },
+  [pscustomobject]@{ Name = "root"; Apply = { param($value) $value.repository_root = "D:/foreign/repo" } },
+  [pscustomobject]@{ Name = "origin"; Apply = { param($value) $value.origin_main_commit = ("b" * 40) } },
+  [pscustomobject]@{ Name = "command"; Apply = { param($value) $value.command.arguments = @("fetch", "--all") } }
+)) {
+  $mutatedReceipt = Copy-JsonValue -Value $receiptAt120
+  & $receiptMutation.Apply $mutatedReceipt
+  $mutatedReceiptValidation = Test-DanioSynchronizationReceipt `
+    -Receipt $mutatedReceipt `
+    -ExpectedInvocationNonce $invocationNonce `
+    -ExpectedRepositoryRoot $normalizedRepoRoot `
+    -ExpectedOriginMainCommit $observationCommit `
+    -ExpectedAhead 0 `
+    -ExpectedBehind 0 `
+    -CheckedAtUtc "2026-07-11T12:00:30.0000000Z" `
+    -MaxReceiptAgeSeconds 120
+  Assert-Equal `
+    -Actual $mutatedReceiptValidation.code `
+    -Expected "INVALID_SYNC_RECEIPT" `
+    -Message "Receipt $($receiptMutation.Name) mismatch was accepted."
+}
+
+$repositoryObservation = New-TestRepositoryObservation `
+  -RepositoryRoot $normalizedRepoRoot `
+  -Commit $observationCommit
+$authorityValid = New-TestValidationResult -Valid $true -Code "AUTHORITY_VALID"
+$runnerValid = New-TestValidationResult -Valid $true -Code "RUNNER_COMPATIBLE"
+$claimReceipt = Copy-JsonValue -Value $receiptAt120
+$claimReadinessParameters = @{
+  Intent = "Claim"
+  SynchronizationReceipt = $claimReceipt
+  ExpectedInvocationNonce = $invocationNonce
+  ExpectedRepositoryRoot = $normalizedRepoRoot
+  RepositoryObservation = $repositoryObservation
+  State = $ready
+  AuthorityValidation = $authorityValid
+  RunnerValidation = $runnerValid
+  RemainingUnitsIncludingCurrent = [int64]$ready.budget.remaining_units_including_current
+  CheckedAtUtc = "2026-07-11T12:00:30.0000000Z"
+  MaxReceiptAgeSeconds = 120
+  RuntimeRequired = $false
+  RuntimeOwnershipClear = $true
+}
+$claimReady = Test-DanioAutonomousReadiness @claimReadinessParameters
+Assert-True -Condition $claimReady.eligible -Message "Normalized safe claim inputs should be eligible: $($claimReady.checks.detail -join '; ')"
+Assert-True -Condition ($null -eq $claimReady.stop_reason_code) -Message "Eligible readiness report carried a stop reason."
+
+$wrongBranchObservation = Copy-JsonValue -Value $repositoryObservation
+$wrongBranchObservation.branch = "feature/wrong-source"
+$wrongBranchParameters = @{} + $claimReadinessParameters
+$wrongBranchParameters.RepositoryObservation = $wrongBranchObservation
+$wrongBranch = Test-DanioAutonomousReadiness @wrongBranchParameters
+Assert-Equal -Actual $wrongBranch.stop_reason_code -Expected "WRONG_SOURCE_BRANCH" -Message "Wrong source branch was accepted."
+
+$aheadObservation = Copy-JsonValue -Value $repositoryObservation
+$aheadObservation.ahead = 1
+$aheadReceipt = New-DanioSynchronizationReceipt `
+  -InvocationNonce $invocationNonce `
+  -RepositoryRoot $normalizedRepoRoot `
+  -ExitCode 0 `
+  -CompletedAtUtc "2026-07-11T12:00:00.0000000Z" `
+  -OriginMainCommit $observationCommit `
+  -Ahead 1 `
+  -Behind 0
+$aheadParameters = @{} + $claimReadinessParameters
+$aheadParameters.RepositoryObservation = $aheadObservation
+$aheadParameters.SynchronizationReceipt = $aheadReceipt
+$ahead = Test-DanioAutonomousReadiness @aheadParameters
+Assert-Equal -Actual $ahead.stop_reason_code -Expected "REMOTE_DIVERGED" -Message "Ahead repository was accepted."
+
+$behindObservation = Copy-JsonValue -Value $repositoryObservation
+$behindObservation.behind = 1
+$behindReceipt = New-DanioSynchronizationReceipt `
+  -InvocationNonce $invocationNonce `
+  -RepositoryRoot $normalizedRepoRoot `
+  -ExitCode 0 `
+  -CompletedAtUtc "2026-07-11T12:00:00.0000000Z" `
+  -OriginMainCommit $observationCommit `
+  -Ahead 0 `
+  -Behind 1
+$behindParameters = @{} + $claimReadinessParameters
+$behindParameters.RepositoryObservation = $behindObservation
+$behindParameters.SynchronizationReceipt = $behindReceipt
+$behind = Test-DanioAutonomousReadiness @behindParameters
+Assert-Equal -Actual $behind.stop_reason_code -Expected "REMOTE_DIVERGED" -Message "Behind repository was accepted."
+
+$dirtyObservation = Copy-JsonValue -Value $repositoryObservation
+$dirtyObservation.clean = $false
+$dirtyObservation.status_paths = @("untracked.txt")
+$dirtyParameters = @{} + $claimReadinessParameters
+$dirtyParameters.RepositoryObservation = $dirtyObservation
+$dirty = Test-DanioAutonomousReadiness @dirtyParameters
+Assert-Equal -Actual $dirty.stop_reason_code -Expected "DIRTY_UNOWNED" -Message "Dirty repository was accepted."
+
+$foreignObservation = Copy-JsonValue -Value $repositoryObservation
+$foreignObservation.ownership_clear = $false
+$foreignObservation.worktrees = @($normalizedRepoRoot, "C:/foreign/worktree")
+$foreignParameters = @{} + $claimReadinessParameters
+$foreignParameters.RepositoryObservation = $foreignObservation
+$foreign = Test-DanioAutonomousReadiness @foreignParameters
+Assert-Equal -Actual $foreign.stop_reason_code -Expected "DIRTY_UNOWNED" -Message "Foreign ownership was accepted."
+
+$authorityInvalidParameters = @{} + $claimReadinessParameters
+$authorityInvalidParameters.AuthorityValidation = New-TestValidationResult `
+  -Valid $false `
+  -Code "AUTHORITY_CONFLICT" `
+  -Details @("program blob moved")
+$authorityInvalid = Test-DanioAutonomousReadiness @authorityInvalidParameters
+Assert-Equal -Actual $authorityInvalid.stop_reason_code -Expected "AUTHORITY_CONFLICT" -Message "Authority mismatch was accepted."
+
+$runnerInvalidParameters = @{} + $claimReadinessParameters
+$runnerInvalidParameters.RunnerValidation = New-TestValidationResult `
+  -Valid $false `
+  -Code "RUNNER_INCOMPATIBLE" `
+  -Details @("runner remains unpinned")
+$runnerInvalid = Test-DanioAutonomousReadiness @runnerInvalidParameters
+Assert-Equal -Actual $runnerInvalid.stop_reason_code -Expected "RUNNER_INCOMPATIBLE" -Message "Runner mismatch was accepted."
+
+$budgetInvalidParameters = @{} + $claimReadinessParameters
+$budgetInvalidParameters.RemainingUnitsIncludingCurrent = 0
+$budgetInvalid = Test-DanioAutonomousReadiness @budgetInvalidParameters
+Assert-Equal -Actual $budgetInvalid.stop_reason_code -Expected "BUDGET_EXHAUSTED" -Message "Zero remaining budget was accepted."
+
+$runtimeInvalidParameters = @{} + $claimReadinessParameters
+$runtimeInvalidParameters.RuntimeRequired = $true
+$runtimeInvalidParameters.RuntimeOwnershipClear = $false
+$runtimeInvalid = Test-DanioAutonomousReadiness @runtimeInvalidParameters
+Assert-Equal -Actual $runtimeInvalid.stop_reason_code -Expected "RUNTIME_OWNERSHIP_CONFLICT" -Message "Unclear required runtime ownership was accepted."
+
+$invalidReceiptParameters = @{} + $runtimeInvalidParameters
+$invalidReceiptParameters.SynchronizationReceipt = Copy-JsonValue -Value $claimReceipt
+$invalidReceiptParameters.SynchronizationReceipt.command.arguments = @("fetch", "--all")
+$invalidReceiptParameters.RepositoryObservation = $wrongBranchObservation
+$invalidReceiptParameters.AuthorityValidation = $authorityInvalidParameters.AuthorityValidation
+$invalidReceiptParameters.RunnerValidation = $runnerInvalidParameters.RunnerValidation
+$invalidReceiptParameters.RemainingUnitsIncludingCurrent = 0
+$invalidReceipt = Test-DanioAutonomousReadiness @invalidReceiptParameters
+Assert-Equal -Actual $invalidReceipt.stop_reason_code -Expected "INVALID_SYNC_RECEIPT" -Message "Stop-reason precedence did not select invalid receipt first."
+Assert-True `
+  -Condition (@($invalidReceipt.checks | Where-Object { $_.status -ceq "fail" }).Count -gt 1) `
+  -Message "Readiness stopped after the first failure instead of returning all checks."
+
+$runnerManifestPath = Join-Path $appRoot "docs/agent/autonomous_completion/runner_compatibility.json"
+$runnerManifest = Get-Content -Raw -LiteralPath $runnerManifestPath | ConvertFrom-Json
+$currentRunnerValidation = Test-DanioRunnerCompatibility -Manifest $runnerManifest
+Assert-Equal -Actual $currentRunnerValidation.code -Expected "RUNNER_INCOMPATIBLE" -Message "Unpinned runner manifest did not remain fail-closed."
+
+$originalOptionalLocks = [Environment]::GetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "Process")
+try {
+  [Environment]::SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "sentinel", "Process")
+  $liveObservation = Get-DanioRepositoryObservation -RepositoryRoot $repoRoot
+  Assert-Equal `
+    -Actual ([Environment]::GetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "Process")) `
+    -Expected "sentinel" `
+    -Message "Repository observation did not restore the prior optional-lock value."
+  Assert-Equal -Actual $liveObservation.repository_root -Expected $normalizedRepoRoot -Message "Live repository observation root mismatch."
+
+  [Environment]::SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", $null, "Process")
+  [void](Get-DanioRepositoryObservation -RepositoryRoot $repoRoot)
+  Assert-True `
+    -Condition ($null -eq [Environment]::GetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "Process")) `
+    -Message "Repository observation created an optional-lock value that was previously unset."
+
+  [Environment]::SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "sentinel", "Process")
+  Assert-ThrowsLike `
+    -Action { Get-DanioRepositoryObservation -RepositoryRoot (Join-Path $repoRoot "missing") | Out-Null } `
+    -ExpectedPattern "cannot find path" `
+    -Message "Invalid repository observation did not fail."
+  Assert-Equal `
+    -Actual ([Environment]::GetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "Process")) `
+    -Expected "sentinel" `
+    -Message "Repository observation did not restore optional locks after failure."
+} finally {
+  [Environment]::SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", $originalOptionalLocks, "Process")
 }
 
 $nullStateValidation = Test-DanioRunState -State $null
@@ -800,6 +1079,57 @@ $repositoryObservation = [pscustomobject]@{
   behind = 0
   clean = $true
 }
+$finalizationRepositoryObservation = New-TestRepositoryObservation `
+  -RepositoryRoot $normalizedRepoRoot `
+  -Commit $evidenceLedgerParentCommit
+$finalizationReceipt = New-DanioSynchronizationReceipt `
+  -InvocationNonce $invocationNonce `
+  -RepositoryRoot $normalizedRepoRoot `
+  -ExitCode 0 `
+  -CompletedAtUtc "2026-07-11T12:10:00.0000000Z" `
+  -OriginMainCommit $evidenceLedgerParentCommit `
+  -Ahead 0 `
+  -Behind 0
+$finalizationReadinessParameters = @{
+  Intent = "Finalization"
+  SynchronizationReceipt = $finalizationReceipt
+  ExpectedInvocationNonce = $invocationNonce
+  ExpectedRepositoryRoot = $normalizedRepoRoot
+  RepositoryObservation = $finalizationRepositoryObservation
+  State = $finalize
+  AuthorityValidation = $authorityValid
+  RunnerValidation = $runnerValid
+  RemainingUnitsIncludingCurrent = [int64]$finalize.budget.remaining_units_including_current
+  CheckedAtUtc = "2026-07-11T12:10:30.0000000Z"
+  MaxReceiptAgeSeconds = 120
+  RuntimeRequired = $false
+  RuntimeOwnershipClear = $true
+  LedgerRows = $completionRows
+  ActivePhaseLedgerIds = $activePhaseLedgerIds
+  Evidence = $evidence
+  Cleanup = $cleanup
+}
+$finalizationReady = Test-DanioAutonomousReadiness @finalizationReadinessParameters
+Assert-True -Condition $finalizationReady.eligible -Message "Valid finalization inputs should be eligible."
+
+$openFinalizationRows = @(Copy-JsonValue -Value $completionRows)
+($openFinalizationRows | Where-Object { $_.Id -eq "DCL-DR-001" }).ClosureState = "open"
+$openFinalizationParameters = @{} + $finalizationReadinessParameters
+$openFinalizationParameters.LedgerRows = $openFinalizationRows
+$openFinalization = Test-DanioAutonomousReadiness @openFinalizationParameters
+Assert-Equal -Actual $openFinalization.stop_reason_code -Expected "COMPLETION_NOT_READY" -Message "Open active row did not block Finalization readiness."
+
+$missingEvidenceParameters = @{} + $finalizationReadinessParameters
+$missingEvidenceParameters.Evidence = $null
+$missingFinalizationEvidence = Test-DanioAutonomousReadiness @missingEvidenceParameters
+Assert-Equal -Actual $missingFinalizationEvidence.stop_reason_code -Expected "COMPLETION_NOT_READY" -Message "Missing final evidence did not block Finalization readiness."
+
+$foreignFinalizationCleanup = Copy-JsonValue -Value $cleanup
+$foreignFinalizationCleanup.owner_token = ("0" * 64)
+$foreignCleanupParameters = @{} + $finalizationReadinessParameters
+$foreignCleanupParameters.Cleanup = $foreignFinalizationCleanup
+$foreignFinalization = Test-DanioAutonomousReadiness @foreignCleanupParameters
+Assert-Equal -Actual $foreignFinalization.stop_reason_code -Expected "COMPLETION_NOT_READY" -Message "Retained foreign lease did not block Finalization readiness."
 Assert-True `
   -Condition (
     [string]$finalize.last_verified_checkpoint.product_commit -cne $finalProductCommit -and
