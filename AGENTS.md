@@ -34,6 +34,10 @@ approval in the current thread or an existing entry in
 - If another Codex session has active dirty work, do not stage, format, or
   rewrite those files. Either wait for a clean handoff or work only in files
   that are clearly isolated from that session's slice.
+- While the autonomous phone completion overlay is active, another
+  repository-writing session or unowned dirty work is a stop condition. The
+  isolated-file carveout does not apply; wait for one clean coordinator
+  handoff.
 - Commit focused slices separately. Docs-only setup changes must stay separate from product behavior changes.
 
 ## Session Freshness
@@ -158,17 +162,24 @@ that make new build/readiness claims.
 - Preserve design setup docs from parallel sessions. Extend them only when the
   current slice explicitly owns that update, and keep design-baseline changes in
   their own focused commit when practical.
+- While the autonomous phone completion overlay is active, there is no
+  parallel design writer; design subagents are read-only auditors and the sole
+  coordinator owns any design-doc write.
 
 ## Multi-Agent Workflow
 
 - Repo-local Codex agent roles live under `.codex/`.
 - Use `apps/aquarium_app/docs/agent/MULTI_AGENT_WORKFLOW.md` for the current
-  coordinator, auditor, reviewer, worker, and Android QA ownership rules.
-- Keep read-only auditors separate from implementation workers.
-- Implementation workers may edit only in explicitly assigned git worktrees with
-  disjoint file/module ownership.
-- Only one Android QA owner may control emulator, ADB, Patrol, Firebase Test
-  Lab, or Android screenshot evidence at a time.
+  coordinator, auditor, reviewer, and Android QA ownership rules.
+- The coordinator is the only repository writer and owns staging, commits,
+  merges, pushes, installed-skill changes, durable evidence files, and task
+  creation. All registered repo-local agents are read-only auditors.
+- `.codex/agents/danio_worker.toml` is retained for history but is not
+  registered and must not be invoked by the phone completion program.
+- Android QA is repository-read-only and may use only a coordinator-supplied
+  immutable commit/APK on a coordinator-assigned serial after
+  `DEVICE_OWNERSHIP.md` is satisfied. Except for `adb devices`, every assigned
+  device-affecting command must use `adb -s <assigned-serial>`.
 
 ## Autonomous Phone Bootstrap Containment
 
@@ -179,6 +190,8 @@ that make new build/readiness claims.
 - Load `$danio-autonomous-slice-runner` first and
   `$verified-slice-runner` second for every autonomous phone setup or product
   unit.
+- One coordinator owns every repository/installed-skill write and Git/task
+  mutation. Parallel agents are repository-read-only auditors only.
 - Until the no-product-change rehearsal passes and Task 13 creates the live
   run state, automatic operational chaining remains disabled. Setup units may
   continue only through an explicit user-authorized project-scoped bootstrap

@@ -85,6 +85,10 @@ Rules:
 - Do not stage, format, rewrite, delete, or revert unrelated dirty files.
 - If a needed file is already dirty, inspect the diff first and preserve the
   existing work.
+- While the autonomous phone completion overlay is active, any other
+  repository writer or unowned dirty work is a stop condition. Do not use
+  disjoint files as a parallel-writer carveout; wait for a clean coordinator
+  handoff.
 - Keep product changes, docs-only setup, and design-baseline updates in
   separate commits.
 - After each committed slice, run `git status --short -uall` and continue only
@@ -107,10 +111,17 @@ Configured roles:
   audit.
 - `danio_reviewer`: read-only post-slice review for regressions and missing
   tests.
-- `danio_worker`: implementation worker for explicitly assigned git worktrees
-  and disjoint file/module ownership only.
-- `danio_android_qa_owner`: single owner for emulator, ADB, Patrol, Firebase
-  Test Lab, and Android screenshot evidence after ownership is clear.
+- `danio_android_qa_owner`: repository-read-only runtime observer for a
+  coordinator-supplied immutable commit/APK and coordinator-assigned serial
+  after ownership is clear. Except for `adb devices`, every device-affecting
+  ADB command uses `adb -s <assigned-serial>`; this phone overlay overrides
+  older unscoped examples in `DEVICE_OWNERSHIP.md`.
+
+The coordinator is the only writer and owns repository/installed-skill edits,
+staging, commits, merges, pushes, durable evidence files, and task creation.
+All registered roles are read-only auditors. The retained
+`.codex/agents/danio_worker.toml` file is de-registered and must not be invoked
+by the phone completion program.
 
 The project cap is six open agent threads with direct-child subagents only.
 See `docs/agent/MULTI_AGENT_WORKFLOW.md` for the operating model.
@@ -309,6 +320,10 @@ regression checks rather than cross-machine visual truth.
 The design autonomy setup under `docs/design/` is treated as active project
 infrastructure. Do not overwrite those files while another session owns a
 design-baseline slice.
+
+While the autonomous phone completion overlay is active, another design writer
+is not permitted. Design subagents are read-only auditors and the sole
+coordinator owns every design-doc write.
 
 For UI or visual work:
 

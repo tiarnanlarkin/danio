@@ -79,6 +79,20 @@ defined in the autonomous phone workflow implementation plan. One writing
 coordinator owns every repository write, stage, commit, merge, push, and task
 creation. Parallel agents may be repository-read-only auditors only.
 
+The coordinator is also the only installed-skill writer and durable
+evidence-file writer. Auditor repository commands are limited to `rg`,
+`Get-Content`, `git show`, `git log`, `git diff --no-ext-diff`, and
+`GIT_OPTIONAL_LOCKS=0 git --no-optional-locks status`. Auditors do not run
+fetch, checkout, add, commit, push, package resolution, Flutter/Gradle gates,
+generators, quality wrappers, background processes, Figma writes, task
+creation, or account-backed actions. Non-Android auditors also do not run
+ADB/emulator commands. Android QA remains repository-read-only and has only
+the serial-scoped runtime exception: it requires coordinator-supplied immutable
+commit/APK identity plus a coordinator-assigned serial after
+`DEVICE_OWNERSHIP.md`.
+Except for `adb devices`, every device-affecting command uses
+`adb -s <assigned-serial>`.
+
 Keep product execution blocked. Do not start DCL-DR-001 or another product
 ledger row before Task 13. Do not take Android runtime ownership, edit Figma or
 installed skills unless the selected setup task explicitly owns that scope,

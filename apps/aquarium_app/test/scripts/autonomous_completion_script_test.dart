@@ -376,6 +376,146 @@ List<String> _validateSchemaInstance(
   return errors;
 }
 
+Map<String, String> _parseCodexAgentRegistry(String source) {
+  final rootFields = <String, Object?>{};
+  final sections = <String, Map<String, Object?>>{};
+  final seenSections = <String>{};
+  String? currentSection;
+
+  for (final rawLine in const LineSplitter().convert(source)) {
+    final line = rawLine.trim();
+    if (line.isEmpty || line.startsWith('#')) {
+      continue;
+    }
+
+    final header = RegExp(
+      r'^\[agents(?:\.([a-z][a-z0-9_]*))?\]$',
+    ).firstMatch(line);
+    if (header != null) {
+      final section = header.group(1) ?? '';
+      currentSection = section;
+      if (!seenSections.add(section)) {
+        throw const FormatException('duplicate Codex agent section');
+      }
+      if (section.isNotEmpty) {
+        sections[section] = {};
+      }
+      continue;
+    }
+
+    if (currentSection == null) {
+      throw FormatException('value outside Codex agent section: $line');
+    }
+    final assignment = RegExp(r'^([a-z_]+)\s*=\s*(.+)$').firstMatch(line);
+    if (assignment == null) {
+      throw FormatException('unsupported Codex TOML syntax: $line');
+    }
+    final key = assignment.group(1)!;
+    final rawValue = assignment.group(2)!;
+    final target = currentSection.isEmpty
+        ? rootFields
+        : sections[currentSection]!;
+    if (target.containsKey(key)) {
+      throw FormatException('duplicate Codex TOML key: $key');
+    }
+    if (currentSection.isEmpty) {
+      if (!const {'max_threads', 'max_depth'}.contains(key)) {
+        throw FormatException('unknown Codex root key: $key');
+      }
+      target[key] = int.parse(rawValue);
+      continue;
+    }
+    if (!const {
+      'description',
+      'config_file',
+      'nickname_candidates',
+    }.contains(key)) {
+      throw FormatException('unknown Codex agent key: $key');
+    }
+    target[key] = jsonDecode(rawValue);
+  }
+
+  if (rootFields.keys.toSet().difference(const {
+        'max_threads',
+        'max_depth',
+      }).isNotEmpty ||
+      rootFields.length != 2 ||
+      rootFields['max_threads'] != 6 ||
+      rootFields['max_depth'] != 1) {
+    throw const FormatException('Codex root fields are incomplete');
+  }
+
+  final registry = <String, String>{};
+  for (final entry in sections.entries) {
+    final fields = entry.value;
+    if (fields.keys.toSet().difference(const {
+          'description',
+          'config_file',
+          'nickname_candidates',
+        }).isNotEmpty ||
+        fields.length != 3 ||
+        fields['description'] is! String ||
+        fields['nickname_candidates'] is! List<dynamic> ||
+        !(fields['nickname_candidates'] as List<dynamic>).every(
+          (value) => value is String,
+        )) {
+      throw FormatException('invalid Codex agent section: ${entry.key}');
+    }
+    final configFile = fields['config_file'];
+    if (configFile is! String || configFile != 'agents/${entry.key}.toml') {
+      throw FormatException('invalid Codex config_file for ${entry.key}');
+    }
+    registry[entry.key] = configFile;
+  }
+  return registry;
+}
+
+Map<String, Object?> _parseCodexAgentHeader(String source) {
+  const instructionsMarker = 'developer_instructions = """';
+  final markerIndex = source.indexOf(instructionsMarker);
+  final closingIndex = source.lastIndexOf('"""');
+  if (markerIndex < 0 ||
+      closingIndex <= markerIndex + instructionsMarker.length ||
+      source.indexOf('"""', markerIndex + instructionsMarker.length) !=
+          closingIndex ||
+      source.substring(closingIndex + 3).trim().isNotEmpty) {
+    throw const FormatException('invalid Codex agent instruction block');
+  }
+
+  final fields = <String, Object?>{};
+  final header = source.substring(0, markerIndex);
+  for (final rawLine in const LineSplitter().convert(header)) {
+    final line = rawLine.trim();
+    if (line.isEmpty || line.startsWith('#')) {
+      continue;
+    }
+    final assignment = RegExp(r'^([a-z_]+)\s*=\s*(.+)$').firstMatch(line);
+    if (assignment == null) {
+      throw FormatException('unsupported Codex agent TOML syntax: $line');
+    }
+    final key = assignment.group(1)!;
+    if (fields.containsKey(key)) {
+      throw FormatException('duplicate Codex agent key: $key');
+    }
+    fields[key] = jsonDecode(assignment.group(2)!);
+  }
+
+  const required = {
+    'name',
+    'description',
+    'model',
+    'model_reasoning_effort',
+    'service_tier',
+    'sandbox_mode',
+    'nickname_candidates',
+  };
+  if (fields.keys.toSet().difference(required).isNotEmpty ||
+      fields.length != required.length) {
+    throw const FormatException('Codex agent header fields are invalid');
+  }
+  return fields;
+}
+
 void main() {
   test('autonomous completion contract files exist and stay ascii-only', () {
     for (final path in <String>[
@@ -907,6 +1047,114 @@ void main() {
       }),
       isTrue,
     );
+  });
+
+  test('coordinator-only agent overlay is fail-closed', () {
+    final config = File('../../.codex/config.toml').readAsStringSync();
+    const expectedRegistry = <String, String>{
+      'danio_product_auditor': 'agents/danio_product_auditor.toml',
+      'danio_ui_auditor': 'agents/danio_ui_auditor.toml',
+      'danio_quality_auditor': 'agents/danio_quality_auditor.toml',
+      'danio_reviewer': 'agents/danio_reviewer.toml',
+      'danio_android_qa_owner': 'agents/danio_android_qa_owner.toml',
+    };
+    final registry = _parseCodexAgentRegistry(config);
+    expect(registry, expectedRegistry);
+    expect(
+      File('../../.codex/agents/danio_worker.toml').existsSync(),
+      isTrue,
+      reason: 'worker definition is retained but de-registered',
+    );
+
+    final auditorPaths = expectedRegistry.values
+        .map((path) => '../../.codex/$path')
+        .toList(growable: false);
+    const exactAllowlist =
+        '`rg`, `Get-Content`, `git show`, `git log`, '
+        '`git diff --no-ext-diff`, and `git --no-optional-locks status` '
+        'with `GIT_OPTIONAL_LOCKS=0`.';
+    const standardDenylist =
+        'Do not run fetch, checkout, add, commit, push, package resolution, '
+        'Flutter/Gradle test/build/analyze, generators, quality wrappers, '
+        'ADB/emulator commands, background processes, Figma writes, task '
+        'creation, or account-backed actions.';
+    const androidDenylist =
+        'Do not run fetch, checkout, add, commit, push, package resolution, '
+        'Flutter/Gradle test/build/analyze, generators, quality wrappers, '
+        'background processes, Figma writes, task creation, or '
+        'account-backed actions.';
+    for (final entry in expectedRegistry.entries) {
+      final path = '../../.codex/${entry.value}';
+      final source = File(path).readAsStringSync();
+      final header = _parseCodexAgentHeader(source);
+      expect(header['name'], entry.key, reason: path);
+      expect(header['sandbox_mode'], 'read-only', reason: path);
+      expect(source, contains(exactAllowlist), reason: path);
+      for (final safetyClause in <String>[
+        'Get-Content -LiteralPath',
+        'rg --pre',
+        'GIT_PAGER=cat',
+        '--no-textconv',
+        '--output',
+        'repo-relative',
+      ]) {
+        expect(source, contains(safetyClause), reason: '$path: $safetyClause');
+      }
+      for (final mutation in <String>[
+        'package resolution',
+        'Flutter/Gradle test/build/analyze',
+        'generators',
+        'quality wrappers',
+        'background processes',
+        'Figma writes',
+        'task creation',
+        'account-backed actions',
+      ]) {
+        expect(source, contains(mutation), reason: '$path: $mutation');
+      }
+    }
+
+    for (final path in auditorPaths.take(4)) {
+      final source = File(path).readAsStringSync();
+      expect(source, contains(standardDenylist), reason: path);
+    }
+
+    final android = File(auditorPaths.last).readAsStringSync();
+    expect(android, contains(androidDenylist));
+    const serialScopedAdb =
+        'Every device-affecting ADB command must use `adb -s <assigned-serial>`';
+    const assignedPatrol =
+        'Run local Patrol only when the coordinator supplies the exact serial-bound command';
+    for (final contract in <String>[
+      'DEVICE_OWNERSHIP.md',
+      'coordinator-supplied immutable commit',
+      'coordinator-supplied immutable APK',
+      'coordinator-assigned serial',
+      'coordinator owns durable evidence-file writes',
+      'Only `adb devices` may be unscoped',
+      serialScopedAdb,
+      'overrides older unscoped ADB examples',
+      assignedPatrol,
+    ]) {
+      expect(android, contains(contract), reason: contract);
+    }
+
+    final chainPrompt = File(
+      'docs/agent/AUTONOMOUS_CHAIN_HANDOFF_PROMPT.md',
+    ).readAsStringSync();
+    final startupStart = chainPrompt.indexOf('Required startup:');
+    final startupEnd = chainPrompt.indexOf('Objective:', startupStart);
+    expect(startupStart, greaterThanOrEqualTo(0));
+    expect(startupEnd, greaterThan(startupStart));
+    final startup = chainPrompt.substring(startupStart, startupEnd);
+    final danioRunner = startup.indexOf(
+      r'1. Load the latest installed $danio-autonomous-slice-runner',
+    );
+    final verifiedRunner = startup.indexOf(
+      r'2. Load the latest installed $verified-slice-runner',
+    );
+    expect(danioRunner, greaterThanOrEqualTo(0));
+    expect(verifiedRunner, greaterThan(danioRunner));
   });
 
   test('normative fixtures model bootstrap modes without live state', () {
